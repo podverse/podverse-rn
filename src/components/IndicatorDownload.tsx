@@ -24,7 +24,11 @@ export const IndicatorDownload = (props: Props) => {
       accessible={false}
       importantForAccessibility='no-hide-descendants'
       style={style}>
-      <Icon isSecondary name='download' size={size} />
+      <Icon
+        accessible={false}
+        isSecondary
+        name='download'
+        size={size} />
     </View>
   )
 }

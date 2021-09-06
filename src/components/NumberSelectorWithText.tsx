@@ -40,6 +40,7 @@ export const NumberSelectorWithText = (props: Props) => {
       accessibilityLabel={!!wrapperOnPress ? '' : accessibilityLabel}
       style={styles.innerWrapper}>
       <TextInput
+        accessibilityLabel={accessibilityLabel}
         autoCompleteType='off'
         editable={editable}
         fontSizeLargestScale={PV.Fonts.largeSizes.md}

@@ -51,8 +51,9 @@ export interface GlobalTheme {
   textInput?: any
   textInputIcon?: any
   textInputEyeBrow?: any
-  textInputPreLabel?: any
   textInputWrapper?: any
+  textSecondary?: boolean
+  textNowPlaying?: boolean
   view?: any
 }
 

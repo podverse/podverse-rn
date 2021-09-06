@@ -6,6 +6,7 @@ import { Colors } from '../resources/Colors'
 import { core } from '../styles'
 
 type Props = {
+  accessible?: boolean
   accessibilityHint?: string
   accessibilityLabel?: string
   children?: any
@@ -21,7 +22,7 @@ type Props = {
 
 export const PVActivityIndicator = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
-  const { accessibilityHint, accessibilityLabel, fillSpace, importantForAccessibility = 'auto', 
+  const { accessible = true, accessibilityHint, accessibilityLabel, fillSpace, importantForAccessibility = 'auto', 
     isOverlay, onPress, size = 'large', testID, transparent = true } = props
 
   const viewStyle = fillSpace ? { flex: 1 } : {}
@@ -31,6 +32,7 @@ export const PVActivityIndicator = (props: Props) => {
     <Fragment>
       {isOverlay && (
         <View
+          accessible={accessible}
           accessibilityHint={accessibilityHint}
           accessibilityLabel={accessibilityLabel}
           importantForAccessibility={importantForAccessibility}
@@ -44,11 +46,13 @@ export const PVActivityIndicator = (props: Props) => {
       )}
       {!isOverlay && (
         <TouchableWithoutFeedback
+          accessible={accessible}
           accessibilityHint={accessibilityHint}
           accessibilityLabel={accessibilityLabel}
           onPress={onPress}>
-          <View style={[core.view, styles.view, viewStyle, props.styles]}>
+          <View accessible={false} style={[core.view, styles.view, viewStyle, props.styles]}>
             <ActivityIndicator
+              accessible={false}
               animating
               color={globalTheme.activityIndicator.color}
               size={size}

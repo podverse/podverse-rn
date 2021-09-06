@@ -32,6 +32,7 @@ const mediaMoreButtons = (
   const globalState = getGlobal()
   const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
   const downloadingText = isDownloading ? translate('Downloading Episode') : translate('Download')
+  const downloadingAccessibilityHint = isDownloading ?  '' :  translate('ARIA HINT - download this episode')
   const isDownloaded = globalState.downloadedEpisodeIds[item.episodeId]
   const buttons = []
   const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session?.userInfo?.id, '')
@@ -93,7 +94,9 @@ const mediaMoreButtons = (
     buttons.push({
       accessibilityHint: itemType === 'episode'
         ? translate('ARIA HINT - stream this episode')
-        : translate('ARIA HINT - stream this clip'),
+        : itemType === 'chapter'
+          ? translate('ARIA HINT - stream this chapter') 
+          : translate('ARIA HINT - stream this clip'),
       accessibilityLabel: translate('Stream'),
       key: PV.Keys.stream,
       text: translate('Stream'),
@@ -109,7 +112,7 @@ const mediaMoreButtons = (
 
     if (handleDownload) {
       buttons.push({
-        accessibilityHint: translate('ARIA HINT - download this episode'),
+        accessibilityHint: downloadingAccessibilityHint,
         accessibilityLabel: downloadingText,
         key: PV.Keys.download,
         text: downloadingText,
@@ -243,7 +246,6 @@ const mediaMoreButtons = (
 
   if (includeGoToPodcast) {
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - tap to go to this podcast'),
       accessibilityLabel: translate('Go to Podcast'),
       key: PV.Keys.go_to_podcast,
       text: translate('Go to Podcast'),

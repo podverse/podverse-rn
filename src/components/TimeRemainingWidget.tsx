@@ -4,7 +4,8 @@ import { StyleSheet, TouchableOpacity } from 'react-native'
 import { State as RNTPState } from 'react-native-track-player'
 import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
-import { convertSecToHhoursMMinutes, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
+import { checkIfNowPlayingItem, convertSecToHhoursMMinutes,
+  requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
 import { handlePlay, PVTrackPlayer, setPlaybackPosition } from '../services/player'
 import { loadItemAndPlayTrack, togglePlay } from '../state/actions/player'
@@ -66,10 +67,6 @@ const MiniProgressBar = (props: BarProps) => {
       <View style={filler} />
     </View>
   )
-}
-
-const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
-  return item && nowPlayingItem && (nowPlayingItem.clipId === item.id || nowPlayingItem.episodeId === item.id)
 }
 
 export const TimeRemainingWidget = (props: Props) => {
@@ -161,7 +158,9 @@ export const TimeRemainingWidget = (props: Props) => {
           : <Icon name={'play'} size={13} />
         }
       </TouchableOpacity>
-
+      {hasStartedItem && !isInvalidDuration && (
+        <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
+      )}
       <View
         accessible={!clipTime}
         accessibilityHint={timeViewAccessibilityHint}

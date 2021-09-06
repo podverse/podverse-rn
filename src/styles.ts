@@ -220,6 +220,9 @@ export const darkTheme = StyleSheet.create({
     borderBottomColor: PV.Colors.grayDarker, // override native style,
     marginBottom: 24
   },
+  textNowPlaying: {
+    color: PV.Colors.orange
+  },
   textSecondary: {
     color: PV.Colors.grayLightest
   },
@@ -457,6 +460,9 @@ export const lightTheme = StyleSheet.create({
     borderColor: PV.Colors.grayLighter,
     borderTopColor: PV.Colors.grayLighter, // override native styles
     borderBottomColor: PV.Colors.grayLighter // override native style
+  },
+  textNowPlaying: {
+    color: PV.Colors.orange
   },
   textSecondary: {
     color: PV.Colors.grayDarkest

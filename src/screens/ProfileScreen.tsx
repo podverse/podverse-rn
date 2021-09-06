@@ -535,7 +535,7 @@ export class ProfileScreen extends React.Component<Props, State> {
               selectedSortLabel={selectedSortLabel}
               testID={testIDPrefix}
             />
-            {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
+            {isLoading && <ActivityIndicator accessible={false} fillSpace testID={testIDPrefix} />}
             {!isLoading && viewType && flatListData && (
               <FlatList
                 data={flatListData}
@@ -557,6 +557,13 @@ export class ProfileScreen extends React.Component<Props, State> {
                 if (selectedItem) {
                   const loggedInUserId = safelyUnwrapNestedVariable(() => session.userInfo.id, '')
                   selectedItem.ownerId = loggedInUserId
+
+                  const itemType = selectedItem.clipIsOfficialChapter
+                    ? 'chapter'
+                    : !!selectedItem.clipId
+                      ? 'clip'
+                      : 'episode'
+
                   return PV.ActionSheet.media.moreButtons(
                     selectedItem,
                     navigation,
@@ -567,7 +574,7 @@ export class ProfileScreen extends React.Component<Props, State> {
                       includeGoToPodcast: true,
                       includeGoToEpisode: true
                     },
-                    'profile'
+                    itemType
                   )
                 }
               }}

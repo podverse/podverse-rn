@@ -54,8 +54,8 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     const handlePress = navigation.getParam(isEditing ? '_stopEditing' : '_startEditing')
     const text = isEditing ? translate('Done') : translate('Remove')
     const accessibilityHint = isEditing
-      ? translate('ARIA HINT - stop removing items from this playlist')
-      : translate('ARIA HINT - start removing items from this playlist')
+      ? translate('ARIA HINT - tap to stop removing items from this playlist')
+      : translate('ARIA HINT - tap to start removing items from this playlist')
 
     return {
       title: translate('Edit Playlist'),

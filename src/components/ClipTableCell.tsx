@@ -11,10 +11,12 @@ import { FastImage, Text, View } from './'
 type Props = {
   handleMorePress: any
   hideImage?: boolean
+  isNowPlayingItem?: boolean
   item: any
   loadTimeStampOnPlay?: boolean
   isChapter?: boolean
   itemType?: 'chapter' | 'clip'
+  onLayout?: any
   showEpisodeInfo?: boolean
   showPodcastInfo?: boolean
   testID: string
@@ -30,8 +32,9 @@ export class ClipTableCell extends React.PureComponent<Props> {
   }
 
   render() {
-    const { handleMorePress, hideImage, item, itemType, loadTimeStampOnPlay,
-      isChapter, showEpisodeInfo, showPodcastInfo, testID, transparent } = this.props
+    const { handleMorePress, hideImage, isChapter, isNowPlayingItem, item, itemType,
+      loadTimeStampOnPlay, onLayout, showEpisodeInfo, showPodcastInfo, testID,
+      transparent } = this.props
 
     const episodePubDate = item?.episode?.pubDate || ''
     const episodeId = item?.episode?.id || ''
@@ -121,6 +124,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
           <Text
             accessibilityLabel={title}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            isNowPlaying={isNowPlayingItem}
             numberOfLines={4}
             style={styles.title}
             testID={`${testID}_title`}>
@@ -134,6 +138,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       <View
         accessible={false}
         importantForAccessibility='no'
+        onLayout={onLayout}
         style={styles.wrapper}
         transparent={transparent}>
         <View
@@ -226,8 +231,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.bold,
-    color: PV.Colors.white
+    fontWeight: PV.Fonts.weights.bold
   },
   wrapper: {
     flexDirection: 'row',

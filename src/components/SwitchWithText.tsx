@@ -28,6 +28,7 @@ type Props = {
   input2Text?: string
   onValueChange: any
   subText?: string
+  subTextAccessible?: boolean
   testID: string
   text: string
   value: boolean
@@ -59,6 +60,7 @@ export const SwitchWithText = (props: Props) => {
     input2Text,
     onValueChange,
     subText,
+    subTextAccessible = false,
     testID,
     text,
     value,
@@ -73,9 +75,9 @@ export const SwitchWithText = (props: Props) => {
         accessibilityRole='switch'
         importantForAccessibility='no'
         onPress={onValueChange}>
-        <View accessible={accessible} style={styles.switchWrapper}>
+        <View accessible={false} style={styles.switchWrapper}>
           <Switch
-            accessible={accessible}
+            accessible={false}
             accessibilityHint={accessibilityHint}
             accessibilityLabel={accessibilityLabel}
             importantForAccessibility='yes'
@@ -83,7 +85,8 @@ export const SwitchWithText = (props: Props) => {
             value={value}
             {...(testID ? { testID: `${testID}_switch`.prependTestId() } : {})} />
           <Text
-            accessible={accessible}
+            accessible={false}
+            accessibilityLabel=''
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             importantForAccessibility='no'
             style={styles.text}
@@ -134,7 +137,7 @@ export const SwitchWithText = (props: Props) => {
       )}
       {!!subText && (
         <Text
-          accessible={false}
+          accessible={subTextAccessible}
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
           importantForAccessibility='no'
           style={[globalTheme.textSecondary, styles.subText]}

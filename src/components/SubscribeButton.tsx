@@ -15,29 +15,15 @@ type Props = {
 }
 
 export const SubscribeButton = (props: Props) => {
-  const { handleToggleSubscribe, isPlaylist, isProfile, isSubscribed, isSubscribing, testID } = props
+  const { handleToggleSubscribe, isSubscribed, isSubscribing, testID } = props
 
   const buttonTitle = isSubscribed ? translate('Unsubscribe') : translate('Subscribe')
   const buttonTextTestId = isSubscribed ? `${testID}_is_subscribed` : `${testID}_is_not_subscribed`
   
-  let accessibililityHint = isSubscribed
-    ? translate('ARIA HINT - unsubscribe from this podcast')
-    : translate('ARIA HINT - subscribe to this podcast')
-  if (isPlaylist) {
-    accessibililityHint = isSubscribed
-      ? translate('ARIA HINT - unsubscribe from this playlist')
-      : translate('ARIA HINT - subscribe to this playlist')
-  } else if (isProfile) {
-    accessibililityHint = isSubscribed
-      ? translate('ARIA HINT - unsubscribe from this profile')
-      : translate('ARIA HINT - subscribe to this profile')
-  }
-
   const accessibilityLabel = isSubscribed ? translate('Unsubscribe') : translate('Subscribe')
 
   return (
     <TouchableOpacity
-      accessibilityHint={accessibililityHint}
       accessibilityLabel={accessibilityLabel}
       hitSlop={{
         bottom: 4,

@@ -37,8 +37,12 @@ export class DownloadTableCell extends React.PureComponent<Props> {
     const per = completed ? 1 : percent
     const statusText = getDownloadStatusText(status)
 
+    // eslint-disable-next-line max-len
+    const accessibilityLabel = `${episodeTitle}, ${podcastTitle}, ${statusText}, ${bytesWritten} ${translate('of')} ${bytesTotal}`
+
     return (
       <Pressable
+        accessibilityLabel={accessibilityLabel}
         onPress={onPress}
         {...(testID ? { testID: `${testID}`.prependTestId() } : {})}
         style={styles.cellView}>

@@ -19,14 +19,24 @@ export const SwipeRowBack = (props: Props) => {
 
   return (
     <TouchableOpacity
+      accessible={false}
       importantForAccessibility='no'
       onPress={onPress}
       style={[styles, s.swipeRowBack, globalTheme.swipeRowBack]}
       testID={`${testID}_swipe_row_back`.prependTestId()}>
       {isLoading ? (
-          <ActivityIndicator importantForAccessibility='no' size='large' testID={testID} />
+          <ActivityIndicator
+            accessible={false}
+            importantForAccessibility='no'
+            size='large'
+            testID={testID} />
       ) : (
-        <Text importantForAccessibility='no' style={s.textWrapper}>{text}</Text>
+        <Text
+          accessible={false}
+          importantForAccessibility='no'
+          style={s.textWrapper}>
+          {text}
+        </Text>
       )}
     </TouchableOpacity>
   )
