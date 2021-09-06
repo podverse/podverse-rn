@@ -137,8 +137,11 @@ export const PVFlatList = (props: Props) => {
           ListFooterComponent={() => {
             if (isLoadingMore && !isEndOfResults) {
               return (
-                <View style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]} transparent={transparent}>
-                  <ActivityIndicator testID={testID} />
+                <View
+                  accessible={false}
+                  style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}
+                  transparent={transparent}>
+                  <ActivityIndicator accessible={false} testID={testID} />
                 </View>
               )
             } else if (!isLoadingMore && !isEndOfResults) {
@@ -160,12 +163,12 @@ export const PVFlatList = (props: Props) => {
           onEndReachedThreshold={onEndReachedThreshold}
           {...(onRefresh
             ? {
-                refreshControl: <RefreshControl 
-                                  refreshing={isRefreshing} 
-                                  onRefresh={onRefresh} 
-                                  tintColor={globalTheme.activityIndicator.color}
-                                />,
-                
+                refreshControl: 
+                  <RefreshControl 
+                    refreshing={isRefreshing} 
+                    onRefresh={onRefresh} 
+                    tintColor={globalTheme.activityIndicator.color}
+                  />
               }
             : {})}
           renderHiddenItem={renderHiddenItem || _renderHiddenItem}

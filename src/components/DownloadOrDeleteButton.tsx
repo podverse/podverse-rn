@@ -63,7 +63,7 @@ export const DownloadOrDeleteButton = (props: Props) => {
     )
   }
 
-  return component
+  return <View accessible>{component}</View>
 }
 
 const styles = StyleSheet.create({

@@ -16,6 +16,7 @@ type Props = {
   importantForAccessibility?: ImportantForAccessibility
   isSecondary?: any
   numberOfLines?: number
+  onLayout?: any
   onPress?: any
   style?: any
   testID: string

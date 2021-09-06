@@ -35,12 +35,14 @@ export class AboutScreen extends React.Component<Props> {
             {'Podverse is an open source podcast manager for iOS, Android, and web.'}
           </Text>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-            {'All Podverse software is provided under a free and open source (FOSS) licence.' +
+            {'All Podverse software is provided under a free and open source licence.' +
               ' Features that require updating our servers are available only with a Premium membership.' +
               ' Sign up today and get 1 year of Premium for free!'}
           </Text>
           <Divider style={styles.divider} />
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
+          <Text
+            accessibilityRole='header'
+            fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
             {translate('Team')}
           </Text>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>

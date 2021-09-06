@@ -277,7 +277,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
                 includeGoToPodcast: true,
                 includeGoToEpisode: true
               },
-              !!selectedItem.startTime ? 'clip' : 'episode'
+              !!selectedItem?.startTime ? 'clip' : 'episode'
             )
           }
           showModal={showActionSheet}

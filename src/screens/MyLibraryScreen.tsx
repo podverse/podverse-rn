@@ -95,7 +95,6 @@ export class MyLibraryScreen extends React.Component<Props, State> {
 
             return (
               <TableCell
-                accessibilityHint={translate('ARIA HINT - tap to go to this screen')}
                 accessibilityLabel={accessibilityLabel}
                 testIDPrefix={`${testIDPrefix}_${item.key}`}
                 testIDSuffix='' 

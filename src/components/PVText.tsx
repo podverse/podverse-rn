@@ -14,6 +14,7 @@ type Props = {
   fontSizeLargerScale?: number
   fontSizeLargestScale?: number
   importantForAccessibility?: ImportantForAccessibility
+  isNowPlaying?: boolean
   isSecondary?: any
   numberOfLines?: number
   onPress?: any
@@ -22,12 +23,16 @@ type Props = {
 }
 
 export const PVText = (props: Props) => {
-  const { fontSizeLargerScale, fontSizeLargestScale, isSecondary, testID } = props
+  const { fontSizeLargerScale, fontSizeLargestScale, isNowPlaying, isSecondary,
+    testID } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const [censorNSFWText] = useGlobal('censorNSFWText')
-
-  const globalThemeText = isSecondary ? globalTheme.textSecondary : globalTheme.text
+  const globalThemeText = isSecondary
+  ? globalTheme.textSecondary
+  : isNowPlaying
+  ? globalTheme.textNowPlaying 
+  : globalTheme.text
 
   const textStyle = [globalThemeText, props.style]
   if (fontScaleMode === PV.Fonts.fontScale.larger && fontSizeLargerScale) {
@@ -37,7 +42,10 @@ export const PVText = (props: Props) => {
   }
 
   return (
-    <Text {...props} style={textStyle} {...(testID ? { testID: testID.prependTestId() } : {})}>
+    <Text
+      {...props}
+      style={textStyle}
+      {...(testID ? { testID: testID.prependTestId() } : {})}>
       {typeof props.children === 'string' ? props.children?.sanitize(censorNSFWText) : props.children}
     </Text>
   )

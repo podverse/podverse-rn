@@ -245,6 +245,7 @@ export class FundingScreen extends React.Component<Props, State> {
               </Text>
               <View style={styles.itemWrapper}>
                 <TextInput
+                  editable={false}
                   eyebrowTitle={translate('Boost Amount for this Podcast')}
                   keyboardType='numeric'
                   wrapperStyle={styles.textInput}
@@ -278,6 +279,7 @@ export class FundingScreen extends React.Component<Props, State> {
               </View>
               <View style={styles.itemWrapper}>
                 <TextInput
+                  editable={false}
                   eyebrowTitle={translate('Streaming Amount for this Podcast')}
                   keyboardType='numeric'
                   wrapperStyle={styles.textInput}
