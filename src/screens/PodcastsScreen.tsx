@@ -119,7 +119,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     PVEventEmitter.on(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
     PVEventEmitter.on(PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, this._handleNavigateToAddPodcastByRSSAuthScreen)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    PVEventEmitter.on(PV.Events.TRACKING_TERMS_ACKNOWLEDGED, this._handleTrackingTermsAcknowledged)
+    PVEventEmitter.on(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED, this._handleTrackingTermsAcknowledged)
 
     updateScreenReaderEnabledState()
 

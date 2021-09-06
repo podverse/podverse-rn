@@ -77,7 +77,7 @@ export class TrackingConsentScreen extends React.Component<Props, State> {
 
     const { navigation } = this.props
     navigation.dismiss()
-    PVEventEmitter.emit(PV.Events.TRACKING_TERMS_ACKNOWLEDGED)
+    PVEventEmitter.emit(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED)
   }
 
   _disableTracking = async () => {    
@@ -87,7 +87,7 @@ export class TrackingConsentScreen extends React.Component<Props, State> {
 
     const { navigation } = this.props
     navigation.dismiss()
-    PVEventEmitter.emit(PV.Events.TRACKING_TERMS_ACKNOWLEDGED)
+    PVEventEmitter.emit(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED)
   }
 
   _goToSettings = () => {
