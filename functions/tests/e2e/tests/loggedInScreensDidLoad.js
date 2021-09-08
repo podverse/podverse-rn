@@ -9,15 +9,15 @@ const test_loggedInScreensDidLoadTests = async () => {
   const driver = getDriver()
 
     // Log In Premium
-
-  await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-  await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_sign_up_button')
-  await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
-  await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
-  await elementByIdClick('login_submit_button')
-  await driver.sleep(4000)
+  //TODO
+  // await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+  // await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_sign_up_button')
+  // await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
+  // await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
+  // await elementByIdClick('login_submit_button')
+  // await driver.sleep(4000)
   
-  await confirmAndroidAlert()
+  // await confirmAndroidAlert()
   
     // Podcasts Screen
   await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
@@ -30,12 +30,12 @@ const test_loggedInScreensDidLoadTests = async () => {
 
     // My Library Screen
   await elementByIdAndClickAndTest('tab_my_library_screen', 'my_library_screen_view')
-  await elementByIdAndClickAndTest('my_library_screen_Downloads_table_cell_wrapper', 'downloads_screen_view', noTestLabel, goBackKey)
-  await elementByIdAndClickAndTest('my_library_screen_Queue_table_cell_wrapper', 'queue_screen_view', noTestLabel, goBackKey)
-  await elementByIdAndClickAndTest('my_library_screen_History_table_cell_wrapper', 'history_screen_view', noTestLabel, goBackKey)
-  await elementCheckIfPresent('my_library_screen_Downloads_table_cell_wrapper')
-  await elementCheckIfPresent('my_library_screen_Queue_table_cell_wrapper')
-  await elementCheckIfPresent('my_library_screen_History_table_cell_wrapper')
+  // await elementByIdAndClickAndTest('my_library_screen_Downloads_table_cell_wrapper', 'downloads_screen_view', noTestLabel, goBackKey)
+  // await elementByIdAndClickAndTest('my_library_screen_Queue_table_cell_wrapper', 'queue_screen_view', noTestLabel, goBackKey)
+  // await elementByIdAndClickAndTest('my_library_screen_History_table_cell_wrapper', 'history_screen_view', noTestLabel, goBackKey)
+  // await elementCheckIfPresent('my_library_screen_Downloads_table_cell_wrapper')
+  // await elementCheckIfPresent('my_library_screen_Queue_table_cell_wrapper')
+  // await elementCheckIfPresent('my_library_screen_History_table_cell_wrapper')
 
     // More Screen
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')

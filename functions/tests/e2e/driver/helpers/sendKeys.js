@@ -2,6 +2,7 @@ const { getDriver } = require('../driverFactory')
 const { logKeyEnd, logKeyStart, logTestInfo } = require('../../utils/logger')
 
 const sendKeysToElementById = async (id, textString, testLabel) => {
+  id = `com.podverse:id/${id}`
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
   await driver.waitForElementById(id, 10000)
@@ -12,6 +13,7 @@ const sendKeysToElementById = async (id, textString, testLabel) => {
 }
 
 const clearTextField = async (id, testLabel) => {
+  id = `com.podverse:id/${id}`
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
   const element = await driver.elementById(id);
