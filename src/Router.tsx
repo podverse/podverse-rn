@@ -110,7 +110,7 @@ const PodcastsNavigator = createStackNavigator(
         <Image source={PV.Tabs.Podcasts.icon} style={{ tintColor }} resizeMode={'contain'} />
       ),
       tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Podcasts.title} />,
-      testID: 'tab_podcasts_screen'.prependTestId()
+      tabBarTestID: 'tab_podcasts_screen'.prependTestId()
     }
   }
 )
@@ -131,7 +131,7 @@ const EpisodesNavigator = createStackNavigator(
       ),
       tabBarAccessibilityLabel: translate('Episodes'),
       tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Episodes.title} />,
-      testID: 'tab_episodes_screen'.prependTestId()
+      tabBarTestID: 'tab_episodes_screen'.prependTestId()
     },
   }
 )
@@ -147,7 +147,7 @@ const ClipsNavigator = createStackNavigator(
       tabBarIcon: ({ tintColor }: { tintColor: any }) =>
         <Image source={PV.Tabs.Clips.icon} style={{ tintColor }} resizeMode={'contain'} />,
       tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Clips.title} />,
-      testID: 'tab_clips_screen'.prependTestId()
+      tabBarTestID: 'tab_clips_screen'.prependTestId()
     }
   }
 )
@@ -194,7 +194,7 @@ const MoreNavigator = createStackNavigator(
         )
       },
       tabBarLabel: (props) => <TabBarLabel {...props} title={translate('More')} />,
-      testID: 'tab_more_screen'.prependTestId()
+      tabBarTestID: 'tab_more_screen'.prependTestId()
     }
   }
 )
@@ -240,7 +240,7 @@ const MyLibraryNavigator = createStackNavigator(
         )
       },
       tabBarLabel: (props) => <TabBarLabel {...props} title='My Library' />,
-      testID: 'tab_my_library_screen'.prependTestId()
+      tabBarTestID: 'tab_my_library_screen'.prependTestId()
     }
   }
 )
