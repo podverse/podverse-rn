@@ -41,7 +41,7 @@ import { getPodcast } from '../services/podcast'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import * as DownloadState from '../state/actions/downloads'
-import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
+import { addAddByRSSPodcastWithCredentials, toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
@@ -60,6 +60,7 @@ type State = {
   isRefreshing: boolean
   isSubscribing: boolean
   limitDownloadedEpisodes: boolean
+  password: string
   podcast?: any
   podcastId?: string
   queryPage: number
@@ -72,7 +73,9 @@ type State = {
   showDeleteDownloadedEpisodesDialog?: boolean
   showNoInternetConnectionMessage?: boolean
   showSettings: boolean
+  showUsernameAndPassword: boolean
   startPodcastFromTime: number
+  username: string
   viewType: string | null
 }
 
@@ -114,6 +117,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       isRefreshing: false,
       isSubscribing: false,
       limitDownloadedEpisodes: false,
+      password: '',
       podcast,
       podcastId,
       queryPage: 1,
@@ -123,6 +127,8 @@ export class PodcastScreen extends React.Component<Props, State> {
       selectedSortLabel: translate('recent'),
       showActionSheet: false,
       showSettings: false,
+      showUsernameAndPassword: false,
+      username: '',
       viewType
     }
 
@@ -580,6 +586,48 @@ static navigationOptions = ({ navigation }) => {
     })
   }
 
+  _handleToggleUsernameAndPassword = () => {
+    const { showUsernameAndPassword } = this.state
+
+    if (!showUsernameAndPassword) {
+      this._handleSavePodcastByRSSURL()
+    }
+
+    this.setState({ showUsernameAndPassword: !showUsernameAndPassword })
+  }
+
+  _handleSavePodcastByRSSURL = () => {
+    const { password, showUsernameAndPassword, username } = this.state
+    const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
+
+    if (addByRSSPodcastFeedUrl) {
+      this.setState({ isLoading: true }, () => {
+        (async () => {
+          try {
+            let addByRSSSucceeded = false
+            if (showUsernameAndPassword && username && password) {
+              const credentials = `${username}:${password}`
+              addByRSSSucceeded = await addAddByRSSPodcastWithCredentials(addByRSSPodcastFeedUrl, credentials)
+            } else {
+              const parseAndClearCredentials = ''
+              addByRSSSucceeded =
+                await addAddByRSSPodcastWithCredentials(addByRSSPodcastFeedUrl, parseAndClearCredentials)
+            }
+            this.setState({ isLoading: false })
+  
+            if (addByRSSSucceeded) {
+              const podcast = await getAddByRSSPodcastLocally(addByRSSPodcastFeedUrl)
+              this.setState({ podcast })
+            }
+          } catch (error) {
+            console.log('_handleSavePodcastByRSSURL', error)
+            this.setState({ isLoading: false })
+          }
+        })()
+      })
+    }
+  }
+
   _handleNavigateToPodcastInfoScreen = () => {
     const { navigation } = this.props
     const { podcast } = this.state
@@ -596,6 +644,7 @@ static navigationOptions = ({ navigation }) => {
       isRefreshing,
       isSubscribing,
       limitDownloadedEpisodes,
+      // password,
       podcast,
       podcastId,
       querySort,
@@ -606,7 +655,9 @@ static navigationOptions = ({ navigation }) => {
       showDeleteDownloadedEpisodesDialog,
       showNoInternetConnectionMessage,
       showSettings,
+      // showUsernameAndPassword,
       startPodcastFromTime,
+      // username,
       viewType
     } = this.state
     const { offlineModeEnabled } = this.global
@@ -724,7 +775,7 @@ static navigationOptions = ({ navigation }) => {
                 editable={false}
                 isHHMMSS
                 selectedNumber={startPodcastFromTime}
-                subText={translate('Episodes of this podcast will start playback from this time')}
+                subText={translate('Episodes from this podcast will start playback from this time')}
                 testID={`${testIDPrefix}_start_podcast_from_time`}
                 text={translate('Preset podcast start time')}
                 textInputOnPress={this._handleNavigateToStartPodcastFromTimeScreen}
@@ -732,6 +783,47 @@ static navigationOptions = ({ navigation }) => {
                 wrapperOnPress={this._handleNavigateToStartPodcastFromTimeScreen}
               />
             </View>
+            {/* {
+              !addByRSSPodcastFeedUrl && (
+                <View style={styles.switchWrapper}>
+                  <SwitchWithText
+                    accessibilityHint={translate('ARIA HINT - type a username and password for this feed')}
+                    accessibilityLabel={translate('Include username and password')}
+                    inputAutoCorrect={false}
+                    inputEditable
+                    inputEyebrowTitle={translate('Username')}
+                    inputHandleTextChange={(text?: string) => this.setState({ username: text || '' })}
+                    inputPlaceholder={translate('Username')}
+                    inputShow={!!showUsernameAndPassword}
+                    inputText={username}
+                    input2AutoCorrect={false}
+                    input2Editable
+                    input2EyebrowTitle={translate('Password')}
+                    input2HandleTextChange={(text?: string) => this.setState({ password: text || '' })}
+                    input2Placeholder={translate('Password')}
+                    input2Show={!!showUsernameAndPassword}
+                    input2Text={password}
+                    onValueChange={this._handleToggleUsernameAndPassword}
+                    subText={!!showUsernameAndPassword ? translate('If this is a password protected feed') : ''}
+                    subTextAccessible
+                    text={translate('Include username and password')}
+                    testID={`${testIDPrefix}_include_username_and_password`}
+                    value={!!showUsernameAndPassword}
+                  />
+                  {
+                    !!showUsernameAndPassword && (
+                      <Button
+                        accessibilityLabel={translate('Save Password')}
+                        onPress={this._handleSavePodcastByRSSURL}
+                        wrapperStyles={styles.settingsSavePasswordButton}
+                        testID={`${testIDPrefix}_save_password`}
+                        text={translate('Save Password')}
+                      />
+                    )
+                  }
+                </View>
+              )
+            } */}
             <Divider style={styles.divider} />
             <Button
               accessibilityHint={
@@ -913,10 +1005,6 @@ const styles = StyleSheet.create({
   aboutViewText: {
     fontSize: PV.Fonts.sizes.lg
   },
-  settingsDeletebutton: {
-    margin: 8,
-    borderRadius: 8
-  },
   divider: {
     marginBottom: 24,
     marginTop: 12
@@ -924,8 +1012,16 @@ const styles = StyleSheet.create({
   itemWrapper: {
     marginTop: 32
   },
+  settingsDeletebutton: {
+    margin: 8,
+    borderRadius: 8
+  },
   settingsHelpText: {
     fontSize: PV.Fonts.sizes.md
+  },
+  settingsSavePasswordButton: {
+    marginHorizontal: 8,
+    marginTop: 24
   },
   settingsTitle: {
     fontSize: PV.Fonts.sizes.xxl,
@@ -940,6 +1036,10 @@ const styles = StyleSheet.create({
   swipeRowBack: {
     marginBottom: 8,
     marginTop: 8
+  },
+  switchWrapper: {
+    marginBottom: 12,
+    marginTop: 28
   },
   toggleLimitDownloadsSwitchWrapper: {},
   view: {

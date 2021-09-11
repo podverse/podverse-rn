@@ -257,6 +257,8 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
 
   if (credentials) {
     await saveAddByRSSPodcastCredentials(feedUrl, credentials)
+  } else {
+    await removeAddByRSSPodcastCredentials(feedUrl)
   }
 
   const { episodes: parsedEpisodes, meta } = result
