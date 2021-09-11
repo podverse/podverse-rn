@@ -54,6 +54,7 @@ type State = {
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
+  hasInternetConnection: boolean
   isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
@@ -107,6 +108,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
+      hasInternetConnection: false,
       isLoading: viewType !== PV.Filters._downloadedKey || !podcast,
       isLoadingMore: false,
       isRefreshing: false,
@@ -174,10 +176,11 @@ static navigationOptions = ({ navigation }) => {
       {
         ...(!hasInternetConnection
           ? {
-              viewType: PV.Filters._downloadedKey
+              viewType: PV.Filters._downloadedKey,
             }
           : { viewType: this.state.viewType }),
-        podcast
+        podcast,
+        hasInternetConnection: !!hasInternetConnection
       },
       () => {
         this._initializePageData()
@@ -419,9 +422,11 @@ static navigationOptions = ({ navigation }) => {
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast, userPlaybackPosition))
           }
           handleNavigationPress={() => {
+            const { hasInternetConnection } = this.state
             this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
               episode,
-              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
+              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
+              hasInternetConnection
             })
           }}
           hideImage
