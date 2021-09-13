@@ -30,7 +30,8 @@ export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
 /*
   Navigate to the EpisodeScreen located within the PodcastsStackNavigator.
  */
-export const navigateToEpisodeScreenWithItemInPodcastsStack = (navigation: any, item: any) => {
+export const navigateToEpisodeScreenWithItemInCurrentStack = (
+  navigation: any, item: any, includeGoToPodcast?: boolean) => {
   const episode = convertNowPlayingItemToEpisode(item)
 
   navigation.dispatch(
@@ -38,7 +39,8 @@ export const navigateToEpisodeScreenWithItemInPodcastsStack = (navigation: any, 
       routeName: PV.RouteNames.EpisodeScreen,
       params: {
         episodeId: item.episodeId,
-        episode
+        episode,
+        includeGoToPodcast
       }
     })
   )

@@ -61,11 +61,10 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const episodeTitleText = title.trim()
     const pubDateText = readableDate(pubDate)
     const timeLabel = getTimeLabelText(mediaFileDuration, episodeDuration, userPlaybackPosition)
+    const timeLabelText = timeLabel ? timeLabel : translate('Unplayed episode')
 
     const accessibilityLabel =
-      `${showPodcastInfo ? `${podcastTitleText}, ` : ''} ${title ? `${title}, ` : ''} ${pubDateText}, ${timeLabel
-          ? timeLabel
-          : translate('Unplayed episode')}`
+      `${showPodcastInfo ? `${podcastTitleText}, ` : ''} ${episodeTitleText}, ${pubDateText}, ${timeLabelText}`
 
     const innerTopView = (
       <RNView

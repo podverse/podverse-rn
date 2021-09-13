@@ -6,7 +6,7 @@ import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { navigateToEpisodeScreenWithItem,
-  navigateToEpisodeScreenWithItemInPodcastsStack, navigateToPodcastScreenWithItem } from '../lib/navigate'
+  navigateToEpisodeScreenWithItemInCurrentStack, navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { IActionSheet } from '../resources/Interfaces'
 import { PVTrackPlayer } from '../services/player'
@@ -23,15 +23,15 @@ const mediaMoreButtons = (
     handleDownload: any
     handleDeleteClip: any
     includeGoToPodcast?: boolean
-    includeGoToEpisode?: boolean | string
-    includeGoToEpisodeInPodcastsStack?: boolean
+    includeGoToEpisodeInEpisodesStack?: boolean | string
+    includeGoToEpisodeInCurrentStack?: boolean
   },
   itemType: 'podcast' | 'episode' | 'clip' | 'chapter' | 'playlist' | 'profile'
 ) => {
   if (!item || !item.episodeId) return
 
-  const { handleDismiss, handleDownload, handleDeleteClip, includeGoToPodcast, includeGoToEpisode,
-    includeGoToEpisodeInPodcastsStack } = config || {}
+  const { handleDismiss, handleDownload, handleDeleteClip, includeGoToPodcast, includeGoToEpisodeInEpisodesStack,
+    includeGoToEpisodeInCurrentStack } = config || {}
   const globalState = getGlobal()
   const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
   const downloadingText = isDownloading ? translate('Downloading Episode') : translate('Download')
@@ -259,17 +259,17 @@ const mediaMoreButtons = (
     })
   }
 
-  if (includeGoToEpisode || includeGoToEpisodeInPodcastsStack) {
+  if (includeGoToEpisodeInEpisodesStack || includeGoToEpisodeInCurrentStack) {
     buttons.push({
       accessibilityLabel: translate('Go to Episode'),
       key: PV.Keys.go_to_episode,
       text: translate('Go to Episode'),
       onPress: async () => {
         await handleDismiss()
-        if (includeGoToEpisodeInPodcastsStack) {
-          navigateToEpisodeScreenWithItemInPodcastsStack(navigation, item)
-        } else {
+        if (includeGoToEpisodeInEpisodesStack) {
           navigateToEpisodeScreenWithItem(navigation, item)
+        } else if (includeGoToEpisodeInCurrentStack) {
+          navigateToEpisodeScreenWithItemInCurrentStack(navigation, item, includeGoToPodcast)
         }
       }
     })

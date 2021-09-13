@@ -425,7 +425,7 @@ static navigationOptions = ({ navigation }) => {
       }
 
       const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
-
+      
       return (
         <EpisodeTableCell
           handleDeletePress={() => this._handleDeleteEpisode(item)}
@@ -919,7 +919,7 @@ static navigationOptions = ({ navigation }) => {
                   {
                     handleDismiss: this._handleCancelPress,
                     handleDownload: this._handleDownloadPressed,
-                    includeGoToEpisodeInPodcastsStack: true
+                    includeGoToEpisodeInCurrentStack: true
                   },
                   viewType === PV.Filters._clipsKey ? 'clip' : 'episode'
                 )
