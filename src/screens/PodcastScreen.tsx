@@ -31,17 +31,19 @@ import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
-import { safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
+import { getAuthorityFeedUrlFromArray, getUsernameAndPasswordFromCredentials,
+  safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRefs } from '../services/mediaRef'
-import { getAddByRSSPodcastLocally } from '../services/parser'
+import { getPodcastCredentials, getAddByRSSPodcastLocally,
+  removePodcastCredentials, savePodcastCredentials } from '../services/parser'
 import { getPodcast } from '../services/podcast'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import * as DownloadState from '../state/actions/downloads'
-import { addAddByRSSPodcastWithCredentials, toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
+import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
@@ -74,7 +76,7 @@ type State = {
   showNoInternetConnectionMessage?: boolean
   showSettings: boolean
   showUsernameAndPassword: boolean
-  startPodcastFromTime: number
+  startPodcastFromTime?: number
   username: string
   viewType: string | null
 }
@@ -203,7 +205,7 @@ static navigationOptions = ({ navigation }) => {
     const { podcast, viewType } = this.state
     const podcastId = this.props.navigation.getParam('podcastId') || this.state.podcastId
     const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
-
+    
     this.setState(
       {
         downloadedEpisodeLimit,
@@ -240,6 +242,8 @@ static navigationOptions = ({ navigation }) => {
               ...newState,
               isLoading: false,
               podcast: newPodcast
+            }, () => {
+              this._updateCredentialsState()
             })
           } catch (error) {
             console.log('_initializePageData', error)
@@ -247,6 +251,8 @@ static navigationOptions = ({ navigation }) => {
               ...newState,
               isLoading: false,
               ...(newPodcast ? { podcast: newPodcast } : { podcast })
+            }, () => {
+              this._updateCredentialsState()
             })
           }
         })()
@@ -586,42 +592,83 @@ static navigationOptions = ({ navigation }) => {
     })
   }
 
-  _handleToggleUsernameAndPassword = () => {
+  _handleToggleUsernameAndPassword = async () => {
     const { showUsernameAndPassword } = this.state
+    const newState = !showUsernameAndPassword
 
-    if (!showUsernameAndPassword) {
-      this._handleSavePodcastByRSSURL()
+    if (!newState) {
+      await this._handleClearPodcastCredentials()
+  
+      this.setState({
+        password: '',
+        showUsernameAndPassword: newState,
+        username: ''
+      })
+    } else {
+      const { password = '', username = '' } = await this._getCredentials()
+      this.setState({
+        password,
+        showUsernameAndPassword: newState,
+        username
+      })
     }
-
-    this.setState({ showUsernameAndPassword: !showUsernameAndPassword })
   }
 
-  _handleSavePodcastByRSSURL = () => {
-    const { password, showUsernameAndPassword, username } = this.state
-    const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
+  _updateCredentialsState = () => {
+    (async () => {
+      const { username, password } = await this._getCredentials()
+      this.setState({
+        username,
+        password,
+        showUsernameAndPassword: !!username && !!password
+      })
+    })()
+  }
 
-    if (addByRSSPodcastFeedUrl) {
+  _getFinalFeedUrl = () => {
+    const { podcast } = this.state
+    const feedUrlObjects = podcast.feedUrls
+    return this.props.navigation.getParam('addByRSSPodcastFeedUrl')
+      || getAuthorityFeedUrlFromArray(feedUrlObjects)
+  }
+
+  _getCredentials = async () => {
+    const finalFeedUrl = this._getFinalFeedUrl()
+    const credentials = await getPodcastCredentials(finalFeedUrl)
+    return getUsernameAndPasswordFromCredentials(credentials)
+  }
+
+  _handleClearPodcastCredentials = async () => {
+    const finalFeedUrl = this._getFinalFeedUrl()
+    if (finalFeedUrl) {
+      await removePodcastCredentials(finalFeedUrl)
+    }
+  }
+
+  _handleSavePodcastCredentials = () => {
+    const { password, showUsernameAndPassword, username } = this.state
+    const finalFeedUrl = this._getFinalFeedUrl()
+
+    if (finalFeedUrl) {
       this.setState({ isLoading: true }, () => {
         (async () => {
           try {
-            let addByRSSSucceeded = false
             if (showUsernameAndPassword && username && password) {
               const credentials = `${username}:${password}`
-              addByRSSSucceeded = await addAddByRSSPodcastWithCredentials(addByRSSPodcastFeedUrl, credentials)
+              await savePodcastCredentials(finalFeedUrl, credentials)
             } else {
-              const parseAndClearCredentials = ''
-              addByRSSSucceeded =
-                await addAddByRSSPodcastWithCredentials(addByRSSPodcastFeedUrl, parseAndClearCredentials)
+              await removePodcastCredentials(finalFeedUrl)
             }
-            this.setState({ isLoading: false })
-  
-            if (addByRSSSucceeded) {
-              const podcast = await getAddByRSSPodcastLocally(addByRSSPodcastFeedUrl)
-              this.setState({ podcast })
-            }
+            this.setState({
+              isLoading: false,
+              showSettings: false
+            })
           } catch (error) {
             console.log('_handleSavePodcastByRSSURL', error)
-            this.setState({ isLoading: false })
+            this.setState({
+              isLoading: false,
+              showSettings: false
+            })
           }
         })()
       })
@@ -644,7 +691,7 @@ static navigationOptions = ({ navigation }) => {
       isRefreshing,
       isSubscribing,
       limitDownloadedEpisodes,
-      // password,
+      password,
       podcast,
       podcastId,
       querySort,
@@ -655,9 +702,9 @@ static navigationOptions = ({ navigation }) => {
       showDeleteDownloadedEpisodesDialog,
       showNoInternetConnectionMessage,
       showSettings,
-      // showUsernameAndPassword,
+      showUsernameAndPassword,
       startPodcastFromTime,
-      // username,
+      username,
       viewType
     } = this.state
     const { offlineModeEnabled } = this.global
@@ -783,8 +830,8 @@ static navigationOptions = ({ navigation }) => {
                 wrapperOnPress={this._handleNavigateToStartPodcastFromTimeScreen}
               />
             </View>
-            {/* {
-              !addByRSSPodcastFeedUrl && (
+            {
+              (addByRSSPodcastFeedUrl || podcast?.credentialsRequired) && (
                 <View style={styles.switchWrapper}>
                   <SwitchWithText
                     accessibilityHint={translate('ARIA HINT - type a username and password for this feed')}
@@ -814,7 +861,8 @@ static navigationOptions = ({ navigation }) => {
                     !!showUsernameAndPassword && (
                       <Button
                         accessibilityLabel={translate('Save Password')}
-                        onPress={this._handleSavePodcastByRSSURL}
+                        isSuccess
+                        onPress={this._handleSavePodcastCredentials}
                         wrapperStyles={styles.settingsSavePasswordButton}
                         testID={`${testIDPrefix}_save_password`}
                         text={translate('Save Password')}
@@ -823,7 +871,7 @@ static navigationOptions = ({ navigation }) => {
                   }
                 </View>
               )
-            } */}
+            }
             <Divider style={styles.divider} />
             <Button
               accessibilityHint={

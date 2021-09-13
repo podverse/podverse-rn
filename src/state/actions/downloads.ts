@@ -21,7 +21,7 @@ import {
   getAutoDownloadSettings as getAutoDownloadSettingsService,
   updateAutoDownloadSettings as updateAutoDownloadSettingsService
 } from '../../services/autoDownloads'
-import { getAddByRSSPodcastCredentials, parseAddByRSSPodcast } from '../../services/parser'
+import { getPodcastCredentials, parseAddByRSSPodcast } from '../../services/parser'
 import { clearNowPlayingItem } from './player'
 
 // The DownloadTaskState should have the same episode and podcast properties as a NowPlayingItem,
@@ -171,7 +171,7 @@ export const updateAutoDownloadSettingsAddByRSS = (addByRSSPodcastFeedUrl: strin
       const newAutoDownloadSettings = await updateAutoDownloadSettingsService(addByRSSPodcastFeedUrl)
       setGlobal({ autoDownloadSettings: newAutoDownloadSettings }, async () => {
         if(autoDownloadOn) {
-          const credentials = await getAddByRSSPodcastCredentials(addByRSSPodcastFeedUrl)
+          const credentials = await getPodcastCredentials(addByRSSPodcastFeedUrl)
           const podcast = await parseAddByRSSPodcast(addByRSSPodcastFeedUrl, credentials)
           if(podcast && podcast.episodes && podcast.episodes[0]) {
             downloadEpisode(podcast.episodes[0], podcast)

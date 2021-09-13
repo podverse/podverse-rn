@@ -651,3 +651,24 @@ export const safeKeyExtractor = (listName: string, index: number, id?: string) =
 export const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
   return item && nowPlayingItem && (nowPlayingItem.clipId === item.id || nowPlayingItem.episodeId === item.id)
 }
+
+export const getAuthorityFeedUrlFromArray = (feedUrlObjects: any[]) => {
+  const obj = feedUrlObjects.find((feedUrlObject) => feedUrlObject.isAuthority)
+  return obj?.url || null
+}
+
+export const getUsernameAndPasswordFromCredentials = (credentials: string) => {
+  let username = ''
+  let password = ''
+
+  if (credentials) {
+    const splitCredentials = credentials.split(':')
+    username = splitCredentials[0] || ''
+    password = splitCredentials[1] || ''
+  }
+
+  return {
+    username,
+    password
+  }
+}

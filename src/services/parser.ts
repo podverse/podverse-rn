@@ -149,7 +149,7 @@ export const parseAllAddByRSSPodcasts = async (lastParsedPubDate: string) => {
   const finalParsedPodcasts = []
   const autoDownloadPodcastSettings = await getAutoDownloadSettings()
 
-  const allAddByRSSPodcastCredentials = await getAllAddByRSSPodcastCredentials()
+  const allAddByRSSPodcastCredentials = await getAllPodcastCredentials()
 
   for (const url of urls) {
     try {
@@ -193,21 +193,21 @@ export const parseAllAddByRSSPodcasts = async (lastParsedPubDate: string) => {
   return finalParsedPodcasts
 }
 
-export const getAddByRSSPodcastCredentialsHeader = async (addByRSSPodcastFeedUrl?: string) => {
-  const credentials = await getAddByRSSPodcastCredentials(addByRSSPodcastFeedUrl)
+export const getPodcastCredentialsHeader = async (addByRSSPodcastFeedUrl?: string) => {
+  const credentials = await getPodcastCredentials(addByRSSPodcastFeedUrl)
   return credentials ? `Basic ${btoa(credentials)}` : ''
 }
 
-export const getAddByRSSPodcastCredentials = async (addByRSSPodcastFeedUrl?: string) => {
+export const getPodcastCredentials = async (addByRSSPodcastFeedUrl?: string) => {
   let credentials = ''
   if (addByRSSPodcastFeedUrl) {
-    const allAddByRSSPodcastCredentials = await getAllAddByRSSPodcastCredentials()
+    const allAddByRSSPodcastCredentials = await getAllPodcastCredentials()
     credentials = allAddByRSSPodcastCredentials[addByRSSPodcastFeedUrl] || ''
   }
   return credentials
 }
 
-const getAllAddByRSSPodcastCredentials = async () => {
+const getAllPodcastCredentials = async () => {
   let allCredentials = {}
 
   try {
@@ -223,8 +223,8 @@ const getAllAddByRSSPodcastCredentials = async () => {
 }
 
 // credentials are a string in format <username>:<password>
-const saveAddByRSSPodcastCredentials = async (feedUrl: string, credentials: string) => {
-  const allAddByRSSPodcastCredentials = await getAllAddByRSSPodcastCredentials()
+export const savePodcastCredentials = async (feedUrl: string, credentials?: string) => {
+  const allAddByRSSPodcastCredentials = await getAllPodcastCredentials()
   allAddByRSSPodcastCredentials[feedUrl] = credentials
 
   await RNSecureKeyStore.set(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, JSON.stringify(allAddByRSSPodcastCredentials), {
@@ -232,8 +232,8 @@ const saveAddByRSSPodcastCredentials = async (feedUrl: string, credentials: stri
   })
 }
 
-const removeAddByRSSPodcastCredentials = async (feedUrl: string) => {
-  const allAddByRSSPodcastCredentials = await getAllAddByRSSPodcastCredentials()
+export const removePodcastCredentials = async (feedUrl: string) => {
+  const allAddByRSSPodcastCredentials = await getAllPodcastCredentials()
   allAddByRSSPodcastCredentials[feedUrl] = ''
 
   await RNSecureKeyStore.set(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, JSON.stringify(allAddByRSSPodcastCredentials), {
@@ -256,9 +256,9 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
   })
 
   if (credentials) {
-    await saveAddByRSSPodcastCredentials(feedUrl, credentials)
+    await savePodcastCredentials(feedUrl, credentials)
   } else {
-    await removeAddByRSSPodcastCredentials(feedUrl)
+    await removePodcastCredentials(feedUrl)
   }
 
   const { episodes: parsedEpisodes, meta } = result
@@ -413,7 +413,7 @@ export const removeAddByRSSPodcast = async (feedUrl: string) => {
   let podcasts = await getAddByRSSPodcastsLocally()
   podcasts = podcasts.filter((x: any) => x.addByRSSPodcastFeedUrl !== feedUrl)
   await setAddByRSSPodcastsLocally(podcasts)
-  await removeAddByRSSPodcastCredentials(feedUrl)
+  await removePodcastCredentials(feedUrl)
   let addByRSSPodcastFeedUrls = await getAddByRSSPodcastFeedUrlsLocally()
   addByRSSPodcastFeedUrls = addByRSSPodcastFeedUrls.filter((x: string) => x !== feedUrl)
   await setAddByRSSPodcastFeedUrlsLocally(addByRSSPodcastFeedUrls)

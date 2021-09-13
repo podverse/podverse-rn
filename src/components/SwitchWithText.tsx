@@ -128,6 +128,7 @@ export const SwitchWithText = (props: Props) => {
           onSubmitEditing={input2HandleSubmit}
           placeholder={input2Placeholder}
           returnKeyType='done'
+          secureTextEntry
           style={[globalTheme.textInput, styles.textInput]}
           {...(testID ? { testID: `${testID}_text_input_2` } : {})}
           underlineColorAndroid='transparent'
