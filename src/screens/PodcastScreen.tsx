@@ -918,7 +918,8 @@ static navigationOptions = ({ navigation }) => {
                   navigation,
                   {
                     handleDismiss: this._handleCancelPress,
-                    handleDownload: this._handleDownloadPressed
+                    handleDownload: this._handleDownloadPressed,
+                    includeGoToEpisodeInPodcastsStack: true
                   },
                   viewType === PV.Filters._clipsKey ? 'clip' : 'episode'
                 )

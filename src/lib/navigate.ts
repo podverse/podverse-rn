@@ -28,6 +28,23 @@ export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
 }
 
 /*
+  Navigate to the EpisodeScreen located within the PodcastsStackNavigator.
+ */
+export const navigateToEpisodeScreenWithItemInPodcastsStack = (navigation: any, item: any) => {
+  const episode = convertNowPlayingItemToEpisode(item)
+
+  navigation.dispatch(
+    NavigationActions.navigate({
+      routeName: PV.RouteNames.EpisodeScreen,
+      params: {
+        episodeId: item.episodeId,
+        episode
+      }
+    })
+  )
+}
+
+/*
   Navigate to the PodcastScreen located within the PodcastsStackNavigator,
   and populate it with podcast data from an object of type NowPlayingItem.
  */

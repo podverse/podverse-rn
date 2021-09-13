@@ -672,3 +672,24 @@ export const getUsernameAndPasswordFromCredentials = (credentials: string) => {
     password
   }
 }
+
+export const getTimeLabelText = (mediaFileDuration?: number, episodeDuration?: number,
+  userPlaybackPosition?: number, clipTime?: string) => {
+  const hasStartedItem = !!mediaFileDuration
+  const totalTime = mediaFileDuration || episodeDuration || 0
+  const playedTime = userPlaybackPosition || 0
+
+  let timeLabel = ''
+  if (totalTime) {
+    timeLabel = convertSecToHhoursMMinutes(totalTime)
+    if (hasStartedItem) {
+      timeLabel = convertSecToHhoursMMinutes(totalTime - playedTime) + ' left'
+    }
+  }
+
+  if (clipTime) {
+    timeLabel = clipTime
+  }
+
+  return timeLabel
+}
