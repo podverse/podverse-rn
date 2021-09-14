@@ -10,10 +10,11 @@ import TrackPlayer, { Capability, PitchAlgorithm, State, Track } from 'react-nat
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
-  getAppUserAgent, getExtensionFromUrl } from '../lib/utility'
+  getAppUserAgent, getAuthorityFeedUrlFromArray, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from './eventEmitter'
-import { getAddByRSSPodcastCredentialsHeader } from './parser'
+import { getPodcastCredentialsHeader } from './parser'
+import { getPodcast, getPodcastFeedUrlAuthority } from './podcast'
 import {
   addQueueItemLast,
   addQueueItemNext,
@@ -459,6 +460,8 @@ export const createTrack = async (item: NowPlayingItem) => {
     episodeId,
     episodeMediaUrl = '',
     episodeTitle = 'Untitled Episode',
+    podcastCredentialsRequired,
+    podcastId,
     podcastImageUrl,
     podcastShrunkImageUrl,
     podcastTitle = 'Untitled Podcast'
@@ -467,6 +470,15 @@ export const createTrack = async (item: NowPlayingItem) => {
   const imageUrl = podcastShrunkImageUrl ? podcastShrunkImageUrl : podcastImageUrl
 
   const id = clipId || episodeId
+  let finalFeedUrl = addByRSSPodcastFeedUrl
+
+  /*
+    If credentials are required but it is a podcast stored in our database,
+    then get the authority feedUrl for the podcast before proceeding.
+  */
+  if (podcastCredentialsRequired && !addByRSSPodcastFeedUrl && podcastId) {
+    finalFeedUrl = await getPodcastFeedUrlAuthority(podcastId)
+  }
 
   if (episodeId) {
     const isDownloadedFile = await checkIfFileIsDownloaded(episodeId, episodeMediaUrl)
@@ -483,7 +495,7 @@ export const createTrack = async (item: NowPlayingItem) => {
         pitchAlgorithm: PitchAlgorithm.Voice
       }
     } else {
-      const Authorization = await getAddByRSSPodcastCredentialsHeader(addByRSSPodcastFeedUrl)
+      const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
 
       track = {
         id,

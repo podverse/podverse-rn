@@ -275,7 +275,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
                 handleDismiss: this._handleCancelPress,
                 handleDownload: this._handleDownloadPressed,
                 includeGoToPodcast: true,
-                includeGoToEpisode: true
+                includeGoToEpisodeInEpisodesStack: true
               },
               !!selectedItem?.startTime ? 'clip' : 'episode'
             )
