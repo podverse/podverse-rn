@@ -651,3 +651,45 @@ export const safeKeyExtractor = (listName: string, index: number, id?: string) =
 export const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
   return item && nowPlayingItem && (nowPlayingItem.clipId === item.id || nowPlayingItem.episodeId === item.id)
 }
+
+export const getAuthorityFeedUrlFromArray = (feedUrlObjects: any[]) => {
+  const obj = feedUrlObjects.find((feedUrlObject) => feedUrlObject.isAuthority)
+  return obj?.url || null
+}
+
+export const getUsernameAndPasswordFromCredentials = (credentials: string) => {
+  let username = ''
+  let password = ''
+
+  if (credentials) {
+    const splitCredentials = credentials.split(':')
+    username = splitCredentials[0] || ''
+    password = splitCredentials[1] || ''
+  }
+
+  return {
+    username,
+    password
+  }
+}
+
+export const getTimeLabelText = (mediaFileDuration?: number, episodeDuration?: number,
+  userPlaybackPosition?: number, clipTime?: string) => {
+  const hasStartedItem = !!mediaFileDuration
+  const totalTime = mediaFileDuration || episodeDuration || 0
+  const playedTime = userPlaybackPosition || 0
+
+  let timeLabel = ''
+  if (totalTime) {
+    timeLabel = convertSecToHhoursMMinutes(totalTime)
+    if (hasStartedItem) {
+      timeLabel = convertSecToHhoursMMinutes(totalTime - playedTime) + ' left'
+    }
+  }
+
+  if (clipTime) {
+    timeLabel = clipTime
+  }
+
+  return timeLabel
+}

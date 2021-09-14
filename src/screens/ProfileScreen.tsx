@@ -572,7 +572,7 @@ export class ProfileScreen extends React.Component<Props, State> {
                       handleDownload: this._handleDownloadPressed,
                       handleDeleteClip: this._showDeleteConfirmDialog,
                       includeGoToPodcast: true,
-                      includeGoToEpisode: true
+                      includeGoToEpisodeInEpisodesStack: true
                     },
                     itemType
                   )

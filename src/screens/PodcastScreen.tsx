@@ -31,12 +31,14 @@ import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
-import { safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
+import { getAuthorityFeedUrlFromArray, getUsernameAndPasswordFromCredentials,
+  safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRefs } from '../services/mediaRef'
-import { getAddByRSSPodcastLocally } from '../services/parser'
+import { getPodcastCredentials, getAddByRSSPodcastLocally,
+  removePodcastCredentials, savePodcastCredentials } from '../services/parser'
 import { getPodcast } from '../services/podcast'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
@@ -54,11 +56,13 @@ type State = {
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
+  hasInternetConnection: boolean
   isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
   isSubscribing: boolean
   limitDownloadedEpisodes: boolean
+  password: string
   podcast?: any
   podcastId?: string
   queryPage: number
@@ -71,7 +75,9 @@ type State = {
   showDeleteDownloadedEpisodesDialog?: boolean
   showNoInternetConnectionMessage?: boolean
   showSettings: boolean
-  startPodcastFromTime: number
+  showUsernameAndPassword: boolean
+  startPodcastFromTime?: number
+  username: string
   viewType: string | null
 }
 
@@ -107,11 +113,13 @@ export class PodcastScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
+      hasInternetConnection: false,
       isLoading: viewType !== PV.Filters._downloadedKey || !podcast,
       isLoadingMore: false,
       isRefreshing: false,
       isSubscribing: false,
       limitDownloadedEpisodes: false,
+      password: '',
       podcast,
       podcastId,
       queryPage: 1,
@@ -121,6 +129,8 @@ export class PodcastScreen extends React.Component<Props, State> {
       selectedSortLabel: translate('recent'),
       showActionSheet: false,
       showSettings: false,
+      showUsernameAndPassword: false,
+      username: '',
       viewType
     }
 
@@ -174,10 +184,11 @@ static navigationOptions = ({ navigation }) => {
       {
         ...(!hasInternetConnection
           ? {
-              viewType: PV.Filters._downloadedKey
+              viewType: PV.Filters._downloadedKey,
             }
           : { viewType: this.state.viewType }),
-        podcast
+        podcast,
+        hasInternetConnection: !!hasInternetConnection
       },
       () => {
         this._initializePageData()
@@ -194,7 +205,7 @@ static navigationOptions = ({ navigation }) => {
     const { podcast, viewType } = this.state
     const podcastId = this.props.navigation.getParam('podcastId') || this.state.podcastId
     const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
-
+    
     this.setState(
       {
         downloadedEpisodeLimit,
@@ -231,6 +242,8 @@ static navigationOptions = ({ navigation }) => {
               ...newState,
               isLoading: false,
               podcast: newPodcast
+            }, () => {
+              this._updateCredentialsState()
             })
           } catch (error) {
             console.log('_initializePageData', error)
@@ -238,6 +251,8 @@ static navigationOptions = ({ navigation }) => {
               ...newState,
               isLoading: false,
               ...(newPodcast ? { podcast: newPodcast } : { podcast })
+            }, () => {
+              this._updateCredentialsState()
             })
           }
         })()
@@ -410,7 +425,7 @@ static navigationOptions = ({ navigation }) => {
       }
 
       const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
-
+      
       return (
         <EpisodeTableCell
           handleDeletePress={() => this._handleDeleteEpisode(item)}
@@ -419,9 +434,11 @@ static navigationOptions = ({ navigation }) => {
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast, userPlaybackPosition))
           }
           handleNavigationPress={() => {
+            const { hasInternetConnection } = this.state
             this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
               episode,
-              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
+              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
+              hasInternetConnection
             })
           }}
           hideImage
@@ -575,6 +592,89 @@ static navigationOptions = ({ navigation }) => {
     })
   }
 
+  _handleToggleUsernameAndPassword = async () => {
+    const { showUsernameAndPassword } = this.state
+    const newState = !showUsernameAndPassword
+
+    if (!newState) {
+      await this._handleClearPodcastCredentials()
+  
+      this.setState({
+        password: '',
+        showUsernameAndPassword: newState,
+        username: ''
+      })
+    } else {
+      const { password = '', username = '' } = await this._getCredentials()
+      this.setState({
+        password,
+        showUsernameAndPassword: newState,
+        username
+      })
+    }
+  }
+
+  _updateCredentialsState = () => {
+    (async () => {
+      const { username, password } = await this._getCredentials()
+      this.setState({
+        username,
+        password,
+        showUsernameAndPassword: !!username && !!password
+      })
+    })()
+  }
+
+  _getFinalFeedUrl = () => {
+    const { podcast } = this.state
+    const feedUrlObjects = podcast.feedUrls
+    return this.props.navigation.getParam('addByRSSPodcastFeedUrl')
+      || getAuthorityFeedUrlFromArray(feedUrlObjects)
+  }
+
+  _getCredentials = async () => {
+    const finalFeedUrl = this._getFinalFeedUrl()
+    const credentials = await getPodcastCredentials(finalFeedUrl)
+    return getUsernameAndPasswordFromCredentials(credentials)
+  }
+
+  _handleClearPodcastCredentials = async () => {
+    const finalFeedUrl = this._getFinalFeedUrl()
+    if (finalFeedUrl) {
+      await removePodcastCredentials(finalFeedUrl)
+    }
+  }
+
+  _handleSavePodcastCredentials = () => {
+    const { password, showUsernameAndPassword, username } = this.state
+    const finalFeedUrl = this._getFinalFeedUrl()
+
+    if (finalFeedUrl) {
+      this.setState({ isLoading: true }, () => {
+        (async () => {
+          try {
+            if (showUsernameAndPassword && username && password) {
+              const credentials = `${username}:${password}`
+              await savePodcastCredentials(finalFeedUrl, credentials)
+            } else {
+              await removePodcastCredentials(finalFeedUrl)
+            }
+            this.setState({
+              isLoading: false,
+              showSettings: false
+            })
+          } catch (error) {
+            console.log('_handleSavePodcastByRSSURL', error)
+            this.setState({
+              isLoading: false,
+              showSettings: false
+            })
+          }
+        })()
+      })
+    }
+  }
+
   _handleNavigateToPodcastInfoScreen = () => {
     const { navigation } = this.props
     const { podcast } = this.state
@@ -591,6 +691,7 @@ static navigationOptions = ({ navigation }) => {
       isRefreshing,
       isSubscribing,
       limitDownloadedEpisodes,
+      password,
       podcast,
       podcastId,
       querySort,
@@ -601,7 +702,9 @@ static navigationOptions = ({ navigation }) => {
       showDeleteDownloadedEpisodesDialog,
       showNoInternetConnectionMessage,
       showSettings,
+      showUsernameAndPassword,
       startPodcastFromTime,
+      username,
       viewType
     } = this.state
     const { offlineModeEnabled } = this.global
@@ -719,7 +822,7 @@ static navigationOptions = ({ navigation }) => {
                 editable={false}
                 isHHMMSS
                 selectedNumber={startPodcastFromTime}
-                subText={translate('Episodes of this podcast will start playback from this time')}
+                subText={translate('Episodes from this podcast will start playback from this time')}
                 testID={`${testIDPrefix}_start_podcast_from_time`}
                 text={translate('Preset podcast start time')}
                 textInputOnPress={this._handleNavigateToStartPodcastFromTimeScreen}
@@ -727,6 +830,48 @@ static navigationOptions = ({ navigation }) => {
                 wrapperOnPress={this._handleNavigateToStartPodcastFromTimeScreen}
               />
             </View>
+            {
+              (addByRSSPodcastFeedUrl || podcast?.credentialsRequired) && (
+                <View style={styles.switchWrapper}>
+                  <SwitchWithText
+                    accessibilityHint={translate('ARIA HINT - type a username and password for this feed')}
+                    accessibilityLabel={translate('Include username and password')}
+                    inputAutoCorrect={false}
+                    inputEditable
+                    inputEyebrowTitle={translate('Username')}
+                    inputHandleTextChange={(text?: string) => this.setState({ username: text || '' })}
+                    inputPlaceholder={translate('Username')}
+                    inputShow={!!showUsernameAndPassword}
+                    inputText={username}
+                    input2AutoCorrect={false}
+                    input2Editable
+                    input2EyebrowTitle={translate('Password')}
+                    input2HandleTextChange={(text?: string) => this.setState({ password: text || '' })}
+                    input2Placeholder={translate('Password')}
+                    input2Show={!!showUsernameAndPassword}
+                    input2Text={password}
+                    onValueChange={this._handleToggleUsernameAndPassword}
+                    subText={!!showUsernameAndPassword ? translate('If this is a password protected feed') : ''}
+                    subTextAccessible
+                    text={translate('Include username and password')}
+                    testID={`${testIDPrefix}_include_username_and_password`}
+                    value={!!showUsernameAndPassword}
+                  />
+                  {
+                    !!showUsernameAndPassword && (
+                      <Button
+                        accessibilityLabel={translate('Save Password')}
+                        isSuccess
+                        onPress={this._handleSavePodcastCredentials}
+                        wrapperStyles={styles.settingsSavePasswordButton}
+                        testID={`${testIDPrefix}_save_password`}
+                        text={translate('Save Password')}
+                      />
+                    )
+                  }
+                </View>
+              )
+            }
             <Divider style={styles.divider} />
             <Button
               accessibilityHint={
@@ -773,7 +918,8 @@ static navigationOptions = ({ navigation }) => {
                   navigation,
                   {
                     handleDismiss: this._handleCancelPress,
-                    handleDownload: this._handleDownloadPressed
+                    handleDownload: this._handleDownloadPressed,
+                    includeGoToEpisodeInCurrentStack: true
                   },
                   viewType === PV.Filters._clipsKey ? 'clip' : 'episode'
                 )
@@ -908,10 +1054,6 @@ const styles = StyleSheet.create({
   aboutViewText: {
     fontSize: PV.Fonts.sizes.lg
   },
-  settingsDeletebutton: {
-    margin: 8,
-    borderRadius: 8
-  },
   divider: {
     marginBottom: 24,
     marginTop: 12
@@ -919,8 +1061,16 @@ const styles = StyleSheet.create({
   itemWrapper: {
     marginTop: 32
   },
+  settingsDeletebutton: {
+    margin: 8,
+    borderRadius: 8
+  },
   settingsHelpText: {
     fontSize: PV.Fonts.sizes.md
+  },
+  settingsSavePasswordButton: {
+    marginHorizontal: 8,
+    marginTop: 24
   },
   settingsTitle: {
     fontSize: PV.Fonts.sizes.xxl,
@@ -935,6 +1085,10 @@ const styles = StyleSheet.create({
   swipeRowBack: {
     marginBottom: 8,
     marginTop: 8
+  },
+  switchWrapper: {
+    marginBottom: 12,
+    marginTop: 28
   },
   toggleLimitDownloadsSwitchWrapper: {},
   view: {
