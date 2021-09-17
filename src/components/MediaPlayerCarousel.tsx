@@ -195,7 +195,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           screenReaderEnabled && (
             <>
               <DropdownButtonSelect
-                accessibilityHint={translate('ARIA HINT - tap to change the now playing information below')}
+                accessibilityHint={translate('ARIA HINT - This is the now playing info selector')}
                 items={accessibilitySelectorItems(hasChapters, hasTranscript)}
                 label={accessibilityItemSelected?.label}
                 onValueChange={this._handleAccessibilitySelectChange}
