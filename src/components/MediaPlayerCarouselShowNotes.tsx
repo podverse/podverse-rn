@@ -22,7 +22,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props> {
 
   render() {
     const { navigation, width } = this.props
-    const { player, screenPlayer } = this.global
+    const { player, screenPlayer, screenReaderEnabled } = this.global
     const { episode, nowPlayingItem } = player
     const { isLoading } = screenPlayer
 
@@ -34,7 +34,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props> {
 
     return (
       <ScrollView style={[styles.wrapper, { width }]} transparent>
-        {!!showClipInfo && (
+        {!!showClipInfo && !screenReaderEnabled && (
           <ClipInfoView
             createdAt={mediaRef.createdAt}
             endTime={mediaRef.endTime}

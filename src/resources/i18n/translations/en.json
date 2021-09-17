@@ -1,6 +1,7 @@
 {
 	"10 per year after that": "$10 per year after that",
 	"A-Z": "A-Z",
+  "ARIA HINT - tap to change the now playing information below": "Tap to change the now playing information below. The player controls are at the bottom of the screen.",
 	"ARIA HINT - Contact Us button": "open your email client and send us an email.",
 	"ARIA HINT - Current playback time": "Current playback time",
 	"ARIA HINT - Currently selected filter": "Currently selected filter",
@@ -42,7 +43,6 @@
 	"ARIA HINT - This is the now playing clip info": "This is the now playing clip info",
 	"ARIA HINT - This is the now playing clip title": "This is the now playing clip title",
 	"ARIA HINT - This is the now playing clip": "ARIA HINT - This is the now playing clip",
-	"ARIA HINT - This is the now playing episode in a carousel": "This is the now playing episode...swipe to the right to view different information...tap on the bottom of the screen for the player controls",
 	"ARIA HINT - This is the now playing episode": "This is the now playing episode",
 	"ARIA HINT - This is the podcast title": "This is the podcast title",
 	"ARIA HINT - This is the profile name": "This is the profile name",
@@ -396,6 +396,7 @@
 	"No thanks": "No thanks",
 	"No": "No",
 	"Now Playing": "Now Playing",
+  "Now Playing Info": "Now Playing Info",
 	"OK": "OK",
 	"Official Episode Page": "Official Episode Page",
 	"Official Podcast Page": "Official Podcast Page",
