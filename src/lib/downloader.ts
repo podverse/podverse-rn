@@ -58,18 +58,30 @@ export const deleteDownloadedEpisode = async (episode: any) => {
 const addDLTask = (episode: any, podcast: any) =>
   DownloadState.addDownloadTask({
     addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
+    episodeChaptersUrl: episode.chaptersUrl,
+    episodeCredentialsRequired: episode.credentialsRequired,
     episodeDescription: episode.description,
     episodeDuration: episode.duration,
+    episodeFunding: episode.funding,
     episodeId: episode.id,
     episodeImageUrl: episode.imageUrl,
+    episodeLinkUrl: episode.linkUrl,
     episodeMediaUrl: episode.mediaUrl,
     episodePubDate: episode.pubDate,
     episodeTitle: episode.title,
+    episodeTranscript: episode.transcript,
+    episodeValue: episode.value,
+    podcastCredentialsRequired: podcast.credentialsRequired,
+    podcastFunding: podcast.funding,
+    podcastHideDynamicAdsWarning: podcast.hideDynamicAdsWarning,
     podcastId: podcast.id,
     podcastImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
     podcastIsExplicit: podcast.isExplicit,
+    podcastLinkUrl: podcast.linkUrl,
+    podcastShrunkImageUrl: podcast.shrunkImageUrl,
     podcastSortableTitle: podcast.sortableTitle,
-    podcastTitle: podcast.title
+    podcastTitle: podcast.title,
+    podcastValue: podcast.value
   })
 
 // NOTE: I was unable to get BackgroundDownloader to successfully resume tasks that were

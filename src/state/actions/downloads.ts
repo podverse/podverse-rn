@@ -31,19 +31,31 @@ export type DownloadTaskState = {
   bytesTotal?: string
   bytesWritten?: string
   completed?: boolean
+  episodeChaptersUrl?: string
+  episodeCredentialsRequired?: boolean
   episodeDescription?: string
   episodeDuration?: number
+  episodeFunding?: any
   episodeId: string
   episodeImageUrl?: string
+  episodeLinkUrl?: string
   episodeMediaUrl: string
   episodePubDate?: string
   episodeTitle?: string
+  episodeTranscript?: any
+  episodeValue?: any
   percent?: number
+  podcastCredentialsRequired?: boolean
+  podcastFunding?: any
+  podcastHideDynamicAdsWarning?: boolean
   podcastId?: string
   podcastImageUrl?: string
   podcastIsExplicit?: boolean
+  podcastLinkUrl?: string
+  podcastShrunkImageUrl?: string
   podcastSortableTitle?: boolean
   podcastTitle?: string
+  podcastValue?: any
   status?: DownloadStatus
 }
 
