@@ -460,7 +460,8 @@ export class ClipsScreen extends React.Component<Props, State> {
                 handleDismiss: this._handleCancelPress,
                 handleDownload: this._handleDownloadPressed,
                 handleDeleteClip: this._handleDeleteClip,
-                includeGoToEpisode: true
+                includeGoToPodcast: true,
+                includeGoToEpisodeInEpisodesStack: true
               },
               'clip'
             )
