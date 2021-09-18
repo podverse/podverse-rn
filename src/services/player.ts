@@ -256,7 +256,11 @@ const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
 
 export const getCurrentLoadedTrackId = async () => {
   const trackIndex = await PVTrackPlayer.getCurrentTrack()
+  const trackId = await getLoadedTrackIdByIndex(trackIndex)
+  return trackId
+}
 
+export const getLoadedTrackIdByIndex = async (trackIndex: number) => {
   let trackId = ''
   if (trackIndex > 0 || trackIndex === 0) {
     const track = await PVTrackPlayer.getTrack(trackIndex)

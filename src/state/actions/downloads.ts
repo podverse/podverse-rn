@@ -359,10 +359,6 @@ export const removeDownloadedPodcast = async (podcastId: string) => {
 }
 
 export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
-  const { clearedNowPlayingItem } = await removeDownloadedPodcastEpisodeService(episodeId)
+  await removeDownloadedPodcastEpisodeService(episodeId)
   await updateDownloadedPodcasts()
-
-  if (clearedNowPlayingItem) {
-    clearNowPlayingItem()
-  }
 }
