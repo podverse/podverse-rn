@@ -9,12 +9,14 @@ import { processValueTransactionQueue, saveStreamingValueTransactionsToTransacti
 import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
+import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { handleEnrichingPlayerState, updatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
   getCurrentLoadedTrackId,
+  getLoadedTrackIdByIndex,
   getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId,
   getPlaybackSpeed,
   handlePlay,
@@ -125,14 +127,20 @@ const syncNowPlayingItemWithTrack = () => {
 
 const resetHistoryItem = async (x: any) => {
   const { position, track } = x
-  const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(track)
+  const loadedTrackId = await getLoadedTrackIdByIndex(track)
+  const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(loadedTrackId)
   if (metaEpisode) {
     const { mediaFileDuration } = metaEpisode
     if (mediaFileDuration > 59 && mediaFileDuration - 59 < position) {
       const setPlayerClipIsLoadedIfClip = false
       const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
-        x.track, setPlayerClipIsLoadedIfClip)
+        loadedTrackId, setPlayerClipIsLoadedIfClip)
       if (currentNowPlayingItem) {
+        const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+        if (autoDeleteEpisodeOnEnd && currentNowPlayingItem?.episodeId) {
+          removeDownloadedPodcastEpisode(currentNowPlayingItem.episodeId)
+        }
+
         const forceUpdateOrderDate = false
         await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate)
       }
@@ -155,6 +163,7 @@ const handleQueueEnded = (x: any) => {
      const preventHandleQueueEnded = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
      if (!preventHandleQueueEnded) {
        await resetHistoryItem(x)
+       
      }
     })()
   }, 0)

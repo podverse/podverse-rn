@@ -97,13 +97,17 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       </Text>
     )
 
+    const outerWrapperStyle = screenReaderEnabled
+      ? [styles.outerWrapper, { paddingBottom: 10, paddingHorizontal: 10 }, { width }]
+      : [styles.outerWrapper, { padding: 10 }, { width }]
+
     return (
       <ScrollView
         scrollEnabled={false}
-        contentContainerStyle={[styles.outerWrapper, { width }]}>
+        contentContainerStyle={outerWrapperStyle}>
         <RNView
           accessible
-          accessibilityHint={translate('ARIA HINT - This is the now playing episode in a carousel')}
+          accessibilityHint={translate('ARIA HINT - This is the now playing episode')}
           accessibilityLabel={textTopWrapperAccessibilityLabel}
           style={styles.carouselTextTopWrapper}>
           {isLoading ? (
@@ -180,7 +184,6 @@ const styles = StyleSheet.create({
   outerWrapper: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
     flex: 1
   },
   carouselTextTopWrapper: {
