@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { convertToNowPlayingItem } from 'podverse-shared'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
@@ -298,6 +298,13 @@ export class EpisodesScreen extends React.Component<Props, State> {
     }
   }
 
+  _handleDownloadPressedNowPlayingItem = (selectedItem: any) => {
+    const episode = convertNowPlayingItemToEpisode(selectedItem)
+    if (episode && episode.podcast) {
+      downloadEpisode(episode, episode.podcast)
+    }
+  }
+
   _renderEpisodeItem = ({ item, index }) => {
     const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
 
@@ -471,7 +478,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
               navigation,
               {
                 handleDismiss: this._handleCancelPress,
-                handleDownload: this._handleDownloadPressed,
+                handleDownload: this._handleDownloadPressedNowPlayingItem,
                 includeGoToPodcast: true,
                 includeGoToEpisodeInCurrentStack: true
               },

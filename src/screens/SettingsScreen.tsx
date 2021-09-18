@@ -342,6 +342,7 @@ export class SettingsScreen extends React.Component<Props, State> {
 
   render() {
     const {
+      autoDeleteEpisodeOnEnd,
       deleteAccountDialogConfirmed,
       deleteAccountDialogText,
       downloadedEpisodeLimitCount,
@@ -492,10 +493,14 @@ export class SettingsScreen extends React.Component<Props, State> {
                 </View>
               </RNPickerSelect>
             </View>
-            {/* <SwitchWithText
-              onValueChange={this._toggleAutoDeleteEpisodeOnEnd}
-              text='Delete downloaded episodes after end is reached'
-              value={!!autoDeleteEpisodeOnEnd} /> */}
+            <View style={styles.itemWrapper}>
+              <SwitchWithText
+                accessibilityLabel={translate('Delete downloaded episodes after end is reached')}
+                onValueChange={this._toggleAutoDeleteEpisodeOnEnd}
+                testID={`${testIDPrefix}_auto_delete_episode`}
+                text={translate('Delete downloaded episodes after end is reached')}
+                value={!!autoDeleteEpisodeOnEnd} />
+            </View>
             <View style={styles.itemWrapper}>
               <SwitchWithText
                 accessibilityLabel={translate('Limit the number of downloaded episodes for each podcast by default')}

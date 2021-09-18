@@ -83,7 +83,6 @@ const mediaMoreButtons = (
 
   if (isDownloaded) {
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - play'),
       accessibilityLabel: translate('Play'),
       key: PV.Keys.play,
       text: translate('Play'),
@@ -129,7 +128,7 @@ const mediaMoreButtons = (
             navigation.navigate(PV.RouteNames.DownloadsScreen)
           } else {
             await handleDismiss()
-            handleDownload()
+            handleDownload(item)
           }
         }
       })
