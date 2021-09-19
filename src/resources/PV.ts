@@ -10,6 +10,7 @@ import { FilterOptions } from './FilterOptions'
 import { Filters } from './Filters'
 import { FlatList } from './FlatList'
 import { Fonts } from './Fonts'
+import { Haptic } from './Haptic'
 import { HTML } from './HTML'
 import { Icons } from './Icons'
 import { Images } from './Images'
@@ -40,6 +41,7 @@ export const PV = {
   FilterOptions,
   FlatList,
   Fonts,
+  Haptic,
   HTML,
   Icons,
   Images,

@@ -296,8 +296,8 @@ export class PlayerScreen extends React.Component<Props> {
 
   render() {
     const { navigation } = this.props
-    const { player, screenPlayer } = this.global
-    const { currentChapter, episode, nowPlayingItem } = player
+    const { currentChapter, player, screenPlayer } = this.global
+    const { episode, nowPlayingItem } = player
     const { showShareActionSheet } = screenPlayer
     let { mediaRef } = player
 

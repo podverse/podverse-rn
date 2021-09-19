@@ -26,9 +26,9 @@ const initialTheme: InitialState = {
     shouldShowAlert: false
   },
   parsedTranscript: null,
+  currentChapter: null,
+  currentChapters: [],
   player: {
-    currentChapter: null,
-    currentChapters: [],
     hasErrored: false,
     isPlaying: false,
     nowPlayingItem: null,

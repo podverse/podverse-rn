@@ -1,5 +1,7 @@
 import { NowPlayingItem } from 'podverse-shared'
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { getGlobal, setGlobal } from 'reactn'
+import { PV } from '../../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../../services/episode'
 import { PVTrackPlayer, updateCurrentTrack } from '../../services/player'
 
@@ -12,14 +14,10 @@ export const clearChapterPlaybackInfo = async (nowPlayingItem?: NowPlayingItem) 
   }
 
   return new Promise((resolve) => {
-    const globalState = getGlobal()
     setGlobal(
       {
-        player: {
-          ...globalState.player,
-          currentChapters: [],
-          currentChapter: null
-        }
+        currentChapters: [],
+        currentChapter: null
       },
       () => {
         resolve(null)
@@ -42,23 +40,19 @@ export const loadChaptersForNowPlayingItem = async (item?: NowPlayingItem) => {
   }
 }
 
+const isNewChapter = (currentChapter: any, newCurrentChapter: any) => (
+  (currentChapter && newCurrentChapter && currentChapter.id !== newCurrentChapter.id)
+  || (!currentChapter && newCurrentChapter)
+)
+
 export const loadChapterPlaybackInfo = () => {
   (async () => {
     const globalState = getGlobal()
-    const { backupDuration, currentChapters } = globalState.player
+    const { currentChapters } = globalState
     const playerPosition = await PVTrackPlayer.getTrackPosition()
-
     if ((playerPosition || playerPosition === 0) && Array.isArray(currentChapters) && currentChapters.length > 1) {
-      const currentChapter = currentChapters.find(
-        // If no chapter.endTime, then assume it is the last chapter, and use the duration instead
-        (chapter: any) =>
-          chapter.endTime
-            ? playerPosition >= chapter.startTime && playerPosition < chapter.endTime
-            : playerPosition >= chapter.startTime && backupDuration && playerPosition < backupDuration
-      )
-      if (currentChapter) {
-        setChapterOnGlobalState(currentChapter)
-      }
+      const newCurrentChapter = getChapterForTime(playerPosition)
+      setChapterOnGlobalState(newCurrentChapter)
     }
   })()
 }
@@ -101,33 +95,32 @@ const enrichChapterDataForPlayer = (chapters: any[]) => {
   return enrichedChapters
 }
 
-export const setChapterOnGlobalState = (currentChapter: any) => {
+export const setChapterOnGlobalState = (newCurrentChapter: any, haptic?: boolean) => {
   const globalState = getGlobal()
-  updateCurrentTrack(currentChapter.title, currentChapter.imageUrl)
+  const { currentChapter } = globalState
 
-  setGlobal({
-    player: {
-      ...globalState.player,
-      currentChapter,
-      mediaRef: currentChapter
+  if (isNewChapter(currentChapter, newCurrentChapter)) {
+    if (haptic) {
+      ReactNativeHapticFeedback.trigger('impactLight', PV.Haptic.options)
     }
-  })
+    updateCurrentTrack(newCurrentChapter.title, newCurrentChapter.imageUrl)
+
+    setGlobal({
+      currentChapter: newCurrentChapter
+    })
+  }
 }
 
 export const setChaptersOnGlobalState = (currentChapters: any[]) => {
-  const globalState = getGlobal()
   setGlobal({
-    player: {
-      ...globalState.player,
-      currentChapters
-    }
+    currentChapters
   })
 }
 
 export const getChapterPrevious = () => {
   const globalState = getGlobal()
-  const { currentChapter, currentChapters } = globalState.player
-  if (currentChapter && currentChapters?.length) {
+  const { currentChapter, currentChapters } = globalState
+  if (currentChapter && currentChapters?.length && currentChapters.length > 1) {
     const currentIndex = currentChapters.findIndex((x: any) => x.id === currentChapter.id)
     const previousIndex = currentIndex - 1
     const previousChapter = currentChapters[previousIndex]
@@ -137,11 +130,48 @@ export const getChapterPrevious = () => {
 
 export const getChapterNext = () => {
   const globalState = getGlobal()
-  const { currentChapter, currentChapters } = globalState.player
-  if (currentChapter && currentChapters?.length) {
+  const { currentChapter, currentChapters } = globalState
+  if (currentChapter && currentChapters?.length && currentChapters.length > 1) {
     const currentIndex = currentChapters.findIndex((x: any) => x.id === currentChapter.id)
     const nextIndex = currentIndex + 1
     const nextChapter = currentChapters[nextIndex]
     return nextChapter
   }
 }
+
+export const getChapterForTime = (playerPosition: number) => {
+  const globalState = getGlobal()
+  const { currentChapters, player } = globalState
+  const { backupDuration } = player
+  
+  let newCurrentChapter = null
+  if (currentChapters && currentChapters.length > 1) {
+    newCurrentChapter = currentChapters.find(
+      // If no chapter.endTime, then assume it is the last chapter, and use the duration instead
+      (chapter: any) =>
+        chapter.endTime
+          ? playerPosition >= chapter.startTime && playerPosition < chapter.endTime
+          : playerPosition >= chapter.startTime && backupDuration && playerPosition < backupDuration
+    )
+  }
+
+  return newCurrentChapter
+}
+
+export const getChapterForTimeAndSetOnState = async (time: number, haptic?: boolean) => {
+  const chapter = await getChapterForTime(time)
+  if (chapter) {
+    setChapterOnGlobalState(chapter, haptic)
+  }
+}
+
+export let chapterInterval: NodeJS.Timeout
+export const clearChapterInterval = () => {
+  if (chapterInterval) {
+    clearInterval(chapterInterval)
+  }
+}
+export const startChapterInterval = () => {
+  chapterInterval = setInterval(loadChapterPlaybackInfo, 4000)
+}
+startChapterInterval()

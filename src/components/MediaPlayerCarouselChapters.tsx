@@ -92,7 +92,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
 
     this.setState({ autoScrollOn: true })
       this.interval = setInterval(() => {
-        const { currentChapter, currentChapters } = this.global.player
+        const { currentChapter, currentChapters } = this.global
         const itemHeightsReady = currentChapters.length === this.itemHeights.length
 
         if (currentChapter && itemHeightsReady) {
@@ -142,8 +142,8 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     })
 
   _renderItem = ({ item, index }) => {
-    const { player } = this.global
-    const { currentChapter, episode } = player
+    const { currentChapter, player } = this.global
+    const { episode } = player
     const podcast = episode?.podcast || {}
     const testID = getTestID()
 
@@ -178,8 +178,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   array is populated.
 */
   _getItemLayout = (data, index) => {
-    const { player } = this.global
-    const { currentChapters } = player
+    const { currentChapters } = this.global
 
     let length = 80
     let offset = 80
@@ -197,8 +196,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   render() {
     const { navigation, width } = this.props
     const { autoScrollOn } = this.state
-    const { offlineModeEnabled, player, screenPlayer, screenReaderEnabled } = this.global
-    const { currentChapters } = player
+    const { currentChapters, offlineModeEnabled, screenPlayer, screenReaderEnabled } = this.global
     const {
       isLoading,
       isLoadingMore,

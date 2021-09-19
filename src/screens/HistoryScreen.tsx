@@ -202,7 +202,8 @@ export class HistoryScreen extends React.Component<Props, State> {
 
   render() {
     const { historyItems = [] } = this.global.session.userInfo
-    const { currentChapter, nowPlayingItem } = this.global.player
+    const { currentChapter, player } = this.global
+    const { nowPlayingItem } = player
     const { isLoading, isLoadingMore, isRemoving, isTransparent } = this.state
 
     const view = (
