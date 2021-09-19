@@ -10,7 +10,8 @@ import {
   playerJumpForward,
   setPlaybackPosition
 } from '../services/player'
-import { playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
+import { playNextChapterOrQueueItem, playNextFromQueue, playPreviousChapterOrReturnToBeginningOfTrack,
+  setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
@@ -89,10 +90,6 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     })
   }
 
-  _returnToBeginningOfTrack = async () => {
-    await setPlaybackPosition(0)
-  }
-
   _renderPlayerControlIcon = (source: ImageSourcePropType, testID?: string, disabled?: boolean) => {
     const disabledStyle: {tintColor?:string} = {}
     if(disabled) {
@@ -120,7 +117,16 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       right: 8,
       top: 8
     }
-    const noNextQueueItem = queueItems?.length === 0
+
+    const isLastChapter =
+      currentChapter
+      && currentChapters.length > 1
+      && currentChapters[currentChapters.length - 1]
+      && currentChapters[currentChapters.length - 1].id === currentChapter.id
+
+    const noNextQueueItem = currentChapter
+      ? queueItems?.length === 0 && isLastChapter
+      : queueItems?.length === 0
 
     // nowPlayingItem will be undefined when loading from a deep link
     let { nowPlayingItem } = player
@@ -185,7 +191,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             <TouchableOpacity
               accessibilityLabel={translate('Return to beginning of episode')}
               accessibilityRole='button'
-              onPress={this._returnToBeginningOfTrack}
+              onLongPress={() => setPlaybackPosition(0)}
+              onPress={playPreviousChapterOrReturnToBeginningOfTrack}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
               {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
             </TouchableOpacity>
@@ -220,7 +227,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             <TouchableOpacity
               accessibilityLabel={translate('Skip to next item in your queue')}
               accessibilityRole='button'
-              onPress={playNextFromQueue}
+              onLongPress={playNextFromQueue}
+              onPress={playNextChapterOrQueueItem}
               disabled={noNextQueueItem}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
               {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, `${testIDPrefix}_skip_track`, noNextQueueItem)}

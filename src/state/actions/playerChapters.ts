@@ -123,3 +123,25 @@ export const setChaptersOnGlobalState = (currentChapters: any[]) => {
     }
   })
 }
+
+export const getChapterPrevious = () => {
+  const globalState = getGlobal()
+  const { currentChapter, currentChapters } = globalState.player
+  if (currentChapter && currentChapters?.length) {
+    const currentIndex = currentChapters.findIndex((x: any) => x.id === currentChapter.id)
+    const previousIndex = currentIndex - 1
+    const previousChapter = currentChapters[previousIndex]
+    return previousChapter
+  }
+}
+
+export const getChapterNext = () => {
+  const globalState = getGlobal()
+  const { currentChapter, currentChapters } = globalState.player
+  if (currentChapter && currentChapters?.length) {
+    const currentIndex = currentChapters.findIndex((x: any) => x.id === currentChapter.id)
+    const nextIndex = currentIndex + 1
+    const nextChapter = currentChapters[nextIndex]
+    return nextChapter
+  }
+}
