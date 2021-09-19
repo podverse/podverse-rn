@@ -12,6 +12,7 @@ import { PV } from '../resources'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { handleEnrichingPlayerState, updatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
@@ -142,7 +143,10 @@ const resetHistoryItem = async (x: any) => {
         }
 
         const forceUpdateOrderDate = false
-        await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate)
+        const skipSetNowPlaying = false
+        const completed = true
+        await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate, skipSetNowPlaying, completed)
+        await updateHistoryItemsIndex()
       }
     }
   }
@@ -163,7 +167,6 @@ const handleQueueEnded = (x: any) => {
      const preventHandleQueueEnded = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
      if (!preventHandleQueueEnded) {
        await resetHistoryItem(x)
-       
      }
     })()
   }, 0)

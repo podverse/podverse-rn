@@ -46,10 +46,17 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     description = decodeHTMLString(description)
     description = description?.trim() || ''
 
-    const { downloadedEpisodeIds, downloadsActive, fontScaleMode, screenReaderEnabled } = this.global
+    const { downloadedEpisodeIds, downloadsActive, fontScaleMode, screenReaderEnabled, session } = this.global
+    const { userInfo } = session
+    const { historyItemsIndex } = userInfo
 
     const isDownloading = downloadsActive[id]
     const isDownloaded = item.addByRSSPodcastFeedUrl ? downloadedEpisodeIds[mediaUrl] : downloadedEpisodeIds[id]
+
+    const episodeCompleted = historyItemsIndex && historyItemsIndex.episodes && id
+      && historyItemsIndex.episodes[id] && historyItemsIndex.episodes[id].completed
+
+    const episodeDownloading = !!downloadsActive[id]
 
     if (!title) title = translate('Untitled Episode')
 
@@ -164,6 +171,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         )}
         <View style={styles.timeRemainingWrapper}>
           <TimeRemainingWidget
+            episodeCompleted={episodeCompleted}
+            episodeDownloading={episodeDownloading}
             handleMorePress={handleMorePress}
             item={item}
             itemType='episode'
