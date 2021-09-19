@@ -19,7 +19,7 @@ type Props = {
 }
 
 type State = {
-  activeTranscriptRowIndex: number | null
+  activeChapterRowIndex: number | null
   autoScrollOn: boolean
 }
 
@@ -38,7 +38,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     this.itemHeights = []
 
     this.state = {
-      activeTranscriptRowIndex: null,
+      activeChapterRowIndex: null,
       autoScrollOn: false
     }
   }
@@ -58,10 +58,19 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     loadItemAndPlayTrack(selectedItem, shouldPlay)
   }
 
+  disableAutoscroll = () => {
+    if (this.interval) {
+      this.setState({
+        activeChapterRowIndex: null,
+        autoScrollOn: false
+      }, this.clearAutoScrollInterval)
+    }
+  }
+
   toggleAutoscroll = () => {
     if (this.interval) {
       this.setState({
-        activeTranscriptRowIndex: null,
+        activeChapterRowIndex: null,
         autoScrollOn: false
       }, this.clearAutoScrollInterval)
     } else {
@@ -97,7 +106,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
           if (index !== -1) {
             const indexBefore = index > 0 ? index - 1 : 0
             this.listRef.scrollToIndex({ index: indexBefore, animated: false })
-            this.setState({ activeTranscriptRowIndex: index })
+            this.setState({ activeChapterRowIndex: index })
           }
         }
       }, intervalTime)
@@ -232,9 +241,9 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
             listRef={(ref: any) => {
               this.listRef = ref
             }}
-            
             noResultsMessage={noResultsMessage}
             noResultsSubMessage={noResultsSubMessage}
+            onScrollBeginDrag={this.disableAutoscroll}
             renderItem={this._renderItem}
             showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
             transparent
