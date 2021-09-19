@@ -59,7 +59,7 @@ const handleOnValueChangeChapter = (newProgressValue: number) => {
 }
 
 /* Make sure the chapter is updated one more time after the last onValueChange event */
-const debouncedOnValueChangeChapterTime = debounce(handleOnValueChangeChapter, 1500, {
+const debouncedOnValueChangeChapterTime = debounce(handleOnValueChangeChapter, 1000, {
   leading: false,
   trailing: true
 })

@@ -172,6 +172,6 @@ export const clearChapterInterval = () => {
   }
 }
 export const startChapterInterval = () => {
-  chapterInterval = setInterval(loadChapterPlaybackInfo, 4000)
+  chapterInterval = setInterval(loadChapterPlaybackInfo, 3000)
 }
 startChapterInterval()
