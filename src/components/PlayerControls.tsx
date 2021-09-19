@@ -93,10 +93,14 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     await setPlaybackPosition(0)
   }
 
-  _renderPlayerControlIcon = (source: ImageSourcePropType, testID?: string) => {
+  _renderPlayerControlIcon = (source: ImageSourcePropType, testID?: string, disabled?: boolean) => {
+    const disabledStyle: {tintColor?:string} = {}
+    if(disabled) {
+      disabledStyle.tintColor = PV.Colors.grayDark
+    }
     return (
       <PVView style={styles.iconContainer} transparent testID={testID}>
-        <Image source={source} resizeMode='contain' style={styles.icon} />
+        <Image source={source} resizeMode='contain' style={[styles.icon, disabledStyle]} />
       </PVView>
     )
   }
@@ -104,8 +108,10 @@ export class PlayerControls extends React.PureComponent<Props, State> {
   render() {
     const { navigation } = this.props
     const { progressValue, showPlayerMoreActionSheet } = this.state
-    const { globalTheme, player, screenPlayer } = this.global
+    const { globalTheme, player, screenPlayer, session } = this.global
     const { backupDuration, currentChapter, currentChapters, playbackRate, playbackState } = player
+    const { userInfo } = session
+    const { queueItems } = userInfo
     const { isLoading } = screenPlayer
     const hasErrored = playbackState === PV.Player.errorState
     const hitSlop = {
@@ -114,6 +120,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       right: 8,
       top: 8
     }
+    const noNextQueueItem = queueItems?.length === 0
 
     // nowPlayingItem will be undefined when loading from a deep link
     let { nowPlayingItem } = player
@@ -214,8 +221,9 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               accessibilityLabel={translate('Skip to next item in your queue')}
               accessibilityRole='button'
               onPress={playNextFromQueue}
+              disabled={noNextQueueItem}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
-              {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, `${testIDPrefix}_skip_track`)}
+              {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, `${testIDPrefix}_skip_track`, noNextQueueItem)}
             </TouchableOpacity>
           </View>
         </View>
