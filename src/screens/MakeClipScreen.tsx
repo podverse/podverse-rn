@@ -327,7 +327,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   onPress: async () => {
                     // the url must be read from global again to ensure the correct state is used
                     const url = this.global.urlsWeb.clip + mediaRef.id
-                    const { nowPlayingItem = {} } = this.global.player
+                    let { nowPlayingItem } = this.global.player
+                    nowPlayingItem = nowPlayingItem || {}
                     const title = `${data.title || translate('Untitled Clip')} – ${nowPlayingItem.podcastTitle} – ${
                       nowPlayingItem.episodeTitle
                     }${translate('clip created using brandName')}`
