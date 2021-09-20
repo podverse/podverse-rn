@@ -33,10 +33,9 @@ const request = async (req: LNPayRequest) => {
   const axiosRequest = {
     url,
     headers: {
-      ...headers,
-      'Content-Type': 'application/json'
+      ...headers
     },
-    data: body ? JSON.stringify(body) : '',
+    data: body,
     method,
     ...opts,
     timeout: 30000
@@ -44,7 +43,6 @@ const request = async (req: LNPayRequest) => {
 
   try {
     const response = await axios(axiosRequest)
-
     return response.data
   } catch (error) {
     console.log('LNPay Request error', error.response.data)
@@ -58,7 +56,8 @@ export const createWallet = async (apiKey = '', label?: string): Promise<LNWalle
       endpoint: '/wallet',
       method: 'POST',
       headers: {
-        'X-Api-Key': apiKey
+        'X-Api-Key': apiKey,
+        'Content-Type': 'application/json'
       },
       body: {
         user_label: label || 'Podverse Wallet'
@@ -97,19 +96,20 @@ export const getWalletInfo = async (wallet: LNWallet): Promise<LNWalletInfo | nu
 
 export const getWallet = async (wallet: LNWallet): Promise<LNWallet | null> => {
   let existingWallet: LNWallet | null = null
+
   try {
     const resp = await request({
-      endpoint: '/wallet/' + wallet.access_keys['Wallet Admin'],
-      headers: {
-        'X-Api-Key': wallet.publicKey
-      }
+      endpoint: '/wallet/' + wallet.access_keys['Wallet Admin'] + `?access-token=${wallet.publicKey}`
     })
+
     if (resp.id === wallet.id) {
       existingWallet = wallet
     }
   } catch (error) {
     if (error.status === 404) {
+      console.log('getWallet error 404 Not Found', error)
       existingWallet = null
+
     } else {
       throw new Error('Wallet Fetch Failed. ' + error.message)
     }
@@ -193,7 +193,8 @@ const sendLNPayKeysendRequest = async (wallet: LNWallet, body: LNPayKeysendReque
     method: 'POST',
     endpoint: '/wallet/' + wallet.access_keys['Wallet Admin'][0] + '/keysend',
     headers: {
-      'X-Api-Key': wallet.publicKey
+      'X-Api-Key': wallet.publicKey,
+      'Content-Type': 'application/json'
     },
     body
   })

@@ -105,8 +105,9 @@ export class PlayerControls extends React.PureComponent<Props, State> {
   render() {
     const { navigation } = this.props
     const { progressValue, showPlayerMoreActionSheet } = this.state
-    const { globalTheme, player, screenPlayer, session } = this.global
-    const { backupDuration, currentChapter, currentChapters, playbackRate, playbackState } = player
+    const { currentChapter, currentChapters, currentChaptersStartTimePositions, globalTheme,
+      player, screenPlayer, session } = this.global
+    const { backupDuration, playbackRate, playbackState } = player
     const { userInfo } = session
     const { queueItems } = userInfo
     const { isLoading } = screenPlayer
@@ -159,13 +160,9 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     }
 
     let { clipEndTime, clipStartTime } = nowPlayingItem
-    let hideClipIndicator = false
     if (!clipStartTime && currentChapter?.startTime) {
       clipStartTime = currentChapter?.startTime
       clipEndTime = currentChapter?.endTime
-      if (currentChapters?.length <= 1) {
-        hideClipIndicator = true
-      }
     }
 
     const jumpBackAccessibilityLabel =
@@ -180,8 +177,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             backupDuration={backupDuration}
             clipEndTime={clipEndTime}
             clipStartTime={clipStartTime}
+            currentChaptersStartTimePositions={currentChaptersStartTimePositions}
             globalTheme={globalTheme}
-            hideClipIndicator={hideClipIndicator}
             isLoading={isLoading}
             value={progressValue}
           />

@@ -9,11 +9,6 @@ import { PV } from '../resources'
 import { translate } from '../lib/i18n'
 import { sendBoost } from '../lib/valueTagHelpers'
 
-const HapticOptions = {
-  enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false
-}
-
 import { toggleValueStreaming } from '../state/actions/valueTag'
 
 import {
@@ -105,7 +100,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   _attemptBoost = () => {
-    ReactNativeHapticFeedback.trigger('impactHeavy', HapticOptions)
+    ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
     this.setState({ boostIsSending: true }, () => {
       this.explosion && this.explosion.start()
       const { podcastValueFinal } = this.global
@@ -128,7 +123,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   _toggleSatStreaming = () => {
-    ReactNativeHapticFeedback.trigger('impactHeavy', HapticOptions)
+    ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
     toggleValueStreaming()
   }
 

@@ -145,18 +145,14 @@ export const initPlayerState = async (globalState: any) => {
 
 export const playPreviousChapterOrReturnToBeginningOfTrack = async () => {
   const globalState = getGlobal()
-  const { player } = globalState
-  const { currentChapters } = player
+  const { currentChapters } = globalState
 
   if (currentChapters && currentChapters.length > 1) {
     const previousChapter = await getChapterPrevious()
     if (previousChapter) {
       await setPlaybackPosition(previousChapter.startTime)
       setGlobal({
-        player: {
-          ...player,
-          currentChapter: previousChapter
-        }
+        currentChapter: previousChapter
       })
       return
     }
@@ -167,18 +163,14 @@ export const playPreviousChapterOrReturnToBeginningOfTrack = async () => {
 
 export const playNextChapterOrQueueItem = async () => {
   const globalState = getGlobal()
-  const { player } = globalState
-  const { currentChapters } = player
+  const { currentChapters } = globalState
 
   if (currentChapters && currentChapters.length > 1) {
     const nextChapter = await getChapterNext()
     if (nextChapter) {
       await setPlaybackPosition(nextChapter.startTime)
       setGlobal({
-        player: {
-          ...player,
-          currentChapter: nextChapter
-        }
+        currentChapter: nextChapter
       })
       return
     }
