@@ -476,4 +476,4 @@ class AppNavigator extends Component<Props, State> {
 const App = createAppContainer(AppNavigator)
 const prefix = PV.DeepLinks.prefix
 
-export default () => <App uriPrefix={prefix} />
+export default () => <App uriPrefix={prefix} theme="dark"/>

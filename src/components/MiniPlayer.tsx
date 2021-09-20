@@ -18,9 +18,12 @@ export class MiniPlayer extends React.PureComponent<Props> {
   render() {
     const { navigation } = this.props
     const { globalTheme, player, screenPlayer, screenReaderEnabled } = this.global
-    const { nowPlayingItem, playbackState } = player
+    const { playbackState } = player
     const { hasErrored } = screenPlayer
     const isDarkMode = globalTheme === darkTheme
+    
+    let { nowPlayingItem } = player
+    nowPlayingItem = nowPlayingItem || {}
 
     let playButtonAdjust = { paddingLeft: 2, paddingTop: 2 } as any
     let playButtonIcon = (

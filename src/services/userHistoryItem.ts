@@ -11,7 +11,8 @@ export const addOrUpdateHistoryItem = async (
   playbackPosition: number,
   mediaFileDuration?: number | null,
   forceUpdateOrderDate?: boolean,
-  skipSetNowPlaying?: boolean
+  skipSetNowPlaying?: boolean,
+  completed?: boolean
 ) => {
   if (!skipSetNowPlaying) {
     await setNowPlayingItem(item, playbackPosition)
@@ -19,7 +20,7 @@ export const addOrUpdateHistoryItem = async (
 
   const useServerData = await checkIfShouldUseServerData()
   return useServerData
-    ? addOrUpdateHistoryItemOnServer(item, playbackPosition, mediaFileDuration, forceUpdateOrderDate)
+    ? addOrUpdateHistoryItemOnServer(item, playbackPosition, mediaFileDuration, forceUpdateOrderDate, completed)
     : addOrUpdateHistoryItemLocally(item, playbackPosition, mediaFileDuration)
 }
 
@@ -58,7 +59,7 @@ export const getHistoryItemIndexInfoForEpisode = (episodeId: string) => {
 export const addOrUpdateHistoryItemLocally = async (
   item: NowPlayingItem,
   playbackPosition: number,
-  mediaFileDuration?: number | null,
+  mediaFileDuration?: number | null
 ) => {
   playbackPosition = Math.floor(playbackPosition) || 0
   mediaFileDuration = mediaFileDuration && Math.floor(mediaFileDuration) || 0
@@ -75,7 +76,8 @@ const addOrUpdateHistoryItemOnServer = async (
   nowPlayingItem: NowPlayingItem,
   playbackPosition: number,
   mediaFileDuration?: number | null,
-  forceUpdateOrderDate?: boolean
+  forceUpdateOrderDate?: boolean,
+  completed?: boolean
 ) => {
   playbackPosition = Math.floor(playbackPosition) || 0
   await addOrUpdateHistoryItemLocally(nowPlayingItem, playbackPosition, mediaFileDuration)
@@ -100,7 +102,8 @@ const addOrUpdateHistoryItemOnServer = async (
       mediaRefId: clipId,
       forceUpdateOrderDate: forceUpdateOrderDate === false ? false : true,
       ...(mediaFileDuration || mediaFileDuration === 0 ? { mediaFileDuration: Math.floor(mediaFileDuration) } : {}),
-      userPlaybackPosition: playbackPosition
+      userPlaybackPosition: playbackPosition,
+      ...(completed ? { completed } : {})
     },
     opts: { credentials: 'include' }
   })
@@ -197,7 +200,8 @@ const generateHistoryItemsIndex = (historyItems: any[]) => {
     } else if (historyItem.episodeId) {
       historyItemsIndex.episodes[historyItem.episodeId] = {
         mediaFileDuration: historyItem.mediaFileDuration || historyItem.episodeDuration,
-        userPlaybackPosition: historyItem.userPlaybackPosition
+        userPlaybackPosition: historyItem.userPlaybackPosition,
+        ...(historyItem.completed ? { completed: historyItem.completed } : {})
       }
     }
   }

@@ -31,7 +31,8 @@ import {
   setNowPlayingItem as setNowPlayingItemService
 } from '../../services/userNowPlayingItem'
 import { getQueueItems } from '../../state/actions/queue'
-import { clearChapterPlaybackInfo, loadChapterPlaybackInfo, loadChaptersForNowPlayingItem } from './playerChapters'
+import { clearChapterPlaybackInfo, getChapterNext, getChapterPrevious, loadChapterPlaybackInfo,
+  loadChaptersForNowPlayingItem } from './playerChapters'
 
 const clearEnrichedPodcastDataIfNewEpisode =
  async (previousNowPlayingItem: NowPlayingItem, nowPlayingItem: NowPlayingItem) => {
@@ -140,6 +141,42 @@ export const initPlayerState = async (globalState: any) => {
       }
     }
   })
+}
+
+export const playPreviousChapterOrReturnToBeginningOfTrack = async () => {
+  const globalState = getGlobal()
+  const { currentChapters } = globalState
+
+  if (currentChapters && currentChapters.length > 1) {
+    const previousChapter = await getChapterPrevious()
+    if (previousChapter) {
+      await setPlaybackPosition(previousChapter.startTime)
+      setGlobal({
+        currentChapter: previousChapter
+      })
+      return
+    }
+  }
+
+  await setPlaybackPosition(0)
+}
+
+export const playNextChapterOrQueueItem = async () => {
+  const globalState = getGlobal()
+  const { currentChapters } = globalState
+
+  if (currentChapters && currentChapters.length > 1) {
+    const nextChapter = await getChapterNext()
+    if (nextChapter) {
+      await setPlaybackPosition(nextChapter.startTime)
+      setGlobal({
+        currentChapter: nextChapter
+      })
+      return
+    }
+  }
+  
+  await playNextFromQueue()
 }
 
 export const playNextFromQueue = async () => {

@@ -11,6 +11,7 @@ import { Icon, MoreButton, Text, View } from './'
 
 type Props = {
   clipTime?: string
+  episodeCompleted?: boolean
   episodeDownloading?: boolean
   handleMorePress?: any
   isChapter?: boolean
@@ -69,7 +70,7 @@ const MiniProgressBar = (props: BarProps) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { episodeDownloading, handleMorePress, item, itemType,
+  const { episodeCompleted, episodeDownloading, handleMorePress, item, itemType,
     loadTimeStampOnPlay, mediaFileDuration, style, testID, timeLabel, transparent,
     userPlaybackPosition } = props
   const { episode = {}, podcast = {} } = item
@@ -138,6 +139,12 @@ export const TimeRemainingWidget = (props: Props) => {
           style={styles.text}>
           {timeLabel}
         </Text>
+        {!!episodeCompleted && (
+          <Icon
+            name={'check'}
+            size={22}
+            style={styles.iconCompleted} />
+        )}
       </View>
       {!!handleMorePress && (
         <MoreButton
@@ -151,6 +158,10 @@ export const TimeRemainingWidget = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
+  iconCompleted: {
+    color: PV.Colors.green,
+    paddingHorizontal: 16
+  },
   container: {
     flexDirection: 'row',
     alignItems: 'center',

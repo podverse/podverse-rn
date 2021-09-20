@@ -30,6 +30,9 @@ export const EpisodeTableHeader = (props: Props) => {
   } = props
 
   const [screenReaderEnabled] = useGlobal('screenReaderEnabled')
+  const [session] = useGlobal('session')
+  const { userInfo } = session
+  const { historyItemsIndex } = userInfo
 
   const isNotFound = !isLoading && !episode
 
@@ -43,6 +46,10 @@ export const EpisodeTableHeader = (props: Props) => {
 
   const pubDate = episode && episode.pubDate
   const isDownloaded = episodeDownloaded
+
+  const id = episode?.id
+  const episodeCompleted = historyItemsIndex && historyItemsIndex.episodes && id
+    && historyItemsIndex.episodes[id] && historyItemsIndex.episodes[id].completed
 
   let episodeTitleText = episode?.title?.trim()
   if (!episodeTitleText) episodeTitleText = translate('Untitled Episode')
@@ -114,6 +121,7 @@ export const EpisodeTableHeader = (props: Props) => {
                 </View>
               </View>
               <TimeRemainingWidget
+                episodeCompleted={episodeCompleted}
                 episodeDownloading={episodeDownloading}
                 handleMorePress={handleMorePress}
                 item={episode}
@@ -121,6 +129,7 @@ export const EpisodeTableHeader = (props: Props) => {
                 mediaFileDuration={mediaFileDuration}
                 style={{ marginVertical: 20 }}
                 testID={testID}
+                timeLabel={timeLabel}
                 userPlaybackPosition={userPlaybackPosition}
               />
             </View>
