@@ -103,6 +103,7 @@ export interface InitialState {
   parsedTranscript: TranscriptRow[] | null
   currentChapter: any
   currentChapters: any
+  currentChaptersStartTimePositions: any
   player: {
     backupDuration?: number
     hasErrored: boolean

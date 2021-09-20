@@ -1,11 +1,11 @@
 import debounce from 'lodash/debounce'
 import { useState } from 'react';
-import { Animated, Dimensions, View } from 'react-native'
+import { Animated, Dimensions, StyleSheet, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import React, { getGlobal } from 'reactn'
 import { useProgress } from 'react-native-track-player'
 import { translate } from '../lib/i18n';
-import { convertSecToHHMMSS } from '../lib/utility'
+import { convertSecToHHMMSS, getMediaRefStartPosition } from '../lib/utility'
 import { PV } from '../resources'
 import { setPlaybackPosition } from '../services/player'
 import { clearChapterInterval, getChapterForTimeAndSetOnState, loadChapterPlaybackInfo,
@@ -13,11 +13,11 @@ import { clearChapterInterval, getChapterForTimeAndSetOnState, loadChapterPlayba
 import { sliderStyles } from '../styles'
 import { Text } from '.'
 
-
 type Props = {
   backupDuration?: number | null
   clipEndTime?: number | null
   clipStartTime?: number | null
+  currentChaptersStartTimePositions?: number[]
   globalTheme: any
   isLoading?: boolean
   isMakeClipScreen?: boolean
@@ -38,7 +38,7 @@ const handleOnValueChange = (newProgressValue: number, localState: any, setLocal
 }
 
 /* Make sure the position is updated one more time after the last onValueChange event */
-const debouncedOnValueChange = debounce(handleOnValueChange, 1000, {
+const debouncedOnValueChange = debounce(handleOnValueChange, 750, {
   leading: false,
   trailing: true
 })
@@ -59,7 +59,7 @@ const handleOnValueChangeChapter = (newProgressValue: number) => {
 }
 
 /* Make sure the chapter is updated one more time after the last onValueChange event */
-const debouncedOnValueChangeChapterTime = debounce(handleOnValueChangeChapter, 1000, {
+const debouncedOnValueChangeChapterTime = debounce(handleOnValueChangeChapter, 750, {
   leading: false,
   trailing: true
 })
@@ -91,7 +91,8 @@ export function PlayerProgressBar(props: Props) {
     })
   }
 
-  const { backupDuration, clipEndTime, clipStartTime, isLoading, isMakeClipScreen } = props;
+  const { backupDuration, clipEndTime, clipStartTime, currentChaptersStartTimePositions,
+    isLoading, isMakeClipScreen } = props;
   const { slidingPositionOverride } = localState
   const { position } = useProgress()
   const { duration } = useProgress()
@@ -107,13 +108,9 @@ export function PlayerProgressBar(props: Props) {
 
   const pos = slidingPositionOverride || position
   const newProgressValue = parentScopeDuration > 0 ? pos / parentScopeDuration : 0
-
-  let clipStartTimePosition = 0
+  
   const sliderWidth = Dimensions.get('screen').width - sliderStyles.wrapper.marginHorizontal * 2
-
-  if (parentScopeDuration && clipStartTime) {
-    clipStartTimePosition = sliderWidth * (clipStartTime / parentScopeDuration)
-  }
+  const clipStartTimePosition = getMediaRefStartPosition(clipStartTime, sliderWidth, parentScopeDuration)
 
   let clipWidthBar = sliderWidth - clipStartTimePosition
   if (isMakeClipScreen && !clipEndTime) {
@@ -121,6 +118,17 @@ export function PlayerProgressBar(props: Props) {
   } else if (parentScopeDuration && clipEndTime) {
     const endPosition = sliderWidth * (clipEndTime / parentScopeDuration)
     clipWidthBar = endPosition - clipStartTimePosition
+  }
+
+  const components = []
+  if (currentChaptersStartTimePositions && currentChaptersStartTimePositions.length > 1) {
+    for (const currentChaptersStartTimePosition of currentChaptersStartTimePositions) {
+      components.push(<View style={[
+        sliderStyles.clipBarStyle,
+        styles.chapterFlagView,
+        { left: currentChaptersStartTimePosition }
+      ]} />)
+    }
   }
 
   return (
@@ -221,6 +229,19 @@ export function PlayerProgressBar(props: Props) {
           }}
         />
       )}
+      {components}
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  chapterFlagView: {
+    height: 4,
+    width: 4,
+    borderRadius: 2,
+    backgroundColor: PV.Colors.yellow,
+    top: 14,
+    zIndex: 1,
+    opacity: 1
+  }
+})

@@ -1,6 +1,8 @@
 import { NowPlayingItem } from 'podverse-shared'
+import { Dimensions } from 'react-native'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { getGlobal, setGlobal } from 'reactn'
+import { getMediaRefStartPosition } from '../../lib/utility'
 import { PV } from '../../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../../services/episode'
 import { PVTrackPlayer, updateCurrentTrack } from '../../services/player'
@@ -111,9 +113,23 @@ export const setChapterOnGlobalState = (newCurrentChapter: any, haptic?: boolean
   }
 }
 
-export const setChaptersOnGlobalState = (currentChapters: any[]) => {
+export const setChaptersOnGlobalState = async (currentChapters: any[]) => {
+  const sliderWidth = Dimensions.get('screen').width - PV.Player.sliderStyles.wrapper.marginHorizontal * 2
+  const duration = await PVTrackPlayer.getTrackDuration()
+  const currentChaptersStartTimePositions = [] as number[]
+
+  if (sliderWidth && duration > 0) {
+    for (const chapter of currentChapters) {
+      if (chapter && chapter.startTime >= 0) {
+        const chapterStartTimePosition = getMediaRefStartPosition(chapter.startTime, sliderWidth, duration)
+        currentChaptersStartTimePositions.push(chapterStartTimePosition)
+      }
+    }
+  }
+
   setGlobal({
-    currentChapters
+    currentChapters,
+    currentChaptersStartTimePositions
   })
 }
 

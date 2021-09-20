@@ -28,6 +28,7 @@ const initialTheme: InitialState = {
   parsedTranscript: null,
   currentChapter: null,
   currentChapters: [],
+  currentChaptersStartTimePositions: [],
   player: {
     hasErrored: false,
     isPlaying: false,

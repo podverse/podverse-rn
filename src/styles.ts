@@ -726,7 +726,7 @@ export const sliderStyles = StyleSheet.create({
   },
   wrapper: {
     minHeight: 50,
-    marginHorizontal: 15
+    marginHorizontal: PV.Player.sliderStyles.wrapper.marginHorizontal
   }
 })
 

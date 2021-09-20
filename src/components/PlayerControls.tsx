@@ -105,7 +105,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
   render() {
     const { navigation } = this.props
     const { progressValue, showPlayerMoreActionSheet } = this.state
-    const { currentChapter, currentChapters, globalTheme, player, screenPlayer, session } = this.global
+    const { currentChapter, currentChapters, currentChaptersStartTimePositions, globalTheme,
+      player, screenPlayer, session } = this.global
     const { backupDuration, playbackRate, playbackState } = player
     const { userInfo } = session
     const { queueItems } = userInfo
@@ -176,6 +177,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             backupDuration={backupDuration}
             clipEndTime={clipEndTime}
             clipStartTime={clipStartTime}
+            currentChaptersStartTimePositions={currentChaptersStartTimePositions}
             globalTheme={globalTheme}
             isLoading={isLoading}
             value={progressValue}

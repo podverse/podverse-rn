@@ -22,6 +22,7 @@ declare module 'reactn/default' {
     parsedTranscript: TranscriptRow[] | null
     currentChapter: any
     currentChapters: any
+    currentChaptersStartTimePositions: any
     player: {
       backupDuration?: number
       hasErrored: boolean
