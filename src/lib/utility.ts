@@ -5,6 +5,7 @@ import { NowPlayingItem } from 'podverse-shared'
 import Config from 'react-native-config'
 import { getUserAgent } from 'react-native-device-info'
 import InAppReview from 'react-native-in-app-review'
+import { View } from '../components'
 import { PV } from '../resources'
 
 const cheerio = require('react-native-cheerio')
@@ -692,4 +693,14 @@ export const getTimeLabelText = (mediaFileDuration?: number, episodeDuration?: n
   }
 
   return timeLabel
+}
+
+export const getMediaRefStartPosition = (clipStartTime?: number | null, sliderWidth?: number, duration?: number) => {
+  let clipStartTimePosition = 0
+
+  if (duration && clipStartTime && sliderWidth) {
+    clipStartTimePosition = sliderWidth * (clipStartTime / duration)
+  }
+
+  return clipStartTimePosition
 }

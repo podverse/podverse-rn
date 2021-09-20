@@ -98,5 +98,10 @@ export const Player = {
   },
   pagination: {
     height: 32
+  },
+  sliderStyles: {
+    wrapper: {
+      marginHorizontal: 15
+    }
   }
 }

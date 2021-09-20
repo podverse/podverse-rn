@@ -257,7 +257,8 @@ export class PlayerScreen extends React.Component<Props> {
 
   _handleShare = async (podcastId?: string, episodeId?: string, mediaRefId?: string,
     mediaRefIsOfficialChapter?: boolean) => {
-    const { nowPlayingItem } = this.global.player
+    let { nowPlayingItem } = this.global.player
+    nowPlayingItem = nowPlayingItem || {}
     let url = ''
     let title = ''
 
@@ -295,8 +296,8 @@ export class PlayerScreen extends React.Component<Props> {
 
   render() {
     const { navigation } = this.props
-    const { player, screenPlayer } = this.global
-    const { currentChapter, episode, nowPlayingItem } = player
+    const { currentChapter, player, screenPlayer } = this.global
+    const { episode, nowPlayingItem } = player
     const { showShareActionSheet } = screenPlayer
     let { mediaRef } = player
 

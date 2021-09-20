@@ -92,6 +92,15 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     )
   }
 
+  disableAutoscroll = () => {
+    if (this.interval) {
+      this.setState({
+        activeTranscriptRowIndex: null,
+        autoScrollOn: false
+      }, this.clearAutoScrollInterval)
+    }
+  }
+
   toggleAutoscroll = () => {
     if (this.interval) {
       this.setState({
@@ -220,6 +229,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
           listRef={(ref: any) => {
             this.listRef = ref
           }}
+          onScrollBeginDrag={this.disableAutoscroll}
           renderItem={this.renderItem}
           testID='transcript-flat-list'
           transparent

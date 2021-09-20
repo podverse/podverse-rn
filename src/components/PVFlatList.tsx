@@ -35,6 +35,7 @@ type Props = {
   onEndReached?: any
   onEndReachedThreshold?: number
   onRefresh?: any
+  onScrollBeginDrag?: any
   renderHiddenItem?: any
   renderSectionHeader?: any
   renderItem: any
@@ -78,6 +79,7 @@ export const PVFlatList = (props: Props) => {
     onEndReached,
     onEndReachedThreshold = 0.9,
     onRefresh,
+    onScrollBeginDrag,
     renderHiddenItem,
     renderItem,
     renderSectionHeader,
@@ -134,6 +136,7 @@ export const PVFlatList = (props: Props) => {
           extraData={extraData}
           ItemSeparatorComponent={ItemSeparatorComponent}
           keyExtractor={keyExtractor}
+          onScrollBeginDrag={onScrollBeginDrag}
           ListFooterComponent={() => {
             if (isLoadingMore && !isEndOfResults) {
               return (

@@ -58,6 +58,21 @@ export const getHistoryItems = async (page: number, existingItems: any[]) => {
   return combinedHistoryItems
 }
 
+export const updateHistoryItemsIndex = async () => {
+  const globalState = getGlobal()
+  const historyItemsIndex = await getHistoryItemsIndex()
+
+  setGlobal({
+    session: {
+      ...globalState.session,
+      userInfo: {
+        ...globalState.session.userInfo,
+        historyItemsIndex
+      }
+    }
+  })
+}
+
 export const removeHistoryItem = async (item: NowPlayingItem) => {
   const globalState = getGlobal()
   const { historyItems, historyItemsIndex } = globalState.session.userInfo
