@@ -1,0 +1,79 @@
+diff --git a/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/module/MusicModule.java b/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/module/MusicModule.java
+index ee54e5c..ffa2ac5 100644
+--- a/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/module/MusicModule.java
++++ b/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/module/MusicModule.java
+@@ -158,6 +158,11 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
+         return constants;
+     }
+ 
++    @ReactMethod
++    public void isServiceRunning(final Promise promise) {
++        promise.resolve(binder != null);
++    }
++
+     @ReactMethod
+     public void setupPlayer(ReadableMap data, final Promise promise) {
+         final Bundle options = Arguments.toBundle(data);
+diff --git a/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayer.swift b/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayer.swift
+index 5ace8d5..e37fc20 100644
+--- a/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayer.swift
++++ b/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayer.swift
+@@ -279,6 +279,12 @@ public class RNTrackPlayer: RCTEventEmitter {
+         resolve(NSNull())
+     }
+ 
++    @objc(isServiceRunning:rejecter:)
++    public func isServiceRunning(resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
++        // TODO That is probably always true
++        resolve(player != nil)
++    }
++
+     @objc(destroy)
+     public func destroy() {
+         print("Destroying player")
+diff --git a/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayerBridge.m b/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayerBridge.m
+index b200194..cb3b353 100644
+--- a/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayerBridge.m
++++ b/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayerBridge.m
+@@ -15,6 +15,9 @@ @interface RCT_EXTERN_REMAP_MODULE(TrackPlayerModule, RNTrackPlayer, NSObject)
+                   resolver:(RCTPromiseResolveBlock)resolve
+                   rejecter:(RCTPromiseRejectBlock)reject);
+ 
++RCT_EXTERN_METHOD(isServiceRunning:(RCTPromiseResolveBlock)resolve
++                  rejecter:(RCTPromiseRejectBlock)reject);
++
+ RCT_EXTERN_METHOD(destroy);
+ 
+ RCT_EXTERN_METHOD(updateOptions:(NSDictionary *)options
+diff --git a/node_modules/react-native-track-player/lib/index.d.ts b/node_modules/react-native-track-player/lib/index.d.ts
+index dc4c356..82d38cd 100644
+--- a/node_modules/react-native-track-player/lib/index.d.ts
++++ b/node_modules/react-native-track-player/lib/index.d.ts
+@@ -1,6 +1,7 @@
+ import { MetadataOptions, PlayerOptions, Event, Track, State, TrackMetadataBase, NowPlayingMetadata, RepeatMode } from './interfaces';
+ declare function setupPlayer(options?: PlayerOptions): Promise<void>;
+ declare function destroy(): any;
++declare function isServiceRunning(): Promise<boolean>;
+ declare type ServiceHandler = () => Promise<void>;
+ declare function registerPlaybackService(factory: () => ServiceHandler): void;
+ declare function addEventListener(event: Event, listener: (data: any) => void): import("react-native").EmitterSubscription;
+diff --git a/node_modules/react-native-track-player/lib/index.js b/node_modules/react-native-track-player/lib/index.js
+index b027872..4ef954e 100644
+--- a/node_modules/react-native-track-player/lib/index.js
++++ b/node_modules/react-native-track-player/lib/index.js
+@@ -87,6 +87,7 @@ function setupPlayer(options) {
+ function destroy() {
+     return TrackPlayer.destroy();
+ }
++
+ function registerPlaybackService(factory) {
+     if (react_native_1.Platform.OS === 'android') {
+         // Registers the headless task
+@@ -341,6 +342,7 @@ exports.default = {
+     destroy: destroy,
+     registerPlaybackService: registerPlaybackService,
+     addEventListener: addEventListener,
++    isServiceRunning: TrackPlayer.isServiceRunning,
+     // MARK: - Queue API
+     add: add,
+     remove: remove,
