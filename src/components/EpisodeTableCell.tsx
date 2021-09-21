@@ -172,7 +172,6 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         <View style={styles.timeRemainingWrapper}>
           <TimeRemainingWidget
             episodeCompleted={episodeCompleted}
-            episodeDownloading={episodeDownloading}
             handleMorePress={handleMorePress}
             item={item}
             itemType='episode'
