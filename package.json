@@ -147,7 +147,7 @@
     "prettier": "1.19.1",
     "react-native-typescript-transformer": "1.2.13",
     "react-test-renderer": "16.13.1",
-    "ssh2": "0.8.9",
+    "ssh2": "1.4.0",
     "tslint": "5.20.1",
     "typescript": "3.9.7"
   },
