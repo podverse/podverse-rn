@@ -1,7 +1,7 @@
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 
-platform :ios, '11.0'
+platform :ios, '12.1'
 
 target 'podverse' do
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
