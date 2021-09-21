@@ -10,7 +10,8 @@ import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
-import { handleEnrichingPlayerState, updatePlaybackState } from '../state/actions/player'
+import { handleEnrichingPlayerState, playNextChapterOrQueueItem,
+  playPreviousChapterOrReturnToBeginningOfTrack, updatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
@@ -293,6 +294,14 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('remote-stop', () => {
     PVTrackPlayer.pause()
     PVEventEmitter.emit(PV.Events.PLAYER_REMOTE_STOP)
+  })
+
+  PVTrackPlayer.addEventListener('remote-previous', () => {
+    playPreviousChapterOrReturnToBeginningOfTrack()
+  })
+
+  PVTrackPlayer.addEventListener('remote-next', () => {
+    playNextChapterOrQueueItem()
   })
 
   PVTrackPlayer.addEventListener('remote-duck', (x: any) => {
