@@ -32,7 +32,8 @@ import {
 } from '../../services/userNowPlayingItem'
 import { getQueueItems } from '../../state/actions/queue'
 import { clearChapterPlaybackInfo, getChapterNext, getChapterPrevious, loadChapterPlaybackInfo,
-  loadChaptersForNowPlayingItem } from './playerChapters'
+  loadChaptersForNowPlayingItem, 
+  setChapterOnGlobalState} from './playerChapters'
 
 const clearEnrichedPodcastDataIfNewEpisode =
  async (previousNowPlayingItem: NowPlayingItem, nowPlayingItem: NowPlayingItem) => {
@@ -151,9 +152,7 @@ export const playPreviousChapterOrReturnToBeginningOfTrack = async () => {
     const previousChapter = await getChapterPrevious()
     if (previousChapter) {
       await setPlaybackPosition(previousChapter.startTime)
-      setGlobal({
-        currentChapter: previousChapter
-      })
+      setChapterOnGlobalState(previousChapter)
       return
     }
   }
@@ -169,9 +168,7 @@ export const playNextChapterOrQueueItem = async () => {
     const nextChapter = await getChapterNext()
     if (nextChapter) {
       await setPlaybackPosition(nextChapter.startTime)
-      setGlobal({
-        currentChapter: nextChapter
-      })
+      setChapterOnGlobalState(nextChapter)
       return
     }
   }
