@@ -144,9 +144,9 @@ export function PlayerProgressBar(props: Props) {
           setLocalState({ ...localState, slidingPositionOverride })
         }}
         onSlidingComplete={async (newProgressValue) => {
-          startChapterInterval()
           const position = newProgressValue * parentScopeDuration
           await setPlaybackPosition(position)
+          startChapterInterval()
 
           /*
             Calling TrackPlayer.seekTo(position) in setPlaybackPosition causes the progress bar
