@@ -10,11 +10,11 @@ import TrackPlayer, { Capability, PitchAlgorithm, State, Track } from 'react-nat
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
-  getAppUserAgent, getAuthorityFeedUrlFromArray, getExtensionFromUrl } from '../lib/utility'
+  getAppUserAgent, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from './eventEmitter'
 import { getPodcastCredentialsHeader } from './parser'
-import { getPodcast, getPodcastFeedUrlAuthority } from './podcast'
+import { getPodcastFeedUrlAuthority } from './podcast'
 import {
   addQueueItemLast,
   addQueueItemNext,
@@ -90,7 +90,9 @@ export const updateTrackPlayerCapabilities = () => {
       Capability.JumpForward,
       Capability.Pause,
       Capability.Play,
-      Capability.SeekTo
+      Capability.SeekTo,
+      Capability.SkipToNext,
+      Capability.SkipToPrevious
     ],
     compactCapabilities: [
       Capability.JumpBackward,
