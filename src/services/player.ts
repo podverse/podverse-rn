@@ -7,6 +7,7 @@ import {
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 import TrackPlayer, { Capability, PitchAlgorithm, State, Track } from 'react-native-track-player'
+import { getGlobal } from 'reactn'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
@@ -84,6 +85,8 @@ TrackPlayer.setupPlayer({
 })
 
 export const updateTrackPlayerCapabilities = () => {
+  const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
+
   TrackPlayer.updateOptions({
     capabilities: [
       Capability.JumpBackward,
@@ -112,8 +115,8 @@ export const updateTrackPlayerCapabilities = () => {
     // every time the user receives a notification.
     alwaysPauseOnInterruption: Platform.OS === 'ios',
     stopWithApp: true,
-    backwardJumpInterval: PV.Player.jumpBackSeconds,
-    forwardJumpInterval: PV.Player.jumpSeconds
+    backwardJumpInterval: parseInt(jumpBackwardsTime, 10),
+    forwardJumpInterval: parseInt(jumpForwardsTime, 10)
   })
 }
 
@@ -150,16 +153,16 @@ export const handleResumeAfterClipHasEnded = async () => {
   PVEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
 
-export const playerJumpBackward = async (seconds: number) => {
+export const playerJumpBackward = async (seconds: string) => {
   const position = await PVTrackPlayer.getTrackPosition()
-  const newPosition = position - seconds
+  const newPosition = position - parseInt(seconds, 10)
   await TrackPlayer.seekTo(newPosition)
   return newPosition
 }
 
-export const playerJumpForward = async (seconds: number) => {
+export const playerJumpForward = async (seconds: string) => {
   const position = await PVTrackPlayer.getTrackPosition()
-  const newPosition = position + seconds
+  const newPosition = position + parseInt(seconds, 10)
   await TrackPlayer.seekTo(newPosition)
   return newPosition
 }
@@ -336,9 +339,19 @@ export const initializePlayerQueue = async () => {
 export const loadItemAndPlayTrack = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
-  forceUpdateOrderDate?: boolean
+  forceUpdateOrderDate: boolean,
+  itemToSetNextInQueue: NowPlayingItem | null
 ) => {
   if (!item) return
+  const { addCurrentItemNextInQueue } = getGlobal()
+
+  if (
+    addCurrentItemNextInQueue
+    && itemToSetNextInQueue
+    && item.episodeId !== itemToSetNextInQueue.episodeId
+  ) {  
+    addQueueItemNext(itemToSetNextInQueue)
+  }
 
   const newItem = item
 
@@ -715,4 +728,20 @@ export const handlePlay = () => {
 export const checkIdlePlayerState = async () => {
   const state = await TrackPlayer.getState()
   return state === 0 || state === State.None
+}
+
+export const setPlayerJumpBackwards = (val?: string) => {
+  const newValue = val && parseInt(val, 10) > 0 || val === '' ? val : PV.Player.jumpBackSeconds.toString()
+  if (newValue !== '') {
+    AsyncStorage.setItem(PV.Keys.PLAYER_JUMP_BACKWARDS, newValue.toString())
+  }
+  return newValue
+}
+
+export const setPlayerJumpForwards = (val?: string) => {
+  const newValue = val && parseInt(val, 10) > 0 || val === '' ? val : PV.Player.jumpSeconds.toString()
+  if (newValue !== '') {
+    AsyncStorage.setItem(PV.Keys.PLAYER_JUMP_FORWARDS, newValue.toString())
+  }
+  return newValue
 }

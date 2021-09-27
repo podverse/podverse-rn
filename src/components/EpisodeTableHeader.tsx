@@ -42,9 +42,9 @@ export const EpisodeTableHeader = (props: Props) => {
     episode?.podcast_shrunkImageUrl ||
     episode?.podcast?.imageUrl
 
-  const { duration = 0 } = episode
+  const duration = episode?.duration || 0
 
-  const pubDate = episode && episode.pubDate
+  const pubDate = episode?.pubDate
   const isDownloaded = episodeDownloaded
 
   const id = episode?.id

@@ -10,6 +10,7 @@ type Props = {
   accessibilityLabel?: string
   editable?: boolean
   handleChangeText?: any
+  handleOnBlur?: any
   handleSubmitEditing?: any
   isHHMMSS?: boolean
   isSmallText?: boolean
@@ -23,8 +24,9 @@ type Props = {
 }
 
 export const NumberSelectorWithText = (props: Props) => {
-  const { accessibilityHint, accessibilityLabel, editable, handleChangeText, handleSubmitEditing, isHHMMSS, isSmallText,
-    selectedNumber = 0, subText, testID, text, textInputOnPress, textInputStyle = {}, wrapperOnPress } = props
+  const { accessibilityHint, accessibilityLabel, editable, handleChangeText, handleOnBlur,
+    handleSubmitEditing,isHHMMSS, isSmallText, selectedNumber = 0, subText, testID, text,
+    textInputOnPress, textInputStyle = {}, wrapperOnPress } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   let strNum = ''
@@ -45,6 +47,7 @@ export const NumberSelectorWithText = (props: Props) => {
         editable={editable}
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
         keyboardType='numeric'
+        onBlur={handleOnBlur}
         onChangeText={handleChangeText}
         onPress={textInputOnPress}
         onSubmitEditing={handleSubmitEditing}

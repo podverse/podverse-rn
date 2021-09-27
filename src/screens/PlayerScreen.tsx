@@ -201,7 +201,9 @@ export class PlayerScreen extends React.Component<Props> {
               }
               const newItem = convertToNowPlayingItem(mediaRef, null, null)
               const shouldPlay = true
-              await loadItemAndPlayTrack(newItem, shouldPlay)
+              const forceUpdateOrderDate = false
+              const setCurrentItemNextInQueue = true
+              await loadItemAndPlayTrack(newItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
             }
           }
         } catch (error) {

@@ -28,6 +28,7 @@ import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 import { trackPlayerScreenPageView } from '../../services/tracking'
 import {
   clearNowPlayingItem as clearNowPlayingItemService,
+  getNowPlayingItemLocally,
   setNowPlayingItem as setNowPlayingItemService
 } from '../../services/userNowPlayingItem'
 import { getQueueItems } from '../../state/actions/queue'
@@ -77,8 +78,10 @@ export const initializePlayerQueue = async () => {
   const nowPlayingItem = await initializePlayerQueueService()
 
   if (nowPlayingItem) {
-    const shouldPlay = false
-    await loadItemAndPlayTrack(nowPlayingItem, shouldPlay)
+    const shouldPlay = true
+    const forceUpdateOrderDate = false
+    const setCurrentItemNextInQueue = true
+    await loadItemAndPlayTrack(nowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
     showMiniPlayer()
   }
 
@@ -194,9 +197,14 @@ const handleLoadChapterForNowPlayingEpisode = async (item: NowPlayingItem) => {
 export const loadItemAndPlayTrack = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
-  forceUpdateOrderDate?: boolean
+  forceUpdateOrderDate?: boolean,
+  setCurrentItemNextInQueue?: boolean
 ) => {
   const globalState = getGlobal()
+  let nowPlayingItem = null
+  if (setCurrentItemNextInQueue) {
+    nowPlayingItem = await getNowPlayingItemLocally()
+  }
 
   if (item) {
     const { nowPlayingItem: previousNowPlayingItem } = globalState.player
@@ -220,7 +228,7 @@ export const loadItemAndPlayTrack = async (
     // If the value tag is unavailable, try to enrich it from Podcast Index API
     // then make sure the enrichedItem is on global state.
     // If the transcript tag is available, parse it and assign it to the enrichedItem.
-    const enrichedItem = await loadItemAndPlayTrackService(item, shouldPlay, forceUpdateOrderDate)
+    const enrichedItem = await loadItemAndPlayTrackService(item, shouldPlay, forceUpdateOrderDate, nowPlayingItem)
     if (enrichedItem) {
       updatePlayerState(enrichedItem)
     }
@@ -350,4 +358,3 @@ export const initializePlaybackSpeed = async () => {
     }
   })
 }
-
