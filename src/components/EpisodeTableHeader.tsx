@@ -44,7 +44,7 @@ export const EpisodeTableHeader = (props: Props) => {
 
   const duration = episode?.duration || 0
 
-  const pubDate = episode && episode.pubDate
+  const pubDate = episode?.pubDate
   const isDownloaded = episodeDownloaded
 
   const id = episode?.id
