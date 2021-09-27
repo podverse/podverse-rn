@@ -14,7 +14,7 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { updateTrackPlayerCapabilities } from '../services/player'
 import { trackPageView } from '../services/tracking'
-import { setPlayerJumpBackwards, setPlayerJumpForwards } from '../state/actions/settings'
+import { handleFinishSettingPlayerTime, setPlayerJumpBackwards, setPlayerJumpForwards } from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent } from '../styles'
 
 type Props = {
@@ -78,7 +78,7 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
   }
 
   _finishSettingJumpTime = () => {
-    updateTrackPlayerCapabilities()
+    handleFinishSettingPlayerTime()
   }
 
   render() {
@@ -98,7 +98,7 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
             // eslint-disable-next-line max-len
             accessibilityLabel={`${translate('Jump backwards seconds')}`}
             handleChangeText={this._setJumpBackwards}
-            handleSubmitEditing={this._finishSettingJumpTime}
+            handleOnBlur={this._finishSettingJumpTime}
             selectedNumber={jumpBackwardsTime}
             testID={`${testIDPrefix}_jump_backwards_time`}
             text={translate('Jump backwards seconds')}
@@ -111,7 +111,7 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
             // eslint-disable-next-line max-len
             accessibilityLabel={`${translate('Jump forwards seconds')}`}
             handleChangeText={this._setJumpForwards}
-            handleSubmitEditing={this._finishSettingJumpTime}
+            handleOnBlur={this._finishSettingJumpTime}
             selectedNumber={jumpForwardsTime}
             testID={`${testIDPrefix}_jump_forwards_time`}
             text={translate('Jump forwards seconds')}

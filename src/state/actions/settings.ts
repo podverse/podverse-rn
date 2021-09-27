@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import Config from 'react-native-config'
-import { setGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import {
   setPlayerJumpBackwards as setPlayerJumpBackwardsService,
@@ -21,8 +21,8 @@ export const initializeSettings = async () => {
   const listenTrackingEnabled = await checkIfTrackingIsEnabled()
   const urlsAPI = await PV.URLs.api()
   const urlsWeb = await PV.URLs.web()
-  const jumpBackwardsTime = await AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_BACKWARDS)
-  const jumpForwardsTime = await AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_FORWARDS)
+  const jumpBackwardsTime = await AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_BACKWARDS) || PV.Player.jumpBackSeconds
+  const jumpForwardsTime = await AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_FORWARDS) || PV.Player.jumpSeconds
 
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) {
     try {
@@ -46,8 +46,8 @@ export const initializeSettings = async () => {
     urlsAPI,
     urlsWeb
   }, () => {
-    // Call updateTrackPlayerCapabilities again in case a custom jump time is available.
-    updateTrackPlayerCapabilities()
+    // Call handleFinishSettingPlayerTime in case a custom jump time is available.
+    handleFinishSettingPlayerTime()
   })
 }
 
@@ -129,4 +129,16 @@ export const setPlayerJumpBackwards = (val?: string) => {
 export const setPlayerJumpForwards = (val?: string) => {
   const newValue = setPlayerJumpForwardsService(val)
   setGlobal({ jumpForwardsTime: newValue })
+}
+
+export const handleFinishSettingPlayerTime = () => {
+  const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
+  const newJumpBackwardsTime = jumpBackwardsTime === '' ? PV.Player.jumpBackSeconds : jumpBackwardsTime
+  const newJumpForwardsTime = jumpForwardsTime === '' ? PV.Player.jumpSeconds : jumpForwardsTime
+  setGlobal({
+    jumpBackwardsTime: newJumpBackwardsTime,
+    jumpForwardsTime: newJumpForwardsTime
+  }, () => {
+    updateTrackPlayerCapabilities()
+  })
 }

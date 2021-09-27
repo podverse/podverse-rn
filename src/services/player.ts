@@ -722,12 +722,16 @@ export const checkIdlePlayerState = async () => {
 
 export const setPlayerJumpBackwards = (val?: string) => {
   const newValue = val && parseInt(val, 10) > 0 || val === '' ? val : PV.Player.jumpBackSeconds.toString()
-  AsyncStorage.setItem(PV.Keys.PLAYER_JUMP_BACKWARDS, newValue.toString())
+  if (newValue !== '') {
+    AsyncStorage.setItem(PV.Keys.PLAYER_JUMP_BACKWARDS, newValue.toString())
+  }
   return newValue
 }
 
 export const setPlayerJumpForwards = (val?: string) => {
   const newValue = val && parseInt(val, 10) > 0 || val === '' ? val : PV.Player.jumpSeconds.toString()
-  AsyncStorage.setItem(PV.Keys.PLAYER_JUMP_FORWARDS, newValue.toString())
+  if (newValue !== '') {
+    AsyncStorage.setItem(PV.Keys.PLAYER_JUMP_FORWARDS, newValue.toString())
+  }
   return newValue
 }
