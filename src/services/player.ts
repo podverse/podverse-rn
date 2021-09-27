@@ -339,9 +339,14 @@ export const initializePlayerQueue = async () => {
 export const loadItemAndPlayTrack = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
-  forceUpdateOrderDate?: boolean
+  forceUpdateOrderDate: boolean,
+  itemToSetNextInQueue: NowPlayingItem | null
 ) => {
   if (!item) return
+
+  if (itemToSetNextInQueue && item.episodeId !== itemToSetNextInQueue.episodeId) {
+    addQueueItemNext(itemToSetNextInQueue)
+  }
 
   const newItem = item
 
