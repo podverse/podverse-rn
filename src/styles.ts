@@ -556,9 +556,12 @@ export const core = StyleSheet.create({
     flex: 1
   },
   button: {
+    borderRadius: 8,
     justifyContent: 'center',
+    marginHorizontal: 12,
+    marginBottom: 24,
+    marginTop: 0,
     minHeight: 56,
-    borderRadius: 8
   },
   buttonText: {
     fontSize: PV.Fonts.sizes.xl,
@@ -581,6 +584,13 @@ export const core = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold,
     marginBottom: 16
   },
+  itemWrapper: {
+    marginBottom: 24
+  },
+  itemWrapperReducedHeight: {
+    marginTop: -4,
+    marginBottom: 16
+  },
   ListHeaderComponent: {
     borderBottomWidth: 0,
     borderTopWidth: 0,
@@ -588,6 +598,16 @@ export const core = StyleSheet.create({
     minHeight: PV.FlatList.searchBar.height,
     justifyContent: 'center',
     marginBottom: 8
+  },
+  pickerSelect: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    marginVertical: 14
+  },
+  pickerSelectIcon: {
+    flex: 0,
+    paddingHorizontal: 4
   },
   row: {
     backgroundColor: 'transparent',
@@ -736,7 +756,7 @@ export const table = StyleSheet.create({
     fontWeight: PV.Fonts.weights.semibold
   },
   cellWrapper: {
-    justifyContent:"center",
+    justifyContent: "center",
     minHeight: PV.Table.cells.standard.height,
     paddingLeft: 8
   }
