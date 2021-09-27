@@ -5,13 +5,16 @@ import React from 'reactn'
 import RNPickerSelect from 'react-native-picker-select'
 import {
   Icon,
+  NumberSelectorWithText,
   ScrollView,
   Text,
   View
 } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
+import { updateTrackPlayerCapabilities } from '../services/player'
 import { trackPageView } from '../services/tracking'
+import { setPlayerJumpBackwards, setPlayerJumpForwards } from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent } from '../styles'
 
 type Props = {
@@ -66,9 +69,21 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
     })
   }
 
+  _setJumpBackwards = (value: string) => {
+    setPlayerJumpBackwards(value)
+  }
+
+  _setJumpForwards = (value: string) => {
+    setPlayerJumpForwards(value)
+  }
+
+  _finishSettingJumpTime = () => {
+    updateTrackPlayerCapabilities()
+  }
+
   render() {
     const { maximumSpeedOptionSelected } = this.state
-    const { globalTheme } = this.global
+    const { globalTheme, jumpBackwardsTime, jumpForwardsTime } = this.global
     const isDarkMode = globalTheme === darkTheme
 
     return (
@@ -76,6 +91,32 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
         contentContainerStyle={styles.scrollViewContentContainer}
         style={styles.wrapper}
         testID={`${testIDPrefix}_view`}>
+        <View style={core.itemWrapper}>
+          <NumberSelectorWithText
+            // eslint-disable-next-line max-len
+            accessibilityHint={translate('ARIA HINT - set the number of seconds to change when time jump backwards is pressed')}
+            // eslint-disable-next-line max-len
+            accessibilityLabel={`${translate('Jump backwards seconds')}`}
+            handleChangeText={this._setJumpBackwards}
+            handleSubmitEditing={this._finishSettingJumpTime}
+            selectedNumber={jumpBackwardsTime}
+            testID={`${testIDPrefix}_jump_backwards_time`}
+            text={translate('Jump backwards seconds')}
+          />
+        </View>
+        <View style={core.itemWrapper}>
+          <NumberSelectorWithText
+            // eslint-disable-next-line max-len
+            accessibilityHint={translate('ARIA HINT - set the number of seconds to change when time jump forwards is pressed')}
+            // eslint-disable-next-line max-len
+            accessibilityLabel={`${translate('Jump forwards seconds')}`}
+            handleChangeText={this._setJumpForwards}
+            handleSubmitEditing={this._finishSettingJumpTime}
+            selectedNumber={jumpForwardsTime}
+            testID={`${testIDPrefix}_jump_forwards_time`}
+            text={translate('Jump forwards seconds')}
+          />
+        </View>
         <View style={core.itemWrapperReducedHeight}>
           <RNPickerSelect
             fixAndroidTouchableBug

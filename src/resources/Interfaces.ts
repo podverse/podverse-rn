@@ -97,6 +97,8 @@ export interface InitialState {
   urlsAPI?: any
   urlsWeb?: any
   offlineModeEnabled?: any
+  jumpBackwardsTime: string
+  jumpForwardsTime: string
   overlayAlert: {
     shouldShowAlert: boolean
   }

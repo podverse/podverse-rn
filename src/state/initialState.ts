@@ -22,6 +22,8 @@ const initialTheme: InitialState = {
   errorReportingEnabled: false,
   listenTrackingEnabled: false,
   offlineModeEnabled: false,
+  jumpBackwardsTime: PV.Player.jumpBackSeconds.toString(),
+  jumpForwardsTime: PV.Player.jumpSeconds.toString(),
   overlayAlert: {
     shouldShowAlert: false
   },

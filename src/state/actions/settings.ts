@@ -2,6 +2,11 @@ import AsyncStorage from '@react-native-community/async-storage'
 import Config from 'react-native-config'
 import { setGlobal } from 'reactn'
 import { PV } from '../../resources'
+import {
+  setPlayerJumpBackwards as setPlayerJumpBackwardsService,
+  setPlayerJumpForwards as setPlayerJumpForwardsService,
+  updateTrackPlayerCapabilities
+} from '../../services/player'
 import { checkIfTrackingIsEnabled } from '../../services/tracking'
 import { removeLNPayWallet } from './lnpay'
 
@@ -16,6 +21,8 @@ export const initializeSettings = async () => {
   const listenTrackingEnabled = await checkIfTrackingIsEnabled()
   const urlsAPI = await PV.URLs.api()
   const urlsWeb = await PV.URLs.web()
+  const jumpBackwardsTime = await AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_BACKWARDS)
+  const jumpForwardsTime = await AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_FORWARDS)
 
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) {
     try {
@@ -34,8 +41,13 @@ export const initializeSettings = async () => {
     errorReportingEnabled,
     listenTrackingEnabled,
     offlineModeEnabled,
+    jumpBackwardsTime,
+    jumpForwardsTime,
     urlsAPI,
     urlsWeb
+  }, () => {
+    // Call updateTrackPlayerCapabilities again in case a custom jump time is available.
+    updateTrackPlayerCapabilities()
   })
 }
 
@@ -107,4 +119,14 @@ export const setOfflineModeEnabled = (value: boolean) => {
       ? await AsyncStorage.setItem(PV.Keys.OFFLINE_MODE_ENABLED, 'TRUE')
       : await AsyncStorage.removeItem(PV.Keys.OFFLINE_MODE_ENABLED)
   })
+}
+
+export const setPlayerJumpBackwards = (val?: string) => {
+  const newValue = setPlayerJumpBackwardsService(val)
+  setGlobal({ jumpBackwardsTime: newValue })
+}
+
+export const setPlayerJumpForwards = (val?: string) => {
+  const newValue = setPlayerJumpForwardsService(val)
+  setGlobal({ jumpForwardsTime: newValue })
 }

@@ -607,7 +607,7 @@ export const core = StyleSheet.create({
   },
   pickerSelectIcon: {
     flex: 0,
-    paddingHorizontal: 4
+    paddingLeft: 4
   },
   row: {
     backgroundColor: 'transparent',
@@ -637,7 +637,7 @@ export const core = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    minWidth: 51,
+    minWidth: 76,
     textAlign: 'center'
   },
   selectorWrapperRight: {
@@ -662,7 +662,8 @@ export const core = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     marginBottom: 16,
-    marginTop: 0
+    marginTop: 0,
+    minWidth: 76
   },
   view: {
     alignItems: 'center',

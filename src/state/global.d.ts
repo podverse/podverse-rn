@@ -16,6 +16,8 @@ declare module 'reactn/default' {
     downloadedEpisodeLimitDefault: boolean | null
     downloadedPodcasts: any[]
     offlineModeEnabled: any
+    jumpBackwardsTime: string
+    jumpForwardsTime: string
     overlayAlert: {
       shouldShowAlert: boolean
     }

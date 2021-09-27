@@ -350,4 +350,3 @@ export const initializePlaybackSpeed = async () => {
     }
   })
 }
-
