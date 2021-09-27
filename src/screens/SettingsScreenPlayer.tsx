@@ -12,7 +12,6 @@ import {
 } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { updateTrackPlayerCapabilities } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import { handleFinishSettingPlayerTime, setPlayerJumpBackwards, setPlayerJumpForwards } from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent } from '../styles'

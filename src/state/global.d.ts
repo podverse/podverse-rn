@@ -18,6 +18,7 @@ declare module 'reactn/default' {
     offlineModeEnabled: any
     jumpBackwardsTime: string
     jumpForwardsTime: string
+    addCurrentItemNextInQueue: boolean
     overlayAlert: {
       shouldShowAlert: boolean
     }

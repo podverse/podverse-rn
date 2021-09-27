@@ -343,8 +343,13 @@ export const loadItemAndPlayTrack = async (
   itemToSetNextInQueue: NowPlayingItem | null
 ) => {
   if (!item) return
+  const { addCurrentItemNextInQueue } = getGlobal()
 
-  if (itemToSetNextInQueue && item.episodeId !== itemToSetNextInQueue.episodeId) {
+  if (
+    addCurrentItemNextInQueue
+    && itemToSetNextInQueue
+    && item.episodeId !== itemToSetNextInQueue.episodeId
+  ) {  
     addQueueItemNext(itemToSetNextInQueue)
   }
 

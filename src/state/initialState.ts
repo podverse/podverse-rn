@@ -24,6 +24,7 @@ const initialTheme: InitialState = {
   offlineModeEnabled: false,
   jumpBackwardsTime: PV.Player.jumpBackSeconds.toString(),
   jumpForwardsTime: PV.Player.jumpSeconds.toString(),
+  addCurrentItemNextInQueue: true,
   overlayAlert: {
     shouldShowAlert: false
   },

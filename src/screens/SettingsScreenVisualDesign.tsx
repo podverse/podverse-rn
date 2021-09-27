@@ -18,20 +18,20 @@ type Props = {
   navigation: any
 }
 
-const testIDPrefix = 'settings_screen_design'
+const testIDPrefix = 'settings_screen_visual'
 
-export class SettingsScreenDesign extends React.Component<Props> {
+export class SettingsScreenVisualDesign extends React.Component<Props> {
 
   constructor(props: Props) {
     super(props)
   }
 
   static navigationOptions = () => ({
-    title: translate('Design')
+    title: translate('Visual Design')
   })
 
   componentDidMount() {
-    trackPageView('/settings-design', 'Settings Screen Design')
+    trackPageView('/settings-visual-design', 'Settings Screen Visual Design')
   }
 
   _handleToggleNSFWText = async () => {

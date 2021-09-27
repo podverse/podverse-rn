@@ -99,6 +99,7 @@ export interface InitialState {
   offlineModeEnabled?: any
   jumpBackwardsTime: string
   jumpForwardsTime: string
+  addCurrentItemNextInQueue: boolean
   overlayAlert: {
     shouldShowAlert: boolean
   }

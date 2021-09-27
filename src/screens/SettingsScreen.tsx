@@ -84,16 +84,42 @@ export class SettingsScreen extends React.Component<Props, State> {
             />
           </View>
           <Divider />
+          {isLoggedIn && (
+            <TableCell
+              accessibilityLabel={translate('Account')}
+              includeDivider
+              onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenAccount)}
+              testIDPrefix={`${testIDPrefix}_account`}
+              testIDSuffix=''>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+                {translate('Account')}
+              </Text>
+            </TableCell>
+          )}
           <TableCell
-            accessibilityLabel={translate('Tracking')}
+            accessibilityLabel={translate('Downloads')}
             includeDivider
-            onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenTracking)}
-            testIDPrefix={`${testIDPrefix}_tracking`}
+            onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenDownloads)}
+            testIDPrefix={`${testIDPrefix}_downloads`}
             testIDSuffix=''>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-              {translate('Tracking')}
+              {translate('Downloads')}
+            </Text>
+          </TableCell>
+          <TableCell
+            accessibilityLabel={translate('History')}
+            includeDivider
+            onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenHistory)}
+            testIDPrefix={`${testIDPrefix}_history`}
+            testIDSuffix=''>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+              {translate('History')}
             </Text>
           </TableCell>
           <TableCell
@@ -109,43 +135,41 @@ export class SettingsScreen extends React.Component<Props, State> {
             </Text>
           </TableCell>
           <TableCell
-            accessibilityLabel={translate('Downloads / History')}
+            accessibilityLabel={translate('Queue')}
             includeDivider
-            onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenDownloadsHistory)}
-            testIDPrefix={`${testIDPrefix}_downloads_history`}
+            onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenQueue)}
+            testIDPrefix={`${testIDPrefix}_queue`}
             testIDSuffix=''>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-              {translate('Downloads / History')}
+              {translate('Queue')}
             </Text>
           </TableCell>
           <TableCell
-            accessibilityLabel={translate('Design')}
+            accessibilityLabel={translate('Tracking')}
             includeDivider
-            onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenDesign)}
-            testIDPrefix={`${testIDPrefix}_design`}
+            onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenTracking)}
+            testIDPrefix={`${testIDPrefix}_tracking`}
             testIDSuffix=''>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-              {translate('Design')}
+              {translate('Tracking')}
             </Text>
           </TableCell>
-          {isLoggedIn && (
-            <TableCell
-              accessibilityLabel={translate('Account')}
-              includeDivider
-              onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenAccount)}
-              testIDPrefix={`${testIDPrefix}_account`}
-              testIDSuffix=''>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                {translate('Account')}
-              </Text>
-            </TableCell>
-          )}
+          <TableCell
+            accessibilityLabel={translate('Visual Design')}
+            includeDivider
+            onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenVisualDesign)}
+            testIDPrefix={`${testIDPrefix}_visual_design`}
+            testIDSuffix=''>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+              {translate('Visual Design')}
+            </Text>
+          </TableCell>
           {!Config.DISABLE_CUSTOM_DOMAINS && (
             <TableCell
               accessibilityLabel={translate('Advanced')}

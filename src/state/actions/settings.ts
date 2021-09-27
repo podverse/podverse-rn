@@ -23,6 +23,7 @@ export const initializeSettings = async () => {
   const urlsWeb = await PV.URLs.web()
   const jumpBackwardsTime = await AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_BACKWARDS) || PV.Player.jumpBackSeconds
   const jumpForwardsTime = await AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_FORWARDS) || PV.Player.jumpSeconds
+  const addCurrentItemNextInQueue = await AsyncStorage.getItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE)
 
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) {
     try {
@@ -44,7 +45,8 @@ export const initializeSettings = async () => {
     jumpBackwardsTime,
     jumpForwardsTime,
     urlsAPI,
-    urlsWeb
+    urlsWeb,
+    addCurrentItemNextInQueue: !!addCurrentItemNextInQueue
   }, () => {
     // Call handleFinishSettingPlayerTime in case a custom jump time is available.
     handleFinishSettingPlayerTime()
@@ -141,4 +143,14 @@ export const handleFinishSettingPlayerTime = () => {
   }, () => {
     updateTrackPlayerCapabilities()
   })
+}
+
+export const setAddCurrentItemNextInQueue = async (val: boolean) => {
+  if (val) {
+    await AsyncStorage.setItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE, 'TRUE')
+    setGlobal({ addCurrentItemNextInQueue: !!val })
+  } else {
+    await AsyncStorage.removeItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE)
+    setGlobal({ addCurrentItemNextInQueue: false })
+  }
 }
