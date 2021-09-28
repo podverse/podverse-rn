@@ -1,5 +1,5 @@
 import React from 'react'
-import { AccessibilityRole, Pressable, View } from 'react-native'
+import { AccessibilityRole, TouchableOpacity, View } from 'react-native'
 import { PV } from '../resources'
 import { table } from '../styles'
 import { Divider, Text, Icon } from '.'
@@ -33,7 +33,8 @@ export const TableCell = (props: TableCellProps) => {
 
   return (
     <>
-      <Pressable
+      <TouchableOpacity
+        accessible
         accessibilityHint={accessibilityHint}
         accessibilityLabel={accessibilityLabel}
         accessibilityRole={accessibilityRole}
@@ -50,7 +51,7 @@ export const TableCell = (props: TableCellProps) => {
                 size={30}/>
             }
           </View>
-      </Pressable>
+      </TouchableOpacity>
       {includeDivider && <Divider />}
     </>
   )
