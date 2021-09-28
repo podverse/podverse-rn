@@ -62,12 +62,12 @@ export class ErrorBoundary extends React.Component<Props, State> {
         <SafeAreaView style={styles.view}>
           <Image style={styles.image} source={PV.Images.BANNER} resizeMode='contain' />
           <View style={styles.container}>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text} testID={`error_boundary_text`}>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text} testID='error_boundary_text'>
               {translate("error_boundary_description")}
             </Text>
             <Button
               onPress={this.backToApp}
-              testID={`error_boundary_button`}
+              testID='error_boundary_button'
               text={translate('Back To App')}
               wrapperStyles={styles.button}
             />

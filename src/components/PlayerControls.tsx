@@ -92,7 +92,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     })
   }
 
-  _renderPlayerControlIcon = (source: ImageSourcePropType, testID?: string, disabled?: boolean) => {
+  _renderPlayerControlIcon = (source: ImageSourcePropType, testID: string, disabled?: boolean) => {
     const disabledStyle: {tintColor?:string} = {}
     if(disabled) {
       disabledStyle.tintColor = PV.Colors.grayDark
