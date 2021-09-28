@@ -34,7 +34,6 @@ export const TableCell = (props: TableCellProps) => {
   return (
     <>
       <TouchableWithoutFeedback
-        accessible
         accessibilityHint={accessibilityHint}
         accessibilityLabel={accessibilityLabel}
         accessibilityRole={accessibilityRole}
