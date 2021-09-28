@@ -43,6 +43,14 @@ import {
   // ScanQRCodeScreen,
   SearchScreen,
   SettingsScreen,
+  SettingsScreenAccount,
+  SettingsScreenAdvanced,
+  SettingsScreenVisualDesign,
+  SettingsScreenDownloads,
+  SettingsScreenHistory,
+  SettingsScreenPlayer,
+  SettingsScreenQueue,
+  SettingsScreenTracking,
   SleepTimerScreen,
   StartPodcastFromTimeScreen,
   TermsOfServiceScreen,
@@ -174,6 +182,14 @@ const MoreNavigator = createStackNavigator(
   {
     [PV.RouteNames.MoreScreen]: MoreScreen,
     [PV.RouteNames.SettingsScreen]: SettingsScreen,
+    [PV.RouteNames.SettingsScreenAccount]: SettingsScreenAccount,
+    [PV.RouteNames.SettingsScreenAdvanced]: SettingsScreenAdvanced,
+    [PV.RouteNames.SettingsScreenVisualDesign]: SettingsScreenVisualDesign,
+    [PV.RouteNames.SettingsScreenDownloads]: SettingsScreenDownloads,
+    [PV.RouteNames.SettingsScreenHistory]: SettingsScreenHistory,
+    [PV.RouteNames.SettingsScreenPlayer]: SettingsScreenPlayer,
+    [PV.RouteNames.SettingsScreenQueue]: SettingsScreenQueue,
+    [PV.RouteNames.SettingsScreenTracking]: SettingsScreenTracking,
     [PV.RouteNames.MembershipScreen]: MembershipScreen,
     [PV.RouteNames.AboutScreen]: AboutScreen,
     [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen,
@@ -476,4 +492,4 @@ class AppNavigator extends Component<Props, State> {
 const App = createAppContainer(AppNavigator)
 const prefix = PV.DeepLinks.prefix
 
-export default () => <App uriPrefix={prefix} />
+export default () => <App uriPrefix={prefix} theme="dark"/>

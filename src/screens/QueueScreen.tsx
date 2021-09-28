@@ -220,7 +220,9 @@ export class QueueScreen extends React.Component<Props, State> {
   _handlePlayItem = async (item: NowPlayingItem) => {
     try {
       const shouldPlay = true
-      await loadItemAndPlayTrack(item, shouldPlay)
+      const forceUpdateOrderDate = false
+      const setCurrentItemNextInQueue = true
+      await loadItemAndPlayTrack(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
       await getQueueItems()
       this.setState({ isLoading: false })
     } catch (error) {
@@ -357,8 +359,9 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { historyItems, historyItemsCount, queueItems } = this.global.session.userInfo
-    const { currentChapter, nowPlayingItem } = this.global.player
+    const { currentChapter, player, session } = this.global
+    const { historyItems, historyItemsCount, queueItems } = session.userInfo
+    const { nowPlayingItem } = player
     const { isEditing, isLoading, isLoadingMore, isRemoving, isTransparent, viewType } = this.state
     const view = (
       <View

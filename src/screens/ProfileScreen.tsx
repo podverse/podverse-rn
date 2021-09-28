@@ -408,9 +408,11 @@ export class ProfileScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleNavigationPress = (selectedItem: any) => {
+  _handleNavigationPress = async (selectedItem: any) => {
     const shouldPlay = true
-    loadItemAndPlayTrack(selectedItem, shouldPlay)
+    const forceUpdateOrderDate = false
+    const setCurrentItemNextInQueue = true
+    await loadItemAndPlayTrack(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   _renderItem = ({ item, index }) => {
@@ -572,7 +574,7 @@ export class ProfileScreen extends React.Component<Props, State> {
                       handleDownload: this._handleDownloadPressed,
                       handleDeleteClip: this._showDeleteConfirmDialog,
                       includeGoToPodcast: true,
-                      includeGoToEpisode: true
+                      includeGoToEpisodeInEpisodesStack: true
                     },
                     itemType
                   )

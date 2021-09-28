@@ -114,7 +114,7 @@ export const BoostDropdownBanner = () => {
           <View style={styles.container}>
             <Text
               style={styles.descriptionStyle}
-              testID={'banner_text'.prependTestId()}>
+              testID='banner_text'>
               {bannerInfo.description}
             </Text>
             {!!bannerInfo.errors?.length && (

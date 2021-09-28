@@ -7,13 +7,15 @@ import {
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 import TrackPlayer, { Capability, PitchAlgorithm, State, Track } from 'react-native-track-player'
+import { getGlobal } from 'reactn'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
   getAppUserAgent, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from './eventEmitter'
-import { getAddByRSSPodcastCredentialsHeader } from './parser'
+import { getPodcastCredentialsHeader } from './parser'
+import { getPodcastFeedUrlAuthority } from './podcast'
 import {
   addQueueItemLast,
   addQueueItemNext,
@@ -83,13 +85,17 @@ TrackPlayer.setupPlayer({
 })
 
 export const updateTrackPlayerCapabilities = () => {
+  const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
+
   TrackPlayer.updateOptions({
     capabilities: [
       Capability.JumpBackward,
       Capability.JumpForward,
       Capability.Pause,
       Capability.Play,
-      Capability.SeekTo
+      Capability.SeekTo,
+      Capability.SkipToNext,
+      Capability.SkipToPrevious
     ],
     compactCapabilities: [
       Capability.JumpBackward,
@@ -109,8 +115,8 @@ export const updateTrackPlayerCapabilities = () => {
     // every time the user receives a notification.
     alwaysPauseOnInterruption: Platform.OS === 'ios',
     stopWithApp: true,
-    backwardJumpInterval: PV.Player.jumpBackSeconds,
-    forwardJumpInterval: PV.Player.jumpSeconds
+    backwardJumpInterval: parseInt(jumpBackwardsTime, 10),
+    forwardJumpInterval: parseInt(jumpForwardsTime, 10)
   })
 }
 
@@ -147,16 +153,16 @@ export const handleResumeAfterClipHasEnded = async () => {
   PVEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
 
-export const playerJumpBackward = async (seconds: number) => {
+export const playerJumpBackward = async (seconds: string) => {
   const position = await PVTrackPlayer.getTrackPosition()
-  const newPosition = position - seconds
+  const newPosition = position - parseInt(seconds, 10)
   await TrackPlayer.seekTo(newPosition)
   return newPosition
 }
 
-export const playerJumpForward = async (seconds: number) => {
+export const playerJumpForward = async (seconds: string) => {
   const position = await PVTrackPlayer.getTrackPosition()
-  const newPosition = position + seconds
+  const newPosition = position + parseInt(seconds, 10)
   await TrackPlayer.seekTo(newPosition)
   return newPosition
 }
@@ -255,7 +261,11 @@ const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
 
 export const getCurrentLoadedTrackId = async () => {
   const trackIndex = await PVTrackPlayer.getCurrentTrack()
+  const trackId = await getLoadedTrackIdByIndex(trackIndex)
+  return trackId
+}
 
+export const getLoadedTrackIdByIndex = async (trackIndex: number) => {
   let trackId = ''
   if (trackIndex > 0 || trackIndex === 0) {
     const track = await PVTrackPlayer.getTrack(trackIndex)
@@ -329,9 +339,19 @@ export const initializePlayerQueue = async () => {
 export const loadItemAndPlayTrack = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
-  forceUpdateOrderDate?: boolean
+  forceUpdateOrderDate: boolean,
+  itemToSetNextInQueue: NowPlayingItem | null
 ) => {
   if (!item) return
+  const { addCurrentItemNextInQueue } = getGlobal()
+
+  if (
+    addCurrentItemNextInQueue
+    && itemToSetNextInQueue
+    && item.episodeId !== itemToSetNextInQueue.episodeId
+  ) {  
+    addQueueItemNext(itemToSetNextInQueue)
+  }
 
   const newItem = item
 
@@ -459,6 +479,8 @@ export const createTrack = async (item: NowPlayingItem) => {
     episodeId,
     episodeMediaUrl = '',
     episodeTitle = 'Untitled Episode',
+    podcastCredentialsRequired,
+    podcastId,
     podcastImageUrl,
     podcastShrunkImageUrl,
     podcastTitle = 'Untitled Podcast'
@@ -467,6 +489,15 @@ export const createTrack = async (item: NowPlayingItem) => {
   const imageUrl = podcastShrunkImageUrl ? podcastShrunkImageUrl : podcastImageUrl
 
   const id = clipId || episodeId
+  let finalFeedUrl = addByRSSPodcastFeedUrl
+
+  /*
+    If credentials are required but it is a podcast stored in our database,
+    then get the authority feedUrl for the podcast before proceeding.
+  */
+  if (podcastCredentialsRequired && !addByRSSPodcastFeedUrl && podcastId) {
+    finalFeedUrl = await getPodcastFeedUrlAuthority(podcastId)
+  }
 
   if (episodeId) {
     const isDownloadedFile = await checkIfFileIsDownloaded(episodeId, episodeMediaUrl)
@@ -483,7 +514,7 @@ export const createTrack = async (item: NowPlayingItem) => {
         pitchAlgorithm: PitchAlgorithm.Voice
       }
     } else {
-      const Authorization = await getAddByRSSPodcastCredentialsHeader(addByRSSPodcastFeedUrl)
+      const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
 
       track = {
         id,
@@ -697,4 +728,20 @@ export const handlePlay = () => {
 export const checkIdlePlayerState = async () => {
   const state = await TrackPlayer.getState()
   return state === 0 || state === State.None
+}
+
+export const setPlayerJumpBackwards = (val?: string) => {
+  const newValue = val && parseInt(val, 10) > 0 || val === '' ? val : PV.Player.jumpBackSeconds.toString()
+  if (newValue !== '') {
+    AsyncStorage.setItem(PV.Keys.PLAYER_JUMP_BACKWARDS, newValue.toString())
+  }
+  return newValue
+}
+
+export const setPlayerJumpForwards = (val?: string) => {
+  const newValue = val && parseInt(val, 10) > 0 || val === '' ? val : PV.Player.jumpSeconds.toString()
+  if (newValue !== '') {
+    AsyncStorage.setItem(PV.Keys.PLAYER_JUMP_FORWARDS, newValue.toString())
+  }
+  return newValue
 }

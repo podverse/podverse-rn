@@ -1,4 +1,4 @@
-import { Alert, Linking, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
+import { Alert, Linking, Pressable, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime, readableDate } from '../lib/utility'
@@ -47,7 +47,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const episodeTitle = item?.episode?.title?.trim() || translate('Untitled Episode')
     const podcastTitle = item?.episode?.podcast?.title?.trim() || translate('Untitled Podcast')
     const clipTime = readableClipTime(startTime, endTime)
-    const { downloadsActive, downloadedEpisodeIds, fontScaleMode } = this.global
+    const { downloadsActive, downloadedEpisodeIds, fontScaleMode, screenReaderEnabled } = this.global
     const isDownloaded = downloadedEpisodeIds[episodeId]
     const episodeDownloading = item?.episode?.id && !!downloadsActive[item.episode.id]
     const chapterImageStyle = item?.linkUrl
@@ -60,8 +60,10 @@ export class ClipTableCell extends React.PureComponent<Props> {
     // eslint-disable-next-line max-len
     const useTo = true
     const accessibilityClipTime = readableClipTime(startTime, endTime, useTo)
+    const timeLabelText = clipTime
+
     // eslint-disable-next-line max-len
-    const accessibilityLabel = `${showPodcastInfo ? `${podcastTitleText},` : ''} ${showEpisodeInfo ? `${episodeTitleText}, ${pubDate},` : ''} ${title}, ${accessibilityClipTime}`
+    const accessibilityLabel = `${title}, ${showPodcastInfo ? `${podcastTitleText},` : ''} ${showEpisodeInfo ? `${episodeTitleText}, ${pubDate},` : ''} ${accessibilityClipTime}`
 
     const innerTopView = (
       <RNView
@@ -135,41 +137,46 @@ export class ClipTableCell extends React.PureComponent<Props> {
     )
 
     return (
-      <View
-        accessible={false}
-        importantForAccessibility='no'
-        onLayout={onLayout}
-        style={styles.wrapper}
-        transparent={transparent}>
+      <Pressable
+        accessible={screenReaderEnabled}
+        accessibilityLabel={accessibilityLabel}
+        importantForAccessibility={screenReaderEnabled ? 'yes' : 'no-hide-descendants'}
+        onPress={handleMorePress}>
         <View
-          accessible={false}
-          importantForAccessibility='no'
-          style={styles.wrapperInner}
-          transparent={transparent}>
-          <RNView style={styles.wrapperTop}>
-            {innerTopView}
-          </RNView>
-          <TimeRemainingWidget
-            clipTime={clipTime}
-            episodeDownloading={episodeDownloading}
-            handleMorePress={handleMorePress}
-            isChapter={isChapter}
-            item={item}
-            itemType={itemType ? itemType : 'clip'}
-            loadTimeStampOnPlay={loadTimeStampOnPlay}
-            testID={testID}
-            transparent={transparent}
-          />
-        </View>
-        {isChapter && (chapterImageUrl || hasChapterCustomImage) && (
-          <TouchableOpacity
+          onLayout={onLayout}
+          transparent={transparent}
+          style={styles.wrapper}>
+          <View
             accessible={false}
-            activeOpacity={1}
-            {...(item?.linkUrl ? { onPress: () => this.handleChapterLinkPress(item.linkUrl) } : {})}>
-            <FastImage isSmall source={chapterImageUrl || podcastImageUrl} styles={chapterImageStyle} />
-          </TouchableOpacity>
-        )}
-      </View>
+            importantForAccessibility='no'
+            style={styles.wrapperInner}
+            transparent={transparent}>
+            <RNView style={styles.wrapperTop}>
+              {innerTopView}
+            </RNView>
+            <TimeRemainingWidget
+              clipTime={clipTime}
+              episodeDownloading={episodeDownloading}
+              handleMorePress={handleMorePress}
+              isChapter={isChapter}
+              item={item}
+              itemType={itemType ? itemType : 'clip'}
+              loadTimeStampOnPlay={loadTimeStampOnPlay}
+              testID={testID}
+              timeLabel={timeLabelText}
+              transparent={transparent}
+            />
+          </View>
+          {isChapter && (chapterImageUrl || hasChapterCustomImage) && (
+            <TouchableOpacity
+              accessible={false}
+              activeOpacity={1}
+              {...(item?.linkUrl ? { onPress: () => this.handleChapterLinkPress(item.linkUrl) } : {})}>
+              <FastImage isSmall source={chapterImageUrl || podcastImageUrl} styles={chapterImageStyle} />
+            </TouchableOpacity>
+          )}
+        </View>
+      </Pressable>
     )
   }
 }

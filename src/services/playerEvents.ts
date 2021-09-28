@@ -9,12 +9,16 @@ import { processValueTransactionQueue, saveStreamingValueTransactionsToTransacti
 import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
-import { handleEnrichingPlayerState, updatePlaybackState } from '../state/actions/player'
+import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
+import { handleEnrichingPlayerState, playNextChapterOrQueueItem,
+  playPreviousChapterOrReturnToBeginningOfTrack, updatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
   getCurrentLoadedTrackId,
+  getLoadedTrackIdByIndex,
   getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId,
   getPlaybackSpeed,
   handlePlay,
@@ -125,16 +129,25 @@ const syncNowPlayingItemWithTrack = () => {
 
 const resetHistoryItem = async (x: any) => {
   const { position, track } = x
-  const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(track)
+  const loadedTrackId = await getLoadedTrackIdByIndex(track)
+  const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(loadedTrackId)
   if (metaEpisode) {
     const { mediaFileDuration } = metaEpisode
     if (mediaFileDuration > 59 && mediaFileDuration - 59 < position) {
       const setPlayerClipIsLoadedIfClip = false
       const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
-        x.track, setPlayerClipIsLoadedIfClip)
+        loadedTrackId, setPlayerClipIsLoadedIfClip)
       if (currentNowPlayingItem) {
+        const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+        if (autoDeleteEpisodeOnEnd && currentNowPlayingItem?.episodeId) {
+          removeDownloadedPodcastEpisode(currentNowPlayingItem.episodeId)
+        }
+
         const forceUpdateOrderDate = false
-        await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate)
+        const skipSetNowPlaying = false
+        const completed = true
+        await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate, skipSetNowPlaying, completed)
+        await updateHistoryItemsIndex()
       }
     }
   }
@@ -243,11 +256,13 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('remote-jump-backward', () => {
-    playerJumpBackward(PV.Player.jumpBackSeconds)
+    const { jumpBackwardsTime } = getGlobal()
+    playerJumpBackward(jumpBackwardsTime)
   })
 
   PVTrackPlayer.addEventListener('remote-jump-forward', () => {
-    playerJumpForward(PV.Player.jumpSeconds)
+    const { jumpForwardsTime } = getGlobal()
+    playerJumpForward(jumpForwardsTime)
   })
 
   PVTrackPlayer.addEventListener('remote-pause', () => {
@@ -281,6 +296,14 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('remote-stop', () => {
     PVTrackPlayer.pause()
     PVEventEmitter.emit(PV.Events.PLAYER_REMOTE_STOP)
+  })
+
+  PVTrackPlayer.addEventListener('remote-previous', () => {
+    playPreviousChapterOrReturnToBeginningOfTrack()
+  })
+
+  PVTrackPlayer.addEventListener('remote-next', () => {
+    playNextChapterOrQueueItem()
   })
 
   PVTrackPlayer.addEventListener('remote-duck', (x: any) => {

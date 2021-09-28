@@ -21,7 +21,7 @@ import {
   getAutoDownloadSettings as getAutoDownloadSettingsService,
   updateAutoDownloadSettings as updateAutoDownloadSettingsService
 } from '../../services/autoDownloads'
-import { getAddByRSSPodcastCredentials, parseAddByRSSPodcast } from '../../services/parser'
+import { getPodcastCredentials, parseAddByRSSPodcast } from '../../services/parser'
 import { clearNowPlayingItem } from './player'
 
 // The DownloadTaskState should have the same episode and podcast properties as a NowPlayingItem,
@@ -31,19 +31,31 @@ export type DownloadTaskState = {
   bytesTotal?: string
   bytesWritten?: string
   completed?: boolean
+  episodeChaptersUrl?: string
+  episodeCredentialsRequired?: boolean
   episodeDescription?: string
   episodeDuration?: number
+  episodeFunding?: any
   episodeId: string
   episodeImageUrl?: string
+  episodeLinkUrl?: string
   episodeMediaUrl: string
   episodePubDate?: string
   episodeTitle?: string
+  episodeTranscript?: any
+  episodeValue?: any
   percent?: number
+  podcastCredentialsRequired?: boolean
+  podcastFunding?: any
+  podcastHideDynamicAdsWarning?: boolean
   podcastId?: string
   podcastImageUrl?: string
   podcastIsExplicit?: boolean
+  podcastLinkUrl?: string
+  podcastShrunkImageUrl?: string
   podcastSortableTitle?: boolean
   podcastTitle?: string
+  podcastValue?: any
   status?: DownloadStatus
 }
 
@@ -171,7 +183,7 @@ export const updateAutoDownloadSettingsAddByRSS = (addByRSSPodcastFeedUrl: strin
       const newAutoDownloadSettings = await updateAutoDownloadSettingsService(addByRSSPodcastFeedUrl)
       setGlobal({ autoDownloadSettings: newAutoDownloadSettings }, async () => {
         if(autoDownloadOn) {
-          const credentials = await getAddByRSSPodcastCredentials(addByRSSPodcastFeedUrl)
+          const credentials = await getPodcastCredentials(addByRSSPodcastFeedUrl)
           const podcast = await parseAddByRSSPodcast(addByRSSPodcastFeedUrl, credentials)
           if(podcast && podcast.episodes && podcast.episodes[0]) {
             downloadEpisode(podcast.episodes[0], podcast)
@@ -347,10 +359,6 @@ export const removeDownloadedPodcast = async (podcastId: string) => {
 }
 
 export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
-  const { clearedNowPlayingItem } = await removeDownloadedPodcastEpisodeService(episodeId)
+  await removeDownloadedPodcastEpisodeService(episodeId)
   await updateDownloadedPodcasts()
-
-  if (clearedNowPlayingItem) {
-    clearNowPlayingItem()
-  }
 }

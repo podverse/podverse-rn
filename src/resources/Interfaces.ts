@@ -97,14 +97,18 @@ export interface InitialState {
   urlsAPI?: any
   urlsWeb?: any
   offlineModeEnabled?: any
+  jumpBackwardsTime: string
+  jumpForwardsTime: string
+  addCurrentItemNextInQueue: boolean
   overlayAlert: {
     shouldShowAlert: boolean
   }
   parsedTranscript: TranscriptRow[] | null
+  currentChapter: any
+  currentChapters: any
+  currentChaptersStartTimePositions: any
   player: {
     backupDuration?: number
-    currentChapter: any
-    currentChapters: any
     hasErrored: boolean
     isPlaying: boolean
     nowPlayingItem: any

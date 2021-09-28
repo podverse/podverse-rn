@@ -136,9 +136,18 @@ const customHTMLTagStyles = {
     fontSize: PV.Fonts.sizes.lg,
     color: PV.Colors.skyLight
   },
+  ol: {
+    marginBottom: 8,
+    marginLeft: 0,
+    marginRight: 0,
+    marginTop: 0,
+    paddingLeft: 0,
+    listStyleType: 'none',
+    color: PV.Colors.white
+  },
   ul: {
-    marginBottom: 0,
-    marginLeft: -16,
+    marginBottom: 8,
+    marginLeft: 0,
     marginRight: 0,
     marginTop: 0,
     paddingLeft: 0,

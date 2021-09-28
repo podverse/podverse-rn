@@ -22,13 +22,17 @@ const initialTheme: InitialState = {
   errorReportingEnabled: false,
   listenTrackingEnabled: false,
   offlineModeEnabled: false,
+  jumpBackwardsTime: PV.Player.jumpBackSeconds.toString(),
+  jumpForwardsTime: PV.Player.jumpSeconds.toString(),
+  addCurrentItemNextInQueue: true,
   overlayAlert: {
     shouldShowAlert: false
   },
   parsedTranscript: null,
+  currentChapter: null,
+  currentChapters: [],
+  currentChaptersStartTimePositions: [],
   player: {
-    currentChapter: null,
-    currentChapters: [],
     hasErrored: false,
     isPlaying: false,
     nowPlayingItem: null,

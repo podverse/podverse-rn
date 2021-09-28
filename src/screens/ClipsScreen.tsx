@@ -369,9 +369,11 @@ export class ClipsScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleNavigationPress = (selectedItem: any) => {
+  _handleNavigationPress = async (selectedItem: any) => {
     const shouldPlay = true
-    loadItemAndPlayTrack(selectedItem, shouldPlay)
+    const forceUpdateOrderDate = false
+    const setCurrentItemNextInQueue = true
+    await loadItemAndPlayTrack(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   render() {
@@ -460,7 +462,8 @@ export class ClipsScreen extends React.Component<Props, State> {
                 handleDismiss: this._handleCancelPress,
                 handleDownload: this._handleDownloadPressed,
                 handleDeleteClip: this._handleDeleteClip,
-                includeGoToEpisode: true
+                includeGoToPodcast: true,
+                includeGoToEpisodeInEpisodesStack: true
               },
               'clip'
             )

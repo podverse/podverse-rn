@@ -3,7 +3,7 @@ import { setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedPodcast, removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
-import { requestAppStoreReviewForSubscribedPodcast } from '../lib/utility'
+import { getAuthorityFeedUrlFromArray, requestAppStoreReviewForSubscribedPodcast } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { getAutoDownloadEpisodes, removeAutoDownloadSetting } from './autoDownloads'
@@ -21,6 +21,11 @@ export const getPodcast = async (id: string) => {
     const downloadedPodcast = await getDownloadedPodcast(id)
     return downloadedPodcast
   }
+}
+
+export const getPodcastFeedUrlAuthority = async (id: string) => {
+  const podcastFull = await getPodcast(id)
+  return getAuthorityFeedUrlFromArray(podcastFull.feedUrls)
 }
 
 export const getPodcasts = async (query: any = {}) => {

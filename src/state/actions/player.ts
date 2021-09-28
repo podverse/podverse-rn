@@ -28,10 +28,13 @@ import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 import { trackPlayerScreenPageView } from '../../services/tracking'
 import {
   clearNowPlayingItem as clearNowPlayingItemService,
+  getNowPlayingItemLocally,
   setNowPlayingItem as setNowPlayingItemService
 } from '../../services/userNowPlayingItem'
 import { getQueueItems } from '../../state/actions/queue'
-import { clearChapterPlaybackInfo, loadChapterPlaybackInfo, loadChaptersForNowPlayingItem } from './playerChapters'
+import { clearChapterPlaybackInfo, getChapterNext, getChapterPrevious, loadChapterPlaybackInfo,
+  loadChaptersForNowPlayingItem, 
+  setChapterOnGlobalState} from './playerChapters'
 
 const clearEnrichedPodcastDataIfNewEpisode =
  async (previousNowPlayingItem: NowPlayingItem, nowPlayingItem: NowPlayingItem) => {
@@ -75,8 +78,10 @@ export const initializePlayerQueue = async () => {
   const nowPlayingItem = await initializePlayerQueueService()
 
   if (nowPlayingItem) {
-    const shouldPlay = false
-    await loadItemAndPlayTrack(nowPlayingItem, shouldPlay)
+    const shouldPlay = true
+    const forceUpdateOrderDate = false
+    const setCurrentItemNextInQueue = true
+    await loadItemAndPlayTrack(nowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
     showMiniPlayer()
   }
 
@@ -142,6 +147,38 @@ export const initPlayerState = async (globalState: any) => {
   })
 }
 
+export const playPreviousChapterOrReturnToBeginningOfTrack = async () => {
+  const globalState = getGlobal()
+  const { currentChapters } = globalState
+
+  if (currentChapters && currentChapters.length > 1) {
+    const previousChapter = await getChapterPrevious()
+    if (previousChapter) {
+      await setPlaybackPosition(previousChapter.startTime)
+      setChapterOnGlobalState(previousChapter)
+      return
+    }
+  }
+
+  await setPlaybackPosition(0)
+}
+
+export const playNextChapterOrQueueItem = async () => {
+  const globalState = getGlobal()
+  const { currentChapters } = globalState
+
+  if (currentChapters && currentChapters.length > 1) {
+    const nextChapter = await getChapterNext()
+    if (nextChapter) {
+      await setPlaybackPosition(nextChapter.startTime)
+      setChapterOnGlobalState(nextChapter)
+      return
+    }
+  }
+  
+  await playNextFromQueue()
+}
+
 export const playNextFromQueue = async () => {
   const item = await playNextFromQueueService()
   await getQueueItems()
@@ -160,9 +197,14 @@ const handleLoadChapterForNowPlayingEpisode = async (item: NowPlayingItem) => {
 export const loadItemAndPlayTrack = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
-  forceUpdateOrderDate?: boolean
+  forceUpdateOrderDate?: boolean,
+  setCurrentItemNextInQueue?: boolean
 ) => {
   const globalState = getGlobal()
+  let nowPlayingItem = null
+  if (setCurrentItemNextInQueue) {
+    nowPlayingItem = await getNowPlayingItemLocally()
+  }
 
   if (item) {
     const { nowPlayingItem: previousNowPlayingItem } = globalState.player
@@ -186,7 +228,7 @@ export const loadItemAndPlayTrack = async (
     // If the value tag is unavailable, try to enrich it from Podcast Index API
     // then make sure the enrichedItem is on global state.
     // If the transcript tag is available, parse it and assign it to the enrichedItem.
-    const enrichedItem = await loadItemAndPlayTrackService(item, shouldPlay, forceUpdateOrderDate)
+    const enrichedItem = await loadItemAndPlayTrackService(item, shouldPlay, forceUpdateOrderDate, nowPlayingItem)
     if (enrichedItem) {
       updatePlayerState(enrichedItem)
     }
@@ -316,4 +358,3 @@ export const initializePlaybackSpeed = async () => {
     }
   })
 }
-

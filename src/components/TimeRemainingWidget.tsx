@@ -3,9 +3,7 @@ import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { State as RNTPState } from 'react-native-track-player'
 import { useGlobal } from 'reactn'
-import { translate } from '../lib/i18n'
-import { checkIfNowPlayingItem, convertSecToHhoursMMinutes,
-  requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
+import { checkIfNowPlayingItem, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
 import { handlePlay, PVTrackPlayer, setPlaybackPosition } from '../services/player'
 import { loadItemAndPlayTrack, togglePlay } from '../state/actions/player'
@@ -13,6 +11,7 @@ import { Icon, MoreButton, Text, View } from './'
 
 type Props = {
   clipTime?: string
+  episodeCompleted?: boolean
   episodeDownloading?: boolean
   handleMorePress?: any
   isChapter?: boolean
@@ -22,6 +21,7 @@ type Props = {
   mediaFileDuration?: number | undefined
   style?: any
   testID: string
+  timeLabel?: string
   transparent?: boolean
   userPlaybackPosition?: number | undefined
 }
@@ -70,8 +70,9 @@ const MiniProgressBar = (props: BarProps) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { clipTime, episodeDownloading, handleMorePress, isChapter, item, itemType,
-    loadTimeStampOnPlay, mediaFileDuration, style, testID, transparent, userPlaybackPosition } = props
+  const { episodeCompleted, episodeDownloading, handleMorePress, item, itemType,
+    loadTimeStampOnPlay, mediaFileDuration, style, testID, timeLabel, transparent,
+    userPlaybackPosition } = props
   const { episode = {}, podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
   const [player] = useGlobal('player')
@@ -80,18 +81,6 @@ export const TimeRemainingWidget = (props: Props) => {
   const hasStartedItem = !!mediaFileDuration
   const totalTime = mediaFileDuration || playingItem.episodeDuration || 0
   const playedTime = userPlaybackPosition || 0
-
-  let timeLabel = ''
-  if (totalTime) {
-    timeLabel = convertSecToHhoursMMinutes(totalTime)
-    if (hasStartedItem) {
-      timeLabel = convertSecToHhoursMMinutes(totalTime - playedTime) + ' left'
-    }
-  }
-
-  if (clipTime) {
-    timeLabel = clipTime
-  }
 
   const handleChapterLoad = async () => {
     await setPlaybackPosition(item.startTime)
@@ -104,13 +93,17 @@ export const TimeRemainingWidget = (props: Props) => {
 
   const playItem = async () => {
     const isNowPlayingItem = checkIfNowPlayingItem(item, nowPlayingItem)
+
     if (loadTimeStampOnPlay) {
       await handleChapterLoad()
     } else {
       if (isNowPlayingItem) {
         togglePlay()
       } else {
-        loadItemAndPlayTrack(playingItem, true)
+        const forceUpdateOrderDate = false
+        const shouldPlay = true
+        const setCurrentItemNextInQueue = true
+        loadItemAndPlayTrack(playingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
       }
     }
     requestAppStoreReviewForEpisodePlayed()
@@ -122,34 +115,11 @@ export const TimeRemainingWidget = (props: Props) => {
 
   const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]
 
-  const timeViewAccessibilityHint = !clipTime
-    ? translate('ARIA HINT - This is the time remaining for this episode')
-    : ''
-
-  let playButtonAccessibilityHint = ''
-  if (!clipTime) {
-    playButtonAccessibilityHint = isNowPlayingItem
-      ? translate('ARIA HINT - pause this episode')
-      : translate('ARIA HINT - tap to play this episode')
-  } else if (clipTime && isChapter) {
-    playButtonAccessibilityHint = isNowPlayingItem
-      ? translate('ARIA HINT - pause this chapter')
-      : translate('ARIA HINT - play this chapter')
-  } else if (clipTime) {
-    playButtonAccessibilityHint = isNowPlayingItem
-      ? translate('ARIA HINT - pause this clip')
-      : translate('ARIA HINT - play this clip')
-  }
-
   return (
     <View style={[styles.container, style]} transparent={transparent}>
       <TouchableOpacity
-        accessibilityHint={playButtonAccessibilityHint}
-        accessibilityLabel={isNowPlayingItem
-          ? translate('Pause')
-          : translate('Play')
-        }
-        accessibilityRole='button'
+        accessible={false}
+        importantForAccessibility='no-hide-descendants'
         onPress={playItem}
         style={iconStyle}
         testID={`${testID}_time_remaining_widget_toggle_play`.prependTestId()}>
@@ -162,22 +132,23 @@ export const TimeRemainingWidget = (props: Props) => {
         <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
       )}
       <View
-        accessible={!clipTime}
-        accessibilityHint={timeViewAccessibilityHint}
-        accessibilityLabel={timeLabel
-          ? timeLabel
-          : translate('Unplayed episode')
-        }
-        importantForAccessibility={!clipTime ? 'yes' : 'no'}
+        accessible={false}
+        importantForAccessibility='no-hide-descendants'
         style={{ flexDirection: 'row', flex: 1, alignItems: 'center', height: '100%' }}>
         <Text
-          accessible={!clipTime}
+          accessible={false}
           fontSizeLargerScale={PV.Fonts.largeSizes.md}
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-          importantForAccessibility={!clipTime ? 'yes' : 'no'}
+          importantForAccessibility='no-hide-descendants'
           style={styles.text}>
           {timeLabel}
         </Text>
+        {!!episodeCompleted && (
+          <Icon
+            name={'check'}
+            size={22}
+            style={styles.iconCompleted} />
+        )}
       </View>
       {!!handleMorePress && (
         <MoreButton
@@ -191,6 +162,10 @@ export const TimeRemainingWidget = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
+  iconCompleted: {
+    color: PV.Colors.green,
+    paddingHorizontal: 16
+  },
   container: {
     flexDirection: 'row',
     alignItems: 'center',

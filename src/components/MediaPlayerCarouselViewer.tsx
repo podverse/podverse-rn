@@ -4,7 +4,6 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
-import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { ActivityIndicator, FastImage, ScrollView, Text, TextTicker } from './'
 
 type Props = {
@@ -16,19 +15,9 @@ type Props = {
 const testIDPrefix = 'media_player_carousel_viewer'
 
 export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
-  chapterInterval: NodeJS.Timeout
   constructor(props) {
     super(props)
     this.state = {}
-  }
-
-  componentDidMount() {
-    loadChapterPlaybackInfo()
-    this.chapterInterval = setInterval(loadChapterPlaybackInfo, 4000)
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.chapterInterval)
   }
 
   handleChapterLinkPress = (url: string) => {
@@ -40,8 +29,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
 
   render() {
     const { handlePressClipInfo, width } = this.props
-    const { player, screenPlayer, screenReaderEnabled } = this.global
-    const { currentChapter } = player
+    const { currentChapter, player, screenPlayer, screenReaderEnabled } = this.global
     const { isLoading } = screenPlayer
     
     // nowPlayingItem will be undefined when loading from a deep link
@@ -97,13 +85,17 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       </Text>
     )
 
+    const outerWrapperStyle = screenReaderEnabled
+      ? [styles.outerWrapper, { paddingBottom: 10, paddingHorizontal: 10 }, { width }]
+      : [styles.outerWrapper, { padding: 10 }, { width }]
+
     return (
       <ScrollView
         scrollEnabled={false}
-        contentContainerStyle={[styles.outerWrapper, { width }]}>
+        contentContainerStyle={outerWrapperStyle}>
         <RNView
           accessible
-          accessibilityHint={translate('ARIA HINT - This is the now playing episode in a carousel')}
+          accessibilityHint={translate('ARIA HINT - This is the now playing episode')}
           accessibilityLabel={textTopWrapperAccessibilityLabel}
           style={styles.carouselTextTopWrapper}>
           {isLoading ? (
@@ -180,7 +172,6 @@ const styles = StyleSheet.create({
   outerWrapper: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
     flex: 1
   },
   carouselTextTopWrapper: {
