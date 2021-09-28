@@ -1,5 +1,5 @@
 import React from 'react'
-import { AccessibilityRole, TouchableWithoutFeedback, View } from 'react-native'
+import { AccessibilityRole, Pressable, View } from 'react-native'
 import { PV } from '../resources'
 import { table } from '../styles'
 import { Divider, Text, Icon } from '.'
@@ -33,24 +33,24 @@ export const TableCell = (props: TableCellProps) => {
 
   return (
     <>
-      <TouchableWithoutFeedback
+      <Pressable
         accessibilityHint={accessibilityHint}
         accessibilityLabel={accessibilityLabel}
         accessibilityRole={accessibilityRole}
         onPress={onPress}
         style={table.cellWrapper}
-        testID={`${testIDPrefix}_table_cell_wrapper${testIDSuffix ? `_${testIDSuffix}` : ''}`}>
+        testID={`${testIDPrefix}_table_cell_wrapper${testIDSuffix ? `_${testIDSuffix}` : ''}`.prependTestId()}>
           <View style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
             <View style={{flexDirection:"row", alignItems:"center"}}>{children}</View>
             {!hideChevron &&
               <Icon
                 style={{marginRight:20}}
-                testID={`${testIDPrefix}_table_cell_chevron${testIDSuffix ? `_${testIDSuffix}` : ''}`}
+                testID={`${testIDPrefix}_table_cell_chevron${testIDSuffix ? `_${testIDSuffix}` : ''}`.prependTestId()}
                 name="angle-right"
                 size={30}/>
             }
           </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
       {includeDivider && <Divider />}
     </>
   )
