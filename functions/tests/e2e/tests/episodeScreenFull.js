@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, elementByIdClick, elementByIdHasText, elementByIdToggle, elementCheckIfNotPresent, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { confirmAndroidAlert } = require('../driver/helpers/alerts')

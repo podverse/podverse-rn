@@ -87,12 +87,13 @@ export const PVTextInput = (props: Props) => {
 
   return (
     <TouchableWithoutFeedback
+      accessible={!!onPress}
       accessibilityHint={accessibilityHint}
       accessibilityLabel={accessibilityLabel}
-      importantForAccessibility={onPress ? 'yes' : 'no'}
+      importantForAccessibility={!!onPress ? 'yes' : 'no'}
       onPress={onPress}>
       <View
-        {...(onPress ? { pointerEvents: 'none' } : {})}
+        {...(!!onPress ? { pointerEvents: 'none' } : {})}
         style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
         {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
           <Text
