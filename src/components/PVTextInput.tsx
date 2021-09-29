@@ -85,52 +85,60 @@ export const PVTextInput = (props: Props) => {
 
   const hasText = !!value && value.length
 
+  const inputComponent = (
+    <View
+      style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
+      {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
+        <Text
+          accessible={false}
+          importantForAccessibility='no'
+          style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]}
+          testID={`${testID}_text_input_eyebrow`}>
+          {eyebrowTitle || placeholder}
+        </Text>
+      )}
+      <TextInput
+        accessible
+        accessibilityLabel={accessibilityLabel}
+        autoCapitalize={autoCapitalize}
+        autoCompleteType={autoCompleteType}
+        autoCorrect={autoCorrect}
+        blurOnSubmit={returnKeyType === 'done'}
+        editable={!!editable}
+        keyboardType={keyboardType}
+        importantForAccessibility={!onPress ? 'yes' : 'no'}
+        multiline={numberOfLines > 1}
+        numberOfLines={hasText ? numberOfLines : 1}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        onChange={onChange}
+        onChangeText={onChangeText}
+        onSubmitEditing={onSubmitEditing}
+        placeholder={placeholder}
+        placeholderTextColor={placeholderTextColor || globalTheme.placeholderText.color}
+        ref={inputRef}
+        returnKeyType={returnKeyType}
+        secureTextEntry={secureTextEntry}
+        style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
+        underlineColorAndroid={underlineColorAndroid}
+        {...(testID ? { testID: `${testID}_text_input`.prependTestId() } : {})}
+        value={value}
+      />
+    </View>
+  )
+
   return (
-    <TouchableWithoutFeedback
-      accessible={!!onPress}
-      accessibilityHint={accessibilityHint}
-      accessibilityLabel={accessibilityLabel}
-      importantForAccessibility={!!onPress ? 'yes' : 'no'}
-      onPress={onPress}>
-      <View
-        style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
-        {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
-          <Text
-            accessible={false}
-            importantForAccessibility='no'
-            style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]}
-            testID={`${testID}_text_input_eyebrow`}>
-            {eyebrowTitle || placeholder}
-          </Text>
-        )}
-        <TextInput
-          accessible
-          accessibilityLabel={accessibilityLabel}
-          autoCapitalize={autoCapitalize}
-          autoCompleteType={autoCompleteType}
-          autoCorrect={autoCorrect}
-          blurOnSubmit={returnKeyType === 'done'}
-          editable={!!editable}
-          keyboardType={keyboardType}
-          importantForAccessibility={!onPress ? 'yes' : 'no'}
-          multiline={numberOfLines > 1}
-          numberOfLines={hasText ? numberOfLines : 1}
-          onBlur={onBlur}
-          onFocus={onFocus}
-          onChange={onChange}
-          onChangeText={onChangeText}
-          onSubmitEditing={onSubmitEditing}
-          placeholder={placeholder}
-          placeholderTextColor={placeholderTextColor || globalTheme.placeholderText.color}
-          ref={inputRef}
-          returnKeyType={returnKeyType}
-          secureTextEntry={secureTextEntry}
-          style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
-          underlineColorAndroid={underlineColorAndroid}
-          {...(testID ? { testID: `${testID}_text_input`.prependTestId() } : {})}
-          value={value}
-        />
-      </View>
-    </TouchableWithoutFeedback>
+    !!onPress ? (
+      <TouchableWithoutFeedback
+        accessible={!!onPress}
+        accessibilityHint={accessibilityHint}
+        accessibilityLabel={accessibilityLabel}
+        importantForAccessibility={!!onPress ? 'yes' : 'no'}
+        onPress={onPress}>
+        {inputComponent}
+      </TouchableWithoutFeedback>
+    ) : (
+      inputComponent
+    )
   )
 }
