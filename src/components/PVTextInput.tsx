@@ -93,7 +93,6 @@ export const PVTextInput = (props: Props) => {
       importantForAccessibility={!!onPress ? 'yes' : 'no'}
       onPress={onPress}>
       <View
-        {...(!!onPress ? { pointerEvents: 'none' } : {})}
         style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
         {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
           <Text
