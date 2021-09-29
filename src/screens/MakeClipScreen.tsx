@@ -364,13 +364,15 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   _playerJumpBackward = async () => {
-    const progressValue = await playerJumpBackward(PV.Player.jumpBackSeconds)
+    const { jumpBackwardsTime } = this.global
+    const progressValue = await playerJumpBackward(jumpBackwardsTime)
     this.setState({ progressValue })
     setTimeout(() => this.setState({ progressValue: null }), 250)
   }
 
   _playerJumpForward = async () => {
-    const progressValue = await playerJumpForward(PV.Player.jumpSeconds)
+    const { jumpForwardsTime } = this.global
+    const progressValue = await playerJumpForward(jumpForwardsTime)
     this.setState({ progressValue })
     setTimeout(() => this.setState({ progressValue: null }), 250)
   }
@@ -407,7 +409,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { globalTheme, player } = this.global
+    const { globalTheme, jumpBackwardsTime, jumpForwardsTime, player } = this.global
     const { backupDuration, playbackRate, playbackState } = player
     const hasErrored = playbackState === PV.Player.errorState
     const {
@@ -448,9 +450,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
     }
 
     const jumpBackAccessibilityLabel =
-      `${translate(`Jump back`)} ${PV.Player.jumpBackSeconds} ${translate('seconds')}`
+      `${translate(`Jump back`)} ${jumpBackwardsTime} ${translate('seconds')}`
     const jumpForwardAccessibilityLabel =
-      `${translate(`Jump forward`)} ${PV.Player.jumpSeconds} ${translate('seconds')}`
+      `${translate(`Jump forward`)} ${jumpForwardsTime} ${translate('seconds')}`
     const miniJumpBackAccessibilityLabel =
       `${translate(`Jump back`)} ${PV.Player.miniJumpSeconds} ${translate('seconds')}`
     const miniJumpForwardAccessibilityLabel =
@@ -616,7 +618,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       testID={`${testIDPrefix}_jump_forward`.prependTestId()}>
                       {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD)}
                       <View style={styles.skipTimeTextWrapper} transparent>
-                        <Text style={styles.skipTimeText}>{PV.Player.jumpSeconds}</Text>
+                        <Text style={styles.skipTimeText}>{jumpForwardsTime}</Text>
                       </View>
                     </TouchableOpacity>
                   </View>

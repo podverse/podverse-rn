@@ -60,7 +60,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       newSpeed = speeds[index + 1]
     }
 
-    await setPlaybackSpeed(newSpeed, this.global)
+    await setPlaybackSpeed(newSpeed)
   }
 
   _navToStopWatchScreen = () => {
@@ -69,13 +69,15 @@ export class PlayerControls extends React.PureComponent<Props, State> {
   }
 
   _playerJumpBackward = async () => {
-    const progressValue = await playerJumpBackward(PV.Player.jumpBackSeconds)
+    const { jumpBackwardsTime } = this.global
+    const progressValue = await playerJumpBackward(jumpBackwardsTime)
     this.setState({ progressValue })
     debouncedPlayerJumpBackward()
   }
 
   _playerJumpForward = async () => {
-    const progressValue = await playerJumpForward(PV.Player.jumpSeconds)
+    const { jumpForwardsTime } = this.global
+    const progressValue = await playerJumpForward(jumpForwardsTime)
     this.setState({ progressValue })
     debouncedPlayerJumpForward()
   }
@@ -90,7 +92,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     })
   }
 
-  _renderPlayerControlIcon = (source: ImageSourcePropType, testID?: string, disabled?: boolean) => {
+  _renderPlayerControlIcon = (source: ImageSourcePropType, testID: string, disabled?: boolean) => {
     const disabledStyle: {tintColor?:string} = {}
     if(disabled) {
       disabledStyle.tintColor = PV.Colors.grayDark
@@ -106,7 +108,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     const { navigation } = this.props
     const { progressValue, showPlayerMoreActionSheet } = this.state
     const { currentChapter, currentChapters, currentChaptersStartTimePositions, globalTheme,
-      player, screenPlayer, session } = this.global
+      jumpBackwardsTime, jumpForwardsTime, player, screenPlayer, session } = this.global
     const { backupDuration, playbackRate, playbackState } = player
     const { userInfo } = session
     const { queueItems } = userInfo
@@ -166,9 +168,9 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     }
 
     const jumpBackAccessibilityLabel =
-      `${translate(`Jump back`)} ${PV.Player.jumpBackSeconds} ${translate('seconds')}`
+      `${translate(`Jump back`)} ${jumpBackwardsTime} ${translate('seconds')}`
     const jumpForwardAccessibilityLabel =
-      `${translate(`Jump forward`)} ${PV.Player.jumpSeconds} ${translate('seconds')}`
+      `${translate(`Jump forward`)} ${jumpForwardsTime} ${translate('seconds')}`
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
@@ -200,7 +202,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               style={playerStyles.icon}>
               {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS, `${testIDPrefix}_jump_backward`)}
               <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
-                <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
+                <Text style={styles.skipTimeText}>{jumpBackwardsTime}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
@@ -218,7 +220,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               style={playerStyles.icon}>
               {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, `${testIDPrefix}_step_forward`)}
               <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
-                <Text style={styles.skipTimeText}>{PV.Player.jumpSeconds}</Text>
+                <Text style={styles.skipTimeText}>{jumpForwardsTime}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity

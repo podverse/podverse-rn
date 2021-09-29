@@ -256,11 +256,13 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('remote-jump-backward', () => {
-    playerJumpBackward(PV.Player.jumpBackSeconds)
+    const { jumpBackwardsTime } = getGlobal()
+    playerJumpBackward(jumpBackwardsTime)
   })
 
   PVTrackPlayer.addEventListener('remote-jump-forward', () => {
-    playerJumpForward(PV.Player.jumpSeconds)
+    const { jumpForwardsTime } = getGlobal()
+    playerJumpForward(jumpForwardsTime)
   })
 
   PVTrackPlayer.addEventListener('remote-pause', () => {
