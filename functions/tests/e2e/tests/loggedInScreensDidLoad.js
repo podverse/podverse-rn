@@ -9,7 +9,7 @@ const test_loggedInScreensDidLoadTests = async () => {
   const driver = getDriver()
 
     // Log In Premium
-
+  //TODO
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
   await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_sign_up_button')
   await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
@@ -45,19 +45,6 @@ const test_loggedInScreensDidLoadTests = async () => {
   await elementByIdAndClickAndTest('more_screen_About_table_cell_wrapper', 'about_screen_view', noTestLabel, goBackKey)
   await performScroll(scrollDownKey, 2)
   await elementByIdAndClickAndTest('more_screen_TermsOfService_table_cell_wrapper', 'terms_of_service_screen_view', noTestLabel, goBackKey)
-
-    // More Screen > Settings Screen
-  await elementByIdAndClickAndTest('more_screen_Settings_table_cell_wrapper', 'settings_screen_view')
-  await elementByIdToggle('settings_screen_offline_mode_switch')
-  await elementByIdToggle('settings_screen_only_allow_downloading_when_connected_to_wifi_switch')
-  await performScroll(scrollDownKey, 2)
-  await elementByIdClick('settings_screen_limit_the_number_of_downloaded_episodes_switch')
-  await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
-  await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
-
-  await driver.back()
-  await driver.back()
-
 
     // Search Screen
   await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
