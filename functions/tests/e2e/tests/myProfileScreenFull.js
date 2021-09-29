@@ -32,96 +32,96 @@ const test_myProfileScreenFull = async () => {
 
   //START FILTER TESTS
 
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'A-Z')
-  await elementByIdHasText('profile_screen_table_section_header_title_text', 'Podcasts')
+  // await elementByIdHasText('profile_screen_dropdown_button_text', 'A-Z')
+  // await elementByIdHasText('profile_screen_table_section_header_title_text', 'Podcasts')
 
-  await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
+  // await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
-  await elementByIdAndClickAndTest('filter_screen_podcasts', 'filter_screen_podcasts_check_icon_button') //1a
-  await elementByIdAndClickAndTest('filter_screen_clips', 'filter_screen_clips_check_icon_button') //2a
+  // await elementByIdAndClickAndTest('filter_screen_podcasts', 'filter_screen_podcasts_check_icon_button') //1a
+  // await elementByIdAndClickAndTest('filter_screen_clips', 'filter_screen_clips_check_icon_button') //2a
 
-  //go back
-  await elementByIdClick('filter_screen_nav_header_button_text')
-  //check title text
-  await elementByIdHasText('profile_screen_table_section_header_title_text', 'Clips')
-  //navigate back to filter screen
-  await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
+  // //go back
+  // await elementByIdClick('filter_screen_nav_header_button_text')
+  // //check title text
+  // await elementByIdHasText('profile_screen_table_section_header_title_text', 'Clips')
+  // //navigate back to filter screen
+  // await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
-  await elementCheckIfNotPresent('filter_screen_podcasts_check_icon_button') //1b
-  await elementByIdAndClickAndTest('filter_screen_playlists', 'filter_screen_playlists_check_icon_button') //8a
-  await elementCheckIfNotPresent('filter_screen_clips_check_icon_button') //2b
+  // await elementCheckIfNotPresent('filter_screen_podcasts_check_icon_button') //1b
+  // await elementByIdAndClickAndTest('filter_screen_playlists', 'filter_screen_playlists_check_icon_button') //8a
+  // await elementCheckIfNotPresent('filter_screen_clips_check_icon_button') //2b
   
-  //go back
-  await elementByIdClick('filter_screen_nav_header_button_text')
-  //check title text
-  await elementByIdHasText('profile_screen_table_section_header_title_text', 'Playlists')
-  //navigate back to filter screen
-  await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
+  // //go back
+  // await elementByIdClick('filter_screen_nav_header_button_text')
+  // //check title text
+  // await elementByIdHasText('profile_screen_table_section_header_title_text', 'Playlists')
+  // //navigate back to filter screen
+  // await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
-  await elementByIdAndClickAndTest('filter_screen_podcasts', 'filter_screen_podcasts_check_icon_button') //9a
-  await elementCheckIfNotPresent('filter_screen_playlists_check_icon_button') //8b
+  // await elementByIdAndClickAndTest('filter_screen_podcasts', 'filter_screen_podcasts_check_icon_button') //9a
+  // await elementCheckIfNotPresent('filter_screen_playlists_check_icon_button') //8b
 
 
-  await elementByIdAndClickAndTest('filter_screen_top-past-day', 'filter_screen_top-past-day_check_icon_button') //3a
+  // await elementByIdAndClickAndTest('filter_screen_top-past-day', 'filter_screen_top-past-day_check_icon_button') //3a
 
-  //go back
-  await elementByIdClick('filter_screen_nav_header_button_text')
-  //check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top - day')
-  //navigate back to filter screen
-  await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
+  // //go back
+  // await elementByIdClick('filter_screen_nav_header_button_text')
+  // //check dropdown text
+  // await elementByIdHasText('profile_screen_dropdown_button_text', 'top - day')
+  // //navigate back to filter screen
+  // await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
-  await elementByIdAndClickAndTest('filter_screen_top-past-week', 'filter_screen_top-past-week_check_icon_button') //4a
-  await elementCheckIfNotPresent('filter_screen_top-past-day_check_icon_button') //3b
+  // await elementByIdAndClickAndTest('filter_screen_top-past-week', 'filter_screen_top-past-week_check_icon_button') //4a
+  // await elementCheckIfNotPresent('filter_screen_top-past-day_check_icon_button') //3b
 
-  //go back
-  await elementByIdClick('filter_screen_nav_header_button_text')
-  //check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top - week')
-  //navigate back to filter screen
-  await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
+  // //go back
+  // await elementByIdClick('filter_screen_nav_header_button_text')
+  // //check dropdown text
+  // await elementByIdHasText('profile_screen_dropdown_button_text', 'top - week')
+  // //navigate back to filter screen
+  // await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
-  await elementByIdAndClickAndTest('filter_screen_top-past-month', 'filter_screen_top-past-month_check_icon_button') //5a
-  await elementCheckIfNotPresent('filter_screen_top-past-week_check_icon_button') //4b
+  // await elementByIdAndClickAndTest('filter_screen_top-past-month', 'filter_screen_top-past-month_check_icon_button') //5a
+  // await elementCheckIfNotPresent('filter_screen_top-past-week_check_icon_button') //4b
 
-  //go back
-  await elementByIdClick('filter_screen_nav_header_button_text')
-  //check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top - month')
-  //navigate back to filter screen
-  await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
+  // //go back
+  // await elementByIdClick('filter_screen_nav_header_button_text')
+  // //check dropdown text
+  // await elementByIdHasText('profile_screen_dropdown_button_text', 'top - month')
+  // //navigate back to filter screen
+  // await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
-  await elementByIdAndClickAndTest('filter_screen_top-past-year', 'filter_screen_top-past-year_check_icon_button') //6a
-  await elementCheckIfNotPresent('filter_screen_top-past-month_check_icon_button') //5b
+  // await elementByIdAndClickAndTest('filter_screen_top-past-year', 'filter_screen_top-past-year_check_icon_button') //6a
+  // await elementCheckIfNotPresent('filter_screen_top-past-month_check_icon_button') //5b
 
-  //go back
-  await elementByIdClick('filter_screen_nav_header_button_text')
-  //check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top - year')
-  //navigate back to filter screen
-  await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
+  // //go back
+  // await elementByIdClick('filter_screen_nav_header_button_text')
+  // //check dropdown text
+  // await elementByIdHasText('profile_screen_dropdown_button_text', 'top - year')
+  // //navigate back to filter screen
+  // await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
   
-  await elementByIdAndClickAndTest('filter_screen_top-all-time', 'filter_screen_top-all-time_check_icon_button') //7a
-  await elementCheckIfNotPresent('filter_screen_top-past-year_check_icon_button') //6b
+  // await elementByIdAndClickAndTest('filter_screen_top-all-time', 'filter_screen_top-all-time_check_icon_button') //7a
+  // await elementCheckIfNotPresent('filter_screen_top-past-year_check_icon_button') //6b
 
-  //go back
-  await elementByIdClick('filter_screen_nav_header_button_text')
-  //check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top - all time')
-  //navigate back to filter screen
-  await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
+  // //go back
+  // await elementByIdClick('filter_screen_nav_header_button_text')
+  // //check dropdown text
+  // await elementByIdHasText('profile_screen_dropdown_button_text', 'top - all time')
+  // //navigate back to filter screen
+  // await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
-  await elementByIdAndClickAndTest('filter_screen_top-past-year', 'filter_screen_top-past-year_check_icon_button')
-  await elementCheckIfNotPresent('filter_screen_top-all-time_check_icon_button') //7b
+  // await elementByIdAndClickAndTest('filter_screen_top-past-year', 'filter_screen_top-past-year_check_icon_button')
+  // await elementCheckIfNotPresent('filter_screen_top-all-time_check_icon_button') //7b
 
-  //go back
-  await elementByIdClick('filter_screen_nav_header_button_text')
-  //check text
-  await elementByIdHasText('profile_screen_table_section_header_title_text', 'Podcasts')
-  //navigate back to filter screen
-  await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
+  // //go back
+  // await elementByIdClick('filter_screen_nav_header_button_text')
+  // //check text
+  // await elementByIdHasText('profile_screen_table_section_header_title_text', 'Podcasts')
+  // //navigate back to filter screen
+  // await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
-  await elementByIdClick('filter_screen_nav_header_button_text')
+  // await elementByIdClick('filter_screen_nav_header_button_text')
 
   //END FILTER TESTS
 
