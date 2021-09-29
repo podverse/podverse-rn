@@ -1,7 +1,7 @@
 import { Alert, Linking, Pressable, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { getTimeLabelText, readableClipTime, readableDate } from '../lib/utility'
+import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { images } from '../styles'
 import { IndicatorDownload } from './IndicatorDownload'

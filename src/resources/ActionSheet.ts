@@ -53,7 +53,9 @@ const mediaMoreButtons = (
           const isDarkMode = globalState.globalTheme === darkTheme
           await handleDismiss()
           const shouldPlay = false
-          await loadItemAndPlayTrack(item, shouldPlay)
+          const forceUpdateOrderDate = false
+          const setCurrentItemNextInQueue = true
+          await loadItemAndPlayTrack(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
           await navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
           setTimeout(() => {
             (async () => {
@@ -89,7 +91,9 @@ const mediaMoreButtons = (
       onPress: async () => {
         await handleDismiss()
         const shouldPlay = true
-        await loadItemAndPlayTrack(item, shouldPlay)
+        const forceUpdateOrderDate = false
+        const setCurrentItemNextInQueue = true
+        await loadItemAndPlayTrack(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
       }
     })
   } else {
@@ -108,7 +112,9 @@ const mediaMoreButtons = (
 
         await handleDismiss()
         const shouldPlay = true
-        await loadItemAndPlayTrack(item, shouldPlay)
+        const forceUpdateOrderDate = false
+        const setCurrentItemNextInQueue = true
+        await loadItemAndPlayTrack(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
       }
     })
 

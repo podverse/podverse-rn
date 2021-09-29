@@ -93,13 +93,17 @@ export const TimeRemainingWidget = (props: Props) => {
 
   const playItem = async () => {
     const isNowPlayingItem = checkIfNowPlayingItem(item, nowPlayingItem)
+
     if (loadTimeStampOnPlay) {
       await handleChapterLoad()
     } else {
       if (isNowPlayingItem) {
         togglePlay()
       } else {
-        loadItemAndPlayTrack(playingItem, true)
+        const forceUpdateOrderDate = false
+        const shouldPlay = true
+        const setCurrentItemNextInQueue = true
+        loadItemAndPlayTrack(playingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
       }
     }
     requestAppStoreReviewForEpisodePlayed()

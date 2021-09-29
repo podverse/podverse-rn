@@ -56,8 +56,6 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const episodeCompleted = historyItemsIndex && historyItemsIndex.episodes && id
       && historyItemsIndex.episodes[id] && historyItemsIndex.episodes[id].completed
 
-    const episodeDownloading = !!downloadsActive[id]
-
     if (!title) title = translate('Untitled Episode')
 
     const titleStyle = (podcastTitle ? styles.title : [styles.title, { marginTop: 0 }]) as any

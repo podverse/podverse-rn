@@ -25,9 +25,11 @@ export const Alerts = {
         { text: translate('No') },
         {
           text: translate('Yes'),
-          onPress: () => {
+          onPress: async () => {
             const shouldPlay = false
-            loadItemAndPlayTrack(item, shouldPlay)
+            const forceUpdateOrderDate = false
+            const setCurrentItemNextInQueue = false
+            await loadItemAndPlayTrack(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
           }
         }
       ]
