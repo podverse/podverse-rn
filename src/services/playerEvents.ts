@@ -270,20 +270,6 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('remote-play', () => {
-    if (Platform.OS === 'ios') {
-      /*
-          "you must also use pause() then re-trigger the rate setRate()
-          and then call play() again in order to get
-          the Notification Player and UI Player to sync up, 
-          otherwise the Notification Player resets its rate to 1x.
-          It seems to me like pause MUST be called to trigger the
-          "remote/notification" state when updating the rate in the UI."
-          
-          https://github.com/DoubleSymmetry/react-native-track-player/issues/1104
-      */
-      PVTrackPlayer.pause()
-    }
-
     handlePlay()
   })
 
