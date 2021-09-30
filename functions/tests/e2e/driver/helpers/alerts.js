@@ -2,6 +2,7 @@ const { getDriver } = require('../driverFactory')
 const { logKeyEnd, logKeyIdNull, logKeyStart, logTestInfo } = require('../../utils/logger')
 
 const confirmAndroidAlert = async () => {
+  id = `com.podverse:id/${id}`
   const driver = getDriver()
   logTestInfo(logKeyStart, logKeyIdNull, 'Confirm Android Alert')
   const el = await driver.element('id', 'android:id/button1')
@@ -10,6 +11,7 @@ const confirmAndroidAlert = async () => {
 }
 
 const cancelAndroidAlert = async () => {
+  id = `com.podverse:id/${id}`
   const driver = getDriver()
   logTestInfo(logKeyStart, logKeyIdNull, 'Cancel Android Alert')
   const el = await driver.element('id', 'android:id/button2')

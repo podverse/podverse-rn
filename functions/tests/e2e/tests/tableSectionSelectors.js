@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, elementByIdClick, elementCheckIfNotPresent, elementByIdHasText, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 

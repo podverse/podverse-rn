@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const { getDriver } = require('../driver/driverFactory')
 
 const test_initTests = async (capabilities) => {

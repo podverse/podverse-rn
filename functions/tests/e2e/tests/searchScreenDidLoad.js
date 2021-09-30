@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const { getDriver } = require('../driver/driverFactory')
 const { confirmAndroidAlert } = require('../driver/helpers/alerts')
 const { elementByIdAndClickAndTest, elementByIdClick, elementWaitFor, goBackKey, noTestLabel } = require('../driver/helpers/elements')
@@ -28,23 +29,24 @@ const test_searchScreenDidLoad = async () => {
   await elementByIdAndClickAndTest('add_podcast_by_rss_screen_save_nav_header_button_text', 'podcast_screen_view', noTestLabel, goBackKey)
 
   await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
-  await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
-  await elementWaitFor('search_screen_podcast_item_0')
-  await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'podcasts_screen_view')
+  // TODO:
+  // await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
+  // await elementWaitFor('search_screen_podcast_item_0')
+  // await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'podcasts_screen_view')
 
-  // Search for and Subscribe to Podcast
+  // // Search for and Subscribe to Podcast
 
-  //Search
-  await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
-  await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
-  await elementByIdAndClickAndTest('search_screen_podcast_item_0', 'search_screen_action_sheet_goToPodcast_button')
-  await elementByIdAndClickAndTest('search_screen_action_sheet_goToPodcast_button', 'podcast_screen_is_subscribed')
-  await elementByIdClick('podcast_screen_subscribe_button')
-  await elementWaitFor('podcast_screen_is_not_subscribed')
-  await driver.sleep(1000)
-  await elementByIdClick('podcast_screen_subscribe_button')
-  await elementWaitFor('podcast_screen_is_subscribed')
-  await driver.back()
+  // //Search
+  // await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
+  // await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
+  // await elementByIdAndClickAndTest('search_screen_podcast_item_0', 'search_screen_action_sheet_goToPodcast_button')
+  // await elementByIdAndClickAndTest('search_screen_action_sheet_goToPodcast_button', 'podcast_screen_is_subscribed')
+  // await elementByIdClick('podcast_screen_subscribe_button')
+  // await elementWaitFor('podcast_screen_is_not_subscribed')
+  // await driver.sleep(1000)
+  // await elementByIdClick('podcast_screen_subscribe_button')
+  // await elementWaitFor('podcast_screen_is_subscribed')
+  // await driver.back()
 
     // Log Out 
 
