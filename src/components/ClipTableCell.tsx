@@ -141,7 +141,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
         accessible={screenReaderEnabled}
         accessibilityLabel={accessibilityLabel}
         importantForAccessibility={screenReaderEnabled ? 'yes' : 'no-hide-descendants'}
-        onPress={handleMorePress}>
+        onPress={screenReaderEnabled ? handleMorePress : null}>
         <View
           onLayout={onLayout}
           transparent={transparent}

@@ -70,7 +70,7 @@ export const EpisodeTableHeader = (props: Props) => {
       accessibilityHint={translate('ARIA HINT - tap to show options for this episode')}
       accessibilityLabel={accessibilityLabel}
       importantForAccessibility={screenReaderEnabled ? 'yes' : 'no-hide-descendants'}
-      onPress={handleMorePress}
+      onPress={screenReaderEnabled ? handleMorePress : null}
       style={styles.view}>
       {isLoading ? (
         <ActivityIndicator fillSpace testID={testID} />
