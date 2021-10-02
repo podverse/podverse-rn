@@ -31,6 +31,4 @@ If applicable, add screenshots to help explain your problem.
 **Additional context**
 Add any other context about the problem here.
 
----
-
 Please feel free to [join our Discord](https://discord.gg/6HkyNKR) and chat with us in the #dev channel if you'd like to work on this.
