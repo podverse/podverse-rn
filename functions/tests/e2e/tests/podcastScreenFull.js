@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { clearTextField, sendKeysToElementById } = require('../driver/helpers/sendKeys')
