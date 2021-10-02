@@ -136,6 +136,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5')
         await AsyncStorage.setItem(PV.Keys.CENSOR_NSFW_TEXT, 'TRUE')
         await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5')
+        await AsyncStorage.setItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE, 'TRUE')
 
         if (!Config.DISABLE_CRASH_LOGS) {
           await AsyncStorage.setItem(PV.Keys.ERROR_REPORTING_ENABLED, 'TRUE')
