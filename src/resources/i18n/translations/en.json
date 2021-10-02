@@ -192,7 +192,7 @@
 	"Add Custom RSS Feed": "Add Custom RSS Feed",
 	"Add Wallet": "Add Wallet",
 	"Add to Playlist": "Add to Playlist",
-	"AddPodcastByRSSScreenText1": "Note: clips and playlists are not supported for custom RSS feeds.",
+	"AddPodcastByRSSScreenText1": "Note: clips, playlists, and sharing are not supported for custom RSS feeds.",
 	"AddPodcastByRSSScreenText2": "To add a podcast with support for clips and playlists, use the Request Podcast link below so we can add it to our database.",
 	"Added By RSS": "Added By RSS",
 	"All Episodes": "All Episodes",

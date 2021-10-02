@@ -78,9 +78,9 @@ export const initializePlayerQueue = async () => {
   const nowPlayingItem = await initializePlayerQueueService()
 
   if (nowPlayingItem) {
-    const shouldPlay = true
+    const shouldPlay = false
     const forceUpdateOrderDate = false
-    const setCurrentItemNextInQueue = true
+    const setCurrentItemNextInQueue = false
     await loadItemAndPlayTrack(nowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
     showMiniPlayer()
   }
