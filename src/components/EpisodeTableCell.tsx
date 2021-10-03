@@ -38,7 +38,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       userPlaybackPosition
     } = this.props
 
-    const { episodeDuration, id, mediaUrl, pubDate = '', podcast = {} } = item
+    const { duration, id, mediaUrl, pubDate = '', podcast = {} } = item
     let { description = '', title = '' } = item
 
     const podcastTitle = podcast.title || translate('Untitled Podcast')
@@ -65,7 +65,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const podcastTitleText = podcastTitle.trim()
     const episodeTitleText = title.trim()
     const pubDateText = readableDate(pubDate)
-    const timeLabel = getTimeLabelText(mediaFileDuration, episodeDuration, userPlaybackPosition)
+    const timeLabel = getTimeLabelText(mediaFileDuration, duration, userPlaybackPosition)
     const timeLabelText = timeLabel ? timeLabel : translate('Unplayed episode')
 
     const accessibilityLabel =
