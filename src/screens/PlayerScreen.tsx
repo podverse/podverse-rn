@@ -137,7 +137,9 @@ export class PlayerScreen extends React.Component<Props> {
   async componentWillUnmount() {
     try {
       clearTempMediaRef()
-      await updateUserPlaybackPosition()
+      const skipSetNowPlaying = false
+      const shouldAwait = true
+      await updateUserPlaybackPosition(skipSetNowPlaying, shouldAwait)
       await getHistoryItems(1, [])
     } catch (e) {
       console.log('PlayerScreen componentWillUnmount', e)

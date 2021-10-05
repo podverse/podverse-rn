@@ -282,7 +282,7 @@ export const getLoadedTrackIdByIndex = async (trackIndex: number) => {
   getTrackPosition and getTrackDuration are accurate for the currently playing item.
   addOrUpdateHistoryItem can be called without await.
 */
-export const updateUserPlaybackPosition = async (skipSetNowPlaying?: boolean) => {
+export const updateUserPlaybackPosition = async (skipSetNowPlaying?: boolean, shouldAwait?: boolean) => {
   try {
     const currentTrackId = await getCurrentLoadedTrackId()
     const setPlayerClipIsLoadedIfClip = false
@@ -298,15 +298,29 @@ export const updateUserPlaybackPosition = async (skipSetNowPlaying?: boolean) =>
       const forceUpdateOrderDate = false
 
       if (duration > 0 && lastPosition >= duration - 10) {
-        addOrUpdateHistoryItem(currentNowPlayingItem, 0, duration, forceUpdateOrderDate, skipSetNowPlaying)
+        if (shouldAwait) {
+          await addOrUpdateHistoryItem(currentNowPlayingItem, 0, duration, forceUpdateOrderDate, skipSetNowPlaying)
+        } else {
+          addOrUpdateHistoryItem(currentNowPlayingItem, 0, duration, forceUpdateOrderDate, skipSetNowPlaying)
+        }
       } else if (lastPosition > 0) {
-        addOrUpdateHistoryItem(
-          currentNowPlayingItem,
-          lastPosition,
-          duration,
-          forceUpdateOrderDate,
-          skipSetNowPlaying
-        )
+        if (shouldAwait) {
+          await addOrUpdateHistoryItem(
+            currentNowPlayingItem,
+            lastPosition,
+            duration,
+            forceUpdateOrderDate,
+            skipSetNowPlaying
+          )
+        } else {
+          addOrUpdateHistoryItem(
+            currentNowPlayingItem,
+            lastPosition,
+            duration,
+            forceUpdateOrderDate,
+            skipSetNowPlaying
+          )
+        }
       }
     }
   } catch (error) {
