@@ -71,7 +71,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   }
 
   _handleChangeText = (value: string) => {
-    this.setState({ url: value })
+    this.setState({ url: value.trim() })
   }
 
   _handleToggleUsernameAndPassword = () => {

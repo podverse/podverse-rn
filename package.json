@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "3.2.5",
+  "version": "3.2.6",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "react-native start",
     "dev:android": "react-native run-android",
-    "dev:ios": "react-native run-ios --simulator 'iPhone 12 Pro Max'",
+    "dev:ios": "react-native run-ios --simulator 'iPhone 13 Pro Max'",
     "dev:ios:device": "react-native run-ios --device",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "eslint --fix 'src/**/*.{ts,tsx}'",

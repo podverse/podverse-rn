@@ -22,6 +22,7 @@ import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
+import { handleAutoDownloadEpisodes } from '../services/autoDownloads'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
@@ -336,7 +337,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // before getting the latest from server and parsing the addByPodcastFeedUrls in getAuthUserInfo.
     await getAuthenticatedUserInfoLocally()
     await combineWithAddByRSSPodcasts()
-    this.handleSelectFilterItem(PV.Filters._subscribedKey)
+
+    const preventIsLoading = false
+    const preventAutoDownloading = true
+    this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
 
     // Set the appUserAgent one time on initialization, then retrieve from a constant
     // using the getAppUserAgent method, or from the global state (for synchronous access).
@@ -355,7 +359,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           }
           
           const preventIsLoading = true
-          this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading)
+          const preventAutoDownloading = false
+          this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
       
           await initDownloads()
           await initializePlayerQueue()
@@ -368,7 +373,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  handleSelectFilterItem = async (selectedKey: string, preventIsLoading?: boolean) => {
+  handleSelectFilterItem = async (selectedKey: string, preventIsLoading?: boolean,
+      preventAutoDownloading?: boolean) => {
     if (!selectedKey) {
       return
     }
@@ -402,7 +408,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
       },
       () => {
         (async () => {
-          const newState = await this._queryData(selectedKey, this.state)
+          const nextState = null
+          const options = {}
+          const newState = await this._queryData(selectedKey, this.state, nextState, options, preventAutoDownloading)
           this.setState(newState)
         })()
       }
@@ -788,8 +796,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _querySubscribedPodcasts = async () => {
+  _querySubscribedPodcasts = async (preventAutoDownloading?: boolean) => {
     await getSubscribedPodcasts()
+    if (!preventAutoDownloading) {
+      await handleAutoDownloadEpisodes()
+    }
   }
 
   _queryAllPodcasts = async (sort: string | null, page = 1) => {
@@ -817,7 +828,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     filterKey: any,
     prevState: State,
     nextState?: any,
-    queryOptions: { isCategorySub?: boolean; searchTitle?: string } = {}
+    queryOptions: { isCategorySub?: boolean; searchTitle?: string } = {},
+    preventAutoDownloading?: boolean
   ) => {
     let newState = {
       isLoading: false,
@@ -841,7 +853,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
       if (filterKey === PV.Filters._subscribedKey) {
         await getAuthUserInfo() // get the latest subscribedPodcastIds first
-        await this._querySubscribedPodcasts()
+        await this._querySubscribedPodcasts(preventAutoDownloading)
       } else if (filterKey === PV.Filters._downloadedKey) {
         const podcasts = await getDownloadedPodcasts()
         newState.endOfResultsReached = true
