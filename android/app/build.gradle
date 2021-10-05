@@ -136,7 +136,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         ndkVersion rootProject.ext.ndkVersion
         versionCode 1
-        versionName "3.2.5"
+        versionName "3.2.6"
         multiDexEnabled true
         missingDimensionStrategy 'store', 'play'
     }
