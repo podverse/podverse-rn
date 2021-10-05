@@ -203,14 +203,16 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   _toggleSubscribeToPodcast = async (id: string) => {
+    const { selectedPodcast } = this.state
     const wasAlerted = await alertIfNoNetworkConnection(translate('subscribe to this podcast'))
     if (wasAlerted) return
 
     try {
-      await toggleSubscribeToPodcast(id)
+      toggleSubscribeToPodcast(id)
     } catch (error) {
       Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
     }
+    this._handleNavigationPress(selectedPodcast)
     this.setState({ showActionSheet: false })
   }
 
