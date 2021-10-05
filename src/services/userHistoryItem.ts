@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { unionBy } from 'lodash'
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
 import { PV } from '../resources'
@@ -155,6 +156,9 @@ export const getHistoryItemsLocally = async () => {
 const getHistoryItemsFromServer = async (page: number) => {
   const bearerToken = await getBearerToken()
 
+  const results = await getHistoryItemsLocally()
+  const { userHistoryItems: localUserHistoryItems } = results
+
   const response = await request({
     endpoint: '/user-history-item',
     method: 'GET',
@@ -166,9 +170,16 @@ const getHistoryItemsFromServer = async (page: number) => {
   })
 
   const { userHistoryItems, userHistoryItemsCount } = response.data
-  await setAllHistoryItemsLocally(userHistoryItems)
 
-  return { userHistoryItems, userHistoryItemsCount }
+  const combinedUserHistoryItems = unionBy(userHistoryItems, localUserHistoryItems, 'episodeId') as NowPlayingItem[]
+  const countDifference = (userHistoryItems.length + localUserHistoryItems.length) - combinedUserHistoryItems.length
+  const combinedUserHistoryItemsCount = userHistoryItemsCount + localUserHistoryItems.length - countDifference
+  await setAllHistoryItemsLocally(combinedUserHistoryItems)
+
+  return {
+    userHistoryItems: combinedUserHistoryItems,
+    userHistoryItemsCount: combinedUserHistoryItemsCount
+  }
 }
 
 export const filterItemFromHistoryItemsIndex = (historyItemsIndex: any, item: any) => {
@@ -187,11 +198,12 @@ const generateHistoryItemsIndex = (historyItems: any[]) => {
     episodes: {},
     mediaRefs: {}
   }
-
+  
   if (!historyItems) {
     historyItems = []
   }
   for (const historyItem of historyItems) {
+
     if (historyItem.mediaRefId) {
       historyItemsIndex.mediaRefs[historyItem.mediaRefId] = {
         mediaFileDuration: historyItem.mediaFileDuration || historyItem.episodeDuration,
@@ -205,6 +217,7 @@ const generateHistoryItemsIndex = (historyItems: any[]) => {
       }
     }
   }
+
   return historyItemsIndex
 }
 
@@ -220,6 +233,9 @@ export const getHistoryItemsIndexLocally = async () => {
 }
 
 const getHistoryItemsIndexFromServer = async () => {
+  const results = await getHistoryItemsLocally()
+  const { userHistoryItems: localUserHistoryItems } = results
+
   const bearerToken = await getBearerToken()
   const response = (await request({
     endpoint: '/user-history-item/metadata',
@@ -231,7 +247,9 @@ const getHistoryItemsIndexFromServer = async () => {
   })) as any
 
   const { userHistoryItems } = response.data
-  return generateHistoryItemsIndex(userHistoryItems)
+
+  const combinedHistoryItems = Object.assign(localUserHistoryItems, userHistoryItems)
+  return generateHistoryItemsIndex(combinedHistoryItems)
 }
 
 const removeHistoryItemLocally = async (item: NowPlayingItem) => {
