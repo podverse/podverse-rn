@@ -19,6 +19,7 @@ export const clearChapterPlaybackInfo = async (nowPlayingItem?: NowPlayingItem) 
     setGlobal(
       {
         currentChapters: [],
+        currentChaptersStartTimePositions: [],
         currentChapter: null
       },
       () => {
