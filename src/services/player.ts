@@ -668,20 +668,18 @@ export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (
 ) => {
   if (!trackId) return null
 
-  const queueItems = await getQueueItemsLocally()
-
-
-  const queueItemIndex = queueItems.findIndex((x: any) =>
+  const results = await getHistoryItemsLocally()
+  const { userHistoryItems } = results
+  let currentNowPlayingItem = userHistoryItems.find((x: any) =>
     checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId)
   )
 
-  let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
   if (!currentNowPlayingItem) {
-    const results = await getHistoryItemsLocally()
-    const { userHistoryItems } = results
-    currentNowPlayingItem = userHistoryItems.find((x: any) =>
+    const queueItems = await getQueueItemsLocally()
+    const queueItemIndex = queueItems.findIndex((x: any) =>
       checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId)
     )
+    currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
   }
 
   if (!currentNowPlayingItem) {
