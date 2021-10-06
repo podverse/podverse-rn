@@ -643,7 +643,7 @@ export const numberWithCommas = (x?: number) => {
 
 export const safeKeyExtractor = (listName: string, index: number, id?: string) => {
   if (id) {
-    return id
+    return id + index
   } else {
     return `${listName}_${index}`
   }
