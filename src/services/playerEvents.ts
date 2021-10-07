@@ -21,8 +21,11 @@ import {
   getLoadedTrackIdByIndex,
   getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId,
   getPlaybackSpeed,
+  handlePause,
   handlePlay,
   handleResumeAfterClipHasEnded,
+  handleSeek,
+  handleStop,
   playerJumpBackward,
   playerJumpForward,
   PVTrackPlayer,
@@ -112,7 +115,7 @@ const syncNowPlayingItemWithTrack = () => {
           clearInterval(retryInterval)
         } else {
           const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
-            currentTrackId, setPlayerClipIsLoadedIfClip)    
+            currentTrackId, setPlayerClipIsLoadedIfClip)
           if (currentNowPlayingItem && retryInterval) {
             clearInterval(retryInterval)
             await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
@@ -157,7 +160,7 @@ const handleQueueEnded = (x: any) => {
   setTimeout(() => {
     (async () => {
       /*
-        The app is calling TrackPlayer.reset() on iOS only in loadItemAndPlayTrack
+        The app is calling PVTrackPlayer.reset() on iOS only in loadItemAndPlayTrack
         because .reset() is the only way to clear out the current item from the queue,
         but .reset() results in the playback-queue-ended event in firing.
         We don't want the playback-queue-ended event handling logic below to happen
@@ -191,7 +194,7 @@ module.exports = async () => {
     handleTrackEnded(x)
   })
 
-  // NOTE: TrackPlayer.reset will call the playback-queue-ended event on Android!!!
+  // NOTE: PVTrackPlayer.reset will call the playback-queue-ended event on Android!!!
   PVTrackPlayer.addEventListener('playback-queue-ended', (x) => {
     console.log('playback-queue-ended', x)
     handleQueueEnded(x)
@@ -219,8 +222,6 @@ module.exports = async () => {
           if (Platform.OS === 'ios') {
             if (x.state === RNTPState.Playing) {
               await setRateWithLatestPlaybackSpeed()
-            } else if (x.state === RNTPState.Paused || RNTPState.Stopped) {
-              await updateUserPlaybackPosition()
             }
           } else if (Platform.OS === 'android') {
             /*
@@ -240,8 +241,6 @@ module.exports = async () => {
             if (x.state === playing) {
               const rate = await getPlaybackSpeed()
               PVTrackPlayer.setRate(rate)
-            } else if (x.state === paused || x.state === stopped) {
-              await updateUserPlaybackPosition()
             }
           }
         }
@@ -266,7 +265,7 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('remote-pause', () => {
-    PVTrackPlayer.pause()
+    handlePause()
   })
 
   PVTrackPlayer.addEventListener('remote-play', () => {
@@ -275,7 +274,7 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('remote-seek', (data) => {
     if (data.position || data.position >= 0) {
-      PVTrackPlayer.seekTo(Math.floor(data.position))
+      handleSeek(data.position)
     }
   })
 
@@ -308,9 +307,9 @@ module.exports = async () => {
         const currentState = await PVTrackPlayer.getState()
         const isPlaying = currentState === RNTPState.Playing
         if (permanent && isPlaying) {
-          PVTrackPlayer.stop()
+          handleStop()
         } else if (paused) {
-          PVTrackPlayer.pause()
+          handlePause()
         } else if (!permanent) {
           handlePlay()
         }
@@ -325,11 +324,6 @@ module.exports = async () => {
       //     PVTrackPlayer.play()
       //   }
       // }
-
-      /* Always save the user playback position whenever the remote-duck event happens.
-         I'm not sure if playback-state gets called whenever remote-duck gets called,
-         so it's possible we are calling updateUserPlaybackPosition more times than necessary. */
-      await updateUserPlaybackPosition()
     })()
   })
 }
@@ -381,7 +375,7 @@ const stopCheckClipIfEndTimeReached = () => {
       const { clipEndTime } = nowPlayingItem
       const currentPosition = await PVTrackPlayer.getTrackPosition()
       if (currentPosition > clipEndTime) {
-        PVTrackPlayer.pause()
+        handlePause()
         await setClipHasEnded(true)
       }
     }

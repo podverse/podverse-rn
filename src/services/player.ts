@@ -36,9 +36,9 @@ export const PVTrackPlayer = TrackPlayer
 
 const checkServiceRunning = async (defaultReturn: any = '') => {
   try {
-    const serviceRunning = await TrackPlayer.isServiceRunning()
+    const serviceRunning = await PVTrackPlayer.isServiceRunning()
     if (!serviceRunning) {
-      throw new Error('TrackPlayer Service not running')
+      throw new Error('PVTrackPlayer Service not running')
     }
   } catch (err) {
     console.log(err.message)
@@ -55,7 +55,7 @@ PVTrackPlayer.getTrackPosition = async () => {
     return serviceRunningResult
   }
 
-  return TrackPlayer.getPosition()
+  return PVTrackPlayer.getPosition()
 }
 
 PVTrackPlayer.getCurrentLoadedTrack = async () => {
@@ -65,7 +65,7 @@ PVTrackPlayer.getCurrentLoadedTrack = async () => {
     return serviceRunningResult
   }
 
-  return TrackPlayer.getCurrentTrack()
+  return PVTrackPlayer.getCurrentTrack()
 }
 
 PVTrackPlayer.getTrackDuration = async () => {
@@ -74,11 +74,11 @@ PVTrackPlayer.getTrackDuration = async () => {
     return serviceRunningResult
   }
 
-  return TrackPlayer.getDuration()
+  return PVTrackPlayer.getDuration()
 }
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
-TrackPlayer.setupPlayer({
+PVTrackPlayer.setupPlayer({
   waitForBuffer: false
 }).then(() => {
   updateTrackPlayerCapabilities()
@@ -87,7 +87,7 @@ TrackPlayer.setupPlayer({
 export const updateTrackPlayerCapabilities = () => {
   const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
 
-  TrackPlayer.updateOptions({
+  PVTrackPlayer.updateOptions({
     capabilities: [
       Capability.JumpBackward,
       Capability.JumpForward,
@@ -156,14 +156,14 @@ export const handleResumeAfterClipHasEnded = async () => {
 export const playerJumpBackward = async (seconds: string) => {
   const position = await PVTrackPlayer.getTrackPosition()
   const newPosition = position - parseInt(seconds, 10)
-  await TrackPlayer.seekTo(newPosition)
+  await PVTrackPlayer.seekTo(newPosition)
   return newPosition
 }
 
 export const playerJumpForward = async (seconds: string) => {
   const position = await PVTrackPlayer.getTrackPosition()
   const newPosition = position + parseInt(seconds, 10)
-  await TrackPlayer.seekTo(newPosition)
+  await PVTrackPlayer.seekTo(newPosition)
   return newPosition
 }
 
@@ -211,7 +211,7 @@ export const playerPreviewStartTime = async (startTime: number, endTime?: number
     clearInterval(playerPreviewEndTimeInterval)
   }
 
-  await TrackPlayer.seekTo(startTime)
+  await PVTrackPlayer.seekTo(startTime)
   handlePlay()
 
   if (endTime) {
@@ -376,7 +376,7 @@ export const loadItemAndPlayTrack = async (
   // if it is, then call setPlaybackposition, and play if shouldPlay, then return.
   // else, if a chapter, play like a normal episode, starting at the time stamp
 
-  TrackPlayer.pause()
+  PVTrackPlayer.pause()
 
   const lastPlayingItem = await getNowPlayingItemLocally()
   const historyItemsIndex = await getHistoryItemsIndexLocally()
@@ -390,22 +390,22 @@ export const loadItemAndPlayTrack = async (
 
   if (Platform.OS === 'ios') {
     await AsyncStorage.setItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED, 'true')
-    TrackPlayer.reset()
+    PVTrackPlayer.reset()
     const track = (await createTrack(item)) as Track
-    await TrackPlayer.add(track)
+    await PVTrackPlayer.add(track)
     await AsyncStorage.removeItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
     await syncPlayerWithQueue()
   } else {
     const currentId = await getCurrentLoadedTrackId()
     if (currentId) {
-      TrackPlayer.removeUpcomingTracks()
+      PVTrackPlayer.removeUpcomingTracks()
       const track = (await createTrack(item)) as Track
-      await TrackPlayer.add(track)
-      await TrackPlayer.skipToNext()
+      await PVTrackPlayer.add(track)
+      await PVTrackPlayer.skipToNext()
       await syncPlayerWithQueue()
     } else {
       const track = (await createTrack(item)) as Track
-      await TrackPlayer.add(track)
+      await PVTrackPlayer.add(track)
       await syncPlayerWithQueue()
     }
   }
@@ -455,9 +455,9 @@ export const addItemToPlayerQueueLast = async (item: NowPlayingItem) => {
 export const syncPlayerWithQueue = async () => {
   try {
     const pvQueueItems = await getQueueItemsLocally()
-    TrackPlayer.removeUpcomingTracks()
+    PVTrackPlayer.removeUpcomingTracks()
     const tracks = await createTracks(pvQueueItems)
-    await TrackPlayer.add(tracks)
+    await PVTrackPlayer.add(tracks)
   } catch (error) {
     console.log('syncPlayerWithQueue error:', error)
   }
@@ -559,20 +559,20 @@ export const createTracks = async (items: NowPlayingItem[]) => {
 }
 
 export const movePlayerItemToNewPosition = async (id: string, newIndex: number) => {
-  const playerQueueItems = await TrackPlayer.getQueue()
+  const playerQueueItems = await PVTrackPlayer.getQueue()
 
   const previousIndex = playerQueueItems.findIndex((x: any) => x.id === id)
 
   if (previousIndex > 0 || previousIndex === 0) {
     try {
-      await TrackPlayer.remove(previousIndex)
+      await PVTrackPlayer.remove(previousIndex)
       const pvQueueItems = await getQueueItemsLocally()
       const itemToMove = pvQueueItems.find(
         (x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id)
       )
       if (itemToMove) {
         const track = await createTrack(itemToMove) as any
-        await TrackPlayer.add([track], newIndex)
+        await PVTrackPlayer.add([track], newIndex)
       }
     } catch (error) {
       console.log('movePlayerItemToNewPosition error:', error)
@@ -583,7 +583,7 @@ export const movePlayerItemToNewPosition = async (id: string, newIndex: number) 
 export const setPlaybackPosition = async (position?: number) => {
   const currentId = await getCurrentLoadedTrackId()
   if (currentId && (position || position === 0 || (position && position > 0))) {
-    await TrackPlayer.seekTo(position)
+    await PVTrackPlayer.seekTo(position)
   }
 }
 
@@ -607,7 +607,7 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
 
         if (duration && duration > 0 && (!trackId || trackId === currentTrackId) && position >= 0) {
           clearInterval(interval)
-          await TrackPlayer.seekTo(position)
+          await PVTrackPlayer.seekTo(position)
           // Sometimes seekTo does not work right away for all episodes...
           // to work around this bug, we set another interval to confirm the track
           // position has been advanced into the clip time.
@@ -617,7 +617,7 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
               if (currentPosition >= position - 1) {
                 clearInterval(confirmClipLoadedInterval)
               } else {
-                await TrackPlayer.seekTo(position)
+                await PVTrackPlayer.seekTo(position)
               }
             })()
           }, 500)
@@ -654,7 +654,7 @@ export const setPlaybackSpeed = async (rate: number) => {
   const isPlaying = currentState === State.Playing
 
   if (isPlaying) {
-    await TrackPlayer.setRate(rate)
+    await PVTrackPlayer.setRate(rate)
   }
 }
 
@@ -718,7 +718,7 @@ export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (
 }
 
 export const togglePlay = async () => {
-  const state = await TrackPlayer.getState()
+  const state = await PVTrackPlayer.getState()
 
   if (state === State.None) {
     handlePlay()
@@ -726,19 +726,34 @@ export const togglePlay = async () => {
   }
 
   if (state === State.Playing) {
-    TrackPlayer.pause()
+    handlePause()
   } else {
     handlePlay()
   }
 }
 
 export const handlePlay = () => {
-  TrackPlayer.play()
+  PVTrackPlayer.play()
   setRateWithLatestPlaybackSpeed()
+  updateUserPlaybackPosition()
+}
+
+export const handlePause = () => {
+  PVTrackPlayer.pause()
+  updateUserPlaybackPosition()
+}
+
+export const handleSeek = async (position: number) => {
+  await PVTrackPlayer.seekTo(Math.floor(position))
+  updateUserPlaybackPosition()
+}
+
+export const handleStop = () => {
+  PVTrackPlayer.stop()
 }
 
 export const checkIdlePlayerState = async () => {
-  const state = await TrackPlayer.getState()
+  const state = await PVTrackPlayer.getState()
   return state === 0 || state === State.None
 }
 
