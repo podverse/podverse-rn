@@ -210,7 +210,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       }
   
       if (nextAppState === 'background' || nextAppState === 'inactive') {
-        // NOTE: On iOS TrackPlayer.updateOptions must be called every time the app
+        // NOTE: On iOS PVTrackPlayer.updateOptions must be called every time the app
         // goes into the background to prevent the remote controls from disappearing
         // on the lock screen.
         // Source: https://github.com/react-native-kit/react-native-track-player/issues/921#issuecomment-686806847
