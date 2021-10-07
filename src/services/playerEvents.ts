@@ -24,7 +24,7 @@ import {
   handlePause,
   handlePlay,
   handleResumeAfterClipHasEnded,
-  handleSeekAndUpdateUserPlaybackPosition,
+  handleSeek,
   handleStop,
   playerJumpBackward,
   playerJumpForward,
@@ -274,7 +274,7 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('remote-seek', (data) => {
     if (data.position || data.position >= 0) {
-      handleSeekAndUpdateUserPlaybackPosition(data.position)
+      handleSeek(data.position)
     }
   })
 
