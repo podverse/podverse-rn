@@ -743,8 +743,8 @@ export const handlePause = () => {
   updateUserPlaybackPosition()
 }
 
-export const handleSeekAndUpdateUserPlaybackPosition = (position: number) => {
-  PVTrackPlayer.seekTo(Math.floor(position))
+export const handleSeekAndUpdateUserPlaybackPosition = async (position: number) => {
+  await PVTrackPlayer.seekTo(Math.floor(position))
   updateUserPlaybackPosition()
 }
 
