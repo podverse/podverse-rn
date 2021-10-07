@@ -176,7 +176,7 @@ export const playerPreviewEndTime = async (endTime: number) => {
 
   const previewEndTime = endTime - 3
   await PVTrackPlayer.seekTo(previewEndTime)
-  handlePlayAndUpdateUserPlaybackPosition()
+  handlePlay()
 
   playerPreviewEndTimeInterval = setInterval(() => {
     (async () => {
@@ -212,7 +212,7 @@ export const playerPreviewStartTime = async (startTime: number, endTime?: number
   }
 
   await TrackPlayer.seekTo(startTime)
-  handlePlayAndUpdateUserPlaybackPosition()
+  handlePlay()
 
   if (endTime) {
     playerPreviewEndTimeInterval = setInterval(() => {
@@ -413,7 +413,7 @@ export const loadItemAndPlayTrack = async (
   if (shouldPlay) {
     if (item && !item.clipId) {
       setTimeout(() => {
-        handlePlayAndUpdateUserPlaybackPosition()
+        handlePlay()
       }, 1500)
     } else if (item && item.clipId) {
       AsyncStorage.setItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED, 'true')
@@ -625,10 +625,10 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
           const shouldPlayWhenClipIsLoaded = await AsyncStorage.getItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
 
           if (shouldPlay) {
-            handlePlayAndUpdateUserPlaybackPosition()
+            handlePlay()
           } else if (shouldPlayWhenClipIsLoaded === 'true') {
             AsyncStorage.removeItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
-            handlePlayAndUpdateUserPlaybackPosition()
+            handlePlay()
           }
 
           resolve(null)
@@ -643,7 +643,7 @@ export const restartNowPlayingItemClip = async () => {
   const nowPlayingItem = await getNowPlayingItem()
   if (nowPlayingItem && nowPlayingItem.clipStartTime) {
     setPlaybackPosition(nowPlayingItem.clipStartTime)
-    handlePlayAndUpdateUserPlaybackPosition()
+    handlePlay()
   }
 }
 
@@ -721,24 +721,24 @@ export const togglePlay = async () => {
   const state = await TrackPlayer.getState()
 
   if (state === State.None) {
-    handlePlayAndUpdateUserPlaybackPosition()
+    handlePlay()
     return
   }
 
   if (state === State.Playing) {
-    handlePauseAndUpdateUserPlaybackPosition()
+    handlePause()
   } else {
-    handlePlayAndUpdateUserPlaybackPosition()
+    handlePlay()
   }
 }
 
-export const handlePlayAndUpdateUserPlaybackPosition = () => {
+export const handlePlay = () => {
   TrackPlayer.play()
   setRateWithLatestPlaybackSpeed()
   updateUserPlaybackPosition()
 }
 
-export const handlePauseAndUpdateUserPlaybackPosition = () => {
+export const handlePause = () => {
   PVTrackPlayer.pause()
   updateUserPlaybackPosition()
 }

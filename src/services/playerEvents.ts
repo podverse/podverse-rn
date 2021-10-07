@@ -21,8 +21,8 @@ import {
   getLoadedTrackIdByIndex,
   getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId,
   getPlaybackSpeed,
-  handlePauseAndUpdateUserPlaybackPosition,
-  handlePlayAndUpdateUserPlaybackPosition,
+  handlePause,
+  handlePlay,
   handleResumeAfterClipHasEnded,
   handleSeekAndUpdateUserPlaybackPosition,
   handleStop,
@@ -265,11 +265,11 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('remote-pause', () => {
-    handlePauseAndUpdateUserPlaybackPosition()
+    handlePause()
   })
 
   PVTrackPlayer.addEventListener('remote-play', () => {
-    handlePlayAndUpdateUserPlaybackPosition()
+    handlePlay()
   })
 
   PVTrackPlayer.addEventListener('remote-seek', (data) => {
@@ -309,9 +309,9 @@ module.exports = async () => {
         if (permanent && isPlaying) {
           handleStop()
         } else if (paused) {
-          handlePauseAndUpdateUserPlaybackPosition()
+          handlePause()
         } else if (!permanent) {
-          handlePlayAndUpdateUserPlaybackPosition()
+          handlePlay()
         }
       } 
       
@@ -375,7 +375,7 @@ const stopCheckClipIfEndTimeReached = () => {
       const { clipEndTime } = nowPlayingItem
       const currentPosition = await PVTrackPlayer.getTrackPosition()
       if (currentPosition > clipEndTime) {
-        handlePauseAndUpdateUserPlaybackPosition()
+        handlePause()
         await setClipHasEnded(true)
       }
     }

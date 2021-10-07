@@ -14,7 +14,7 @@ import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import {
   getCurrentLoadedTrackId,
-  handlePlayAndUpdateUserPlaybackPosition,
+  handlePlay,
   initializePlayerQueue as initializePlayerQueueService,
   loadItemAndPlayTrack as loadItemAndPlayTrackService,
   playNextFromQueue as playNextFromQueueService,
@@ -190,7 +190,7 @@ const handleLoadChapterForNowPlayingEpisode = async (item: NowPlayingItem) => {
   setPlaybackPosition(item.clipStartTime)
   const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(item)
   await setNowPlayingItem(nowPlayingItemEpisode, item.clipStartTime || 0)
-  handlePlayAndUpdateUserPlaybackPosition()
+  handlePlay()
   loadChapterPlaybackInfo()
 }
 
