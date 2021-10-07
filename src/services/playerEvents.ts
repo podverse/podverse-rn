@@ -160,7 +160,7 @@ const handleQueueEnded = (x: any) => {
   setTimeout(() => {
     (async () => {
       /*
-        The app is calling TrackPlayer.reset() on iOS only in loadItemAndPlayTrack
+        The app is calling PVTrackPlayer.reset() on iOS only in loadItemAndPlayTrack
         because .reset() is the only way to clear out the current item from the queue,
         but .reset() results in the playback-queue-ended event in firing.
         We don't want the playback-queue-ended event handling logic below to happen
@@ -194,7 +194,7 @@ module.exports = async () => {
     handleTrackEnded(x)
   })
 
-  // NOTE: TrackPlayer.reset will call the playback-queue-ended event on Android!!!
+  // NOTE: PVTrackPlayer.reset will call the playback-queue-ended event on Android!!!
   PVTrackPlayer.addEventListener('playback-queue-ended', (x) => {
     console.log('playback-queue-ended', x)
     handleQueueEnded(x)

@@ -102,7 +102,7 @@ export function PlayerProgressBar(props: Props) {
     outputRange: [PV.Colors.skyLight + '99', PV.Colors.yellow + '99']
   })
 
-  // If no item is currently in the TrackPlayer, fallback to use the
+  // If no item is currently in the PVTrackPlayer, fallback to use the
   // last loaded item's duration (backupDuration).
   parentScopeDuration = duration > 0 ? duration : backupDuration || 0
 
@@ -149,7 +149,7 @@ export function PlayerProgressBar(props: Props) {
           startChapterInterval()
 
           /*
-            Calling TrackPlayer.seekTo(position) in setPlaybackPosition causes the progress bar
+            Calling PVTrackPlayer.seekTo(position) in setPlaybackPosition causes the progress bar
             to re-render with the *last* position, before finally seeking to the new position
             and then re-rendering with the new correct position. To workaround this, I am adding
             a 1.5 second delay before clearing the slidingPositionOverride from local state.
