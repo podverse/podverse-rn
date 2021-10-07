@@ -21,8 +21,11 @@ import {
   getLoadedTrackIdByIndex,
   getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId,
   getPlaybackSpeed,
-  handlePlay,
+  handlePauseAndUpdateUserPlaybackPosition,
+  handlePlayAndUpdateUserPlaybackPosition,
   handleResumeAfterClipHasEnded,
+  handleSeekAndUpdateUserPlaybackPosition,
+  handleStop,
   playerJumpBackward,
   playerJumpForward,
   PVTrackPlayer,
@@ -112,7 +115,7 @@ const syncNowPlayingItemWithTrack = () => {
           clearInterval(retryInterval)
         } else {
           const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
-            currentTrackId, setPlayerClipIsLoadedIfClip)    
+            currentTrackId, setPlayerClipIsLoadedIfClip)
           if (currentNowPlayingItem && retryInterval) {
             clearInterval(retryInterval)
             await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
@@ -219,8 +222,6 @@ module.exports = async () => {
           if (Platform.OS === 'ios') {
             if (x.state === RNTPState.Playing) {
               await setRateWithLatestPlaybackSpeed()
-            } else if (x.state === RNTPState.Paused || RNTPState.Stopped) {
-              await updateUserPlaybackPosition()
             }
           } else if (Platform.OS === 'android') {
             /*
@@ -240,8 +241,6 @@ module.exports = async () => {
             if (x.state === playing) {
               const rate = await getPlaybackSpeed()
               PVTrackPlayer.setRate(rate)
-            } else if (x.state === paused || x.state === stopped) {
-              await updateUserPlaybackPosition()
             }
           }
         }
@@ -266,16 +265,16 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('remote-pause', () => {
-    PVTrackPlayer.pause()
+    handlePauseAndUpdateUserPlaybackPosition()
   })
 
   PVTrackPlayer.addEventListener('remote-play', () => {
-    handlePlay()
+    handlePlayAndUpdateUserPlaybackPosition()
   })
 
   PVTrackPlayer.addEventListener('remote-seek', (data) => {
     if (data.position || data.position >= 0) {
-      PVTrackPlayer.seekTo(Math.floor(data.position))
+      handleSeekAndUpdateUserPlaybackPosition(data.position)
     }
   })
 
@@ -308,11 +307,11 @@ module.exports = async () => {
         const currentState = await PVTrackPlayer.getState()
         const isPlaying = currentState === RNTPState.Playing
         if (permanent && isPlaying) {
-          PVTrackPlayer.stop()
+          handleStop()
         } else if (paused) {
-          PVTrackPlayer.pause()
+          handlePauseAndUpdateUserPlaybackPosition()
         } else if (!permanent) {
-          handlePlay()
+          handlePlayAndUpdateUserPlaybackPosition()
         }
       } 
       
@@ -325,11 +324,6 @@ module.exports = async () => {
       //     PVTrackPlayer.play()
       //   }
       // }
-
-      /* Always save the user playback position whenever the remote-duck event happens.
-         I'm not sure if playback-state gets called whenever remote-duck gets called,
-         so it's possible we are calling updateUserPlaybackPosition more times than necessary. */
-      await updateUserPlaybackPosition()
     })()
   })
 }
@@ -381,7 +375,7 @@ const stopCheckClipIfEndTimeReached = () => {
       const { clipEndTime } = nowPlayingItem
       const currentPosition = await PVTrackPlayer.getTrackPosition()
       if (currentPosition > clipEndTime) {
-        PVTrackPlayer.pause()
+        handlePauseAndUpdateUserPlaybackPosition()
         await setClipHasEnded(true)
       }
     }

@@ -5,7 +5,7 @@ import { State as RNTPState } from 'react-native-track-player'
 import { useGlobal } from 'reactn'
 import { checkIfNowPlayingItem, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
-import { handlePlay, PVTrackPlayer, setPlaybackPosition } from '../services/player'
+import { handlePlayAndUpdateUserPlaybackPosition, PVTrackPlayer, setPlaybackPosition } from '../services/player'
 import { loadItemAndPlayTrack, togglePlay } from '../state/actions/player'
 import { Icon, MoreButton, Text, View } from './'
 
@@ -87,7 +87,7 @@ export const TimeRemainingWidget = (props: Props) => {
     const currentState = await PVTrackPlayer.getState()
     const isPlaying = currentState === RNTPState.Playing
     if (!isPlaying) {
-      handlePlay()
+      handlePlayAndUpdateUserPlaybackPosition()
     }
   }
 
