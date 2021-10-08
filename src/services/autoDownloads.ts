@@ -7,7 +7,7 @@ import { parseAllAddByRSSPodcasts } from './parser'
 
 export const getAutoDownloadsLastRefreshDate = async () => {
   const dateStr = await AsyncStorage.getItem(PV.Keys.AUTODOWNLOADS_LAST_REFRESHED)
-  const dateISOString = (dateStr && new Date(dateStr).toISOString()) || new Date().toISOString()
+  const dateISOString = !!dateStr ? new Date(dateStr).toISOString() : new Date().toISOString()
   return dateISOString
 }
 
