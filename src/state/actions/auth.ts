@@ -12,12 +12,12 @@ import {
   signUp
 } from '../../services/auth'
 import { getWalletInfo } from '../../services/lnpay'
-import { setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
+import { parseAllAddByRSSPodcasts, setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
 import { setAllQueueItemsLocally } from '../../services/queue'
 import { setAllHistoryItemsLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemLocally, getNowPlayingItemOnServer } from '../../services/userNowPlayingItem'
 import { getLNWallet } from './lnpay'
-import { getSubscribedPodcasts } from './podcast'
+import { combineWithAddByRSSPodcasts, getSubscribedPodcasts } from './podcast'
 import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './valueTag'
 
 export type Credentials = {
@@ -171,12 +171,17 @@ export const loginUser = async (credentials: Credentials) => {
         isLoggedIn: true,
         valueTagSettings
       }
-    }, () => {
-      getSubscribedPodcasts()
+    }, async () => {
+      try {
+        await syncItemsWithLocalStorage(userInfo)
+        await getSubscribedPodcasts()
+        await askToSyncWithNowPlayingItem()
+        await parseAllAddByRSSPodcasts(new Date().toISOString())
+        await combineWithAddByRSSPodcasts()
+      } catch (error) {
+        console.log('loginUser setGlobal callback error:', error)
+      }
     })
-
-    await syncItemsWithLocalStorage(userInfo)
-    await askToSyncWithNowPlayingItem()
 
     return userInfo
   } catch (error) {
@@ -197,9 +202,15 @@ export const logoutUser = async () => {
 export const signUpUser = async (credentials: Credentials) => {
   const globalState = getGlobal()
   const subscribedPodcastIds = safelyUnwrapNestedVariable(() => globalState.session.userInfo.subscribedPodcastIds, [])
+  const addByRSSPodcastFeedUrls =
+    safelyUnwrapNestedVariable(() => globalState.session.userInfo.addByRSSPodcastFeedUrls, [])
 
   if (subscribedPodcastIds.length > 0) {
     credentials.subscribedPodcastIds = subscribedPodcastIds
+  }
+
+  if (addByRSSPodcastFeedUrls.length > 0) {
+    credentials.addByRSSPodcastFeedUrls = addByRSSPodcastFeedUrls
   }
 
   await signUp(credentials)
