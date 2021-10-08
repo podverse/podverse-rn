@@ -5,7 +5,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
-import { getAutoDownloadSettings } from './autoDownloads'
+import { getAutoDownloadSettings, getAutoDownloadsLastRefreshDate } from './autoDownloads'
 import { combineWithAddByRSSPodcasts } from './podcast'
 import { request } from './request'
 const podcastFeedParser = require('@podverse/podcast-feed-parser')
@@ -143,7 +143,7 @@ export const setAddByRSSPodcastFeedUrlsLocally = async (addByRSSPodcastFeedUrls:
   }
 }
 
-export const parseAllAddByRSSPodcasts = async (lastParsedPubDate: string) => {
+export const parseAllAddByRSSPodcasts = async () => {
   const urls = await getAddByRSSPodcastFeedUrlsLocally()
   const parsedPodcasts = []
   const finalParsedPodcasts = []
@@ -178,6 +178,7 @@ export const parseAllAddByRSSPodcasts = async (lastParsedPubDate: string) => {
       && parsedPodcast.episodes 
       && parsedPodcast.episodes.length) 
     {
+      const lastParsedPubDate = await getAutoDownloadsLastRefreshDate()
       for(const episode of parsedPodcast.episodes) {
         if(new Date(episode.pubDate).valueOf() > new Date(lastParsedPubDate).valueOf()) {
           const restart = false
