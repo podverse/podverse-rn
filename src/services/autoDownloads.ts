@@ -5,12 +5,16 @@ import { PV } from '../resources'
 import { getEpisodes } from './episode'
 import { parseAllAddByRSSPodcasts } from './parser'
 
+export const getAutoDownloadsLastRefreshDate = async () => {
+  const dateStr = await AsyncStorage.getItem(PV.Keys.AUTODOWNLOADS_LAST_REFRESHED)
+  const dateISOString = (dateStr && new Date(dateStr).toISOString()) || new Date().toISOString()
+  return dateISOString
+}
+
 export const handleAutoDownloadEpisodesAddByRSSPodcasts = async () => {
   const isConnected = await hasValidNetworkConnection()
   if (isConnected) {
-    const dateStr = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED)
-    const dateISOString = (dateStr && new Date(dateStr).toISOString()) || new Date().toISOString()
-    await parseAllAddByRSSPodcasts(dateISOString)
+    await parseAllAddByRSSPodcasts()
   }
 }
 
@@ -21,8 +25,7 @@ export const handleAutoDownloadEpisodes = async () => {
   const autoDownloadSettings = autoDownloadSettingsString ? JSON.parse(autoDownloadSettingsString) : {}
   const podcastIds = Object.keys(autoDownloadSettings).filter((key: string) => autoDownloadSettings[key] === true)
 
-  const dateStr = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED)
-  const dateISOString = (dateStr && new Date(dateStr).toISOString()) || new Date().toISOString()
+  const dateISOString = await getAutoDownloadsLastRefreshDate()
   const autoDownloadEpisodes = await getAutoDownloadEpisodes(dateISOString, podcastIds)
 
   // Wait for app to initialize. Without this setTimeout, then when getSubscribedPodcasts is called in
@@ -42,7 +45,7 @@ export const handleAutoDownloadEpisodes = async () => {
     })()
   }, 3000)
 
-  await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED, new Date().toISOString())
+  await AsyncStorage.setItem(PV.Keys.AUTODOWNLOADS_LAST_REFRESHED, new Date().toISOString())
 }
 
 export const getAutoDownloadEpisodes = async (sincePubDate: string, podcastIds: any[]) => {
