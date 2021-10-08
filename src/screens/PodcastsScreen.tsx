@@ -799,7 +799,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _querySubscribedPodcasts = async (preventAutoDownloading?: boolean) => {
     await getSubscribedPodcasts()
-    await parseAllAddByRSSPodcasts(new Date().toISOString())
+    await parseAllAddByRSSPodcasts()
     await combineWithAddByRSSPodcasts()
     if (!preventAutoDownloading) {
       await handleAutoDownloadEpisodes()
