@@ -26,6 +26,7 @@ import { handleAutoDownloadEpisodes } from '../services/autoDownloads'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
+import { parseAllAddByRSSPodcasts } from '../services/parser'
 import { checkIdlePlayerState, updateTrackPlayerCapabilities,
   updateUserPlaybackPosition } from '../services/player'
 import { getPodcast, getPodcasts } from '../services/podcast'
@@ -798,6 +799,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _querySubscribedPodcasts = async (preventAutoDownloading?: boolean) => {
     await getSubscribedPodcasts()
+    await parseAllAddByRSSPodcasts()
+    await combineWithAddByRSSPodcasts()
     if (!preventAutoDownloading) {
       await handleAutoDownloadEpisodes()
     }
