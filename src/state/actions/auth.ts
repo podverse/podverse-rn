@@ -176,7 +176,7 @@ export const loginUser = async (credentials: Credentials) => {
         await syncItemsWithLocalStorage(userInfo)
         await getSubscribedPodcasts()
         await askToSyncWithNowPlayingItem()
-        await parseAllAddByRSSPodcasts(new Date().toISOString())
+        await parseAllAddByRSSPodcasts()
         await combineWithAddByRSSPodcasts()
       } catch (error) {
         console.log('loginUser setGlobal callback error:', error)
