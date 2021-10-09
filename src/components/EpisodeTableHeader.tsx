@@ -58,7 +58,7 @@ export const EpisodeTableHeader = (props: Props) => {
   if (!podcastTitleText) podcastTitleText = translate('Untitled Podcast')
 
   const pubDateText = readableDate(pubDate)
-  const timeLabel = getTimeLabelText(mediaFileDuration, duration, userPlaybackPosition)
+  const timeLabel = getTimeLabelText(mediaFileDuration, duration, userPlaybackPosition, episodeCompleted)
   const timeLabelText = timeLabel ? timeLabel : translate('Unplayed episode')
 
   const accessibilityLabel =
