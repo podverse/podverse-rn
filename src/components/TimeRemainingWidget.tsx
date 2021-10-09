@@ -128,7 +128,7 @@ export const TimeRemainingWidget = (props: Props) => {
           : <Icon name={'play'} size={13} />
         }
       </TouchableOpacity>
-      {hasStartedItem && !isInvalidDuration && (
+      {(hasStartedItem && !isInvalidDuration && playedTime > 0 && !episodeCompleted) && (
         <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
       )}
       <View
@@ -143,7 +143,7 @@ export const TimeRemainingWidget = (props: Props) => {
           style={styles.text}>
           {timeLabel}
         </Text>
-        {!!episodeCompleted && (
+        {!!episodeCompleted && !userPlaybackPosition && (
           <Icon
             name={'check'}
             size={22}
