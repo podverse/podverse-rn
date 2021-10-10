@@ -3,6 +3,7 @@ import { Alerts } from './Alerts'
 import { AlertStatuses } from './AlertStatuses'
 import { Colors } from './Colors'
 import { DeepLinks } from './DeepLinks'
+import { Dimensions } from './Dimensions'
 import { Emails } from './Emails'
 import { Errors } from './Errors'
 import { Events } from './Events'
@@ -34,6 +35,7 @@ export const PV = {
   AlertStatuses,
   Colors,
   DeepLinks,
+  Dimensions,
   Emails,
   Errors,
   Events,

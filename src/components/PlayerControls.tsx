@@ -172,6 +172,14 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     const jumpForwardAccessibilityLabel =
       `${translate(`Jump forward`)} ${jumpForwardsTime} ${translate('seconds')}`
 
+    const previousButtonAccessibilityLabel = currentChapters && currentChapters.length > 1
+      ? translate('Go to previous chapter')
+      : translate('Return to beginning of episode')
+    
+    const nextButtonAccessibilityLabel = currentChapters && currentChapters.length > 1
+      ? translate('Go to next chapter')
+      : translate('Skip to next item in your queue')
+    
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
         <View style={styles.progressWrapper}>
@@ -188,7 +196,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         <View style={styles.playerControlsMiddleRow}>
           <View style={styles.playerControlsMiddleRowTop}>
             <TouchableOpacity
-              accessibilityLabel={translate('Return to beginning of episode')}
+              accessibilityLabel={previousButtonAccessibilityLabel}
               accessibilityRole='button'
               onLongPress={() => setPlaybackPosition(0)}
               onPress={playPreviousChapterOrReturnToBeginningOfTrack}
@@ -224,7 +232,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              accessibilityLabel={translate('Skip to next item in your queue')}
+              accessibilityLabel={nextButtonAccessibilityLabel}
               accessibilityRole='button'
               onLongPress={playNextFromQueue}
               onPress={playNextChapterOrQueueItem}
