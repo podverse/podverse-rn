@@ -13,6 +13,7 @@ import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
   getAppUserAgent, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
+import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import { getPodcastCredentialsHeader } from './parser'
 import { getPodcastFeedUrlAuthority } from './podcast'
@@ -332,9 +333,16 @@ export const initializePlayerQueue = async () => {
   try {
     const queueItems = await getQueueItems()
     let filteredItems = [] as any
-
-    const item = await getNowPlayingItemLocally()
+    
+    let item = await getNowPlayingItemLocally()
     if (item) {
+      /* Use the item from history to make sure we have the same
+         userPlaybackPosition that was last saved from other devices. */
+      if (!item.clipId && item.episodeId) {
+        await updateHistoryItemsIndex()
+        item = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(item.episodeId)
+      }
+
       filteredItems = filterItemFromQueueItems(queueItems, item)
       filteredItems.unshift(item)
     }
