@@ -1,5 +1,5 @@
-import { Alert, Linking, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View as RNView } from 'react-native'
-
+import { Alert, Dimensions, Linking, StyleSheet, TouchableOpacity,
+  TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
@@ -13,6 +13,8 @@ type Props = {
 }
 
 const testIDPrefix = 'media_player_carousel_viewer'
+
+const screenHeight = Dimensions.get('screen').width
 
 export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
   constructor(props) {
@@ -89,6 +91,10 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       ? [styles.outerWrapper, { paddingBottom: 10, paddingHorizontal: 10 }, { width }]
       : [styles.outerWrapper, { padding: 10 }, { width }]
 
+    const imageWrapperStyle = screenHeight < PV.Dimensions.smallScreen.height
+      ? [styles.carouselImageWrapper, { width: width * 0.9 }, { height: '50%' }]
+      : [styles.carouselImageWrapper, { width: width * 0.9 }]
+
     return (
       <ScrollView
         scrollEnabled={false}
@@ -127,7 +133,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             )
           )}
         </RNView>
-        <RNView style={[styles.carouselImageWrapper, { width: width * 0.9 }]}>
+        <RNView style={imageWrapperStyle}>
           <TouchableOpacity
             accessible={false}
             activeOpacity={1}
