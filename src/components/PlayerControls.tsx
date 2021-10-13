@@ -6,13 +6,14 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import {
   playerCheckIfStateIsBuffering,
+  playerCheckIfStateIsPlaying,
   playerJumpBackward,
   playerJumpForward,
   playerSetPosition
 } from '../services/player'
-import { playNextChapterOrQueueItem, playNextFromQueue,
+import { playNextChapterOrQueueItem, playerPlayNextFromQueue,
   playPreviousChapterOrReturnToBeginningOfTrack, setPlaybackSpeed,
-  togglePlay } from '../state/actions/player'
+  playerTogglePlay } from '../state/actions/player'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
@@ -150,7 +151,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         />
       )
       playButtonAdjust = { paddingBottom: 8 } as any
-    } else if (playbackState === RNTPState.Playing) {
+    } else if (playerCheckIfStateIsPlaying(playbackState)) {
       playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
       playButtonAdjust = {}
       playButtonAccessibilityHint = translate('ARIA HINT - pause playback')
@@ -217,7 +218,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             <TouchableOpacity
               accessibilityHint={playButtonAccessibilityHint}
               accessibilityLabel={playButtonAccessibilityLabel}
-              onPress={togglePlay}>
+              onPress={playerTogglePlay}>
               <View importantForAccessibility='no-hide-descendants' style={[playerStyles.playButton, playButtonAdjust]}>
                 {playButtonIcon}
               </View>
@@ -235,7 +236,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             <TouchableOpacity
               accessibilityLabel={nextButtonAccessibilityLabel}
               accessibilityRole='button'
-              onLongPress={playNextFromQueue}
+              onLongPress={playerPlayNextFromQueue}
               onPress={playNextChapterOrQueueItem}
               disabled={noNextQueueItem}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>

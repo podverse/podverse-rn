@@ -6,23 +6,20 @@ import {
   NowPlayingItem
 } from 'podverse-shared'
 import Config from 'react-native-config'
-import { State as RNTPState } from 'react-native-track-player'
 import { getGlobal, setGlobal } from 'reactn'
 import { getParsedTranscript } from '../../lib/transcriptHelpers'
 import { convertPodcastIndexValueTagToStandardValueTag } from '../../lib/valueTagHelpers'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import {
-  playerGetCurrentLoadedTrackId,
   playerHandlePlayWithUpdate,
   playerLoadNowPlayingItem as playerLoadNowPlayingItemService,
   playerSetPosition,
-  setPlaybackSpeed as setPlaybackSpeedService,
-  togglePlay as togglePlayService,
+  playerSetPlaybackSpeed as playerSetPlaybackSpeedService,
+  playerTogglePlay as playerTogglePlayService,
   playerGetState,
   playerGetDuration
 } from '../../services/player'
-import { PVAudioPlayer } from '../../services/playerAudio'
 import { getPodcastFromPodcastIndexById } from '../../services/podcastIndex'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 import { trackPlayerScreenPageView } from '../../services/tracking'
@@ -30,10 +27,11 @@ import {
   clearNowPlayingItem as clearNowPlayingItemService,
   setNowPlayingItem as setNowPlayingItemService
 } from '../../services/userNowPlayingItem'
-import { getQueueItems } from '../../state/actions/queue'
+import { audioPlayNextFromQueue } from './playerAudio'
 import { clearChapterPlaybackInfo, getChapterNext, getChapterPrevious, loadChapterPlaybackInfo,
   loadChaptersForNowPlayingItem, 
   setChapterOnGlobalState} from './playerChapters'
+import { videoStateClearVideoInfo, videoStateSetVideoInfo } from './playerVideo'
 
 const clearEnrichedPodcastDataIfNewEpisode =
  async (previousNowPlayingItem: NowPlayingItem, nowPlayingItem: NowPlayingItem) => {
@@ -45,7 +43,7 @@ const clearEnrichedPodcastDataIfNewEpisode =
   }
 }
 
-export const updatePlayerState = (item: NowPlayingItem) => {
+export const playerUpdatePlayerState = (item: NowPlayingItem) => {
   if (!item) return
 
   const globalState = getGlobal()
@@ -59,7 +57,8 @@ export const updatePlayerState = (item: NowPlayingItem) => {
       ...globalState.player,
       episode,
       ...(!item.clipId ? { mediaRef } : { mediaRef: null }),
-      nowPlayingItem: item
+      nowPlayingItem: item,
+      videoInfo: videoStateSetVideoInfo(item)
     }
   } as any
 
@@ -73,7 +72,7 @@ export const updatePlayerState = (item: NowPlayingItem) => {
   setGlobal(newState)
 }
 
-export const clearNowPlayingItem = async () => {
+export const playerClearNowPlayingItem = async () => {
   await clearNowPlayingItemService()
 
   const globalState = getGlobal()
@@ -81,8 +80,9 @@ export const clearNowPlayingItem = async () => {
     player: {
       ...globalState.player,
       nowPlayingItem: null,
-      playbackState: RNTPState.Stopped,
-      showMiniPlayer: false
+      playbackState: null,
+      showMiniPlayer: false,
+      videoInfo: videoStateClearVideoInfo()
     },
     screenPlayer: {
       ...globalState.screenPlayer,
@@ -155,20 +155,13 @@ export const playNextChapterOrQueueItem = async () => {
     }
   }
   
-  await playNextFromQueue()
+  await audioPlayNextFromQueue()
 }
 
-export const playNextFromQueue = async () => {
-  const item = await playNextFromQueueService()
-  await getQueueItems()
-
-  if (item) trackPlayerScreenPageView(item)
-}
-
-const handleLoadChapterForNowPlayingEpisode = async (item: NowPlayingItem) => {
+const playerHandleLoadChapterForNowPlayingEpisode = async (item: NowPlayingItem) => {
   playerSetPosition(item.clipStartTime)
   const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(item)
-  await setNowPlayingItem(nowPlayingItemEpisode, item.clipStartTime || 0)
+  await playerSetNowPlayingItem(nowPlayingItemEpisode, item.clipStartTime || 0)
   playerHandlePlayWithUpdate()
   loadChapterPlaybackInfo()
 }
@@ -191,25 +184,18 @@ export const playerLoadNowPlayingItem = async (
 
     if (item.clipIsOfficialChapter) {
       if (previousNowPlayingItem && item.episodeId === previousNowPlayingItem.episodeId) {
-        await handleLoadChapterForNowPlayingEpisode(item)
+        await playerHandleLoadChapterForNowPlayingEpisode(item)
         return
       } else {
         loadChapterPlaybackInfo()
       }
     }
 
-    updatePlayerState(item)
+    playerUpdatePlayerState(item)
 
     const itemToSetNextInQueue = setCurrentItemNextInQueue ? previousNowPlayingItem : null
 
-    // If the value tag is unavailable, try to enrich it from Podcast Index API
-    // then make sure the enrichedItem is on global state.
-    // If the transcript tag is available, parse it and assign it to the enrichedItem.
-    const enrichedItem = await playerLoadNowPlayingItemService(
-      item, shouldPlay, !!forceUpdateOrderDate, itemToSetNextInQueue)
-    if (enrichedItem) {
-      updatePlayerState(enrichedItem)
-    }
+    await playerLoadNowPlayingItemService(item, shouldPlay, !!forceUpdateOrderDate, itemToSetNextInQueue)
 
     showMiniPlayer()
   }
@@ -272,7 +258,7 @@ const enrichPodcastValue = async (item: NowPlayingItem) => {
 }
 
 export const setPlaybackSpeed = async (rate: number) => {
-  await setPlaybackSpeedService(rate)
+  await playerSetPlaybackSpeedService(rate)
 
   const globalState = getGlobal()
   setGlobal({
@@ -285,24 +271,22 @@ export const setPlaybackSpeed = async (rate: number) => {
   PVEventEmitter.emit(PV.Events.PLAYER_SPEED_UPDATED)
 }
 
-export const togglePlay = async () => {
+export const playerTogglePlay = async () => {
   // If somewhere a play button is pressed, but nothing is currently loaded in the player,
   // then load the last time from memory by re-initializing the player.
-  const trackId = await playerGetCurrentLoadedTrackId()
-  if (!trackId) {
-    // TODO VIDEO:
-    // await audioInitializePlayerQueue()
-  }
-  await togglePlayService()
+  // TODO VIDEO: check if this is needed
+  // const trackId = await audioGetCurrentLoadedTrackId()
+  // if (!trackId) {
+  //   await audioInitializePlayerQueue()
+  // }
+  await playerTogglePlayService()
 
   showMiniPlayer()
 }
 
-export const updatePlaybackState = async (state?: any) => {
+export const playerUpdatePlaybackState = async (state?: any) => {
   let playbackState = state
-
   if (!playbackState) playbackState = await playerGetState()
-
   const backupDuration = await playerGetDuration()
 
   const globalState = getGlobal()
@@ -315,10 +299,10 @@ export const updatePlaybackState = async (state?: any) => {
   })
 }
 
-export const setNowPlayingItem = async (item: NowPlayingItem | null, playbackPosition: number) => {
+export const playerSetNowPlayingItem = async (item: NowPlayingItem | null, playbackPosition: number) => {
   if (item) {
     await setNowPlayingItemService(item, playbackPosition)
-    updatePlayerState(item)
+    playerUpdatePlayerState(item)
   }
 }
 

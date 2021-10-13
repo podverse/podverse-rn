@@ -6,7 +6,7 @@ import { refreshDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
-import { updatePlaybackState, updatePlayerState } from '../state/actions/player'
+import { playerUpdatePlaybackState, playerUpdatePlayerState } from '../state/actions/player'
 import { getQueueItems } from '../state/actions/queue'
 
 type Props = any
@@ -43,11 +43,11 @@ export class PlayerEvents extends React.PureComponent<Props> {
   }
 
   _handlePlayerPlaybackError = () => {
-    updatePlaybackState(PV.Player.errorState)
+    playerUpdatePlaybackState(PV.Player.errorState)
   }
 
   _playerStateUpdated = () => {
-    updatePlaybackState()
+    playerUpdatePlaybackState()
   }
 
   _refreshNowPlayingItem = () => {
@@ -57,10 +57,10 @@ export class PlayerEvents extends React.PureComponent<Props> {
 
       const nowPlayingItem = await getNowPlayingItemLocally()
       if (nowPlayingItem) {
-        updatePlayerState(nowPlayingItem)
+        playerUpdatePlayerState(nowPlayingItem)
       }
    
-      await updatePlaybackState()
+      await playerUpdatePlaybackState()
       await getQueueItems()
     })()
   }

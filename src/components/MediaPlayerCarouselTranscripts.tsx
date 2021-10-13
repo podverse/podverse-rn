@@ -4,7 +4,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
-import { playerGetPlaybackSpeed, playerGetPosition, playerSetPosition } from '../services/player'
+import { getPlaybackSpeed, playerGetPosition, playerSetPosition } from '../services/player'
 import { PVSearchBar } from './PVSearchBar'
 import { AutoScrollToggle, FlatList, TableSectionSelectors, Text, View } from './'
 
@@ -119,7 +119,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
   }
 
   enableAutoscroll = async () => {
-    const playbackSpeed = await playerGetPlaybackSpeed()
+    const playbackSpeed = await getPlaybackSpeed()
     const intervalTime = 1000 / playbackSpeed
     this.clearAutoScrollInterval()
 

@@ -7,7 +7,7 @@ import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
-import { playerGetPlaybackSpeed } from '../services/player'
+import { getPlaybackSpeed } from '../services/player'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { ActionSheet, ActivityIndicator, AutoScrollToggle, ClipTableCell, Divider, FlatList,
   ScrollView, TableSectionSelectors } from './'
@@ -87,7 +87,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   }
 
   enableAutoscroll = async () => {
-    const playbackSpeed = await playerGetPlaybackSpeed()
+    const playbackSpeed = await getPlaybackSpeed()
     const intervalTime = 2000 / playbackSpeed
     lastPlayingChapter = null
     this.clearAutoScrollInterval()

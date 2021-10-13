@@ -115,9 +115,8 @@ export const audioIsLoaded = async () => {
   return trackIndex >= 0
 }
 
-export const audioCheckIfIsPlaying = async () => {
-  const currentState = await PVAudioPlayer.getState()
-  return currentState === State.Playing
+export const audioCheckIfIsPlaying = (playbackState: any) => {
+  return playbackState === State.Playing
 }
 
 export const audioGetCurrentLoadedTrackId = async () => {
@@ -482,4 +481,18 @@ export const audioPlayerGetState = () => {
 
 export const audioGetRate = () => {
   return PVAudioPlayer.getRate()
+}
+
+export const audioJumpBackward = async (seconds: string) => {
+  const position = await audioGetTrackPosition()
+  const newPosition = position - parseInt(seconds, 10)
+  await audioHandleSeekTo(newPosition)
+  return newPosition
+}
+
+export const audioJumpForward = async (seconds: string) => {
+  const position = await audioGetTrackPosition()
+  const newPosition = position + parseInt(seconds, 10)
+  await audioHandleSeekTo(newPosition)
+  return newPosition
 }

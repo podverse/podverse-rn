@@ -39,8 +39,8 @@ import {
   initializePlaybackSpeed,
   initPlayerState,
   showMiniPlayer,
-  updatePlaybackState,
-  updatePlayerState
+  playerUpdatePlaybackState,
+  playerUpdatePlayerState
 } from '../state/actions/player'
 import { combineWithAddByRSSPodcasts,
   getSubscribedPodcasts, removeAddByRSSPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
@@ -192,11 +192,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
         }
   
         if (!lastItem || (lastItem && currentItem && currentItem.episodeId !== lastItem.episodeId)) {
-          updatePlayerState(currentItem)
+          playerUpdatePlayerState(currentItem)
           showMiniPlayer()
         }
   
-        await updatePlaybackState()
+        await playerUpdatePlaybackState()
   
         // NOTE: On iOS, when returning to the app from the background while the player was paused,
         // sometimes the player will be in an idle state, requiring the user to press play twice to

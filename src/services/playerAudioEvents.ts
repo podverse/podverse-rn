@@ -11,24 +11,24 @@ import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { handleEnrichingPlayerState, playNextChapterOrQueueItem,
-  playPreviousChapterOrReturnToBeginningOfTrack, updatePlaybackState } from '../state/actions/player'
+  playPreviousChapterOrReturnToBeginningOfTrack, playerUpdatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import {
-  playerGetClipHasEnded,
-  playerGetCurrentLoadedTrackId,
-  playerGetPlaybackSpeed,
-  playerJumpBackward,
-  playerJumpForward,
+  getClipHasEnded,
+  getPlaybackSpeed,
+  setClipHasEnded,
   playerHandleResumeAfterClipHasEnded,
-  playerSetClipHasEnded,
   playerSetPositionWhenDurationIsAvailable,
   playerSetRateWithLatestPlaybackSpeed,
   playerUpdateUserPlaybackPosition
 } from './player'
 import {
   PVAudioPlayer,
+  audioJumpBackward,
+  audioJumpForward,
+  audioGetCurrentLoadedTrackId,
   audioGetLoadedTrackIdByIndex,
   audioGetTrackPosition,
   audioHandlePauseWithUpdate,
@@ -100,10 +100,10 @@ const syncNowPlayingItemWithTrack = () => {
   // or getNowPlayingItemFromLocalStorage...
   function sync() {
     (async () => {
-      updatePlaybackState()
+      playerUpdatePlaybackState()
       await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
 
-      const currentTrackId = await playerGetCurrentLoadedTrackId()
+      const currentTrackId = await audioGetCurrentLoadedTrackId()
       const setPlayerClipIsLoadedIfClip = true
 
       /*
@@ -210,7 +210,7 @@ module.exports = async () => {
 
       PVEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
-      const clipHasEnded = await playerGetClipHasEnded()
+      const clipHasEnded = await getClipHasEnded()
       const nowPlayingItem = await getNowPlayingItemLocally()
 
       if (nowPlayingItem) {
@@ -239,11 +239,9 @@ module.exports = async () => {
               buffering 6
               ???       8
             */
-            const stopped = 1
-            const paused = 2
             const playing = 3
             if (x.state === playing) {
-              const rate = await playerGetPlaybackSpeed()
+              const rate = await getPlaybackSpeed()
               PVAudioPlayer.setRate(rate)
             }
           }
@@ -260,12 +258,12 @@ module.exports = async () => {
 
   PVAudioPlayer.addEventListener('remote-jump-backward', () => {
     const { jumpBackwardsTime } = getGlobal()
-    playerJumpBackward(jumpBackwardsTime)
+    audioJumpBackward(jumpBackwardsTime)
   })
 
   PVAudioPlayer.addEventListener('remote-jump-forward', () => {
     const { jumpForwardsTime } = getGlobal()
-    playerJumpForward(jumpForwardsTime)
+    audioJumpForward(jumpForwardsTime)
   })
 
   PVAudioPlayer.addEventListener('remote-pause', () => {
@@ -342,7 +340,7 @@ const startCheckClipEndTime = async () => {
   if (nowPlayingItem) {
     const { clipEndTime, clipId } = nowPlayingItem
     if (clipId && clipEndTime) {
-      await playerSetClipHasEnded(false)
+      await setClipHasEnded(false)
       startBackgroundTimer()
     }
   }
@@ -356,7 +354,7 @@ const stopBackgroundTimerIfShouldBeStopped = async (
   const nowPlayingItem = await getNowPlayingItemLocally()
 
   if (!checkClipEndTimeShouldStop && nowPlayingItem?.clipEndTime) {
-    const clipHasEnded = await playerGetClipHasEnded()
+    const clipHasEnded = await getClipHasEnded()
     if (clipHasEnded) {
       checkClipEndTimeShouldStop = true
     }
@@ -380,7 +378,7 @@ const stopCheckClipIfEndTimeReached = () => {
       const currentPosition = await audioGetTrackPosition()
       if (currentPosition > clipEndTime) {
         audioHandlePauseWithUpdate()
-        await playerSetClipHasEnded(true)
+        await setClipHasEnded(true)
       }
     }
     const checkClipEndTimeStopped = false

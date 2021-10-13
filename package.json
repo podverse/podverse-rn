@@ -27,6 +27,11 @@
     "postinstall": "patch-package",
     "version_update": "babel-node ./scripts/update_version.js"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
     "*.{ts,tsx}": [
       "eslint --fix",

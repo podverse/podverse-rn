@@ -107,5 +107,13 @@ export const Player = {
   playerTypes: {
     isAudio: 'isAudio',
     isVideo: 'isVideo'
+  },
+  videoInfo: {
+    videoPlaybackState: {
+      stopped: 'stopped',
+      buffering: 'buffering',
+      playing: 'playing',
+      paused: 'paused'
+    }
   }
 }

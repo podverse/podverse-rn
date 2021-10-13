@@ -17,12 +17,14 @@ import { audioIsLoaded,  audioCheckIfIsPlaying, audioSetRate, audioHandlePlayWit
   audioHandleSeekToWithUpdate,
   audioSyncPlayerWithQueue,
   audioUpdateTrackPlayerCapabilities,
-  audioUpdateCurrentTrack} from './playerAudio'
+  audioUpdateCurrentTrack,
+  audioTogglePlay
+} from './playerAudio'
 import { videoIsLoaded } from './playerVideo'
 import { addOrUpdateHistoryItem, saveOrResetCurrentlyPlayingItemInHistory } from './userHistoryItem'
 import { getNowPlayingItem, getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
 
-export const playerGetClipHasEnded = async () => {
+export const getClipHasEnded = async () => {
   const clipHasEnded = await AsyncStorage.getItem(PV.Keys.CLIP_HAS_ENDED)
   return clipHasEnded === 'true'
 }
@@ -81,7 +83,7 @@ export const playerPreviewEndTime = async (endTime: number) => {
 }
 
 export const playerSetRateWithLatestPlaybackSpeed = async () => {
-  const rate = await playerGetPlaybackSpeed()
+  const rate = await getPlaybackSpeed()
 
   /*
     Call playerSetRate multiple times for iOS as a workaround for a bug.
@@ -89,8 +91,11 @@ export const playerSetRateWithLatestPlaybackSpeed = async () => {
   */
   if (Platform.OS === 'ios') {
     playerSetRate(rate)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     setTimeout( () => playerSetRate(rate), 200)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     setTimeout( () => playerSetRate(rate), 500)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     setTimeout( () => playerSetRate(rate), 800)
   } else {
     playerSetRate(rate)
@@ -118,7 +123,7 @@ export const playerPreviewStartTime = async (startTime: number, endTime?: number
   }
 }
 
-export const playerSetClipHasEnded = async (clipHasEnded: boolean) => {
+export const setClipHasEnded = async (clipHasEnded: boolean) => {
   await AsyncStorage.setItem(PV.Keys.CLIP_HAS_ENDED, JSON.stringify(clipHasEnded))
 }
 
@@ -195,6 +200,8 @@ export const playerLoadNowPlayingItem = async (
   } else {
     await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
   }
+
+  return item
 }
 
 export const playerSetPosition = async (position?: number) => {
@@ -314,7 +321,7 @@ export const playerHandleSeekToWithUpdate = async (position: number) => {
   }
 }
 
-export const playerGetPlaybackSpeed = async () => {
+export const getPlaybackSpeed = async () => {
   try {
     const rate = await AsyncStorage.getItem(PV.Keys.PLAYER_PLAYBACK_SPEED)
     if (rate) {
@@ -329,7 +336,8 @@ export const playerGetPlaybackSpeed = async () => {
 
 export const playerSetPlaybackSpeed = async (rate: number) => {
   await AsyncStorage.setItem(PV.Keys.PLAYER_PLAYBACK_SPEED, JSON.stringify(rate))
-  const isPlaying = await playerCheckIfStateIsPlaying()
+  const playerState = await playerGetState()
+  const isPlaying = playerCheckIfStateIsPlaying(playerState)
   if (isPlaying) await playerSetRate(rate)
 }
 
@@ -342,23 +350,19 @@ export const playerSetRate = async (rate = 1) => {
   }
 }
 
-export const playerCheckIfStateIsPlaying = async () => {
-  const playerType = await playerCheckActiveType()
+export const playerCheckIfStateIsPlaying = (playbackState: any) => {
   let isPlaying = false
-  if (playerType === PV.Player.playerTypes.isAudio) {
-    isPlaying = await audioCheckIfIsPlaying()
-  } else if (playerType === PV.Player.playerTypes.isVideo) {
+  isPlaying = audioCheckIfIsPlaying(playbackState)
+  if (!isPlaying) {
     // TODO: videoCheckIfIsPlaying
   }
   return isPlaying
 }
 
-export const playerCheckIfStateIsBuffering = async (playbackState: any) => {
+export const playerCheckIfStateIsBuffering = (playbackState: any) => {
   let isBuffering = false
-  const playerType = await playerCheckActiveType()
-  if (playerType === PV.Player.playerTypes.isAudio) {
-    isBuffering = audioCheckIfStateIsBuffering(playbackState)
-  } else if (playerType === PV.Player.playerTypes.isVideo) {
+  isBuffering = audioCheckIfStateIsBuffering(playbackState)
+  if (!isBuffering) {
     // TODO: videoCheckIfStateIsBuffering
   }
   return isBuffering
@@ -445,4 +449,13 @@ export const playerSetPlayerJumpForwards = (val?: string) => {
     AsyncStorage.setItem(PV.Keys.PLAYER_JUMP_FORWARDS, newValue.toString())
   }
   return newValue
+}
+
+export const playerTogglePlay = async () => {
+  const playerType = await playerCheckActiveType()
+  if (playerType === PV.Player.playerTypes.isAudio) {
+    audioTogglePlay()
+  } else if (playerType === PV.Player.playerTypes.isVideo) {
+    // TODO: videoTogglePlay
+  }
 }
