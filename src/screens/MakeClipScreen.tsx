@@ -31,12 +31,12 @@ import { requestAppStoreReview } from '../lib/utility'
 import { PV } from '../resources'
 import { createMediaRef, updateMediaRef } from '../services/mediaRef'
 import {
-  checkIfStateIsBuffering,
+  playerCheckIfStateIsBuffering,
+  playerGetPosition,
   playerJumpBackward,
   playerJumpForward,
   playerPreviewEndTime,
-  playerPreviewStartTime,
-  PVTrackPlayer
+  playerPreviewStartTime
 } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
@@ -114,7 +114,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const { player } = this.global
     const { nowPlayingItem } = player
     navigation.setParams({ _saveMediaRef: this._saveMediaRef })
-    const currentPosition = await PVTrackPlayer.getTrackPosition()
+    const currentPosition = await playerGetPosition()
     const isEditing = this.props.navigation.getParam('isEditing')
 
     // Prevent the temporary progressValue from sticking in the progress bar
@@ -201,12 +201,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   _setStartTime = async () => {
-    const currentPosition = await PVTrackPlayer.getTrackPosition()
+    const currentPosition = await playerGetPosition()
     this.setState({ startTime: Math.floor(currentPosition) })
   }
 
   _setEndTime = async () => {
-    const currentPosition = await PVTrackPlayer.getTrackPosition()
+    const currentPosition = await playerGetPosition()
     if (currentPosition && currentPosition > 0) {
       this.setState({ endTime: Math.floor(currentPosition) })
     }
@@ -306,7 +306,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               clipStartTime: mediaRef.startTime,
               clipTitle: mediaRef.title
             }
-            const position = await PVTrackPlayer.getTrackPosition()
+            const position = await playerGetPosition()
             await setNowPlayingItem(newItem, position || 0)
           }
 
@@ -442,7 +442,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       playButtonAdjust = {}
       playButtonAccessibilityHint = translate('ARIA HINT - pause playback')
       playButtonAccessibilityLabel = translate('Pause')
-    } else if (checkIfStateIsBuffering(playbackState)) {
+    } else if (playerCheckIfStateIsBuffering(playbackState)) {
       playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
       playButtonAccessibilityHint = ''

@@ -10,7 +10,7 @@ import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
-import { loadItemAndPlayTrack } from '../state/actions/player'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList,
   ScrollView, TableSectionSelectors } from './'
 
@@ -144,7 +144,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     const shouldPlay = true
     const forceUpdateOrderDate = false
     const setCurrentItemNextInQueue = false
-    loadItemAndPlayTrack(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   _handleMorePress = (selectedItem: any) => {

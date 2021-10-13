@@ -35,7 +35,7 @@ import {
   getUserPlaylists
 } from '../services/user'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { loadItemAndPlayTrack } from '../state/actions/player'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { getPublicUser, toggleSubscribeToUser } from '../state/actions/user'
 import { core } from '../styles'
 
@@ -412,7 +412,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     const shouldPlay = true
     const forceUpdateOrderDate = false
     const setCurrentItemNextInQueue = true
-    await loadItemAndPlayTrack(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    await playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   _renderItem = ({ item, index }) => {

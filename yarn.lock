@@ -1274,6 +1274,14 @@
     "@types/react" "*"
     "@types/react-native" "*"
 
+"@types/react-native-video@^5.0.9":
+  version "5.0.9"
+  resolved "https://registry.yarnpkg.com/@types/react-native-video/-/react-native-video-5.0.9.tgz#dc3a862dfdcf263632ffc8562b8ee441cc3b5c8d"
+  integrity sha512-GnFv2eLLK/LW2ZUAw20vhm+I3lMpkgfmYLqM8ZxB0dOw7FBsLw01hvcTJ9jgQGIV7ZOhsNII+RfkK/trglN5Kg==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+
 "@types/react-native@*":
   version "0.65.5"
   resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.65.5.tgz#e5e473be8c7ed784419554f25cc8850b9c3ce68d"
@@ -3296,14 +3304,19 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.857:
-  version "1.3.864"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.864.tgz#6a993bcc196a2b8b3df84d28d5d4dd912393885f"
-  integrity sha512-v4rbad8GO6/yVI92WOeU9Wgxc4NA0n4f6P1FvZTY+jyY7JHEhw3bduYu60v3Q1h81Cg6eo4ApZrFPuycwd5hGw==
+  version "1.3.866"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.866.tgz#d446338f5ad6948b27a50739760e7b0b5cc5032f"
+  integrity sha512-iYze6TpDXWxk+sfcpUUdTs6Pv/3kG45Pnjer2DxEeFw0N08bZeNLuz97s2lMgy8yObon48o0WHY2Bkg3xuAPOA==
 
 elegant-spinner@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/elegant-spinner/-/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
   integrity sha1-2wQ1IcldfjA/2PNFvtwzSc+wcp4=
+
+eme-encryption-scheme-polyfill@^2.0.1:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/eme-encryption-scheme-polyfill/-/eme-encryption-scheme-polyfill-2.0.3.tgz#2ca6e06480e06cceb5e50efd27943ac46c959878"
+  integrity sha512-44CNFMsqzHdKHrzWxlS7xZ8KUHn5XutBqpmCuWzNIynmAyFInHrrD3ozv/RvK9ZhgV6QY6Easx8EWAmxteNodg==
 
 emitter-component@^1.1.1:
   version "1.1.1"
@@ -5559,6 +5572,11 @@ jsprim@^1.2.2:
     array-includes "^3.1.3"
     object.assign "^4.1.2"
 
+keymirror@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/keymirror/-/keymirror-0.1.1.tgz#918889ea13f8d0a42e7c557250eee713adc95c35"
+  integrity sha1-kYiJ6hP40KQufFVyUO7nE63JXDU=
+
 kind-of@^3.0.2, kind-of@^3.0.3, kind-of@^3.2.0:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-3.2.2.tgz#31ea21a734bab9bbb0f32466d893aea51e4a3c64"
@@ -6079,7 +6097,7 @@ lodash.without@~4.4.0:
   resolved "https://registry.yarnpkg.com/lodash.without/-/lodash.without-4.4.0.tgz#3cd4574a00b67bae373a94b748772640507b7aac"
   integrity sha1-PNRXSgC2e643OpS3SHcmQFB7eqw=
 
-lodash@4.17.21, lodash@^4.0.0, lodash@^4.15.0, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.4:
+lodash@4.17.21, lodash@^4.0.0, lodash@^4.15.0, lodash@^4.16.4, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.4:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -7693,10 +7711,10 @@ plist@^3.0.1:
     base64-js "^1.5.1"
     xmlbuilder "^9.0.7"
 
-podverse-shared@^3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-3.2.2.tgz#3ec3ec0cc27e4df4edbbd707a5da75992ba49b15"
-  integrity sha512-zOTh+5l2XVbrUKjkbR+LZfWau3ChV+KNKXyJnUql19nnGKaGYPD5KVSLk5N9N+DGIPe1iIPqqdnFjV9HqLe6fw==
+podverse-shared@^3.2.3:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-3.2.3.tgz#c62693198febeac1752dd7594378dcae4630a512"
+  integrity sha512-ewebfbKG9Nbz5bje+JiTbhdaS4XseXSG2D6FxZdEvTP9gcQQxTPh6XaYiwRjkJg+3v+EYiOFiGsidKmGbDeirw==
   dependencies:
     typescript "3.9.7"
 
@@ -8083,6 +8101,11 @@ react-native-localize@2.1.1:
   resolved "https://registry.yarnpkg.com/react-native-localize/-/react-native-localize-2.1.1.tgz#da8f8776991d2b748708c408db05152602cefb38"
   integrity sha512-+uyz2/b0vyLq19fcb7r1qU1gqmzbp3aC6EMTvOVXwfBuiN+aJXR/fDdFOJJ8D7+bLccKeuS2zBDrazh+ZayX/g==
 
+react-native-orientation-locker@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-orientation-locker/-/react-native-orientation-locker-1.3.1.tgz#e47cfdd4a7390df6ccdbc748a6eca9e8be953b0d"
+  integrity sha512-BJPe/GvGO8nNdtqQat30CS9H2o+Qt8hv9AMYCxLS5l5k5+BP3FLScU2+GBg2DizDQCOnTtA24o8heI7kwy+rvw==
+
 react-native-parse-html@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/react-native-parse-html/-/react-native-parse-html-2.2.6.tgz#21f28f97b38407784759bc59e244b51109d9cc87"
@@ -8236,6 +8259,22 @@ react-native-vector-icons@8.1.0:
     lodash.template "^4.5.0"
     prop-types "^15.7.2"
     yargs "^16.1.1"
+
+react-native-video-controls@^2.8.1:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/react-native-video-controls/-/react-native-video-controls-2.8.1.tgz#30ae707d8d218fed34bba3fc027b3943c5f438d9"
+  integrity sha512-dBmrE3TAKaR1gYMfbukjAM6Xo8OMZyRrxPzZtnaUgWcvGo11PQwzaI/j8HPD5fLgO+rlweP2pDpEJyIBsJvJkw==
+  dependencies:
+    lodash "^4.16.4"
+
+react-native-video@^5.2.0-alpha1:
+  version "5.2.0-alpha1"
+  resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-5.2.0-alpha1.tgz#990381bf2a053f8d3f20c98ff447a7d0cc61b851"
+  integrity sha512-UkvawdXCdInfvV/w8HMnjDnWDirSwEyOyWsY6IJbguZk9xc0chXKM010DwkdTFldY0bkWXEP2XHyEPh/AKwKcg==
+  dependencies:
+    keymirror "^0.1.1"
+    prop-types "^15.7.2"
+    shaka-player "^2.5.9"
 
 react-native-webview@11.13.0:
   version "11.13.0"
@@ -8994,6 +9033,13 @@ sha@^3.0.0:
   integrity sha512-DOYnM37cNsLNSGIG/zZWch5CKIRNoLdYUQTQlcgkRkoYIUwDYjqDyye16YcDZg/OPdcbUgTKMjc4SY6TB7ZAPw==
   dependencies:
     graceful-fs "^4.1.2"
+
+shaka-player@^2.5.9:
+  version "2.5.23"
+  resolved "https://registry.yarnpkg.com/shaka-player/-/shaka-player-2.5.23.tgz#db92d1c6cf2314f0180a2cec11b0e2f2560336f5"
+  integrity sha512-3MC9k0OXJGw8AZ4n/ZNCZS2yDxx+3as5KgH6Tx4Q5TRboTBBCu6dYPI5vp1DxKeyU12MBN1Zcbs7AKzXv2EnCg==
+  dependencies:
+    eme-encryption-scheme-polyfill "^2.0.1"
 
 shallow-clone@^3.0.0:
   version "3.0.1"

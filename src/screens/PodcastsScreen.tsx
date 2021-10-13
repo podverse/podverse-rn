@@ -27,8 +27,8 @@ import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCate
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { parseAllAddByRSSPodcasts } from '../services/parser'
-import { checkIdlePlayerState, updateTrackPlayerCapabilities,
-  updateUserPlaybackPosition } from '../services/player'
+import { playerCheckIdlePlayerState, playerUpdateUserPlaybackPosition } from '../services/player'
+import { audioInitializePlayerQueue, audioUpdateTrackPlayerCapabilities } from '../services/playerAudio'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
 import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
@@ -37,7 +37,6 @@ import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloa
 import { updateWalletInfo } from '../state/actions/lnpay'
 import {
   initializePlaybackSpeed,
-  initializePlayerQueue,
   initPlayerState,
   showMiniPlayer,
   updatePlaybackState,
@@ -182,7 +181,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _handleAppStateChange = (nextAppState: any) => {
     (async () => {
-      await updateUserPlaybackPosition()
+      await playerUpdateUserPlaybackPosition()
 
       if (nextAppState === 'active' && !isInitialLoad) {
         const { nowPlayingItem: lastItem } = this.global.player
@@ -201,22 +200,22 @@ export class PodcastsScreen extends React.Component<Props, State> {
   
         // NOTE: On iOS, when returning to the app from the background while the player was paused,
         // sometimes the player will be in an idle state, requiring the user to press play twice to
-        // reload the item in the player and begin playing. By calling initializePlayerQueue once whenever
+        // reload the item in the player and begin playing. By calling audioInitializePlayerQueue once whenever
         // the idle playback-state event is called, it automatically reloads the item.
         // I don't think this issue is happening on Android, so we're not using this workaround on Android.
-        const isIdle = await checkIdlePlayerState()
+        const isIdle = await playerCheckIdlePlayerState()
         if (Platform.OS === 'ios' && isIdle) {
-          await initializePlayerQueue()
+          await audioInitializePlayerQueue()
         }
       }
   
       if (nextAppState === 'background' || nextAppState === 'inactive') {
-        // NOTE: On iOS PVTrackPlayer.updateOptions must be called every time the app
+        // NOTE: On iOS PVAudioPlayer.updateOptions must be called every time the app
         // goes into the background to prevent the remote controls from disappearing
         // on the lock screen.
         // Source: https://github.com/react-native-kit/react-native-track-player/issues/921#issuecomment-686806847
         if (Platform.OS === 'ios') {
-          updateTrackPlayerCapabilities()
+          audioUpdateTrackPlayerCapabilities()
         }
       }
 
@@ -364,7 +363,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
       
           await initDownloads()
-          await initializePlayerQueue()
+          await audioInitializePlayerQueue()
           await initializePlaybackSpeed()
           initializeValueProcessor()
     

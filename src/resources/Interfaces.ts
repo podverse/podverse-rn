@@ -117,6 +117,11 @@ export interface InitialState {
     showMiniPlayer: boolean
     shouldContinuouslyPlay: boolean
     sleepTimer: any
+    videoInfo: {
+      videoIsLoaded: boolean
+      videoPosition: number
+      videoDuration: number
+    }
   }
   playlists: {
     myPlaylists: []

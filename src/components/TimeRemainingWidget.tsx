@@ -5,8 +5,9 @@ import { State as RNTPState } from 'react-native-track-player'
 import { useGlobal } from 'reactn'
 import { checkIfNowPlayingItem, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
-import { handlePlay, PVTrackPlayer, setPlaybackPosition } from '../services/player'
-import { loadItemAndPlayTrack, togglePlay } from '../state/actions/player'
+import { playerHandlePlayWithUpdate, playerCheckIfStateIsPlaying,
+  playerSetPosition } from '../services/player'
+import { playerLoadNowPlayingItem, togglePlay } from '../state/actions/player'
 import { Icon, MoreButton, Text, View } from './'
 
 type Props = {
@@ -83,11 +84,10 @@ export const TimeRemainingWidget = (props: Props) => {
   const playedTime = userPlaybackPosition || 0
 
   const handleChapterLoad = async () => {
-    await setPlaybackPosition(item.startTime)
-    const currentState = await PVTrackPlayer.getState()
-    const isPlaying = currentState === RNTPState.Playing
+    await playerSetPosition(item.startTime)
+    const isPlaying = await playerCheckIfStateIsPlaying()
     if (!isPlaying) {
-      handlePlay()
+      playerHandlePlayWithUpdate()
     }
   }
 
@@ -103,7 +103,7 @@ export const TimeRemainingWidget = (props: Props) => {
         const forceUpdateOrderDate = false
         const shouldPlay = true
         const setCurrentItemNextInQueue = true
-        loadItemAndPlayTrack(playingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+        playerLoadNowPlayingItem(playingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
       }
     }
     requestAppStoreReviewForEpisodePlayed()

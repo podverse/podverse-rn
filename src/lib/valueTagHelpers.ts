@@ -4,8 +4,8 @@ import Config from 'react-native-config'
 import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { BannerInfoError } from '../resources/Interfaces'
+import { playerGetRate, playerGetPosition } from '../services/player'
 import { sendLNPayValueTransaction } from '../services/lnpay'
-import { PVTrackPlayer } from '../services/player'
 import { createSatoshiStreamStats } from './satoshiStream'
 
 /*
@@ -165,8 +165,8 @@ const convertValueTagIntoValueTransaction = async (
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
 
   const timestamp = Date.now()
-  const speed = await PVTrackPlayer.getRate()
-  const currentPlaybackPosition = await PVTrackPlayer.getPosition()
+  const speed = await playerGetRate()
+  const currentPlaybackPosition = await playerGetPosition()
   const pubkey = 'podverse-pubkey'
 
   const satoshiStreamStats = createSatoshiStreamStats(

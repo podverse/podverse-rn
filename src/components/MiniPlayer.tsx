@@ -3,7 +3,7 @@ import { State as RNTPState } from 'react-native-track-player'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { checkIfStateIsBuffering } from '../services/player'
+import { playerCheckIfStateIsBuffering } from '../services/player'
 import { togglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { ActivityIndicator, FastImage, Icon, Text, TextTicker } from './'
@@ -50,7 +50,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
           wrapperStyle={[playerStyles.icon, playButtonAdjust]} />
       )
       playButtonAdjust = {}
-    } else if (checkIfStateIsBuffering(playbackState)) {
+    } else if (playerCheckIfStateIsBuffering(playbackState)) {
       playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
     }

@@ -103,5 +103,9 @@ export const Player = {
     wrapper: {
       marginHorizontal: 15
     }
+  },
+  playerTypes: {
+    isAudio: 'isAudio',
+    isVideo: 'isVideo'
   }
 }

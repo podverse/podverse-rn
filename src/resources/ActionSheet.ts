@@ -9,9 +9,9 @@ import { navigateToEpisodeScreenWithItem,
   navigateToEpisodeScreenWithItemInCurrentStack, navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { IActionSheet } from '../resources/Interfaces'
-import { PVTrackPlayer } from '../services/player'
+import { playerGetPosition } from '../services/player'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
-import { loadItemAndPlayTrack } from '../state/actions/player'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
 import { PV } from './PV'
 
@@ -55,11 +55,11 @@ const mediaMoreButtons = (
           const shouldPlay = false
           const forceUpdateOrderDate = false
           const setCurrentItemNextInQueue = true
-          await loadItemAndPlayTrack(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+          await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
           await navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
           setTimeout(() => {
             (async () => {
-              const initialProgressValue = await PVTrackPlayer.getTrackPosition()
+              const initialProgressValue = await playerGetPosition()
               navigation.navigate(PV.RouteNames.MakeClipScreen, {
                 initialProgressValue,
                 initialPrivacy: item.isPublic,
@@ -93,7 +93,7 @@ const mediaMoreButtons = (
         const shouldPlay = true
         const forceUpdateOrderDate = false
         const setCurrentItemNextInQueue = true
-        await loadItemAndPlayTrack(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+        await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
       }
     })
   } else {
@@ -114,7 +114,7 @@ const mediaMoreButtons = (
         const shouldPlay = true
         const forceUpdateOrderDate = false
         const setCurrentItemNextInQueue = true
-        await loadItemAndPlayTrack(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+        await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
       }
     })
 

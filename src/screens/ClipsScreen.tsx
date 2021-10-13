@@ -24,7 +24,7 @@ import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCate
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { trackPageView } from '../services/tracking'
 import { getLoggedInUserMediaRefs } from '../services/user'
-import { loadItemAndPlayTrack } from '../state/actions/player'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { core } from '../styles'
 
 type Props = {
@@ -373,7 +373,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     const shouldPlay = true
     const forceUpdateOrderDate = false
     const setCurrentItemNextInQueue = true
-    await loadItemAndPlayTrack(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    await playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   render() {

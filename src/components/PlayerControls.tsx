@@ -5,13 +5,14 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import {
-  checkIfStateIsBuffering,
+  playerCheckIfStateIsBuffering,
   playerJumpBackward,
   playerJumpForward,
-  setPlaybackPosition
+  playerSetPosition
 } from '../services/player'
-import { playNextChapterOrQueueItem, playNextFromQueue, playPreviousChapterOrReturnToBeginningOfTrack,
-  setPlaybackSpeed, togglePlay } from '../state/actions/player'
+import { playNextChapterOrQueueItem, playNextFromQueue,
+  playPreviousChapterOrReturnToBeginningOfTrack, setPlaybackSpeed,
+  togglePlay } from '../state/actions/player'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
@@ -154,7 +155,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       playButtonAdjust = {}
       playButtonAccessibilityHint = translate('ARIA HINT - pause playback')
       playButtonAccessibilityLabel = translate('Pause')
-    } else if (checkIfStateIsBuffering(playbackState)) {
+    } else if (playerCheckIfStateIsBuffering(playbackState)) {
       playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
       playButtonAccessibilityHint = ''
@@ -198,7 +199,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             <TouchableOpacity
               accessibilityLabel={previousButtonAccessibilityLabel}
               accessibilityRole='button'
-              onLongPress={() => setPlaybackPosition(0)}
+              onLongPress={() => playerSetPosition(0)}
               onPress={playPreviousChapterOrReturnToBeginningOfTrack}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
               {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
