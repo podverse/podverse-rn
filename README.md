@@ -1,5 +1,14 @@
 # Podverse
 
+## Contributing
+
+Instruction for contributing to the **Podverse Mobile App** can be found here:
+
+[Contribute](https://github.com/podverse/podverse-rn/blob/master/Contributing.md)
+
+---
+## About
+
 Podverse is an open source podcast manager for iOS, Android, and web. Check us out at [podverse.fm](https://podverse.fm/)!
 
 Free features:
@@ -42,4 +51,3 @@ AGPLv3 is the open source license under which all Podverse software is provided.
 Podverse software is open source so anyone can launch their own podcast app as affordably as possible. If a podcast network wants to create their own podcast app, they can use Podverse software and do it for a tiny fraction of the cost of hiring programmers to build a podcast app from scratch.
 
 Our goal is to help level the playing field between the corporate world and independent media, so independent media has the same technological advantages as large corporations, and open source software is essential to that mission.
-
