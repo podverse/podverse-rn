@@ -4,7 +4,7 @@
 
 Instruction for contributing to the **Podverse Mobile App** can be found here:
 
-[Contribute](https://github.com/podverse/podverse-rn/blob/getting_started_instructions/Contributing.md)
+[Contribute](https://github.com/podverse/podverse-rn/blob/master/Contributing.md)
 
 ---
 ## About
