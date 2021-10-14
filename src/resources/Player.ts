@@ -110,10 +110,10 @@ export const Player = {
   },
   videoInfo: {
     videoPlaybackState: {
-      stopped: 'stopped',
-      buffering: 'buffering',
-      playing: 'playing',
-      paused: 'paused'
+      stopped: 'videoStopped',
+      buffering: 'videoBuffering',
+      playing: 'videoPlaying',
+      paused: 'videoPaused'
     }
   }
 }

@@ -10,8 +10,8 @@ import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
-import { handleEnrichingPlayerState, playNextChapterOrQueueItem,
-  playPreviousChapterOrReturnToBeginningOfTrack, playerUpdatePlaybackState } from '../state/actions/player'
+import { handleEnrichingPlayerState, playerPlayNextChapterOrQueueItem,
+  playerPlayPreviousChapterOrReturnToBeginningOfTrack, playerUpdatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
@@ -35,7 +35,9 @@ import {
   audioHandlePlayWithUpdate,
   audioHandleSeekToWithUpdate,
   audioHandleStop,
-  audioPlayerGetState
+  audioGetState,
+  audioHandlePause,
+  audioCheckIfIsPlaying
 } from './playerAudio'
 import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
 import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally,
@@ -94,7 +96,7 @@ const syncNowPlayingItemWithTrack = () => {
   // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
   // - Sometimes the debouncedSetPlaybackPosition seems to load with the previous track's playback position,
   // instead of the new track's playback position.
-  // NOTE: This timeout will lead to a delay before every clip starts, where it starts playing from the episode start
+  // TODO: This timeout will lead to a delay before every clip starts, where it starts playing from the episode start
   // before playing from the clip start. Hopefully we can iron this out sometime...
   // - The second timeout is called in case something was out of sync previously from getCurrentTrack
   // or getNowPlayingItemFromLocalStorage...
@@ -216,15 +218,15 @@ module.exports = async () => {
       if (nowPlayingItem) {
         const { clipEndTime } = nowPlayingItem
         const currentPosition = await audioGetTrackPosition()
-        const currentState = await audioPlayerGetState()
-        const isPlaying = currentState === RNTPState.Playing
+        const currentState = await audioGetState()
+        const isPlaying = audioCheckIfIsPlaying(currentState)
 
         const shouldHandleAfterClip = clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying
         if (shouldHandleAfterClip) {
           await playerHandleResumeAfterClipHasEnded()
         } else {
           if (Platform.OS === 'ios') {
-            if (x.state === RNTPState.Playing) {
+            if (audioCheckIfIsPlaying(x.state)) {
               await playerSetRateWithLatestPlaybackSpeed()
             }
           } else if (Platform.OS === 'android') {
@@ -281,16 +283,16 @@ module.exports = async () => {
   })
 
   PVAudioPlayer.addEventListener('remote-stop', () => {
-    PVAudioPlayer.pause()
+    audioHandlePause()
     PVEventEmitter.emit(PV.Events.PLAYER_REMOTE_STOP)
   })
 
   PVAudioPlayer.addEventListener('remote-previous', () => {
-    playPreviousChapterOrReturnToBeginningOfTrack()
+    playerPlayPreviousChapterOrReturnToBeginningOfTrack()
   })
 
   PVAudioPlayer.addEventListener('remote-next', () => {
-    playNextChapterOrQueueItem()
+    playerPlayNextChapterOrQueueItem()
   })
 
   PVAudioPlayer.addEventListener('remote-duck', (x: any) => {
@@ -306,8 +308,8 @@ module.exports = async () => {
         // as a result of remote-duck.
         // Thanks to nesinervink and bakkerjoeri for help resolving this issue:
         // https://github.com/react-native-kit/react-native-track-player/issues/687#issuecomment-660149163
-        const currentState = await PVAudioPlayer.getState()
-        const isPlaying = currentState === RNTPState.Playing
+        const currentState = await audioGetState()
+        const isPlaying = audioCheckIfIsPlaying(currentState)
         if (permanent && isPlaying) {
           audioHandleStop()
         } else if (paused) {
@@ -443,12 +445,12 @@ let valueStreamingIntervalSecondCount = 1
 const handleBackgroundTimerInterval = () => {
   stopCheckClipIfEndTimeReached()
 
-  PVAudioPlayer.getState().then(async (playbackState) => {
+  audioGetState().then(async (playbackState) => {
     const globalState = getGlobal()
     const { streamingEnabled } = globalState.session.valueTagSettings
 
     if (streamingEnabled) {
-      if (playbackStateIsPlaying(playbackState)) {
+      if (audioCheckIfIsPlaying(playbackState)) {
         valueStreamingIntervalSecondCount++
 
         if (
@@ -477,21 +479,4 @@ const handleBackgroundTimerInterval = () => {
       }
     }
   })
-}
-
-const playbackStateIsPlaying = (playbackState: string | number) => {
-  let isPlaying = false
-
-  if (Platform.OS === 'ios') {
-    if (playbackState === RNTPState.Playing) {
-      isPlaying = true
-    }
-  } else if (Platform.OS === 'android') {
-    const playing = 3
-    if (playbackState === playing) {
-      isPlaying = true
-    }
-  }
-
-  return isPlaying
 }

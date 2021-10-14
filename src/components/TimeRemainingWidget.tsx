@@ -1,13 +1,14 @@
 import { convertToNowPlayingItem } from 'podverse-shared'
 import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
-import { State as RNTPState } from 'react-native-track-player'
 import { useGlobal } from 'reactn'
 import { checkIfNowPlayingItem, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
 import { playerHandlePlayWithUpdate, playerCheckIfStateIsPlaying,
-  playerSetPosition } from '../services/player'
-import { playerLoadNowPlayingItem, togglePlay } from '../state/actions/player'
+  playerSetPosition, 
+  playerGetState} from '../services/player'
+import { audioCheckIfIsPlaying } from '../services/playerAudio'
+import { playerLoadNowPlayingItem, playerTogglePlay } from '../state/actions/player'
 import { Icon, MoreButton, Text, View } from './'
 
 type Props = {
@@ -85,7 +86,8 @@ export const TimeRemainingWidget = (props: Props) => {
 
   const handleChapterLoad = async () => {
     await playerSetPosition(item.startTime)
-    const isPlaying = await playerCheckIfStateIsPlaying()
+    const playbackState = await playerGetState()
+    const isPlaying = playerCheckIfStateIsPlaying(playbackState)
     if (!isPlaying) {
       playerHandlePlayWithUpdate()
     }
@@ -98,7 +100,7 @@ export const TimeRemainingWidget = (props: Props) => {
       await handleChapterLoad()
     } else {
       if (isNowPlayingItem) {
-        togglePlay()
+        playerTogglePlay()
       } else {
         const forceUpdateOrderDate = false
         const shouldPlay = true
@@ -110,7 +112,7 @@ export const TimeRemainingWidget = (props: Props) => {
   }
 
   const isInvalidDuration = totalTime <= 0
-  const isPlaying = playbackState === RNTPState.Playing
+  const isPlaying = audioCheckIfIsPlaying(playbackState)
   const isNowPlayingItem = isPlaying && checkIfNowPlayingItem(item, nowPlayingItem)
 
   const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]

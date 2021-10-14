@@ -126,7 +126,7 @@ export const initPlayerState = async (globalState: any) => {
   })
 }
 
-export const playPreviousChapterOrReturnToBeginningOfTrack = async () => {
+export const playerPlayPreviousChapterOrReturnToBeginningOfTrack = async () => {
   const globalState = getGlobal()
   const { currentChapters } = globalState
 
@@ -142,7 +142,7 @@ export const playPreviousChapterOrReturnToBeginningOfTrack = async () => {
   await playerSetPosition(0)
 }
 
-export const playNextChapterOrQueueItem = async () => {
+export const playerPlayNextChapterOrQueueItem = async () => {
   const globalState = getGlobal()
   const { currentChapters } = globalState
 
@@ -257,7 +257,7 @@ const enrichPodcastValue = async (item: NowPlayingItem) => {
   }
 }
 
-export const setPlaybackSpeed = async (rate: number) => {
+export const playerSetPlaybackSpeed = async (rate: number) => {
   await playerSetPlaybackSpeedService(rate)
 
   const globalState = getGlobal()

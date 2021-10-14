@@ -1,5 +1,8 @@
 import { NowPlayingItem } from 'podverse-shared'
-import { checkIfVideoFileType } from '../../lib/utility'
+
+export const checkIfVideoFileType = (nowPlayingItem?: NowPlayingItem) => {
+  return nowPlayingItem?.mediaType && nowPlayingItem.mediaType.indexOf('video') >= 0
+}
 
 export const videoStateSetVideoInfo = (item: NowPlayingItem) => {
   if (checkIfVideoFileType(item)) {

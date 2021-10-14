@@ -4,13 +4,13 @@ import TrackPlayer, { Capability, PitchAlgorithm, State, Track } from 'react-nat
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../lib/downloader'
-import { checkIfVideoFileType, getAppUserAgent } from '../lib/utility'
+import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
+import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import { getPodcastCredentialsHeader } from './parser'
-import { playerGetCurrentLoadedTrackId, playerSetRateWithLatestPlaybackSpeed,
-  playerUpdateUserPlaybackPosition } from './player'
+import { playerSetRateWithLatestPlaybackSpeed, playerUpdateUserPlaybackPosition } from './player'
 import { getPodcastFeedUrlAuthority } from './podcast'
 import { addQueueItemNext, filterItemFromQueueItems, getQueueItems, getQueueItemsLocally } from './queue'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from './userHistoryItem'
@@ -67,7 +67,6 @@ PVAudioPlayer.getTrackDuration = async () => {
   return PVAudioPlayer.getDuration()
 }
 
-// TODO: setupPlayer is a promise, could this cause an async issue?
 PVAudioPlayer.setupPlayer({
   waitForBuffer: false
 }).then(() => {
@@ -147,7 +146,7 @@ export const audioLoadNowPlayingItem = async (
   shouldPlay: boolean,
   forceUpdateOrderDate: boolean
 ) => {
-  // TODO: discard video player
+  // TODO VIDEO: discard/reset video player
 
   PVAudioPlayer.pause()
 
@@ -169,7 +168,7 @@ export const audioLoadNowPlayingItem = async (
     await AsyncStorage.removeItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
     await audioSyncPlayerWithQueue()
   } else {
-    const currentId = await playerGetCurrentLoadedTrackId()
+    const currentId = await audioGetCurrentLoadedTrackId()
     if (currentId) {
       PVAudioPlayer.removeUpcomingTracks()
       const track = (await audioCreateTrack(item)) as Track
@@ -318,15 +317,15 @@ export const audioMovePlayerItemToNewPosition = async (id: string, newIndex: num
   }
 }
 
-export const audioSetPlaybackPosition = async (position?: number) => {
-  const currentId = await playerGetCurrentLoadedTrackId()
+export const audioSetPosition = async (position?: number) => {
+  const currentId = await audioGetCurrentLoadedTrackId()
   if (currentId && (position || position === 0 || (position && position > 0))) {
-    await PVAudioPlayer.seekTo(position)
+    await audioHandleSeekTo(position)
   }
 }
 
 export const audioTogglePlay = async () => {
-  const state = await PVAudioPlayer.getState()
+  const state = await audioGetState()
 
   if (state === State.None) {
     audioHandlePlay()
@@ -377,7 +376,7 @@ export const audioSetRate = async (rate = 1) => {
 }
 
 export const audioCheckIdlePlayerState = async () => {
-  const state = await PVAudioPlayer.getState()
+  const state = await audioGetState()
   return state === 0 || state === State.None
 }
 
@@ -413,10 +412,9 @@ export const audioPlayNextFromQueue = async () => {
   const queueItems = await PVAudioPlayer.getQueue()
   if (queueItems && queueItems.length > 1) {
     await PVAudioPlayer.skipToNext()
-    const currentId = await playerGetCurrentLoadedTrackId()
+    const currentId = await audioGetCurrentLoadedTrackId()
     const setPlayerClipIsLoadedIfClip = true
-    const item = await getNowPlayingItemFromLocalStorage(
-      currentId, setPlayerClipIsLoadedIfClip)
+    const item = await getNowPlayingItemFromLocalStorage(currentId, setPlayerClipIsLoadedIfClip)
     if (item) {
       await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0)
       return item
@@ -475,7 +473,7 @@ export const audioGetTrackDuration = () => {
   return PVAudioPlayer.getTrackDuration()
 }
 
-export const audioPlayerGetState = () => {
+export const audioGetState = () => {
   return PVAudioPlayer.getState()
 }
 

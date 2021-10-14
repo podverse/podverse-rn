@@ -704,7 +704,3 @@ export const getMediaRefStartPosition = (clipStartTime?: number | null, sliderWi
 
   return clipStartTimePosition
 }
-
-export const checkIfVideoFileType = (nowPlayingItem?: NowPlayingItem) => {
-  return nowPlayingItem?.mediaType && nowPlayingItem.mediaType.indexOf('video') >= 0
-}

@@ -1,5 +1,5 @@
 import { getGlobal } from 'reactn'
-import { checkIfVideoFileType } from '../lib/utility'
+import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { getNowPlayingItemLocally } from './userNowPlayingItem'
 
 export const videoIsLoaded = () => {

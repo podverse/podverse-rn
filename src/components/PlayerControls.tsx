@@ -1,6 +1,5 @@
 import debounce from 'lodash/debounce'
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, Image, ImageSourcePropType } from 'react-native'
-import { State as RNTPState } from 'react-native-track-player'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
@@ -9,11 +8,11 @@ import {
   playerCheckIfStateIsPlaying,
   playerJumpBackward,
   playerJumpForward,
+  playerPlayNextFromQueue,
   playerSetPosition
 } from '../services/player'
-import { playNextChapterOrQueueItem, playerPlayNextFromQueue,
-  playPreviousChapterOrReturnToBeginningOfTrack, setPlaybackSpeed,
-  playerTogglePlay } from '../state/actions/player'
+import { playerPlayNextChapterOrQueueItem, playerPlayPreviousChapterOrReturnToBeginningOfTrack,
+  playerSetPlaybackSpeed, playerTogglePlay } from '../state/actions/player'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
@@ -62,7 +61,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       newSpeed = speeds[index + 1]
     }
 
-    await setPlaybackSpeed(newSpeed)
+    await playerSetPlaybackSpeed(newSpeed)
   }
 
   _navToStopWatchScreen = () => {
@@ -201,7 +200,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               accessibilityLabel={previousButtonAccessibilityLabel}
               accessibilityRole='button'
               onLongPress={() => playerSetPosition(0)}
-              onPress={playPreviousChapterOrReturnToBeginningOfTrack}
+              onPress={playerPlayPreviousChapterOrReturnToBeginningOfTrack}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
               {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
             </TouchableOpacity>
@@ -237,7 +236,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               accessibilityLabel={nextButtonAccessibilityLabel}
               accessibilityRole='button'
               onLongPress={playerPlayNextFromQueue}
-              onPress={playNextChapterOrQueueItem}
+              onPress={playerPlayNextChapterOrQueueItem}
               disabled={noNextQueueItem}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
               {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, `${testIDPrefix}_skip_track`, noNextQueueItem)}
