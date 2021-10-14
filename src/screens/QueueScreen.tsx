@@ -365,7 +365,7 @@ export class QueueScreen extends React.Component<Props, State> {
     const { isEditing, isLoading, isLoadingMore, isRemoving, isTransparent, viewType } = this.state
     const view = (
       <View
-        style={[styles.view, { backgroundColor: 'yellow' }]}
+        style={styles.view}
         transparent={isTransparent}
         testID={`${testIDPrefix}_view`}>
         {!isLoading && viewType === _queueKey && ((queueItems && queueItems.length > 0) || nowPlayingItem) && (
