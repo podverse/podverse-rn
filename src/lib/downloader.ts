@@ -339,9 +339,8 @@ export const pauseDownloadTask = (downloadTaskState: DownloadState.DownloadTaskS
 
 export const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
   let isDownloadedFile = true
-  const filePath = await getDownloadedFilePath(id, episodeMediaUrl)
-
   try {
+    const filePath = await getDownloadedFilePath(id, episodeMediaUrl)
     await RNFS.stat(filePath)
   } catch (innerErr) {
     isDownloadedFile = false
