@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
 import { PV } from '../resources'
-import { checkIfVideoFileType } from '../state/actions/playerVideo'
+import { checkIfVideoFileType, videoIsLoaded, videoLoadNowPlayingItem } from '../state/actions/playerVideo'
 import PVEventEmitter from './eventEmitter'
 import { audioIsLoaded,  audioCheckIfIsPlaying, audioSetRate, audioHandlePlayWithUpdate,
   audioHandleSeekTo, audioHandlePause, audioSetPosition, audioAddNowPlayingItemNextInQueue,
@@ -20,7 +20,6 @@ import { audioIsLoaded,  audioCheckIfIsPlaying, audioSetRate, audioHandlePlayWit
   audioUpdateCurrentTrack,
   audioTogglePlay
 } from './playerAudio'
-import { videoIsLoaded } from './playerVideo'
 import { addOrUpdateHistoryItem, saveOrResetCurrentlyPlayingItemInHistory } from './userHistoryItem'
 import { getNowPlayingItem, getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
 
@@ -186,19 +185,24 @@ export const playerLoadNowPlayingItem = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
   forceUpdateOrderDate: boolean,
-  itemToSetNextInQueue: NowPlayingItem | null
+  itemToSetNextInQueue: NowPlayingItem | null,
+  navigation: any
 ) => {
-  if (!checkIfVideoFileType(item)) {
-    audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
-  }
+  try {
+    if (!checkIfVideoFileType(item)) {
+      audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
+    }
+  
+    const skipSetNowPlaying = true
+    await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
 
-  const skipSetNowPlaying = true
-  await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
-
-  if (checkIfVideoFileType(item)) {
-    // TODO VIDEO: videoLoadNowPlayingItem
-  } else {
-    await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
+    if (checkIfVideoFileType(item)) {
+      await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, navigation)
+    } else {
+      await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
+    }
+  } catch (error) {
+    console.log('playerLoadNowPlayingItem service error', error)
   }
 
   return item

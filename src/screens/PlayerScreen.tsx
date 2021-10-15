@@ -205,7 +205,13 @@ export class PlayerScreen extends React.Component<Props> {
               const shouldPlay = true
               const forceUpdateOrderDate = false
               const setCurrentItemNextInQueue = true
-              await playerLoadNowPlayingItem(newItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+              await playerLoadNowPlayingItem(
+                newItem,
+                shouldPlay,
+                forceUpdateOrderDate,
+                setCurrentItemNextInQueue,
+                navigation
+              )
             }
           }
         } catch (error) {

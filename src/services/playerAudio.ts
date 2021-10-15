@@ -146,7 +146,7 @@ export const audioLoadNowPlayingItem = async (
   shouldPlay: boolean,
   forceUpdateOrderDate: boolean
 ) => {
-  // TODO VIDEO: discard/reset video player
+  // TODO VIDEO: discard/reset video player???
 
   PVAudioPlayer.pause()
 

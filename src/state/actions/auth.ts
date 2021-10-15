@@ -120,7 +120,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
   return isLoggedIn
 }
 
-export const askToSyncWithNowPlayingItem = async () => {
+export const askToSyncWithNowPlayingItem = async (navigation: any) => {
   const localNowPlayingItem = await getNowPlayingItemLocally()
   const serverNowPlayingItem = await getNowPlayingItemOnServer()
 
@@ -130,7 +130,10 @@ export const askToSyncWithNowPlayingItem = async () => {
       (localNowPlayingItem.clipId && localNowPlayingItem.clipId !== serverNowPlayingItem.clipId) ||
       (!localNowPlayingItem.clipId && localNowPlayingItem.episodeId !== serverNowPlayingItem.episodeId))
     ) {
-      const askToSyncWithLastHistoryItem = PV.Alerts.ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM(serverNowPlayingItem)
+      const askToSyncWithLastHistoryItem = PV.Alerts.ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM(
+        serverNowPlayingItem,
+        navigation
+      )
       Alert.alert(
         askToSyncWithLastHistoryItem.title,
         askToSyncWithLastHistoryItem.message,
@@ -159,7 +162,7 @@ const syncItemsWithLocalStorage = async (userInfo: any) => {
   }
 }
 
-export const loginUser = async (credentials: Credentials) => {
+export const loginUser = async (credentials: Credentials, navigation: any) => {
   try {
     const userInfo = await login(credentials.email, credentials.password)
     const globalState = getGlobal()
@@ -175,7 +178,7 @@ export const loginUser = async (credentials: Credentials) => {
       try {
         await syncItemsWithLocalStorage(userInfo)
         await getSubscribedPodcasts()
-        await askToSyncWithNowPlayingItem()
+        await askToSyncWithNowPlayingItem(navigation)
         await parseAllAddByRSSPodcasts()
         await combineWithAddByRSSPodcasts()
       } catch (error) {

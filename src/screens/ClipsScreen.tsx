@@ -254,10 +254,12 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _renderClipItem = ({ item, index }) => {
+    const { navigation } = this.props
     return item?.episode?.id ? (
         <ClipTableCell
           item={item}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.episode.podcast))}
+          navigation={navigation}
           showEpisodeInfo
           showPodcastInfo
           testID={`${testIDPrefix}_clip_item_${index}`}
@@ -370,10 +372,17 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _handleNavigationPress = async (selectedItem: any) => {
+    const { navigation } = this.props
     const shouldPlay = true
     const forceUpdateOrderDate = false
     const setCurrentItemNextInQueue = true
-    await playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    await playerLoadNowPlayingItem(
+      selectedItem,
+      shouldPlay,
+      forceUpdateOrderDate,
+      setCurrentItemNextInQueue,
+      navigation
+    )
   }
 
   render() {

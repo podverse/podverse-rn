@@ -331,6 +331,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _initializeScreenData = async () => {
+    const { navigation } = this.props
     await initPlayerState(this.global)
     await initializeSettings()
 
@@ -353,7 +354,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         (async () => {
           try {
             const isLoggedIn = await getAuthUserInfo()
-            if (isLoggedIn) await askToSyncWithNowPlayingItem()
+            if (isLoggedIn) await askToSyncWithNowPlayingItem(navigation)
           } catch (error) {
             console.log('initializeScreenData getAuthUserInfo', error)
             // If getAuthUserInfo fails, continue with the networkless version of the app

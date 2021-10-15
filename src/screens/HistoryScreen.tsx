@@ -132,11 +132,18 @@ export class HistoryScreen extends React.Component<Props, State> {
   }
 
   _handlePlayItem = async (item: NowPlayingItem) => {
+    const { navigation } = this.props
     try {
       const shouldPlay = true
       const forceUpdateOrderDate = false
       const setCurrentItemNextInQueue = true
-      await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+      await playerLoadNowPlayingItem(
+        item,
+        shouldPlay,
+        forceUpdateOrderDate,
+        setCurrentItemNextInQueue,
+        navigation
+      )
     } catch (error) {
       // Error Loading and playing item
     }

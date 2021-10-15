@@ -169,8 +169,9 @@ const playerHandleLoadChapterForNowPlayingEpisode = async (item: NowPlayingItem)
 export const playerLoadNowPlayingItem = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
-  forceUpdateOrderDate?: boolean,
-  setCurrentItemNextInQueue?: boolean
+  forceUpdateOrderDate: boolean,
+  setCurrentItemNextInQueue: boolean,
+  navigation: any
 ) => {
   const globalState = getGlobal()
   const { nowPlayingItem: previousNowPlayingItem } = globalState.player
@@ -195,7 +196,13 @@ export const playerLoadNowPlayingItem = async (
 
     const itemToSetNextInQueue = setCurrentItemNextInQueue ? previousNowPlayingItem : null
 
-    await playerLoadNowPlayingItemService(item, shouldPlay, !!forceUpdateOrderDate, itemToSetNextInQueue)
+    await playerLoadNowPlayingItemService(
+      item,
+      shouldPlay,
+      !!forceUpdateOrderDate,
+      itemToSetNextInQueue,
+      navigation
+    )
 
     showMiniPlayer()
   }

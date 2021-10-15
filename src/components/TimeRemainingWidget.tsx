@@ -18,9 +18,10 @@ type Props = {
   handleMorePress?: any
   isChapter?: boolean
   item: any
-  itemType: 'episode' | 'clip'
+  itemType: 'episode' | 'clip' | 'chapter'
   loadTimeStampOnPlay?: boolean
   mediaFileDuration?: number | undefined
+  navigation: any
   style?: any
   testID: string
   timeLabel?: string
@@ -73,7 +74,7 @@ const MiniProgressBar = (props: BarProps) => {
 
 export const TimeRemainingWidget = (props: Props) => {
   const { episodeCompleted, episodeDownloading, handleMorePress, item, itemType,
-    loadTimeStampOnPlay, mediaFileDuration, style, testID, timeLabel, transparent,
+    loadTimeStampOnPlay, mediaFileDuration, navigation, style, testID, timeLabel, transparent,
     userPlaybackPosition } = props
   const { episode = {}, podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
@@ -105,7 +106,13 @@ export const TimeRemainingWidget = (props: Props) => {
         const forceUpdateOrderDate = false
         const shouldPlay = true
         const setCurrentItemNextInQueue = true
-        playerLoadNowPlayingItem(playingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+        playerLoadNowPlayingItem(
+          playingItem,
+          shouldPlay,
+          forceUpdateOrderDate,
+          setCurrentItemNextInQueue,
+          navigation
+        )
       }
     }
     requestAppStoreReviewForEpisodePlayed()
