@@ -2,7 +2,7 @@ import { NowPlayingItem } from 'podverse-shared'
 import { translate } from '../lib/i18n'
 import { sendVerificationEmail } from '../services/auth'
 import { logoutUser } from '../state/actions/auth'
-import { loadItemAndPlayTrack } from '../state/actions/player'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
 
 const _expiredMessage = translate('To renew your membership please visit the Membership page')
 const _logoutButtonText = translate('Log Out')
@@ -29,7 +29,7 @@ export const Alerts = {
             const shouldPlay = false
             const forceUpdateOrderDate = false
             const setCurrentItemNextInQueue = false
-            await loadItemAndPlayTrack(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+            await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
           }
         }
       ]

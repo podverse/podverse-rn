@@ -336,3 +336,30 @@ export const pauseDownloadTask = (downloadTaskState: DownloadState.DownloadTaskS
   const task = downloadTasks.find((task) => task.id === episodeId)
   if (task) task.pause()
 }
+
+export const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
+  let isDownloadedFile = true
+  try {
+    const filePath = await getDownloadedFilePath(id, episodeMediaUrl)
+    await RNFS.stat(filePath)
+  } catch (innerErr) {
+    isDownloadedFile = false
+  }
+  return isDownloadedFile
+}
+
+export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string) => {
+  const ext = getExtensionFromUrl(episodeMediaUrl)
+  const downloader = await BackgroundDownloader()
+
+  /* If downloaded episode is for an addByRSSPodcast, then the episodeMediaUrl
+     will be the id, so remove the URL params from the URL, and don't append
+     an extension to the file path.
+  */
+  if (id && id.indexOf('http') > -1) {
+    const idWithoutUrlParams = id.split('?')[0]
+    return `${downloader.directories.documents}/${idWithoutUrlParams}`
+  } else {
+    return `${downloader.directories.documents}/${id}${ext}`
+  }
+}

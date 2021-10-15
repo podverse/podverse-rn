@@ -7,7 +7,7 @@ import { useProgress } from 'react-native-track-player'
 import { translate } from '../lib/i18n';
 import { convertSecToHHMMSS, getMediaRefStartPosition } from '../lib/utility'
 import { PV } from '../resources'
-import { setPlaybackPosition } from '../services/player'
+import { playerSetPosition } from '../services/player'
 import { clearChapterInterval, getChapterForTimeAndSetOnState, loadChapterPlaybackInfo,
   startChapterInterval } from '../state/actions/playerChapters'
 import { sliderStyles } from '../styles'
@@ -102,7 +102,7 @@ export function PlayerProgressBar(props: Props) {
     outputRange: [PV.Colors.skyLight + '99', PV.Colors.yellow + '99']
   })
 
-  // If no item is currently in the PVTrackPlayer, fallback to use the
+  // If no item is currently in the PVAudioPlayer, fallback to use the
   // last loaded item's duration (backupDuration).
   parentScopeDuration = duration > 0 ? duration : backupDuration || 0
 
@@ -145,11 +145,11 @@ export function PlayerProgressBar(props: Props) {
         }}
         onSlidingComplete={async (newProgressValue) => {
           const position = newProgressValue * parentScopeDuration
-          await setPlaybackPosition(position)
+          await playerSetPosition(position)
           startChapterInterval()
 
           /*
-            Calling PVTrackPlayer.seekTo(position) in setPlaybackPosition causes the progress bar
+            Calling PVAudioPlayer.seekTo(position) in playerSetPosition causes the progress bar
             to re-render with the *last* position, before finally seeking to the new position
             and then re-rendering with the new correct position. To workaround this, I am adding
             a 1.5 second delay before clearing the slidingPositionOverride from local state.

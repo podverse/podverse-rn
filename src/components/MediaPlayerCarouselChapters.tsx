@@ -8,7 +8,7 @@ import { PV } from '../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPlaybackSpeed } from '../services/player'
-import { loadItemAndPlayTrack } from '../state/actions/player'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { ActionSheet, ActivityIndicator, AutoScrollToggle, ClipTableCell, Divider, FlatList,
   ScrollView, TableSectionSelectors } from './'
 
@@ -57,7 +57,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     const shouldPlay = true
     const forceUpdateOrderDate = false
     const setCurrentItemNextInQueue = false
-    loadItemAndPlayTrack(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   disableAutoscroll = () => {

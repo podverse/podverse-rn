@@ -103,5 +103,17 @@ export const Player = {
     wrapper: {
       marginHorizontal: 15
     }
+  },
+  playerTypes: {
+    isAudio: 'isAudio',
+    isVideo: 'isVideo'
+  },
+  videoInfo: {
+    videoPlaybackState: {
+      stopped: 'videoStopped',
+      buffering: 'videoBuffering',
+      playing: 'videoPlaying',
+      paused: 'videoPaused'
+    }
   }
 }

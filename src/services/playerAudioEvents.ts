@@ -10,35 +10,41 @@ import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
-import { handleEnrichingPlayerState, playNextChapterOrQueueItem,
-  playPreviousChapterOrReturnToBeginningOfTrack, updatePlaybackState } from '../state/actions/player'
+import { handleEnrichingPlayerState, playerPlayNextChapterOrQueueItem,
+  playerPlayPreviousChapterOrReturnToBeginningOfTrack, playerUpdatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
-  getCurrentLoadedTrackId,
-  getLoadedTrackIdByIndex,
-  getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId,
   getPlaybackSpeed,
-  handlePause,
-  handlePlay,
-  handleResumeAfterClipHasEnded,
-  handleSeek,
-  handleStop,
-  playerJumpBackward,
-  playerJumpForward,
-  PVTrackPlayer,
   setClipHasEnded,
-  setPlaybackPositionWhenDurationIsAvailable,
-  setRateWithLatestPlaybackSpeed,
-  updateUserPlaybackPosition
+  playerHandleResumeAfterClipHasEnded,
+  playerSetPositionWhenDurationIsAvailable,
+  playerSetRateWithLatestPlaybackSpeed,
+  playerUpdateUserPlaybackPosition
 } from './player'
+import {
+  PVAudioPlayer,
+  audioJumpBackward,
+  audioJumpForward,
+  audioGetCurrentLoadedTrackId,
+  audioGetLoadedTrackIdByIndex,
+  audioGetTrackPosition,
+  audioHandlePauseWithUpdate,
+  audioHandlePlayWithUpdate,
+  audioHandleSeekToWithUpdate,
+  audioHandleStop,
+  audioGetState,
+  audioHandlePause,
+  audioCheckIfIsPlaying
+} from './playerAudio'
 import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
-import { getNowPlayingItemLocally, setNowPlayingItemLocally } from './userNowPlayingItem'
+import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally,
+  setNowPlayingItemLocally } from './userNowPlayingItem'
 import { removeQueueItem } from './queue'
 
-const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 1000, {
+const debouncedSetPlaybackPosition = debounce(playerSetPositionWhenDurationIsAvailable, 1000, {
   leading: true,
   trailing: false
 })
@@ -73,8 +79,8 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
 
   PVEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
 
-  // Call updateUserPlaybackPosition to make sure the current item is saved as the userNowPlayingItem
-  await updateUserPlaybackPosition()
+  // Call playerUpdateUserPlaybackPosition to make sure the current item is saved as the userNowPlayingItem
+  await playerUpdateUserPlaybackPosition()
 
   handleEnrichingPlayerState(currentNowPlayingItem)
 }
@@ -90,22 +96,22 @@ const syncNowPlayingItemWithTrack = () => {
   // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
   // - Sometimes the debouncedSetPlaybackPosition seems to load with the previous track's playback position,
   // instead of the new track's playback position.
-  // NOTE: This timeout will lead to a delay before every clip starts, where it starts playing from the episode start
+  // TODO: This timeout will lead to a delay before every clip starts, where it starts playing from the episode start
   // before playing from the clip start. Hopefully we can iron this out sometime...
   // - The second timeout is called in case something was out of sync previously from getCurrentTrack
-  // or getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId...
+  // or getNowPlayingItemFromLocalStorage...
   function sync() {
     (async () => {
-      updatePlaybackState()
+      playerUpdatePlaybackState()
       await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
 
-      const currentTrackId = await getCurrentLoadedTrackId()
+      const currentTrackId = await audioGetCurrentLoadedTrackId()
       const setPlayerClipIsLoadedIfClip = true
 
       /*
         When a new item loads, sometimes that item is not available in the local history
-        until a few seconds into the loadItemAndPlayTrack, so we're reattempting the
-        getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId up to 5 times.
+        until a few seconds into the playerLoadNowPlayingItem, so we're reattempting the
+        getNowPlayingItemFromLocalStorage up to 5 times.
       */
       let retryIntervalCount = 1
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -114,7 +120,7 @@ const syncNowPlayingItemWithTrack = () => {
         if (retryIntervalCount >= 5) {
           clearInterval(retryInterval)
         } else {
-          const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
+          const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(
             currentTrackId, setPlayerClipIsLoadedIfClip)
           if (currentNowPlayingItem && retryInterval) {
             clearInterval(retryInterval)
@@ -132,13 +138,13 @@ const syncNowPlayingItemWithTrack = () => {
 
 const resetHistoryItem = async (x: any) => {
   const { position, track } = x
-  const loadedTrackId = await getLoadedTrackIdByIndex(track)
+  const loadedTrackId = await audioGetLoadedTrackIdByIndex(track)
   const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(loadedTrackId)
   if (metaEpisode) {
     const { mediaFileDuration } = metaEpisode
     if (mediaFileDuration > 59 && mediaFileDuration - 59 < position) {
       const setPlayerClipIsLoadedIfClip = false
-      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
+      const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(
         loadedTrackId, setPlayerClipIsLoadedIfClip)
       if (currentNowPlayingItem) {
         const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
@@ -160,13 +166,13 @@ const handleQueueEnded = (x: any) => {
   setTimeout(() => {
     (async () => {
       /*
-        The app is calling PVTrackPlayer.reset() on iOS only in loadItemAndPlayTrack
+        The app is calling PVAudioPlayer.reset() on iOS only in playerLoadNowPlayingItem
         because .reset() is the only way to clear out the current item from the queue,
         but .reset() results in the playback-queue-ended event in firing.
         We don't want the playback-queue-ended event handling logic below to happen
-        during loadItemAndPlayTrack, so to work around this, I am setting temporary
+        during playerLoadNowPlayingItem, so to work around this, I am setting temporary
         AsyncStorage state so we can know when a queue has actually ended or
-        when the event is the result of .reset() called within loadItemAndPlayTrack.
+        when the event is the result of .reset() called within playerLoadNowPlayingItem.
       */
      const preventHandleQueueEnded = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
      if (!preventHandleQueueEnded) {
@@ -186,21 +192,21 @@ const handleTrackEnded = (x: any) => {
 
 // eslint-disable-next-line @typescript-eslint/require-await
 module.exports = async () => {
-  PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
+  PVAudioPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
 
-  PVTrackPlayer.addEventListener('playback-track-changed', (x: any) => {
+  PVAudioPlayer.addEventListener('playback-track-changed', (x: any) => {
     console.log('playback-track-changed', x)
     syncNowPlayingItemWithTrack()
     handleTrackEnded(x)
   })
 
-  // NOTE: PVTrackPlayer.reset will call the playback-queue-ended event on Android!!!
-  PVTrackPlayer.addEventListener('playback-queue-ended', (x) => {
+  // NOTE: PVAudioPlayer.reset will call the playback-queue-ended event on Android!!!
+  PVAudioPlayer.addEventListener('playback-queue-ended', (x) => {
     console.log('playback-queue-ended', x)
     handleQueueEnded(x)
   })
 
-  PVTrackPlayer.addEventListener('playback-state', (x) => {
+  PVAudioPlayer.addEventListener('playback-state', (x) => {
     (async () => {
       console.log('playback-state', x)
 
@@ -211,17 +217,17 @@ module.exports = async () => {
 
       if (nowPlayingItem) {
         const { clipEndTime } = nowPlayingItem
-        const currentPosition = await PVTrackPlayer.getTrackPosition()
-        const currentState = await PVTrackPlayer.getState()
-        const isPlaying = currentState === RNTPState.Playing
+        const currentPosition = await audioGetTrackPosition()
+        const currentState = await audioGetState()
+        const isPlaying = audioCheckIfIsPlaying(currentState)
 
         const shouldHandleAfterClip = clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying
         if (shouldHandleAfterClip) {
-          await handleResumeAfterClipHasEnded()
+          await playerHandleResumeAfterClipHasEnded()
         } else {
           if (Platform.OS === 'ios') {
-            if (x.state === RNTPState.Playing) {
-              await setRateWithLatestPlaybackSpeed()
+            if (audioCheckIfIsPlaying(x.state)) {
+              await playerSetRateWithLatestPlaybackSpeed()
             }
           } else if (Platform.OS === 'android') {
             /*
@@ -235,12 +241,10 @@ module.exports = async () => {
               buffering 6
               ???       8
             */
-            const stopped = 1
-            const paused = 2
             const playing = 3
             if (x.state === playing) {
               const rate = await getPlaybackSpeed()
-              PVTrackPlayer.setRate(rate)
+              PVAudioPlayer.setRate(rate)
             }
           }
         }
@@ -248,50 +252,50 @@ module.exports = async () => {
     })()
   })
 
-  PVTrackPlayer.addEventListener('playback-error', (x: any) => {
+  PVAudioPlayer.addEventListener('playback-error', (x: any) => {
     console.log('playback-error', x)
     // TODO: post error to our logs!
     PVEventEmitter.emit(PV.Events.PLAYER_PLAYBACK_ERROR)
   })
 
-  PVTrackPlayer.addEventListener('remote-jump-backward', () => {
+  PVAudioPlayer.addEventListener('remote-jump-backward', () => {
     const { jumpBackwardsTime } = getGlobal()
-    playerJumpBackward(jumpBackwardsTime)
+    audioJumpBackward(jumpBackwardsTime)
   })
 
-  PVTrackPlayer.addEventListener('remote-jump-forward', () => {
+  PVAudioPlayer.addEventListener('remote-jump-forward', () => {
     const { jumpForwardsTime } = getGlobal()
-    playerJumpForward(jumpForwardsTime)
+    audioJumpForward(jumpForwardsTime)
   })
 
-  PVTrackPlayer.addEventListener('remote-pause', () => {
-    handlePause()
+  PVAudioPlayer.addEventListener('remote-pause', () => {
+    audioHandlePauseWithUpdate()
   })
 
-  PVTrackPlayer.addEventListener('remote-play', () => {
-    handlePlay()
+  PVAudioPlayer.addEventListener('remote-play', () => {
+    audioHandlePlayWithUpdate()
   })
 
-  PVTrackPlayer.addEventListener('remote-seek', (data) => {
+  PVAudioPlayer.addEventListener('remote-seek', (data) => {
     if (data.position || data.position >= 0) {
-      handleSeek(data.position)
+      audioHandleSeekToWithUpdate(data.position)
     }
   })
 
-  PVTrackPlayer.addEventListener('remote-stop', () => {
-    PVTrackPlayer.pause()
+  PVAudioPlayer.addEventListener('remote-stop', () => {
+    audioHandlePause()
     PVEventEmitter.emit(PV.Events.PLAYER_REMOTE_STOP)
   })
 
-  PVTrackPlayer.addEventListener('remote-previous', () => {
-    playPreviousChapterOrReturnToBeginningOfTrack()
+  PVAudioPlayer.addEventListener('remote-previous', () => {
+    playerPlayPreviousChapterOrReturnToBeginningOfTrack()
   })
 
-  PVTrackPlayer.addEventListener('remote-next', () => {
-    playNextChapterOrQueueItem()
+  PVAudioPlayer.addEventListener('remote-next', () => {
+    playerPlayNextChapterOrQueueItem()
   })
 
-  PVTrackPlayer.addEventListener('remote-duck', (x: any) => {
+  PVAudioPlayer.addEventListener('remote-duck', (x: any) => {
     (async () => {
       const { paused, permanent } = x
 
@@ -304,24 +308,24 @@ module.exports = async () => {
         // as a result of remote-duck.
         // Thanks to nesinervink and bakkerjoeri for help resolving this issue:
         // https://github.com/react-native-kit/react-native-track-player/issues/687#issuecomment-660149163
-        const currentState = await PVTrackPlayer.getState()
-        const isPlaying = currentState === RNTPState.Playing
+        const currentState = await audioGetState()
+        const isPlaying = audioCheckIfIsPlaying(currentState)
         if (permanent && isPlaying) {
-          handleStop()
+          audioHandleStop()
         } else if (paused) {
-          handlePause()
+          audioHandlePauseWithUpdate()
         } else if (!permanent) {
-          handlePlay()
+          audioHandlePlayWithUpdate()
         }
       } 
       
       // else if (Platform.OS === 'android') {
       //   if (permanent) {
-      //     PVTrackPlayer.stop()
+      //     PVAudioPlayer.stop()
       //   } else if (paused) {
-      //     PVTrackPlayer.pause()
+      //     PVAudioPlayer.pause()
       //   } else if (!permanent) {
-      //     PVTrackPlayer.play()
+      //     PVAudioPlayer.play()
       //   }
       // }
     })()
@@ -373,9 +377,9 @@ const stopCheckClipIfEndTimeReached = () => {
     const nowPlayingItem = await getNowPlayingItemLocally()
     if (nowPlayingItem) {
       const { clipEndTime } = nowPlayingItem
-      const currentPosition = await PVTrackPlayer.getTrackPosition()
+      const currentPosition = await audioGetTrackPosition()
       if (currentPosition > clipEndTime) {
-        handlePause()
+        audioHandlePauseWithUpdate()
         await setClipHasEnded(true)
       }
     }
@@ -441,12 +445,12 @@ let valueStreamingIntervalSecondCount = 1
 const handleBackgroundTimerInterval = () => {
   stopCheckClipIfEndTimeReached()
 
-  PVTrackPlayer.getState().then(async (playbackState) => {
+  audioGetState().then(async (playbackState) => {
     const globalState = getGlobal()
     const { streamingEnabled } = globalState.session.valueTagSettings
 
     if (streamingEnabled) {
-      if (playbackStateIsPlaying(playbackState)) {
+      if (audioCheckIfIsPlaying(playbackState)) {
         valueStreamingIntervalSecondCount++
 
         if (
@@ -475,21 +479,4 @@ const handleBackgroundTimerInterval = () => {
       }
     }
   })
-}
-
-const playbackStateIsPlaying = (playbackState: string | number) => {
-  let isPlaying = false
-
-  if (Platform.OS === 'ios') {
-    if (playbackState === RNTPState.Playing) {
-      isPlaying = true
-    }
-  } else if (Platform.OS === 'android') {
-    const playing = 3
-    if (playbackState === playing) {
-      isPlaying = true
-    }
-  }
-
-  return isPlaying
 }

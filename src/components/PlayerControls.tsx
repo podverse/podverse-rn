@@ -1,17 +1,18 @@
 import debounce from 'lodash/debounce'
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, Image, ImageSourcePropType } from 'react-native'
-import { State as RNTPState } from 'react-native-track-player'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import {
-  checkIfStateIsBuffering,
+  playerCheckIfStateIsBuffering,
+  playerCheckIfStateIsPlaying,
   playerJumpBackward,
   playerJumpForward,
-  setPlaybackPosition
+  playerPlayNextFromQueue,
+  playerSetPosition
 } from '../services/player'
-import { playNextChapterOrQueueItem, playNextFromQueue, playPreviousChapterOrReturnToBeginningOfTrack,
-  setPlaybackSpeed, togglePlay } from '../state/actions/player'
+import { playerPlayNextChapterOrQueueItem, playerPlayPreviousChapterOrReturnToBeginningOfTrack,
+  playerSetPlaybackSpeed, playerTogglePlay } from '../state/actions/player'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
@@ -60,7 +61,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       newSpeed = speeds[index + 1]
     }
 
-    await setPlaybackSpeed(newSpeed)
+    await playerSetPlaybackSpeed(newSpeed)
   }
 
   _navToStopWatchScreen = () => {
@@ -149,12 +150,12 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         />
       )
       playButtonAdjust = { paddingBottom: 8 } as any
-    } else if (playbackState === RNTPState.Playing) {
+    } else if (playerCheckIfStateIsPlaying(playbackState)) {
       playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
       playButtonAdjust = {}
       playButtonAccessibilityHint = translate('ARIA HINT - pause playback')
       playButtonAccessibilityLabel = translate('Pause')
-    } else if (checkIfStateIsBuffering(playbackState)) {
+    } else if (playerCheckIfStateIsBuffering(playbackState)) {
       playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
       playButtonAccessibilityHint = ''
@@ -198,8 +199,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             <TouchableOpacity
               accessibilityLabel={previousButtonAccessibilityLabel}
               accessibilityRole='button'
-              onLongPress={() => setPlaybackPosition(0)}
-              onPress={playPreviousChapterOrReturnToBeginningOfTrack}
+              onLongPress={() => playerSetPosition(0)}
+              onPress={playerPlayPreviousChapterOrReturnToBeginningOfTrack}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
               {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
             </TouchableOpacity>
@@ -216,7 +217,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             <TouchableOpacity
               accessibilityHint={playButtonAccessibilityHint}
               accessibilityLabel={playButtonAccessibilityLabel}
-              onPress={togglePlay}>
+              onPress={playerTogglePlay}>
               <View importantForAccessibility='no-hide-descendants' style={[playerStyles.playButton, playButtonAdjust]}>
                 {playButtonIcon}
               </View>
@@ -234,8 +235,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             <TouchableOpacity
               accessibilityLabel={nextButtonAccessibilityLabel}
               accessibilityRole='button'
-              onLongPress={playNextFromQueue}
-              onPress={playNextChapterOrQueueItem}
+              onLongPress={playerPlayNextFromQueue}
+              onPress={playerPlayNextChapterOrQueueItem}
               disabled={noNextQueueItem}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
               {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, `${testIDPrefix}_skip_track`, noNextQueueItem)}

@@ -4,7 +4,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
-import { getPlaybackSpeed, PVTrackPlayer, setPlaybackPosition } from '../services/player'
+import { getPlaybackSpeed, playerGetPosition, playerSetPosition } from '../services/player'
 import { PVSearchBar } from './PVSearchBar'
 import { AutoScrollToggle, FlatList, TableSectionSelectors, Text, View } from './'
 
@@ -74,7 +74,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
         accessible
         accessibilityLabel={accessibilityLabel}
         activeOpacity={0.7}
-        onPress={() => setPlaybackPosition(startTime)}>
+        onPress={() => playerSetPosition(startTime)}>
         {!!this.currentSpeaker && (
           <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
             {this.currentSpeaker}
@@ -127,7 +127,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
       this.interval = setInterval(() => {
         (async () => {
           const { parsedTranscript } = this.global
-          const currentPosition = await PVTrackPlayer.getTrackPosition()
+          const currentPosition = await playerGetPosition()
 
           const index = parsedTranscript.findIndex(
             (item: Record<string, any>) => item.startTime < currentPosition && item.endTime > currentPosition

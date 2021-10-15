@@ -3,7 +3,7 @@ import React, { Fragment } from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
-import { PVTrackPlayer, restartNowPlayingItemClip } from '../services/player'
+import { playerGetPosition, playerRestartNowPlayingItemClip } from '../services/player'
 import { button, core } from '../styles'
 import { ActivityIndicator, Divider, Icon, TableSectionSelectors, Text, TextLink } from './'
 
@@ -40,7 +40,7 @@ export class ClipInfoView extends React.PureComponent<Props> {
 
   _handleEditPress = async () => {
     const { isPublic, navigation } = this.props
-    const initialProgressValue = await PVTrackPlayer.getTrackPosition()
+    const initialProgressValue = await playerGetPosition()
     const isLoggedIn = safelyUnwrapNestedVariable(() => this.global.session.isLoggedIn, false)
     const globalTheme = safelyUnwrapNestedVariable(() => this.global.globalTheme, {})
 
@@ -140,7 +140,7 @@ export class ClipInfoView extends React.PureComponent<Props> {
               <TextLink
                 accessible={false}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                onPress={restartNowPlayingItemClip}
+                onPress={playerRestartNowPlayingItemClip}
                 style={styles.replayClip}
                 text={translate('Replay Clip')} />
             )}

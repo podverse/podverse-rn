@@ -5,14 +5,14 @@ import { getGlobal, setGlobal } from 'reactn'
 import { getMediaRefStartPosition } from '../../lib/utility'
 import { PV } from '../../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../../services/episode'
-import { PVTrackPlayer, updateCurrentTrack } from '../../services/player'
+import { playerGetPosition, playerGetDuration, playerUpdateCurrentTrack } from '../../services/player'
 
 export const clearChapterPlaybackInfo = async (nowPlayingItem?: NowPlayingItem) => { 
   if (nowPlayingItem) {
     const imageUrl = nowPlayingItem.episodeImageUrl
       || nowPlayingItem.podcastShrunkImageUrl
       || nowPlayingItem.podcastImageUrl
-    updateCurrentTrack(nowPlayingItem.episodeTitle, imageUrl)
+    playerUpdateCurrentTrack(nowPlayingItem.episodeTitle, imageUrl)
   }
 
   return new Promise((resolve) => {
@@ -52,7 +52,7 @@ export const loadChapterPlaybackInfo = () => {
   (async () => {
     const globalState = getGlobal()
     const { currentChapters } = globalState
-    const playerPosition = await PVTrackPlayer.getTrackPosition()
+    const playerPosition = await playerGetPosition()
     if ((playerPosition || playerPosition === 0) && Array.isArray(currentChapters) && currentChapters.length > 1) {
       const newCurrentChapter = getChapterForTime(playerPosition)
       setChapterOnGlobalState(newCurrentChapter)
@@ -106,17 +106,14 @@ export const setChapterOnGlobalState = (newCurrentChapter: any, haptic?: boolean
     if (haptic) {
       ReactNativeHapticFeedback.trigger('impactLight', PV.Haptic.options)
     }
-    updateCurrentTrack(newCurrentChapter.title, newCurrentChapter.imageUrl)
-
-    setGlobal({
-      currentChapter: newCurrentChapter
-    })
+    playerUpdateCurrentTrack(newCurrentChapter.title, newCurrentChapter.imageUrl)
+    setGlobal({ currentChapter: newCurrentChapter })
   }
 }
 
 export const setChaptersOnGlobalState = async (currentChapters: any[]) => {
   const sliderWidth = Dimensions.get('screen').width - PV.Player.sliderStyles.wrapper.marginHorizontal * 2
-  const duration = await PVTrackPlayer.getTrackDuration()
+  const duration = await playerGetDuration()
   const currentChaptersStartTimePositions = [] as number[]
 
   if (sliderWidth && duration > 0) {

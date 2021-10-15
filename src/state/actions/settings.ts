@@ -3,9 +3,9 @@ import Config from 'react-native-config'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import {
-  setPlayerJumpBackwards as setPlayerJumpBackwardsService,
-  setPlayerJumpForwards as setPlayerJumpForwardsService,
-  updateTrackPlayerCapabilities
+  playerSetPlayerJumpBackwards as playerSetPlayerJumpBackwardsService,
+  playerSetPlayerJumpForwards as playerSetPlayerJumpForwardsService,
+  playerUpdateTrackPlayerCapabilities
 } from '../../services/player'
 import { checkIfTrackingIsEnabled } from '../../services/tracking'
 import { removeLNPayWallet } from './lnpay'
@@ -124,12 +124,12 @@ export const setOfflineModeEnabled = (value: boolean) => {
 }
 
 export const setPlayerJumpBackwards = (val?: string) => {
-  const newValue = setPlayerJumpBackwardsService(val)
+  const newValue = playerSetPlayerJumpBackwardsService(val)
   setGlobal({ jumpBackwardsTime: newValue })
 }
 
 export const setPlayerJumpForwards = (val?: string) => {
-  const newValue = setPlayerJumpForwardsService(val)
+  const newValue = playerSetPlayerJumpForwardsService(val)
   setGlobal({ jumpForwardsTime: newValue })
 }
 
@@ -141,7 +141,7 @@ export const handleFinishSettingPlayerTime = () => {
     jumpBackwardsTime: newJumpBackwardsTime,
     jumpForwardsTime: newJumpForwardsTime
   }, () => {
-    updateTrackPlayerCapabilities()
+    playerUpdateTrackPlayerCapabilities()
   })
 }
 

@@ -1,12 +1,14 @@
 import { convertToNowPlayingItem } from 'podverse-shared'
 import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
-import { State as RNTPState } from 'react-native-track-player'
 import { useGlobal } from 'reactn'
 import { checkIfNowPlayingItem, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
-import { handlePlay, PVTrackPlayer, setPlaybackPosition } from '../services/player'
-import { loadItemAndPlayTrack, togglePlay } from '../state/actions/player'
+import { playerHandlePlayWithUpdate, playerCheckIfStateIsPlaying,
+  playerSetPosition, 
+  playerGetState} from '../services/player'
+import { audioCheckIfIsPlaying } from '../services/playerAudio'
+import { playerLoadNowPlayingItem, playerTogglePlay } from '../state/actions/player'
 import { Icon, MoreButton, Text, View } from './'
 
 type Props = {
@@ -83,11 +85,11 @@ export const TimeRemainingWidget = (props: Props) => {
   const playedTime = userPlaybackPosition || 0
 
   const handleChapterLoad = async () => {
-    await setPlaybackPosition(item.startTime)
-    const currentState = await PVTrackPlayer.getState()
-    const isPlaying = currentState === RNTPState.Playing
+    await playerSetPosition(item.startTime)
+    const playbackState = await playerGetState()
+    const isPlaying = playerCheckIfStateIsPlaying(playbackState)
     if (!isPlaying) {
-      handlePlay()
+      playerHandlePlayWithUpdate()
     }
   }
 
@@ -98,19 +100,19 @@ export const TimeRemainingWidget = (props: Props) => {
       await handleChapterLoad()
     } else {
       if (isNowPlayingItem) {
-        togglePlay()
+        playerTogglePlay()
       } else {
         const forceUpdateOrderDate = false
         const shouldPlay = true
         const setCurrentItemNextInQueue = true
-        loadItemAndPlayTrack(playingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+        playerLoadNowPlayingItem(playingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
       }
     }
     requestAppStoreReviewForEpisodePlayed()
   }
 
   const isInvalidDuration = totalTime <= 0
-  const isPlaying = playbackState === RNTPState.Playing
+  const isPlaying = audioCheckIfIsPlaying(playbackState)
   const isNowPlayingItem = isPlaying && checkIfNowPlayingItem(item, nowPlayingItem)
 
   const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]

@@ -28,11 +28,11 @@ import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRef } from '../services/mediaRef'
-import { PVTrackPlayer, updateUserPlaybackPosition } from '../services/player'
+import { playerGetPosition, playerUpdateUserPlaybackPosition } from '../services/player'
 import { addQueueItemNext } from '../services/queue'
 import { trackPageView } from '../services/tracking'
 import { getNowPlayingItem } from '../services/userNowPlayingItem'
-import { loadItemAndPlayTrack } from '../state/actions/player'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { loadChaptersForEpisode } from '../state/actions/playerChapters'
 import { getHistoryItems } from '../state/actions/userHistoryItem'
 import { core } from '../styles'
@@ -139,7 +139,7 @@ export class PlayerScreen extends React.Component<Props> {
       clearTempMediaRef()
       const skipSetNowPlaying = false
       const shouldAwait = true
-      await updateUserPlaybackPosition(skipSetNowPlaying, shouldAwait)
+      await playerUpdateUserPlaybackPosition(skipSetNowPlaying, shouldAwait)
       await getHistoryItems(1, [])
     } catch (e) {
       console.log('PlayerScreen componentWillUnmount', e)
@@ -205,7 +205,7 @@ export class PlayerScreen extends React.Component<Props> {
               const shouldPlay = true
               const forceUpdateOrderDate = false
               const setCurrentItemNextInQueue = true
-              await loadItemAndPlayTrack(newItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+              await playerLoadNowPlayingItem(newItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
             }
           }
         } catch (error) {
@@ -233,7 +233,7 @@ export class PlayerScreen extends React.Component<Props> {
   }
 
   _getInitialProgressValue = async () => {
-    const initialProgressValue = await PVTrackPlayer.getTrackPosition()
+    const initialProgressValue = await playerGetPosition()
     if (initialProgressValue || initialProgressValue === 0) {
       return Math.floor(initialProgressValue)
     } else {
