@@ -442,7 +442,7 @@ export const audioInitializePlayerQueue = async () => {
     let filteredItems = [] as any
     
     let item = await getNowPlayingItemLocally()
-    if (item) {
+    if (item && !checkIfVideoFileType(item)) {
       /* Use the item from history to make sure we have the same
          userPlaybackPosition that was last saved from other devices. */
       if (!item.clipId && item.episodeId) {
@@ -452,14 +452,14 @@ export const audioInitializePlayerQueue = async () => {
 
       filteredItems = filterItemFromQueueItems(queueItems, item)
       filteredItems.unshift(item)
-    }
 
-    if (filteredItems.length > 0) {
-      const tracks = await audioCreateTracks(filteredItems)
-      PVAudioPlayer.add(tracks)
-    }
+      if (filteredItems.length > 0) {
+        const tracks = await audioCreateTracks(filteredItems)
+        PVAudioPlayer.add(tracks)
+      }
 
-    return item
+      return item
+    }
   } catch (error) {
     console.log('Initializing player error: ', error)
   }

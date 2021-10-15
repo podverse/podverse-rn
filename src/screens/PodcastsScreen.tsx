@@ -28,7 +28,7 @@ import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { parseAllAddByRSSPodcasts } from '../services/parser'
 import { playerCheckIdlePlayerState, playerUpdateUserPlaybackPosition } from '../services/player'
-import { audioInitializePlayerQueue, audioUpdateTrackPlayerCapabilities } from '../services/playerAudio'
+import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudio'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
 import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
@@ -38,10 +38,11 @@ import { updateWalletInfo } from '../state/actions/lnpay'
 import {
   initializePlaybackSpeed,
   initPlayerState,
-  showMiniPlayer,
   playerUpdatePlaybackState,
-  playerUpdatePlayerState
+  playerUpdatePlayerState,
+  showMiniPlayer
 } from '../state/actions/player'
+import { audioInitializePlayerQueue } from '../state/actions/playerAudio'
 import { combineWithAddByRSSPodcasts,
   getSubscribedPodcasts, removeAddByRSSPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { updateScreenReaderEnabledState } from '../state/actions/screenReader'

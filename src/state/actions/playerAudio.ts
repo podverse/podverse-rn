@@ -14,8 +14,7 @@ export const audioInitializePlayerQueue = async () => {
   if (nowPlayingItem) {
     const shouldPlay = false
     const forceUpdateOrderDate = false
-    const setCurrentItemNextInQueue = false
-    await audioLoadNowPlayingItem(nowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    await audioLoadNowPlayingItem(nowPlayingItem, shouldPlay, forceUpdateOrderDate)
     showMiniPlayer()
   }
 
