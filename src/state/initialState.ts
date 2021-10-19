@@ -34,7 +34,6 @@ const initialTheme: InitialState = {
   currentChaptersStartTimePositions: [],
   player: {
     hasErrored: false,
-    isPlaying: false,
     nowPlayingItem: null,
     playbackRate: 1,
     shouldContinuouslyPlay: false,

@@ -1,14 +1,70 @@
 // import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from 'podverse-shared'
-import { getGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
+import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../../lib/downloader'
 import { PV } from '../../resources'
-// import PVEventEmitter from '../../services/eventEmitter'
-import { getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
+import PVEventEmitter from '../../services/eventEmitter'
+import { getPodcastCredentialsHeader } from '../../services/parser'
+import { playerUpdateUserPlaybackPosition } from '../../services/player'
 import { PVAudioPlayer } from '../../services/playerAudio'
+import { getPodcastFeedUrlAuthority } from '../../services/podcast'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from '../../services/userHistoryItem'
+import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
+import { removeDownloadedPodcastEpisode } from './downloads'
+import { playerUpdatePlayerState, showMiniPlayer } from './player'
+import { updateHistoryItemsIndex } from './userHistoryItem'
+
+export const videoInitializePlayer = async (item: NowPlayingItem) => {
+  if (item && checkIfVideoFileType(item)) {
+    /* Use the item from history to make sure we have the same
+        userPlaybackPosition that was last saved from other devices. */
+    if (!item.clipId && item.episodeId) {
+      await updateHistoryItemsIndex()
+      item = await getNowPlayingItemFromLocalStorage(item.episodeId)
+    }
+
+    const forceUpdateOrderDate = false
+    /* No navigation object needed for videoLoadNowPlayingItem
+       since we shouldn't navigate to the PlayerScreen in videoInitializePlayer. */
+    await videoLoadNowPlayingItem(item, forceUpdateOrderDate)
+    showMiniPlayer()
+  }
+
+  const globalState = getGlobal()
+  setGlobal({
+    screenPlayer: {
+      ...globalState.screenPlayer,
+      isLoading: false
+    }
+  })
+}
 
 export const checkIfVideoFileType = (nowPlayingItem?: NowPlayingItem) => {
   return nowPlayingItem?.episodeMediaType && nowPlayingItem.episodeMediaType.indexOf('video') >= 0
+}
+
+export const videoGetState = () => {
+  const globalState = getGlobal()
+  return globalState.player.playbackState
+}
+
+export const videoGetRate = () => {
+  const globalState = getGlobal()
+  return globalState.player.playbackRate
+}
+
+export const videoSetRate = (rate = 1.0) => {
+  const globalState = getGlobal()
+  const { player } = globalState
+  setGlobal({
+    player: {
+      ...player,
+      playbackRate: rate
+    }
+  }, () => {
+    PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED)    
+  })
 }
 
 export const videoIsLoaded = () => {
@@ -16,10 +72,17 @@ export const videoIsLoaded = () => {
   return player.videoInfo.videoIsLoaded
 }
 
-export const videoGetCurrentLoadedTrackId = async () => {
+export const videoCheckIfStateIsPlaying = (playbackState: any) => 
+  playbackState === PV.Player.videoInfo.videoPlaybackState.playing
+
+export const videoCheckIfStateIsBuffering = (playbackState: any) => 
+  playbackState === PV.Player.videoInfo.videoPlaybackState.buffering
+
+export const videoGetCurrentLoadedTrackId = () => {
   let currentTrackId = ''
+  const { player } = getGlobal()
   try {
-    const nowPlayingItem = await getNowPlayingItemLocally()
+    const { nowPlayingItem } = player
     if (checkIfVideoFileType(nowPlayingItem)) {
       currentTrackId = nowPlayingItem.clipId || nowPlayingItem.episodeId
     }
@@ -59,43 +122,183 @@ export const videoStateClearVideoInfo = () => {
     }
 }
 
+export const videoStateUpdateDuration = (duration = 0) => {
+  const globalState = getGlobal()
+  const { player } = globalState
+  const { videoInfo } = player
+  setGlobal({
+    player: {
+      ...player,
+      videoInfo: {
+        ...videoInfo,
+        videoDuration: duration
+      }
+    }
+  })
+}
+
+export const videoStateUpdatePosition = (position = 0) => {
+  const globalState = getGlobal()
+  const { player } = globalState
+  const { videoInfo } = player
+  setGlobal({
+    player: {
+      ...player,
+      videoInfo: {
+        ...videoInfo,
+        videoPosition: position
+      }
+    }
+  })
+}
+
+export const videoUpdatePlaybackState = (playbackState?: any) => {
+  const globalState = getGlobal()
+  setGlobal({
+    player: {
+      ...globalState.player,
+      playbackState
+    }
+  })
+}
+
+export const videoTogglePlay = () => {
+  const globalState = getGlobal()
+  const { player } = globalState
+  const { playbackState } = player
+
+  let newPlaybackState = PV.Player.videoInfo.videoPlaybackState.paused
+  if (!videoCheckIfStateIsPlaying(playbackState)) {
+    newPlaybackState = PV.Player.videoInfo.videoPlaybackState.playing
+  }
+
+  setGlobal({
+    player: {
+      ...player,
+      playbackState: newPlaybackState
+    }
+  }, () => {
+    PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED)
+  })
+}
+
+export const videoPlay = () => {
+  const globalState = getGlobal()
+  const { player } = globalState
+  const newPlaybackState = PV.Player.videoInfo.videoPlaybackState.playing
+
+  setGlobal({
+    player: {
+      ...player,
+      playbackState: newPlaybackState
+    }
+  }, () => {
+    PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED)
+  })
+}
+
+export const videoHandlePause = () => {
+  const globalState = getGlobal()
+  const { player } = globalState
+  const newPlaybackState = PV.Player.videoInfo.videoPlaybackState.paused
+
+  setGlobal({
+    player: {
+      ...player,
+      playbackState: newPlaybackState
+    }
+  }, () => {
+    PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED)
+  })
+}
+
+export const videoHandlePauseWithUpdate = () => {
+  videoHandlePause()
+  playerUpdateUserPlaybackPosition()
+}
+
 export const videoLoadNowPlayingItem = async (
   item: NowPlayingItem,
-  shouldPlay: boolean,
   forceUpdateOrderDate: boolean,
-  navigation: any
+  navigation?: any // only pass in if you want to go immediately to PlayerScreen
 ) => {
-  await PVAudioPlayer.reset()
+  await AsyncStorage.setItem(PV.Events.PLAYER_VIDEO_IS_LOADING, 'TRUE')
+  PVAudioPlayer.reset()
 
-  const lastPlayingItem = await getNowPlayingItemLocally()
   const historyItemsIndex = await getHistoryItemsIndexLocally()
 
   const { clipId, episodeId } = item
   if (!clipId && episodeId) {
     item.episodeDuration = historyItemsIndex?.episodes[episodeId]?.mediaFileDuration || 0
+    
+    // Update player state with the new episodeDuration
+    playerUpdatePlayerState(item)
   }
 
   addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
 
-  navigation.navigate(PV.RouteNames.PlayerScreen)
-
-  // load video 
-  // should it just load on navigate?
-  // then handle other player functions in onEvents?
-
-  if (shouldPlay) {
-    if (item && !item.clipId) {
-      setTimeout(() => {
-        // videoHandlePlay()
-      }, 1500)
-    } else if (item && item.clipId) {
-      // AsyncStorage.setItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED, 'true')
-    }
+  if (navigation) {
+    navigation.navigate(PV.RouteNames.PlayerScreen)
   }
 
-  if (lastPlayingItem && lastPlayingItem.episodeId && lastPlayingItem.episodeId !== item.episodeId) {
-    // PVEventEmitter.emit(PV.Events.PLAYER_NEW_EPISODE_LOADED)
-  }
+  /* Add second delay to make sure the playback-track-changed and playback-queue-ended
+     events triggered by PVAudioPlayer.reset() finishes */
+  setTimeout(() => {
+    (async () => {
+      await AsyncStorage.removeItem(PV.Events.PLAYER_VIDEO_IS_LOADING)
+    })()
+  }, 1000)
 
   return item
+}
+
+export const videoHandleSeekTo = (position: number) => {
+  PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_SEEK_TO, position)
+}
+
+export const videoResetHistoryItem = async () => {
+  const nowPlayingItem = await getNowPlayingItemLocally()
+  if (nowPlayingItem) {
+    const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+    if (autoDeleteEpisodeOnEnd && nowPlayingItem?.episodeId) {
+      removeDownloadedPodcastEpisode(nowPlayingItem.episodeId)
+    }
+
+    const forceUpdateOrderDate = false
+    const skipSetNowPlaying = false
+    const completed = true
+    await addOrUpdateHistoryItem(nowPlayingItem, 0, null, forceUpdateOrderDate, skipSetNowPlaying, completed)
+    await updateHistoryItemsIndex()
+  }
+}
+
+export const videoGetDownloadedFileInfo = async (nowPlayingItem: NowPlayingItem) => {
+  const { addByRSSPodcastFeedUrl, episodeId, episodeMediaUrl, podcastCredentialsRequired,
+    podcastId } = nowPlayingItem
+
+  let finalFeedUrl = addByRSSPodcastFeedUrl
+  let isDownloadedFile = false
+  let filePath = ''
+  let Authorization = ''
+
+  /*
+    If credentials are required but it is a podcast stored in our database,
+    then get the authority feedUrl for the podcast before proceeding.
+  */
+  if (podcastCredentialsRequired && !addByRSSPodcastFeedUrl && podcastId) {
+    finalFeedUrl = await getPodcastFeedUrlAuthority(podcastId)
+  }
+
+  if (episodeId) {
+    isDownloadedFile = await checkIfFileIsDownloaded(episodeId, episodeMediaUrl)
+    filePath = await getDownloadedFilePath(episodeId, episodeMediaUrl)
+    Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
+  }
+
+  return {
+    Authorization,
+    filePath,
+    finalFeedUrl,
+    isDownloadedFile
+  }
 }

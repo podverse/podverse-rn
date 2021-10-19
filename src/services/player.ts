@@ -2,10 +2,14 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
 import { PV } from '../resources'
-import { checkIfVideoFileType, videoIsLoaded, videoLoadNowPlayingItem } from '../state/actions/playerVideo'
+import { checkIfVideoFileType, videoCheckIfStateIsBuffering, videoCheckIfStateIsPlaying,
+  videoGetCurrentLoadedTrackId,
+  videoGetRate, videoGetState, videoGetTrackDuration, videoGetTrackPosition, videoHandlePause,
+  videoHandlePauseWithUpdate, videoHandleSeekTo, videoIsLoaded, videoLoadNowPlayingItem, videoSetRate, videoTogglePlay
+} from '../state/actions/playerVideo'
 import PVEventEmitter from './eventEmitter'
 import { audioIsLoaded,  audioCheckIfIsPlaying, audioSetRate, audioHandlePlayWithUpdate,
-  audioHandleSeekTo, audioHandlePause, audioSetPosition, audioAddNowPlayingItemNextInQueue,
+  audioHandleSeekTo, audioHandlePause, audioAddNowPlayingItemNextInQueue,
   audioLoadNowPlayingItem, audioGetTrackDuration, audioGetTrackPosition,
   audioGetCurrentLoadedTrackId, 
   audioCheckIfStateIsBuffering,
@@ -13,7 +17,6 @@ import { audioIsLoaded,  audioCheckIfIsPlaying, audioSetRate, audioHandlePlayWit
   audioGetRate,
   audioHandlePauseWithUpdate,
   audioPlayNextFromQueue,
-  audioCheckIdlePlayerState,
   audioHandleSeekToWithUpdate,
   audioSyncPlayerWithQueue,
   audioUpdateTrackPlayerCapabilities,
@@ -29,7 +32,8 @@ export const getClipHasEnded = async () => {
 }
 
 export const playerCheckActiveType = async () => {
-  let playerType = (await audioIsLoaded()) ? PV.Player.playerTypes.isAudio : null
+  const isAudio = await audioIsLoaded()
+  let playerType = isAudio ? PV.Player.playerTypes.isAudio : null
   if (playerType !== PV.Player.playerTypes.isAudio) {
     playerType = videoIsLoaded() ? PV.Player.playerTypes.isVideo : null
   }
@@ -88,7 +92,8 @@ export const playerSetRateWithLatestPlaybackSpeed = async () => {
     Call playerSetRate multiple times for iOS as a workaround for a bug.
     https://github.com/DoubleSymmetry/react-native-track-player/issues/766
   */
-  if (Platform.OS === 'ios') {
+  const playerType = await playerCheckActiveType()
+  if (Platform.OS === 'ios' && playerType === PV.Player.playerTypes.isAudio) {
     playerSetRate(rate)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     setTimeout( () => playerSetRate(rate), 200)
@@ -132,7 +137,7 @@ export const playerGetCurrentLoadedTrackId = async () => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     currentTrackId = await audioGetCurrentLoadedTrackId()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoGetCurrentLoadedTrackId
+    currentTrackId = videoGetCurrentLoadedTrackId()
   }
   return currentTrackId
 }
@@ -143,7 +148,7 @@ export const playerGetPosition = async () => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     position = await audioGetTrackPosition()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoGetTrackPosition
+    position = await videoGetTrackPosition()
   }
   return position
 }
@@ -154,7 +159,7 @@ export const playerGetDuration = async () => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     duration = await audioGetTrackDuration()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoGetTrackDuration
+    duration = await videoGetTrackDuration()
   }
   return duration
 }
@@ -167,6 +172,7 @@ export const playerGetDuration = async () => {
 export const playerUpdateUserPlaybackPosition = async (skipSetNowPlaying?: boolean, shouldAwait?: boolean) => {
   try {
     const currentTrackId = await playerGetCurrentLoadedTrackId()
+
     const setPlayerClipIsLoadedIfClip = false
     const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(
       currentTrackId,
@@ -186,18 +192,18 @@ export const playerLoadNowPlayingItem = async (
   shouldPlay: boolean,
   forceUpdateOrderDate: boolean,
   itemToSetNextInQueue: NowPlayingItem | null,
-  navigation: any
+  navigation?: any // only pass in if you want to go immediately to PlayerScreen for video
 ) => {
   try {
     if (!checkIfVideoFileType(item)) {
       audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
     }
-  
+    
     const skipSetNowPlaying = true
     await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
 
     if (checkIfVideoFileType(item)) {
-      await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, navigation)
+      await videoLoadNowPlayingItem(item, forceUpdateOrderDate, navigation)
     } else {
       await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
     }
@@ -206,15 +212,6 @@ export const playerLoadNowPlayingItem = async (
   }
 
   return item
-}
-
-export const playerSetPosition = async (position?: number) => {
-  const playerType = await playerCheckActiveType()
-  if (playerType === PV.Player.playerTypes.isAudio) {
-    audioSetPosition(position)
-  } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoSetPlaybackPosition
-  }
 }
 
 // Sometimes the duration is not immediately available for certain episodes.
@@ -276,7 +273,7 @@ export const playerSetPositionWhenDurationIsAvailable = async (
 export const playerRestartNowPlayingItemClip = async () => {
   const nowPlayingItem = await getNowPlayingItem()
   if (nowPlayingItem && nowPlayingItem.clipStartTime) {
-    playerSetPosition(nowPlayingItem.clipStartTime)
+    playerHandleSeekTo(nowPlayingItem.clipStartTime)
     playerHandlePlayWithUpdate()
   }
 }
@@ -295,7 +292,7 @@ export const playerHandlePause = async () => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     audioHandlePause()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoHandlePause
+    videoHandlePause()
   }
 }
 
@@ -304,7 +301,7 @@ export const playerHandlePauseWithUpdate = async () => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     audioHandlePauseWithUpdate()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoHandlePauseWithUpdate
+    videoHandlePauseWithUpdate()
   }
 }
 
@@ -313,7 +310,7 @@ export const playerHandleSeekTo = async (position: number) => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     audioHandleSeekTo(position)
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoHandleSeekTo
+    videoHandleSeekTo(position)
   }
 }
 
@@ -322,7 +319,7 @@ export const playerHandleSeekToWithUpdate = async (position: number) => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     audioHandleSeekToWithUpdate(position)
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoHandleSeekToWithUpdate
+    videoHandleSeekTo(position)
   }
 }
 
@@ -351,7 +348,7 @@ export const playerSetRate = async (rate = 1) => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     audioSetRate(rate)
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoSetRate
+    videoSetRate(rate)
   }
 }
 
@@ -359,7 +356,7 @@ export const playerCheckIfStateIsPlaying = (playbackState: any) => {
   let isPlaying = false
   isPlaying = audioCheckIfIsPlaying(playbackState)
   if (!isPlaying) {
-    // TODO VIDEO: videoCheckIfIsPlaying
+    isPlaying = videoCheckIfStateIsPlaying(playbackState)
   }
   return isPlaying
 }
@@ -368,7 +365,7 @@ export const playerCheckIfStateIsBuffering = (playbackState: any) => {
   let isBuffering = false
   isBuffering = audioCheckIfStateIsBuffering(playbackState)
   if (!isBuffering) {
-    // TODO VIDEO: videoCheckIfStateIsBuffering
+    isBuffering = videoCheckIfStateIsBuffering(playbackState)
   }
   return isBuffering
 }
@@ -379,7 +376,7 @@ export const playerGetState = async () => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     playerState = await audioGetState()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoPlayerGetState
+    playerState = videoGetState()
   }
   return playerState
 }
@@ -390,7 +387,7 @@ export const playerGetRate = async () => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     playerRate = await audioGetRate()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoGetRate
+    playerRate = videoGetRate()
   }
   return playerRate
 }
@@ -400,25 +397,30 @@ export const playerPlayNextFromQueue = async () => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     await audioPlayNextFromQueue()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoPlayNextFromQueue
+    // NO CORRESPONDING VIDEO FUNCTION NEEDED
   }
 }
 
-export const playerCheckIdlePlayerState = async () => {
-  const playerType = await playerCheckActiveType()
-  if (playerType === PV.Player.playerTypes.isAudio) {
-    await audioCheckIdlePlayerState()
-  } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoCheckIdlePlayerState
-  }
-}
+// export const playerCheckIdlePlayerState = async () => {
+//   const playerType = await playerCheckActiveType()
+//   let isIdle = false
+//   if (playerType === PV.Player.playerTypes.isAudio) {
+//     isIdle = await audioCheckIdlePlayerState()
+//   } else if (playerType === PV.Player.playerTypes.isVideo) {
+//     // isIdel = awvideoCheckIdlePlayerState()
+//   }
+//   return isIdle
+// }
+
+export const playerGetCurrentLoadedT
 
 export const playerSyncPlayerWithQueue = async () => {
   const playerType = await playerCheckActiveType()
   if (playerType === PV.Player.playerTypes.isAudio) {
     await audioSyncPlayerWithQueue()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoSyncPlayerWithQueue
+    // NO CORRESPONDING VIDEO FUNCTION NEEDED
+    // QUEUE CURRENTLY DISABLED FOR VIDEO
   }
 }
 
@@ -427,7 +429,7 @@ export const playerUpdateTrackPlayerCapabilities = async () => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     audioUpdateTrackPlayerCapabilities()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoSyncPlayerWithQueue
+    // NO CORRESPONDING VIDEO FUNCTION NEEDED
   }
 }
 
@@ -436,11 +438,12 @@ export const playerUpdateCurrentTrack = async (trackTitle?: string, artworkUrl?:
   if (playerType === PV.Player.playerTypes.isAudio) {
     audioUpdateCurrentTrack(trackTitle, artworkUrl)
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoUpdateCurrentTrack
+    // NO CORRESPONDING VIDEO FUNCTION NEEDED
+    // USER HAS TO DISMISS THE PLAYER TO START PLAYING A NEW VIDEO
   }
 }
 
-export const playerSetPlayerJumpBackwards = (val?: string) => {
+export const setPlayerJumpBackwards = (val?: string) => {
   const newValue = val && parseInt(val, 10) > 0 || val === '' ? val : PV.Player.jumpBackSeconds.toString()
   if (newValue !== '') {
     AsyncStorage.setItem(PV.Keys.PLAYER_JUMP_BACKWARDS, newValue.toString())
@@ -448,7 +451,7 @@ export const playerSetPlayerJumpBackwards = (val?: string) => {
   return newValue
 }
 
-export const playerSetPlayerJumpForwards = (val?: string) => {
+export const setPlayerJumpForwards = (val?: string) => {
   const newValue = val && parseInt(val, 10) > 0 || val === '' ? val : PV.Player.jumpSeconds.toString()
   if (newValue !== '') {
     AsyncStorage.setItem(PV.Keys.PLAYER_JUMP_FORWARDS, newValue.toString())
@@ -461,6 +464,6 @@ export const playerTogglePlay = async () => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     audioTogglePlay()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoTogglePlay
+    videoTogglePlay()
   }
 }

@@ -4,7 +4,8 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
-import { ActivityIndicator, FastImage, ScrollView, Text, TextTicker } from './'
+import { checkIfVideoFileType } from '../state/actions/playerVideo'
+import { ActivityIndicator, FastImage, PVVideo, ScrollView, Text, TextTicker } from './'
 
 type Props = {
   handlePressClipInfo: any
@@ -134,13 +135,22 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
           )}
         </RNView>
         <RNView style={imageWrapperStyle}>
-          <TouchableOpacity
-            accessible={false}
-            activeOpacity={1}
-            {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
-            style={styles.imageContainer}>
-            <FastImage key={imageUrl} source={imageUrl} styles={imageStyles} />
-          </TouchableOpacity>
+          {
+            checkIfVideoFileType(nowPlayingItem) && (
+              <PVVideo />
+            )
+          }
+          {
+            !checkIfVideoFileType(nowPlayingItem) && (
+              <TouchableOpacity
+                accessible={false}
+                activeOpacity={1}
+                {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
+                style={styles.imageContainer}>
+                <FastImage key={imageUrl} source={imageUrl} styles={imageStyles} />
+              </TouchableOpacity>
+            )
+          }
         </RNView>
         {!!clipId && (
           <RNView style={styles.carouselChapterWrapper}>

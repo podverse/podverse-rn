@@ -14,24 +14,37 @@ import PVEventEmitter from '../../services/eventEmitter'
 import {
   playerHandlePlayWithUpdate,
   playerLoadNowPlayingItem as playerLoadNowPlayingItemService,
-  playerSetPosition,
+  playerHandleSeekTo,
   playerSetPlaybackSpeed as playerSetPlaybackSpeedService,
   playerTogglePlay as playerTogglePlayService,
   playerGetState,
-  playerGetDuration
+  playerGetDuration,
+  playerCheckActiveType
 } from '../../services/player'
+import { audioTogglePlay } from '../../services/playerAudio'
 import { getPodcastFromPodcastIndexById } from '../../services/podcastIndex'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 import { trackPlayerScreenPageView } from '../../services/tracking'
 import {
   clearNowPlayingItem as clearNowPlayingItemService,
+  getNowPlayingItemLocally,
   setNowPlayingItem as setNowPlayingItemService
 } from '../../services/userNowPlayingItem'
-import { audioPlayNextFromQueue } from './playerAudio'
+import { audioInitializePlayerQueue, audioPlayNextFromQueue } from './playerAudio'
 import { clearChapterPlaybackInfo, getChapterNext, getChapterPrevious, loadChapterPlaybackInfo,
   loadChaptersForNowPlayingItem, 
   setChapterOnGlobalState} from './playerChapters'
-import { videoStateClearVideoInfo, videoStateSetVideoInfo } from './playerVideo'
+import { checkIfVideoFileType, videoInitializePlayer, videoStateClearVideoInfo,
+  videoStateSetVideoInfo } from './playerVideo'
+
+export const initializePlayer = async () => {
+  const item = await getNowPlayingItemLocally()
+  if (checkIfVideoFileType(item)) {
+    videoInitializePlayer(item)
+  } else if (!checkIfVideoFileType(item)) {
+    audioInitializePlayerQueue(item)
+  }
+}
 
 const clearEnrichedPodcastDataIfNewEpisode =
  async (previousNowPlayingItem: NowPlayingItem, nowPlayingItem: NowPlayingItem) => {
@@ -52,13 +65,15 @@ export const playerUpdatePlayerState = (item: NowPlayingItem) => {
   episode.description = episode.description || 'No show notes available'
   const mediaRef = convertNowPlayingItemToMediaRef(item)
 
+  const videoInfo = videoStateSetVideoInfo(item)
+
   const newState = {
     player: {
       ...globalState.player,
       episode,
       ...(!item.clipId ? { mediaRef } : { mediaRef: null }),
       nowPlayingItem: item,
-      videoInfo: videoStateSetVideoInfo(item)
+      videoInfo
     }
   } as any
 
@@ -133,13 +148,13 @@ export const playerPlayPreviousChapterOrReturnToBeginningOfTrack = async () => {
   if (currentChapters && currentChapters.length > 1) {
     const previousChapter = await getChapterPrevious()
     if (previousChapter) {
-      await playerSetPosition(previousChapter.startTime)
+      await playerHandleSeekTo(previousChapter.startTime)
       setChapterOnGlobalState(previousChapter)
       return
     }
   }
 
-  await playerSetPosition(0)
+  await playerHandleSeekTo(0)
 }
 
 export const playerPlayNextChapterOrQueueItem = async () => {
@@ -149,7 +164,7 @@ export const playerPlayNextChapterOrQueueItem = async () => {
   if (currentChapters && currentChapters.length > 1) {
     const nextChapter = await getChapterNext()
     if (nextChapter) {
-      await playerSetPosition(nextChapter.startTime)
+      await playerHandleSeekTo(nextChapter.startTime)
       setChapterOnGlobalState(nextChapter)
       return
     }
@@ -159,11 +174,13 @@ export const playerPlayNextChapterOrQueueItem = async () => {
 }
 
 const playerHandleLoadChapterForNowPlayingEpisode = async (item: NowPlayingItem) => {
-  playerSetPosition(item.clipStartTime)
-  const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(item)
-  await playerSetNowPlayingItem(nowPlayingItemEpisode, item.clipStartTime || 0)
-  playerHandlePlayWithUpdate()
-  loadChapterPlaybackInfo()
+  if (item.clipStartTime || item.clipStartTime === 0) {
+    playerHandleSeekTo(item.clipStartTime)
+    const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(item)
+    await playerSetNowPlayingItem(nowPlayingItemEpisode, item.clipStartTime)
+    playerHandlePlayWithUpdate()
+    loadChapterPlaybackInfo()
+  }
 }
 
 export const playerLoadNowPlayingItem = async (
@@ -171,7 +188,7 @@ export const playerLoadNowPlayingItem = async (
   shouldPlay: boolean,
   forceUpdateOrderDate: boolean,
   setCurrentItemNextInQueue: boolean,
-  navigation: any
+  navigation?: any // only pass in if you want to go immediately to PlayerScreen for video
 ) => {
   const globalState = getGlobal()
   const { nowPlayingItem: previousNowPlayingItem } = globalState.player
@@ -252,14 +269,15 @@ const enrichPodcastValue = async (item: NowPlayingItem) => {
     || item?.podcastValue?.length
     || item?.podcastValue?.recipients?.length
   ) {
-    PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
+    // No event emitter needed since it is immediately available to the PlayerScreen in the item
   } else if (item.podcastIndexPodcastId) {
     const podcastIndexPodcast = await getPodcastFromPodcastIndexById(item.podcastIndexPodcastId)
     const podcastIndexPodcastValueTag = podcastIndexPodcast?.feed?.value
     if (podcastIndexPodcastValueTag?.model && podcastIndexPodcastValueTag?.destinations) {
       const podcastValue = convertPodcastIndexValueTagToStandardValueTag(podcastIndexPodcastValueTag)
-      PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
-      setGlobal({ podcastValueFinal: podcastValue })
+      setGlobal({ podcastValueFinal: podcastValue }, () => {
+        PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
+      })
     }
   }
 }
@@ -276,6 +294,18 @@ export const playerSetPlaybackSpeed = async (rate: number) => {
   })
 
   PVEventEmitter.emit(PV.Events.PLAYER_SPEED_UPDATED)
+}
+
+export const playerTogglePlayOrNavToPlayer = async (item?: NowPlayingItem, navigation?: any) => {
+  await playerTogglePlayService()
+  const playerType = await playerCheckActiveType()
+  if (playerType === PV.Player.playerTypes.isAudio) {
+    audioTogglePlay()
+  } else if (playerType === PV.Player.playerTypes.isVideo && item) {
+    navigation.navigate(PV.RouteNames.PlayerScreen)
+  }
+
+  showMiniPlayer()
 }
 
 export const playerTogglePlay = async () => {

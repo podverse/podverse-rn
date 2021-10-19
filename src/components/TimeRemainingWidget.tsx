@@ -5,10 +5,10 @@ import { useGlobal } from 'reactn'
 import { checkIfNowPlayingItem, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
 import { playerHandlePlayWithUpdate, playerCheckIfStateIsPlaying,
-  playerSetPosition, 
-  playerGetState} from '../services/player'
+  playerHandleSeekTo, playerGetState} from '../services/player'
 import { audioCheckIfIsPlaying } from '../services/playerAudio'
 import { playerLoadNowPlayingItem, playerTogglePlay } from '../state/actions/player'
+import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { Icon, MoreButton, Text, View } from './'
 
 type Props = {
@@ -77,16 +77,16 @@ export const TimeRemainingWidget = (props: Props) => {
     loadTimeStampOnPlay, mediaFileDuration, navigation, style, testID, timeLabel, transparent,
     userPlaybackPosition } = props
   const { episode = {}, podcast = {} } = item
-  const playingItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
+  const convertedItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
   const [player] = useGlobal('player')
   const { nowPlayingItem, playbackState } = player
 
   const hasStartedItem = !!mediaFileDuration
-  const totalTime = mediaFileDuration || playingItem.episodeDuration || 0
+  const totalTime = mediaFileDuration || convertedItem.episodeDuration || 0
   const playedTime = userPlaybackPosition || 0
 
   const handleChapterLoad = async () => {
-    await playerSetPosition(item.startTime)
+    await playerHandleSeekTo(item.startTime)
     const playbackState = await playerGetState()
     const isPlaying = playerCheckIfStateIsPlaying(playbackState)
     if (!isPlaying) {
@@ -100,14 +100,14 @@ export const TimeRemainingWidget = (props: Props) => {
     if (loadTimeStampOnPlay) {
       await handleChapterLoad()
     } else {
-      if (isNowPlayingItem) {
+      if (isNowPlayingItem && !checkIfVideoFileType(nowPlayingItem)) {
         playerTogglePlay()
       } else {
         const forceUpdateOrderDate = false
         const shouldPlay = true
         const setCurrentItemNextInQueue = true
         playerLoadNowPlayingItem(
-          playingItem,
+          convertedItem,
           shouldPlay,
           forceUpdateOrderDate,
           setCurrentItemNextInQueue,
@@ -137,26 +137,32 @@ export const TimeRemainingWidget = (props: Props) => {
           : <Icon name={'play'} size={13} />
         }
       </TouchableOpacity>
-      {(hasStartedItem && !isInvalidDuration && playedTime > 0 && !episodeCompleted) && (
+      {(hasStartedItem && !isInvalidDuration && playedTime > 0) && (
         <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
       )}
       <View
         accessible={false}
         importantForAccessibility='no-hide-descendants'
         style={{ flexDirection: 'row', flex: 1, alignItems: 'center', height: '100%' }}>
-        <Text
-          accessible={false}
-          fontSizeLargerScale={PV.Fonts.largeSizes.md}
-          fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-          importantForAccessibility='no-hide-descendants'
-          style={styles.text}>
-          {timeLabel}
-        </Text>
-        {!!episodeCompleted && !userPlaybackPosition && (
-          <Icon
-            name={'check'}
-            size={22}
-            style={styles.iconCompleted} />
+        {
+          !!timeLabel && (
+            <Text
+              accessible={false}
+              fontSizeLargerScale={PV.Fonts.largeSizes.md}
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              importantForAccessibility='no-hide-descendants'
+              style={styles.text}>
+              {timeLabel}
+            </Text>
+          )
+        }
+        {!!episodeCompleted && (
+          <View style={styles.icon}>
+            <Icon
+              name={'check'}
+              size={22}
+              style={styles.iconCompleted} />
+          </View>
         )}
       </View>
       {!!handleMorePress && (
@@ -171,18 +177,16 @@ export const TimeRemainingWidget = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
-  iconCompleted: {
-    color: PV.Colors.green,
-    paddingHorizontal: 16
-  },
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly'
   },
-  text: {
-    color: PV.Colors.skyLight,
-    fontSize: PV.Fonts.sizes.sm
+  icon: {
+    marginLeft: 8
+  },
+  iconCompleted: {
+    color: PV.Colors.green
   },
   playButton: {
     borderColor: PV.Colors.skyLight,
@@ -194,5 +198,10 @@ const styles = StyleSheet.create({
     width: 40,
     marginRight: 10,
     backgroundColor: PV.Colors.brandBlueDark + '44'
+  },
+  text: {
+    color: PV.Colors.skyLight,
+    fontSize: PV.Fonts.sizes.sm,
+    marginRight: 8
   }
 })

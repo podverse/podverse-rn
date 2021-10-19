@@ -29,13 +29,14 @@ import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRef } from '../services/mediaRef'
 import { playerGetPosition, playerUpdateUserPlaybackPosition } from '../services/player'
-import { addQueueItemNext } from '../services/queue'
 import { trackPageView } from '../services/tracking'
 import { getNowPlayingItem } from '../services/userNowPlayingItem'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { loadChaptersForEpisode } from '../state/actions/playerChapters'
+import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { getHistoryItems } from '../state/actions/userHistoryItem'
 import { core } from '../styles'
+
 
 type Props = {
   navigation?: any
@@ -103,13 +104,23 @@ export class PlayerScreen extends React.Component<Props> {
               <NavShareIcon globalTheme={globalTheme} handlePress={_showShareActionSheet} />
             </RNView>
           )}
-          <NavQueueIcon globalTheme={globalTheme} isTransparent navigation={navigation} showBackButton />
+          {
+            !checkIfVideoFileType(nowPlayingItem) && (
+              <NavQueueIcon
+                globalTheme={globalTheme}
+                isTransparent
+                navigation={navigation}
+                showBackButton />
+            )
+          }
         </RNView>
       )
     }
   }
 
   async componentDidMount() {
+    PVEventEmitter.on(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED, this._handleRefreshNavigationHeader)
+
     const { navigation } = this.props
     const mediaRefId = navigation.getParam('mediaRefId')
 
@@ -135,15 +146,23 @@ export class PlayerScreen extends React.Component<Props> {
   }
 
   async componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED, this._handleRefreshNavigationHeader)
+
     try {
       clearTempMediaRef()
       const skipSetNowPlaying = false
       const shouldAwait = true
+
       await playerUpdateUserPlaybackPosition(skipSetNowPlaying, shouldAwait)
       await getHistoryItems(1, [])
     } catch (e) {
-      console.log('PlayerScreen componentWillUnmount', e)
+      console.log('PlayerScreen componentWillUnmount error', e)
     }
+  }
+
+  _handleRefreshNavigationHeader = () => {
+    console.log('_handleRefreshNavigationHeader')
+    this.props.navigation.setParams()
   }
 
   _handleNewEpisodeLoaded = () => {
@@ -198,9 +217,6 @@ export class PlayerScreen extends React.Component<Props> {
           if (!currentItem || (mediaRefId && mediaRefId !== currentItem.mediaRefId)) {
             const mediaRef = await getMediaRef(mediaRefId)
             if (mediaRef) {
-              if (currentItem) {
-                await addQueueItemNext(currentItem)
-              }
               const newItem = convertToNowPlayingItem(mediaRef, null, null)
               const shouldPlay = true
               const forceUpdateOrderDate = false

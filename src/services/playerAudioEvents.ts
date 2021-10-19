@@ -1,35 +1,22 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import debounce from 'lodash/debounce'
-import { NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
-import { getGlobal, setGlobal } from 'reactn'
-import BackgroundTimer from 'react-native-background-timer'
-import { State as RNTPState } from 'react-native-track-player'
-import { processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../lib/valueTagHelpers'
-import { translate } from '../lib/i18n'
-import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
+import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
-import { handleEnrichingPlayerState, playerPlayNextChapterOrQueueItem,
-  playerPlayPreviousChapterOrReturnToBeginningOfTrack, playerUpdatePlaybackState } from '../state/actions/player'
-import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { playerPlayNextChapterOrQueueItem,
+  playerPlayPreviousChapterOrReturnToBeginningOfTrack } from '../state/actions/player'
 import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
   getPlaybackSpeed,
-  setClipHasEnded,
   playerHandleResumeAfterClipHasEnded,
-  playerSetPositionWhenDurationIsAvailable,
-  playerSetRateWithLatestPlaybackSpeed,
-  playerUpdateUserPlaybackPosition
+  playerSetRateWithLatestPlaybackSpeed
 } from './player'
 import {
   PVAudioPlayer,
   audioJumpBackward,
   audioJumpForward,
-  audioGetCurrentLoadedTrackId,
-  audioGetLoadedTrackIdByIndex,
   audioGetTrackPosition,
   audioHandlePauseWithUpdate,
   audioHandlePlayWithUpdate,
@@ -37,106 +24,14 @@ import {
   audioHandleStop,
   audioGetState,
   audioHandlePause,
-  audioCheckIfIsPlaying
+  audioCheckIfIsPlaying,
+  audioGetLoadedTrackIdByIndex
 } from './playerAudio'
+import { syncNowPlayingItemWithTrack } from './playerBackgroundTimer'
 import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
-import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally,
-  setNowPlayingItemLocally } from './userNowPlayingItem'
-import { removeQueueItem } from './queue'
+import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
 
-const debouncedSetPlaybackPosition = debounce(playerSetPositionWhenDurationIsAvailable, 1000, {
-  leading: true,
-  trailing: false
-})
-
-const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem) => {
-  if (!currentNowPlayingItem) return
-
-  await clearChapterPlaybackInfo(currentNowPlayingItem)
-
-  await setNowPlayingItemLocally(currentNowPlayingItem, currentNowPlayingItem.userPlaybackPosition || 0)
-
-  if (currentNowPlayingItem && currentNowPlayingItem.clipId && !currentNowPlayingItem.clipIsOfficialChapter) {
-    PVEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
-  }
-
-  if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
-    debouncedSetPlaybackPosition(currentNowPlayingItem.clipStartTime || 0)
-  } else if (
-    !currentNowPlayingItem.clipId
-    && currentNowPlayingItem.userPlaybackPosition
-    && currentNowPlayingItem.userPlaybackPosition >= 5
-  ) {
-    debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
-  } else {
-    const { podcastId } = currentNowPlayingItem
-    const startPodcastFromTime = await getStartPodcastFromTime(podcastId)
-    
-    if (!currentNowPlayingItem.clipId && startPodcastFromTime) {
-      debouncedSetPlaybackPosition(startPodcastFromTime, trackId)
-    }
-  }
-
-  PVEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
-
-  // Call playerUpdateUserPlaybackPosition to make sure the current item is saved as the userNowPlayingItem
-  await playerUpdateUserPlaybackPosition()
-
-  handleEnrichingPlayerState(currentNowPlayingItem)
-}
-
-const syncNowPlayingItemWithTrack = () => {
-  // If the clipEndInterval is already running, stop it before the clip is
-  // reloaded in the handleSyncNowPlayingItem function.
-  const checkClipEndTimeShouldStop = true
-  const streamingValueShouldStop = false
-  stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeShouldStop, streamingValueShouldStop)
-
-  // The first setTimeout is an attempt to prevent the following:
-  // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
-  // - Sometimes the debouncedSetPlaybackPosition seems to load with the previous track's playback position,
-  // instead of the new track's playback position.
-  // TODO: This timeout will lead to a delay before every clip starts, where it starts playing from the episode start
-  // before playing from the clip start. Hopefully we can iron this out sometime...
-  // - The second timeout is called in case something was out of sync previously from getCurrentTrack
-  // or getNowPlayingItemFromLocalStorage...
-  function sync() {
-    (async () => {
-      playerUpdatePlaybackState()
-      await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
-
-      const currentTrackId = await audioGetCurrentLoadedTrackId()
-      const setPlayerClipIsLoadedIfClip = true
-
-      /*
-        When a new item loads, sometimes that item is not available in the local history
-        until a few seconds into the playerLoadNowPlayingItem, so we're reattempting the
-        getNowPlayingItemFromLocalStorage up to 5 times.
-      */
-      let retryIntervalCount = 1
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      const retryInterval = setInterval(async () => {
-        retryIntervalCount += 1
-        if (retryIntervalCount >= 5) {
-          clearInterval(retryInterval)
-        } else {
-          const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(
-            currentTrackId, setPlayerClipIsLoadedIfClip)
-          if (currentNowPlayingItem && retryInterval) {
-            clearInterval(retryInterval)
-            await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
-            await removeQueueItem(currentNowPlayingItem)
-            PVEventEmitter.emit(PV.Events.QUEUE_HAS_UPDATED)
-          }
-        }
-      }, 1000)
-    })()
-  }
-
-  setTimeout(sync, 1000)
-}
-
-const resetHistoryItem = async (x: any) => {
+export const audioResetHistoryItem = async (x: any) => {
   const { position, track } = x
   const loadedTrackId = await audioGetLoadedTrackIdByIndex(track)
   const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(loadedTrackId)
@@ -162,7 +57,7 @@ const resetHistoryItem = async (x: any) => {
   }
 }
 
-const handleQueueEnded = (x: any) => {
+export const audioHandleQueueEnded = (x: any) => {
   setTimeout(() => {
     (async () => {
       /*
@@ -176,16 +71,16 @@ const handleQueueEnded = (x: any) => {
       */
      const preventHandleQueueEnded = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
      if (!preventHandleQueueEnded) {
-       await resetHistoryItem(x)
+       await audioResetHistoryItem(x)
      }
     })()
   }, 0)
 }
 
-const handleTrackEnded = (x: any) => {
+export const audioHandleTrackEnded = (x: any) => {
   setTimeout(() => {
     (async () => {
-      await resetHistoryItem(x)
+      await audioResetHistoryItem(x)
     })()
   }, 0)
 }
@@ -195,15 +90,27 @@ module.exports = async () => {
   PVAudioPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
 
   PVAudioPlayer.addEventListener('playback-track-changed', (x: any) => {
-    console.log('playback-track-changed', x)
-    syncNowPlayingItemWithTrack()
-    handleTrackEnded(x)
+    (async () => {
+      console.log('playback-track-changed', x)
+  
+      const shouldSkip = await AsyncStorage.getItem(PV.Events.PLAYER_VIDEO_IS_LOADING)
+      if (!shouldSkip) {
+        syncNowPlayingItemWithTrack()
+        audioHandleTrackEnded(x)
+      }
+    })()
   })
 
   // NOTE: PVAudioPlayer.reset will call the playback-queue-ended event on Android!!!
   PVAudioPlayer.addEventListener('playback-queue-ended', (x) => {
-    console.log('playback-queue-ended', x)
-    handleQueueEnded(x)
+    (async () => {
+      console.log('playback-queue-ended', x)
+  
+      const shouldSkip = await AsyncStorage.getItem(PV.Events.PLAYER_VIDEO_IS_LOADING)
+      if (!shouldSkip) {
+        audioHandleQueueEnded(x)
+      }
+    })()
   })
 
   PVAudioPlayer.addEventListener('playback-state', (x) => {
@@ -329,154 +236,5 @@ module.exports = async () => {
       //   }
       // }
     })()
-  })
-}
-
-/*
-  HANDLE CLIP END TIME INTERVAL
-*/
-
-const startCheckClipEndTime = async () => {
-  const nowPlayingItem = await getNowPlayingItemLocally()
-
-  if (nowPlayingItem) {
-    const { clipEndTime, clipId } = nowPlayingItem
-    if (clipId && clipEndTime) {
-      await setClipHasEnded(false)
-      startBackgroundTimer()
-    }
-  }
-}
-
-const stopBackgroundTimerIfShouldBeStopped = async (
-  checkClipEndTimeShouldStop: boolean,
-  streamingValueShouldStop: boolean
-) => {
-  const globalState = getGlobal()
-  const nowPlayingItem = await getNowPlayingItemLocally()
-
-  if (!checkClipEndTimeShouldStop && nowPlayingItem?.clipEndTime) {
-    const clipHasEnded = await getClipHasEnded()
-    if (clipHasEnded) {
-      checkClipEndTimeShouldStop = true
-    }
-  }
-
-  const { streamingEnabled } = globalState.session.valueTagSettings
-  if (!streamingValueShouldStop && !streamingEnabled) {
-    streamingValueShouldStop = true
-  }
-
-  if (checkClipEndTimeShouldStop && streamingValueShouldStop) {
-    stopBackgroundTimer()
-  }
-}
-
-const stopCheckClipIfEndTimeReached = () => {
-  (async () => {
-    const nowPlayingItem = await getNowPlayingItemLocally()
-    if (nowPlayingItem) {
-      const { clipEndTime } = nowPlayingItem
-      const currentPosition = await audioGetTrackPosition()
-      if (currentPosition > clipEndTime) {
-        audioHandlePauseWithUpdate()
-        await setClipHasEnded(true)
-      }
-    }
-    const checkClipEndTimeStopped = false
-    const streamingValueStopped = false
-    stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeStopped, streamingValueStopped)
-  })()
-}
-
-const debouncedHandlePlayerClipLoaded = debounce(startCheckClipEndTime, 1000)
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
-PVEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, debouncedHandlePlayerClipLoaded)
-
-/*
-  HANDLE VALUE STREAMING TOGGLE
-*/
-
-const handleValueStreamingToggle = () => {
-  const globalState = getGlobal()
-  const { streamingEnabled } = globalState.session.valueTagSettings
-
-  if (streamingEnabled) {
-    startBackgroundTimer()
-  } else {
-    const checkClipEndTimeShouldStop = false
-    const streamingValueShouldStop = true
-    stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeShouldStop, streamingValueShouldStop)
-  }
-}
-
-const handleValueStreamingMinutePassed = async () => {
-  const globalState = getGlobal()
-  const { podcastValueFinal } = globalState
-  const { nowPlayingItem } = globalState.player
-  const { streamingAmount } = globalState.session?.valueTagSettings?.lightningNetwork?.lnpay?.globalSettings || {}
-  const valueTag = podcastValueFinal || nowPlayingItem.episodeValue || nowPlayingItem.podcastValue
-
-  if (valueTag) {
-    await saveStreamingValueTransactionsToTransactionQueue(
-      valueTag,
-      nowPlayingItem,
-      streamingAmount
-    )
-  }
-}
-
-PVEventEmitter.on(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED, handleValueStreamingToggle)
-
-/*
-  BACKGROUND TIMER
-*/
-
-const startBackgroundTimer = () => {
-  stopBackgroundTimer()
-  BackgroundTimer.runBackgroundTimer(handleBackgroundTimerInterval, 1000)
-}
-
-const stopBackgroundTimer = () => {
-  BackgroundTimer.stopBackgroundTimer()
-}
-
-let valueStreamingIntervalSecondCount = 1
-const handleBackgroundTimerInterval = () => {
-  stopCheckClipIfEndTimeReached()
-
-  audioGetState().then(async (playbackState) => {
-    const globalState = getGlobal()
-    const { streamingEnabled } = globalState.session.valueTagSettings
-
-    if (streamingEnabled) {
-      if (audioCheckIfIsPlaying(playbackState)) {
-        valueStreamingIntervalSecondCount++
-
-        if (
-          valueStreamingIntervalSecondCount
-          && valueStreamingIntervalSecondCount % 60 === 0) {        
-          await handleValueStreamingMinutePassed()
-        }
-      }
-      
-      if (valueStreamingIntervalSecondCount === 600) {
-        valueStreamingIntervalSecondCount = 1;
-        (async () => {
-          const { errors, transactions, totalAmount } = await processValueTransactionQueue()
-          if (transactions.length > 0 && totalAmount > 0) {
-            setGlobal({
-              bannerInfo: {
-                show: true,
-                description: translate('Streaming Value Sent'),
-                errors,
-                transactions,
-                totalAmount
-              }
-            })
-          }
-        })()
-      }
-    }
   })
 }

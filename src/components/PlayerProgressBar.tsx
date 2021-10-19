@@ -2,12 +2,12 @@ import debounce from 'lodash/debounce'
 import { useState } from 'react';
 import { Animated, Dimensions, StyleSheet, View } from 'react-native'
 import { Slider } from 'react-native-elements'
-import React, { getGlobal } from 'reactn'
+import React, { getGlobal, useGlobal } from 'reactn'
 import { useProgress } from 'react-native-track-player'
 import { translate } from '../lib/i18n';
 import { convertSecToHHMMSS, getMediaRefStartPosition } from '../lib/utility'
 import { PV } from '../resources'
-import { playerSetPosition } from '../services/player'
+import { playerHandleSeekTo } from '../services/player'
 import { clearChapterInterval, getChapterForTimeAndSetOnState, loadChapterPlaybackInfo,
   startChapterInterval } from '../state/actions/playerChapters'
 import { sliderStyles } from '../styles'
@@ -51,9 +51,9 @@ const handleOnValueChangeChapter = (newProgressValue: number) => {
     const currentTime = Date.now()
     if (currentTime - 500 > lastOnValueChangeChapterTime) {
       lastOnValueChangeChapterTime = currentTime
-      const position = newProgressValue * parentScopeDuration
+      const innerPosition = newProgressValue * parentScopeDuration
       const haptic = true
-      getChapterForTimeAndSetOnState(position, haptic)
+      getChapterForTimeAndSetOnState(innerPosition, haptic)
     }
   }
 }
@@ -96,6 +96,8 @@ export function PlayerProgressBar(props: Props) {
   const { slidingPositionOverride } = localState
   const { position } = useProgress()
   const { duration } = useProgress()
+  const [player] = useGlobal('player')
+  const { videoDuration, videoPosition } = player.videoInfo
 
   const backgroundColorInterpolator = localState.clipColorAnimation.interpolate({
     inputRange: [0, 1],
@@ -104,10 +106,18 @@ export function PlayerProgressBar(props: Props) {
 
   // If no item is currently in the PVAudioPlayer, fallback to use the
   // last loaded item's duration (backupDuration).
-  parentScopeDuration = duration > 0 ? duration : backupDuration || 0
 
-  const pos = slidingPositionOverride || position
-  const newProgressValue = parentScopeDuration > 0 ? pos / parentScopeDuration : 0
+  if (duration > 0) {
+    parentScopeDuration = duration
+  } else if (videoDuration > 0) {
+    parentScopeDuration = videoDuration
+  } else if (backupDuration && backupDuration > 0) {
+    parentScopeDuration = backupDuration
+  }
+
+
+  const outerPosition = slidingPositionOverride || position || videoPosition || 0
+  const newProgressValue = parentScopeDuration > 0 ? outerPosition / parentScopeDuration : 0
   
   const sliderWidth = Dimensions.get('screen').width - sliderStyles.wrapper.marginHorizontal * 2
   const clipStartTimePosition = getMediaRefStartPosition(clipStartTime, sliderWidth, parentScopeDuration)
@@ -144,14 +154,14 @@ export function PlayerProgressBar(props: Props) {
           setLocalState({ ...localState, slidingPositionOverride })
         }}
         onSlidingComplete={async (newProgressValue) => {
-          const position = newProgressValue * parentScopeDuration
-          await playerSetPosition(position)
+          const innerPosition = newProgressValue * parentScopeDuration
+          await playerHandleSeekTo(innerPosition)
           startChapterInterval()
 
           /*
-            Calling PVAudioPlayer.seekTo(position) in playerSetPosition causes the progress bar
-            to re-render with the *last* position, before finally seeking to the new position
-            and then re-rendering with the new correct position. To workaround this, I am adding
+            Calling PVAudioPlayer.seekTo(innerPosition) in playerHandleSeekTo causes the progress bar
+            to re-render with the *last* innerPosition, before finally seeking to the new innerPosition
+            and then re-rendering with the new correct innerPosition. To workaround this, I am adding
             a 1.5 second delay before clearing the slidingPositionOverride from local state.
           */
           setTimeout(() => {
@@ -171,17 +181,17 @@ export function PlayerProgressBar(props: Props) {
         }}
         thumbStyle={sliderStyles.thumbStyle}
         thumbTintColor={PV.Colors.white}
-        value={isLoading ? 0 : newProgressValue}
+        value={newProgressValue}
       />
       {!isLoading ? (
         <View style={sliderStyles.timeRow}>
           <Text
             accessibilityHint={translate('ARIA HINT - Current playback time')}
-            accessibilityLabel={convertSecToHHMMSS(slidingPositionOverride || position)}
+            accessibilityLabel={convertSecToHHMMSS(outerPosition)}
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={sliderStyles.time}>
-            {convertSecToHHMMSS(slidingPositionOverride || position)}
+            {convertSecToHHMMSS(outerPosition)}
           </Text>
           <Text
             accessibilityHint={translate('ARIA HINT - episode duration')}

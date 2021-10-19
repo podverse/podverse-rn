@@ -8,7 +8,7 @@ import {
   removeHTMLAttributesFromString
 } from '../lib/utility'
 import { PV } from '../resources'
-import { playerSetPosition } from '../services/player'
+import { playerHandleSeekTo } from '../services/player'
 import { TableSectionSelectors } from './TableSectionSelectors'
 
 type Props = {
@@ -65,7 +65,7 @@ export const HTMLScrollView = (props: Props) => {
             onPress: (event: any, href: string, attributes: any) => {
               const startTime = parseInt(attributes && attributes['data-start-time'], 10)
               if ((startTime || startTime === 0)) {
-                playerSetPosition(startTime)
+                playerHandleSeekTo(startTime)
               } else if (href) {
                 Linking.openURL(href)
               }
