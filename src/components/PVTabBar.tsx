@@ -2,7 +2,7 @@ import React from 'react'
 import { BottomTabBar } from 'react-navigation-tabs'
 import { useGlobal } from 'reactn'
 import {StyleSheet} from "react-native"
-import { View, Text } from '../components'
+import { Text, View } from '../components'
 import { PV } from '../resources'
 import { darkTheme } from '../styles'
 import { translate } from '../lib/i18n'

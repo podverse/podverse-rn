@@ -5,7 +5,7 @@ import { PV } from '../../resources'
 import {
   setPlayerJumpBackwards as setPlayerJumpBackwardsService,
   setPlayerJumpForwards as setPlayerJumpForwardsService,
-  updateTrackPlayerCapabilities
+  playerUpdateTrackPlayerCapabilities
 } from '../../services/player'
 import { checkIfTrackingIsEnabled } from '../../services/tracking'
 import { removeLNPayWallet } from './lnpay'
@@ -141,7 +141,7 @@ export const handleFinishSettingPlayerTime = () => {
     jumpBackwardsTime: newJumpBackwardsTime,
     jumpForwardsTime: newJumpForwardsTime
   }, () => {
-    updateTrackPlayerCapabilities()
+    playerUpdateTrackPlayerCapabilities()
   })
 }
 

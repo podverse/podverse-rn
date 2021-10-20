@@ -5,7 +5,6 @@ import { NowPlayingItem } from 'podverse-shared'
 import Config from 'react-native-config'
 import { getUserAgent } from 'react-native-device-info'
 import InAppReview from 'react-native-in-app-review'
-import { View } from '../components'
 import { PV } from '../resources'
 
 const cheerio = require('react-native-cheerio')
@@ -112,10 +111,11 @@ export const convertSecToHHMMSS = (sec: number) => {
 
 export const convertSecToHhoursMMinutes = (sec: number) => {
   let totalSec = Math.floor(sec)
+
   const hours = Math.floor(totalSec / 3600)
   totalSec %= 3600
-  const minutes = Math.floor(totalSec / 60)
 
+  const minutes = Math.floor(totalSec / 60)
   let result = `${minutes} min`
 
   if (hours >= 1) {
@@ -683,7 +683,7 @@ export const getTimeLabelText = (mediaFileDuration?: number, episodeDuration?: n
   let timeLabel = ''
   if (totalTime) {
     timeLabel = convertSecToHhoursMMinutes(totalTime)
-    if (hasStartedItem && playedTime > 0 && !completed) {
+    if (hasStartedItem && playedTime > 0) {
       timeLabel = convertSecToHhoursMMinutes(totalTime - playedTime) + ' left'
     }
   }

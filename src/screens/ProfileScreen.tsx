@@ -35,7 +35,7 @@ import {
   getUserPlaylists
 } from '../services/user'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { loadItemAndPlayTrack } from '../state/actions/player'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { getPublicUser, toggleSubscribeToUser } from '../state/actions/user'
 import { core } from '../styles'
 
@@ -409,13 +409,21 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _handleNavigationPress = async (selectedItem: any) => {
+    const { navigation } = this.props
     const shouldPlay = true
     const forceUpdateOrderDate = false
     const setCurrentItemNextInQueue = true
-    await loadItemAndPlayTrack(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    await playerLoadNowPlayingItem(
+      selectedItem,
+      shouldPlay,
+      forceUpdateOrderDate,
+      setCurrentItemNextInQueue,
+      navigation
+    )
   }
 
   _renderItem = ({ item, index }) => {
+    const { navigation } = this.props
     const { viewType } = this.state
 
     if (viewType === PV.Filters._podcastsKey) {
@@ -435,6 +443,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       return episode?.id && episode?.podcast ? (
         <ClipTableCell
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
+          navigation={navigation}
           showEpisodeInfo
           showPodcastInfo
           testID={`${testIDPrefix}_clip_item_${index}`}

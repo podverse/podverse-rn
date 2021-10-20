@@ -2,7 +2,7 @@ import { NowPlayingItem } from 'podverse-shared'
 import { translate } from '../lib/i18n'
 import { sendVerificationEmail } from '../services/auth'
 import { logoutUser } from '../state/actions/auth'
-import { loadItemAndPlayTrack } from '../state/actions/player'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
 
 const _expiredMessage = translate('To renew your membership please visit the Membership page')
 const _logoutButtonText = translate('Log Out')
@@ -14,7 +14,7 @@ const _sendVerificationEmailMessage = translate(
 const _cancelText = translate('Cancel')
 
 export const Alerts = {
-  ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM: (item: NowPlayingItem) => {
+  ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM: (item: NowPlayingItem, navigation: any) => {
     const title = item.clipId ? item.clipTitle : item.episodeTitle
     const type = item.clipId ? translate('Clip') : translate('Episode')
 
@@ -29,7 +29,13 @@ export const Alerts = {
             const shouldPlay = false
             const forceUpdateOrderDate = false
             const setCurrentItemNextInQueue = false
-            await loadItemAndPlayTrack(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+            await playerLoadNowPlayingItem(
+              item,
+              shouldPlay,
+              forceUpdateOrderDate,
+              setCurrentItemNextInQueue,
+              navigation
+            )
           }
         }
       ]

@@ -396,6 +396,7 @@ static navigationOptions = ({ navigation }) => {
   }
 
   _renderItem = ({ item, index }: RenderItemArg) => {
+    const { navigation } = this.props
     const { podcast, viewType } = this.state
 
     if (viewType === PV.Filters._clipsKey) {
@@ -405,6 +406,7 @@ static navigationOptions = ({ navigation }) => {
             handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
             hideImage
             item={item}
+            navigation={navigation}
             showEpisodeInfo
             showPodcastInfo={false}
             testID={`${testIDPrefix}_clip_item_${index}`}
@@ -444,6 +446,7 @@ static navigationOptions = ({ navigation }) => {
           hideImage
           item={episode}
           mediaFileDuration={mediaFileDuration}
+          navigation={navigation}
           testID={testId}
           userPlaybackPosition={userPlaybackPosition}
         />

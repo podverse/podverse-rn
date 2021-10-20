@@ -14,7 +14,7 @@ import { translate } from '../lib/i18n'
 import { overrideImageUrlWithChapterImageUrl, safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
-import { loadItemAndPlayTrack } from '../state/actions/player'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { getHistoryItems, removeHistoryItem } from '../state/actions/userHistoryItem'
 import { core } from '../styles'
 
@@ -132,11 +132,18 @@ export class HistoryScreen extends React.Component<Props, State> {
   }
 
   _handlePlayItem = async (item: NowPlayingItem) => {
+    const { navigation } = this.props
     try {
       const shouldPlay = true
       const forceUpdateOrderDate = false
       const setCurrentItemNextInQueue = true
-      await loadItemAndPlayTrack(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+      await playerLoadNowPlayingItem(
+        item,
+        shouldPlay,
+        forceUpdateOrderDate,
+        setCurrentItemNextInQueue,
+        navigation
+      )
     } catch (error) {
       // Error Loading and playing item
     }

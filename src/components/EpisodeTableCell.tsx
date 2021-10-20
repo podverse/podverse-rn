@@ -16,6 +16,7 @@ type Props = {
   hideImage?: boolean
   item?: any
   mediaFileDuration?: number
+  navigation: any
   pubDate?: any
   showPodcastInfo?: boolean
   testID: string
@@ -33,6 +34,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       hideImage,
       item,
       mediaFileDuration,
+      navigation,
       showPodcastInfo,
       testID,
       userPlaybackPosition
@@ -174,6 +176,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             item={item}
             itemType='episode'
             mediaFileDuration={mediaFileDuration}
+            navigation={navigation}
             testID={testID}
             timeLabel={timeLabel}
             userPlaybackPosition={userPlaybackPosition}

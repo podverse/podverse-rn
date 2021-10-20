@@ -25,5 +25,8 @@ export const Tabs = {
     title: translate('Queue'),
     icon: require('./images/tab-icons/tab-queue.png'),
     index: 4
+  },
+  styles: {
+    height: 48
   }
 }

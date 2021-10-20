@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-community/async-storage'
 import {
   Alert,
   Modal,
-  SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -11,7 +10,6 @@ import {
   ImageSourcePropType
 } from 'react-native'
 import Share from 'react-native-share'
-import { State as RNTPState } from 'react-native-track-player'
 import React from 'reactn'
 import { clearTempMediaRef, saveTempMediaRef } from '../state/actions/mediaRef'
 import {
@@ -19,6 +17,7 @@ import {
   DropdownButtonSelect,
   Icon,
   NavHeaderButtonText,
+  OpaqueBackground,
   PlayerProgressBar,
   Text,
   TextInput,
@@ -31,15 +30,16 @@ import { requestAppStoreReview } from '../lib/utility'
 import { PV } from '../resources'
 import { createMediaRef, updateMediaRef } from '../services/mediaRef'
 import {
-  checkIfStateIsBuffering,
+  playerCheckIfStateIsBuffering,
+  playerCheckIfStateIsPlaying,
+  playerGetPosition,
   playerJumpBackward,
   playerJumpForward,
   playerPreviewEndTime,
-  playerPreviewStartTime,
-  PVTrackPlayer
+  playerPreviewStartTime
 } from '../services/player'
 import { trackPageView } from '../services/tracking'
-import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
+import { playerTogglePlay, playerSetNowPlayingItem, playerSetPlaybackSpeed } from '../state/actions/player'
 import { core, darkTheme, iconStyles, playerStyles } from '../styles'
 
 type Props = {
@@ -114,7 +114,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const { player } = this.global
     const { nowPlayingItem } = player
     navigation.setParams({ _saveMediaRef: this._saveMediaRef })
-    const currentPosition = await PVTrackPlayer.getTrackPosition()
+    const currentPosition = await playerGetPosition()
     const isEditing = this.props.navigation.getParam('isEditing')
 
     // Prevent the temporary progressValue from sticking in the progress bar
@@ -201,12 +201,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   _setStartTime = async () => {
-    const currentPosition = await PVTrackPlayer.getTrackPosition()
+    const currentPosition = await playerGetPosition()
     this.setState({ startTime: Math.floor(currentPosition) })
   }
 
   _setEndTime = async () => {
-    const currentPosition = await PVTrackPlayer.getTrackPosition()
+    const currentPosition = await playerGetPosition()
     if (currentPosition && currentPosition > 0) {
       this.setState({ endTime: Math.floor(currentPosition) })
     }
@@ -224,7 +224,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       newSpeed = speeds[index + 1]
     }
 
-    await setPlaybackSpeed(newSpeed)
+    await playerSetPlaybackSpeed(newSpeed)
   }
 
   _clearEndTime = () => {
@@ -306,8 +306,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
               clipStartTime: mediaRef.startTime,
               clipTitle: mediaRef.title
             }
-            const position = await PVTrackPlayer.getTrackPosition()
-            await setNowPlayingItem(newItem, position || 0)
+            const position = await playerGetPosition()
+            await playerSetNowPlayingItem(newItem, position || 0)
           }
 
           this.setState({ isSaving: false, shouldClearClipInfo:true }, () => {
@@ -437,12 +437,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
         />
       )
       playButtonAdjust = { paddingBottom: 8 } as any
-    } else if (playbackState === RNTPState.Playing) {
+    } else if (playerCheckIfStateIsPlaying(playbackState)) {
       playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
       playButtonAdjust = {}
       playButtonAccessibilityHint = translate('ARIA HINT - pause playback')
       playButtonAccessibilityLabel = translate('Pause')
-    } else if (checkIfStateIsBuffering(playbackState)) {
+    } else if (playerCheckIfStateIsBuffering(playbackState)) {
       playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
       playButtonAccessibilityHint = ''
@@ -459,7 +459,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       `${translate(`Jump forward`)} ${PV.Player.miniJumpSeconds} ${translate('seconds')}`
 
     return (
-      <SafeAreaView style={styles.viewContainer}>
+      <OpaqueBackground>
         <View style={styles.view} transparent testID='make_clip_screen_view'>
           <View style={styles.contentContainer}>
             <View style={styles.wrapperTop} transparent>
@@ -591,7 +591,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     <TouchableOpacity
                       accessibilityHint={playButtonAccessibilityHint}
                       accessibilityLabel={playButtonAccessibilityLabel}
-                      onPress={() => togglePlay()}
+                      onPress={() => playerTogglePlay()}
                       testID={`${testIDPrefix}_toggle_play`.prependTestId()}>
                       <View
                         importantForAccessibility='no-hide-descendants'
@@ -749,7 +749,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
             </RNView>
           </Modal>
         )}
-      </SafeAreaView>
+      </OpaqueBackground>
     )
   }
 }
@@ -784,7 +784,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    marginTop: 56
   },
   dropdownButtonSelectWrapper: {
     marginTop: 16

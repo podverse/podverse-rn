@@ -4,13 +4,11 @@ import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
-import { State as RNTPState } from 'react-native-track-player'
 import { PV } from '../resources'
 import { translate } from '../lib/i18n'
 import { sendBoost } from '../lib/valueTagHelpers'
-
+import { audioCheckIfIsPlaying } from '../services/playerAudio'
 import { toggleValueStreaming } from '../state/actions/valueTag'
-
 import {
   ActivityIndicator,
   DropdownButtonSelect,
@@ -148,8 +146,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { lnpay } = lightningNetwork || {}
     const { globalSettings, lnpayEnabled } = lnpay || {}
     const { boostAmount, streamingAmount } = globalSettings || {}
-    const isPlaying = playbackState === RNTPState.Playing
-
+    const isPlaying = audioCheckIfIsPlaying(playbackState)
 
     let itemCount = 3
     if (hasChapters) itemCount++

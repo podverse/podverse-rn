@@ -226,6 +226,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           }
           isLoading={isLoading}
           mediaFileDuration={mediaFileDuration}
+          navigation={navigation}
           testID={testIDPrefix}
           userPlaybackPosition={userPlaybackPosition}
         />

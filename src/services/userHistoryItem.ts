@@ -4,6 +4,7 @@ import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
+import { playerGetDuration, playerGetPosition } from './player'
 import { request } from './request'
 import { setNowPlayingItem } from './userNowPlayingItem'
 
@@ -23,6 +24,69 @@ export const addOrUpdateHistoryItem = async (
   return useServerData
     ? addOrUpdateHistoryItemOnServer(item, playbackPosition, mediaFileDuration, forceUpdateOrderDate, completed)
     : addOrUpdateHistoryItemLocally(item, playbackPosition, mediaFileDuration)
+}
+
+export const addOrUpdateHistoryItemConditionalAsync = async (
+  shouldAwait: boolean,
+  item: NowPlayingItem,
+  playbackPosition: number,
+  mediaFileDuration?: number | null,
+  forceUpdateOrderDate?: boolean,
+  skipSetNowPlaying?: boolean,
+  completed?: boolean
+) => {
+  if (shouldAwait) {
+    await addOrUpdateHistoryItem(
+      item,
+      playbackPosition,
+      mediaFileDuration,
+      forceUpdateOrderDate,
+      skipSetNowPlaying,
+      completed
+    )
+  } else {
+    addOrUpdateHistoryItem(
+      item,
+      playbackPosition,
+      mediaFileDuration,
+      forceUpdateOrderDate,
+      skipSetNowPlaying,
+      completed
+    )
+  }
+}
+
+export const saveOrResetCurrentlyPlayingItemInHistory = async (
+  shouldAwait: boolean,
+  nowPlayingItem: NowPlayingItem,
+  skipSetNowPlaying: boolean
+) => {
+  const lastPosition = await playerGetPosition()
+  const duration = await playerGetDuration()
+  const forceUpdateOrderDate = false
+
+  if (duration > 0 && lastPosition >= duration - 10) {
+    const startPlaybackPosition = 0
+    const completed = true
+    await addOrUpdateHistoryItemConditionalAsync(
+      !!shouldAwait,
+      nowPlayingItem,
+      startPlaybackPosition,
+      duration,
+      forceUpdateOrderDate,
+      skipSetNowPlaying,
+      completed
+    )
+  } else if (lastPosition > 0) {
+    await addOrUpdateHistoryItemConditionalAsync(
+      !!shouldAwait,
+      nowPlayingItem,
+      lastPosition,
+      duration,
+      forceUpdateOrderDate,
+      skipSetNowPlaying
+    )
+  }
 }
 
 export const clearHistoryItems = async () => {
