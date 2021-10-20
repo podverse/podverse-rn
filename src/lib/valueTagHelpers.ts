@@ -48,7 +48,7 @@ export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueT
 }
 
 const calculateNormalizedSplits = (recipients: ValueRecipient[]) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return []
 
   let normalizedValueRecipients: ValueRecipientNormalized[] = []
 
@@ -80,7 +80,7 @@ const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipien
 
 export const normalizeValueRecipients = (
   recipients: ValueRecipient[], total: number, roundDownValues: boolean) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return []
 
   const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(recipients)
   const feeRecipient = normalizedValueRecipients.find((valueRecipient) => valueRecipient.fee === true)
@@ -116,7 +116,7 @@ export const convertValueTagIntoValueTransactions = async (
   amount: number,
   roundDownValues: boolean
 ) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return []
 
   const { method, type } = valueTag
 
@@ -306,7 +306,7 @@ export const clearValueTransactionQueue = async () => {
   minimum number of transactions.
 */
 export const bundleValueTransactionQueue = async () => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return []
 
   try {
     const transactionQueue = await getValueTransactionQueue()
