@@ -5,7 +5,8 @@ import { PV } from '../resources'
 import { checkIfVideoFileType, videoCheckIfStateIsBuffering, videoCheckIfStateIsPlaying,
   videoGetCurrentLoadedTrackId,
   videoGetRate, videoGetState, videoGetTrackDuration, videoGetTrackPosition, videoHandlePause,
-  videoHandlePauseWithUpdate, videoHandleSeekTo, videoIsLoaded, videoLoadNowPlayingItem, videoSetRate, videoTogglePlay
+  videoHandlePauseWithUpdate, videoHandlePlayWithUpdate, videoHandleSeekTo, videoIsLoaded, videoLoadNowPlayingItem,
+  videoPlay, videoSetRate, videoTogglePlay
 } from '../state/actions/playerVideo'
 import PVEventEmitter from './eventEmitter'
 import { audioIsLoaded,  audioCheckIfIsPlaying, audioSetRate, audioHandlePlayWithUpdate,
@@ -283,7 +284,7 @@ export const playerHandlePlayWithUpdate = async () => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     audioHandlePlayWithUpdate()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
-    // TODO VIDEO: videoHandlePlayWithUpdate
+    videoHandlePlayWithUpdate()
   }
 }
 

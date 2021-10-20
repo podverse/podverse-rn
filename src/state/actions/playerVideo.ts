@@ -256,6 +256,11 @@ export const videoHandleSeekTo = (position: number) => {
   PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_SEEK_TO, position)
 }
 
+export const videoHandlePlayWithUpdate = () => {
+  videoPlay()
+  playerUpdateUserPlaybackPosition()
+}
+
 export const videoResetHistoryItem = async () => {
   const nowPlayingItem = await getNowPlayingItemLocally()
   if (nowPlayingItem) {
