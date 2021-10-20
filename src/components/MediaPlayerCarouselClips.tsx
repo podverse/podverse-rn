@@ -141,10 +141,17 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   }
 
   _handleNavigationPress = (selectedItem: any) => {
+    const { navigation } = this.props
     const shouldPlay = true
     const forceUpdateOrderDate = false
     const setCurrentItemNextInQueue = false
-    playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    playerLoadNowPlayingItem(
+      selectedItem,
+      shouldPlay,
+      forceUpdateOrderDate,
+      setCurrentItemNextInQueue,
+      navigation
+    )
   }
 
   _handleMorePress = (selectedItem: any) => {
@@ -242,6 +249,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   }
 
   _renderItem = ({ item, index }) => {
+    const { navigation } = this.props
     const { player, screenPlayer } = this.global
     const { episode } = player
     const podcast = episode?.podcast || {}
@@ -260,6 +268,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
         item={item}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
         hideImage
+        navigation={navigation}
         showEpisodeInfo={queryFrom !== PV.Filters._fromThisEpisodeKey}
         showPodcastInfo={false}
         testID={`${testID}_item_${index}`}

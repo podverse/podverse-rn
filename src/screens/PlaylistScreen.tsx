@@ -143,6 +143,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
         <ClipTableCell
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           item={item}
+          navigation={navigation}
           showEpisodeInfo
           showPodcastInfo
           testID={`${testIDPrefix}_clip_item_${index}`}
@@ -162,6 +163,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           }
           item={item}
           mediaFileDuration={mediaFileDuration}
+          navigation={navigation}
           showPodcastInfo
           testID={`${testIDPrefix}_episode_item_${index}`}
           userPlaybackPosition={userPlaybackPosition}

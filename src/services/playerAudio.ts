@@ -111,7 +111,7 @@ export const audioUpdateTrackPlayerCapabilities = () => {
 
 export const audioIsLoaded = async () => {
   const trackIndex = await PVAudioPlayer.getCurrentTrack()
-  return trackIndex >= 0
+  return Number.isInteger(trackIndex) && trackIndex >= 0
 }
 
 export const audioCheckIfIsPlaying = (playbackState: any) => {
@@ -146,7 +146,7 @@ export const audioLoadNowPlayingItem = async (
   shouldPlay: boolean,
   forceUpdateOrderDate: boolean
 ) => {
-  // TODO VIDEO: discard/reset video player
+  // TODO VIDEO: discard/reset video player???
 
   PVAudioPlayer.pause()
 
@@ -436,12 +436,11 @@ export const audioAddNowPlayingItemNextInQueue = (
   }
 }
 
-export const audioInitializePlayerQueue = async () => {
+export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
   try {
     const queueItems = await getQueueItems()
     let filteredItems = [] as any
     
-    let item = await getNowPlayingItemLocally()
     if (item && !checkIfVideoFileType(item)) {
       /* Use the item from history to make sure we have the same
          userPlaybackPosition that was last saved from other devices. */
@@ -458,11 +457,12 @@ export const audioInitializePlayerQueue = async () => {
         PVAudioPlayer.add(tracks)
       }
 
-      return item
     }
   } catch (error) {
     console.log('Initializing player error: ', error)
   }
+  
+  return item
 }
 
 export const audioGetTrackPosition = () => {

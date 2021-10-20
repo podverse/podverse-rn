@@ -110,7 +110,6 @@ export interface InitialState {
   player: {
     backupDuration?: number
     hasErrored: boolean
-    isPlaying: boolean
     nowPlayingItem: any
     playbackRate: number
     showMakeClip: boolean

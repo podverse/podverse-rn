@@ -4,7 +4,7 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { playerCheckIfStateIsBuffering } from '../services/player'
 import { audioCheckIfIsPlaying } from '../services/playerAudio'
-import { playerTogglePlay } from '../state/actions/player'
+import { playerTogglePlay, playerTogglePlayOrNavToPlayer } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { ActivityIndicator, FastImage, Icon, Text, TextTicker } from './'
 
@@ -32,7 +32,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
         accessibilityLabel={translate('Play')}
         accessibilityRole='button'
         name='play'
-        onPress={() => playerTogglePlay(this.global)}
+        onPress={() => playerTogglePlayOrNavToPlayer(nowPlayingItem, navigation)}
         size={20}
         testID={`${testIDPrefix}_play_button`}
         wrapperStyle={[playerStyles.icon, playButtonAdjust]} />
@@ -44,7 +44,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
           accessibilityLabel={translate('Pause')}
           accessibilityRole='button'
           name='pause'
-          onPress={() => playerTogglePlay(this.global)}
+          onPress={() => playerTogglePlay()}
           size={20}
           testID={`${testIDPrefix}_pause_button`}
           wrapperStyle={[playerStyles.icon, playButtonAdjust]} />

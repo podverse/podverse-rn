@@ -13,6 +13,7 @@ type Props = {
   handleMorePress?: any
   isLoading?: boolean
   mediaFileDuration?: number
+  navigation: any
   testID: string
   userPlaybackPosition?: number
 }
@@ -25,6 +26,7 @@ export const EpisodeTableHeader = (props: Props) => {
     handleMorePress,
     isLoading,
     mediaFileDuration,
+    navigation,
     testID,
     userPlaybackPosition
   } = props
@@ -127,6 +129,7 @@ export const EpisodeTableHeader = (props: Props) => {
                 item={episode}
                 itemType='episode'
                 mediaFileDuration={mediaFileDuration}
+                navigation={navigation}
                 style={{ marginVertical: 20 }}
                 testID={testID}
                 timeLabel={timeLabel}

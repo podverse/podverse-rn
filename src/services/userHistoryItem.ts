@@ -32,7 +32,8 @@ export const addOrUpdateHistoryItemConditionalAsync = async (
   playbackPosition: number,
   mediaFileDuration?: number | null,
   forceUpdateOrderDate?: boolean,
-  skipSetNowPlaying?: boolean
+  skipSetNowPlaying?: boolean,
+  completed?: boolean
 ) => {
   if (shouldAwait) {
     await addOrUpdateHistoryItem(
@@ -40,7 +41,8 @@ export const addOrUpdateHistoryItemConditionalAsync = async (
       playbackPosition,
       mediaFileDuration,
       forceUpdateOrderDate,
-      skipSetNowPlaying
+      skipSetNowPlaying,
+      completed
     )
   } else {
     addOrUpdateHistoryItem(
@@ -48,7 +50,8 @@ export const addOrUpdateHistoryItemConditionalAsync = async (
       playbackPosition,
       mediaFileDuration,
       forceUpdateOrderDate,
-      skipSetNowPlaying
+      skipSetNowPlaying,
+      completed
     )
   }
 }
@@ -64,13 +67,15 @@ export const saveOrResetCurrentlyPlayingItemInHistory = async (
 
   if (duration > 0 && lastPosition >= duration - 10) {
     const startPlaybackPosition = 0
+    const completed = true
     await addOrUpdateHistoryItemConditionalAsync(
       !!shouldAwait,
       nowPlayingItem,
       startPlaybackPosition,
       duration,
       forceUpdateOrderDate,
-      skipSetNowPlaying
+      skipSetNowPlaying,
+      completed
     )
   } else if (lastPosition > 0) {
     await addOrUpdateHistoryItemConditionalAsync(

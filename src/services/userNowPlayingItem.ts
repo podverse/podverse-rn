@@ -137,6 +137,7 @@ export const getNowPlayingItemFromLocalStorage = async (
   if (!trackId) return null
 
   const results = await getHistoryItemsLocally()
+
   const { userHistoryItems } = results
   let currentNowPlayingItem = userHistoryItems.find((x: any) =>
     checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId)

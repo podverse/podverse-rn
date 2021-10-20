@@ -306,6 +306,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _renderEpisodeItem = ({ item, index }) => {
+    const { navigation } = this.props
     const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
 
     return (
@@ -324,6 +325,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           })
         }}
         mediaFileDuration={mediaFileDuration}
+        navigation={navigation}
         showPodcastInfo
         testID={`${testIDPrefix}_episode_item_${index}`}
         userPlaybackPosition={userPlaybackPosition}

@@ -4,7 +4,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
-import { getPlaybackSpeed, playerGetPosition, playerSetPosition } from '../services/player'
+import { getPlaybackSpeed, playerGetPosition, playerHandleSeekTo } from '../services/player'
 import { PVSearchBar } from './PVSearchBar'
 import { AutoScrollToggle, FlatList, TableSectionSelectors, Text, View } from './'
 
@@ -74,7 +74,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
         accessible
         accessibilityLabel={accessibilityLabel}
         activeOpacity={0.7}
-        onPress={() => playerSetPosition(startTime)}>
+        onPress={() => playerHandleSeekTo(startTime)}>
         {!!this.currentSpeaker && (
           <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
             {this.currentSpeaker}

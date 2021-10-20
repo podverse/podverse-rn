@@ -55,7 +55,13 @@ const mediaMoreButtons = (
           const shouldPlay = false
           const forceUpdateOrderDate = false
           const setCurrentItemNextInQueue = true
-          await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+          await playerLoadNowPlayingItem(
+            item,
+            shouldPlay,
+            forceUpdateOrderDate,
+            setCurrentItemNextInQueue,
+            navigation
+          )
           await navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
           setTimeout(() => {
             (async () => {
@@ -93,7 +99,13 @@ const mediaMoreButtons = (
         const shouldPlay = true
         const forceUpdateOrderDate = false
         const setCurrentItemNextInQueue = true
-        await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+        await playerLoadNowPlayingItem(
+          item,
+          shouldPlay,
+          forceUpdateOrderDate,
+          setCurrentItemNextInQueue,
+          navigation
+        )
       }
     })
   } else {
@@ -114,7 +126,13 @@ const mediaMoreButtons = (
         const shouldPlay = true
         const forceUpdateOrderDate = false
         const setCurrentItemNextInQueue = true
-        await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+        await playerLoadNowPlayingItem(
+          item,
+          shouldPlay,
+          forceUpdateOrderDate,
+          setCurrentItemNextInQueue,
+          navigation
+        )
       }
     })
 
