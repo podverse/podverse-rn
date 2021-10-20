@@ -34,16 +34,21 @@ const initialTheme: InitialState = {
   currentChaptersStartTimePositions: [],
   player: {
     hasErrored: false,
-    isPlaying: false,
     nowPlayingItem: null,
     playbackRate: 1,
     shouldContinuouslyPlay: false,
     showMakeClip: false,
     showMiniPlayer: false,
+    playbackState: null,
     sleepTimer: {
       defaultTimeRemaining: PV.Player.defaultSleepTimerInSeconds,
       isActive: false,
       timeRemaining: PV.Player.defaultSleepTimerInSeconds
+    },
+    videoInfo: {
+      videoDuration: 0,
+      videoIsLoaded: false,
+      videoPosition: 0
     }
   },
   playlists: {

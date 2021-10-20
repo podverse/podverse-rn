@@ -29,13 +29,22 @@ declare module 'reactn/default' {
     player: {
       backupDuration?: number
       hasErrored: boolean
-      isPlaying: boolean
       nowPlayingItem: any
       playbackRate: number
       showMakeClip: boolean
       showMiniPlayer: boolean
       shouldContinuouslyPlay: boolean
-      sleepTimer: any
+      playbackState: any
+      sleepTimer: {
+        defaultTimeRemaining: number
+        isActive: boolean
+        timeRemaining: number
+      }
+      videoInfo: {
+        videoDuration: number
+        videoIsLoaded: boolean
+        videoPosition: number
+      }
     }
     playlists: {
       myPlaylists: []

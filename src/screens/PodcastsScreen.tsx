@@ -27,8 +27,8 @@ import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCate
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { parseAllAddByRSSPodcasts } from '../services/parser'
-import { checkIdlePlayerState, updateTrackPlayerCapabilities,
-  updateUserPlaybackPosition } from '../services/player'
+import { playerUpdateUserPlaybackPosition } from '../services/player'
+import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudio'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
 import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
@@ -37,11 +37,11 @@ import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloa
 import { updateWalletInfo } from '../state/actions/lnpay'
 import {
   initializePlaybackSpeed,
-  initializePlayerQueue,
+  initializePlayer,
   initPlayerState,
-  showMiniPlayer,
-  updatePlaybackState,
-  updatePlayerState
+  playerUpdatePlaybackState,
+  playerUpdatePlayerState,
+  showMiniPlayer
 } from '../state/actions/player'
 import { combineWithAddByRSSPodcasts,
   getSubscribedPodcasts, removeAddByRSSPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
@@ -182,7 +182,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _handleAppStateChange = (nextAppState: any) => {
     (async () => {
-      await updateUserPlaybackPosition()
+      await playerUpdateUserPlaybackPosition()
 
       if (nextAppState === 'active' && !isInitialLoad) {
         const { nowPlayingItem: lastItem } = this.global.player
@@ -191,32 +191,33 @@ export class PodcastsScreen extends React.Component<Props, State> {
         if (Platform.OS === 'ios') {
           checkIfTrackingIsEnabled()
         }
-  
+
         if (!lastItem || (lastItem && currentItem && currentItem.episodeId !== lastItem.episodeId)) {
-          updatePlayerState(currentItem)
+          playerUpdatePlayerState(currentItem)
           showMiniPlayer()
         }
   
-        await updatePlaybackState()
-  
+        await playerUpdatePlaybackState()
+
+        // NOTE UPDATE: I don't think this is working...commenting out for now.
         // NOTE: On iOS, when returning to the app from the background while the player was paused,
         // sometimes the player will be in an idle state, requiring the user to press play twice to
-        // reload the item in the player and begin playing. By calling initializePlayerQueue once whenever
+        // reload the item in the player and begin playing. By calling audioInitializePlayerQueue once whenever
         // the idle playback-state event is called, it automatically reloads the item.
         // I don't think this issue is happening on Android, so we're not using this workaround on Android.
-        const isIdle = await checkIdlePlayerState()
-        if (Platform.OS === 'ios' && isIdle) {
-          await initializePlayerQueue()
-        }
+        // const isIdle = await playerCheckIdlePlayerState()
+        // if (Platform.OS === 'ios' && isIdle) {
+        //   await audioInitializePlayerQueue()
+        // }
       }
   
       if (nextAppState === 'background' || nextAppState === 'inactive') {
-        // NOTE: On iOS PVTrackPlayer.updateOptions must be called every time the app
+        // NOTE: On iOS PVAudioPlayer.updateOptions must be called every time the app
         // goes into the background to prevent the remote controls from disappearing
         // on the lock screen.
         // Source: https://github.com/react-native-kit/react-native-track-player/issues/921#issuecomment-686806847
         if (Platform.OS === 'ios') {
-          updateTrackPlayerCapabilities()
+          audioUpdateTrackPlayerCapabilities()
         }
       }
 
@@ -331,6 +332,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _initializeScreenData = async () => {
+    const { navigation } = this.props
     await initPlayerState(this.global)
     await initializeSettings()
 
@@ -353,7 +355,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         (async () => {
           try {
             const isLoggedIn = await getAuthUserInfo()
-            if (isLoggedIn) await askToSyncWithNowPlayingItem()
+            if (isLoggedIn) await askToSyncWithNowPlayingItem(navigation)
           } catch (error) {
             console.log('initializeScreenData getAuthUserInfo', error)
             // If getAuthUserInfo fails, continue with the networkless version of the app
@@ -364,7 +366,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
       
           await initDownloads()
-          await initializePlayerQueue()
+          await initializePlayer()
           await initializePlaybackSpeed()
           initializeValueProcessor()
     

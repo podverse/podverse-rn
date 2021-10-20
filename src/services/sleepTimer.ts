@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { convertHoursMinutesSecondsToSeconds } from '../lib/utility'
 import { PV } from '../resources'
-import { handlePause } from './player'
+import { playerHandlePauseWithUpdate } from './player'
 
 let sleepTimerInterval = null as any
 let timeRemaining = 0
@@ -18,7 +18,7 @@ export const getSleepTimerTimeRemaining = () => {
 
 export const handleSleepTimerReachedEnd = async () => {
   stopSleepTimer()
-  handlePause()
+  playerHandlePauseWithUpdate()
   const defaultTimeRemaining = await getSleepTimerDefaultTimeRemaining()
   timeRemaining = defaultTimeRemaining
 }

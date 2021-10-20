@@ -8,7 +8,7 @@ import { PV } from '../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPlaybackSpeed } from '../services/player'
-import { loadItemAndPlayTrack } from '../state/actions/player'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { ActionSheet, ActivityIndicator, AutoScrollToggle, ClipTableCell, Divider, FlatList,
   ScrollView, TableSectionSelectors } from './'
 
@@ -54,10 +54,17 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   }
 
   _handleNavigationPress = (selectedItem: any) => {
+    const { navigation } = this.props
     const shouldPlay = true
     const forceUpdateOrderDate = false
     const setCurrentItemNextInQueue = false
-    loadItemAndPlayTrack(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    playerLoadNowPlayingItem(
+      selectedItem,
+      shouldPlay,
+      forceUpdateOrderDate,
+      setCurrentItemNextInQueue,
+      navigation
+    )
   }
 
   disableAutoscroll = () => {
@@ -144,6 +151,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     })
 
   _renderItem = ({ item, index }) => {
+    const { navigation } = this.props
     const { currentChapter, player } = this.global
     const { episode } = player
     const podcast = episode?.podcast || {}
@@ -163,6 +171,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
         item={item}
         itemType='chapter'
         loadTimeStampOnPlay
+        navigation={navigation}
         onLayout={(item: any) => this.itemHeights[index] = item.nativeEvent.layout.height}
         showPodcastInfo={false}
         testID={`${testID}_item_${index}`}

@@ -1,18 +1,20 @@
 import debounce from 'lodash/debounce'
-import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, Image, ImageSourcePropType } from 'react-native'
-import { State as RNTPState } from 'react-native-track-player'
+import { StyleSheet, TouchableOpacity, View, Image, ImageSourcePropType } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import {
-  checkIfStateIsBuffering,
+  playerCheckIfStateIsBuffering,
+  playerCheckIfStateIsPlaying,
   playerJumpBackward,
   playerJumpForward,
-  setPlaybackPosition
+  playerPlayNextFromQueue,
+  playerHandleSeekTo
 } from '../services/player'
-import { playNextChapterOrQueueItem, playNextFromQueue, playPreviousChapterOrReturnToBeginningOfTrack,
-  setPlaybackSpeed, togglePlay } from '../state/actions/player'
-import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { playerPlayNextChapterOrQueueItem, playerPlayPreviousChapterOrReturnToBeginningOfTrack,
+  playerSetPlaybackSpeed, playerTogglePlay } from '../state/actions/player'
+  import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
+  import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
 import { ActivityIndicator, Icon, PlayerProgressBar, Text, View as PVView } from './'
@@ -60,7 +62,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       newSpeed = speeds[index + 1]
     }
 
-    await setPlaybackSpeed(newSpeed)
+    await playerSetPlaybackSpeed(newSpeed)
   }
 
   _navToStopWatchScreen = () => {
@@ -139,6 +141,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     let playButtonAdjust = { paddingLeft: 2 } as any
     let playButtonAccessibilityHint = translate('ARIA HINT - resume playing')
     let playButtonAccessibilityLabel = translate('Play')
+
     if (hasErrored) {
       playButtonIcon = (
         <Icon
@@ -149,12 +152,12 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         />
       )
       playButtonAdjust = { paddingBottom: 8 } as any
-    } else if (playbackState === RNTPState.Playing) {
+    } else if (playerCheckIfStateIsPlaying(playbackState)) {
       playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
       playButtonAdjust = {}
       playButtonAccessibilityHint = translate('ARIA HINT - pause playback')
       playButtonAccessibilityLabel = translate('Pause')
-    } else if (checkIfStateIsBuffering(playbackState)) {
+    } else if (playerCheckIfStateIsBuffering(playbackState)) {
       playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
       playButtonAccessibilityHint = ''
@@ -180,6 +183,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       ? translate('Go to next chapter')
       : translate('Skip to next item in your queue')
     
+    const isVideo = checkIfVideoFileType(nowPlayingItem)
+
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
         <View style={styles.progressWrapper}>
@@ -195,14 +200,18 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         </View>
         <View style={styles.playerControlsMiddleRow}>
           <View style={styles.playerControlsMiddleRowTop}>
-            <TouchableOpacity
-              accessibilityLabel={previousButtonAccessibilityLabel}
-              accessibilityRole='button'
-              onLongPress={() => setPlaybackPosition(0)}
-              onPress={playPreviousChapterOrReturnToBeginningOfTrack}
-              style={[playerStyles.icon, { flexDirection: 'row' }]}>
-              {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
-            </TouchableOpacity>
+            {
+              !isVideo && (
+                <TouchableOpacity
+                  accessibilityLabel={previousButtonAccessibilityLabel}
+                  accessibilityRole='button'
+                  onLongPress={() => playerHandleSeekTo(0)}
+                  onPress={playerPlayPreviousChapterOrReturnToBeginningOfTrack}
+                  style={[playerStyles.icon, { flexDirection: 'row' }]}>
+                  {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
+                </TouchableOpacity>
+              )
+            }
             <TouchableOpacity
               accessibilityLabel={jumpBackAccessibilityLabel}
               accessibilityRole='button'
@@ -216,7 +225,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             <TouchableOpacity
               accessibilityHint={playButtonAccessibilityHint}
               accessibilityLabel={playButtonAccessibilityLabel}
-              onPress={togglePlay}>
+              onPress={playerTogglePlay}>
               <View importantForAccessibility='no-hide-descendants' style={[playerStyles.playButton, playButtonAdjust]}>
                 {playButtonIcon}
               </View>
@@ -231,15 +240,19 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 <Text style={styles.skipTimeText}>{jumpForwardsTime}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              accessibilityLabel={nextButtonAccessibilityLabel}
-              accessibilityRole='button'
-              onLongPress={playNextFromQueue}
-              onPress={playNextChapterOrQueueItem}
-              disabled={noNextQueueItem}
-              style={[playerStyles.icon, { flexDirection: 'row' }]}>
-              {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, `${testIDPrefix}_skip_track`, noNextQueueItem)}
-            </TouchableOpacity>
+            {
+              !isVideo && (
+                <TouchableOpacity
+                  accessibilityLabel={nextButtonAccessibilityLabel}
+                  accessibilityRole='button'
+                  onLongPress={playerPlayNextFromQueue}
+                  onPress={playerPlayNextChapterOrQueueItem}
+                  disabled={noNextQueueItem}
+                  style={[playerStyles.icon, { flexDirection: 'row' }]}>
+                  {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, `${testIDPrefix}_skip_track`, noNextQueueItem)}
+                </TouchableOpacity>
+              )
+            }
           </View>
         </View>
         <View style={styles.playerControlsBottomRow}>
@@ -253,7 +266,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               <Icon name='moon' size={20} solid testID={`${testIDPrefix}_sleep_timer`} />
             </View>
           </TouchableOpacity>
-          <TouchableWithoutFeedback
+          <TouchableOpacity
             accessibilityHint={translate('ARIA HINT - current playback speed')}
             accessibilityLabel={`${playbackRate}X`}
             accessibilityRole='button'
@@ -265,7 +278,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               testID={`${testIDPrefix}_playback_rate`}>
               {`${playbackRate}X`}
             </Text>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
           <TouchableOpacity
             accessibilityHint={translate('ARIA HINT - show more player screen options')}
             accessibilityLabel={translate('More player options')}

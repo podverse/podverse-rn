@@ -2,20 +2,20 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from 'podverse-shared'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
-import { syncPlayerWithQueue } from './player'
+import { playerSyncPlayerWithQueue } from './player'
 import { request } from './request'
 
 export const addQueueItemLast = async (item: NowPlayingItem) => {
   const useServerData = await checkIfShouldUseServerData()
   const results = useServerData ? await addQueueItemLastOnServer(item) : await addQueueItemLastLocally(item)
-  await syncPlayerWithQueue()
+  await playerSyncPlayerWithQueue()
   return results
 }
 
 export const addQueueItemNext = async (item: NowPlayingItem) => {
   const useServerData = await checkIfShouldUseServerData()
   const results = useServerData ? await addQueueItemNextOnServer(item) : await addQueueItemNextLocally(item)
-  await syncPlayerWithQueue()
+  await playerSyncPlayerWithQueue()
   return results
 }
 
@@ -57,7 +57,7 @@ export const removeQueueItem = async (item: NowPlayingItem) => {
 
 export const setAllQueueItems = async (items: NowPlayingItem[]) => {
   await setAllQueueItemsLocally(items)
-  await syncPlayerWithQueue()
+  await playerSyncPlayerWithQueue()
   return items
 }
 
@@ -114,7 +114,7 @@ export const addQueueItemToServer = async (item: NowPlayingItem, newPosition: nu
     await setAllQueueItemsLocally(userQueueItems)
   }
 
-  await syncPlayerWithQueue()
+  await playerSyncPlayerWithQueue()
 
   return userQueueItems
 }
