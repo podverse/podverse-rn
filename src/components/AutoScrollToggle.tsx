@@ -16,7 +16,8 @@ export const AutoScrollToggle = (props: Props) => {
     <TouchableOpacity
       accessible={false}
       activeOpacity={0.7}
-      onPress={toggleAutoscroll}>
+      onPress={toggleAutoscroll}
+      style={styles.wrapper}>
       <Text
         accessible={false}
         isNowPlaying={!!autoScrollOn}
@@ -30,12 +31,16 @@ export const AutoScrollToggle = (props: Props) => {
 
 const styles = StyleSheet.create({
   autoScrollerText: {
+    fontSize: PV.Fonts.sizes.md,
+    fontWeight: PV.Fonts.weights.bold
+  },
+  wrapper: {
     borderRadius: 16,
     backgroundColor: PV.Colors.velvet,
     borderColor: PV.Colors.brandBlueLight,
     borderWidth: 2,
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.bold,
+    justifyContent: 'center',
+    flex: 0,
     paddingVertical: 5,
     paddingHorizontal: 10
   }
