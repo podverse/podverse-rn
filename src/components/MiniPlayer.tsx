@@ -141,8 +141,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.semibold,
-    marginBottom: 2
+    fontWeight: PV.Fonts.weights.semibold
   },
   image: {
     height: 60,
@@ -160,13 +159,14 @@ const styles = StyleSheet.create({
   },
   podcastTitle: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.semibold,
-    marginTop: 2
+    fontWeight: PV.Fonts.weights.semibold
   },
   textWrapper: {
     flex: 1,
     justifyContent: 'space-around',
     marginLeft: 10,
-    marginRight: 2
+    marginRight: 2,
+    marginBottom: 4,
+    marginTop: 3
   }
 })
