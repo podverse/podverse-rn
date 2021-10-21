@@ -1,7 +1,7 @@
-import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
+import { TouchableWithoutFeedback, Alert, Linking, StyleSheet, View as RNView } from 'react-native'
 import { getBuildNumber, getVersion } from 'react-native-device-info'
 import React from 'reactn'
-import { Divider, Icon, ScrollView, Text, View } from '../components'
+import { Divider, FastImage, Icon, ScrollView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -95,6 +95,16 @@ export class AboutScreen extends React.Component<Props> {
               style={[button.iconOnlySmall, styles.icon]}
             />
           </RNView>
+          <TouchableWithoutFeedback
+            onPress={() => this.handleFollowLink(PV.URLs.social.podcastIndex)}
+          >
+            <RNView style={styles.footerWrapper}>
+              <FastImage
+                source={'https://podverse.fm/images/podcastindex-namespace-final.svg'}
+                styles={styles.footerImage}
+              />
+            </RNView>
+          </TouchableWithoutFeedback>
         </ScrollView>
       </View>
     )
@@ -102,6 +112,16 @@ export class AboutScreen extends React.Component<Props> {
 }
 
 const styles = StyleSheet.create({
+  footerWrapper: {
+    marginTop: 10,
+    flex: 1,
+    alignSelf: 'center',
+    width: 200,
+  },
+  footerImage: {
+    height: 25,
+    resizeMode: 'contain',
+  },
   content: {
     flex: 1
   },
