@@ -4,13 +4,14 @@ import Orientation from 'react-native-orientation-locker'
 import Video from 'react-native-video-controls'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
-import { getPlaybackSpeed, playerCheckIfStateIsPlaying, playerUpdateUserPlaybackPosition } from '../services/player'
+import { syncNowPlayingItemWithTrack } from '../services/playerBackgroundTimer'
+import { getClipHasEnded, getPlaybackSpeed, playerCheckIfStateIsPlaying,
+  playerHandleResumeAfterClipHasEnded, playerUpdateUserPlaybackPosition } from '../services/player'
 import { addOrUpdateHistoryItem } from '../services/userHistoryItem'
 import { getNowPlayingItemFromLocalStorage } from '../services/userNowPlayingItem'
-import { videoCheckIfStateIsPlaying, videoGetDownloadedFileInfo, videoResetHistoryItem,
-  videoStateUpdateDuration, 
-  videoStateUpdatePosition,
-  videoUpdatePlaybackState} from '../state/actions/playerVideo'
+import { videoCheckIfStateIsPlaying, videoGetDownloadedFileInfo, videoGetState,
+  videoGetTrackPosition, videoResetHistoryItem, videoStateUpdateDuration, videoStateUpdatePosition,
+  videoUpdatePlaybackState } from '../state/actions/playerVideo'
 
 type Props = {
   
@@ -23,6 +24,8 @@ type State = {
   uri?: string
 }
 
+// Use isInitialLoad to prevent _setupNowPlayingItemPlayer from loading twice on first render.
+let isInitialLoad = true
 export class PVVideo extends React.PureComponent<Props, State> {
   videoRef: any | null = null
 
@@ -52,7 +55,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
         uri = filePath
       }
 
-      await this._seekToLastVideoPositionOrHistoryPosition()
+      await this._setupNowPlayingItemPlayer()
 
       this.setState({
         Authorization,
@@ -67,18 +70,19 @@ export class PVVideo extends React.PureComponent<Props, State> {
   componentWillUnmount() {
     PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED, this._handlePlaybackStateChange)
     PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_SEEK_TO, this._handleSeekTo)
+    isInitialLoad = true
   }
 
   _disableFullscreen = () => {
-    const { videoPosition: lastVideoPosition } = getGlobal().player.videoInfo
-    this._handleSeekTo(lastVideoPosition)
+    const setClipTime = false
+    this._setupNowPlayingItemPlayer(setClipTime)
     Orientation.lockToPortrait()
     this.setState({ isFullscreen: false })
   }
 
   _enableFullscreen = () => {
-    const { videoPosition: lastVideoPosition } = getGlobal().player.videoInfo
-    this._handleSeekTo(lastVideoPosition)
+    const setClipTime = false
+    this._setupNowPlayingItemPlayer(setClipTime)
     Orientation.unlockAllOrientations()
     Orientation.lockToLandscape()
     this.setState({ isFullscreen: true })
@@ -94,7 +98,28 @@ export class PVVideo extends React.PureComponent<Props, State> {
     }
   }
 
+  _handleResumeAfterClipHasEnded = async () => {
+    let shouldContinue = true
+    const { nowPlayingItem } = this.global.player
+    const { clipEndTime } = nowPlayingItem
+    const clipHasEnded = await getClipHasEnded()
+    const currentPosition = await videoGetTrackPosition()
+    const currentState = await videoGetState()
+    const isPlaying = videoCheckIfStateIsPlaying(currentState)
+    const shouldHandleAfterClip = clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying
+    if (shouldHandleAfterClip) {
+      await playerHandleResumeAfterClipHasEnded()
+      shouldContinue = false
+    }
+    return shouldContinue
+  }
+
   _handlePlay = async () => {
+    const { nowPlayingItem } = this.global.player
+    if (nowPlayingItem.clipId) {
+      await this._handleResumeAfterClipHasEnded()
+    }
+
     const playbackRate = await getPlaybackSpeed()
     this.videoRef.setState({ rate: playbackRate })
     videoUpdatePlaybackState(PV.Player.videoInfo.videoPlaybackState.playing)
@@ -115,11 +140,14 @@ export class PVVideo extends React.PureComponent<Props, State> {
   /* If there is still a videoPosition in globalState, use that instead of
      digging it out of the local storage. This is needed to handle going in
      and out of fullscreen mode immediately. */
-  _seekToLastVideoPositionOrHistoryPosition = async () => {
+  _setupNowPlayingItemPlayer = async (setClipTime = true) => {
     const { player } = getGlobal()
     const { nowPlayingItem, videoInfo } = player
     const { videoPosition: lastVideoPosition } = videoInfo
-    if (lastVideoPosition) {
+
+    if (nowPlayingItem.clipId && setClipTime && lastVideoPosition < nowPlayingItem.clipEndTime) {
+      syncNowPlayingItemWithTrack()
+    } else if (lastVideoPosition) {
       this._handleSeekTo(lastVideoPosition)
     } else {
       const nowPlayingItemFromHistory = await getNowPlayingItemFromLocalStorage(
@@ -196,7 +224,9 @@ export class PVVideo extends React.PureComponent<Props, State> {
         onReadyForDisplay={async () => {
           /* If a videoPosition is in globalState, resume from that time.
           This is needed to handle switching between fullscreen and back. */
-          await this._seekToLastVideoPositionOrHistoryPosition()
+          if (!isInitialLoad) {
+            await this._setupNowPlayingItemPlayer()
+          }
           
           this._handlePlay()
 
