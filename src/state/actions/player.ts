@@ -44,6 +44,8 @@ export const initializePlayer = async () => {
   } else if (!checkIfVideoFileType(item)) {
     audioInitializePlayerQueue(item)
   }
+
+  handleEnrichingPlayerState(item)
 }
 
 const clearEnrichedPodcastDataIfNewEpisode =
