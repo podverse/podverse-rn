@@ -138,7 +138,6 @@ const allSortItems = [
 const filterSortItemsList = Config.FILTER_SORT_ITEMS ? Config.FILTER_SORT_ITEMS.split(',') : []
 
 const sortItems = allSortItems.filter((item: any) => {
-  console.log('---', { allSortItems, filterSortItemsList });
   return filterSortItemsList.find((value: string) => item.value === value)
 })
 
@@ -168,7 +167,7 @@ export const FilterOptions = {
   screenFilters: {
     ClipsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
-      sort: [_mostRecentKey, ..._top]
+      sort: [_mostRecentKey, ..._top, _randomKey]
     },
     EpisodeMediaRefScreen: {
       from: [_fromThisEpisodeKey],
