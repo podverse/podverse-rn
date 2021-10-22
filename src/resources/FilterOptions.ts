@@ -180,7 +180,7 @@ export const FilterOptions = {
     },
     PlayerScreen: {
       clipsFrom: [_fromThisEpisodeKey, _fromThisPodcastKey],
-      clipsFromEpisodeSort: [_chronologicalKey, _mostRecentKey, ..._top],
+      clipsFromEpisodeSort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey],
       clipsFromPodcastSort: [_mostRecentKey, ..._top]
     },
     PodcastScreen: {
