@@ -134,6 +134,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
   _handleSeekTo = (position: number) => {
     if (position >= 0) {
       this.videoRef.seekTo(position)
+      videoStateUpdatePosition(position)
     }
   }
 
