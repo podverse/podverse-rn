@@ -113,13 +113,13 @@ export class AboutScreen extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   footerWrapper: {
-    marginTop: 10,
+    marginTop: 26,
     flex: 1,
     alignSelf: 'center',
-    width: 200,
+    width: 240,
   },
   footerImage: {
-    height: 25,
+    height: 38,
     resizeMode: 'contain',
   },
   content: {

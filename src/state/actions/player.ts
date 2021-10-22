@@ -44,6 +44,8 @@ export const initializePlayer = async () => {
   } else if (!checkIfVideoFileType(item)) {
     audioInitializePlayerQueue(item)
   }
+
+  handleEnrichingPlayerState(item)
 }
 
 const clearEnrichedPodcastDataIfNewEpisode =
@@ -60,10 +62,17 @@ export const playerUpdatePlayerState = (item: NowPlayingItem) => {
   if (!item) return
 
   const globalState = getGlobal()
+  const { videoDuration } = globalState.player.videoInfo
 
   const episode = convertNowPlayingItemToEpisode(item)
   episode.description = episode.description || 'No show notes available'
   const mediaRef = convertNowPlayingItemToMediaRef(item)
+
+  // For video only, don't let the duration in state be overwritten
+  // by asynchronous state updates to the nowPlayingItem.
+  if (checkIfVideoFileType(item) && videoDuration) {
+    item.episodeDuration = videoDuration
+  }
 
   const videoInfo = videoStateSetVideoInfo(item)
 
