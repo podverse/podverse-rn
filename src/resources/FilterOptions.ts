@@ -167,7 +167,7 @@ export const FilterOptions = {
   screenFilters: {
     ClipsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
-      sort: [_mostRecentKey, ..._top, _randomKey]
+      sort: [_mostRecentKey, ..._top]
     },
     EpisodeMediaRefScreen: {
       from: [_fromThisEpisodeKey],
@@ -175,7 +175,7 @@ export const FilterOptions = {
     },
     EpisodesScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
-      sort: [_mostRecentKey, ..._top, _randomKey],
+      sort: [_mostRecentKey, ..._top],
       sortLimitQueries: [..._top]
     },
     PlayerScreen: {
@@ -195,7 +195,7 @@ export const FilterOptions = {
     },
     ProfileScreen: {
       type: [_podcastsKey, _clipsKey, _playlistsKey],
-      sortClips: [_mostRecentKey, ..._top],
+      sortClips: [_mostRecentKey, ..._top, _randomKey],
       sortPlaylists: [_alphabeticalKey],
       sortPodcasts: [_alphabeticalKey, _mostRecentKey, ..._top, _randomKey]
     }
