@@ -197,7 +197,7 @@ export const FilterOptions = {
       type: [_podcastsKey, _clipsKey, _playlistsKey],
       sortClips: [_mostRecentKey, ..._top],
       sortPlaylists: [_alphabeticalKey],
-      sortPodcasts: [_alphabeticalKey, _mostRecentKey, ..._top]
+      sortPodcasts: [_alphabeticalKey, _mostRecentKey, ..._top, _randomKey]
     }
   },
   items: {
