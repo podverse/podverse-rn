@@ -166,12 +166,25 @@ export const getQueueItemsLocally = async () => {
 
 const getQueueItemsFromServer = async () => {
   const bearerToken = await getBearerToken()
-  const response = await request({
-    endpoint: '/user-queue-item',
-    method: 'GET',
-    headers: { Authorization: bearerToken },
-    opts: { credentials: 'include' }
-  })
+
+  /* If user membership is expired, we don't want the 401 error to crash the app,
+     so return an empty response body instead. */
+  let response = {
+    data: {
+      userQueueItems: []
+    }
+  }
+
+  try {
+    response = await request({
+      endpoint: '/user-queue-item',
+      method: 'GET',
+      headers: { Authorization: bearerToken },
+      opts: { credentials: 'include' }
+    })
+  } catch (error) {
+    console.log('getQueueItemsFromServer error', error)
+  }
 
   const userQueueItems = response && response.data && response.data.userQueueItems
   await setAllQueueItemsLocally(userQueueItems)

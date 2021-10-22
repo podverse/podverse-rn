@@ -4,6 +4,7 @@ import { Icon } from '../components'
 import { translate } from '../lib/i18n'
 import { getMembershipStatus, readableDate, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 
 type State = {
   hideKey: string | null
@@ -98,8 +99,11 @@ export const OverlayAlert = () => {
       ...state,
       showAlert: false
     })
-    // TODO!
-    console.log('navigate to renew membership')
+
+    /* I don't know how to pass navigation into the OverlayAlert in the App component,
+       so using an event to trigger navigation instead.
+    */
+    PVEventEmitter.emit(PV.Events.NAV_TO_MEMBERSHIP_SCREEN)
   }
 
   if (!state.showAlert) {
