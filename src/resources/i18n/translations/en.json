@@ -530,6 +530,7 @@
 	"Sync podcasts across devices": "— Sync podcasts across devices",
 	"Tap the Start and End Time inputs to set them with the current track time": "▸ Tap the \"Start\" and \"End Time\" inputs to set them with the current track time.",
 	"Team": "Team",
+	"Contributors": "Contributors",
 	"Terms of Service": "Terms of Service",
 	"TermsOfServiceScreenMatomoTrackingText1": "Podverse lets users optionally enable anonymized tracking within the app. We use this tracking info to help determine which content on the site (including podcasts, episodes, and clips) are most popular.",
 	"TermsOfServiceScreenMatomoTrackingText2": "The tracking software we use is called Matomo, and it is a free and open source analytics platform. We host an instance of Matomo, so all tracking data is hosted on our servers, and individual user tracking data will never be sold to or shared with 3rd parties.",
