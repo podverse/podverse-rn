@@ -50,6 +50,19 @@ export class AboutScreen extends React.Component<Props> {
           </Text>
           <Divider style={styles.divider} />
           <Text
+            accessibilityRole='header'
+            fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
+            {translate('Contributors')}
+          </Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.text}
+            onPress={() => this.handleFollowLink('https://github.com/r1jsheth')}
+          >
+            {'r1jsheth'}
+          </Text>
+          <Divider style={styles.divider} />
+          <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={styles.text}>{`Version ${getVersion()} Build ${getBuildNumber()}`}</Text>
           <Divider style={styles.divider} />
