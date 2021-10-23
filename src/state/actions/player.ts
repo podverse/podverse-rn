@@ -305,18 +305,6 @@ export const playerSetPlaybackSpeed = async (rate: number) => {
   PVEventEmitter.emit(PV.Events.PLAYER_SPEED_UPDATED)
 }
 
-export const playerTogglePlayOrNavToPlayer = async (item?: NowPlayingItem, navigation?: any) => {
-  await playerTogglePlayService()
-  const playerType = await playerCheckActiveType()
-  if (playerType === PV.Player.playerTypes.isAudio) {
-    audioTogglePlay()
-  } else if (playerType === PV.Player.playerTypes.isVideo && item) {
-    navigation.navigate(PV.RouteNames.PlayerScreen)
-  }
-
-  showMiniPlayer()
-}
-
 export const playerTogglePlay = async () => {
   // If somewhere a play button is pressed, but nothing is currently loaded in the player,
   // then load the last time from memory by re-initializing the player.

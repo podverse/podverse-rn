@@ -2,11 +2,12 @@ import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { playerCheckIfStateIsBuffering } from '../services/player'
-import { audioCheckIfIsPlaying } from '../services/playerAudio'
-import { playerTogglePlay, playerTogglePlayOrNavToPlayer } from '../state/actions/player'
+import PVEventEmitter from '../services/eventEmitter'
+import { playerCheckIfStateIsBuffering, playerCheckIfStateIsPlaying } from '../services/player'
+import { playerTogglePlay } from '../state/actions/player'
+import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
-import { ActivityIndicator, FastImage, Icon, Text, TextTicker } from './'
+import { ActivityIndicator, FastImage, Icon, PVVideo, Text, TextTicker } from './'
 
 type Props = {
   navigation: any
@@ -32,12 +33,12 @@ export class MiniPlayer extends React.PureComponent<Props> {
         accessibilityLabel={translate('Play')}
         accessibilityRole='button'
         name='play'
-        onPress={() => playerTogglePlayOrNavToPlayer(nowPlayingItem, navigation)}
+        onPress={() => playerTogglePlay()}
         size={20}
         testID={`${testIDPrefix}_play_button`}
         wrapperStyle={[playerStyles.icon, playButtonAdjust]} />
     )
-    if (audioCheckIfIsPlaying(playbackState)) {
+    if (playerCheckIfStateIsPlaying(playbackState)) {
       playButtonIcon = (
         <Icon
           accessibilityHint={translate('ARIA HINT - pause playback')}
@@ -77,21 +78,33 @@ export class MiniPlayer extends React.PureComponent<Props> {
             <TouchableWithoutFeedback
               accessibilityLabel={nowPlayingAccessibilityLabel}
               accessibilityHint={translate('ARIA HINT - open the full player screen')}
-              onPress={() =>
+              onPress={() => {
                 navigation.navigate(PV.RouteNames.PlayerScreen, {
                   nowPlayingItem,
                   addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl,
                   isDarkMode
                 })
-              }
+                PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS)
+              }}
               testID={testIDPrefix.prependTestId()}>
               <View style={[styles.player, globalTheme.player]}>
-                <FastImage
-                  isSmall
-                  resizeMode='contain'
-                  source={nowPlayingItem.episodeImageUrl || nowPlayingItem.podcastImageUrl}
-                  styles={styles.image}
-                />
+                {
+                  checkIfVideoFileType(nowPlayingItem) && (
+                    <View style={styles.image}>
+                      <PVVideo isMiniPlayer navigation={navigation} />
+                    </View>
+                  )
+                }
+                {
+                  !checkIfVideoFileType(nowPlayingItem) && (
+                    <FastImage
+                      isSmall
+                      resizeMode='contain'
+                      source={nowPlayingItem.episodeImageUrl || nowPlayingItem.podcastImageUrl}
+                      styles={styles.image}
+                    />
+                  )
+                }
                 <View style={styles.textWrapper}>
                   <Text
                     allowFontScaling={false}

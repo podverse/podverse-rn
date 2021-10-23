@@ -25,7 +25,7 @@ export const NavMakeClipIcon = (props: Props) => {
     const { globalTheme, session } = getGlobal()
     const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
 
-    PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_NAVIGATE_DEEPER_INTO_STACK)
+    PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS)
 
     navigation.navigate(PV.RouteNames.MakeClipScreen, {
       initialProgressValue,
