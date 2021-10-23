@@ -137,7 +137,7 @@ export const videoStateUpdateDuration = (duration = 0) => {
   })
 }
 
-export const videoStateUpdatePosition = (position = 0) => {
+export const videoStateUpdatePosition = (position = 0, callback?: any) => {
   const globalState = getGlobal()
   const { player } = globalState
   const { videoInfo } = player
@@ -149,17 +149,17 @@ export const videoStateUpdatePosition = (position = 0) => {
         videoPosition: position
       }
     }
-  })
+  }, callback)
 }
 
-export const videoUpdatePlaybackState = (playbackState?: any) => {
+export const videoUpdatePlaybackState = (playbackState?: any, callback?: any) => {
   const globalState = getGlobal()
   setGlobal({
     player: {
       ...globalState.player,
       playbackState
     }
-  })
+  }, callback)
 }
 
 export const videoTogglePlay = () => {
