@@ -51,17 +51,19 @@ export class PVVideo extends React.PureComponent<Props, State> {
     PVEventEmitter.on(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED, this._handlePlaybackStateChange)
     PVEventEmitter.on(PV.Events.PLAYER_VIDEO_SEEK_TO, this._handleSeekTo)
     PVEventEmitter.on(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS, this._handleDestroyPlayer)
+    PVEventEmitter.on(PV.Events.PLAYER_VIDEO_NEW_ITEM_LOADED, this._handleNewItemShouldLoad)
     
     if (isMiniPlayer) {
-      this._handleWillFocus()
+      this._handleNewItemShouldLoad()
     }
 
-    this.willFocusListener = navigation.addListener('willFocus', this._handleWillFocus)
+    this.willFocusListener = navigation.addListener('willFocus', this._handleNewItemShouldLoad)
   }
 
   componentWillUnmount() {
     PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED, this._handlePlaybackStateChange)
     PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_SEEK_TO, this._handleSeekTo)
+    PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_NEW_ITEM_LOADED, this._handleNewItemShouldLoad)
     this.willFocusListener.remove()
   }
 
@@ -69,7 +71,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
     this.setState({ destroyPlayer: true })
   }
 
-  _handleWillFocus = () => {
+  _handleNewItemShouldLoad = () => {
     this.setState({ destroyPlayer: false }, () => {
       (async () => {
         try {
@@ -93,7 +95,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
             uri
           })
         } catch (error) {
-          console.log('PVVideo componentDidMount error', error)
+          console.log('PVVideo _handleNewItemShouldLoad error', error)
         }
       })()
     })
@@ -242,85 +244,79 @@ export class PVVideo extends React.PureComponent<Props, State> {
     nowPlayingItem = nowPlayingItem || {}
 
     const pvVideo = (
-      <>
-        {
-          !destroyPlayer && (
-            <Video
-              disableBack={!isFullscreen || isMiniPlayer}
-              disablePlayPause={!isFullscreen || isMiniPlayer}
-              disableSeekbar={!isFullscreen || isMiniPlayer}
-              disableTimer
-              disableVolume
-              disableFullscreen={isFullscreen || disableFullscreen || isMiniPlayer}
-              onBack={this._disableFullscreen}
-              onEnd={() => {
-                videoResetHistoryItem()
-                this._handlePause()
-              }}
-              onEnterFullscreen={this._enableFullscreen}
-              // onError={() => {
-              //   console.log('onError')
-              // }}
-              onLoad={(payload: any) => {
-                const { duration } = payload
-                videoStateUpdateDuration(duration)
-                /* call addOrUpdateHistoryItem within the onLoad function of PVVideo to ensure
-                  we have the duration saved to userHistoryItems */
-                const forceUpdateOrderDate = true
-                addOrUpdateHistoryItem(
-                  nowPlayingItem,
-                  nowPlayingItem.userPlaybackPosition || 0,
-                  nowPlayingItem.episodeDuration || 0,
-                  forceUpdateOrderDate
-                )
-    
-                this._handleScreenChange()
-              }}
-              onPause={() => {
-                /* Only call in fullscreen mode you can get an infinite loop :( */
-                if (this.state.isFullscreen) {
-                  this._handlePause()
-                }
-              }}
-              onPlay={() => {
-                /* Only call in fullscreen mode you can get an infinite loop :( */
-                if (this.state.isFullscreen) {
-                  this._handlePlay()
-                }
-              }}
-              onProgress={(payload: any) => {
-                const { disableOnProgress } = this.state
-                if (!disableOnProgress) {
-                  const { currentTime } = payload
-                  videoStateUpdatePosition(currentTime)
-                }
-              }}
-              // onReadyForDisplay={}
-              paused={!isReadyToPlay || !playerCheckIfStateIsPlaying(playbackState)}
-              poster={nowPlayingItem.episodeImageUrl || nowPlayingItem.shrunkPodcastImageUrl}
-              progressUpdateInterval={1000}
-              /* The props.rate is only used in the Video constructor.
-                Call this.videoRef.setState({ rate }) to change the rate. */
-              rate={1}
-              ref={(ref: Video) => (this.videoRef = ref)}
-              source={{
-                ...(destroyPlayer ? { uri: '' } : { uri }),
-                headers: {
-                  'User-Agent': userAgent,
-                  ...(Authorization ? { Authorization } : {})
-                }
-              }}
-              style={styles.videoMini}
-            />
+      <Video
+        disableBack={!isFullscreen || isMiniPlayer}
+        disablePlayPause={!isFullscreen || isMiniPlayer}
+        disableSeekbar={!isFullscreen || isMiniPlayer}
+        disableTimer
+        disableVolume
+        disableFullscreen={isFullscreen || disableFullscreen || isMiniPlayer}
+        onBack={this._disableFullscreen}
+        onEnd={() => {
+          videoResetHistoryItem()
+          this._handlePause()
+        }}
+        onEnterFullscreen={this._enableFullscreen}
+        // onError={() => {
+        //   console.log('onError')
+        // }}
+        onLoad={(payload: any) => {
+          const { duration } = payload
+          videoStateUpdateDuration(duration)
+          /* call addOrUpdateHistoryItem within the onLoad function of PVVideo to ensure
+            we have the duration saved to userHistoryItems */
+          const forceUpdateOrderDate = true
+          addOrUpdateHistoryItem(
+            nowPlayingItem,
+            nowPlayingItem.userPlaybackPosition || 0,
+            nowPlayingItem.episodeDuration || 0,
+            forceUpdateOrderDate
           )
-        }
-      </>
+
+          this._handleScreenChange()
+        }}
+        onPause={() => {
+          /* Only call in fullscreen mode you can get an infinite loop :( */
+          if (this.state.isFullscreen) {
+            this._handlePause()
+          }
+        }}
+        onPlay={() => {
+          /* Only call in fullscreen mode you can get an infinite loop :( */
+          if (this.state.isFullscreen) {
+            this._handlePlay()
+          }
+        }}
+        onProgress={(payload: any) => {
+          const { disableOnProgress } = this.state
+          if (!disableOnProgress) {
+            const { currentTime } = payload
+            videoStateUpdatePosition(currentTime)
+          }
+        }}
+        // onReadyForDisplay={}
+        paused={!isReadyToPlay || !playerCheckIfStateIsPlaying(playbackState)}
+        poster={nowPlayingItem.episodeImageUrl || nowPlayingItem.shrunkPodcastImageUrl}
+        progressUpdateInterval={1000}
+        /* The props.rate is only used in the Video constructor.
+          Call this.videoRef.setState({ rate }) to change the rate. */
+        rate={1}
+        ref={(ref: Video) => (this.videoRef = ref)}
+        source={{
+          ...(destroyPlayer ? { uri: '' } : { uri }),
+          headers: {
+            'User-Agent': userAgent,
+            ...(Authorization ? { Authorization } : {})
+          }
+        }}
+        style={styles.videoMini}
+      />
     )
 
     return (
       <>
         {
-          isFullscreen && (
+          !destroyPlayer && isFullscreen && (
             <Modal
               supportedOrientations={['portrait', 'landscape']}
               style={{ height: 200, width: 200, position: 'relative' }}
@@ -331,7 +327,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
           )
         }
         {
-          !isFullscreen && pvVideo
+          !destroyPlayer && !isFullscreen && pvVideo
         }
       </>
     )

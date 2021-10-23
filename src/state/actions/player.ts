@@ -58,7 +58,7 @@ const clearEnrichedPodcastDataIfNewEpisode =
   }
 }
 
-export const playerUpdatePlayerState = (item: NowPlayingItem) => {
+export const playerUpdatePlayerState = (item: NowPlayingItem, isNewVideo?: boolean) => {
   if (!item) return
 
   const globalState = getGlobal()
@@ -93,7 +93,9 @@ export const playerUpdatePlayerState = (item: NowPlayingItem) => {
     }
   }
 
-  setGlobal(newState)
+  setGlobal(newState, () => {
+    PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_NEW_ITEM_LOADED)
+  })
 }
 
 export const playerClearNowPlayingItem = async () => {

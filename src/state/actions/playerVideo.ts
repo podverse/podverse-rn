@@ -219,8 +219,7 @@ export const videoHandlePauseWithUpdate = () => {
 
 export const videoLoadNowPlayingItem = async (
   item: NowPlayingItem,
-  forceUpdateOrderDate: boolean,
-  navigation?: any // only pass in if you want to go immediately to PlayerScreen
+  forceUpdateOrderDate: boolean// only pass in if you want to go immediately to PlayerScreen
 ) => {
   await AsyncStorage.setItem(PV.Events.PLAYER_VIDEO_IS_LOADING, 'TRUE')
   PVAudioPlayer.reset()
@@ -232,14 +231,11 @@ export const videoLoadNowPlayingItem = async (
     item.episodeDuration = historyItemsIndex?.episodes[episodeId]?.mediaFileDuration || 0
     
     // Update player state with the new episodeDuration
-    playerUpdatePlayerState(item)
+    const isNewVideo = true
+    playerUpdatePlayerState(item, isNewVideo)
   }
 
   addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
-
-  if (navigation) {
-    navigation.navigate(PV.RouteNames.PlayerScreen)
-  }
 
   /* Add second delay to make sure the playback-track-changed and playback-queue-ended
      events triggered by PVAudioPlayer.reset() finishes */
