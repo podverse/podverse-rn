@@ -14,11 +14,13 @@ import { videoCheckIfStateIsPlaying, videoGetDownloadedFileInfo, videoGetState,
   videoUpdatePlaybackState } from '../state/actions/playerVideo'
 
 type Props = {
-  
+  disableFullscreen?: boolean
+  navigation: any
 }
 
 type State = {
   Authorization?: string
+  destroyPlayer: boolean
   disableOnProgress?: boolean
   isDownloadedFile: boolean
   isFullscreen: boolean
@@ -26,13 +28,17 @@ type State = {
   uri?: string
 }
 
+// let hasMounted = false
+
 export class PVVideo extends React.PureComponent<Props, State> {
   videoRef: any | null = null
+  willFocusListener: any
 
   constructor(props) {
     super(props)
 
     this.state = {
+      destroyPlayer: false,
       isDownloadedFile: false,
       isFullscreen: false,
       isInitialLoad: true
@@ -40,10 +46,30 @@ export class PVVideo extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
+    const { navigation } = this.props
     PVEventEmitter.on(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED, this._handlePlaybackStateChange)
     PVEventEmitter.on(PV.Events.PLAYER_VIDEO_SEEK_TO, this._handleSeekTo)
-    
-    this.setState({ isInitialLoad: false }, () => {
+    PVEventEmitter.on(PV.Events.PLAYER_VIDEO_NAVIGATE_DEEPER_INTO_STACK, this._handleDestroyPlayer)
+    // if (!hasMounted) {
+    //   hasMounted = true
+    //   this._handleWillAppear()
+    // }
+    this.willFocusListener = navigation.addListener('willFocus', this._handleWillAppear)
+  }
+
+  componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED, this._handlePlaybackStateChange)
+    PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_SEEK_TO, this._handleSeekTo)
+    this.willFocusListener.remove()
+  }
+
+  _handleDestroyPlayer = () => {
+    this.setState({ destroyPlayer: true })
+  }
+
+  _handleWillAppear = () => {
+    console.log('_handleWillAppear')
+    this.setState({ destroyPlayer: false, isInitialLoad: false }, () => {
       (async () => {
         try {
           const { player } = this.global
@@ -72,10 +98,6 @@ export class PVVideo extends React.PureComponent<Props, State> {
     })
   }
 
-  componentWillUnmount() {
-    PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED, this._handlePlaybackStateChange)
-    PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_SEEK_TO, this._handleSeekTo)
-  }
 
   _disableFullscreen = () => {
     this._handleScreenChange()
@@ -199,7 +221,8 @@ export class PVVideo extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { Authorization, isFullscreen, isInitialLoad, uri } = this.state
+    const { disableFullscreen } = this.props
+    const { Authorization, destroyPlayer, isFullscreen, isInitialLoad, uri } = this.state
     const { player, userAgent } = this.global
     const { playbackState } = player
     
@@ -214,7 +237,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
         disableSeekbar={!isFullscreen}
         disableTimer
         disableVolume
-        disableFullscreen={isFullscreen}
+        disableFullscreen={isFullscreen || disableFullscreen}
         onBack={this._disableFullscreen}
         onEnd={() => {
           videoResetHistoryItem()
@@ -285,7 +308,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
               style={{ height: 200, width: 200, position: 'relative' }}
               transparent={false}
               visible>
-              {pvVideo}
+              {!destroyPlayer && pvVideo}
             </Modal>
           )
         }
