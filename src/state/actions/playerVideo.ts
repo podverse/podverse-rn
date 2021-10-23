@@ -12,7 +12,7 @@ import { getPodcastFeedUrlAuthority } from '../../services/podcast'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
 import { removeDownloadedPodcastEpisode } from './downloads'
-import { playerUpdatePlayerState, showMiniPlayer } from './player'
+import { playerUpdatePlaybackState, playerUpdatePlayerState, showMiniPlayer } from './player'
 import { updateHistoryItemsIndex } from './userHistoryItem'
 
 export const videoInitializePlayer = async (item: NowPlayingItem) => {
@@ -24,10 +24,11 @@ export const videoInitializePlayer = async (item: NowPlayingItem) => {
       item = await getNowPlayingItemFromLocalStorage(item.episodeId)
     }
 
+    const shouldPlay = false
     const forceUpdateOrderDate = false
     /* No navigation object needed for videoLoadNowPlayingItem
        since we shouldn't navigate to the PlayerScreen in videoInitializePlayer. */
-    await videoLoadNowPlayingItem(item, forceUpdateOrderDate)
+    await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
     showMiniPlayer()
   }
 
@@ -219,6 +220,7 @@ export const videoHandlePauseWithUpdate = () => {
 
 export const videoLoadNowPlayingItem = async (
   item: NowPlayingItem,
+  shouldPlay: boolean,
   forceUpdateOrderDate: boolean// only pass in if you want to go immediately to PlayerScreen
 ) => {
   await AsyncStorage.setItem(PV.Events.PLAYER_VIDEO_IS_LOADING, 'TRUE')
@@ -242,6 +244,9 @@ export const videoLoadNowPlayingItem = async (
   setTimeout(() => {
     (async () => {
       await AsyncStorage.removeItem(PV.Events.PLAYER_VIDEO_IS_LOADING)
+      if (shouldPlay) {
+        playerUpdatePlaybackState(PV.Player.videoInfo.videoPlaybackState.playing)
+      }
     })()
   }, 1000)
 

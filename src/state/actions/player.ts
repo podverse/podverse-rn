@@ -228,8 +228,7 @@ export const playerLoadNowPlayingItem = async (
       item,
       shouldPlay,
       !!forceUpdateOrderDate,
-      itemToSetNextInQueue,
-      navigation
+      itemToSetNextInQueue
     )
 
     showMiniPlayer()

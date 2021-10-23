@@ -203,7 +203,7 @@ export const playerLoadNowPlayingItem = async (
     await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
 
     if (checkIfVideoFileType(item)) {
-      await videoLoadNowPlayingItem(item, forceUpdateOrderDate)
+      await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
     } else {
       await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
     }

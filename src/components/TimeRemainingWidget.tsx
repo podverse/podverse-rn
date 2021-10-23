@@ -6,7 +6,6 @@ import { checkIfNowPlayingItem, requestAppStoreReviewForEpisodePlayed } from '..
 import { PV } from '../resources'
 import { playerHandlePlayWithUpdate, playerCheckIfStateIsPlaying,
   playerHandleSeekTo, playerGetState} from '../services/player'
-import { audioCheckIfIsPlaying } from '../services/playerAudio'
 import { playerLoadNowPlayingItem, playerTogglePlay } from '../state/actions/player'
 import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { Icon, MoreButton, Text, View } from './'
@@ -100,7 +99,7 @@ export const TimeRemainingWidget = (props: Props) => {
     if (loadTimeStampOnPlay) {
       await handleChapterLoad()
     } else {
-      if (isNowPlayingItem && !checkIfVideoFileType(nowPlayingItem)) {
+      if (isNowPlayingItem) {
         playerTogglePlay()
       } else {
         const forceUpdateOrderDate = false
@@ -119,7 +118,7 @@ export const TimeRemainingWidget = (props: Props) => {
   }
 
   const isInvalidDuration = totalTime <= 0
-  const isPlaying = audioCheckIfIsPlaying(playbackState)
+  const isPlaying = playerCheckIfStateIsPlaying(playbackState)
   const isNowPlayingItem = isPlaying && checkIfNowPlayingItem(item, nowPlayingItem)
 
   const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]
