@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { playerCheckActiveType } from '../services/player'
 import { PV } from './PV'
 
 const _speedOneHalfKey = 0.5
@@ -15,6 +16,7 @@ const _speedQuadrupleAndAHalfKey = 4.5
 const _speedQuintupleKey = 5
 
 const speeds = async () => {
+  
   const arr = [
     _speedOneHalfKey,
     _speedThreeQuartersKey,
@@ -24,15 +26,19 @@ const speeds = async () => {
     _speedDoubleKey
   ]
 
-  const maximumSpeed = await AsyncStorage.getItem(PV.Keys.PLAYER_MAXIMUM_SPEED)
-  const max = Number(maximumSpeed)
-
-  if (max >= _speedDoubleAndAHalfKey) arr.push(_speedDoubleAndAHalfKey)
-  if (max >= _speedTripleKey) arr.push(_speedTripleKey)
-  if (max >= _speedTripleAndAHalfKey) arr.push(_speedTripleAndAHalfKey)
-  if (max >= _speedQuadrupleKey) arr.push(_speedQuadrupleKey)
-  if (max >= _speedQuadrupleAndAHalfKey) arr.push(_speedQuadrupleAndAHalfKey)
-  if (max >= _speedQuintupleKey) arr.push(_speedQuintupleKey)
+  const playerType = await playerCheckActiveType()
+  if (playerType === PV.Player.playerTypes.isVideo) {
+    // videoPlayer cannot play faster than 2x without playback failing
+  } else if (playerType === PV.Player.playerTypes.isAudio) {
+    const maximumSpeed = await AsyncStorage.getItem(PV.Keys.PLAYER_MAXIMUM_SPEED)
+    const max = Number(maximumSpeed)
+    if (max >= _speedDoubleAndAHalfKey) arr.push(_speedDoubleAndAHalfKey)
+    if (max >= _speedTripleKey) arr.push(_speedTripleKey)
+    if (max >= _speedTripleAndAHalfKey) arr.push(_speedTripleAndAHalfKey)
+    if (max >= _speedQuadrupleKey) arr.push(_speedQuadrupleKey)
+    if (max >= _speedQuadrupleAndAHalfKey) arr.push(_speedQuadrupleAndAHalfKey)
+    if (max >= _speedQuintupleKey) arr.push(_speedQuintupleKey)
+  }
 
   return arr
 }

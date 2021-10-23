@@ -349,6 +349,8 @@ export const playerSetRate = async (rate = 1) => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     audioSetRate(rate)
   } else if (playerType === PV.Player.playerTypes.isVideo) {
+    // videoPlayer cannot play faster than 2x without playback failing
+    if (rate > 2) rate = 2
     videoSetRate(rate)
   }
 }

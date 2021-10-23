@@ -75,17 +75,17 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
   _disableFullscreen = () => {
     const setClipTime = false
-    this._setupNowPlayingItemPlayer(setClipTime)
     Orientation.lockToPortrait()
     this.setState({ isFullscreen: false })
+    this._setupNowPlayingItemPlayer(setClipTime)
   }
 
   _enableFullscreen = () => {
     const setClipTime = false
-    this._setupNowPlayingItemPlayer(setClipTime)
     Orientation.unlockAllOrientations()
     Orientation.lockToLandscape()
     this.setState({ isFullscreen: true })
+    this._setupNowPlayingItemPlayer(setClipTime)
   }
 
   _handlePlaybackStateChange = () => {
@@ -131,11 +131,13 @@ export class PVVideo extends React.PureComponent<Props, State> {
     playerUpdateUserPlaybackPosition()
   }
 
-  _handleSeekTo = (position: number) => {
-    if (position >= 0) {
-      this.videoRef.seekTo(position)
-      videoStateUpdatePosition(position)
-    }
+  _handleSeekTo = (position: number, withDelay?: boolean) => {
+    setTimeout(() => {
+      if (position >= 0) {
+        this.videoRef.seekTo(position)
+      }
+      videoUpdatePlaybackState(PV.Player.videoInfo.videoPlaybackState.playing)
+    }, withDelay ? 1000 : 0)
   }
 
   /* If there is still a videoPosition in globalState, use that instead of
@@ -145,20 +147,22 @@ export class PVVideo extends React.PureComponent<Props, State> {
     const { player } = getGlobal()
     const { nowPlayingItem, videoInfo } = player
     const { videoPosition: lastVideoPosition } = videoInfo
+    const withDelay = true
 
     if (nowPlayingItem.clipId && setClipTime && lastVideoPosition < nowPlayingItem.clipEndTime) {
       syncNowPlayingItemWithTrack()
     } else if (lastVideoPosition) {
-      this._handleSeekTo(lastVideoPosition)
+      this._handleSeekTo(lastVideoPosition, withDelay)
     } else {
       const nowPlayingItemFromHistory = await getNowPlayingItemFromLocalStorage(
         nowPlayingItem.clipId || nowPlayingItem.episodeId
       )
-  
+        
       this._handleSeekTo(
         nowPlayingItemFromHistory
           ? nowPlayingItemFromHistory.userPlaybackPosition
-          : nowPlayingItem.userPlaybackPosition
+          : nowPlayingItem.userPlaybackPosition,
+        withDelay
       )
     }
   }
