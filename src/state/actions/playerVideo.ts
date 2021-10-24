@@ -222,10 +222,10 @@ export const videoHandlePauseWithUpdate = () => {
 export const videoLoadNowPlayingItem = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
-  forceUpdateOrderDate: boolean// only pass in if you want to go immediately to PlayerScreen
+  forceUpdateOrderDate: boolean,
+  previousNowPlayingItem?: NowPlayingItem | null
 ) => {
-  const globalState = getGlobal()
-  const { clipId: previousClipId, episodeId: previousEpisodeId } = globalState?.player?.nowPlayingItem || {}
+  const { clipId: previousClipId, episodeId: previousEpisodeId } = previousNowPlayingItem || {}
   await AsyncStorage.setItem(PV.Events.PLAYER_VIDEO_IS_LOADING, 'TRUE')
   PVAudioPlayer.reset()
 

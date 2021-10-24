@@ -225,8 +225,7 @@ export class PlayerScreen extends React.Component<Props> {
                 newItem,
                 shouldPlay,
                 forceUpdateOrderDate,
-                setCurrentItemNextInQueue,
-                navigation
+                setCurrentItemNextInQueue
               )
             }
           }
