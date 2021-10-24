@@ -4,11 +4,11 @@ import { StyleSheet, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
 import { checkIfNowPlayingItem, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import { playerHandlePlayWithUpdate, playerCheckIfStateIsPlaying,
   playerHandleSeekTo, playerGetState} from '../services/player'
-import { audioCheckIfIsPlaying } from '../services/playerAudio'
-import { playerLoadNowPlayingItem, playerTogglePlay } from '../state/actions/player'
-import { checkIfVideoFileType } from '../state/actions/playerVideo'
+  import { setNowPlayingItem } from '../services/userNowPlayingItem'
+import { playerLoadNowPlayingItem, playerTogglePlay, playerUpdatePlayerState } from '../state/actions/player'
 import { Icon, MoreButton, Text, View } from './'
 
 type Props = {
@@ -19,9 +19,8 @@ type Props = {
   isChapter?: boolean
   item: any
   itemType: 'episode' | 'clip' | 'chapter'
-  loadTimeStampOnPlay?: boolean
+  loadChapterOnPlay?: boolean
   mediaFileDuration?: number | undefined
-  navigation: any
   style?: any
   testID: string
   timeLabel?: string
@@ -74,7 +73,7 @@ const MiniProgressBar = (props: BarProps) => {
 
 export const TimeRemainingWidget = (props: Props) => {
   const { episodeCompleted, episodeDownloading, handleMorePress, item, itemType,
-    loadTimeStampOnPlay, mediaFileDuration, navigation, style, testID, timeLabel, transparent,
+    loadChapterOnPlay, mediaFileDuration, style, testID, timeLabel, transparent,
     userPlaybackPosition } = props
   const { episode = {}, podcast = {} } = item
   const convertedItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
@@ -94,32 +93,50 @@ export const TimeRemainingWidget = (props: Props) => {
     }
   }
 
+  const handleClipFromSameEpisodeLoaded = () => {
+    playerUpdatePlayerState(convertedItem, async () => {
+      if (convertedItem.clipStartTime || convertedItem.clipStartTime === 0) {
+        await playerHandleSeekTo(convertedItem.clipStartTime)
+        const playbackState = await playerGetState()
+        const isPlaying = playerCheckIfStateIsPlaying(playbackState)
+        if (!isPlaying) {
+          playerHandlePlayWithUpdate()
+        }
+        setNowPlayingItem(convertedItem, convertedItem.clipStartTime)
+        PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)
+      }
+    })
+
+  }
+
   const playItem = async () => {
     const isNowPlayingItem = checkIfNowPlayingItem(item, nowPlayingItem)
-
-    if (loadTimeStampOnPlay) {
+    if (loadChapterOnPlay) {
       await handleChapterLoad()
+    } else if (
+      !isNowPlayingItem
+      && convertedItem.clipId
+      && convertedItem.episodeId === nowPlayingItem.episodeId
+    ) {
+      handleClipFromSameEpisodeLoaded()
+    } else if (isNowPlayingItem) {
+      playerTogglePlay()
     } else {
-      if (isNowPlayingItem && !checkIfVideoFileType(nowPlayingItem)) {
-        playerTogglePlay()
-      } else {
-        const forceUpdateOrderDate = false
-        const shouldPlay = true
-        const setCurrentItemNextInQueue = true
-        playerLoadNowPlayingItem(
-          convertedItem,
-          shouldPlay,
-          forceUpdateOrderDate,
-          setCurrentItemNextInQueue,
-          navigation
-        )
-      }
+      const forceUpdateOrderDate = false
+      const shouldPlay = true
+      const setCurrentItemNextInQueue = true
+      playerLoadNowPlayingItem(
+        convertedItem,
+        shouldPlay,
+        forceUpdateOrderDate,
+        setCurrentItemNextInQueue
+      )
     }
     requestAppStoreReviewForEpisodePlayed()
   }
 
   const isInvalidDuration = totalTime <= 0
-  const isPlaying = audioCheckIfIsPlaying(playbackState)
+  const isPlaying = playerCheckIfStateIsPlaying(playbackState)
   const isNowPlayingItem = isPlaying && checkIfNowPlayingItem(item, nowPlayingItem)
 
   const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]

@@ -354,7 +354,10 @@ const mediaPlayerCarouselComponents = (
             <>
               {
                 (accessibilityItemSelectedValue === _nowPlayingInfoKey || !accessibilityItemSelectedValue) &&
-                  <MediaPlayerCarouselViewer handlePressClipInfo={handlePressClipInfo} width={screenWidth} />
+                  <MediaPlayerCarouselViewer
+                    handlePressClipInfo={handlePressClipInfo}
+                    navigation={navigation}
+                    width={screenWidth} />
               }
               {
                 accessibilityItemSelectedValue === _episodeSummaryKey &&
@@ -376,7 +379,10 @@ const mediaPlayerCarouselComponents = (
           )
           : (
             <>
-              <MediaPlayerCarouselViewer handlePressClipInfo={handlePressClipInfo} width={screenWidth} />
+              <MediaPlayerCarouselViewer
+                handlePressClipInfo={handlePressClipInfo}
+                navigation={navigation}
+                width={screenWidth} />
               <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
               {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
               <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />

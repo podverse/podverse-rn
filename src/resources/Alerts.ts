@@ -81,7 +81,7 @@ export const Alerts = {
     buttons: [{ text: _logoutButtonText, onPress: logoutUser }]
   },
   PREMIUM_MEMBERSHIP_REQUIRED: {
-    message: translate('Sign up for a premium account to use this feature'),
+    message: translate('Sign up for a premium membership to use this feature'),
     title: translate('Premium Membership Required')
   },
   PURCHASE_CANCELLED: {

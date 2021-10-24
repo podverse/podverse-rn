@@ -6,8 +6,7 @@ import { checkIfVideoFileType, videoCheckIfStateIsBuffering, videoCheckIfStateIs
   videoGetCurrentLoadedTrackId,
   videoGetRate, videoGetState, videoGetTrackDuration, videoGetTrackPosition, videoHandlePause,
   videoHandlePauseWithUpdate, videoHandlePlayWithUpdate, videoHandleSeekTo, videoIsLoaded, videoLoadNowPlayingItem,
-  videoPlay, videoSetRate, videoTogglePlay
-} from '../state/actions/playerVideo'
+  videoSetRate, videoTogglePlay } from '../state/actions/playerVideo'
 import PVEventEmitter from './eventEmitter'
 import { audioIsLoaded,  audioCheckIfIsPlaying, audioSetRate, audioHandlePlayWithUpdate,
   audioHandleSeekTo, audioHandlePause, audioAddNowPlayingItemNextInQueue,
@@ -192,8 +191,7 @@ export const playerLoadNowPlayingItem = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
   forceUpdateOrderDate: boolean,
-  itemToSetNextInQueue: NowPlayingItem | null,
-  navigation?: any // only pass in if you want to go immediately to PlayerScreen for video
+  itemToSetNextInQueue: NowPlayingItem | null
 ) => {
   try {
     if (!checkIfVideoFileType(item)) {
@@ -204,7 +202,7 @@ export const playerLoadNowPlayingItem = async (
     await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
 
     if (checkIfVideoFileType(item)) {
-      await videoLoadNowPlayingItem(item, forceUpdateOrderDate, navigation)
+      await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
     } else {
       await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
     }
@@ -239,6 +237,7 @@ export const playerSetPositionWhenDurationIsAvailable = async (
           && position >= 0
         ) {
           clearInterval(interval)
+          
           await playerHandleSeekTo(position)
           // Sometimes seekTo does not work right away for all episodes...
           // to work around this bug, we set another interval to confirm the track
@@ -349,6 +348,8 @@ export const playerSetRate = async (rate = 1) => {
   if (playerType === PV.Player.playerTypes.isAudio) {
     audioSetRate(rate)
   } else if (playerType === PV.Player.playerTypes.isVideo) {
+    // videoPlayer cannot play faster than 2x without playback failing
+    if (rate > 2) rate = 2
     videoSetRate(rate)
   }
 }

@@ -7,7 +7,8 @@ import {
   TouchableWithoutFeedback,
   View as RNView,
   Image,
-  ImageSourcePropType
+  ImageSourcePropType,
+  Dimensions
 } from 'react-native'
 import Share from 'react-native-share'
 import React from 'reactn'
@@ -19,6 +20,7 @@ import {
   NavHeaderButtonText,
   OpaqueBackground,
   PlayerProgressBar,
+  PVVideo,
   Text,
   TextInput,
   TimeInput,
@@ -40,6 +42,7 @@ import {
 } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import { playerTogglePlay, playerSetNowPlayingItem, playerSetPlaybackSpeed } from '../state/actions/player'
+import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { core, darkTheme, iconStyles, playerStyles } from '../styles'
 
 type Props = {
@@ -60,6 +63,9 @@ type State = {
 }
 
 const testIDPrefix = 'make_clip_screen'
+
+const screenHeight = Dimensions.get('screen').width
+const screenWidth = Dimensions.get('screen').width
 
 export class MakeClipScreen extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -410,7 +416,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const { globalTheme, jumpBackwardsTime, jumpForwardsTime, player } = this.global
-    const { backupDuration, playbackRate, playbackState } = player
+    const { backupDuration, nowPlayingItem, playbackRate, playbackState } = player
     const hasErrored = playbackState === PV.Player.errorState
     const {
       endTime,
@@ -458,6 +464,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const miniJumpForwardAccessibilityLabel =
       `${translate(`Jump forward`)} ${PV.Player.miniJumpSeconds} ${translate('seconds')}`
 
+    const outerWrapperStyle = [styles.outerWrapper, { padding: 10 }, { width: screenWidth }]
+
+    const imageWrapperStyle = screenHeight < PV.Dimensions.smallScreen.height
+      ? [styles.carouselImageWrapper, { width: screenWidth * 0.9 }, { height: '100%' }]
+      : [styles.carouselImageWrapper, { width: screenWidth * 0.9 }]
+
     return (
       <OpaqueBackground>
         <View style={styles.view} transparent testID='make_clip_screen_view'>
@@ -490,7 +502,20 @@ export class MakeClipScreen extends React.Component<Props, State> {
               value={isPublicItemSelected.value}
               wrapperStyle={styles.dropdownButtonSelectWrapper}
             />
-            <View style={styles.fillerView} transparent />
+            {
+              checkIfVideoFileType(nowPlayingItem) && (
+                <RNView style={outerWrapperStyle}>
+                  <RNView style={imageWrapperStyle}>
+                    <PVVideo disableFullscreen navigation={navigation} />
+                  </RNView>
+                </RNView>
+              )
+            }
+            {
+              !checkIfVideoFileType(nowPlayingItem) && (
+                <View style={styles.fillerView} transparent />
+              )
+            }
             <View style={styles.wrapperBottom} transparent>
               <View style={styles.wrapperBottomInside} transparent>
                 <TimeInput
@@ -806,6 +831,15 @@ const styles = StyleSheet.create({
   playerControlsBottomRowText: {
     fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.bold
+  },
+  outerWrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1
+  },
+  carouselImageWrapper: {
+    alignItems: 'center',
+    height: '100%'
   },
   clearEndTimeText: {
     color: PV.Colors.skyLight,

@@ -12,7 +12,7 @@ import { getPodcastFeedUrlAuthority } from '../../services/podcast'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
 import { removeDownloadedPodcastEpisode } from './downloads'
-import { playerUpdatePlayerState, showMiniPlayer } from './player'
+import { playerUpdatePlaybackState, playerUpdatePlayerState, showMiniPlayer } from './player'
 import { updateHistoryItemsIndex } from './userHistoryItem'
 
 export const videoInitializePlayer = async (item: NowPlayingItem) => {
@@ -21,13 +21,15 @@ export const videoInitializePlayer = async (item: NowPlayingItem) => {
         userPlaybackPosition that was last saved from other devices. */
     if (!item.clipId && item.episodeId) {
       await updateHistoryItemsIndex()
-      item = await getNowPlayingItemFromLocalStorage(item.episodeId)
+      const itemFromStorage = await getNowPlayingItemFromLocalStorage(item.episodeId)
+      if (itemFromStorage) {
+        item = itemFromStorage
+      }
     }
 
+    const shouldPlay = false
     const forceUpdateOrderDate = false
-    /* No navigation object needed for videoLoadNowPlayingItem
-       since we shouldn't navigate to the PlayerScreen in videoInitializePlayer. */
-    await videoLoadNowPlayingItem(item, forceUpdateOrderDate)
+    await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
     showMiniPlayer()
   }
 
@@ -137,7 +139,7 @@ export const videoStateUpdateDuration = (duration = 0) => {
   })
 }
 
-export const videoStateUpdatePosition = (position = 0) => {
+export const videoStateUpdatePosition = (position = 0, callback?: any) => {
   const globalState = getGlobal()
   const { player } = globalState
   const { videoInfo } = player
@@ -149,17 +151,17 @@ export const videoStateUpdatePosition = (position = 0) => {
         videoPosition: position
       }
     }
-  })
+  }, callback)
 }
 
-export const videoUpdatePlaybackState = (playbackState?: any) => {
+export const videoUpdatePlaybackState = (playbackState?: any, callback?: any) => {
   const globalState = getGlobal()
   setGlobal({
     player: {
       ...globalState.player,
       playbackState
     }
-  })
+  }, callback)
 }
 
 export const videoTogglePlay = () => {
@@ -219,33 +221,40 @@ export const videoHandlePauseWithUpdate = () => {
 
 export const videoLoadNowPlayingItem = async (
   item: NowPlayingItem,
-  forceUpdateOrderDate: boolean,
-  navigation?: any // only pass in if you want to go immediately to PlayerScreen
+  shouldPlay: boolean,
+  forceUpdateOrderDate: boolean// only pass in if you want to go immediately to PlayerScreen
 ) => {
+  const globalState = getGlobal()
+  const { clipId: previousClipId, episodeId: previousEpisodeId } = globalState?.player?.nowPlayingItem || {}
   await AsyncStorage.setItem(PV.Events.PLAYER_VIDEO_IS_LOADING, 'TRUE')
   PVAudioPlayer.reset()
 
   const historyItemsIndex = await getHistoryItemsIndexLocally()
-
   const { clipId, episodeId } = item
-  if (!clipId && episodeId) {
+
+  if (
+    episodeId && (
+      episodeId !== previousEpisodeId
+      || (clipId && previousClipId !== clipId)
+    )
+  ) {
     item.episodeDuration = historyItemsIndex?.episodes[episodeId]?.mediaFileDuration || 0
-    
-    // Update player state with the new episodeDuration
-    playerUpdatePlayerState(item)
+    /* Use callback to wait until video is finished loading in global state    
+       before calling the PLAYER_VIDEO_NEW_ITEM event. */
+    const callback = () => PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_NEW_ITEM_LOADED)
+    playerUpdatePlayerState(item, callback)
   }
 
   addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
-
-  if (navigation) {
-    navigation.navigate(PV.RouteNames.PlayerScreen)
-  }
 
   /* Add second delay to make sure the playback-track-changed and playback-queue-ended
      events triggered by PVAudioPlayer.reset() finishes */
   setTimeout(() => {
     (async () => {
       await AsyncStorage.removeItem(PV.Events.PLAYER_VIDEO_IS_LOADING)
+      if (shouldPlay) {
+        playerUpdatePlaybackState(PV.Player.videoInfo.videoPlaybackState.playing)
+      }
     })()
   }, 1000)
 

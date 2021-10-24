@@ -58,7 +58,7 @@ const clearEnrichedPodcastDataIfNewEpisode =
   }
 }
 
-export const playerUpdatePlayerState = (item: NowPlayingItem) => {
+export const playerUpdatePlayerState = (item: NowPlayingItem, callback?: any) => {
   if (!item) return
 
   const globalState = getGlobal()
@@ -93,7 +93,7 @@ export const playerUpdatePlayerState = (item: NowPlayingItem) => {
     }
   }
 
-  setGlobal(newState)
+  setGlobal(newState, callback)
 }
 
 export const playerClearNowPlayingItem = async () => {
@@ -196,8 +196,7 @@ export const playerLoadNowPlayingItem = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
   forceUpdateOrderDate: boolean,
-  setCurrentItemNextInQueue: boolean,
-  navigation?: any // only pass in if you want to go immediately to PlayerScreen for video
+  setCurrentItemNextInQueue: boolean
 ) => {
   const globalState = getGlobal()
   const { nowPlayingItem: previousNowPlayingItem } = globalState.player
@@ -226,8 +225,7 @@ export const playerLoadNowPlayingItem = async (
       item,
       shouldPlay,
       !!forceUpdateOrderDate,
-      itemToSetNextInQueue,
-      navigation
+      itemToSetNextInQueue
     )
 
     showMiniPlayer()
@@ -303,18 +301,6 @@ export const playerSetPlaybackSpeed = async (rate: number) => {
   })
 
   PVEventEmitter.emit(PV.Events.PLAYER_SPEED_UPDATED)
-}
-
-export const playerTogglePlayOrNavToPlayer = async (item?: NowPlayingItem, navigation?: any) => {
-  await playerTogglePlayService()
-  const playerType = await playerCheckActiveType()
-  if (playerType === PV.Player.playerTypes.isAudio) {
-    audioTogglePlay()
-  } else if (playerType === PV.Player.playerTypes.isVideo && item) {
-    navigation.navigate(PV.RouteNames.PlayerScreen)
-  }
-
-  showMiniPlayer()
 }
 
 export const playerTogglePlay = async () => {
