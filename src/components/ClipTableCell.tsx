@@ -13,7 +13,7 @@ type Props = {
   hideImage?: boolean
   isNowPlayingItem?: boolean
   item: any
-  loadTimeStampOnPlay?: boolean
+  loadChapterOnPlay?: boolean
   isChapter?: boolean
   itemType?: 'chapter' | 'clip'
   navigation: any
@@ -34,7 +34,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
   render() {
     const { handleMorePress, hideImage, isChapter, isNowPlayingItem, item, itemType,
-      loadTimeStampOnPlay, navigation, onLayout, showEpisodeInfo, showPodcastInfo, testID,
+      loadChapterOnPlay, navigation, onLayout, showEpisodeInfo, showPodcastInfo, testID,
       transparent } = this.props
 
     const episodePubDate = item?.episode?.pubDate || ''
@@ -162,7 +162,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
               isChapter={isChapter}
               item={item}
               itemType={itemType ? itemType : 'clip'}
-              loadTimeStampOnPlay={loadTimeStampOnPlay}
+              loadChapterOnPlay={loadChapterOnPlay}
               navigation={navigation}
               testID={testID}
               timeLabel={timeLabelText}

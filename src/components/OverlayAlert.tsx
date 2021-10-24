@@ -39,8 +39,8 @@ export const OverlayAlert = () => {
         const freeTrialExpiration = readableDate(safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, ''))
         setState({
           hideKey: 'hideFreeTrialExpired',
-          alertTitle: `${translate('Your free trial expired')}${freeTrialExpiration}. 
-          ${translate('Please renew your membership to continue using premium features')}`,
+          // eslint-disable-next-line max-len
+          alertTitle: `${translate('Your free trial expired')}${freeTrialExpiration} ${translate('Please renew your membership to continue using premium features')}`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
           alertTitleStyle: globalTheme.overlayAlertDanger,
           linkAction: handleRenewMembership,
@@ -61,8 +61,8 @@ export const OverlayAlert = () => {
 
         setState({
           hideKey: 'hideMembershipExpired',
-          alertTitle: `${translate('Your membership expired')}${membershipExpiration}. 
-          ${translate('Please renew your membership to continue using premium features')}`,
+          // eslint-disable-next-line max-len
+          alertTitle: `${translate('Your membership expired')}${membershipExpiration}. ${translate('Please renew your membership to continue using premium features')}`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
           alertTitleStyle: globalTheme.overlayAlertDanger,
           linkAction: handleRenewMembership,
