@@ -46,25 +46,46 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     const { isMiniPlayer, navigation } = this.props
+    PVEventEmitter.on(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS, this._handleDestroyPlayer)
+    PVEventEmitter.on(PV.Events.PLAYER_VIDEO_NEW_CLIP_ITEM_LOADED, this._handleNewClipItemShouldLoad)
+    PVEventEmitter.on(PV.Events.PLAYER_VIDEO_NEW_EPISODE_ITEM_LOADED, this._handleNewEpisodeItemShouldLoad)
     PVEventEmitter.on(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED, this._handlePlaybackStateChange)
     PVEventEmitter.on(PV.Events.PLAYER_VIDEO_SEEK_TO, this._handleSeekTo)
-    PVEventEmitter.on(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS, this._handleDestroyPlayer)
-    PVEventEmitter.on(PV.Events.PLAYER_VIDEO_NEW_ITEM_LOADED, this._handleNewItemShouldLoad)
     
     if (isMiniPlayer) {
-      this._handleNewItemShouldLoad()
+      const { player } = this.global
+      let { nowPlayingItem } = player
+        // nowPlayingItem will be undefined when loading from a deep link
+      nowPlayingItem = nowPlayingItem || {}
+      if (nowPlayingItem.clipId) {
+        this._handleNewClipItemShouldLoad()
+      } else {
+        this._handleNewEpisodeItemShouldLoad()
+      }
     }
 
-    this.willFocusListener = navigation.addListener('willFocus', this._handleNewItemShouldLoad)
+    this.willFocusListener = navigation.addListener('willFocus', this._handleNewEpisodeItemShouldLoad)
   }
 
   componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS, this._handleDestroyPlayer)
+    PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_NEW_CLIP_ITEM_LOADED, this._handleNewClipItemShouldLoad)
+    PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_NEW_EPISODE_ITEM_LOADED, this._handleNewEpisodeItemShouldLoad)
     PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED, this._handlePlaybackStateChange)
     PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_SEEK_TO, this._handleSeekTo)
-    PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_NEW_ITEM_LOADED, this._handleNewItemShouldLoad)
   }
 
-  _handleNewItemShouldLoad = () => {
+  _handleNewClipItemShouldLoad = () => {
+    const setClipTime = true
+    this._handleNewItemShouldLoad(setClipTime)
+  }
+
+  _handleNewEpisodeItemShouldLoad = () => {
+    const setClipTime = false
+    this._handleNewItemShouldLoad(setClipTime)
+  }
+
+  _handleNewItemShouldLoad = (setClipTime: boolean) => {
     const { playbackState } = this.global.player
     const transitionPlaybackState = playbackState
     this.setState({ transitionPlaybackState }, () => {
@@ -91,6 +112,10 @@ export class PVVideo extends React.PureComponent<Props, State> {
                 Authorization,
                 isDownloadedFile,
                 uri
+              }, () => {
+                if (setClipTime && nowPlayingItem.clipId) {
+                  syncNowPlayingItemWithTrack()
+                }
               })
             } catch (error) {
               console.log('PVVideo _handleNewItemShouldLoad error', error)
@@ -110,8 +135,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
     this.setState({ transitionPlaybackState }, () => {
       (async () => {
-        const setClipTime = false
-        await this._setupNowPlayingItemPlayer(setClipTime)
+        await this._setupNowPlayingItemPlayer()
       })()
     })
   }
@@ -119,15 +143,13 @@ export class PVVideo extends React.PureComponent<Props, State> {
   /* If there is still a videoPosition in globalState, use that instead of
      digging it out of the local storage. This is needed to handle going in
      and out of fullscreen mode immediately. */
-  _setupNowPlayingItemPlayer = async (setClipTime = true) => {
+  _setupNowPlayingItemPlayer = async () => {
     const { player } = getGlobal()
     const { nowPlayingItem, videoInfo } = player
     const { videoPosition: lastVideoPosition } = videoInfo
     const handlePlayAfterSeek = true
 
-    if (nowPlayingItem.clipId && setClipTime) {
-      syncNowPlayingItemWithTrack()
-    } else if (lastVideoPosition) {
+    if (lastVideoPosition) {
       this._handleSeekTo(lastVideoPosition, handlePlayAfterSeek)
     } else {
       const nowPlayingItemFromHistory = await getNowPlayingItemFromLocalStorage(

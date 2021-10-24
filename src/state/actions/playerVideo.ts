@@ -232,17 +232,20 @@ export const videoLoadNowPlayingItem = async (
   const historyItemsIndex = await getHistoryItemsIndexLocally()
   const { clipId, episodeId } = item
 
-  if (
-    episodeId && (
-      episodeId !== previousEpisodeId
-      || (clipId && previousClipId !== clipId)
-    )
-  ) {
+  if (episodeId) {
     item.episodeDuration = historyItemsIndex?.episodes[episodeId]?.mediaFileDuration || 0
-    /* Use callback to wait until video is finished loading in global state    
-       before calling the PLAYER_VIDEO_NEW_ITEM event. */
-    const callback = () => PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_NEW_ITEM_LOADED)
-    playerUpdatePlayerState(item, callback)
+    if (clipId && previousClipId !== clipId) {
+      /* Use callback to wait until video is finished loading in global state    
+         before calling the PLAYER_VIDEO_NEW_ITEM event. */
+      const callback = () => PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_NEW_CLIP_ITEM_LOADED)
+      playerUpdatePlayerState(item, callback)
+    } else if (episodeId !== previousEpisodeId) {
+      item.episodeDuration = historyItemsIndex?.episodes[episodeId]?.mediaFileDuration || 0
+      /* Use callback to wait until video is finished loading in global state    
+         before calling the PLAYER_VIDEO_NEW_ITEM event. */
+      const callback = () => PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_NEW_EPISODE_ITEM_LOADED)
+      playerUpdatePlayerState(item, callback)
+    }
   }
 
   addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
