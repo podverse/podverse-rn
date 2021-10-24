@@ -180,7 +180,7 @@ export const FilterOptions = {
     },
     PlayerScreen: {
       clipsFrom: [_fromThisEpisodeKey, _fromThisPodcastKey],
-      clipsFromEpisodeSort: [_chronologicalKey, _mostRecentKey, ..._top],
+      clipsFromEpisodeSort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey],
       clipsFromPodcastSort: [_mostRecentKey, ..._top]
     },
     PodcastScreen: {
@@ -195,9 +195,9 @@ export const FilterOptions = {
     },
     ProfileScreen: {
       type: [_podcastsKey, _clipsKey, _playlistsKey],
-      sortClips: [_mostRecentKey, ..._top],
+      sortClips: [_mostRecentKey, ..._top, _randomKey],
       sortPlaylists: [_alphabeticalKey],
-      sortPodcasts: [_alphabeticalKey, _mostRecentKey, ..._top]
+      sortPodcasts: [_alphabeticalKey, _mostRecentKey, ..._top, _randomKey]
     }
   },
   items: {
