@@ -177,7 +177,7 @@ export class MembershipScreen extends React.Component<Props, State> {
             </View>
             <View style={styles.textRowCentered}>
               <TextLink
-                accessibilityHint={translate('ARIA HINT - sign up for your premium account')}
+                accessibilityHint={translate('ARIA HINT - sign up for your premium membership')}
                 disabled={disableButton}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={this.handleSignUpPress}

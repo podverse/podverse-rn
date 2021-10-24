@@ -4,6 +4,7 @@ import { Icon } from '../components'
 import { translate } from '../lib/i18n'
 import { getMembershipStatus, readableDate, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 
 type State = {
   hideKey: string | null
@@ -38,8 +39,8 @@ export const OverlayAlert = () => {
         const freeTrialExpiration = readableDate(safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, ''))
         setState({
           hideKey: 'hideFreeTrialExpired',
-          alertTitle: `${translate('Your free trial expired')}${freeTrialExpiration}. 
-          ${translate('Please renew your membership to continue using premium features')}`,
+          // eslint-disable-next-line max-len
+          alertTitle: `${translate('Your free trial expired')}${freeTrialExpiration} ${translate('Please renew your membership to continue using premium features')}`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
           alertTitleStyle: globalTheme.overlayAlertDanger,
           linkAction: handleRenewMembership,
@@ -60,8 +61,8 @@ export const OverlayAlert = () => {
 
         setState({
           hideKey: 'hideMembershipExpired',
-          alertTitle: `${translate('Your membership expired')}${membershipExpiration}. 
-          ${translate('Please renew your membership to continue using premium features')}`,
+          // eslint-disable-next-line max-len
+          alertTitle: `${translate('Your membership expired')}${membershipExpiration}. ${translate('Please renew your membership to continue using premium features')}`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
           alertTitleStyle: globalTheme.overlayAlertDanger,
           linkAction: handleRenewMembership,
@@ -98,8 +99,11 @@ export const OverlayAlert = () => {
       ...state,
       showAlert: false
     })
-    // TODO!
-    console.log('navigate to renew membership')
+
+    /* I don't know how to pass navigation into the OverlayAlert in the App component,
+       so using an event to trigger navigation instead.
+    */
+    PVEventEmitter.emit(PV.Events.NAV_TO_MEMBERSHIP_SCREEN)
   }
 
   if (!state.showAlert) {

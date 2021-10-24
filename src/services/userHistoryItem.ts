@@ -223,15 +223,27 @@ const getHistoryItemsFromServer = async (page: number) => {
   const results = await getHistoryItemsLocally()
   const { userHistoryItems: localUserHistoryItems } = results
 
-  const response = await request({
-    endpoint: '/user-history-item',
-    method: 'GET',
-    headers: { Authorization: bearerToken },
-    query: {
-      page
-    },
-    opts: { credentials: 'include' }
-  })
+  /* If user membership is expired, we don't want the 401 error to crash the app,
+     so return an empty response body instead. */
+  let response = {
+    data: {
+      userHistoryItems: [],
+      userHistoryItemsCount: 0
+    }
+  }
+  try {
+    response = await request({
+      endpoint: '/user-history-item',
+      method: 'GET',
+      headers: { Authorization: bearerToken },
+      query: {
+        page
+      },
+      opts: { credentials: 'include' }
+    })
+  } catch (error) {
+    console.log('getHistoryItemsFromServer error', error)
+  }
 
   const { userHistoryItems, userHistoryItemsCount } = response.data
 
@@ -300,18 +312,29 @@ const getHistoryItemsIndexFromServer = async () => {
   const results = await getHistoryItemsLocally()
   const { userHistoryItems: localUserHistoryItems } = results
 
-  const bearerToken = await getBearerToken()
-  const response = (await request({
-    endpoint: '/user-history-item/metadata',
-    method: 'GET',
-    headers: {
-      Authorization: bearerToken,
-      'Content-Type': 'application/json'
+  /* If user membership is expired, we don't want the 401 error to crash the app,
+     so return an empty response body instead. */
+  let response = {
+    data: {
+      userHistoryItems: []
     }
-  })) as any
+  }
+
+  try {
+    const bearerToken = await getBearerToken()
+    response = (await request({
+      endpoint: '/user-history-item/metadata',
+      method: 'GET',
+      headers: {
+        Authorization: bearerToken,
+        'Content-Type': 'application/json'
+      }
+    })) as any
+  } catch (error) {
+    console.log('getHistoryItemsIndexFromServer error', error)
+  }
 
   const { userHistoryItems } = response.data
-
   const combinedHistoryItems = Object.assign(localUserHistoryItems, userHistoryItems)
   return generateHistoryItemsIndex(combinedHistoryItems)
 }

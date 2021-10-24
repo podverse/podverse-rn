@@ -170,7 +170,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
         isNowPlayingItem={currentChapter && currentChapter.id === item.id}
         item={item}
         itemType='chapter'
-        loadTimeStampOnPlay
+        loadChapterOnPlay
         navigation={navigation}
         onLayout={(item: any) => this.itemHeights[index] = item.nativeEvent.layout.height}
         showPodcastInfo={false}

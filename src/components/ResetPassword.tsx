@@ -50,7 +50,7 @@ export class ResetPassword extends React.Component<Props, State> {
     return (
       <View style={[styles.view, style]}>
         <TextInput
-          accessibilityHint={translate('ARIA HINT - Type your premium account email address')}
+          accessibilityHint={translate('ARIA HINT - Type your premium membership email address')}
           autoCapitalize='none'
           autoCompleteType='email'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}

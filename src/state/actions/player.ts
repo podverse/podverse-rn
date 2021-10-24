@@ -18,10 +18,8 @@ import {
   playerSetPlaybackSpeed as playerSetPlaybackSpeedService,
   playerTogglePlay as playerTogglePlayService,
   playerGetState,
-  playerGetDuration,
-  playerCheckActiveType
+  playerGetDuration
 } from '../../services/player'
-import { audioTogglePlay } from '../../services/playerAudio'
 import { getPodcastFromPodcastIndexById } from '../../services/podcastIndex'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 import { trackPlayerScreenPageView } from '../../services/tracking'
@@ -44,6 +42,8 @@ export const initializePlayer = async () => {
   } else if (!checkIfVideoFileType(item)) {
     audioInitializePlayerQueue(item)
   }
+
+  handleEnrichingPlayerState(item)
 }
 
 const clearEnrichedPodcastDataIfNewEpisode =
@@ -56,14 +56,21 @@ const clearEnrichedPodcastDataIfNewEpisode =
   }
 }
 
-export const playerUpdatePlayerState = (item: NowPlayingItem) => {
+export const playerUpdatePlayerState = (item: NowPlayingItem, callback?: any) => {
   if (!item) return
 
   const globalState = getGlobal()
+  const { videoDuration } = globalState.player.videoInfo
 
   const episode = convertNowPlayingItemToEpisode(item)
   episode.description = episode.description || 'No show notes available'
   const mediaRef = convertNowPlayingItemToMediaRef(item)
+
+  // For video only, don't let the duration in state be overwritten
+  // by asynchronous state updates to the nowPlayingItem.
+  if (checkIfVideoFileType(item) && videoDuration) {
+    item.episodeDuration = videoDuration
+  }
 
   const videoInfo = videoStateSetVideoInfo(item)
 
@@ -84,7 +91,7 @@ export const playerUpdatePlayerState = (item: NowPlayingItem) => {
     }
   }
 
-  setGlobal(newState)
+  setGlobal(newState, callback)
 }
 
 export const playerClearNowPlayingItem = async () => {
@@ -187,8 +194,7 @@ export const playerLoadNowPlayingItem = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
   forceUpdateOrderDate: boolean,
-  setCurrentItemNextInQueue: boolean,
-  navigation?: any // only pass in if you want to go immediately to PlayerScreen for video
+  setCurrentItemNextInQueue: boolean
 ) => {
   const globalState = getGlobal()
   const { nowPlayingItem: previousNowPlayingItem } = globalState.player
@@ -217,8 +223,7 @@ export const playerLoadNowPlayingItem = async (
       item,
       shouldPlay,
       !!forceUpdateOrderDate,
-      itemToSetNextInQueue,
-      navigation
+      itemToSetNextInQueue
     )
 
     showMiniPlayer()
@@ -294,18 +299,6 @@ export const playerSetPlaybackSpeed = async (rate: number) => {
   })
 
   PVEventEmitter.emit(PV.Events.PLAYER_SPEED_UPDATED)
-}
-
-export const playerTogglePlayOrNavToPlayer = async (item?: NowPlayingItem, navigation?: any) => {
-  await playerTogglePlayService()
-  const playerType = await playerCheckActiveType()
-  if (playerType === PV.Player.playerTypes.isAudio) {
-    audioTogglePlay()
-  } else if (playerType === PV.Player.playerTypes.isVideo && item) {
-    navigation.navigate(PV.RouteNames.PlayerScreen)
-  }
-
-  showMiniPlayer()
 }
 
 export const playerTogglePlay = async () => {

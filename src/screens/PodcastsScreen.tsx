@@ -120,6 +120,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
     PVEventEmitter.on(PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, this._handleNavigateToAddPodcastByRSSAuthScreen)
+    PVEventEmitter.on(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED, this._handleTrackingTermsAcknowledged)
 
@@ -165,6 +166,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     PVEventEmitter.removeListener(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
     PVEventEmitter.removeListener(
       PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, this._handleNavigateToAddPodcastByRSSAuthScreen)
+    PVEventEmitter.removeListener(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
   }
 
   _handleTrackingTermsAcknowledged = async () => {
@@ -234,6 +236,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _handleNavigateToAddPodcastByRSSAuthScreen = (params: any) => {
     const { feedUrl } = params
     this.props.navigation.navigate(PV.RouteNames.AddPodcastByRSSAuthScreen, { feedUrl })
+  }
+
+  _handleNavigateToMembershipScreen = () => {
+    this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
   }
 
   // On some Android devices, the .goBack method appears to not work reliably

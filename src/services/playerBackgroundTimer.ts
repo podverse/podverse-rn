@@ -36,9 +36,8 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   await clearChapterPlaybackInfo(currentNowPlayingItem)
 
   await setNowPlayingItemLocally(currentNowPlayingItem, currentNowPlayingItem.userPlaybackPosition || 0)
-
   if (currentNowPlayingItem && currentNowPlayingItem.clipId && !currentNowPlayingItem.clipIsOfficialChapter) {
-    PVEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
+    PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)
   }
 
   if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
@@ -176,7 +175,7 @@ const stopCheckClipIfEndTimeReached = () => {
 
 const debouncedHandlePlayerClipLoaded = debounce(startCheckClipEndTime, 1000)
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
-PVEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, debouncedHandlePlayerClipLoaded)
+PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLoaded)
 
 /*
   HANDLE VALUE STREAMING TOGGLE
