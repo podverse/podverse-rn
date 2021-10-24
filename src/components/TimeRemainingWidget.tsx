@@ -6,7 +6,8 @@ import { checkIfNowPlayingItem, requestAppStoreReviewForEpisodePlayed } from '..
 import { PV } from '../resources'
 import { playerHandlePlayWithUpdate, playerCheckIfStateIsPlaying,
   playerHandleSeekTo, playerGetState} from '../services/player'
-import { playerLoadNowPlayingItem, playerTogglePlay } from '../state/actions/player'
+  import { setNowPlayingItem } from '../services/userNowPlayingItem'
+import { playerLoadNowPlayingItem, playerTogglePlay, playerUpdatePlayerState } from '../state/actions/player'
 import { Icon, MoreButton, Text, View } from './'
 
 type Props = {
@@ -17,9 +18,8 @@ type Props = {
   isChapter?: boolean
   item: any
   itemType: 'episode' | 'clip' | 'chapter'
-  loadTimeStampOnPlay?: boolean
+  loadChapterOnPlay?: boolean
   mediaFileDuration?: number | undefined
-  navigation: any
   style?: any
   testID: string
   timeLabel?: string
@@ -72,7 +72,7 @@ const MiniProgressBar = (props: BarProps) => {
 
 export const TimeRemainingWidget = (props: Props) => {
   const { episodeCompleted, episodeDownloading, handleMorePress, item, itemType,
-    loadTimeStampOnPlay, mediaFileDuration, navigation, style, testID, timeLabel, transparent,
+    loadChapterOnPlay, mediaFileDuration, style, testID, timeLabel, transparent,
     userPlaybackPosition } = props
   const { episode = {}, podcast = {} } = item
   const convertedItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
@@ -92,26 +92,44 @@ export const TimeRemainingWidget = (props: Props) => {
     }
   }
 
+  const handleClipFromSameEpisodeLoaded = () => {    
+    playerUpdatePlayerState(convertedItem, async () => {
+      if (convertedItem.clipStartTime || convertedItem.clipStartTime === 0) {
+        await playerHandleSeekTo(convertedItem.clipStartTime)
+        const playbackState = await playerGetState()
+        const isPlaying = playerCheckIfStateIsPlaying(playbackState)
+        if (!isPlaying) {
+          playerHandlePlayWithUpdate()
+        }
+        setNowPlayingItem(convertedItem, convertedItem.clipStartTime)
+      }
+    })
+
+  }
+
   const playItem = async () => {
     const isNowPlayingItem = checkIfNowPlayingItem(item, nowPlayingItem)
 
-    if (loadTimeStampOnPlay) {
+    if (loadChapterOnPlay) {
       await handleChapterLoad()
+    } else if (
+      !isNowPlayingItem
+      && convertedItem.clipId
+      && convertedItem.episodeId === nowPlayingItem.episodeId
+    ) {
+      handleClipFromSameEpisodeLoaded()
+    } else if (isNowPlayingItem) {
+      playerTogglePlay()
     } else {
-      if (isNowPlayingItem) {
-        playerTogglePlay()
-      } else {
-        const forceUpdateOrderDate = false
-        const shouldPlay = true
-        const setCurrentItemNextInQueue = true
-        playerLoadNowPlayingItem(
-          convertedItem,
-          shouldPlay,
-          forceUpdateOrderDate,
-          setCurrentItemNextInQueue,
-          navigation
-        )
-      }
+      const forceUpdateOrderDate = false
+      const shouldPlay = true
+      const setCurrentItemNextInQueue = true
+      playerLoadNowPlayingItem(
+        convertedItem,
+        shouldPlay,
+        forceUpdateOrderDate,
+        setCurrentItemNextInQueue
+      )
     }
     requestAppStoreReviewForEpisodePlayed()
   }
