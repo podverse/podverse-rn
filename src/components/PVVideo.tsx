@@ -23,9 +23,6 @@ type State = {
   isFullscreen: boolean
   uri?: string
 }
-
-// Use isInitialLoad to prevent _setupNowPlayingItemPlayer from loading twice on first render.
-let isInitialLoad = true
 export class PVVideo extends React.PureComponent<Props, State> {
   videoRef: any | null = null
 

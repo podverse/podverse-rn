@@ -18,10 +18,8 @@ import {
   playerSetPlaybackSpeed as playerSetPlaybackSpeedService,
   playerTogglePlay as playerTogglePlayService,
   playerGetState,
-  playerGetDuration,
-  playerCheckActiveType
+  playerGetDuration
 } from '../../services/player'
-import { audioTogglePlay } from '../../services/playerAudio'
 import { getPodcastFromPodcastIndexById } from '../../services/podcastIndex'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 import { trackPlayerScreenPageView } from '../../services/tracking'
