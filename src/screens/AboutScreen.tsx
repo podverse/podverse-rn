@@ -60,10 +60,11 @@ export class AboutScreen extends React.Component<Props> {
             fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
             {translate('Contributors')}
           </Text>
-          {contributorsList.map((contributor: Contributor) => {
+          {contributorsList.map((contributor: Contributor, index: number) => {
             return (
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                key={`contributors_${index}`}
                 style={styles.text}
                 onPress={() => this.handleFollowLink(contributor.link)}
               >
