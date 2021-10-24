@@ -51,13 +51,20 @@ export class PVVideo extends React.PureComponent<Props, State> {
     PVEventEmitter.on(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED, this._handlePlaybackStateChange)
     PVEventEmitter.on(PV.Events.PLAYER_VIDEO_SEEK_TO, this._handleSeekTo)
     PVEventEmitter.on(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS, this._handleDestroyPlayer)
-    PVEventEmitter.on(PV.Events.PLAYER_VIDEO_NEW_ITEM_LOADED, this._handleNewItemShouldLoad)
+    PVEventEmitter.on(PV.Events.PLAYER_VIDEO_NEW_ITEM_LOADED, () => {
+      const shouldSetClip = true
+      this._handleNewItemShouldLoad(shouldSetClip)
+    })
     
     if (isMiniPlayer) {
-      this._handleNewItemShouldLoad()
+      const shouldSetClip = true
+      this._handleNewItemShouldLoad(shouldSetClip)
     }
 
-    this.willFocusListener = navigation.addListener('willFocus', this._handleNewItemShouldLoad)
+    this.willFocusListener = navigation.addListener('willFocus', () => {
+      const shouldSetClip = false
+      this._handleNewItemShouldLoad(shouldSetClip)
+    })
   }
 
   componentWillUnmount() {
@@ -71,7 +78,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
     this.setState({ destroyPlayer: true })
   }
 
-  _handleNewItemShouldLoad = () => {
+  _handleNewItemShouldLoad = (setClipTime: boolean) => {
     this.setState({ destroyPlayer: false }, () => {
       (async () => {
         try {
@@ -86,8 +93,8 @@ export class PVVideo extends React.PureComponent<Props, State> {
           if (isDownloadedFile && filePath) {
             uri = filePath
           }
-    
-          await this._setupNowPlayingItemPlayer()
+          
+          await this._setupNowPlayingItemPlayer(setClipTime)
     
           this.setState({
             Authorization,
@@ -120,7 +127,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
     const { nowPlayingItem, videoInfo } = player
     const { videoPosition: lastVideoPosition } = videoInfo
 
-    if (nowPlayingItem.clipId && setClipTime && lastVideoPosition < nowPlayingItem.clipEndTime) {
+    if (nowPlayingItem.clipId && setClipTime) {
       syncNowPlayingItemWithTrack()
     } else if (lastVideoPosition) {
       this._handleSeekTo(lastVideoPosition)

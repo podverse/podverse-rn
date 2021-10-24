@@ -21,13 +21,14 @@ export const videoInitializePlayer = async (item: NowPlayingItem) => {
         userPlaybackPosition that was last saved from other devices. */
     if (!item.clipId && item.episodeId) {
       await updateHistoryItemsIndex()
-      item = await getNowPlayingItemFromLocalStorage(item.episodeId)
+      const itemFromStorage = await getNowPlayingItemFromLocalStorage(item.episodeId)
+      if (itemFromStorage) {
+        item = itemFromStorage
+      }
     }
 
     const shouldPlay = false
     const forceUpdateOrderDate = false
-    /* No navigation object needed for videoLoadNowPlayingItem
-       since we shouldn't navigate to the PlayerScreen in videoInitializePlayer. */
     await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
     showMiniPlayer()
   }
@@ -223,15 +224,21 @@ export const videoLoadNowPlayingItem = async (
   shouldPlay: boolean,
   forceUpdateOrderDate: boolean// only pass in if you want to go immediately to PlayerScreen
 ) => {
+  const globalState = getGlobal()
+  const { clipId: previousClipId, episodeId: previousEpisodeId } = globalState?.player?.nowPlayingItem || {}
   await AsyncStorage.setItem(PV.Events.PLAYER_VIDEO_IS_LOADING, 'TRUE')
   PVAudioPlayer.reset()
 
   const historyItemsIndex = await getHistoryItemsIndexLocally()
-
   const { clipId, episodeId } = item
-  if (!clipId && episodeId) {
+
+  if (
+    episodeId && (
+      episodeId !== previousEpisodeId
+      || (clipId && previousClipId !== clipId)
+    )
+  ) {
     item.episodeDuration = historyItemsIndex?.episodes[episodeId]?.mediaFileDuration || 0
-    
     /* Use callback to wait until video is finished loading in global state    
        before calling the PLAYER_VIDEO_NEW_ITEM event. */
     const callback = () => PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_NEW_ITEM_LOADED)

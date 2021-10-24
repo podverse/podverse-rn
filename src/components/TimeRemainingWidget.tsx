@@ -4,6 +4,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
 import { checkIfNowPlayingItem, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import { playerHandlePlayWithUpdate, playerCheckIfStateIsPlaying,
   playerHandleSeekTo, playerGetState} from '../services/player'
   import { setNowPlayingItem } from '../services/userNowPlayingItem'
@@ -92,7 +93,7 @@ export const TimeRemainingWidget = (props: Props) => {
     }
   }
 
-  const handleClipFromSameEpisodeLoaded = () => {    
+  const handleClipFromSameEpisodeLoaded = () => {
     playerUpdatePlayerState(convertedItem, async () => {
       if (convertedItem.clipStartTime || convertedItem.clipStartTime === 0) {
         await playerHandleSeekTo(convertedItem.clipStartTime)
@@ -102,6 +103,7 @@ export const TimeRemainingWidget = (props: Props) => {
           playerHandlePlayWithUpdate()
         }
         setNowPlayingItem(convertedItem, convertedItem.clipStartTime)
+        PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)
       }
     })
 
@@ -109,7 +111,6 @@ export const TimeRemainingWidget = (props: Props) => {
 
   const playItem = async () => {
     const isNowPlayingItem = checkIfNowPlayingItem(item, nowPlayingItem)
-
     if (loadChapterOnPlay) {
       await handleChapterLoad()
     } else if (
