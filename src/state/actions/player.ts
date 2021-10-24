@@ -58,7 +58,7 @@ const clearEnrichedPodcastDataIfNewEpisode =
   }
 }
 
-export const playerUpdatePlayerState = (item: NowPlayingItem, isNewVideo?: boolean) => {
+export const playerUpdatePlayerState = (item: NowPlayingItem, callback?: any) => {
   if (!item) return
 
   const globalState = getGlobal()
@@ -93,9 +93,7 @@ export const playerUpdatePlayerState = (item: NowPlayingItem, isNewVideo?: boole
     }
   }
 
-  setGlobal(newState, () => {
-    PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_NEW_ITEM_LOADED)
-  })
+  setGlobal(newState, callback)
 }
 
 export const playerClearNowPlayingItem = async () => {
@@ -198,8 +196,7 @@ export const playerLoadNowPlayingItem = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
   forceUpdateOrderDate: boolean,
-  setCurrentItemNextInQueue: boolean,
-  navigation?: any // only pass in if you want to go immediately to PlayerScreen for video
+  setCurrentItemNextInQueue: boolean
 ) => {
   const globalState = getGlobal()
   const { nowPlayingItem: previousNowPlayingItem } = globalState.player

@@ -6,8 +6,7 @@ import { checkIfVideoFileType, videoCheckIfStateIsBuffering, videoCheckIfStateIs
   videoGetCurrentLoadedTrackId,
   videoGetRate, videoGetState, videoGetTrackDuration, videoGetTrackPosition, videoHandlePause,
   videoHandlePauseWithUpdate, videoHandlePlayWithUpdate, videoHandleSeekTo, videoIsLoaded, videoLoadNowPlayingItem,
-  videoPlay, videoSetRate, videoTogglePlay
-} from '../state/actions/playerVideo'
+  videoSetRate, videoTogglePlay } from '../state/actions/playerVideo'
 import PVEventEmitter from './eventEmitter'
 import { audioIsLoaded,  audioCheckIfIsPlaying, audioSetRate, audioHandlePlayWithUpdate,
   audioHandleSeekTo, audioHandlePause, audioAddNowPlayingItemNextInQueue,
@@ -238,6 +237,7 @@ export const playerSetPositionWhenDurationIsAvailable = async (
           && position >= 0
         ) {
           clearInterval(interval)
+          
           await playerHandleSeekTo(position)
           // Sometimes seekTo does not work right away for all episodes...
           // to work around this bug, we set another interval to confirm the track

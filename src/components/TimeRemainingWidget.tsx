@@ -7,7 +7,6 @@ import { PV } from '../resources'
 import { playerHandlePlayWithUpdate, playerCheckIfStateIsPlaying,
   playerHandleSeekTo, playerGetState} from '../services/player'
 import { playerLoadNowPlayingItem, playerTogglePlay } from '../state/actions/player'
-import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { Icon, MoreButton, Text, View } from './'
 
 type Props = {

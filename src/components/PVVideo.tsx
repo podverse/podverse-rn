@@ -119,11 +119,11 @@ export class PVVideo extends React.PureComponent<Props, State> {
     const { player } = getGlobal()
     const { nowPlayingItem, videoInfo } = player
     const { videoPosition: lastVideoPosition } = videoInfo
-    const setReadyToPlay = true
+
     if (nowPlayingItem.clipId && setClipTime && lastVideoPosition < nowPlayingItem.clipEndTime) {
       syncNowPlayingItemWithTrack()
     } else if (lastVideoPosition) {
-      this._handleSeekTo(lastVideoPosition, setReadyToPlay)
+      this._handleSeekTo(lastVideoPosition)
     } else {
       const nowPlayingItemFromHistory = await getNowPlayingItemFromLocalStorage(
         nowPlayingItem.clipId || nowPlayingItem.episodeId
@@ -132,8 +132,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
       this._handleSeekTo(
         nowPlayingItemFromHistory
           ? nowPlayingItemFromHistory.userPlaybackPosition
-          : nowPlayingItem.userPlaybackPosition,
-        setReadyToPlay
+          : nowPlayingItem.userPlaybackPosition
       )
     }
   }

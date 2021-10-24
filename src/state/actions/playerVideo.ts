@@ -232,9 +232,10 @@ export const videoLoadNowPlayingItem = async (
   if (!clipId && episodeId) {
     item.episodeDuration = historyItemsIndex?.episodes[episodeId]?.mediaFileDuration || 0
     
-    // Update player state with the new episodeDuration
-    const isNewVideo = true
-    playerUpdatePlayerState(item, isNewVideo)
+    /* Use callback to wait until video is finished loading in global state    
+       before calling the PLAYER_VIDEO_NEW_ITEM event. */
+    const callback = () => PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_NEW_ITEM_LOADED)
+    playerUpdatePlayerState(item, callback)
   }
 
   addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
