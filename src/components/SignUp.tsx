@@ -149,7 +149,7 @@ export class SignUp extends React.Component<Props, State> {
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator>
         <TextInput
-          accessibilityHint={translate('ARIA HINT - Type your premium account email address')}
+          accessibilityHint={translate('ARIA HINT - Type your premium membership email address')}
           autoCapitalize='none'
           autoCompleteType='email'
           keyboardType='email-address'

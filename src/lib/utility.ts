@@ -588,7 +588,7 @@ export const requestAppStoreReview = () => {
 }
 
 export const requestAppStoreReviewForEpisodePlayed = async () => {
-  const EPISODES_PLAYED_LIMIT = 10
+  const EPISODES_PLAYED_LIMIT = 20
   const numberOfPlayedEpisodesString: string | null = await AsyncStorage.getItem(PV.Keys.NUMBER_OF_EPISODES_PLAYED)
   let numberOfPlayedEpisodes = numberOfPlayedEpisodesString ? Number(numberOfPlayedEpisodesString) : 0
   if (numberOfPlayedEpisodes < EPISODES_PLAYED_LIMIT) {

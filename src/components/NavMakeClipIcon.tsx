@@ -5,6 +5,7 @@ import { darkTheme } from '../../src/styles'
 import { translate } from '../lib/i18n'
 import { getMakeClipIsPublic, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import { NavItemIcon, NavItemWrapper } from './'
 
 type Props = {
@@ -23,6 +24,8 @@ export const NavMakeClipIcon = (props: Props) => {
     const isPublic = await getMakeClipIsPublic()
     const { globalTheme, session } = getGlobal()
     const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
+
+    PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS)
 
     navigation.navigate(PV.RouteNames.MakeClipScreen, {
       initialProgressValue,

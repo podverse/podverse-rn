@@ -31,7 +31,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
   }
 
   render() {
-    const { handlePressClipInfo, width } = this.props
+    const { handlePressClipInfo, navigation, width } = this.props
     const { currentChapter, player, screenPlayer, screenReaderEnabled } = this.global
     const { isLoading } = screenPlayer
     
@@ -137,7 +137,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
         <RNView style={imageWrapperStyle}>
           {
             checkIfVideoFileType(nowPlayingItem) && (
-              <PVVideo />
+              <PVVideo navigation={navigation} />
             )
           }
           {

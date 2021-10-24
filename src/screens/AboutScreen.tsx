@@ -6,6 +6,12 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { button } from '../styles'
+const contributorsList = require('../resources/Contributors.json');
+
+type Contributor = {
+  name: string;
+  link: string;
+};
 
 type Props = any
 
@@ -48,6 +54,23 @@ export class AboutScreen extends React.Component<Props> {
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {'Mitch Downey\n\nCreon Creonopoulos\n\nGary Johnson\n\nKyle Downey'}
           </Text>
+          <Divider style={styles.divider} />
+          <Text
+            accessibilityRole='header'
+            fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
+            {translate('Contributors')}
+          </Text>
+          {contributorsList.map((contributor: Contributor) => {
+            return (
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={styles.text}
+                onPress={() => this.handleFollowLink(contributor.link)}
+              >
+                {contributor.name}
+              </Text>
+            );
+          })}
           <Divider style={styles.divider} />
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
