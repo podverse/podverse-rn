@@ -7,6 +7,7 @@ import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { button } from '../styles'
 const contributorsList = require('../resources/Contributors.json');
+const maintainersList = require('../resources/Maintainers.json');
 
 type Contributor = {
   name: string;
@@ -49,11 +50,21 @@ export class AboutScreen extends React.Component<Props> {
           <Text
             accessibilityRole='header'
             fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
-            {translate('Team')}
+            {translate('Maintainers')}
           </Text>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-            {'Mitch Downey\n\nCreon Creonopoulos\n\nGary Johnson\n\nKyle Downey'}
-          </Text>
+          {maintainersList.map((contributor: Contributor, index: number) => {
+            const style = contributor.link ? [styles.text, styles.link] : styles.text
+            return (
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                key={`maintainers_${index}`}
+                onPress={() => this.handleFollowLink(contributor.link)}
+                style={style}
+              >
+                {contributor.name}
+              </Text>
+            );
+          })}
           <Divider style={styles.divider} />
           <Text
             accessibilityRole='header'
@@ -61,11 +72,12 @@ export class AboutScreen extends React.Component<Props> {
             {translate('Contributors')}
           </Text>
           {contributorsList.map((contributor: Contributor, index: number) => {
+            const style = contributor.link ? [styles.text, styles.link] : styles.text
             return (
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 key={`contributors_${index}`}
-                style={styles.text}
+                style={style}
                 onPress={() => this.handleFollowLink(contributor.link)}
               >
                 {contributor.name}
@@ -144,6 +156,7 @@ const styles = StyleSheet.create({
   },
   footerImage: {
     height: 38,
+    marginBottom: 24,
     resizeMode: 'contain',
   },
   content: {
