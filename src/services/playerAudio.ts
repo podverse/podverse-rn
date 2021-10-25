@@ -100,8 +100,10 @@ export const audioUpdateTrackPlayerCapabilities = () => {
       Capability.Play,
       Capability.SeekTo
     ],
-    // alwaysPauseOnInterruption caused serious problems with the player unpausing
-    // every time the user receives a notification.
+    /*
+      See alwaysPauseOnInterruption comment in the playerAudioEvents file
+      for an explanation why we are enabling it on iOS only.
+    */
     alwaysPauseOnInterruption: Platform.OS === 'ios',
     stopWithApp: true,
     backwardJumpInterval: parseInt(jumpBackwardsTime, 10),

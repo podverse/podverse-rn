@@ -141,7 +141,6 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   }
 
   _handleNavigationPress = (selectedItem: any) => {
-    const { navigation } = this.props
     const shouldPlay = true
     const forceUpdateOrderDate = false
     const setCurrentItemNextInQueue = false
@@ -149,8 +148,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
       selectedItem,
       shouldPlay,
       forceUpdateOrderDate,
-      setCurrentItemNextInQueue,
-      navigation
+      setCurrentItemNextInQueue
     )
   }
 

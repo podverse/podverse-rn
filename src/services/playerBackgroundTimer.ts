@@ -121,7 +121,8 @@ export const syncNowPlayingItemWithTrack = () => {
 */
 
 const startCheckClipEndTime = async () => {
-  const nowPlayingItem = await getNowPlayingItemLocally()
+  const globalState = getGlobal()
+  const { nowPlayingItem } = globalState.player
 
   if (nowPlayingItem) {
     const { clipEndTime, clipId } = nowPlayingItem
@@ -137,7 +138,7 @@ export const stopBackgroundTimerIfShouldBeStopped = async (
   streamingValueShouldStop: boolean
 ) => {
   const globalState = getGlobal()
-  const nowPlayingItem = await getNowPlayingItemLocally()
+  const { nowPlayingItem } = globalState.player
 
   if (!checkClipEndTimeShouldStop && nowPlayingItem?.clipEndTime) {
     const clipHasEnded = await getClipHasEnded()
@@ -158,7 +159,8 @@ export const stopBackgroundTimerIfShouldBeStopped = async (
 
 const stopCheckClipIfEndTimeReached = () => {
   (async () => {
-    const nowPlayingItem = await getNowPlayingItemLocally()
+    const globalState = getGlobal()
+    const { nowPlayingItem } = globalState.player
     if (nowPlayingItem) {
       const { clipEndTime } = nowPlayingItem
       const currentPosition = await playerGetPosition()
