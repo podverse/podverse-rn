@@ -10,7 +10,6 @@ const test_loggedInScreensDidLoadTests = async () => {
   const driver = getDriver()
 
     // Log In Premium
-  //TODO
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
   await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_sign_up_button')
   await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')

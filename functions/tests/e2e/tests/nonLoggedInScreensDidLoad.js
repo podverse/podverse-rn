@@ -38,9 +38,10 @@ const test_nonLoggedInScreensDidLoadTests = async () => {
   await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_safe_area_view')
   await elementByIdClick('auth_screen_reset_password_button')
   await driver.back()
-  await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_safe_area_view')
-  await elementByIdClick('auth_screen_sign_up_button')
-  await driver.back()
+  // TODO TEST:
+  // await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_safe_area_view')
+  // await elementByIdClick('auth_screen_sign_up_button')
+  // await driver.back()
   await elementByIdAndClickAndTest('more_screen_Membership_table_cell_wrapper', 'membership_screen_view', noTestLabel, goBackKey)
   await elementByIdAndClickAndTest('more_screen_About_table_cell_wrapper', 'about_screen_view', noTestLabel, goBackKey)
   await performScroll(scrollDownKey, 2)
