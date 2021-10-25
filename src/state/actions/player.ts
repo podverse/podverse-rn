@@ -215,7 +215,9 @@ export const playerLoadNowPlayingItem = async (
       }
     }
 
-    playerUpdatePlayerState(item)
+    if (!checkIfVideoFileType(item)) {
+      playerUpdatePlayerState(item)
+    }
 
     const itemToSetNextInQueue = setCurrentItemNextInQueue ? previousNowPlayingItem : null
 
@@ -223,7 +225,8 @@ export const playerLoadNowPlayingItem = async (
       item,
       shouldPlay,
       !!forceUpdateOrderDate,
-      itemToSetNextInQueue
+      itemToSetNextInQueue,
+      previousNowPlayingItem
     )
 
     showMiniPlayer()

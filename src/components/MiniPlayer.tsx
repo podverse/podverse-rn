@@ -71,20 +71,57 @@ export class MiniPlayer extends React.PureComponent<Props> {
       </Text>
     )
 
+    // const { clipEndTime, clipStartTime, clipTitle } = nowPlayingItem
+    // const useTo = false
+    // const finalClipTitle = `${clipTitle} ${readableClipTime(clipStartTime, clipEndTime, useTo)}`
+    // const clipTitleComponent = (
+    //   <Text
+    //     accessible={false}
+    //     importantForAccessibility='no'
+    //     isSecondary
+    //     numberOfLines={1}
+    //     style={[styles.clipTitle, globalTheme.playerText]}
+    //     testID={`${testIDPrefix}_clip_title`}>
+    //     {finalClipTitle}
+    //   </Text>
+    // )
+
+    // const clipTitleWrapperStyle = [styles.clipTitleWrapper, globalTheme.player]
+
     return (
       <View>
+        {/* {
+          screenReaderEnabled ? (
+            <View style={clipTitleWrapperStyle}>
+              <TextTicker
+                accessible={false}
+                allowFontScaling={false}
+                bounce
+                importantForAccessibility='no-hide-descendants'
+                loop
+                styles={styles.clipTitle}
+                textLength={nowPlayingItem?.clipTitle?.length}>
+                {clipTitleComponent}
+              </TextTicker>
+            </View>
+          ) : (
+            <View style={clipTitleWrapperStyle}>
+              {clipTitleComponent}
+            </View>
+          )
+        } */}
         {nowPlayingItem && (
           <View style={[styles.playerInnerWrapper, globalTheme.player]}>
             <TouchableWithoutFeedback
               accessibilityLabel={nowPlayingAccessibilityLabel}
               accessibilityHint={translate('ARIA HINT - open the full player screen')}
               onPress={() => {
+                PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS)
                 navigation.navigate(PV.RouteNames.PlayerScreen, {
                   nowPlayingItem,
                   addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl,
                   isDarkMode
                 })
-                PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS)
               }}
               testID={testIDPrefix.prependTestId()}>
               <View style={[styles.player, globalTheme.player]}>
@@ -150,6 +187,16 @@ export class MiniPlayer extends React.PureComponent<Props> {
 }
 
 const styles = StyleSheet.create({
+  clipTitle: {
+    fontSize: PV.Fonts.sizes.xl,
+    // fontWeight: PV.Fonts.weights.semibold,
+  },
+  clipTitleWrapper: {
+    borderTopWidth: 1,
+    flex: 0,
+    paddingHorizontal: 8,
+    paddingVertical: 6
+  },
   episodeTitle: {
     alignItems: 'center',
     flex: 0,

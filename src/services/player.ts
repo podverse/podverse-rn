@@ -191,7 +191,8 @@ export const playerLoadNowPlayingItem = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
   forceUpdateOrderDate: boolean,
-  itemToSetNextInQueue: NowPlayingItem | null
+  itemToSetNextInQueue: NowPlayingItem | null,
+  previousNowPlayingItem: NowPlayingItem | null
 ) => {
   try {
     if (!checkIfVideoFileType(item)) {
@@ -202,7 +203,12 @@ export const playerLoadNowPlayingItem = async (
     await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
 
     if (checkIfVideoFileType(item)) {
-      await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
+      await videoLoadNowPlayingItem(
+        item,
+        shouldPlay,
+        forceUpdateOrderDate,
+        previousNowPlayingItem
+      )
     } else {
       await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
     }

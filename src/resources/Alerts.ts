@@ -33,8 +33,7 @@ export const Alerts = {
               item,
               shouldPlay,
               forceUpdateOrderDate,
-              setCurrentItemNextInQueue,
-              navigation
+              setCurrentItemNextInQueue
             )
           }
         }

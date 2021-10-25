@@ -218,7 +218,6 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   _handlePlayItem = async (item: NowPlayingItem) => {
-    const { navigation } = this.props
     try {
       const shouldPlay = true
       const forceUpdateOrderDate = false
@@ -227,8 +226,7 @@ export class QueueScreen extends React.Component<Props, State> {
         item,
         shouldPlay,
         forceUpdateOrderDate,
-        setCurrentItemNextInQueue,
-        navigation
+        setCurrentItemNextInQueue
       )
       await getQueueItems()
       this.setState({ isLoading: false })

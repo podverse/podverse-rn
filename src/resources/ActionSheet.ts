@@ -59,8 +59,7 @@ const mediaMoreButtons = (
             item,
             shouldPlay,
             forceUpdateOrderDate,
-            setCurrentItemNextInQueue,
-            navigation
+            setCurrentItemNextInQueue
           )
           await navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
           setTimeout(() => {
@@ -103,8 +102,7 @@ const mediaMoreButtons = (
           item,
           shouldPlay,
           forceUpdateOrderDate,
-          setCurrentItemNextInQueue,
-          navigation
+          setCurrentItemNextInQueue
         )
       }
     })
@@ -130,8 +128,7 @@ const mediaMoreButtons = (
           item,
           shouldPlay,
           forceUpdateOrderDate,
-          setCurrentItemNextInQueue,
-          navigation
+          setCurrentItemNextInQueue
         )
       }
     })

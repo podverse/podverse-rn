@@ -114,7 +114,8 @@ export const TimeRemainingWidget = (props: Props) => {
     if (loadChapterOnPlay) {
       await handleChapterLoad()
     } else if (
-      !isNowPlayingItem
+      nowPlayingItem
+      && !isNowPlayingItem
       && convertedItem.clipId
       && convertedItem.episodeId === nowPlayingItem.episodeId
     ) {

@@ -409,7 +409,6 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _handleNavigationPress = async (selectedItem: any) => {
-    const { navigation } = this.props
     const shouldPlay = true
     const forceUpdateOrderDate = false
     const setCurrentItemNextInQueue = true
@@ -417,8 +416,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       selectedItem,
       shouldPlay,
       forceUpdateOrderDate,
-      setCurrentItemNextInQueue,
-      navigation
+      setCurrentItemNextInQueue
     )
   }
 
