@@ -540,7 +540,7 @@
 	"TermsOfServiceScreenMatomoTrackingTextFDroid": "Podverse for F-Droid ***does not*** contain tracking software, but tracking software is present on the Podverse website and optionally in the iOS and Android versions.",
 	"TermsOfServiceScreenText1": "Podverse will never sell or share private user data.",
 	"TermsOfServiceScreenText2": "Podverse will never put advertisements next to or within a podcast's content without that podcast's permission.",
-	"TermsOfServiceScreenText3": "All audio files found on podverse.fm load from the podcaster's own public server. We do not host podcast audio files ourselves.",
+	"TermsOfServiceScreenText3": "All audio and video files found on podverse.fm load from the podcaster's own public server. We do not host podcast audio or video files ourselves.",
 	"TermsOfServiceScreenText4": "All clips hosted on podverse.fm are crowd-sourced and unofficial, unless otherwise noted by the podcaster.",
 	"TermsOfServiceScreenText5": "Clips load within the full episode's media file, so the user always has access to the full recording.",
 	"TermsOfServiceScreenText6": "Podverse hosts Podcast Funding Links and content from third-party podcast feeds and sites. These have their own independent privacy policies, and we have no responsibility for their content or activities.",

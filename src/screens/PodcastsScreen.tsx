@@ -4,6 +4,7 @@ import { Alert, AppState, Linking, Platform, StyleSheet, View as RNView } from '
 import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
+import { convertToNowPlayingItem } from 'podverse-shared'
 import {
   ActivityIndicator,
   Divider,
@@ -26,12 +27,13 @@ import { handleAutoDownloadEpisodes } from '../services/autoDownloads'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
+import { getMediaRef } from '../services/mediaRef'
+import { getNowPlayingItem } from '../services/userNowPlayingItem'
 import { parseAllAddByRSSPodcasts } from '../services/parser'
 import { playerUpdateUserPlaybackPosition } from '../services/player'
 import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudio'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
-import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
 import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
 import { updateWalletInfo } from '../state/actions/lnpay'
@@ -39,6 +41,7 @@ import {
   initializePlaybackSpeed,
   initializePlayer,
   initPlayerState,
+  playerLoadNowPlayingItem,
   playerUpdatePlaybackState,
   playerUpdatePlayerState,
   showMiniPlayer
@@ -49,7 +52,7 @@ import { updateScreenReaderEnabledState } from '../state/actions/screenReader'
 import { initializeSettings } from '../state/actions/settings'
 import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
 import { initializeValueProcessor } from '../state/actions/valueTag'
-import { core, darkTheme } from '../styles'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
@@ -245,6 +248,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   // On some Android devices, the .goBack method appears to not work reliably
   // unless there is some delay between screen changes. Wrapping each .goBack method
   // in a delay to make this happen.
+  // Go back to the root screen to make sure componentDidMount is called.
   _goBackWithDelay = async () => {
     const { navigation } = this.props
     return new Promise((resolve) => {
@@ -270,10 +274,34 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleDeepLinkClip = async (mediaRefId: string) => {
+    if (mediaRefId) {
+      try {
+        const currentItem = await getNowPlayingItem()
+        if (!currentItem || (mediaRefId && mediaRefId !== currentItem.mediaRefId)) {
+          const mediaRef = await getMediaRef(mediaRefId)
+          if (mediaRef) {
+            const newItem = convertToNowPlayingItem(mediaRef, null, null)
+            const shouldPlay = true
+            const forceUpdateOrderDate = false
+            const setCurrentItemNextInQueue = true
+            await playerLoadNowPlayingItem(
+              newItem,
+              shouldPlay,
+              forceUpdateOrderDate,
+              setCurrentItemNextInQueue
+            )
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
   _handleOpenURL = async (url: string) => {
     const { navigation } = this.props
     const { navigate } = navigation
-    const isDarkMode = this.global.globalTheme === darkTheme
 
     try {
       if (url) {
@@ -282,16 +310,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const path = splitPath[0] ? splitPath[0] : ''
         const id = splitPath[1] ? splitPath[1] : ''
 
-        // Go back to the root screen in order to make sure
-        // componentDidMount is called on all screens
-        // so initialize methods are run.
         await this._goBackWithDelay()
 
         if (path === PV.DeepLinks.Clip.pathPrefix) {
-          await navigate(PV.RouteNames.PlayerScreen, {
-            mediaRefId: id,
-            isDarkMode
-          })
+          await this._handleDeepLinkClip(id)
         } else if (path === PV.DeepLinks.Episode.pathPrefix) {
           const episode = await getEpisode(id)
           if (episode) {
