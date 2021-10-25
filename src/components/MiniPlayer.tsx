@@ -1,7 +1,6 @@
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { playerCheckIfStateIsBuffering, playerCheckIfStateIsPlaying } from '../services/player'
@@ -117,12 +116,12 @@ export class MiniPlayer extends React.PureComponent<Props> {
               accessibilityLabel={nowPlayingAccessibilityLabel}
               accessibilityHint={translate('ARIA HINT - open the full player screen')}
               onPress={() => {
+                PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS)
                 navigation.navigate(PV.RouteNames.PlayerScreen, {
                   nowPlayingItem,
                   addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl,
                   isDarkMode
                 })
-                PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS)
               }}
               testID={testIDPrefix.prependTestId()}>
               <View style={[styles.player, globalTheme.player]}>

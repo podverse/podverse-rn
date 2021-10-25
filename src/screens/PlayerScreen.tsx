@@ -1,4 +1,4 @@
-import { convertNowPlayingItemToMediaRef, convertToNowPlayingItem } from 'podverse-shared'
+import { convertNowPlayingItemToMediaRef } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import { Config } from 'react-native-config'
 import Share from 'react-native-share'
@@ -27,11 +27,8 @@ import {
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
-import { getMediaRef } from '../services/mediaRef'
 import { playerGetPosition, playerUpdateUserPlaybackPosition } from '../services/player'
 import { trackPageView } from '../services/tracking'
-import { getNowPlayingItem } from '../services/userNowPlayingItem'
-import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { loadChaptersForEpisode } from '../state/actions/playerChapters'
 import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { getHistoryItems } from '../state/actions/userHistoryItem'
@@ -120,11 +117,6 @@ export class PlayerScreen extends React.Component<Props> {
 
   async componentDidMount() {
     PVEventEmitter.on(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED, this._handleRefreshNavigationHeader)
-
-    const { navigation } = this.props
-    const mediaRefId = navigation.getParam('mediaRefId')
-
-    if (mediaRefId) this._initializeScreenData()
     
     this.props.navigation.setParams({
       _getEpisodeId: this._getEpisodeId,
@@ -193,54 +185,6 @@ export class PlayerScreen extends React.Component<Props> {
     }
 
     loadChaptersForEpisode(episode)
-  }
-
-  _initializeScreenData = () => {
-    setGlobal(
-      {
-        screenPlayer: {
-          ...this.global.screenPlayer,
-          endOfResultsReached: false,
-          flatListData: [],
-          flatListDataTotalCount: null,
-          isLoading: true,
-          queryPage: 1
-        }
-      },
-      async () => {
-        const { navigation } = this.props
-        const mediaRefId = navigation.getParam('mediaRefId')
-
-        try {
-          const currentItem = await getNowPlayingItem()
-
-          if (!currentItem || (mediaRefId && mediaRefId !== currentItem.mediaRefId)) {
-            const mediaRef = await getMediaRef(mediaRefId)
-            if (mediaRef) {
-              const newItem = convertToNowPlayingItem(mediaRef, null, null)
-              const shouldPlay = true
-              const forceUpdateOrderDate = false
-              const setCurrentItemNextInQueue = true
-              await playerLoadNowPlayingItem(
-                newItem,
-                shouldPlay,
-                forceUpdateOrderDate,
-                setCurrentItemNextInQueue
-              )
-            }
-          }
-        } catch (error) {
-          console.log(error)
-        }
-
-        setGlobal({
-          screenPlayer: {
-            ...this.global.screenPlayer,
-            isLoading: false
-          }
-        })
-      }
-    )
   }
 
   _getEpisodeId = () => {
