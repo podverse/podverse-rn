@@ -16,7 +16,9 @@ export const createSatoshiStreamStats = (
   speed: string,
   pubkey: string,
   amount: string,
-  name: string
+  name: string,
+  customKey: string,
+  customValue: string
 ) => {
   const podcast = nowPlayingItem?.podcastTitle || translate('Untitled Podcast')
   const episode = nowPlayingItem?.episodeTitle || translate('Untitled Episode')
@@ -39,6 +41,7 @@ export const createSatoshiStreamStats = (
       app_name: Config.USER_AGENT_PREFIX,
       name
     },
-    7629175: podcastIndexId
+    7629175: podcastIndexId,
+    ...(customKey ? { [customKey]: customValue } : {})
   } as SatoshiStreamStats
 }

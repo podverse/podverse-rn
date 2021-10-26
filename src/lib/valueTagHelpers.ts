@@ -176,7 +176,9 @@ const convertValueTagIntoValueTransaction = async (
     speed.toString(),
     pubkey,
     normalizedValueRecipient.amount.toString(),
-    normalizedValueRecipient.name || ''
+    normalizedValueRecipient.name || '',
+    normalizedValueRecipient.customKey || '',
+    normalizedValueRecipient.customValue || ''
   )
 
   return {
