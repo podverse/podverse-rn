@@ -1,8 +1,13 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, StyleProp, ViewStyle } from 'react-native'
 import { useGlobal } from 'reactn'
 
-export const Divider = (props: any) => {
+type DividerProps = {
+  style?: StyleProp<ViewStyle>;
+  children?: React.ReactNode[] | React.ReactNode | undefined;
+}
+
+export const Divider = (props: DividerProps) => {
   const [globalTheme] = useGlobal('globalTheme')
   return (
     <View {...props} style={[styles.divider, globalTheme.divider, props.style]}>
