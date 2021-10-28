@@ -42,6 +42,8 @@ type State = {
 const testIDPrefix = 'sign_up'
 
 export class SignUp extends React.Component<Props, State> {
+  keyboardDidHide: EmitterSubscription
+
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -60,11 +62,11 @@ export class SignUp extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    Keyboard.addListener('keyboardDidHide', this.checkIfSubmitIsDisabled)
+    this.keyboardDidHide = Keyboard.addListener('keyboardDidHide', this.checkIfSubmitIsDisabled)
   }
 
   componentWillUnmount() {
-    Keyboard.removeListener('keyboardDidHide', this.checkIfSubmitIsDisabled)
+    this.keyboardDidHide.remove()
   }
 
   emailChanged = (emailText: string) => {

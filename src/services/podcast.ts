@@ -151,11 +151,12 @@ export const subscribeToPodcastIfNotAlready = async (alreadySubscribedPodcasts: 
     Array.isArray(alreadySubscribedPodcasts) &&
     !alreadySubscribedPodcasts.some((alreadySubscribedPodcast) => alreadySubscribedPodcast.id === podcastId)
   ) {
-    await toggleSubscribeToPodcast(podcastId)
+    const skipRequestReview = true
+    await toggleSubscribeToPodcast(podcastId, skipRequestReview)
   }
 }
 
-export const toggleSubscribeToPodcast = async (id: string) => {
+export const toggleSubscribeToPodcast = async (id: string, skipRequestReview = false) => {
   const isLoggedIn = await checkIfLoggedIn()
   const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
   let isUnsubscribing = false
@@ -200,7 +201,7 @@ export const toggleSubscribeToPodcast = async (id: string) => {
   if (isUnsubscribing) {
     await removeDownloadedPodcast(id)
     await setDownloadedEpisodeLimit(id)
-  } else {
+  } else if (!skipRequestReview) {
     requestAppStoreReviewForSubscribedPodcast()
   }
 
