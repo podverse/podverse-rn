@@ -271,7 +271,7 @@ const mediaMoreButtons = (
   if (itemType === 'episode') {
     buttons.push({
       accessibilityLabel: translate('Mark as Played'),
-      key: PV.Keys.go_to_podcast,
+      key: PV.Keys.mark_as_played,
       text: translate('Mark as Played'),
       onPress: async () => {
         await handleDismiss()
