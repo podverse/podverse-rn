@@ -13,7 +13,7 @@ type DropdownButtonProps = {
   sortLabel?: string;
   testID?: string;
   transparent?: any;
-  onPress?: () => {};
+  onPress?: () => unknown;
 }
 
 export const DropdownButton = (props: DropdownButtonProps) => {

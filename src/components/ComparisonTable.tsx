@@ -5,7 +5,7 @@ import { Divider, Icon, Text, View } from './'
 
 type TableLineItem = {
   /**
-   *  text: The row heading
+   * text: The row heading
    */
   text: string;
   column1: boolean; 
