@@ -3,6 +3,7 @@ import { translate } from '../lib/i18n'
 import { sendVerificationEmail } from '../services/auth'
 import { logoutUser } from '../state/actions/auth'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
+import { PV } from '.'
 
 const _expiredMessage = translate('To renew your membership please visit the Membership page')
 const _logoutButtonText = translate('Log Out')
@@ -14,7 +15,7 @@ const _sendVerificationEmailMessage = translate(
 const _cancelText = translate('Cancel')
 
 export const Alerts = {
-  ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM: (item: NowPlayingItem, navigation: any) => {
+  ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM: (item: NowPlayingItem) => {
     const title = item.clipId ? item.clipTitle : item.episodeTitle
     const type = item.clipId ? translate('Clip') : translate('Episode')
 
@@ -43,6 +44,13 @@ export const Alerts = {
   BUTTONS: {
     OK: [{ text: translate('OK') }]
   },
+  GO_TO_LOGIN_BUTTONS: (navigation: any) => ([
+    { text: translate('OK') },
+    {
+      text: translate('Go to Login'),
+      onPress: () => navigation.navigate(PV.RouteNames.AuthScreen)
+    }
+  ]),
   EMAIL_NOT_VERIFIED: (email: string) => ({
     message: _sendVerificationEmailMessage,
     title: translate('Verify Your Email'),
@@ -62,6 +70,10 @@ export const Alerts = {
   LOGIN_INVALID: {
     message: translate('Invalid username or password'),
     title: translate('Login Error')
+  },
+  LOGIN_TO_MARK_EPISODES_AS_PLAYED: {
+    message: translate('Please login to mark episodes as played'),
+    title: translate('Login Needed')
   },
   NETWORK_ERROR: {
     message: (str?: string) =>
