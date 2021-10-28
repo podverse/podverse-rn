@@ -3,7 +3,25 @@ import React, { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Divider, Icon, Text, View } from './'
 
-export const ComparisonTable = (props: any) => {
+type TableLineItem = {
+  /**
+   *  text: The row heading
+   */
+  text: string;
+  column1: boolean; 
+  column2: boolean;
+  accessibilityLabel: string;
+}
+
+type ComparisonTableProps = {
+  column1Title: string;
+  column2Title: string;
+  data: TableLineItem[] | [];
+  mainTitle: string;
+  mainTitleAccessibilityHint: string;
+}
+
+export const ComparisonTable = (props: ComparisonTableProps) => {
   const { column1Title, column2Title, data, mainTitle, mainTitleAccessibilityHint } = props
   const [globalTheme] = useGlobal('globalTheme')
 

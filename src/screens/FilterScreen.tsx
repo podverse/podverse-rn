@@ -23,6 +23,21 @@ type State = {
   screenName: string
 }
 
+type Item = {
+  label?: string;
+  value?: string;
+  parentId?: string;
+  id?: string;
+}
+
+type Section = {
+  title?: string;
+  data?: Item[];
+  value?: string;
+  accessibilityHint?: string;
+  accessibilityRole?: string;
+}
+
 const testIDPrefix = 'filter_screen'
 
 export class FilterScreen extends React.Component<Props, State> {
@@ -95,7 +110,7 @@ export class FilterScreen extends React.Component<Props, State> {
     })
   }
 
-  getNewLocalState = async (section: any, item: any) => {
+  getNewLocalState = async (section: Section, item: Item) => {
     const {
       flatCategoryItems,
       screenName,
@@ -155,7 +170,7 @@ export class FilterScreen extends React.Component<Props, State> {
     }
   }
 
-  getSelectHandler = async (section: any, item: any) => {
+  getSelectHandler = async (section: Section, item: Item) => {
     const { navigation } = this.props
     let handleSelect: any
     let categoryValueOverride = ''
