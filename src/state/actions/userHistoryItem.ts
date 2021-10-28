@@ -1,6 +1,7 @@
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import {
+  addOrUpdateHistoryItem,
   clearHistoryItems as clearHistoryItemsService,
   filterItemFromHistoryItems,
   filterItemFromHistoryItemsIndex,
@@ -93,4 +94,32 @@ export const removeHistoryItem = async (item: NowPlayingItem) => {
   })
 
   return historyItems
+}
+
+export const markAsPlayed = async (item: NowPlayingItem) => {
+  const { session } = getGlobal()
+  const { historyItemsIndex } = session.userInfo
+
+  if (item.episodeId) {
+    let playbackPosition = 0
+    let mediaFileDuration = null
+    const historyItem = historyItemsIndex?.episodes[item.episodeId]
+    if (historyItem) {
+      mediaFileDuration = historyItem.mediaFileDuration || 0
+      playbackPosition = historyItem.userPlaybackPosition
+    }
+  
+    const forceUpdateOrderDate = false
+    const skipSetNowPlaying = true
+    const completed = true
+    await addOrUpdateHistoryItem(
+      item,
+      playbackPosition,
+      mediaFileDuration,
+      forceUpdateOrderDate,
+      skipSetNowPlaying,
+      completed
+    )
+    await updateHistoryItemsIndex()
+  }
 }

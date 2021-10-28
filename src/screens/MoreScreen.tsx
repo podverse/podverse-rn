@@ -103,32 +103,37 @@ export class MoreScreen extends React.Component<Props, State> {
 
   _importOpml = async () => {
     try {
-      const res = await DocumentPicker.pick({
+      const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.allFiles]
       })
-      const contents = await RNFS.readFile(res.uri, 'utf8')
-
-      this.setState({ isLoading: true }, () => {
-        parseString(contents, async (err: any, result: any) => {
-          try {
-            if (err) {
-              throw err
-            } else if (!result?.opml?.body[0]?.outline) {
-              throw new Error('OPML file is not in the correct format')
+      
+      if (!res) {
+        throw new Error('Something went wrong with the import process.')
+      } else {
+        const contents = await RNFS.readFile(res.uri, 'utf8')
+  
+        this.setState({ isLoading: true }, () => {
+          parseString(contents, async (err: any, result: any) => {
+            try {
+              if (err) {
+                throw err
+              } else if (!result?.opml?.body[0]?.outline) {
+                throw new Error('OPML file is not in the correct format')
+              }
+  
+              const rssArr = parseOpmlFile(result, true)
+              await addAddByRSSPodcasts(rssArr)
+  
+              this.setState({ isLoading: false }, () => {
+                this.props.navigation.navigate(PV.RouteNames.PodcastsScreen)
+              })
+            } catch (error) {
+              console.log('Error parsing podcast: ', error)
+              this.setState({ isLoading: false })
             }
-
-            const rssArr = parseOpmlFile(result, true)
-            await addAddByRSSPodcasts(rssArr)
-
-            this.setState({ isLoading: false }, () => {
-              this.props.navigation.navigate(PV.RouteNames.PodcastsScreen)
-            })
-          } catch (error) {
-            console.log('Error parsing podcast: ', error)
-            this.setState({ isLoading: false })
-          }
+          })
         })
-      })
+      }
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on

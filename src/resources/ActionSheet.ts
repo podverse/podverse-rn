@@ -13,6 +13,7 @@ import { playerGetPosition } from '../services/player'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
+import { markAsPlayed } from '../state/actions/userHistoryItem'
 import { PV } from './PV'
 
 const mediaMoreButtons = (
@@ -263,6 +264,26 @@ const mediaMoreButtons = (
       onPress: async () => {
         removeDownloadedPodcastEpisode(item.episodeId)
         await handleDismiss()
+      }
+    })
+  }
+
+  if (itemType === 'episode') {
+    buttons.push({
+      accessibilityLabel: translate('Mark as Played'),
+      key: PV.Keys.mark_as_played,
+      text: translate('Mark as Played'),
+      onPress: async () => {
+        await handleDismiss()
+        if (isLoggedIn) {
+          await markAsPlayed(item)
+        } else {
+          Alert.alert(
+            PV.Alerts.LOGIN_TO_MARK_EPISODES_AS_PLAYED.title,
+            PV.Alerts.LOGIN_TO_MARK_EPISODES_AS_PLAYED.message,
+            PV.Alerts.GO_TO_LOGIN_BUTTONS(navigation)
+          )
+        }
       }
     })
   }

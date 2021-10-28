@@ -4,7 +4,19 @@ import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Icon, Text } from '.'
 
-export const DropdownButton = (props: any) => {
+type DropdownButtonProps = {
+  accessible?: boolean;
+  accessibilityHint?: string;
+  accessibilityLabel?: boolean;
+  disableFilter?: boolean;
+  importantForAccessibility?: "auto" | "yes" | "no" | "no-hide-descendants" | undefined;
+  sortLabel?: string;
+  testID?: string;
+  transparent?: any;
+  onPress?: () => unknown;
+}
+
+export const DropdownButton = (props: DropdownButtonProps) => {
   const { accessible = true, accessibilityHint, disableFilter, importantForAccessibility,
     onPress, sortLabel, testID } = props
   const [globalTheme] = useGlobal('globalTheme')

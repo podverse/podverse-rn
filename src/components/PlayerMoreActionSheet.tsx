@@ -29,6 +29,18 @@ let volumeListener = null as any
 
 const testIDPrefix = 'player_more_action_sheet'
 
+/**
+ * As seen on Android device
+ */
+type VolumeData = {
+  notification?: number | undefined;
+  ring?: number | undefined;
+  music?: number | undefined;
+  call?: number | undefined;
+  alarm?: number | undefined;
+  system?: number | undefined;
+  value?: number | undefined;
+}
 export class PlayerMoreActionSheet extends React.Component<Props, State> {
   constructor() {
     super()
@@ -40,7 +52,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     const volume = await SystemSetting.getVolume()
     this.setState({ volume })
 
-    volumeListener = SystemSetting.addVolumeListener((data: any) => {
+    volumeListener = SystemSetting.addVolumeListener((data: VolumeData) => {
       const volume = data.value
       this.setState({ volume })
     })
