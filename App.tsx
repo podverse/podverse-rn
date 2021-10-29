@@ -5,6 +5,7 @@ import { Image, LogBox, Platform, StatusBar, View } from 'react-native'
 import Config from 'react-native-config'
 import { getFontScale } from 'react-native-device-info'
 import 'react-native-gesture-handler'
+import Orientation from 'react-native-orientation-locker'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
@@ -39,6 +40,9 @@ class App extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
+
+    Orientation.lockToPortrait()
+
     this.state = {
       appReady: false,
       minVersionMismatch: false
