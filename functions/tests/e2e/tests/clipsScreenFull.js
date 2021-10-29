@@ -7,7 +7,7 @@ const test_clipsScreenFull = async () => {
 
   await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
 
-  //START FILTER TESTS
+  // START FILTER TESTS
 
   // await elementByIdAndClickAndTest('clips_screen_dropdown_button', 'filter_screen_view')
   // await elementByIdClick('filter_screen_all-podcasts')
@@ -105,7 +105,7 @@ const test_clipsScreenFull = async () => {
 
   // await elementByIdAndClickAndTest('filter_screen_nav_header_button_text', 'clips_screen_view')
 
-  //END FILTER TESTS
+  // END FILTER TESTS
 
   // test loading spinner displays
 
