@@ -1,9 +1,9 @@
 import React from 'react'
-import { ActivityIndicator, TouchableOpacity } from 'react-native'
+import { ActivityIndicator } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { core } from '../styles'
-import { Text } from '.'
+import { PressableWithOpacity, Text } from '.'
 
 type Props = {
   accessibilityHint?: string
@@ -38,7 +38,7 @@ export const PVButton = (props: Props) => {
   const isTransparentStyle = isTransparent ? globalTheme.buttonTransparentWrapper : null
 
   return (
-    <TouchableOpacity
+    <PressableWithOpacity
       accessible={accessible}
       accessibilityHint={accessibilityHint}
       accessibilityLabel={accessibilityLabel}
@@ -73,6 +73,6 @@ export const PVButton = (props: Props) => {
           {text}
         </Text>
       )}
-    </TouchableOpacity>
+    </PressableWithOpacity>
   )
 }

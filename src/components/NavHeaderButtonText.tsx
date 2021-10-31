@@ -1,7 +1,6 @@
-import { TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { navHeader } from '../styles'
-import { Text } from './'
+import { PressableWithOpacity, Text } from './'
 
 type Props = {
   accessibilityHint?: string
@@ -25,7 +24,7 @@ export const NavHeaderButtonText = (props: Props) => {
   }
 
   return (
-    <TouchableOpacity
+    <PressableWithOpacity
       accessibilityHint={accessibilityHint}
       accessibilityLabel={accessibilityLabel}
       disabled={disabled}
@@ -34,6 +33,6 @@ export const NavHeaderButtonText = (props: Props) => {
       <Text allowFontScaling={false} style={buttonTextStyle} testID={`${testID}_text`}>
         {text}
       </Text>
-    </TouchableOpacity>
+    </PressableWithOpacity>
   )
 }

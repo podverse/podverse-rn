@@ -1,5 +1,5 @@
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
-import { StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import {
   ActionSheet,
@@ -8,6 +8,7 @@ import {
   Icon,
   NavSearchIcon,
   NavShareIcon,
+  PressableWithOpacity,
   ScrollView,
   Text,
   View
@@ -234,7 +235,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           !isLoading && (
             <View>
               {showClipsCell && (
-                <TouchableOpacity
+                <PressableWithOpacity
                   accessibilityHint={translate('ARIA HINT - show clips from this episode')}
                   accessibilityLabel={translate('Clips')}
                   accessibilityRole='button'
@@ -255,10 +256,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
                     </Text>
                     <Icon name='arrow-right' size={15} />
                   </>
-                </TouchableOpacity>
+                </PressableWithOpacity>
               )}
               {showChaptersCell && (
-                <TouchableOpacity
+                <PressableWithOpacity
                   accessibilityHint={translate('ARIA HINT - show the chapters for this episode')}
                   accessibilityLabel={translate('Chapters')}
                   accessibilityRole='button'
@@ -279,7 +280,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
                     </Text>
                     <Icon name='arrow-right' size={15} />
                   </>
-                </TouchableOpacity>
+                </PressableWithOpacity>
               )}
               <HTMLScrollView
                 disableScrolling

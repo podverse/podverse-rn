@@ -123,6 +123,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
                   isDarkMode
                 })
               }}
+              style={{ flex: 1 }}
               testID={testIDPrefix.prependTestId()}>
               <View style={[styles.player, globalTheme.player]}>
                 {

@@ -80,7 +80,8 @@ export class QueueTableCell extends React.PureComponent<Props> {
             accessibilityLabel={accessibilityLabel}
             accessibilityRole='none'
             onLongPress={drag}
-            onPress={onPress}>
+            onPress={onPress}
+            style={{ flex: 1 }}>
             <RNView style={styles.wrapperTappableInner}>
               <FastImage isSmall key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
               <RNView style={styles.textWrapper}>
@@ -217,7 +218,7 @@ const styles = StyleSheet.create({
     marginTop: 8
   },
   wrapperTappableInner: {
-    flex: 1,
+    flex: 0,
     flexDirection: 'row'
   },
   wrapperTop: {

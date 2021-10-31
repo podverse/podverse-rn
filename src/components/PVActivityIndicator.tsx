@@ -49,7 +49,8 @@ export const PVActivityIndicator = (props: Props) => {
           accessible={accessible}
           accessibilityHint={accessibilityHint}
           accessibilityLabel={accessibilityLabel}
-          onPress={onPress}>
+          onPress={onPress}
+          style={viewStyle}>
           <View accessible={false} style={[core.view, styles.view, viewStyle, props.styles]}>
             <ActivityIndicator
               accessible={false}

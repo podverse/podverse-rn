@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { Pressable, StyleSheet } from 'react-native'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { Text } from '.'
@@ -13,7 +13,7 @@ export const AutoScrollToggle = (props: Props) => {
   const { autoScrollOn, toggleAutoscroll } = props
 
   return (
-    <TouchableOpacity
+    <Pressable
       accessible={false}
       activeOpacity={0.7}
       onPress={toggleAutoscroll}
@@ -25,7 +25,7 @@ export const AutoScrollToggle = (props: Props) => {
         testID='transcript-autoscroll'>
         {!!autoScrollOn ? translate('Autoscroll On') : translate('Autoscroll Off')}
       </Text>
-    </TouchableOpacity>
+    </Pressable>
   )
 }
 
