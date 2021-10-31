@@ -38,6 +38,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props> {
           <ClipInfoView
             createdAt={mediaRef.createdAt}
             endTime={mediaRef.endTime}
+            episodeTitle={episode.title}
             isLoading={isLoading}
             isOfficialChapter={mediaRef.isOfficialChapter}
             isOfficialSoundBite={mediaRef.isOfficialSoundBite}

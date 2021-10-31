@@ -33,7 +33,6 @@ export class QueueTableCell extends React.PureComponent<Props> {
     const {
       clipEndTime,
       clipStartTime,
-      clipTitle = translate('Untitled Clip'),
       drag,
       episodePubDate = '',
       episodeTitle = translate('Untitled Episode'),
@@ -50,6 +49,8 @@ export class QueueTableCell extends React.PureComponent<Props> {
       testID,
       transparent
     } = this.props
+
+    const clipTitle = this.props.clipTitle || episodeTitle || translate('Untitled Clip')
 
     const viewStyle = isActive
       ? [styles.wrapper, styles.wrapperActive, hideDivider ? { borderBottomWidth: 0 } : {}]

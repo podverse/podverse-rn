@@ -44,7 +44,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const hasChapterCustomImage = item?.hasCustomImage
     const startTime = item.startTime
     const endTime = item.endTime
-    const title = item?.title?.trim() || translate('Untitled Clip')
+    const title = item?.title?.trim() || item?.episode?.title?.trim() || translate('Untitled Clip')
     const episodeTitle = item?.episode?.title?.trim() || translate('Untitled Episode')
     const podcastTitle = item?.episode?.podcast?.title?.trim() || translate('Untitled Podcast')
     const clipTime = readableClipTime(startTime, endTime)
