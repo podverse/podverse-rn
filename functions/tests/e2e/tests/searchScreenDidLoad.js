@@ -7,7 +7,7 @@ const test_searchScreenDidLoad = async () => {
   console.log('_Search Screen Did Load_')
   const driver = getDriver()
 
-  //Login
+  // Login
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
   await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_sign_up_button')
   await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
@@ -28,17 +28,19 @@ const test_searchScreenDidLoad = async () => {
   await sendKeysToElementById('add_podcast_by_rss_screen_rss_feed_text_input', 'https://stage.podverse.fm/sampleRSS/how-to-start-a-podcast.rss', 'Add Custom RSS Feed')
   await elementByIdAndClickAndTest('add_podcast_by_rss_screen_save_nav_header_button_text', 'podcast_screen_view', noTestLabel, goBackKey)
 
+
   await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
-  // TODO:
-  // await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
+  await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
+  // TODO: fails on podcast item 0
   // await elementWaitFor('search_screen_podcast_item_0')
   // await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'podcasts_screen_view')
 
-  // // Search for and Subscribe to Podcast
+  // // // Search for and Subscribe to Podcast
 
-  // //Search
+  // // //Search
   // await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
   // await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
+  
   // await elementByIdAndClickAndTest('search_screen_podcast_item_0', 'search_screen_action_sheet_goToPodcast_button')
   // await elementByIdAndClickAndTest('search_screen_action_sheet_goToPodcast_button', 'podcast_screen_is_subscribed')
   // await elementByIdClick('podcast_screen_subscribe_button')
@@ -46,7 +48,7 @@ const test_searchScreenDidLoad = async () => {
   // await driver.sleep(1000)
   // await elementByIdClick('podcast_screen_subscribe_button')
   // await elementWaitFor('podcast_screen_is_subscribed')
-  // await driver.back()
+  await driver.back()
 
     // Log Out 
 

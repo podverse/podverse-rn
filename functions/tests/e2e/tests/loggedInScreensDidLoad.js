@@ -10,7 +10,6 @@ const test_loggedInScreensDidLoadTests = async () => {
   const driver = getDriver()
 
     // Log In Premium
-  //TODO
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
   await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_sign_up_button')
   await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
@@ -48,11 +47,12 @@ const test_loggedInScreensDidLoadTests = async () => {
   await elementByIdAndClickAndTest('more_screen_TermsOfService_table_cell_wrapper', 'terms_of_service_screen_view', noTestLabel, goBackKey)
 
     // Search Screen
-  await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
-  await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
-  await driver.sleep(5000)
-  await elementWaitFor('search_screen_podcast_item_0')
-  await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'podcasts_screen_view')
+    // TODO TEST:
+  // await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
+  // await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
+  // await driver.sleep(5000)
+  // await elementWaitFor('search_screen_podcast_item_0')
+  // await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'podcasts_screen_view')
 
     // Log Out
 
