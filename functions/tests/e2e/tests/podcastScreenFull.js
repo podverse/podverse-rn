@@ -40,7 +40,7 @@ const test_podcastScreenFull = async () => {
 
   // test loading spinner displays
 
-  await elementByIdAndClickAndTest('podcast_screen_settings_icon_button', 'podcast_screen_toggle_download_limit_switch')
+  await elementByIdAndClickAndTest('podcast_screen_settings', 'podcast_screen_toggle_download_limit_switch')
 
   await elementByIdClick('podcast_screen_toggle_download_limit_switch')
 
