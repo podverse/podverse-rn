@@ -2,9 +2,8 @@ import AsyncStorage from '@react-native-community/async-storage'
 import {
   Alert,
   Modal,
+  Pressable,
   StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
   View as RNView,
   Image,
   ImageSourcePropType,
@@ -20,6 +19,7 @@ import {
   NavHeaderButtonText,
   OpaqueBackground,
   PlayerProgressBar,
+  PressableWithOpacity,
   PVVideo,
   Text,
   TextInput,
@@ -554,7 +554,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               <View style={styles.clearEndTimeWrapper} transparent>
                 <View style={styles.clearEndTimeTextSpacer} transparent />
                 {endTime && (
-                  <TouchableWithoutFeedback
+                  <Pressable
                     accessible
                     accessibilityHint={translate('ARIA HINT - clear the end time for this clip')}
                     accessibilityLabel={translate('Remove end time')}
@@ -571,7 +571,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     <Text style={styles.clearEndTimeText}>
                       {translate('Remove end time')}
                     </Text>
-                  </TouchableWithoutFeedback>
+                  </Pressable>
                 )}
               </View>
               <View style={[styles.wrapper, globalTheme.player]} transparent>
@@ -587,7 +587,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 </View>
                 <View style={styles.playerControlsMiddleRow} transparent>
                   <View style={styles.playerControlsMiddleRowTop} transparent>
-                    <TouchableOpacity
+                    <PressableWithOpacity
                       accessibilityLabel={jumpBackAccessibilityLabel}
                       accessibilityRole='button'
                       onPress={this._playerJumpBackward}
@@ -598,8 +598,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
                         importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper} transparent>
                         <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
                       </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                    </PressableWithOpacity>
+                    <PressableWithOpacity
                       accessibilityLabel={miniJumpBackAccessibilityLabel}
                       accessibilityRole='button'
                       onPress={this._playerMiniJumpBackward}
@@ -612,8 +612,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
                         transparent>
                         <Text style={styles.skipTimeText}>1</Text>
                       </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                    </PressableWithOpacity>
+                    <PressableWithOpacity
                       accessibilityHint={playButtonAccessibilityHint}
                       accessibilityLabel={playButtonAccessibilityLabel}
                       onPress={() => playerTogglePlay()}
@@ -623,8 +623,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
                         style={[playerStyles.playButton, playButtonAdjust]}>
                         {playButtonIcon}
                       </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                    </PressableWithOpacity>
+                    <PressableWithOpacity
                       accessibilityLabel={miniJumpForwardAccessibilityLabel}
                       accessibilityRole='button'
                       onPress={this._playerMiniJumpForward}
@@ -634,8 +634,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       <View style={styles.skipTimeTextWrapper} transparent>
                         <Text style={styles.skipTimeText}>1</Text>
                       </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                    </PressableWithOpacity>
+                    <PressableWithOpacity
                       accessibilityLabel={jumpForwardAccessibilityLabel}
                       accessibilityRole='button'
                       onPress={this._playerJumpForward}
@@ -645,11 +645,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       <View style={styles.skipTimeTextWrapper} transparent>
                         <Text style={styles.skipTimeText}>{jumpForwardsTime}</Text>
                       </View>
-                    </TouchableOpacity>
+                    </PressableWithOpacity>
                   </View>
                 </View>
                 <View style={styles.playerControlsBottomRow} transparent>
-                  <TouchableOpacity
+                  <PressableWithOpacity
                     accessibilityHint={translate('ARIA HINT - show how to information for the make clip screen')}
                     accessibilityLabel={translate('How To')}
                     accessibilityRole='button'
@@ -672,8 +672,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
                         {translate('How To')}
                       </Text>
                     </View>
-                  </TouchableOpacity>
-                  <TouchableWithoutFeedback
+                  </PressableWithOpacity>
+                  <Pressable
                     accessibilityHint={translate('ARIA HINT - current playback speed')}
                     accessibilityLabel={`${playbackRate}X`}
                     accessibilityRole='button'
@@ -697,8 +697,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
                         {`${playbackRate}X`}
                       </Text>
                     </View>
-                  </TouchableWithoutFeedback>
-                  <TouchableOpacity
+                  </Pressable>
+                  <PressableWithOpacity
                     accessibilityHint={translate('ARIA HINT - go to the FAQ page')}
                     accessibilityLabel={translate('FAQ')}
                     accessibilityRole='button'
@@ -721,7 +721,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                         {translate('FAQ')}
                       </Text>
                     </View>
-                  </TouchableOpacity>
+                  </PressableWithOpacity>
                 </View>
               </View>
             </View>
@@ -756,7 +756,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
                   {translate('If a podcast inserts dynamic ads the clip start time may not stay accurate')}
                 </Text>
-                <TouchableOpacity
+                <PressableWithOpacity
                   accessibilityHint={translate('ARIA HINT - continue to the Make Clip screen')}
                   accessibilityLabel={translate('Got It')}
                   accessibilityRole='button'
@@ -769,7 +769,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     style={styles.modalButton}>
                     {translate('Got It')}
                   </Text>
-                </TouchableOpacity>
+                </PressableWithOpacity>
               </RNView>
             </RNView>
           </Modal>

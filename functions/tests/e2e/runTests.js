@@ -47,13 +47,13 @@ const runTests = async (customCapabilities) => {
     await test_initTests(capabilities)
     await test_launchApp()
 
-    await test_nonLoggedInScreensDidLoadTests()
+    // await test_nonLoggedInScreensDidLoadTests()
     // await test_loggedInScreensDidLoadTests()
 
-    // await test_podcastScreenFull()         
+    await test_podcastScreenFull()         
     // await test_episodesScreenFull()
-    await test_episodeScreenFull()
-    await test_clipsScreenFull()
+    // await test_episodeScreenFull()
+    // await test_clipsScreenFull()
     // await test_profilesScreenFull()
     // await test_myProfileScreenFull()
     // await test_playlistsScreenFull()
@@ -61,10 +61,10 @@ const runTests = async (customCapabilities) => {
     // await test_searchScreenDidLoad()
     // await test_tableSectionSelectors()
     // await test_nonLoggedInMediaPlayer()
-    await test_queueScreenEditFeature()
-    await test_historyScreenEditFeature()
+    // await test_queueScreenEditFeature()
+    // await test_historyScreenEditFeature()
     // await test_fundingPresent()
-    await test_LNPaySetup()
+    // await test_LNPaySetup()
     // await test_bitcoinWallet()
 
 

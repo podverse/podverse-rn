@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Switch, TouchableWithoutFeedback, View } from 'react-native'
+import { Pressable, StyleSheet, Switch, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Text, TextInput } from './'
@@ -70,7 +70,7 @@ export const SwitchWithText = (props: Props) => {
 
   return (
     <View style={wrapperStyle}>
-      <TouchableWithoutFeedback
+      <Pressable
         accessible={accessible}
         accessibilityRole='switch'
         importantForAccessibility='no'
@@ -94,7 +94,7 @@ export const SwitchWithText = (props: Props) => {
             {text}
           </Text>
         </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
       {inputShow && (
         <TextInput
           autoCapitalize='none'

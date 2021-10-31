@@ -1,9 +1,9 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { ActivityIndicator } from '.'
+import { ActivityIndicator, PressableWithOpacity } from '.'
 
 type Props = {
   handleMorePress: any
@@ -17,7 +17,7 @@ export const MoreButton = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
-    <TouchableOpacity
+    <PressableWithOpacity
       accessibilityHint={`${translate('ARIA HINT - show more options for this')} ${translate(itemType)}`}
       accessibilityLabel={translate('More')}
       accessibilityRole='button'
@@ -38,7 +38,7 @@ export const MoreButton = (props: Props) => {
           <ActivityIndicator onPress={handleMorePress} styles={[styles.activityIndicator]} testID={testID} />
         </View>
       )}
-    </TouchableOpacity>
+    </PressableWithOpacity>
   )
 }
 

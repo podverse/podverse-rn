@@ -110,23 +110,23 @@ const allSortItems = [
     value: _oldestKey
   },
   {
-    label: translate('top - day'),
+    label: translate('top – day'),
     value: _topPastDay
   },
   {
-    label: translate('top - week'),
+    label: translate('top – week'),
     value: _topPastWeek
   },
   {
-    label: translate('top - month'),
+    label: translate('top – month'),
     value: _topPastMonth
   },
   {
-    label: translate('top - year'),
+    label: translate('top – year'),
     value: _topPastYear
   },
   {
-    label: translate('top - all time'),
+    label: translate('top – all time'),
     value: _topAllTime
   },
   {

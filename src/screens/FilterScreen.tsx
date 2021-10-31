@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { FlatList, Icon, NavHeaderButtonText, Text, View } from '../components'
 import { generateSections } from '../lib/filters'
@@ -237,7 +237,7 @@ export class FilterScreen extends React.Component<Props, State> {
     const accessibilityHint = `${isActive ? translate('ARIA HINT - Currently selected filter') : ''}`
 
     return (
-      <TouchableWithoutFeedback
+      <Pressable
         accessibilityHint={accessibilityHint}
         accessibilityLabel={item.labelShort || item.label || item.title}
         importantForAccessibility='yes'
@@ -264,7 +264,7 @@ export class FilterScreen extends React.Component<Props, State> {
               testID={`${testIDPrefix}_${value}_check`}/>
           )}
         </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
     )
   }
 

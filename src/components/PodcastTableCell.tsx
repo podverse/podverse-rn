@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Dimensions, Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
@@ -69,7 +69,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
     const accessibilityLabel = `${trimmedPodcastTitle}, ${lastPubDate}, ${downloadCountText}`
 
     return (
-      <TouchableWithoutFeedback
+      <Pressable
         accessibilityLabel={accessibilityLabel}
         onPress={onPress}
         {...(testID ? { testID: testID.prependTestId() } : {})}>
@@ -100,7 +100,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
             )}
           </RNView>
         </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
     )
   }
 }

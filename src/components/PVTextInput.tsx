@@ -1,5 +1,5 @@
 import React from 'react'
-import { Platform, TextInput, TouchableWithoutFeedback } from 'react-native'
+import { Platform, Pressable, TextInput } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { core } from '../styles'
@@ -129,14 +129,14 @@ export const PVTextInput = (props: Props) => {
 
   return (
     !!onPress ? (
-      <TouchableWithoutFeedback
+      <Pressable
         accessible={!!onPress}
         accessibilityHint={accessibilityHint}
         accessibilityLabel={accessibilityLabel}
         importantForAccessibility={!!onPress ? 'yes' : 'no'}
         onPress={onPress}>
         {inputComponent}
-      </TouchableWithoutFeedback>
+      </Pressable>
     ) : (
       inputComponent
     )

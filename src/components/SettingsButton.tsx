@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
+import { Pressable, StyleSheet, View } from 'react-native'
 import { Icon } from './'
 
 type Props = {
@@ -15,22 +15,22 @@ export const SettingsButton = (props: Props) => {
     showCheckmark, testID } = props
 
   return (
-    <TouchableWithoutFeedback
+    <Pressable
       accessibilityHint={accessibilityHint}
       accessibilityLabel={accessibilityLabel}
       hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
-      onPress={handleToggleSettings}>
+      onPress={handleToggleSettings}
+      testID={testID.prependTestId()}>
       <View style={styles.buttonView}>
         <View>
           <Icon
             isSecondary
             name={showCheckmark ? 'check' : 'cog'}
             size={18}
-            solid
-            testID={testID} />
+            solid />
         </View>
       </View>
-    </TouchableWithoutFeedback>
+    </Pressable>
   )
 }
 

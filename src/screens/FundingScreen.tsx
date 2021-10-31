@@ -1,10 +1,10 @@
 import { ValueTransaction } from 'podverse-shared'
-import { Alert, Keyboard, Linking, Pressable, StyleSheet, TouchableOpacity } from 'react-native'
+import { Alert, Keyboard, Linking, Pressable, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import React, { getGlobal } from 'reactn'
 import AsyncStorage from '@react-native-community/async-storage'
-import { Divider, FastImage, NavDismissIcon, ScrollView, Text,
-  TextInput, ValueTagInfoView, View } from '../components'
+import { Divider, FastImage, NavDismissIcon, PressableWithOpacity, ScrollView,
+  Text, TextInput, ValueTagInfoView, View } from '../components'
 import { ValueTransactionRouteError } from '../components/ValueTagInfoView'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
@@ -122,7 +122,7 @@ export class FundingScreen extends React.Component<Props, State> {
     const { url, value } = item
     if (!url || !value) return null
     return (
-      <TouchableOpacity
+      <PressableWithOpacity
         activeOpacity={0.7}
         onPress={() => this.handleFollowLink(url)}>
         <Text
@@ -131,7 +131,7 @@ export class FundingScreen extends React.Component<Props, State> {
           testID={`${testIDPrefix}_${type}_link_${index}`}>
           {value}
         </Text>
-      </TouchableOpacity>
+      </PressableWithOpacity>
     )
   }
 

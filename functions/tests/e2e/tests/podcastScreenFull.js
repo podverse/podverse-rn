@@ -11,7 +11,7 @@ const test_podcastScreenFull = async () => {
   console.log('_Podcast Screen Full_')
   const driver = getDriver()
 
-  //Login
+  // Login
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
   await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_sign_up_button')
   await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
@@ -40,7 +40,7 @@ const test_podcastScreenFull = async () => {
 
   // test loading spinner displays
 
-  await elementByIdAndClickAndTest('podcast_screen_settings_icon_button', 'podcast_screen_toggle_download_limit_switch')
+  await elementByIdAndClickAndTest('podcast_screen_settings', 'podcast_screen_toggle_download_limit_switch')
 
   await elementByIdClick('podcast_screen_toggle_download_limit_switch')
 

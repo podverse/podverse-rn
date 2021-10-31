@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
+import { Dimensions, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
@@ -17,6 +17,7 @@ import {
   MediaPlayerCarouselShowNotes,
   MediaPlayerCarouselTranscripts,
   MediaPlayerCarouselViewer,
+  PressableWithOpacity,
   ScrollView,
   Text,
   View
@@ -236,7 +237,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
         }
         {!!Config.ENABLE_VALUE_TAG_TRANSACTIONS && lnpayEnabled && hasValueInfo && (
           <View style={styles.boostButtonsContainer}>
-            <TouchableOpacity
+            <PressableWithOpacity
               onPress={this._toggleSatStreaming}
               style={styles.boostButton}
               testID={'stream_button'.prependTestId()}>
@@ -252,8 +253,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                   styles={{ position: 'absolute', right: 20 }}
                   testID={testIDPrefix} />
               )}
-            </TouchableOpacity>
-            <TouchableOpacity
+            </PressableWithOpacity>
+            <PressableWithOpacity
               disabled={boostIsSending || boostWasSent}
               onLayout={(event) => {
                 this.setState({ explosionOrigin: event.nativeEvent.layout.y })
@@ -275,7 +276,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                   )}
                 </>
               )}
-            </TouchableOpacity>
+            </PressableWithOpacity>
           </View>
         )}
         {

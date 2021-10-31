@@ -1,4 +1,4 @@
-import { Alert, Linking, Pressable, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
+import { Alert, Linking, Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime, readableDate } from '../lib/utility'
@@ -6,7 +6,7 @@ import { PV } from '../resources'
 import { images } from '../styles'
 import { IndicatorDownload } from './IndicatorDownload'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
-import { FastImage, Text, View } from './'
+import { FastImage, PressableWithOpacity, Text, View } from './'
 
 type Props = {
   handleMorePress: any
@@ -170,12 +170,12 @@ export class ClipTableCell extends React.PureComponent<Props> {
             />
           </View>
           {isChapter && (chapterImageUrl || hasChapterCustomImage) && (
-            <TouchableOpacity
+            <PressableWithOpacity
               accessible={false}
               activeOpacity={1}
               {...(item?.linkUrl ? { onPress: () => this.handleChapterLinkPress(item.linkUrl) } : {})}>
               <FastImage isSmall source={chapterImageUrl || podcastImageUrl} styles={chapterImageStyle} />
-            </TouchableOpacity>
+            </PressableWithOpacity>
           )}
         </View>
       </Pressable>

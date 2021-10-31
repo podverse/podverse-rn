@@ -1,6 +1,7 @@
 import React from 'react'
-import { AccessibilityRole, TouchableOpacity, View } from 'react-native'
+import { AccessibilityRole, View } from 'react-native'
 import { navHeader } from '../styles'
+import { PressableWithOpacity } from '.'
 
 type Props = {
   accessibilityHint?: string
@@ -18,7 +19,7 @@ export const NavItemWrapper = (props: Props) => {
   return (
     <View
       style={navHeader.buttonWrapper}>
-      <TouchableOpacity
+      <PressableWithOpacity
         {...(!!accessibilityHint ? { accessibilityHint } : {})}
         {...(!!accessibilityLabel ? { accessibilityLabel } : {})}
         {...(!!accessibilityRole ? { accessibilityRole } : {})}
@@ -31,7 +32,7 @@ export const NavItemWrapper = (props: Props) => {
         onPress={handlePress}
         {...(testID ? { testID: testID.prependTestId() } : {})}>
         {children}
-      </TouchableOpacity>
+      </PressableWithOpacity>
     </View>
   )
 }
