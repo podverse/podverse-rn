@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Pressable, StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import { FlatList, Icon, NavHeaderButtonText, Text, View } from '../components'
 import { generateSections } from '../lib/filters'
@@ -237,38 +237,34 @@ export class FilterScreen extends React.Component<Props, State> {
     const accessibilityHint = `${isActive ? translate('ARIA HINT - Currently selected filter') : ''}`
 
     return (
-      <View testID={`${testIDPrefix}_${value}`.prependTestId()}>
-        <TouchableWithoutFeedback
-          accessibilityHint={accessibilityHint}
-          accessibilityLabel={item.labelShort || item.label || item.title}
-          importantForAccessibility='yes'
-          onPress={async () => {
-            const { categoryValueOverride, handleSelect } = await this.getSelectHandler(section, item)
-            const newState = (await this.getNewLocalState(section, item)) as any
+      <Pressable
+        accessibilityHint={accessibilityHint}
+        accessibilityLabel={item.labelShort || item.label || item.title}
+        importantForAccessibility='yes'
+        onPress={async () => {
+          const { categoryValueOverride, handleSelect } = await this.getSelectHandler(section, item)
+          const newState = (await this.getNewLocalState(section, item)) as any
 
-            this.setState(newState, () => {
-              handleSelect(categoryValueOverride || value)
-            })
-          }}>
-          <View style={styles.itemWrapper}>
-            <Text
-              importantForAccessibility='no-hide-descendants'
-              style={[
-                itemTextStyle,
-                isActive ? { fontWeight: PV.Fonts.weights.extraBold, color: PV.Colors.white } : {}
-              ]}>
-              {item.labelShort || item.label || item.title}
-            </Text>
-            {isActive && (
-              <Icon
-                name='check'
-                size={24}
-                style={styles.itemIcon}
-                testID={`${testIDPrefix}_${value}_check`}/>
-            )}
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
+          this.setState(newState, () => {
+            handleSelect(categoryValueOverride || value)
+          })
+        }}
+        testID={`${testIDPrefix}_${value}`.prependTestId()}>
+        <View style={styles.itemWrapper}>
+          <Text
+            importantForAccessibility='no-hide-descendants'
+            style={[itemTextStyle, isActive ? { fontWeight: PV.Fonts.weights.extraBold, color: PV.Colors.white } : {}]}>
+            {item.labelShort || item.label || item.title}
+          </Text>
+          {isActive && (
+            <Icon
+              name='check'
+              size={24}
+              style={styles.itemIcon}
+              testID={`${testIDPrefix}_${value}_check`}/>
+          )}
+        </View>
+      </Pressable>
     )
   }
 
