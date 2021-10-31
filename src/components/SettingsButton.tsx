@@ -20,7 +20,7 @@ export const SettingsButton = (props: Props) => {
       accessibilityLabel={accessibilityLabel}
       hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
       onPress={handleToggleSettings}
-      testID={testID}>
+      testID={testID.prependTestId()}>
       <View style={styles.buttonView}>
         <View>
           <Icon
