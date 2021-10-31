@@ -1,5 +1,6 @@
 import React from 'react'
-import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { PressableWithOpacity } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -46,12 +47,12 @@ export class OnboardingScreen extends React.Component<Props> {
           <Text style={styles.text}>{translate('Edit clips and playlists')}</Text>
           <Text style={styles.text}>{translate('Sync podcasts across devices')}</Text>
         </View>
-        <TouchableOpacity style={styles.signInButton} onPress={this.goToLogin}>
+        <PressableWithOpacity style={styles.signInButton} onPress={this.goToLogin}>
           <Text style={styles.signInButtonText}>Login / Register</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.skipSignInButton} onPress={this.dismissOnboarding}>
+        </PressableWithOpacity>
+        <PressableWithOpacity style={styles.skipSignInButton} onPress={this.dismissOnboarding}>
           <Text style={styles.skipSignInText}>No Thanks</Text>
-        </TouchableOpacity>
+        </PressableWithOpacity>
       </SafeAreaView>
     )
   }

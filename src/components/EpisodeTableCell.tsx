@@ -145,6 +145,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               accessible={false}
               importantForAccessibility='no-hide-descendants'
               {...(!screenReaderEnabled ? { onPress: handleNavigationPress } : {})}
+              style={{ flex: 1 }}
               {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
               {innerTopView}
             </Pressable>

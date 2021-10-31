@@ -1,11 +1,11 @@
 import React from 'react'
-import { Pressable, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Pressable, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
 import { convertSecToHHMMSS } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
-import { Text } from './'
+import { PressableWithOpacity, Text } from './'
 
 type Props = {
   accessibilityHint?: string
@@ -56,7 +56,7 @@ export const TimeInput = (props: Props) => {
         </View>
       </Pressable>
       {(time || time === 0) && (
-        <TouchableOpacity
+        <PressableWithOpacity
           accessibilityHint={previewAccessibilityHint}
           accessibilityLabel={previewAccessibilityLabel}
           accessibilityRole='button'
@@ -73,7 +73,7 @@ export const TimeInput = (props: Props) => {
             name='play'
             size={20}
             style={styles.previewIcon} />
-        </TouchableOpacity>
+        </PressableWithOpacity>
       )}
     </View>
   )

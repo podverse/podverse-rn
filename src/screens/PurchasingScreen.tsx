@@ -1,6 +1,6 @@
-import { Linking, Platform, StyleSheet, TouchableOpacity } from 'react-native'
+import { Linking, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, SafeAreaView, Text, View } from '../components'
+import { ActivityIndicator, PressableWithOpacity, SafeAreaView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { createEmailLinkUrl } from '../lib/utility'
 import { PV } from '../resources'
@@ -59,19 +59,19 @@ export class PurchasingScreen extends React.Component<Props> {
           {!!isLoading && <ActivityIndicator styles={styles.activityIndicator} testID={testIDPrefix} />}
           {!!message && <Text style={[globalTheme.text, styles.message]}>{message}</Text>}
           {!isLoading && showRetryLink && (
-            <TouchableOpacity onPress={this._handleRetryProcessing}>
+            <PressableWithOpacity onPress={this._handleRetryProcessing}>
               <Text style={[globalTheme.text, styles.button]}>Retry</Text>
-            </TouchableOpacity>
+            </PressableWithOpacity>
           )}
           {!isLoading && showContactSupportLink && (
-            <TouchableOpacity onPress={this._handleContactSupportPress}>
+            <PressableWithOpacity onPress={this._handleContactSupportPress}>
               <Text style={[globalTheme.text, styles.button]}>Contact Support</Text>
-            </TouchableOpacity>
+            </PressableWithOpacity>
           )}
           {!isLoading && showDismissLink && (
-            <TouchableOpacity onPress={this._handleDismiss}>
+            <PressableWithOpacity onPress={this._handleDismiss}>
               <Text style={[globalTheme.text, styles.button]}>{translate('Close')}</Text>
-            </TouchableOpacity>
+            </PressableWithOpacity>
           )}
         </View>
       </SafeAreaView>

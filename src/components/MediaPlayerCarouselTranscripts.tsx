@@ -1,12 +1,13 @@
 import { TranscriptRow } from 'podverse-shared'
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPlaybackSpeed, playerGetPosition, playerHandleSeekTo } from '../services/player'
 import { PVSearchBar } from './PVSearchBar'
-import { AutoScrollToggle, FlatList, TableSectionSelectors, Text, View } from './'
+import { AutoScrollToggle, FlatList, PressableWithOpacity, TableSectionSelectors,
+  Text, View } from './'
 
 type Props = {
   navigation?: any
@@ -70,7 +71,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
       `${this.currentSpeaker ? `${this.currentSpeaker}, ` : ''} ${text}, ${startTimeHHMMSS}`
 
     return (
-      <TouchableOpacity
+      <PressableWithOpacity
         accessible
         accessibilityLabel={accessibilityLabel}
         activeOpacity={0.7}
@@ -88,7 +89,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
             {startTimeHHMMSS}
           </Text>
         </View>
-      </TouchableOpacity>
+      </PressableWithOpacity>
     )
   }
 

@@ -1,6 +1,7 @@
-import { KeyboardAvoidingView, StyleSheet, TouchableOpacity } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, NavDismissIcon, Text, TextInput, View } from '../components'
+import { ActivityIndicator, NavDismissIcon, PressableWithOpacity,
+  Text, TextInput, View } from '../components'
 import { translate } from '../lib/i18n'
 import { navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { PV } from '../resources'
@@ -150,9 +151,9 @@ export class AddPodcastByRSSAuthScreen extends React.Component<Props, State> {
             underlineColorAndroid='transparent'
             wrapperStyle={core.textInputWrapper}
           />
-          <TouchableOpacity activeOpacity={1}>
+          <PressableWithOpacity activeOpacity={1}>
             <>
-              <TouchableOpacity
+              <PressableWithOpacity
                 style={[styles.signInButton, disabledStyle]}
                 disabled={submitIsDisabled || isLoading}
                 onPress={this.login}
@@ -162,9 +163,9 @@ export class AddPodcastByRSSAuthScreen extends React.Component<Props, State> {
                 ) : (
                   <Text style={signInButtonTextStyle}>{translate('Login')}</Text>
                 )}
-              </TouchableOpacity>
+              </PressableWithOpacity>
             </>
-          </TouchableOpacity>
+          </PressableWithOpacity>
           <Text
             key='cancel'
             onPress={this.handleDismiss}

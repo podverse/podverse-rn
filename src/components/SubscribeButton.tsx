@@ -1,8 +1,8 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { ActivityIndicator, Text, View } from './'
+import { ActivityIndicator, PressableWithOpacity, Text, View } from './'
 
 type Props = {
   handleToggleSubscribe: any
@@ -23,7 +23,7 @@ export const SubscribeButton = (props: Props) => {
   const accessibilityLabel = isSubscribed ? translate('Unsubscribe') : translate('Subscribe')
 
   return (
-    <TouchableOpacity
+    <PressableWithOpacity
       accessibilityLabel={accessibilityLabel}
       hitSlop={{
         bottom: 4,
@@ -50,7 +50,7 @@ export const SubscribeButton = (props: Props) => {
           </Text>
         )}
       </View>
-    </TouchableOpacity>
+    </PressableWithOpacity>
   )
 }
 
