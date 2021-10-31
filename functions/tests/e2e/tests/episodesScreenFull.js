@@ -9,7 +9,7 @@ const test_episodesScreenFull = async () => {
 
   // START FILTER TESTS
 
-  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top - week')
+  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top – week')
   await elementByIdHasText('episodes_screen_table_section_header_title_text', 'All Podcasts')
 
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
@@ -40,7 +40,7 @@ const test_episodesScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top - day')
+  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top – day')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
@@ -50,7 +50,7 @@ const test_episodesScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top - week')
+  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top – week')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
@@ -60,7 +60,7 @@ const test_episodesScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top - month')
+  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top – month')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
@@ -70,7 +70,7 @@ const test_episodesScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top - year')
+  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top – year')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
   
@@ -80,7 +80,7 @@ const test_episodesScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top - all time')
+  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top – all time')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 

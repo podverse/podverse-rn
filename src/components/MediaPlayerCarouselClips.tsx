@@ -292,7 +292,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
       querySort,
       selectedFromLabel = translate('Episode Clips'),
       selectedItem,
-      selectedSortLabel = translate('top - week'),
+      selectedSortLabel = translate('top – week'),
       showDeleteConfirmDialog,
       showMoreActionSheet,
       showNoInternetConnectionMessage
