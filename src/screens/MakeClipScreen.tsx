@@ -2,9 +2,9 @@ import AsyncStorage from '@react-native-community/async-storage'
 import {
   Alert,
   Modal,
+  Pressable,
   StyleSheet,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View as RNView,
   Image,
   ImageSourcePropType,
@@ -554,7 +554,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               <View style={styles.clearEndTimeWrapper} transparent>
                 <View style={styles.clearEndTimeTextSpacer} transparent />
                 {endTime && (
-                  <TouchableWithoutFeedback
+                  <Pressable
                     accessible
                     accessibilityHint={translate('ARIA HINT - clear the end time for this clip')}
                     accessibilityLabel={translate('Remove end time')}
@@ -571,7 +571,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     <Text style={styles.clearEndTimeText}>
                       {translate('Remove end time')}
                     </Text>
-                  </TouchableWithoutFeedback>
+                  </Pressable>
                 )}
               </View>
               <View style={[styles.wrapper, globalTheme.player]} transparent>
@@ -673,7 +673,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       </Text>
                     </View>
                   </TouchableOpacity>
-                  <TouchableWithoutFeedback
+                  <Pressable
                     accessibilityHint={translate('ARIA HINT - current playback speed')}
                     accessibilityLabel={`${playbackRate}X`}
                     accessibilityRole='button'
@@ -697,7 +697,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                         {`${playbackRate}X`}
                       </Text>
                     </View>
-                  </TouchableWithoutFeedback>
+                  </Pressable>
                   <TouchableOpacity
                     accessibilityHint={translate('ARIA HINT - go to the FAQ page')}
                     accessibilityLabel={translate('FAQ')}

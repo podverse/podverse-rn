@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { ActivityIndicator, Dimensions, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
+import { ActivityIndicator, Dimensions, Pressable, StyleSheet, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { ImportantForAccessibility } from '../lib/accessibilityHelpers'
 import { Colors } from '../resources/Colors'
@@ -45,7 +45,7 @@ export const PVActivityIndicator = (props: Props) => {
         </View>
       )}
       {!isOverlay && (
-        <TouchableWithoutFeedback
+        <Pressable
           accessible={accessible}
           accessibilityHint={accessibilityHint}
           accessibilityLabel={accessibilityLabel}
@@ -58,7 +58,7 @@ export const PVActivityIndicator = (props: Props) => {
               size={size}
               testID={`${testID}_activity_indicator`.prependTestId()} />
           </View>
-        </TouchableWithoutFeedback>
+        </Pressable>
       )}
     </Fragment>
   )

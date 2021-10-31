@@ -1,4 +1,4 @@
-import { StyleSheet, Switch, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Pressable, StyleSheet, Switch, View as RNView } from 'react-native'
 import React, { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { removeHTMLFromString } from '../lib/utility'
@@ -129,7 +129,7 @@ export const PodcastTableHeader = (props: Props) => {
           )}
           {!isNotFound && !!finalDescription && (
             <View style={styles.descriptionWrapper}>
-              <TouchableWithoutFeedback
+              <Pressable
                 accessibilityHint={translate('ARIA HINT - show more info about this podcast')}
                 accessibilityLabel={finalDescription}
                 onPress={handleNavigateToPodcastInfoScreen}>
@@ -143,7 +143,7 @@ export const PodcastTableHeader = (props: Props) => {
                     style={styles.descriptionText}
                     testID={`${testID}_description_text_more`}>{translate('more-ellipsis')}</Text> */}
                 </RNView>
-              </TouchableWithoutFeedback>
+              </Pressable>
             </View>
           )}
           {isNotFound && (
