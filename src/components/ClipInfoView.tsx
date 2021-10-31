@@ -9,6 +9,7 @@ import { ActivityIndicator, Divider, Icon, TableSectionSelectors, Text, TextLink
 
 type Props = {
   createdAt: string
+  episodeTitle?: string
   endTime?: number
   isLoading?: boolean
   isOfficialChapter?: boolean
@@ -56,6 +57,7 @@ export class ClipInfoView extends React.PureComponent<Props> {
   render() {
     const {
       endTime,
+      episodeTitle,
       isLoading,
       isOfficialChapter,
       isOfficialSoundBite,
@@ -69,7 +71,7 @@ export class ClipInfoView extends React.PureComponent<Props> {
 
     let { title } = this.props
     if (!title) {
-      title = isOfficialChapter ? translate('Untitled Chapter') : translate('Untitled Clip')
+      title = isOfficialChapter ? translate('Untitled Chapter') : (episodeTitle || translate('Untitled Clip'))
     }
     const sectionHeaderTitle = isOfficialChapter ? translate('Chapter Info') : translate('Clip Info')
 

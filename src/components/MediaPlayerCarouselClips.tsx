@@ -396,8 +396,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
         ...(queryFrom === PV.Filters._fromThisPodcastKey && nowPlayingItem
           ? { podcastId: nowPlayingItem.podcastId }
           : {}),
-        includeEpisode: queryFrom === PV.Filters._fromThisPodcastKey,
-        allowUntitled: true
+        includeEpisode: queryFrom === PV.Filters._fromThisPodcastKey
       })
 
       return results
