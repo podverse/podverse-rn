@@ -19,15 +19,15 @@ export const SettingsButton = (props: Props) => {
       accessibilityHint={accessibilityHint}
       accessibilityLabel={accessibilityLabel}
       hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
-      onPress={handleToggleSettings}>
+      onPress={handleToggleSettings}
+      testID={testID}>
       <View style={styles.buttonView}>
         <View>
           <Icon
             isSecondary
             name={showCheckmark ? 'check' : 'cog'}
             size={18}
-            solid
-            testID={testID} />
+            solid />
         </View>
       </View>
     </Pressable>
