@@ -279,6 +279,8 @@ const allTabs = {
     path: ''
   },
   Episodes: EpisodesNavigator,
+  'MyLibrary': { screen: MyLibraryNavigator, path: '' },
+  // Remove this after the 'My Library' string is no longer used in NAV_STACK_TABS .env vars
   'My Library': { screen: MyLibraryNavigator, path: '' },
   Clips: ClipsNavigator,
   More: { screen: MoreNavigator, path: PV.DeepLinks.Search.path }
