@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Pressable, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
 import { convertSecToHHMMSS } from '../lib/utility'
@@ -30,7 +30,7 @@ export const TimeInput = (props: Props) => {
 
   return (
     <View style={styles.timeInputWrapper}>
-      <TouchableWithoutFeedback
+      <Pressable
         accessibilityHint={accessibilityHint}
         accessibilityLabel={accessibilityLabel}
         accessibilityRole='button'
@@ -54,7 +54,7 @@ export const TimeInput = (props: Props) => {
             </Text>
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
       {(time || time === 0) && (
         <TouchableOpacity
           accessibilityHint={previewAccessibilityHint}

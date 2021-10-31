@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime, readableDate } from '../lib/utility'
@@ -70,7 +70,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
         transparent={transparent}
         testID={testID}>
         <RNView style={styles.wrapperTop}>
-          <TouchableWithoutFeedback
+          <Pressable
             accessibilityHint={isNowPlayingItem
               ? translate('ARIA HINT - This is the now playing episode')
               : !isClip
@@ -116,7 +116,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
               </RNView>
               {!!showMoveButton && <Icon isSecondary name='arrows-alt-v' size={28} style={button.iconOnlyMedium} />}
             </RNView>
-          </TouchableWithoutFeedback>
+          </Pressable>
           {!!showRemoveButton && !!handleRemovePress && (
             <Icon
               accessibilityHint={translate('ARIA HINT - remove this item')}

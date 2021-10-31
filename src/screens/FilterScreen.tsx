@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { FlatList, Icon, NavHeaderButtonText, Text, View } from '../components'
 import { generateSections } from '../lib/filters'

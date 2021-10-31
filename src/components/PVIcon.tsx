@@ -1,5 +1,5 @@
 import React from 'react'
-import { AccessibilityRole, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { AccessibilityRole, Pressable, View as RNView } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
 import { ImportantForAccessibility } from '../lib/accessibilityHelpers'
@@ -53,7 +53,7 @@ export const PVIcon = (props: Props) => {
     <RNView importantForAccessibility={importantForAccessibility}>
       {
         !!onPress ? (
-          <TouchableWithoutFeedback
+          <Pressable
             {...(accessibilityHint ? { accessibilityHint } : {})}
             {...(accessibilityLabel ? { accessibilityLabel } : {})}
             {...(accessibilityRole ? { accessibilityRole } : {})}
@@ -68,7 +68,7 @@ export const PVIcon = (props: Props) => {
             <RNView style={wrapperStyle}>
               {icon}
             </RNView>
-          </TouchableWithoutFeedback>
+          </Pressable>
         ) : (
           <RNView
             {...(accessible ? { accessible } : {})}

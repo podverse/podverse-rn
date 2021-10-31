@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { decodeHTMLString, getTimeLabelText, readableDate, removeHTMLFromString } from '../lib/utility'
@@ -141,13 +141,13 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           importantForAccessibility='no-hide-descendants'
           style={styles.wrapperTop}>
           {(handleNavigationPress && !screenReaderEnabled) ? (
-            <TouchableWithoutFeedback
+            <Pressable
               accessible={false}
               importantForAccessibility='no-hide-descendants'
               {...(!screenReaderEnabled ? { onPress: handleNavigationPress } : {})}
               {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
               {innerTopView}
-            </TouchableWithoutFeedback>
+            </Pressable>
           ) : (
             innerTopView
           )}
@@ -159,13 +159,13 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             testID={testID} />
         </RNView>
         {(handleNavigationPress && !screenReaderEnabled) ? (
-          <TouchableWithoutFeedback
+          <Pressable
             accessible={false}
             importantForAccessibility='no-hide-descendants'
             {...(!screenReaderEnabled ? { onPress: handleNavigationPress } : {})}
             {...(testID ? { testID: `${testID}_bottom_view_nav`.prependTestId() } : {})}>
             <RNView>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</RNView>
-          </TouchableWithoutFeedback>
+          </Pressable>
         ) : (
           bottomText
         )}

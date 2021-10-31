@@ -1,5 +1,5 @@
-import { Alert, Dimensions, Linking, StyleSheet, TouchableOpacity,
-  TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Alert, Dimensions, Linking, Pressable, StyleSheet, TouchableOpacity,
+  View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
@@ -154,7 +154,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
         </RNView>
         {!!clipId && (
           <RNView style={styles.carouselChapterWrapper}>
-            <TouchableWithoutFeedback
+            <Pressable
               accessibilityHint={clipAccessibilityHint}
               accessibilityLabel={clipAccessibilityLabel}
               onPress={handlePressClipInfo}>
@@ -176,7 +176,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
                   {readableClipTime(clipStartTime, clipEndTime)}
                 </Text>
               </RNView>
-            </TouchableWithoutFeedback>
+            </Pressable>
           </RNView>
         )}
       </ScrollView>

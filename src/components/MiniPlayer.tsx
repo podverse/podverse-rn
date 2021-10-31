@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
+import { Pressable, StyleSheet, View } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
@@ -112,7 +112,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
         } */}
         {nowPlayingItem && (
           <View style={[styles.playerInnerWrapper, globalTheme.player]}>
-            <TouchableWithoutFeedback
+            <Pressable
               accessibilityLabel={nowPlayingAccessibilityLabel}
               accessibilityHint={translate('ARIA HINT - open the full player screen')}
               onPress={() => {
@@ -165,7 +165,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
                   }
                 </View>
               </View>
-            </TouchableWithoutFeedback>
+            </Pressable>
             <View style={{ flex: 0, justifyContent: 'center', height: 60, width: 60 }}>
               {!hasErrored && playButtonIcon}
               {hasErrored && (

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useGlobal, useState } from 'reactn'
 import { Icon } from '../components'
 import { translate } from '../lib/i18n'
@@ -118,7 +118,7 @@ export const OverlayAlert = () => {
           {translate('Renew Membership')}
         </Text>
       </View>
-      <TouchableWithoutFeedback
+      <Pressable
         hitSlop={{
           bottom: 4,
           left: 4,
@@ -129,7 +129,7 @@ export const OverlayAlert = () => {
         <View style={styles.iconWrapper}>
           <Icon color={PV.Colors.white} name='times' size={28} />
         </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
     </View>
   )
 }
