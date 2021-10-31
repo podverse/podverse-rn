@@ -44,7 +44,7 @@ export const SubscribeButton = (props: Props) => {
           <Text
             fontSizeLargerScale={PV.Fonts.largeSizes.md}
             fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-            testID={buttonTextTestId.prependTestId()}
+            testID={buttonTextTestId}
             style={styles.buttonText}>
             {buttonTitle.toUpperCase()}
           </Text>
