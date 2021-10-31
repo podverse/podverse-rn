@@ -75,7 +75,8 @@ export const PVIcon = (props: Props) => {
             {...(accessible && accessibilityHint ? { accessibilityHint } : { accessibilityHint: '' })}
             {...(accessible && accessibilityLabel ? { accessibilityLabel } : { accessibilityLabel: '' })}
             {...(accessible && accessibilityRole ? { accessibilityRole } : {})}
-            style={wrapperStyle}>
+            style={wrapperStyle}
+            {...(testID ? { testID: `${testID}_icon_button`.prependTestId() } : {})}>
             {icon}
           </RNView>
         )
