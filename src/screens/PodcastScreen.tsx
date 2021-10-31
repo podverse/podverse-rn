@@ -971,8 +971,7 @@ static navigationOptions = ({ navigation }) => {
       page,
       podcastId,
       includeEpisode: true,
-      ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-      allowUntitled: true
+      ...(searchAllFieldsText ? { searchAllFieldsText } : {})
     })
     return results
   }

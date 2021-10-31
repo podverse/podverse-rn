@@ -92,8 +92,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
         const results = await getMediaRefs({
           sort: querySort,
           page: queryOptions.queryPage,
-          episodeId: episode.id,
-          allowUntitled: true
+          episodeId: episode.id
         })
 
         newState.flatListData = [...flatListData, ...results[0]]
@@ -104,8 +103,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
         const results = await getMediaRefs({
           sort: filterKey,
           page: 1,
-          episodeId: episode.id,
-          allowUntitled: true
+          episodeId: episode.id
         })
 
         newState.flatListData = [...flatListData, ...results[0]]
