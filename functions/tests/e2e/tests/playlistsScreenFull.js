@@ -11,7 +11,7 @@ const test_playlistsScreenFull = async () => {
   
     // Log In Premium
 
-//Login
+// Login
 await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
 await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_sign_up_button')
 await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
@@ -31,14 +31,14 @@ try {
 
     // Playlists Screen
   await elementByIdAndClickAndTest('my_library_screen_Playlists_table_cell_wrapper', 'playlists_screen_view')
-  await elementByIdAndClickAndTest('playlists_screen_playlist_section-my-playlists_item_0', 'playlist_screen_view')
-  await elementByIdAndClickAndTest('playlist_screen_edit_icon_button', 'edit_playlist_screen_view')
-  await elementByIdAndClickAndTest('edit_playlist_screen_nav_header_button_text', 'edit_playlist_screen_view')
-  await sendKeysToElementById('edit_playlist_screen_title_text_input', 'Edited Playlist Title', 'Edit Playlist Title')
-  await elementByIdAndClickAndTest('edit_playlist_screen_queue_item_0_remove_button_icon_button', 'edit_playlist_screen_view')
-  await elementByIdAndClickAndTest('edit_playlist_screen_nav_header_button_text', 'edit_playlist_screen_view')
+  // await elementByIdAndClickAndTest('playlists_screen_playlist_section-my-playlists_item_0', 'playlist_screen_view')
+  // await elementByIdAndClickAndTest('playlist_screen_edit_icon_button', 'edit_playlist_screen_view')
+  // await elementByIdAndClickAndTest('edit_playlist_screen_nav_header_button_text', 'edit_playlist_screen_view')
+  // await sendKeysToElementById('edit_playlist_screen_title_text_input', 'Edited Playlist Title', 'Edit Playlist Title')
+  // await elementByIdAndClickAndTest('edit_playlist_screen_queue_item_0_remove_button_icon_button', 'edit_playlist_screen_view')
+  // await elementByIdAndClickAndTest('edit_playlist_screen_nav_header_button_text', 'edit_playlist_screen_view')
 
-  driver.back()
+  // driver.back()
   driver.back()
 
   driver.back()  

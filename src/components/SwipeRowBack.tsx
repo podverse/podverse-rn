@@ -1,8 +1,8 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { ActivityIndicator } from '.'
+import { ActivityIndicator, PressableWithOpacity } from '.'
 
 type Props = {
   accessibilityLabel?: string
@@ -18,7 +18,7 @@ export const SwipeRowBack = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
-    <TouchableOpacity
+    <PressableWithOpacity
       accessible={false}
       importantForAccessibility='no'
       onPress={onPress}
@@ -38,7 +38,7 @@ export const SwipeRowBack = (props: Props) => {
           {text}
         </Text>
       )}
-    </TouchableOpacity>
+    </PressableWithOpacity>
   )
 }
 

@@ -81,7 +81,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       selectedCategory: null,
       selectedCategorySub: null,
       selectedFilterLabel: hasSubscribedPodcasts ? translate('Subscribed') : translate('All Podcasts'),
-      selectedSortLabel: hasSubscribedPodcasts ? translate('recent') : translate('top - week'),
+      selectedSortLabel: hasSubscribedPodcasts ? translate('recent') : translate('top – week'),
       showActionSheet: false
     }
 

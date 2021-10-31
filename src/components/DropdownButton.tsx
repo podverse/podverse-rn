@@ -1,8 +1,8 @@
 import React from 'react'
-import { TouchableOpacity, View } from 'react-native'
+import { View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { Icon, Text } from '.'
+import { Icon, PressableWithOpacity, Text } from '.'
 
 type DropdownButtonProps = {
   accessible?: boolean;
@@ -29,7 +29,7 @@ export const DropdownButton = (props: DropdownButtonProps) => {
   }
 
   return (
-    <TouchableOpacity
+    <PressableWithOpacity
       accessible={accessible}
       accessibilityHint={accessibilityHint}
       accessibilityLabel={sortLabel}
@@ -57,7 +57,7 @@ export const DropdownButton = (props: DropdownButtonProps) => {
           size={14}
           style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]} />
       </View>
-    </TouchableOpacity>
+    </PressableWithOpacity>
   )
 }
 

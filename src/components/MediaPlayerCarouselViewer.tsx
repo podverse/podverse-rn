@@ -1,11 +1,11 @@
-import { Alert, Dimensions, Linking, StyleSheet, TouchableOpacity,
-  TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Alert, Dimensions, Linking, Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfVideoFileType } from '../state/actions/playerVideo'
-import { ActivityIndicator, FastImage, PVVideo, ScrollView, Text, TextTicker } from './'
+import { ActivityIndicator, FastImage, PressableWithOpacity, PVVideo, ScrollView,
+  Text, TextTicker } from './'
 
 type Props = {
   handlePressClipInfo: any
@@ -142,19 +142,19 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
           }
           {
             !checkIfVideoFileType(nowPlayingItem) && (
-              <TouchableOpacity
+              <PressableWithOpacity
                 accessible={false}
                 activeOpacity={1}
                 {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
                 style={styles.imageContainer}>
                 <FastImage key={imageUrl} source={imageUrl} styles={imageStyles} />
-              </TouchableOpacity>
+              </PressableWithOpacity>
             )
           }
         </RNView>
         {!!clipId && (
           <RNView style={styles.carouselChapterWrapper}>
-            <TouchableWithoutFeedback
+            <Pressable
               accessibilityHint={clipAccessibilityHint}
               accessibilityLabel={clipAccessibilityLabel}
               onPress={handlePressClipInfo}>
@@ -176,7 +176,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
                   {readableClipTime(clipStartTime, clipEndTime)}
                 </Text>
               </RNView>
-            </TouchableWithoutFeedback>
+            </Pressable>
           </RNView>
         )}
       </ScrollView>

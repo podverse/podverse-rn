@@ -1,7 +1,8 @@
 import React from 'react'
-import { Text, TouchableOpacity } from 'react-native'
+import { Text } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
+import { PressableWithOpacity } from '.'
 
 type Props = {
   accessible?: boolean
@@ -30,7 +31,7 @@ export const TextLink = (props: Props) => {
   }
 
   return (
-    <TouchableOpacity
+    <PressableWithOpacity
       accessible={accessible}
       accessibilityHint={accessibilityHint}
       accessibilityLabel={text}
@@ -43,6 +44,6 @@ export const TextLink = (props: Props) => {
         style={[style, globalTheme.link, textInputStyle]}>
         {text}
       </Text>
-    </TouchableOpacity>
+    </PressableWithOpacity>
   )
 }

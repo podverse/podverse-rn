@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
+import { Pressable, StyleSheet, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { convertSecToHHMMSS } from '../lib/utility'
 import { PV } from '../resources'
@@ -72,12 +72,12 @@ export const NumberSelectorWithText = (props: Props) => {
     <View style={styles.outerWrapper}>
       {!!wrapperOnPress
         ? (
-          <TouchableWithoutFeedback
+          <Pressable
             accessibilityHint={accessibilityHint}
             accessibilityLabel={accessibilityLabel}
             onPress={wrapperOnPress}>
             {textInput}
-          </TouchableWithoutFeedback>
+          </Pressable>
         )
         : textInput
       }

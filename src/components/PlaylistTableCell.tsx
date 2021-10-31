@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { ActivityIndicator, Text, View } from './'
@@ -37,7 +37,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
     const accessibilityLabel = `${trimmedTitle}, ${itemsCount} ${createdBy ? `,${byText}` : ''}`
 
     return (
-      <TouchableWithoutFeedback
+      <Pressable
         accessibilityHint={accessibilityHint}
         accessibilityLabel={accessibilityLabel}
         onPress={onPress}
@@ -78,7 +78,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
             {isSaving && <ActivityIndicator styles={styles.activityIndicator} testID={testID} />}
           </RNView>
         </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
     )
   }
 }

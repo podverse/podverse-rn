@@ -19,7 +19,7 @@ const test_nonLoggedInScreensDidLoadTests = async () => {
 
   //   // My Library Screen
   await elementByIdAndClickAndTest('tab_my_library_screen', 'my_library_screen_view')
-    //TODO
+    // TODO
   await elementByIdAndClickAndTest('my_library_screen_Downloads_table_cell_wrapper', 'downloads_screen_view', noTestLabel, goBackKey)
   await elementByIdAndClickAndTest('my_library_screen_Queue_table_cell_wrapper', 'queue_screen_view', noTestLabel, goBackKey)
   await elementByIdAndClickAndTest('my_library_screen_History_table_cell_wrapper', 'history_screen_view', noTestLabel, goBackKey)
@@ -38,9 +38,10 @@ const test_nonLoggedInScreensDidLoadTests = async () => {
   await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_safe_area_view')
   await elementByIdClick('auth_screen_reset_password_button')
   await driver.back()
-  await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_safe_area_view')
-  await elementByIdClick('auth_screen_sign_up_button')
-  await driver.back()
+  // TODO TEST:
+  // await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_safe_area_view')
+  // await elementByIdClick('auth_screen_sign_up_button')
+  // await driver.back()
   await elementByIdAndClickAndTest('more_screen_Membership_table_cell_wrapper', 'membership_screen_view', noTestLabel, goBackKey)
   await elementByIdAndClickAndTest('more_screen_About_table_cell_wrapper', 'about_screen_view', noTestLabel, goBackKey)
   await performScroll(scrollDownKey, 2)

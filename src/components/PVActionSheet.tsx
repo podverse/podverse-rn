@@ -1,10 +1,10 @@
-import { Animated, Modal, Text, TouchableHighlight, View, TouchableOpacity } from 'react-native'
+import { Animated, Modal, Text, TouchableHighlight, View } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { actionSheetStyles } from '../styles'
-import { ActivityIndicator } from '.'
+import { ActivityIndicator, PressableWithOpacity } from '.'
 
 type Props = {
   handleCancelPress?: any
@@ -187,7 +187,7 @@ export class PVActionSheet extends React.Component<Props, State> {
 
     return (
       <Modal transparent visible={showModal} onRequestClose={this.attemptClose}>
-        <TouchableOpacity
+        <PressableWithOpacity
           accessible={false}
           activeOpacity={1}
           onPress={this.attemptClose}
@@ -211,7 +211,7 @@ export class PVActionSheet extends React.Component<Props, State> {
             )}
             {buttons}
           </Animated.View>
-        </TouchableOpacity>
+        </PressableWithOpacity>
       </Modal>
     )
   }
