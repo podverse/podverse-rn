@@ -47,25 +47,25 @@ const runTests = async (customCapabilities) => {
     await test_initTests(capabilities)
     await test_launchApp()
 
-    // await test_nonLoggedInScreensDidLoadTests()
-    // await test_loggedInScreensDidLoadTests()
+    await test_nonLoggedInScreensDidLoadTests()
+    await test_loggedInScreensDidLoadTests()
 
-    await test_podcastScreenFull()         
-    // await test_episodesScreenFull()
-    // await test_episodeScreenFull()
-    // await test_clipsScreenFull()
-    // await test_profilesScreenFull()
-    // await test_myProfileScreenFull()
-    // await test_playlistsScreenFull()
-    // await test_settingsScreenFull()
-    // await test_searchScreenDidLoad()
-    // await test_tableSectionSelectors()
-    // await test_nonLoggedInMediaPlayer()
-    // await test_queueScreenEditFeature()
-    // await test_historyScreenEditFeature()
-    // await test_fundingPresent()
-    // await test_LNPaySetup()
-    // await test_bitcoinWallet()
+    await test_podcastScreenFull()
+    await test_episodesScreenFull()
+    await test_episodeScreenFull()
+    await test_clipsScreenFull()
+    await test_profilesScreenFull()
+    await test_myProfileScreenFull()
+    await test_playlistsScreenFull()
+    await test_settingsScreenFull()
+    await test_searchScreenDidLoad()
+    await test_tableSectionSelectors()
+    // await test_nonLoggedInMediaPlayer()       // TODO: Nav Share
+    await test_queueScreenEditFeature()
+    await test_historyScreenEditFeature()
+    // await test_fundingPresent()               // TODO: fail on search screen podcast select
+    // await test_LNPaySetup()                   // TODO: fail on create wallet button
+    // await test_bitcoinWallet()                // TODO: fail on search screen podcast select
 
 
 
