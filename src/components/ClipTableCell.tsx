@@ -1,7 +1,7 @@
 import { Alert, Linking, Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { readableClipTime, readableDate } from '../lib/utility'
+import { prefixClipLabel, readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { images } from '../styles'
 import { IndicatorDownload } from './IndicatorDownload'
@@ -44,7 +44,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const hasChapterCustomImage = item?.hasCustomImage
     const startTime = item.startTime
     const endTime = item.endTime
-    const title = item?.title?.trim() || item?.episode?.title?.trim() || translate('Untitled Clip')
+    const title = item?.title?.trim() || prefixClipLabel(item?.episode?.title)
     const episodeTitle = item?.episode?.title?.trim() || translate('Untitled Episode')
     const podcastTitle = item?.episode?.podcast?.title?.trim() || translate('Untitled Podcast')
     const clipTime = readableClipTime(startTime, endTime)
