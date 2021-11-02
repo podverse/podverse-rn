@@ -14,6 +14,18 @@ const test_settingsScreenFull = async () => {
   await elementByIdToggle('settings_screen_offline_mode_switch')
   // await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
 
+  await elementByIdAndClickAndTest('settings_screen_downloads_table_cell_wrapper', 'settings_screen_downloads_view', goBackKey)
+  // await elementByIdAndClickAndTest('settings_screen_history_table_cell_wrapper', 'settings_screen_history_view', goBackKey)
+  // await elementByIdAndClickAndTest('settings_screen_player_table_cell_wrapper', 'settings_screen_player_view', goBackKey)
+  // await elementByIdAndClickAndTest('settings_screen_queue_table_cell_wrapper', 'settings_screen_queue_view', goBackKey)
+  // await elementByIdAndClickAndTest('settings_screen_tracking_table_cell_wrapper', 'settings_screen_tracking_view', goBackKey)
+  // await elementByIdAndClickAndTest('settings_screen_visual_design_table_cell_wrapper', 'settings_screen_visual_design_view', goBackKey)
+
+
+
+
+
+
   // if (process.env.DEVICE_TYPE !== 'F-Droid') {
   //   await elementByIdHasText('settings_screen_listen_tracking_text', 'Listen Tracking Enabled')
   //   await elementByIdClick('settings_screen_listen_tracking_switch')
