@@ -23,7 +23,7 @@ type State = {
   showDeleteAccountDialog?: boolean
 }
 
-const testIDPrefix = 'settings_screen_advanced'
+const testIDPrefix = 'settings_screen_account'
 
 export class SettingsScreenAccount extends React.Component<Props, State> {
 
