@@ -6,6 +6,7 @@ import Config from 'react-native-config'
 import { getUserAgent } from 'react-native-device-info'
 import InAppReview from 'react-native-in-app-review'
 import { PV } from '../resources'
+import { translate } from './i18n'
 
 const cheerio = require('react-native-cheerio')
 
@@ -703,4 +704,14 @@ export const getMediaRefStartPosition = (clipStartTime?: number | null, sliderWi
   }
 
   return clipStartTimePosition
+}
+
+export const prefixClipLabel = (episodeTitle?: string) => {
+  let title = ''
+  if (episodeTitle) {
+    title = `(${translate('Clip')}) ${episodeTitle}`.trim()
+  } else {
+    title = translate('Untitled Clip')
+  }
+  return title
 }

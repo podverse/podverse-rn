@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native'
 import React, { Fragment } from 'reactn'
 import { translate } from '../lib/i18n'
-import { readableClipTime, safelyUnwrapNestedVariable } from '../lib/utility'
+import { prefixClipLabel, readableClipTime, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { playerGetPosition, playerRestartNowPlayingItemClip } from '../services/player'
 import { button, core } from '../styles'
@@ -71,7 +71,7 @@ export class ClipInfoView extends React.PureComponent<Props> {
 
     let { title } = this.props
     if (!title) {
-      title = isOfficialChapter ? translate('Untitled Chapter') : (episodeTitle || translate('Untitled Clip'))
+      title = isOfficialChapter ? translate('Untitled Chapter') : prefixClipLabel(episodeTitle)
     }
     const sectionHeaderTitle = isOfficialChapter ? translate('Chapter Info') : translate('Clip Info')
 
