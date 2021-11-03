@@ -14,12 +14,12 @@ const test_settingsScreenFull = async () => {
   await elementByIdToggle('settings_screen_offline_mode_switch')
   // await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
 
-  await elementByIdAndClickAndTest('settings_screen_downloads_table_cell_wrapper', 'settings_screen_downloads_view', goBackKey)
-  // await elementByIdAndClickAndTest('settings_screen_history_table_cell_wrapper', 'settings_screen_history_view', goBackKey)
-  // await elementByIdAndClickAndTest('settings_screen_player_table_cell_wrapper', 'settings_screen_player_view', goBackKey)
-  // await elementByIdAndClickAndTest('settings_screen_queue_table_cell_wrapper', 'settings_screen_queue_view', goBackKey)
-  // await elementByIdAndClickAndTest('settings_screen_tracking_table_cell_wrapper', 'settings_screen_tracking_view', goBackKey)
-  // await elementByIdAndClickAndTest('settings_screen_visual_design_table_cell_wrapper', 'settings_screen_visual_design_view', goBackKey)
+  await elementByIdAndClickAndTest('settings_screen_downloads_table_cell_wrapper', 'settings_screen_downloads_view', 'Downloads', goBackKey)
+  // await elementByIdAndClickAndTest('settings_screen_history_table_cell_wrapper', 'settings_screen_history_view', 'History', goBackKey)
+  await elementByIdAndClickAndTest('settings_screen_player_table_cell_wrapper', 'settings_screen_player_view','Player', goBackKey)
+  await elementByIdAndClickAndTest('settings_screen_queue_table_cell_wrapper', 'settings_screen_queue_view','Queue', goBackKey)
+  await elementByIdAndClickAndTest('settings_screen_tracking_table_cell_wrapper', 'settings_screen_tracking_view','Tracking', goBackKey)
+  await elementByIdAndClickAndTest('settings_screen_visual_design_table_cell_wrapper', 'settings_screen_visual_view','Visual Design', goBackKey)
 
 
 
