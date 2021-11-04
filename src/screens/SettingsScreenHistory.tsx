@@ -19,7 +19,7 @@ type State = {
   isLoading?: boolean
 }
 
-const testIDPrefix = 'settings_screen_downloads'
+const testIDPrefix = 'settings_screen_history'
 
 export class SettingsScreenHistory extends React.Component<Props, State> {
 
