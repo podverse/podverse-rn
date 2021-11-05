@@ -195,6 +195,10 @@ export const playerLoadNowPlayingItem = async (
   previousNowPlayingItem: NowPlayingItem | null
 ) => {
   try {
+    if(!item) {
+      return
+    }
+
     if (!checkIfVideoFileType(item)) {
       audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
     }
@@ -215,8 +219,6 @@ export const playerLoadNowPlayingItem = async (
   } catch (error) {
     console.log('playerLoadNowPlayingItem service error', error)
   }
-
-  return item
 }
 
 // Sometimes the duration is not immediately available for certain episodes.
@@ -419,8 +421,6 @@ export const playerPlayNextFromQueue = async () => {
 //   }
 //   return isIdle
 // }
-
-export const playerGetCurrentLoadedT
 
 export const playerSyncPlayerWithQueue = async () => {
   const playerType = await playerCheckActiveType()
