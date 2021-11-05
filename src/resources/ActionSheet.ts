@@ -7,7 +7,7 @@ import { getGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { navigateToEpisodeScreenWithItem,
   navigateToEpisodeScreenWithItemInCurrentStack, navigateToPodcastScreenWithItem } from '../lib/navigate'
-import { safelyUnwrapNestedVariable } from '../lib/utility'
+import { prefixClipLabel, safelyUnwrapNestedVariable } from '../lib/utility'
 import { IActionSheet } from '../resources/Interfaces'
 import { playerGetPosition } from '../services/player'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
@@ -235,8 +235,8 @@ const mediaMoreButtons = (
 
             if (item.clipId) {
               url = urlsWeb.clip + item.clipId
-              title = item.clipTitle ? `${item.clipTitle} – ` : ''
-              title += `${item.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
+              title = item.clipTitle ? item.clipTitle : prefixClipLabel(item.episodeTitle)
+              title += ` – ${item.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
             } else if (item.episodeId) {
               url = urlsWeb.episode + item.episodeId
               title += `${item.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`

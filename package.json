@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "3.3.3",
+  "version": "3.3.4",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -19,11 +19,11 @@
     "lint": "eslint --fix 'src/**/*.{ts,tsx}'",
     "format": "prettier --write src/**/*.ts*",
     "stage:resetDatabase": "node ./scripts/_resetDatabase.js",
-    "test:e2e:android": "export $(cat .env | xargs) && DEVICE_TYPE=Android BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./functions/tests/e2e/index.js",
-    "test:w:e2e:android": "BROWSERSTACK_TEST_ENV='local' DEVICE_TYPE='Android' node ./functions/tests/e2e/index.js",
-    "test:e2e:fdroid": "export $(cat .env | xargs) && DEVICE_TYPE=F-Droid BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./functions/tests/e2e/index.js",
-    "test:w:e2e:fdroid": "BROWSERSTACK_TEST_ENV='local' DEVICE_TYPE='F-Droid' node ./functions/tests/e2e/index.js",
-    "test:e2e:ios": "export $(cat .env | xargs) && DEVICE_TYPE=iOS BROWSERSTACK_DEVICE='iPhone 12 Pro Max' BROWSERSTACK_OS_VERSION='13.0' node ./functions/tests/e2e/index.js",
+    "test:e2e:android": "export $(cat .env | xargs) && DEVICE_TYPE=android BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./functions/tests/e2e/index.js",
+    "test:w:e2e:android": "BROWSERSTACK_TEST_ENV='local' DEVICE_TYPE='android' node ./functions/tests/e2e/index.js",
+    "test:e2e:fdroid": "export $(cat .env | xargs) && DEVICE_TYPE=f-droid BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./functions/tests/e2e/index.js",
+    "test:w:e2e:fdroid": "BROWSERSTACK_TEST_ENV='local' DEVICE_TYPE='f-droid' node ./functions/tests/e2e/index.js",
+    "test:e2e:ios": "export $(cat .env | xargs) && DEVICE_TYPE=ios BROWSERSTACK_DEVICE='iPhone 12 Pro Max' BROWSERSTACK_OS_VERSION='13.0' node ./functions/tests/e2e/index.js",
     "postinstall": "patch-package",
     "version_update": "babel-node ./scripts/update_version.js"
   },
@@ -128,7 +128,7 @@
     "@types/react-native": "0.64.2",
     "@types/react-native-background-timer": "2.0.0",
     "@types/react-native-dialog": "8.0.0",
-    "@types/react-native-share": "3.3.3",
+    "@types/react-native-share": "3.3.4",
     "@types/react-native-vector-icons": "6.4.8",
     "@types/react-navigation": "3.4.0",
     "@types/validator": "13.6.0",
