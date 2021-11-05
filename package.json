@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "3.3.3",
+  "version": "3.3.4",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -128,7 +128,7 @@
     "@types/react-native": "0.64.2",
     "@types/react-native-background-timer": "2.0.0",
     "@types/react-native-dialog": "8.0.0",
-    "@types/react-native-share": "3.3.3",
+    "@types/react-native-share": "3.3.4",
     "@types/react-native-vector-icons": "6.4.8",
     "@types/react-navigation": "3.4.0",
     "@types/validator": "13.6.0",
