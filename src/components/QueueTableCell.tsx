@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { readableClipTime, readableDate } from '../lib/utility'
+import { prefixClipLabel, readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button, images } from '../styles'
 import { FastImage, Icon, Text, View } from '.'
@@ -50,7 +50,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
       transparent
     } = this.props
 
-    const clipTitle = this.props.clipTitle || episodeTitle || translate('Untitled Clip')
+    const clipTitle = this.props.clipTitle || prefixClipLabel(episodeTitle)
 
     const viewStyle = isActive
       ? [styles.wrapper, styles.wrapperActive, hideDivider ? { borderBottomWidth: 0 } : {}]

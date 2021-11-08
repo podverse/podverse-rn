@@ -21,6 +21,7 @@ import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import {
   overrideImageUrlWithChapterImageUrl,
+  prefixClipLabel,
   replaceLinebreaksWithBrTags,
   safelyUnwrapNestedVariable
 } from '../lib/utility'
@@ -245,8 +246,8 @@ export class PlayerScreen extends React.Component<Props> {
       )}`
     } else {
       url = this.global.urlsWeb.clip + mediaRefId
-      title = `${nowPlayingItem.clipTitle ? `${nowPlayingItem.clipTitle} – ` : ''}`
-      title += `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate(
+      title = nowPlayingItem.clipTitle ? nowPlayingItem.clipTitle : prefixClipLabel(nowPlayingItem.episodeTitle)
+      title += ` – ${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate(
         'clip shared using brandName'
       )}`
     }

@@ -1,7 +1,7 @@
 import { Alert, Dimensions, Linking, Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { readableClipTime } from '../lib/utility'
+import { prefixClipLabel, readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { ActivityIndicator, FastImage, PressableWithOpacity, PVVideo, ScrollView,
@@ -39,10 +39,12 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
 
-    const { episodeImageUrl, podcastImageUrl } = nowPlayingItem
-    let { clipId, clipEndTime, clipStartTime, clipTitle } = nowPlayingItem
+    const { clipTitle, episodeImageUrl, episodeTitle, podcastImageUrl } = nowPlayingItem
+    let { clipId, clipEndTime, clipStartTime } = nowPlayingItem
     let clipUrl = ''
     let imageUrl = episodeImageUrl || podcastImageUrl
+
+    let finalClipTitle = clipTitle ? clipTitle : prefixClipLabel(episodeTitle)
 
     // If a clip is currently playing, then load the clip info.
     // Else if a chapter is currently playing, then override with the chapter info.
@@ -52,7 +54,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       clipEndTime = currentChapter.endTime
       clipUrl = currentChapter.linkUrl
       clipStartTime = currentChapter.startTime
-      clipTitle = currentChapter.title
+      finalClipTitle = currentChapter.title
       imageUrl = currentChapter.imageUrl || episodeImageUrl || podcastImageUrl
     }
 
@@ -63,7 +65,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
 
     const textTopWrapperAccessibilityLabel = `${nowPlayingItem.episodeTitle}. ${nowPlayingItem.podcastTitle}`
     const useTo = true
-    const clipAccessibilityLabel = `${clipTitle}, ${readableClipTime(clipStartTime, clipEndTime, useTo)}`
+    const clipAccessibilityLabel = `${finalClipTitle}, ${readableClipTime(clipStartTime, clipEndTime, useTo)}`
     const clipAccessibilityHint = isOfficialChapter
       ? translate('ARIA HINT - This is the now playing chapter info')
       : translate('ARIA HINT - This is the now playing clip info')
@@ -84,7 +86,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
         numberOfLines={1}
         style={styles.clipTitle}
         testID={`${testIDPrefix}_clip_title`}>
-        {clipTitle}
+        {finalClipTitle}
       </Text>
     )
 
@@ -167,7 +169,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
                       importantForAccessibility='no-hide-descendants'
                       loop
                       styles={styles.clipTitle}
-                      textLength={clipTitle?.length}>
+                      textLength={finalClipTitle?.length}>
                       {clipTitleComponent}
                     </TextTicker>
                   ) : clipTitleComponent
