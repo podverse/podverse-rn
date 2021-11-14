@@ -76,7 +76,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
       onPress={() => this._handleItemPress(item)}
       percent={item.percent}
       podcastImageUrl={item.podcastImageUrl}
-      {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
+      {...(item?.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
       status={item.status}
       testID={`${testIDPrefix}_download_item_${index}`}
     />

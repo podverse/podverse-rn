@@ -63,7 +63,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       imageStyles.push(styles.imageBorder)
     }
 
-    const textTopWrapperAccessibilityLabel = `${nowPlayingItem.episodeTitle}. ${nowPlayingItem.podcastTitle}`
+    const textTopWrapperAccessibilityLabel = `${nowPlayingItem?.episodeTitle}. ${nowPlayingItem?.podcastTitle}`
     const useTo = true
     const clipAccessibilityLabel = `${finalClipTitle}, ${readableClipTime(clipStartTime, clipEndTime, useTo)}`
     const clipAccessibilityHint = isOfficialChapter
@@ -76,7 +76,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
         numberOfLines={1}
         style={styles.episodeTitle}
         testID={`${testIDPrefix}_episode_title`}>
-        {nowPlayingItem.episodeTitle}
+        {nowPlayingItem?.episodeTitle}
       </Text>
     )
 
@@ -130,7 +130,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
                   numberOfLines={1}
                   style={styles.podcastTitle}
                   testID='media_player_carousel_viewer_podcast_title'>
-                  {nowPlayingItem.podcastTitle}
+                  {nowPlayingItem?.podcastTitle}
                 </Text>
               </RNView>
             )
