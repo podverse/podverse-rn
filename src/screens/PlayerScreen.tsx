@@ -169,7 +169,7 @@ export class PlayerScreen extends React.Component<Props> {
     const episode = safelyUnwrapNestedVariable(() => this.global.player.episode, {})
     const podcast = safelyUnwrapNestedVariable(() => this.global.player.episode.podcast, {})
 
-    if (hasInternetConnection && episode?.id && !podcast.addByRSSPodcastFeedUrl) {
+    if (hasInternetConnection && episode?.id && !podcast?.addByRSSPodcastFeedUrl) {
       try {
         const fullEpisode = await getEpisode(episode.id)
         if (fullEpisode && fullEpisode.description) {

@@ -31,7 +31,7 @@ export const getNowPlayingItemLocally = async () => {
     const itemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
     const parsedObject = itemString ? JSON.parse(itemString) : {}
     // confirm a valid object is found in storage before returning
-    return parsedObject.clipId || parsedObject.episodeId ? parsedObject : null
+    return (parsedObject.clipId || parsedObject.episodeId) ? parsedObject : null
   } catch (error) {
     console.log('getNowPlayingItemLocally', error)
     return null

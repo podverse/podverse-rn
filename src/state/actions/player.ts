@@ -278,7 +278,7 @@ const enrichPodcastValue = async (item: NowPlayingItem) => {
     || item?.podcastValue?.recipients?.length
   ) {
     // No event emitter needed since it is immediately available to the PlayerScreen in the item
-  } else if (item.podcastIndexPodcastId) {
+  } else if (item?.podcastIndexPodcastId) {
     const podcastIndexPodcast = await getPodcastFromPodcastIndexById(item.podcastIndexPodcastId)
     const podcastIndexPodcastValueTag = podcastIndexPodcast?.feed?.value
     if (podcastIndexPodcastValueTag?.model && podcastIndexPodcastValueTag?.destinations) {

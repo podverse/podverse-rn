@@ -1,5 +1,5 @@
 import { Modal, StyleSheet } from 'react-native'
-import React, { getGlobal }  from 'reactn'
+import React from 'reactn'
 import Orientation from 'react-native-orientation-locker'
 import Video from 'react-native-video-controls'
 import { PV } from '../resources'
@@ -33,7 +33,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
   videoRef: any | null = null
   willFocusListener: any
 
-  constructor(props) {
+  constructor(props:Props) {
     super(props)
 
     this.state = {
@@ -107,7 +107,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
               if (isDownloadedFile && filePath) {
                 uri = filePath
               }
-              
+
               this.setState({
                 Authorization,
                 isDownloadedFile,
@@ -144,7 +144,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
      digging it out of the local storage. This is needed to handle going in
      and out of fullscreen mode immediately. */
   _setupNowPlayingItemPlayer = async () => {
-    const { player } = getGlobal()
+    const { player } = this.global
     const { nowPlayingItem, videoInfo } = player
     const { videoPosition: lastVideoPosition } = videoInfo
     const handlePlayAfterSeek = true
@@ -195,8 +195,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
   _handlePlaybackStateChange = () => {
     const { destroyPlayer } = this.state
     if (!destroyPlayer) {
-      const globalState = getGlobal()
-      const { playbackState } = globalState.player
+      const { playbackState } = this.global.player
       if (videoCheckIfStateIsPlaying(playbackState)) {
         this._handlePlay()
       } else {
@@ -288,7 +287,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
 
-    const pvVideo = (
+    const pvVideo = uri ? (
       <Video
         disableBack={!isFullscreen || isMiniPlayer}
         disablePlayPause={!isFullscreen || isMiniPlayer}
@@ -348,7 +347,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
         rate={1}
         ref={(ref: Video) => (this.videoRef = ref)}
         source={{
-          ...(destroyPlayer ? { uri: '' } : { uri }),
+          uri,
           headers: {
             'User-Agent': userAgent,
             ...(Authorization ? { Authorization } : {})
@@ -356,7 +355,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
         }}
         style={styles.videoMini}
       />
-    )
+    ) : null
 
     return (
       <>
