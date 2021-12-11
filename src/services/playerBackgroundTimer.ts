@@ -21,7 +21,7 @@ import {
   playerUpdateUserPlaybackPosition,
   setClipHasEnded
 } from './player'
-import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally,
+import { getNowPlayingItemFromLocalStorage,
   setNowPlayingItemLocally } from './userNowPlayingItem'
 import { removeQueueItem } from './queue'
 

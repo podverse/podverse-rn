@@ -177,7 +177,7 @@ export class AuthScreen extends React.Component<Props, State> {
           accessibilityLabel={translate('Sign Up')}
           accessibilityRole='button'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          key='moreInfo'
+          key={_signup}
           onPress={this._handleSignUpPress}
           style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}
           testID={`${testIDPrefix}_sign_up_button`}>

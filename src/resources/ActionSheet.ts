@@ -236,10 +236,10 @@ const mediaMoreButtons = (
             if (item.clipId) {
               url = urlsWeb.clip + item.clipId
               title = item.clipTitle ? item.clipTitle : prefixClipLabel(item.episodeTitle)
-              title += ` – ${item.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
+              title += ` – ${item?.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
             } else if (item.episodeId) {
               url = urlsWeb.episode + item.episodeId
-              title += `${item.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`
+              title += `${item?.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`
             }
             await Share.open({
               title,
