@@ -1,7 +1,6 @@
 import { NowPlayingItem } from 'podverse-shared'
 import { Pressable, StyleSheet, View } from 'react-native'
 import React from 'reactn'
-import { translate } from '../lib/i18n'
 import { prefixClipLabel, readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { Text } from './'

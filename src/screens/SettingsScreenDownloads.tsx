@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
-import { Alert, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
@@ -25,6 +25,7 @@ import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import * as DownloadState from '../state/actions/downloads'
 import { core } from '../styles'
+import { networkSupported } from '../lib/network'
 
 type Props = {
   navigation: any
@@ -44,12 +45,6 @@ type State = {
 const testIDPrefix = 'settings_screen_downloads'
 
 export class SettingsScreenDownloads extends React.Component<Props, State> {
-
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {}
-  }
 
   static navigationOptions = () => ({
     title: translate('Downloads')
@@ -77,18 +72,15 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
     const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
     const newValue = downloadingWifiOnly !== 'TRUE'
 
-    NetInfo.fetch().then((state) => {
-      if (!newValue && state.type === 'cellular') {
-        refreshDownloads()
-      }
-    })
-
+    const state = await NetInfo.fetch()
+    if (!newValue && networkSupported(state)) {
+      refreshDownloads()
+    }
+    
     this.setState({ downloadingWifiOnly: newValue }, () => {
-      (async () => {
         newValue
-          ? await AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
-          : await AsyncStorage.removeItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
-      })()
+          ? AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
+          : AsyncStorage.removeItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
     })
   }
 
