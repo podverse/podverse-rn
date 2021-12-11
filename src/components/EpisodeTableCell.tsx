@@ -67,7 +67,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const podcastTitleText = podcastTitle.trim()
     const episodeTitleText = title.trim()
     const pubDateText = readableDate(pubDate)
-    const timeLabel = getTimeLabelText(mediaFileDuration, duration, userPlaybackPosition, episodeCompleted)
+    const timeLabel = getTimeLabelText(mediaFileDuration, duration, userPlaybackPosition)
     const timeLabelText = timeLabel ? timeLabel : translate('Unplayed episode')
 
     const accessibilityLabel =

@@ -170,7 +170,7 @@ export const PVFlatList = (props: Props) => {
                   <RefreshControl 
                     refreshing={isRefreshing} 
                     onRefresh={onRefresh} 
-                    tintColor={globalTheme.activityIndicator.color}
+                    tintColor={globalTheme?.activityIndicator?.color}
                   />
               }
             : {})}

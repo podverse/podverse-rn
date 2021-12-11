@@ -57,8 +57,8 @@ export class MiniPlayer extends React.PureComponent<Props> {
     }
 
     let nowPlayingAccessibilityLabel = `${translate('ARIA HINT - Now playing')}. `
-    nowPlayingAccessibilityLabel += `${nowPlayingItem.podcastTitle}. `
-    nowPlayingAccessibilityLabel += `${nowPlayingItem.episodeTitle}.`
+    nowPlayingAccessibilityLabel += `${nowPlayingItem?.podcastTitle}. `
+    nowPlayingAccessibilityLabel += `${nowPlayingItem?.episodeTitle}.`
 
     const episodeTitleComponent = (
       <Text
@@ -67,7 +67,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
         numberOfLines={1}
         style={[styles.episodeTitle, globalTheme.playerText]}
         testID={`${testIDPrefix}_episode_title`}>
-        {nowPlayingItem.episodeTitle}
+        {nowPlayingItem?.episodeTitle}
       </Text>
     )
 
@@ -149,7 +149,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
                     numberOfLines={1}
                     style={[styles.podcastTitle, globalTheme.playerText]}
                     testID={`${testIDPrefix}_podcast_title`}>
-                    {nowPlayingItem.podcastTitle}
+                    {nowPlayingItem?.podcastTitle}
                   </Text>
                   {
                     !screenReaderEnabled ? (

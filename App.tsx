@@ -21,8 +21,7 @@ import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 
-LogBox.ignoreLogs(['Warning: componentWillUpdate'])
-LogBox.ignoreAllLogs(true)
+LogBox.ignoreLogs(['EventEmitter.removeListener', "Require cycle"])
 
 type Props = any
 
