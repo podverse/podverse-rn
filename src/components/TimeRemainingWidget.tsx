@@ -100,7 +100,7 @@ export const TimeRemainingWidget = (props: Props) => {
         const playbackState = await playerGetState()
         const isPlaying = playerCheckIfStateIsPlaying(playbackState)
         if (!isPlaying) {
-          playerHandlePlayWithUpdate()
+          await playerHandlePlayWithUpdate()
         }
         setNowPlayingItem(convertedItem, convertedItem.clipStartTime)
         PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)

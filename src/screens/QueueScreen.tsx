@@ -265,7 +265,7 @@ export class QueueScreen extends React.Component<Props, State> {
             }
           }}
           podcastImageUrl={item.podcastImageUrl}
-          {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
+          {...(item?.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
           showRemoveButton={isEditing}
           testID={`${testIDPrefix}_history_item_${index}`}
           transparent={isTransparent}
@@ -289,7 +289,7 @@ export class QueueScreen extends React.Component<Props, State> {
         isActive={isActive}
         onPress={() => this._onPressRow(index)}
         podcastImageUrl={item.podcastImageUrl}
-        {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
+        {...(item?.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
         showMoveButton={!isEditing}
         showRemoveButton={isEditing}
         testID={`${testIDPrefix}_queue_item_${index}`}
@@ -388,13 +388,13 @@ export class QueueScreen extends React.Component<Props, State> {
                   <QueueTableCell
                     clipEndTime={nowPlayingItem?.clipEndTime}
                     clipStartTime={nowPlayingItem?.clipStartTime}
-                    {...(nowPlayingItem.clipTitle ? { clipTitle: nowPlayingItem.clipTitle } : {})}
-                    {...(nowPlayingItem.episodePubDate ? { episodePubDate: nowPlayingItem.episodePubDate } : {})}
-                    {...(nowPlayingItem.episodeTitle ? { episodeTitle: nowPlayingItem.episodeTitle } : {})}
+                    {...(nowPlayingItem?.clipTitle ? { clipTitle: nowPlayingItem.clipTitle } : {})}
+                    {...(nowPlayingItem?.episodePubDate ? { episodePubDate: nowPlayingItem.episodePubDate } : {})}
+                    {...(nowPlayingItem?.episodeTitle ? { episodeTitle: nowPlayingItem.episodeTitle } : {})}
                     hideDivider
                     isNowPlayingItem
-                    podcastImageUrl={nowPlayingItem.podcastImageUrl}
-                    {...(nowPlayingItem.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
+                    podcastImageUrl={nowPlayingItem?.podcastImageUrl}
+                    {...(nowPlayingItem?.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
                     testID={`${testIDPrefix}_now_playing_header`}
                     transparent={isTransparent}
                   />

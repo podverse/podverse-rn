@@ -28,7 +28,7 @@ import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCate
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRef } from '../services/mediaRef'
-import { getNowPlayingItem } from '../services/userNowPlayingItem'
+import { getNowPlayingItem, getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { parseAllAddByRSSPodcasts } from '../services/parser'
 import { playerUpdateUserPlaybackPosition } from '../services/player'
 import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudio'
