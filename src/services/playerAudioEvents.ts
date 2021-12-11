@@ -216,15 +216,22 @@ module.exports = async () => {
         Maybe Google Maps fires off it's own remote-duck event
         and we don't need alwaysPauseOnInterruption true on Android?...
       */
-      if (Platform.OS === 'android') {
-        if (permanent) {
-          audioHandleStop()
-        } else if (paused) {
-          audioHandlePauseWithUpdate()
-        } else if (!permanent) {
-          audioHandlePlayWithUpdate()
-        }
-      }
+      /*
+        2021-12-10 It appears this code below was causing the player to resume playing
+        when it should be paused but a text notification is received.
+        By commenting out this code, apps like Google Maps may not do remote-duck
+        handling properly, but the text notification bug makes the app unusable
+        so I'm commenting it out for now.
+      */
+      // if (Platform.OS === 'android') {
+      //   if (permanent) {
+      //     audioHandleStop()
+      //   } else if (paused) {
+      //     audioHandlePauseWithUpdate()
+      //   } else if (!permanent) {
+      //     audioHandlePlayWithUpdate()
+      //   }
+      // }
 
       /*
         iOS triggers remote-duck with permanent: true when the player app returns to foreground,
