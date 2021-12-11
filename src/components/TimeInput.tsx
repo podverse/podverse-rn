@@ -21,8 +21,17 @@ type Props = {
 }
 
 export const TimeInput = (props: Props) => {
-  const { accessibilityHint, handlePreview, handleSetTime, labelText, placeholder,
-    previewAccessibilityHint, previewAccessibilityLabel, testID, time } = props
+  const {
+    accessibilityHint,
+    handlePreview,
+    handleSetTime,
+    labelText,
+    placeholder,
+    previewAccessibilityHint,
+    previewAccessibilityLabel,
+    testID,
+    time
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
   const text = time || time === 0 ? convertSecToHHMMSS(time) : placeholder
 
@@ -68,11 +77,7 @@ export const TimeInput = (props: Props) => {
           }}
           onPress={handlePreview}
           testID={`${testID}_time_input_preview_button`.prependTestId()}>
-          <Icon
-            color={globalTheme.dropdownButtonText.color}
-            name='play'
-            size={20}
-            style={styles.previewIcon} />
+          <Icon color={globalTheme.dropdownButtonText.color} name='play' size={20} style={styles.previewIcon} />
         </PressableWithOpacity>
       )}
     </View>

@@ -57,7 +57,7 @@ const testIDPrefix = 'clips_screen'
 
 export class ClipsScreen extends React.Component<Props, State> {
   shouldLoad: boolean
-  
+
   constructor(props: Props) {
     super(props)
 
@@ -65,7 +65,7 @@ export class ClipsScreen extends React.Component<Props, State> {
 
     const { subscribedPodcastIds } = this.global.session.userInfo
     const hasSubscribedPodcasts = subscribedPodcastIds && subscribedPodcastIds.length > 0
-    
+
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
@@ -83,7 +83,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       selectedSortLabel: translate('recent'),
       showActionSheet: false
     }
-    
+
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
@@ -183,7 +183,7 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   _onEndReached = ({ distanceFromEnd }) => {
     const { endOfResultsReached, queryFrom, queryPage = 1 } = this.state
-    if (!endOfResultsReached && this.shouldLoad) {      
+    if (!endOfResultsReached && this.shouldLoad) {
       if (distanceFromEnd > -1) {
         this.shouldLoad = false
 
@@ -242,7 +242,8 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   _ItemSeparatorComponent = () => <Divider />
 
-  _handleCancelPress = () => new Promise((resolve) => {
+  _handleCancelPress = () =>
+    new Promise((resolve) => {
       this.setState({ showActionSheet: false }, resolve)
     })
 
@@ -256,15 +257,15 @@ export class ClipsScreen extends React.Component<Props, State> {
   _renderClipItem = ({ item, index }) => {
     const { navigation } = this.props
     return item?.episode?.id ? (
-        <ClipTableCell
-          item={item}
-          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.episode.podcast))}
-          navigation={navigation}
-          showEpisodeInfo
-          showPodcastInfo
-          testID={`${testIDPrefix}_clip_item_${index}`}
-        />
-      ) : null
+      <ClipTableCell
+        item={item}
+        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.episode.podcast))}
+        navigation={navigation}
+        showEpisodeInfo
+        showPodcastInfo
+        testID={`${testIDPrefix}_clip_item_${index}`}
+      />
+    ) : null
   }
 
   _handleSearchBarClear = () => {
@@ -375,12 +376,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     const shouldPlay = true
     const forceUpdateOrderDate = false
     const setCurrentItemNextInQueue = true
-    await playerLoadNowPlayingItem(
-      selectedItem,
-      shouldPlay,
-      forceUpdateOrderDate,
-      setCurrentItemNextInQueue
-    )
+    await playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   render() {
@@ -414,9 +410,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     const showOfflineMessage = offlineModeEnabled
 
     return (
-      <View
-        style={styles.view}
-        testID={`${testIDPrefix}_view`}>
+      <View style={styles.view} testID={`${testIDPrefix}_view`}>
         <TableSectionSelectors
           filterScreenTitle={translate('Clips')}
           handleSelectCategoryItem={(x: any) => this._selectCategory(x)}
@@ -496,7 +490,8 @@ export class ClipsScreen extends React.Component<Props, State> {
     )
   }
 
-  _getLoggedInUserMediaRefs = async (queryPage?: number, newSortFilter?: string) => getLoggedInUserMediaRefs({
+  _getLoggedInUserMediaRefs = async (queryPage?: number, newSortFilter?: string) =>
+    getLoggedInUserMediaRefs({
       sort: newSortFilter ? newSortFilter : PV.Filters._mostRecentKey,
       page: queryPage ? queryPage : 1,
       includePodcast: true
@@ -596,8 +591,6 @@ export class ClipsScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       }
-
-      
     } catch (error) {
       console.log('ClipsScreen queryData error:', error)
     }

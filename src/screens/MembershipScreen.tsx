@@ -23,7 +23,6 @@ type State = {
 const testIDPrefix = 'membership_screen'
 
 export class MembershipScreen extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
 
@@ -34,8 +33,8 @@ export class MembershipScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = () => ({
-      title: translate('Membership')
-    })
+    title: translate('Membership')
+  })
 
   async componentDidMount() {
     try {
@@ -107,16 +106,16 @@ export class MembershipScreen extends React.Component<Props, State> {
     const expiresAccessibilityLabel = `${translate('Expires')}: ${readableDate(expirationDate)}`
 
     return (
-      <View
-        style={styles.wrapper}
-        testID={`${testIDPrefix}_view`}>
+      <View style={styles.wrapper} testID={`${testIDPrefix}_view`}>
         {isLoading && isLoggedIn && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && isLoggedIn && !!membershipStatus && (
           <View>
             <View
               accessible
               // eslint-disable-next-line max-len
-              accessibilityHint={translate('ARIA HINT - This is the membership status of your currently logged-in account')}
+              accessibilityHint={translate(
+                'ARIA HINT - This is the membership status of your currently logged-in account'
+              )}
               accessibilityLabel={statusAccessibilityLabel}
               style={styles.textRow}>
               <Text
@@ -134,15 +133,16 @@ export class MembershipScreen extends React.Component<Props, State> {
             </View>
             <View
               accessible
-              accessibilityHint={
-                translate('ARIA HINT - This is the date your premium membership will expire unless it is renewed')}
+              accessibilityHint={translate(
+                'ARIA HINT - This is the date your premium membership will expire unless it is renewed'
+              )}
               accessibilityLabel={expiresAccessibilityLabel}
               style={styles.textRow}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 style={styles.label}
                 testID={`${testIDPrefix}_expires`}>
-                  {`${translate('Expires')}: `}
+                {`${translate('Expires')}: `}
               </Text>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -159,7 +159,8 @@ export class MembershipScreen extends React.Component<Props, State> {
                 onPress={this.handleRenewPress}
                 style={styles.subText}
                 testID={`${testIDPrefix}_renew_membership`}
-                text={translate('Renew Membership')} />
+                text={translate('Renew Membership')}
+              />
             </View>
           </View>
         )}
@@ -183,7 +184,8 @@ export class MembershipScreen extends React.Component<Props, State> {
                 onPress={this.handleSignUpPress}
                 style={styles.subText}
                 testID={`${testIDPrefix}_sign_up`}
-                text={translate('Sign Up')} />
+                text={translate('Sign Up')}
+              />
             </View>
           </View>
         )}

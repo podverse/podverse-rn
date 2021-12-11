@@ -96,7 +96,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
               addByRSSSucceeded = await addAddByRSSPodcast(url)
             }
             this.setState({ isLoading: false })
-  
+
             if (addByRSSSucceeded) {
               const podcast = await getAddByRSSPodcastLocally(url)
               this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
@@ -123,15 +123,15 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
     const { isLoading, password, showUsernameAndPassword, url, username } = this.state
 
     return (
-      <View
-        style={styles.content}
-        testID={`${testIDPrefix}_view`}>
+      <View style={styles.content} testID={`${testIDPrefix}_view`}>
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && (
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <TextInput
               // eslint-disable-next-line max-len
-              accessibilityHint={translate('ARIA HINT - Type or paste your RSS feed URL here When finished press the Save button above')}
+              accessibilityHint={translate(
+                'ARIA HINT - Type or paste your RSS feed URL here When finished press the Save button above'
+              )}
               accessibilityLabel={translate('RSS feed link')}
               autoCapitalize='none'
               autoCompleteType='off'
@@ -171,10 +171,9 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
               wrapperStyle={styles.switchWrapper}
             />
             <Divider style={styles.divider} />
-            <Text 
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm} 
-              style={[styles.text, {fontWeight: PV.Fonts.weights.bold, marginBottom: 24}]}
-            >
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              style={[styles.text, { fontWeight: PV.Fonts.weights.bold, marginBottom: 24 }]}>
               {translate('AddPodcastByRSSScreenText1')}
             </Text>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
@@ -187,7 +186,8 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
                 onPress={this._navToRequestPodcastEmail}
                 style={styles.textLink}
                 testID={`${testIDPrefix}_request_podcast`}
-                text={translate('Request Podcast')} />
+                text={translate('Request Podcast')}
+              />
             )}
           </ScrollView>
         )}
@@ -228,6 +228,6 @@ const styles = StyleSheet.create({
   },
   textLink: {
     fontSize: PV.Fonts.sizes.lg,
-    textDecorationLine:"underline"
+    textDecorationLine: 'underline'
   }
 })

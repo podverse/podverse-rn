@@ -49,13 +49,9 @@ export const HTMLScrollView = (props: Props) => {
 
   return (
     <ScrollView style={[styles.scrollView, style]} scrollEnabled={!disableScrolling}>
-      {!!sectionTitle &&
-        <TableSectionSelectors
-          disableFilter
-          hideDropdown
-          includePadding
-          selectedFilterLabel={sectionTitle} />
-      }
+      {!!sectionTitle && (
+        <TableSectionSelectors disableFilter hideDropdown includePadding selectedFilterLabel={sectionTitle} />
+      )}
       <RenderHTML
         baseStyle={styles.html}
         contentWidth={Dimensions.get('window').width}
@@ -64,7 +60,7 @@ export const HTMLScrollView = (props: Props) => {
           a: {
             onPress: (event: any, href: string, attributes: any) => {
               const startTime = parseInt(attributes && attributes['data-start-time'], 10)
-              if ((startTime || startTime === 0)) {
+              if (startTime || startTime === 0) {
                 playerHandleSeekTo(startTime)
               } else if (href) {
                 Linking.openURL(href)

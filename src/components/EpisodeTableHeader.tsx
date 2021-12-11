@@ -50,8 +50,12 @@ export const EpisodeTableHeader = (props: Props) => {
   const isDownloaded = episodeDownloaded
 
   const id = episode?.id
-  const episodeCompleted = historyItemsIndex && historyItemsIndex.episodes && id
-    && historyItemsIndex.episodes[id] && historyItemsIndex.episodes[id].completed
+  const episodeCompleted =
+    historyItemsIndex &&
+    historyItemsIndex.episodes &&
+    id &&
+    historyItemsIndex.episodes[id] &&
+    historyItemsIndex.episodes[id].completed
 
   let episodeTitleText = episode?.title?.trim()
   if (!episodeTitleText) episodeTitleText = translate('Untitled Episode')
@@ -63,8 +67,7 @@ export const EpisodeTableHeader = (props: Props) => {
   const timeLabel = getTimeLabelText(mediaFileDuration, duration, userPlaybackPosition, episodeCompleted)
   const timeLabelText = timeLabel ? timeLabel : translate('Unplayed episode')
 
-  const accessibilityLabel =
-    `${podcastTitleText}, ${episodeTitleText}, ${pubDateText}, ${timeLabelText}`
+  const accessibilityLabel = `${podcastTitleText}, ${episodeTitleText}, ${pubDateText}, ${timeLabelText}`
 
   return (
     <Pressable

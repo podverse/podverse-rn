@@ -68,7 +68,7 @@ const convertJSONSRTItemToTranscriptRow = (item: any, line: number) => {
 }
 
 const parseSRTFile = (data: string) => {
-  const pattern = /(\d{1,})\n([0-9\x3a\x2c]{12})\s\x2d\x2d\x3e\s([0-9\x3a\x2c]{12})\n((.+?)\x3a\s)?(.*)\n(.*)\n\n/gmi
+  const pattern = /(\d{1,})\n([0-9\x3a\x2c]{12})\s\x2d\x2d\x3e\s([0-9\x3a\x2c]{12})\n((.+?)\x3a\s)?(.*)\n(.*)\n\n/gim
   let matches
 
   const result = [] as TranscriptRow[]
@@ -103,7 +103,7 @@ const convertParsedSRTItemToTranscriptRow = (item: any) => {
   const endTimeHHMMSS = convertSecToHHMMSS(endTime)
   const speaker = item[4]
   let text = item[6]
-  if (item[7]) text+= ` ${item[7]}`
+  if (item[7]) text += ` ${item[7]}`
 
   return {
     line,
@@ -116,9 +116,9 @@ const convertParsedSRTItemToTranscriptRow = (item: any) => {
   } as TranscriptRow
 }
 
-const parseHTMLFile = (data: string)  => {
+const parseHTMLFile = (data: string) => {
   // eslint-disable-next-line max-len
-  const pattern = /\x3ccite\x3e(.+?)\x3a\x3c\x2fcite\x3e\n\x3ctime\x3e([0-9\x3a\x2c]{1,12})\x3c\x2ftime\x3e\n\x3cp\x3e(.+?)\x3c\x2fp\x3e/gmi
+  const pattern = /\x3ccite\x3e(.+?)\x3a\x3c\x2fcite\x3e\n\x3ctime\x3e([0-9\x3a\x2c]{1,12})\x3c\x2ftime\x3e\n\x3cp\x3e(.+?)\x3c\x2fp\x3e/gim
   let matches
 
   const result = [] as TranscriptRow[]
@@ -157,7 +157,7 @@ const convertParsedHTMLItemToTranscriptRow = (item: any, line: number) => {
 }
 
 const parseVTTFile = (data: string) => {
-  const pattern = /([0-9\x3a\x2e]{12})\s\x2d\x2d\x3e\s([0-9\x3a\x2e]{12})\n((.+?)\x3a\s)?(.*)\n(.*)\n\n/gmi
+  const pattern = /([0-9\x3a\x2e]{12})\s\x2d\x2d\x3e\s([0-9\x3a\x2e]{12})\n((.+?)\x3a\s)?(.*)\n(.*)\n\n/gim
   let matches
 
   const result = [] as any[]
@@ -191,7 +191,7 @@ const convertParsedVTTItemToTranscriptRow = (item: any, line: number) => {
   const endTimeHHMMSS = convertSecToHHMMSS(endTime)
   const speaker = item[3]
   let text = item[5]
-  if (item[6]) text+= ` ${item[6]}`
+  if (item[6]) text += ` ${item[6]}`
 
   return {
     line,

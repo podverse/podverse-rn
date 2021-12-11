@@ -43,17 +43,15 @@ export const ProfileTableHeader = (props: Props) => {
         <View style={styles.wrapper}>
           <View
             accessible
-            accessibilityHint={isLoggedInUserProfile
-              ? translate('ARIA HINT - This is your profile name')
-              : translate('ARIA HINT - This is the profile name')
+            accessibilityHint={
+              isLoggedInUserProfile
+                ? translate('ARIA HINT - This is your profile name')
+                : translate('ARIA HINT - This is the profile name')
             }
             accessibilityLabel={name}
             style={styles.textWrapper}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                numberOfLines={1}
-                style={styles.name}>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.name}>
                 {name}
               </Text>
             </View>
@@ -65,7 +63,8 @@ export const ProfileTableHeader = (props: Props) => {
               name='pencil-alt'
               onPress={() => handleEditPress(id)}
               size={26}
-              style={button.iconOnlyMedium} />
+              style={button.iconOnlyMedium}
+            />
           )}
           {!!handleToggleSubscribe && (
             <SubscribeButton
@@ -108,7 +107,7 @@ const styles = StyleSheet.create({
   textWrapper: {
     flexDirection: 'column',
     justifyContent: 'center',
-    flex: 1,
+    flex: 1
   },
   wrapper: {
     alignItems: 'center',

@@ -5,20 +5,27 @@ import { PV } from '../resources'
 import { Icon, PressableWithOpacity, Text } from '.'
 
 type DropdownButtonProps = {
-  accessible?: boolean;
-  accessibilityHint?: string;
-  accessibilityLabel?: boolean;
-  disableFilter?: boolean;
-  importantForAccessibility?: "auto" | "yes" | "no" | "no-hide-descendants" | undefined;
-  sortLabel?: string;
-  testID?: string;
-  transparent?: any;
-  onPress?: () => unknown;
+  accessible?: boolean
+  accessibilityHint?: string
+  accessibilityLabel?: boolean
+  disableFilter?: boolean
+  importantForAccessibility?: 'auto' | 'yes' | 'no' | 'no-hide-descendants' | undefined
+  sortLabel?: string
+  testID?: string
+  transparent?: any
+  onPress?: () => unknown
 }
 
 export const DropdownButton = (props: DropdownButtonProps) => {
-  const { accessible = true, accessibilityHint, disableFilter, importantForAccessibility,
-    onPress, sortLabel, testID } = props
+  const {
+    accessible = true,
+    accessibilityHint,
+    disableFilter,
+    importantForAccessibility,
+    onPress,
+    sortLabel,
+    testID
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
   const dropdownStyle = disableFilter ? { opacity: 0.0 } : {}
 
@@ -34,7 +41,7 @@ export const DropdownButton = (props: DropdownButtonProps) => {
       accessibilityHint={accessibilityHint}
       accessibilityLabel={sortLabel}
       accessibilityRole='button'
-        importantForAccessibility={importantForAccessibility}
+      importantForAccessibility={importantForAccessibility}
       activeOpacity={0.7}
       disabled={disableFilter}
       onPress={onPress}
@@ -55,7 +62,8 @@ export const DropdownButton = (props: DropdownButtonProps) => {
           accessible={false}
           name='angle-down'
           size={14}
-          style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]} />
+          style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]}
+        />
       </View>
     </PressableWithOpacity>
   )

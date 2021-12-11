@@ -40,10 +40,10 @@ export class ProfilesScreen extends React.Component<Props, State> {
       queryPage: 1
     }
   }
-  
+
   static navigationOptions = () => ({
-      title: translate('Profiles')
-    })
+    title: translate('Profiles')
+  })
 
   async componentDidMount() {
     const { navigation } = this.props
@@ -145,9 +145,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
     const showOfflineMessage = offlineModeEnabled
 
     return (
-      <View
-        style={styles.view}
-        testID={`${testIDPrefix}_view`}>
+      <View style={styles.view} testID={`${testIDPrefix}_view`}>
         <View style={styles.view}>
           {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
           {!isLoading && (

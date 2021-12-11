@@ -12,7 +12,6 @@ type State = {
 }
 
 export class WebPageScreen extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
@@ -22,9 +21,9 @@ export class WebPageScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = ({ navigation }) => ({
-      title: '',
-      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} />
-    })
+    title: '',
+    headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} />
+  })
 
   render() {
     const { uri } = this.state

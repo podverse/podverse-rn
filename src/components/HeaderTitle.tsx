@@ -20,12 +20,9 @@ export const HeaderTitle = (props: Props) => {
   return (
     <View>
       <View style={styles.wrapper}>
-        <Text
-          allowFontScaling={false}
-          ref={textRef}
-          style={textStyle}>
+        <Text allowFontScaling={false} ref={textRef} style={textStyle}>
           {title}
-          </Text>
+        </Text>
       </View>
     </View>
   )

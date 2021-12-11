@@ -174,13 +174,14 @@ export const parseAllAddByRSSPodcasts = async () => {
       finalParsedPodcasts.push(parsedPodcast)
     }
 
-    if(autoDownloadPodcastSettings[parsedPodcast.addByRSSPodcastFeedUrl] 
-      && parsedPodcast.episodes 
-      && parsedPodcast.episodes.length) 
-    {
+    if (
+      autoDownloadPodcastSettings[parsedPodcast.addByRSSPodcastFeedUrl] &&
+      parsedPodcast.episodes &&
+      parsedPodcast.episodes.length
+    ) {
       const lastParsedPubDate = await getAutoDownloadsLastRefreshDate()
-      for(const episode of parsedPodcast.episodes) {
-        if(new Date(episode.pubDate).valueOf() > new Date(lastParsedPubDate).valueOf()) {
+      for (const episode of parsedPodcast.episodes) {
+        if (new Date(episode.pubDate).valueOf() > new Date(lastParsedPubDate).valueOf()) {
           const restart = false
           const waitToAddTask = true
           downloadEpisode(episode, parsedPodcast, restart, waitToAddTask)

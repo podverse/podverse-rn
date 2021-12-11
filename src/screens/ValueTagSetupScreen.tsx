@@ -30,7 +30,7 @@ const testIDPrefix = 'value_tag_setup_screen'
 export class ValueTagSetupScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    
+
     this.state = {
       localBoostAmount: '0',
       localStreamingAmount: '0',
@@ -76,9 +76,7 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
     const walletSatsBalanceText = numberWithCommas(walletSatsBalance) || 0
 
     return (
-      <View
-        style={styles.content}
-        testID={`${testIDPrefix}_view`}>
+      <View style={styles.content} testID={`${testIDPrefix}_view`}>
         <View style={styles.itemWrapper}>
           <SwitchWithText
             onValueChange={this._showLNPaySetup}
@@ -95,11 +93,13 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
                 <TextRow
                   label={`${translate('Balance')}: `}
                   testID={`${testIDPrefix}_balance`}
-                  text={`${walletSatsBalanceText} ${translate('satoshis')}`} />
+                  text={`${walletSatsBalanceText} ${translate('satoshis')}`}
+                />
                 <TextRow
                   label={`${translate('Name')}: `}
                   testID={`${testIDPrefix}_name`}
-                  text={`${walletUserLabel ? walletUserLabel : '----'}`} />
+                  text={`${walletUserLabel ? walletUserLabel : '----'}`}
+                />
               </View>
               <View style={styles.sectionWrapper}>
                 <Text style={core.headerText}>{translate('LNPay Global Settings')}</Text>
@@ -130,9 +130,7 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
                   keyboardType='numeric'
                   onBlur={() => {
                     const { localStreamingAmount } = this.state
-                    if (
-                      Number(localStreamingAmount)
-                      && Number(localStreamingAmount) > MINIMUM_STREAMING_PAYMENT) {
+                    if (Number(localStreamingAmount) && Number(localStreamingAmount) > MINIMUM_STREAMING_PAYMENT) {
                       updateGlobalStreamingAmount(Number(localStreamingAmount))
                     } else {
                       updateGlobalStreamingAmount(MINIMUM_STREAMING_PAYMENT)
@@ -160,8 +158,8 @@ const styles = StyleSheet.create({
   content: {
     alignItems: 'center',
     flex: 1,
-    paddingTop:20,
-    paddingHorizontal:15
+    paddingTop: 20,
+    paddingHorizontal: 15
   },
   itemWrapper: {
     marginBottom: 0,

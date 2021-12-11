@@ -3,8 +3,8 @@ import { View, StyleProp, ViewStyle } from 'react-native'
 import { useGlobal } from 'reactn'
 
 type DividerProps = {
-  style?: StyleProp<ViewStyle>;
-  children?: React.ReactNode[] | React.ReactNode | undefined;
+  style?: StyleProp<ViewStyle>
+  children?: React.ReactNode[] | React.ReactNode | undefined
 }
 
 export const Divider = (props: DividerProps) => {

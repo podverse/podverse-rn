@@ -74,13 +74,21 @@ export const trackPlayerScreenPageView = (item: any) => {
     if (item?.clipId) {
       trackPageView(
         '/clip/' + item.clipId,
-        'Player Screen - Clip - ' + encodeURIComponent(item.podcastTitle) + ' - ' + encodeURIComponent(item.episodeTitle) + ' - ' + encodeURIComponent(item.clipTitle)
+        'Player Screen - Clip - ' +
+          encodeURIComponent(item.podcastTitle) +
+          ' - ' +
+          encodeURIComponent(item.episodeTitle) +
+          ' - ' +
+          encodeURIComponent(item.clipTitle)
       )
     }
     if (item?.episodeId) {
       trackPageView(
         '/episode/' + item.episodeId,
-        'Player Screen - Episode - ' + encodeURIComponent(item.podcastTitle) + ' - ' + encodeURIComponent(item.episodeTitle)
+        'Player Screen - Episode - ' +
+          encodeURIComponent(item.podcastTitle) +
+          ' - ' +
+          encodeURIComponent(item.episodeTitle)
       )
     }
     if (item?.podcastId) {

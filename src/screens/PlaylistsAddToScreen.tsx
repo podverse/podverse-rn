@@ -49,22 +49,22 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = ({ navigation }) => ({
-      title: translate('Add to Playlist'),
-      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-      headerRight: () => (
-        <RNView>
-          {navigation.getParam('isLoggedIn') && (
-            <NavHeaderButtonText
-              accessibilityHint={translate('ARIA HINT - create a new playlist')}
-              accessibilityLabel={translate('New')}
-              handlePress={navigation.getParam('showNewPlaylistDialog')}
-              testID={`${testIDPrefix}_new`}
-              text={translate('New')}
-            />
-          )}
-        </RNView>
-      )
-    })
+    title: translate('Add to Playlist'),
+    headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
+    headerRight: () => (
+      <RNView>
+        {navigation.getParam('isLoggedIn') && (
+          <NavHeaderButtonText
+            accessibilityHint={translate('ARIA HINT - create a new playlist')}
+            accessibilityLabel={translate('New')}
+            handlePress={navigation.getParam('showNewPlaylistDialog')}
+            testID={`${testIDPrefix}_new`}
+            text={translate('New')}
+          />
+        )}
+      </RNView>
+    )
+  })
 
   async componentDidMount() {
     this.props.navigation.setParams({
@@ -92,7 +92,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
       () => {
         (async () => {
           const { newPlaylistTitle } = this.state
-  
+
           try {
             await createPlaylist({ title: newPlaylistTitle }, this.global)
           } catch (error) {
@@ -104,7 +104,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
               )
             }
           }
-  
+
           this.setState({
             isLoading: false
           })
@@ -167,9 +167,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
     const { isLoggedIn } = session
 
     return (
-      <View
-        style={styles.view}
-        testID={`${testIDPrefix}_view`}>
+      <View style={styles.view} testID={`${testIDPrefix}_view`}>
         {!isLoggedIn && (
           <MessageWithAction
             testID={testIDPrefix}

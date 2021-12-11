@@ -3,11 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
-import {
-  ScrollView,
-  SwitchWithText,
-  View
-} from '../components'
+import { ScrollView, SwitchWithText, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -21,7 +17,6 @@ type Props = {
 const testIDPrefix = 'settings_screen_visual'
 
 export class SettingsScreenVisualDesign extends React.Component<Props> {
-
   constructor(props: Props) {
     super(props)
   }
