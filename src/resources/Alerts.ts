@@ -30,12 +30,7 @@ export const Alerts = {
             const shouldPlay = false
             const forceUpdateOrderDate = false
             const setCurrentItemNextInQueue = false
-            await playerLoadNowPlayingItem(
-              item,
-              shouldPlay,
-              forceUpdateOrderDate,
-              setCurrentItemNextInQueue
-            )
+            await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
           }
         }
       ]
@@ -44,13 +39,13 @@ export const Alerts = {
   BUTTONS: {
     OK: [{ text: translate('OK') }]
   },
-  GO_TO_LOGIN_BUTTONS: (navigation: any) => ([
+  GO_TO_LOGIN_BUTTONS: (navigation: any) => [
     { text: translate('OK') },
     {
       text: translate('Go to Login'),
       onPress: () => navigation.navigate(PV.RouteNames.AuthScreen)
     }
-  ]),
+  ],
   EMAIL_NOT_VERIFIED: (email: string) => ({
     message: _sendVerificationEmailMessage,
     title: translate('Verify Your Email'),
@@ -114,7 +109,9 @@ export const Alerts = {
   RESET_PASSWORD_SUCCESS: {
     message:
       // eslint-disable-next-line max-len
-      `${translate('Please check your inbox If this address exists in our system you should receive a reset password email shortly')} ${translate('The email may go to your Spam folder')}`,
+      `${translate(
+        'Please check your inbox If this address exists in our system you should receive a reset password email shortly'
+      )} ${translate('The email may go to your Spam folder')}`,
     title: translate('Reset Password Sent')
   },
   SIGN_UP_ERROR: {

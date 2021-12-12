@@ -52,7 +52,7 @@ export const startSleepTimer = async () => {
     (async () => {
       const seconds = getSleepTimerTimeRemaining()
       timeRemaining = seconds - 1
-      
+
       if (timeRemaining <= 0) {
         await handleSleepTimerReachedEnd()
       }

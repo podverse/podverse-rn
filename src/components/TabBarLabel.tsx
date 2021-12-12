@@ -11,10 +11,7 @@ export const TabBarLabel = (props: Props) => {
   const { title } = props
 
   return (
-    <Text
-      allowFontScaling={false}
-      numberOfLines={1}
-      style={tabbar.labelLight}>
+    <Text allowFontScaling={false} numberOfLines={1} style={tabbar.labelLight}>
       {title}
     </Text>
   )

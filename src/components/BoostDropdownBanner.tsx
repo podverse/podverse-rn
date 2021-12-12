@@ -72,7 +72,7 @@ export const BoostDropdownBanner = () => {
   }
 
   const erroringTransactions = errors.map((error) => {
-    return {message: error.error.message, address: error.details.address}
+    return { message: error.error.message, address: error.details.address }
   })
 
   return (
@@ -112,9 +112,7 @@ export const BoostDropdownBanner = () => {
             )}
           </ScrollView>
           <View style={styles.container}>
-            <Text
-              style={styles.descriptionStyle}
-              testID='banner_text'>
+            <Text style={styles.descriptionStyle} testID='banner_text'>
               {bannerInfo.description}
             </Text>
             {!!bannerInfo.errors?.length && (

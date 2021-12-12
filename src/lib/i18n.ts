@@ -10,12 +10,11 @@ const translationGetters = {
 class Internationalizer {
   static instance: Internationalizer
   translationConfig: any
-  
+
   constructor(translationConfig: any) {
     this.translationConfig = translationConfig
   }
-  
-  
+
   static initializeTranslator = () => {
     if (!Internationalizer.instance) {
       const fallback = { languageTag: 'en', isRTL: false }

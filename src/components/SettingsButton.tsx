@@ -11,8 +11,7 @@ type Props = {
 }
 
 export const SettingsButton = (props: Props) => {
-  const { accessibilityHint, accessibilityLabel, handleToggleSettings,
-    showCheckmark, testID } = props
+  const { accessibilityHint, accessibilityLabel, handleToggleSettings, showCheckmark, testID } = props
 
   return (
     <Pressable
@@ -23,11 +22,7 @@ export const SettingsButton = (props: Props) => {
       testID={testID.prependTestId()}>
       <View style={styles.buttonView}>
         <View>
-          <Icon
-            isSecondary
-            name={showCheckmark ? 'check' : 'cog'}
-            size={18}
-            solid />
+          <Icon isSecondary name={showCheckmark ? 'check' : 'cog'} size={18} solid />
         </View>
       </View>
     </Pressable>

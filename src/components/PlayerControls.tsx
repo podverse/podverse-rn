@@ -11,14 +11,17 @@ import {
   playerPlayNextFromQueue,
   playerHandleSeekTo
 } from '../services/player'
-import { playerPlayNextChapterOrQueueItem, playerPlayPreviousChapterOrReturnToBeginningOfTrack,
-  playerSetPlaybackSpeed, playerTogglePlay } from '../state/actions/player'
-  import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
-  import { checkIfVideoFileType } from '../state/actions/playerVideo'
+import {
+  playerPlayNextChapterOrQueueItem,
+  playerPlayPreviousChapterOrReturnToBeginningOfTrack,
+  playerSetPlaybackSpeed,
+  playerTogglePlay
+} from '../state/actions/player'
+import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
-import { ActivityIndicator, Icon, PlayerProgressBar, PressableWithOpacity,
-  Text, View as PVView } from './'
+import { ActivityIndicator, Icon, PlayerProgressBar, PressableWithOpacity, Text, View as PVView } from './'
 
 type Props = {
   navigation: any
@@ -96,8 +99,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
   }
 
   _renderPlayerControlIcon = (source: ImageSourcePropType, testID: string, disabled?: boolean) => {
-    const disabledStyle: {tintColor?:string} = {}
-    if(disabled) {
+    const disabledStyle: { tintColor?: string } = {}
+    if (disabled) {
       disabledStyle.tintColor = PV.Colors.grayDark
     }
     return (
@@ -110,8 +113,17 @@ export class PlayerControls extends React.PureComponent<Props, State> {
   render() {
     const { navigation } = this.props
     const { progressValue, showPlayerMoreActionSheet } = this.state
-    const { currentChapter, currentChapters, currentChaptersStartTimePositions, globalTheme,
-      jumpBackwardsTime, jumpForwardsTime, player, screenPlayer, session } = this.global
+    const {
+      currentChapter,
+      currentChapters,
+      currentChaptersStartTimePositions,
+      globalTheme,
+      jumpBackwardsTime,
+      jumpForwardsTime,
+      player,
+      screenPlayer,
+      session
+    } = this.global
     const { backupDuration, playbackRate, playbackState } = player
     const { userInfo } = session
     const { queueItems } = userInfo
@@ -125,14 +137,12 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     }
 
     const isLastChapter =
-      currentChapter
-      && currentChapters.length > 1
-      && currentChapters[currentChapters.length - 1]
-      && currentChapters[currentChapters.length - 1].id === currentChapter.id
+      currentChapter &&
+      currentChapters.length > 1 &&
+      currentChapters[currentChapters.length - 1] &&
+      currentChapters[currentChapters.length - 1].id === currentChapter.id
 
-    const noNextQueueItem = currentChapter
-      ? queueItems?.length === 0 && isLastChapter
-      : queueItems?.length === 0
+    const noNextQueueItem = currentChapter ? queueItems?.length === 0 && isLastChapter : queueItems?.length === 0
 
     // nowPlayingItem will be undefined when loading from a deep link
     let { nowPlayingItem } = player
@@ -171,19 +181,19 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       clipEndTime = currentChapter?.endTime
     }
 
-    const jumpBackAccessibilityLabel =
-      `${translate(`Jump back`)} ${jumpBackwardsTime} ${translate('seconds')}`
-    const jumpForwardAccessibilityLabel =
-      `${translate(`Jump forward`)} ${jumpForwardsTime} ${translate('seconds')}`
+    const jumpBackAccessibilityLabel = `${translate(`Jump back`)} ${jumpBackwardsTime} ${translate('seconds')}`
+    const jumpForwardAccessibilityLabel = `${translate(`Jump forward`)} ${jumpForwardsTime} ${translate('seconds')}`
 
-    const previousButtonAccessibilityLabel = currentChapters && currentChapters.length > 1
-      ? translate('Go to previous chapter')
-      : translate('Return to beginning of episode')
-    
-    const nextButtonAccessibilityLabel = currentChapters && currentChapters.length > 1
-      ? translate('Go to next chapter')
-      : translate('Skip to next item in your queue')
-    
+    const previousButtonAccessibilityLabel =
+      currentChapters && currentChapters.length > 1
+        ? translate('Go to previous chapter')
+        : translate('Return to beginning of episode')
+
+    const nextButtonAccessibilityLabel =
+      currentChapters && currentChapters.length > 1
+        ? translate('Go to next chapter')
+        : translate('Skip to next item in your queue')
+
     const isVideo = checkIfVideoFileType(nowPlayingItem)
 
     return (
@@ -201,18 +211,16 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         </View>
         <View style={styles.playerControlsMiddleRow}>
           <View style={styles.playerControlsMiddleRowTop}>
-            {
-              !isVideo && (
-                <PressableWithOpacity
-                  accessibilityLabel={previousButtonAccessibilityLabel}
-                  accessibilityRole='button'
-                  onLongPress={() => playerHandleSeekTo(0)}
-                  onPress={playerPlayPreviousChapterOrReturnToBeginningOfTrack}
-                  style={[playerStyles.icon, { flexDirection: 'row' }]}>
-                  {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
-                </PressableWithOpacity>
-              )
-            }
+            {!isVideo && (
+              <PressableWithOpacity
+                accessibilityLabel={previousButtonAccessibilityLabel}
+                accessibilityRole='button'
+                onLongPress={() => playerHandleSeekTo(0)}
+                onPress={playerPlayPreviousChapterOrReturnToBeginningOfTrack}
+                style={[playerStyles.icon, { flexDirection: 'row' }]}>
+                {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
+              </PressableWithOpacity>
+            )}
             <PressableWithOpacity
               accessibilityLabel={jumpBackAccessibilityLabel}
               accessibilityRole='button'
@@ -241,19 +249,17 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 <Text style={styles.skipTimeText}>{jumpForwardsTime}</Text>
               </View>
             </PressableWithOpacity>
-            {
-              !isVideo && (
-                <PressableWithOpacity
-                  accessibilityLabel={nextButtonAccessibilityLabel}
-                  accessibilityRole='button'
-                  onLongPress={playerPlayNextFromQueue}
-                  onPress={playerPlayNextChapterOrQueueItem}
-                  disabled={noNextQueueItem}
-                  style={[playerStyles.icon, { flexDirection: 'row' }]}>
-                  {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, `${testIDPrefix}_skip_track`, noNextQueueItem)}
-                </PressableWithOpacity>
-              )
-            }
+            {!isVideo && (
+              <PressableWithOpacity
+                accessibilityLabel={nextButtonAccessibilityLabel}
+                accessibilityRole='button'
+                onLongPress={playerPlayNextFromQueue}
+                onPress={playerPlayNextChapterOrQueueItem}
+                disabled={noNextQueueItem}
+                style={[playerStyles.icon, { flexDirection: 'row' }]}>
+                {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, `${testIDPrefix}_skip_track`, noNextQueueItem)}
+              </PressableWithOpacity>
+            )}
           </View>
         </View>
         <View style={styles.playerControlsBottomRow}>

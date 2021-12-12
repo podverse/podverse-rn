@@ -25,7 +25,7 @@ export class PurchaseListener extends React.Component<Props> {
     this.purchaseUpdateSubscription = purchaseUpdatedListener((purchase: InAppPurchase | Purchase) => {
       (async () => {
         const { productId, purchaseToken, transactionId, transactionReceipt } = purchase
-  
+
         if (Platform.OS === 'android') {
           if (productId && transactionId && purchaseToken) {
             // Don't use await on navigate here, or it can lead to race condition issues between

@@ -16,10 +16,10 @@ import { addQueueItemNext, filterItemFromQueueItems, getQueueItems, getQueueItem
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from './userHistoryItem'
 import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
 
-declare module "react-native-track-player" {
-  export function getCurrentLoadedTrack(): Promise<string>;
-  export function getTrackDuration(): Promise<number>;
-  export function getTrackPosition(): Promise<number>;
+declare module 'react-native-track-player' {
+  export function getCurrentLoadedTrack(): Promise<string>
+  export function getTrackDuration(): Promise<number>
+  export function getTrackPosition(): Promise<number>
 }
 
 export const PVAudioPlayer = TrackPlayer
@@ -217,14 +217,14 @@ export const audioUpdateCurrentTrack = async (trackTitle?: string, artworkUrl?: 
     const currentIndex = await PVAudioPlayer.getCurrentTrack()
     if (currentIndex > 0 || currentIndex === 0) {
       const track = await PVAudioPlayer.getTrack(currentIndex)
-      
+
       if (track) {
         const newTrack = {
           ...track,
           ...(trackTitle ? { title: trackTitle } : {}),
           ...(artworkUrl ? { artwork: artworkUrl } : {})
         } as Track
-      
+
         await PVAudioPlayer.updateMetadataForTrack(currentIndex, newTrack)
       }
     }
@@ -310,7 +310,7 @@ export const audioMovePlayerItemToNewPosition = async (id: string, newIndex: num
         (x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id)
       )
       if (itemToMove) {
-        const track = await audioCreateTrack(itemToMove) as any
+        const track = (await audioCreateTrack(itemToMove)) as any
         await PVAudioPlayer.add([track], newIndex)
       }
     } catch (error) {
@@ -425,15 +425,17 @@ export const audioPlayNextFromQueue = async () => {
 }
 
 export const audioAddNowPlayingItemNextInQueue = (
-  item: NowPlayingItem, itemToSetNextInQueue: NowPlayingItem | null) => {
+  item: NowPlayingItem,
+  itemToSetNextInQueue: NowPlayingItem | null
+) => {
   const { addCurrentItemNextInQueue } = getGlobal()
 
   if (
-    addCurrentItemNextInQueue
-    && itemToSetNextInQueue
-    && item.episodeId !== itemToSetNextInQueue.episodeId
-    && !checkIfVideoFileType(item)
-  ) {  
+    addCurrentItemNextInQueue &&
+    itemToSetNextInQueue &&
+    item.episodeId !== itemToSetNextInQueue.episodeId &&
+    !checkIfVideoFileType(item)
+  ) {
     addQueueItemNext(itemToSetNextInQueue)
   }
 }
@@ -442,7 +444,7 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
   try {
     const queueItems = await getQueueItems()
     let filteredItems = [] as any
-    
+
     if (item && !checkIfVideoFileType(item)) {
       /* Use the item from history to make sure we have the same
          userPlaybackPosition that was last saved from other devices. */
@@ -458,12 +460,11 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
         const tracks = await audioCreateTracks(filteredItems)
         PVAudioPlayer.add(tracks)
       }
-
     }
   } catch (error) {
     console.log('Initializing player error: ', error)
   }
-  
+
   return item
 }
 

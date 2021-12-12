@@ -35,11 +35,11 @@ export class PVFastImage extends React.PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    if(prevProps?.source !== this.props.source) {
-      this.setState({ hasError:false })
+    if (prevProps?.source !== this.props.source) {
+      this.setState({ hasError: false })
     }
   }
-  
+
   render() {
     const { accessible = false, isSmall, resizeMode = 'contain', source, styles } = this.props
     const { hasError, uuid } = this.state

@@ -34,8 +34,8 @@ export class DownloadsScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = () => ({
-      title: translate('Downloads')
-    })
+    title: translate('Downloads')
+  })
 
   componentDidMount() {
     trackPageView('/downloads', 'Downloads Screen')
@@ -57,7 +57,8 @@ export class DownloadsScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleCancelPress = () => new Promise((resolve) => {
+  _handleCancelPress = () =>
+    new Promise((resolve) => {
       this.setState(
         {
           selectedItem: null,
@@ -103,9 +104,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
     const { selectedItem, showActionSheet } = this.state
 
     return (
-      <View
-        style={styles.view}
-        testID='downloads_screen_view'>
+      <View style={styles.view} testID='downloads_screen_view'>
         <FlatList
           data={downloadsArray}
           dataTotalCount={downloadsArray.length}

@@ -190,7 +190,10 @@ export const removeExtraInfoFromEpisodeDescription = (html: string) => {
 export const filterHTMLElementsFromString = (html: string) => {
   if (html) {
     // eslint-disable-next-line max-len
-    const finalHtml = html.replace(/<audio.*>.*?<\/audio>|<video.*>.*?<\/video>|<iframe.*>.*?<\/iframe>|<img.*>.*?<\/img>|<img.*>/gi, '')
+    const finalHtml = html.replace(
+      /<audio.*>.*?<\/audio>|<video.*>.*?<\/video>|<iframe.*>.*?<\/iframe>|<img.*>.*?<\/img>|<img.*>/gi,
+      ''
+    )
     return finalHtml
   }
   return html
@@ -414,7 +417,7 @@ export const convertTranscriptTimestampToSeconds = (timestamp: string) => {
   let hhmmss = timestamp.split(',')[0]
   // VTT time stamps use this formatting: 00:02:45.170
   hhmmss = timestamp.split('.')[0]
-  return convertHHMMSSToSeconds(hhmmss)  
+  return convertHHMMSSToSeconds(hhmmss)
 }
 
 export const convertHHMMSSToAnchorTags = (html: string) => {
@@ -638,8 +641,8 @@ export const parseOpmlFile = (data: any, topLevel = false): string[] => {
 }
 
 export const numberWithCommas = (x?: number) => {
-  if (!x || x === 0) return x  
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  if (!x || x === 0) return x
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
 export const safeKeyExtractor = (listName: string, index: number, id?: string) => {
@@ -675,8 +678,13 @@ export const getUsernameAndPasswordFromCredentials = (credentials: string) => {
   }
 }
 
-export const getTimeLabelText = (mediaFileDuration?: number, episodeDuration?: number,
-  userPlaybackPosition?: number, completed?: boolean, clipTime?: string) => {
+export const getTimeLabelText = (
+  mediaFileDuration?: number,
+  episodeDuration?: number,
+  userPlaybackPosition?: number,
+  completed?: boolean,
+  clipTime?: string
+) => {
   const hasStartedItem = !!mediaFileDuration
   const totalTime = mediaFileDuration || episodeDuration || 0
   const playedTime = userPlaybackPosition || 0

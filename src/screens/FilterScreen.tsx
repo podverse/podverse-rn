@@ -24,24 +24,23 @@ type State = {
 }
 
 type Item = {
-  label?: string;
-  value?: string;
-  parentId?: string;
-  id?: string;
+  label?: string
+  value?: string
+  parentId?: string
+  id?: string
 }
 
 type Section = {
-  title?: string;
-  data?: Item[];
-  value?: string;
-  accessibilityHint?: string;
-  accessibilityRole?: string;
+  title?: string
+  data?: Item[]
+  value?: string
+  accessibilityHint?: string
+  accessibilityRole?: string
 }
 
 const testIDPrefix = 'filter_screen'
 
 export class FilterScreen extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
 
@@ -71,7 +70,8 @@ export class FilterScreen extends React.Component<Props, State> {
           accessibilityLabel={translate('Done')}
           handlePress={navigation.dismiss}
           testID={testIDPrefix}
-          text={translate('Done')} />
+          text={translate('Done')}
+        />
       )
     }
   }
@@ -257,11 +257,7 @@ export class FilterScreen extends React.Component<Props, State> {
             {item.labelShort || item.label || item.title}
           </Text>
           {isActive && (
-            <Icon
-              name='check'
-              size={24}
-              style={styles.itemIcon}
-              testID={`${testIDPrefix}_${value}_check`}/>
+            <Icon name='check' size={24} style={styles.itemIcon} testID={`${testIDPrefix}_${value}_check`} />
           )}
         </View>
       </Pressable>
@@ -278,15 +274,17 @@ export class FilterScreen extends React.Component<Props, State> {
           disableNoResultsMessage
           keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.value || item?.id)}
           renderSectionHeader={({ section }) => (
-              <View style={styles.sectionItemWrapper}>
-                <Text
-                  accessible
-                  accessibilityHint={section.accessibilityHint}
-                  accessibilityLabel={section.title}
-                  accessibilityRole={section.accessibilityRole}
-                  style={styles.sectionItemText}>{section.title}</Text>
-              </View>
-            )}
+            <View style={styles.sectionItemWrapper}>
+              <Text
+                accessible
+                accessibilityHint={section.accessibilityHint}
+                accessibilityLabel={section.title}
+                accessibilityRole={section.accessibilityRole}
+                style={styles.sectionItemText}>
+                {section.title}
+              </Text>
+            </View>
+          )}
           renderItem={this.renderItem}
           sections={sections}
           testID={testIDPrefix}

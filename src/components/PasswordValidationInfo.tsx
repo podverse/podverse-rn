@@ -15,49 +15,33 @@ type Props = {
 
 export class PasswordValidationInfo extends React.PureComponent<Props> {
   render() {
-    const { hasAtLeastXCharacters, hasLowercase, hasNumber, hasUppercase, passwordsMatch,
-      style } = this.props
+    const { hasAtLeastXCharacters, hasLowercase, hasNumber, hasUppercase, passwordsMatch, style } = this.props
 
     return (
       <View style={[styles.wrapper, style]}>
         <View style={styles.textRow}>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            numberOfLines={1}
-            style={styles.label}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.label}>
             {translate('Password requirements')}
           </Text>
         </View>
         <View
           accessible
-          accessibilityHint={passwordsMatch
-              ? `${translate('requirement met')}`
-              : `${translate('requirement not met')}`}
+          accessibilityHint={passwordsMatch ? `${translate('requirement met')}` : `${translate('requirement not met')}`}
           style={styles.textRow}>
           <Text
             accessible
-            accessibilityHint={hasUppercase
-              ? translate('requirement met')
-              : translate('requirement not met')
-            }
+            accessibilityHint={hasUppercase ? translate('requirement met') : translate('requirement not met')}
             accessibilityLabel={translate('has uppercase')}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
             style={hasUppercase ? styles.validText : styles.invalidText}>
             {translate('has uppercase')}
           </Text>
-          {hasUppercase && (
-            <Icon
-              name='check'
-              size={18}
-              style={styles.icon} />
-          )}
+          {hasUppercase && <Icon name='check' size={18} style={styles.icon} />}
         </View>
         <View
           accessible
-          accessibilityHint={passwordsMatch
-              ? `${translate('requirement met')}`
-              : `${translate('requirement not met')}`}
+          accessibilityHint={passwordsMatch ? `${translate('requirement met')}` : `${translate('requirement not met')}`}
           style={styles.textRow}>
           <Text
             accessible
@@ -68,18 +52,11 @@ export class PasswordValidationInfo extends React.PureComponent<Props> {
             style={hasLowercase ? styles.validText : styles.invalidText}>
             {translate('has lowercase')}
           </Text>
-          {hasLowercase && (
-            <Icon
-              name='check'
-              size={18}
-              style={styles.icon} />
-          )}
+          {hasLowercase && <Icon name='check' size={18} style={styles.icon} />}
         </View>
         <View
           accessible
-          accessibilityHint={passwordsMatch
-              ? `${translate('requirement met')}`
-              : `${translate('requirement not met')}`}
+          accessibilityHint={passwordsMatch ? `${translate('requirement met')}` : `${translate('requirement not met')}`}
           style={styles.textRow}>
           <Text
             accessible
@@ -90,18 +67,11 @@ export class PasswordValidationInfo extends React.PureComponent<Props> {
             style={hasNumber ? styles.validText : styles.invalidText}>
             {translate('has number')}
           </Text>
-            {hasNumber && (
-              <Icon
-                name='check'
-                size={18}
-                style={styles.icon} />
-            )}
+          {hasNumber && <Icon name='check' size={18} style={styles.icon} />}
         </View>
         <View
           accessible
-          accessibilityHint={passwordsMatch
-              ? `${translate('requirement met')}`
-              : `${translate('requirement not met')}`}
+          accessibilityHint={passwordsMatch ? `${translate('requirement met')}` : `${translate('requirement not met')}`}
           style={styles.textRow}>
           <Text
             accessible
@@ -112,18 +82,11 @@ export class PasswordValidationInfo extends React.PureComponent<Props> {
             style={hasAtLeastXCharacters ? styles.validText : styles.invalidText}>
             {translate('is at least 8 characters')}
           </Text>
-          {hasAtLeastXCharacters && (
-            <Icon
-              name='check'
-              size={18}
-              style={styles.icon} />
-          )}
+          {hasAtLeastXCharacters && <Icon name='check' size={18} style={styles.icon} />}
         </View>
         <View
           accessible
-          accessibilityHint={passwordsMatch
-              ? `${translate('requirement met')}`
-              : `${translate('requirement not met')}`}
+          accessibilityHint={passwordsMatch ? `${translate('requirement met')}` : `${translate('requirement not met')}`}
           style={styles.textRow}>
           <Text
             accessible
@@ -133,13 +96,7 @@ export class PasswordValidationInfo extends React.PureComponent<Props> {
             style={passwordsMatch ? styles.validText : styles.invalidText}>
             {translate('passwords match')}
           </Text>
-          {passwordsMatch && (
-            <Icon
-              accessible
-              name='check'
-              size={18}
-              style={styles.icon} />
-          )}
+          {passwordsMatch && <Icon accessible name='check' size={18} style={styles.icon} />}
         </View>
       </View>
     )

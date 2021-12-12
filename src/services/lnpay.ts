@@ -109,7 +109,6 @@ export const getWallet = async (wallet: LNWallet): Promise<LNWallet | null> => {
     if (error.status === 404) {
       console.log('getWallet error 404 Not Found', error)
       existingWallet = null
-
     } else {
       throw new Error('Wallet Fetch Failed. ' + error.message)
     }
@@ -134,10 +133,9 @@ const generateLNPayKeysendRequestBody = (valueTransaction: ValueTransaction) => 
   /*
     NOTE: LNPay requires custom_records values to be stringified objects.
   */
-  
+
   const customRecord7629169 = JSON.stringify(satoshiStreamStats[7629169])
   const customRecord7629175 = JSON.stringify(satoshiStreamStats[7629175])
-
 
   const stringifiedCustomRecords = {
     7629169: customRecord7629169,
@@ -148,17 +146,17 @@ const generateLNPayKeysendRequestBody = (valueTransaction: ValueTransaction) => 
     // passThru: {},
     dest_pubkey: address,
     num_satoshis: Math.ceil(amount),
-    custom_records: stringifiedCustomRecords,
+    custom_records: stringifiedCustomRecords
   } as LNPayKeysendRequestBody
 }
 
 export const sendLNPayValueTransaction = async (valueTransaction: ValueTransaction) => {
   let error = null
   let paymentWasSuccessful = false
-  
+
   try {
     const userWallet = await getLNWallet()
-    
+
     if (userWallet) {
       const lnpayKeysendRequestBody = generateLNPayKeysendRequestBody(valueTransaction)
       try {
@@ -168,11 +166,10 @@ export const sendLNPayValueTransaction = async (valueTransaction: ValueTransacti
         error = paymentError
       }
     }
-
   } catch (err) {
     error = err
   }
-  
+
   if (error) {
     console.log('sendLNPayValueTransaction error:', error)
   }

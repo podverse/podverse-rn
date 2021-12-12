@@ -150,16 +150,15 @@ export const downloadEpisode = async (
   const destination = `${downloader.directories.documents}/${episode.id}${ext}`
   const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
 
-  
   let downloadUrl = episode.mediaUrl
-  if(downloadUrl.startsWith("http://")) {
+  if (downloadUrl.startsWith('http://')) {
     try {
       const secureUrlInfo = await getSecureUrl(episode.mediaUrl)
-      if(secureUrlInfo?.secureUrl) {
+      if (secureUrlInfo?.secureUrl) {
         downloadUrl = secureUrlInfo.secureUrl
       }
     } catch (err) {
-      console.log("Secure url not found for http mediaUrl. Info: ", err)
+      console.log('Secure url not found for http mediaUrl. Info: ', err)
     }
   }
 

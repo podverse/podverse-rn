@@ -172,14 +172,14 @@ export class ProfileScreen extends React.Component<Props, State> {
           const { id } = this.global.session.userInfo
           const isLoggedInUserProfile = userId === id
           let newState = {} as any
-  
+
           if (isLoggedInUserProfile) {
             newState = {
               isLoading: false,
               isLoadingMore: false,
               queryPage: 1
             } as State
-  
+
             try {
               await getAuthUserInfo()
               setGlobal(
@@ -203,7 +203,7 @@ export class ProfileScreen extends React.Component<Props, State> {
               isLoadingMore: false,
               queryPage: 1
             } as State
-  
+
             try {
               const { profileFlatListData } = await getPublicUser(userId)
               newState.flatListData = profileFlatListData
@@ -317,9 +317,10 @@ export class ProfileScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleCancelPress = () => new Promise((resolve) => {
-    this.setState({ showActionSheet: false }, resolve)
-  })
+  _handleCancelPress = () =>
+    new Promise((resolve) => {
+      this.setState({ showActionSheet: false }, resolve)
+    })
 
   _handleMorePress = (selectedItem: any) => {
     this.setState({
@@ -343,7 +344,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           await toggleSubscribeToUser(id)
           const subscribedUserIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedUserIds, [])
           const isSubscribed = subscribedUserIds.some((x: string) => x === id)
-  
+
           this.setState({
             isSubscribed,
             isSubscribing: false
@@ -412,12 +413,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     const shouldPlay = true
     const forceUpdateOrderDate = false
     const setCurrentItemNextInQueue = true
-    await playerLoadNowPlayingItem(
-      selectedItem,
-      shouldPlay,
-      forceUpdateOrderDate,
-      setCurrentItemNextInQueue
-    )
+    await playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   _renderItem = ({ item, index }) => {
@@ -507,9 +503,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     const showOfflineMessage = offlineModeEnabled
 
     return (
-      <View
-        style={styles.view}
-        testID={`${testIDPrefix}_view`}>
+      <View style={styles.view} testID={`${testIDPrefix}_view`}>
         {isMyProfile && !isLoggedIn && (
           <MessageWithAction
             topActionHandler={this._onPressLogin}
@@ -570,8 +564,8 @@ export class ProfileScreen extends React.Component<Props, State> {
                   const itemType = selectedItem.clipIsOfficialChapter
                     ? 'chapter'
                     : !!selectedItem.clipId
-                      ? 'clip'
-                      : 'episode'
+                    ? 'clip'
+                    : 'episode'
 
                   return PV.ActionSheet.media.moreButtons(
                     selectedItem,
@@ -610,89 +604,92 @@ export class ProfileScreen extends React.Component<Props, State> {
     )
   }
 
-  _queryPodcasts = async (newState: any, page = 1, sort?: string | null) => new Promise((resolve) => {
-    (async () => {
-      const { flatListData } = this.state
-      const query = {
-        page,
-        podcastIds: this.global.profile.user.subscribedPodcastIds,
-        sort
-      }
-
-      let results = [[], 0]
-      if (this.global.profile.user.subscribedPodcastIds.length > 0) {
-        results = await getPodcasts(query)
-      }
-
-      setGlobal(
-        {
-          profile: {
-            user: this.global.profile.user
-          }
-        },
-        () => {
-          newState.flatListData = [...flatListData, ...results[0]]
-          newState.endOfResultsReached = newState.flatListData.length >= results[1]
-          newState.flatListDataTotalCount = results[1]
-          newState.queryPage = page
-          resolve(newState)
+  _queryPodcasts = async (newState: any, page = 1, sort?: string | null) =>
+    new Promise((resolve) => {
+      (async () => {
+        const { flatListData } = this.state
+        const query = {
+          page,
+          podcastIds: this.global.profile.user.subscribedPodcastIds,
+          sort
         }
-      )
-    })()
-  })
 
-  _queryMediaRefs = async (newState: any, page = 1, sort?: string | null) => new Promise((resolve) => {
-    (async () => {
-      const { flatListData, userId } = this.state
-      const query = { page }
-      const { id } = this.global.session.userInfo
-      const isLoggedInUserProfile = userId === id
-      let results = [] as any[]
-      query.sort = sort
-
-      if (isLoggedInUserProfile) {
-        results = await getLoggedInUserMediaRefs(query)
-      } else {
-        results = await getUserMediaRefs(this.global.profile.user.id, query)
-      }
-
-      setGlobal(
-        {
-          profile: {
-            user: this.global.profile.user
-          }
-        },
-        () => {
-          newState.flatListData = [...flatListData, ...results[0]]
-          newState.endOfResultsReached = newState.flatListData.length >= results[1]
-          newState.flatListDataTotalCount = results[1]
-          newState.queryPage = page
-          resolve(newState)
+        let results = [[], 0]
+        if (this.global.profile.user.subscribedPodcastIds.length > 0) {
+          results = await getPodcasts(query)
         }
-      )
-    })()
-  })
 
-  _queryPlaylists = async (newState: any, page = 1, sort?: string | null) => new Promise((resolve) => {
-    (async () => {
-      const { userId } = this.state
-      const { id } = this.global.session.userInfo
-      const query = { page, sort }
-      const isLoggedInUserProfile = userId === id
-      let results = [] as any[]
+        setGlobal(
+          {
+            profile: {
+              user: this.global.profile.user
+            }
+          },
+          () => {
+            newState.flatListData = [...flatListData, ...results[0]]
+            newState.endOfResultsReached = newState.flatListData.length >= results[1]
+            newState.flatListDataTotalCount = results[1]
+            newState.queryPage = page
+            resolve(newState)
+          }
+        )
+      })()
+    })
 
-      if (isLoggedInUserProfile) {
-        results = await getLoggedInUserPlaylists()
-      } else {
-        results = await getUserPlaylists(this.global.profile.user.id, query)
-      }
-      newState.flatListData = results[0]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-      newState.flatListDataTotalCount = results[1]
-      newState.queryPage = page
-      resolve(newState)
-    })()
-  })
+  _queryMediaRefs = async (newState: any, page = 1, sort?: string | null) =>
+    new Promise((resolve) => {
+      (async () => {
+        const { flatListData, userId } = this.state
+        const query = { page }
+        const { id } = this.global.session.userInfo
+        const isLoggedInUserProfile = userId === id
+        let results = [] as any[]
+        query.sort = sort
+
+        if (isLoggedInUserProfile) {
+          results = await getLoggedInUserMediaRefs(query)
+        } else {
+          results = await getUserMediaRefs(this.global.profile.user.id, query)
+        }
+
+        setGlobal(
+          {
+            profile: {
+              user: this.global.profile.user
+            }
+          },
+          () => {
+            newState.flatListData = [...flatListData, ...results[0]]
+            newState.endOfResultsReached = newState.flatListData.length >= results[1]
+            newState.flatListDataTotalCount = results[1]
+            newState.queryPage = page
+            resolve(newState)
+          }
+        )
+      })()
+    })
+
+  _queryPlaylists = async (newState: any, page = 1, sort?: string | null) =>
+    new Promise((resolve) => {
+      (async () => {
+        const { userId } = this.state
+        const { id } = this.global.session.userInfo
+        const query = { page, sort }
+        const isLoggedInUserProfile = userId === id
+        let results = [] as any[]
+
+        if (isLoggedInUserProfile) {
+          results = await getLoggedInUserPlaylists()
+        } else {
+          results = await getUserPlaylists(this.global.profile.user.id, query)
+        }
+        newState.flatListData = results[0]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
+        newState.queryPage = page
+        resolve(newState)
+      })()
+    })
 
   _queryData = async (filterKey: string | null, page = 1) => {
     const { querySort, viewType } = this.state

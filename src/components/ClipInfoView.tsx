@@ -80,24 +80,13 @@ export class ClipInfoView extends React.PureComponent<Props> {
         {isLoading && <ActivityIndicator testID={testIDPrefix} />}
         {!isLoading && (
           <Fragment>
-            <TableSectionSelectors
-              accessible={false}
-              disableFilter
-              selectedFilterLabel={sectionHeaderTitle} />
+            <TableSectionSelectors accessible={false} disableFilter selectedFilterLabel={sectionHeaderTitle} />
             <View style={core.row}>
-              <View
-                accessible={false}
-                style={styles.topTextWrapper}>
-                <Text
-                  accessible={false}
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={styles.title}>
+              <View accessible={false} style={styles.topTextWrapper}>
+                <Text accessible={false} fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title}>
                   {title}
                 </Text>
-                <Text
-                  accessible={false}
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  style={styles.time}>
+                <Text accessible={false} fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.time}>
                   {readableClipTime(startTime, endTime)}
                 </Text>
               </View>
@@ -115,10 +104,7 @@ export class ClipInfoView extends React.PureComponent<Props> {
             </View>
             {!isOfficialChapter && !isOfficialSoundBite && (
               <View style={core.row}>
-                <Text
-                  accessible={false}
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={styles.ownerName}>
+                <Text accessible={false} fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.ownerName}>
                   {`${translate('By')} `}
                 </Text>
                 {ownerIsPublic ? (
@@ -127,12 +113,10 @@ export class ClipInfoView extends React.PureComponent<Props> {
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     onPress={this._navToProfileScreen}
                     style={styles.ownerName}
-                    text={ownerName || translate('anonymous')} />
+                    text={ownerName || translate('anonymous')}
+                  />
                 ) : (
-                  <Text
-                    accessible={false}
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    style={styles.ownerName}>
+                  <Text accessible={false} fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.ownerName}>
                     {translate('anonymous')}
                   </Text>
                 )}
@@ -144,7 +128,8 @@ export class ClipInfoView extends React.PureComponent<Props> {
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={playerRestartNowPlayingItemClip}
                 style={styles.replayClip}
-                text={translate('Replay Clip')} />
+                text={translate('Replay Clip')}
+              />
             )}
             <Divider style={styles.divider} />
           </Fragment>

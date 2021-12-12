@@ -78,8 +78,7 @@ const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipien
     normalizedValueRecipient?.type
   )
 
-export const normalizeValueRecipients = (
-  recipients: ValueRecipient[], total: number, roundDownValues: boolean) => {
+export const normalizeValueRecipients = (recipients: ValueRecipient[], total: number, roundDownValues: boolean) => {
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return []
 
   const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(recipients)
@@ -134,11 +133,7 @@ export const convertValueTagIntoValueTransactions = async (
   const valueTransactions: ValueTransaction[] = []
   const recipients = valueTag.recipients
 
-  const normalizedValueRecipients = normalizeValueRecipients(
-    recipients,
-    amount,
-    roundDownValues
-  )
+  const normalizedValueRecipients = normalizeValueRecipients(recipients, amount, roundDownValues)
 
   for (const normalizedValueRecipient of normalizedValueRecipients) {
     const valueTransaction = await convertValueTagIntoValueTransaction(
@@ -196,9 +191,9 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
   const errors: BannerInfoError[] = []
 
   const valueTags =
-    podcastValueFinal
-    || (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue)
-    || (nowPlayingItem?.podcastValue?.length && nowPlayingItem?.podcastValue)
+    podcastValueFinal ||
+    (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue) ||
+    (nowPlayingItem?.podcastValue?.length && nowPlayingItem?.podcastValue)
 
   // TODO: right now we are assuming the first item will be the lightning network
   // this will need to be updated to support additional valueTags

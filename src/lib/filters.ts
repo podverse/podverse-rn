@@ -337,8 +337,7 @@ export const generateSections = (options: any) => {
         ? [
             {
               title: translate('Filter'),
-              data:
-              filterItems,
+              data: filterItems,
               value: PV.Filters._sectionFilterKey,
               accessibilityHint: translate(filterAccessibilityHint),
               accessibilityRole: 'header'

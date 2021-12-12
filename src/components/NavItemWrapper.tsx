@@ -13,12 +13,10 @@ type Props = {
 }
 
 export const NavItemWrapper = (props: Props) => {
-  const { accessibilityHint, accessibilityLabel, accessibilityRole, children,
-    handlePress, testID } = props
+  const { accessibilityHint, accessibilityLabel, accessibilityRole, children, handlePress, testID } = props
 
   return (
-    <View
-      style={navHeader.buttonWrapper}>
+    <View style={navHeader.buttonWrapper}>
       <PressableWithOpacity
         {...(!!accessibilityHint ? { accessibilityHint } : {})}
         {...(!!accessibilityLabel ? { accessibilityLabel } : {})}

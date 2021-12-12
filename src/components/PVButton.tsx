@@ -23,8 +23,22 @@ type Props = {
 }
 
 export const PVButton = (props: Props) => {
-  const { accessibilityHint, accessibilityLabel, accessible, disabled, isDisabledStyle, isLoading,
-    isPrimary, isSuccess, isTransparent, isWarning, onPress, testID, text, wrapperStyles } = props
+  const {
+    accessibilityHint,
+    accessibilityLabel,
+    accessible,
+    disabled,
+    isDisabledStyle,
+    isLoading,
+    isPrimary,
+    isSuccess,
+    isTransparent,
+    isWarning,
+    onPress,
+    testID,
+    text,
+    wrapperStyles
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   const disabledStyle = disabled || isDisabledStyle ? globalTheme.buttonDisabledWrapper : null

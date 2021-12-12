@@ -52,23 +52,18 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props> {
           />
         )}
         <View style={styles.showNotesWrapper} transparent>
-          <TableSectionSelectors
-            disableFilter
-            includePadding
-            selectedFilterLabel={translate('Episode Summary')}
-          />
+          <TableSectionSelectors disableFilter includePadding selectedFilterLabel={translate('Episode Summary')} />
           {!isLoading && episode && (
             <View>
-              {
-                episode?.pubDate &&
-                  <Text
-                    accessibilityHint={translate('ARIA HINT - This is the episode publication date')}
-                    accessibilityLabel={readableDate(episode.pubDate)}
-                    style={styles.episodePubDate}
-                    testID={`${testIDPrefix}_episode_pub_date`}>
-                    {readableDate(episode.pubDate)}
-                  </Text>
-              }
+              {episode?.pubDate && (
+                <Text
+                  accessibilityHint={translate('ARIA HINT - This is the episode publication date')}
+                  accessibilityLabel={readableDate(episode.pubDate)}
+                  style={styles.episodePubDate}
+                  testID={`${testIDPrefix}_episode_pub_date`}>
+                  {readableDate(episode.pubDate)}
+                </Text>
+              )}
               <HTMLScrollView
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 html={episode.description ? episode.description : ''}

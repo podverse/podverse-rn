@@ -3,12 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import Config from 'react-native-config'
-import {
-  Divider,
-  ScrollView,
-  SwitchWithText,
-  View
-} from '../components'
+import { Divider, ScrollView, SwitchWithText, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -22,7 +17,6 @@ type Props = {
 const testIDPrefix = 'settings_screen_tracking'
 
 export class SettingsScreenTracking extends React.Component<Props> {
-
   constructor(props: Props) {
     super(props)
   }
@@ -58,13 +52,15 @@ export class SettingsScreenTracking extends React.Component<Props> {
             <View style={core.itemWrapper}>
               <SwitchWithText
                 accessibilityHint={translate('Error Reporting subtext')}
-                accessibilityLabel={errorReportingEnabled
-                  ? translate('Error Reporting Enabled') : translate('Error Reporting Disabled')}
+                accessibilityLabel={
+                  errorReportingEnabled ? translate('Error Reporting Enabled') : translate('Error Reporting Disabled')
+                }
                 onValueChange={this._handleToggleErrorReporting}
                 subText={translate('Error Reporting subtext')}
                 testID={`${testIDPrefix}_error_reporting`}
-                text={errorReportingEnabled
-                  ? translate('Error Reporting Enabled') : translate('Error Reporting Disabled')}
+                text={
+                  errorReportingEnabled ? translate('Error Reporting Enabled') : translate('Error Reporting Disabled')
+                }
                 value={!!errorReportingEnabled}
               />
             </View>
@@ -75,13 +71,15 @@ export class SettingsScreenTracking extends React.Component<Props> {
           <View style={core.itemWrapper}>
             <SwitchWithText
               accessibilityHint={translate('Listen Tracking subtext')}
-              accessibilityLabel={listenTrackingEnabled
-                ? translate('Listen Tracking Enabled') : translate('Listen Tracking Disabled')}
+              accessibilityLabel={
+                listenTrackingEnabled ? translate('Listen Tracking Enabled') : translate('Listen Tracking Disabled')
+              }
               onValueChange={this._handleToggleListenTracking}
               subText={translate('Listen Tracking subtext')}
               testID={`${testIDPrefix}_listen_tracking`}
-              text={listenTrackingEnabled
-                ? translate('Listen Tracking Enabled') : translate('Listen Tracking Disabled')}
+              text={
+                listenTrackingEnabled ? translate('Listen Tracking Enabled') : translate('Listen Tracking Disabled')
+              }
               value={!!listenTrackingEnabled}
             />
           </View>

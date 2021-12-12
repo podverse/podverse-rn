@@ -166,11 +166,10 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       : [styles.boostButtonSubText]
 
     const hasValueInfo =
-      !!Config.ENABLE_VALUE_TAG_TRANSACTIONS && (
-        podcastValueFinal?.length > 0
-        || nowPlayingItem?.episodeValue?.length > 0
-        || nowPlayingItem?.podcastValue?.length > 0
-      )
+      !!Config.ENABLE_VALUE_TAG_TRANSACTIONS &&
+      (podcastValueFinal?.length > 0 ||
+        nowPlayingItem?.episodeValue?.length > 0 ||
+        nowPlayingItem?.podcastValue?.length > 0)
 
     const carouselComponents = mediaPlayerCarouselComponents(
       this._handlePressClipInfo,
@@ -184,57 +183,51 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
     return (
       <View style={styles.wrapper} transparent>
-        {
-          screenReaderEnabled && (
-            <>
-              <DropdownButtonSelect
-                accessibilityHint={translate('ARIA HINT - This is the now playing info selector')}
-                items={accessibilitySelectorItems(hasChapters, hasTranscript)}
-                label={accessibilityItemSelected?.label}
-                onValueChange={this._handleAccessibilitySelectChange}
-                placeholder={placeholderItem}
-                testID={testIDPrefix}
-                value={accessibilityItemSelected?.value || null}
-                wrapperStyle={styles.accessibilitySelectWrapper}
-              />
+        {screenReaderEnabled && (
+          <>
+            <DropdownButtonSelect
+              accessibilityHint={translate('ARIA HINT - This is the now playing info selector')}
+              items={accessibilitySelectorItems(hasChapters, hasTranscript)}
+              label={accessibilityItemSelected?.label}
+              onValueChange={this._handleAccessibilitySelectChange}
+              placeholder={placeholderItem}
+              testID={testIDPrefix}
+              value={accessibilityItemSelected?.value || null}
+              wrapperStyle={styles.accessibilitySelectWrapper}
+            />
+            {carouselComponents}
+          </>
+        )}
+        {!screenReaderEnabled && (
+          <>
+            <ScrollView
+              bounces={false}
+              decelerationRate='fast'
+              horizontal
+              onMomentumScrollEnd={this.onScrollEnd}
+              pagingEnabled={false}
+              scrollViewRef={(ref: any) => (this.scrollView = ref)}
+              showsHorizontalScrollIndicator={false}
+              snapToInterval={screenWidth}
+              snapToStart
+              transparent>
               {carouselComponents}
-            </>
-          )
-        }
-        {
-          !screenReaderEnabled && (
-            <>
-              <ScrollView
-                bounces={false}
-                decelerationRate='fast'
-                horizontal
-                onMomentumScrollEnd={this.onScrollEnd}
-                pagingEnabled={false}
-                scrollViewRef={(ref: any) => (this.scrollView = ref)}
-                showsHorizontalScrollIndicator={false}
-                snapToInterval={screenWidth}
-                snapToStart
-                transparent>
-                {carouselComponents}
-              </ScrollView>
-              <View
-                accessible={false}
-                importantForAccessibility='no-hide-descendants'>
-                <Dots
-                  active={activeIndex}
-                  activeColor={PV.Colors.skyDark}
-                  activeDotHeight={9}
-                  activeDotWidth={9}
-                  length={itemCount}
-                  paddingVertical={12}
-                  passiveColor={PV.Colors.grayLighter}
-                  passiveDotHeight={8}
-                  passiveDotWidth={8}
-                />
-              </View>
-            </>
-          )
-        }
+            </ScrollView>
+            <View accessible={false} importantForAccessibility='no-hide-descendants'>
+              <Dots
+                active={activeIndex}
+                activeColor={PV.Colors.skyDark}
+                activeDotHeight={9}
+                activeDotWidth={9}
+                length={itemCount}
+                paddingVertical={12}
+                passiveColor={PV.Colors.grayLighter}
+                passiveDotHeight={8}
+                passiveDotWidth={8}
+              />
+            </View>
+          </>
+        )}
         {!!Config.ENABLE_VALUE_TAG_TRANSACTIONS && lnpayEnabled && hasValueInfo && (
           <View style={styles.boostButtonsContainer}>
             <PressableWithOpacity
@@ -248,10 +241,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                 {streamingAmount} {translate('sats / min')}
               </Text>
               {streamingEnabled && isPlaying && (
-                <ActivityIndicator
-                  size={15}
-                  styles={{ position: 'absolute', right: 20 }}
-                  testID={testIDPrefix} />
+                <ActivityIndicator size={15} styles={{ position: 'absolute', right: 20 }} testID={testIDPrefix} />
               )}
             </PressableWithOpacity>
             <PressableWithOpacity
@@ -309,19 +299,19 @@ const accessibilitySelectorItems = (hasChapters: boolean, hasTranscript: boolean
   ]
 
   if (hasChapters) {
-    items.push(    {
+    items.push({
       label: translate('Chapters'),
       value: _chaptersKey
     })
   }
 
-  items.push(    {
+  items.push({
     label: translate('Clips'),
     value: _clipsKey
   })
 
   if (hasTranscript) {
-    items.push(    {
+    items.push({
       label: translate('Chapters'),
       value: _transcriptKey
     })
@@ -341,60 +331,50 @@ const mediaPlayerCarouselComponents = (
 ) => {
   let finalSelectedValue = accessibilityItemSelectedValue
   if (
-    finalSelectedValue === _chaptersKey && !hasChapters
-    || finalSelectedValue === _transcriptKey && !hasTranscript
+    (finalSelectedValue === _chaptersKey && !hasChapters) ||
+    (finalSelectedValue === _transcriptKey && !hasTranscript)
   ) {
     finalSelectedValue = _nowPlayingInfoKey
   }
 
   return (
     <>
-      {
-        screenReaderEnabled
-          ? (
-            <>
-              {
-                (accessibilityItemSelectedValue === _nowPlayingInfoKey || !accessibilityItemSelectedValue) &&
-                  <MediaPlayerCarouselViewer
-                    handlePressClipInfo={handlePressClipInfo}
-                    navigation={navigation}
-                    width={screenWidth} />
-              }
-              {
-                accessibilityItemSelectedValue === _episodeSummaryKey &&
-                  <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
-              }
-              {
-                accessibilityItemSelectedValue === _chaptersKey &&
-                  <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />
-              }
-              {
-                accessibilityItemSelectedValue === _clipsKey &&
-                  <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
-              }
-              {
-                accessibilityItemSelectedValue === _transcriptKey &&
-                  <MediaPlayerCarouselTranscripts width={screenWidth} />
-              }
-            </>
-          )
-          : (
-            <>
-              <MediaPlayerCarouselViewer
-                handlePressClipInfo={handlePressClipInfo}
-                navigation={navigation}
-                width={screenWidth} />
-              <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
-              {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
-              <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
-              {hasTranscript && <MediaPlayerCarouselTranscripts width={screenWidth} />}
-            </>
-          )
-      }
+      {screenReaderEnabled ? (
+        <>
+          {(accessibilityItemSelectedValue === _nowPlayingInfoKey || !accessibilityItemSelectedValue) && (
+            <MediaPlayerCarouselViewer
+              handlePressClipInfo={handlePressClipInfo}
+              navigation={navigation}
+              width={screenWidth}
+            />
+          )}
+          {accessibilityItemSelectedValue === _episodeSummaryKey && (
+            <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
+          )}
+          {accessibilityItemSelectedValue === _chaptersKey && (
+            <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />
+          )}
+          {accessibilityItemSelectedValue === _clipsKey && (
+            <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
+          )}
+          {accessibilityItemSelectedValue === _transcriptKey && <MediaPlayerCarouselTranscripts width={screenWidth} />}
+        </>
+      ) : (
+        <>
+          <MediaPlayerCarouselViewer
+            handlePressClipInfo={handlePressClipInfo}
+            navigation={navigation}
+            width={screenWidth}
+          />
+          <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
+          {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
+          <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
+          {hasTranscript && <MediaPlayerCarouselTranscripts width={screenWidth} />}
+        </>
+      )}
     </>
   )
 }
-
 
 const styles = StyleSheet.create({
   accessibilitySelectWrapper: {
