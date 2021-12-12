@@ -100,10 +100,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       headerRight: () => (
         <RNView style={styles.navHeaderButtonWrapper}>
           <NavHeaderButtonText
-            accessibilityHint={isLoggedIn
-              ? ''
-              : translate('ARIA HINT - go to the login screen')
-            }
+            accessibilityHint={isLoggedIn ? '' : translate('ARIA HINT - go to the login screen')}
             accessibilityLabel={isLoggedIn ? translate('Save Clip') : translate('Go to Login')}
             color={globalTheme.text.color}
             handlePress={navigation.getParam('_saveMediaRef')}
@@ -140,22 +137,22 @@ export class MakeClipScreen extends React.Component<Props, State> {
         }
       },
       () => {
-        const {tempMediaRefInfo} = this.global
+        const { tempMediaRefInfo } = this.global
         let startTime = null
         let endTime = null
         let title = ''
-        if(!isEditing) {
-          if(tempMediaRefInfo.startTime) {
+        if (!isEditing) {
+          if (tempMediaRefInfo.startTime) {
             startTime = tempMediaRefInfo.startTime
           } else {
             startTime = Math.floor(currentPosition)
           }
 
-          if(tempMediaRefInfo.endTime) {
+          if (tempMediaRefInfo.endTime) {
             endTime = tempMediaRefInfo.endTime
           }
 
-          if(tempMediaRefInfo.clipTitle) {
+          if (tempMediaRefInfo.clipTitle) {
             title = tempMediaRefInfo.clipTitle
           }
         } else {
@@ -177,11 +174,15 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   async componentWillUnmount() {
-    if(!this.props.navigation.getParam('isEditing')) {
-      await saveTempMediaRef({startTime: this.state.startTime, endTime:this.state.endTime, clipTitle:this.state.title})
+    if (!this.props.navigation.getParam('isEditing')) {
+      await saveTempMediaRef({
+        startTime: this.state.startTime,
+        endTime: this.state.endTime,
+        clipTitle: this.state.title
+      })
     }
 
-    if(this.state.shouldClearClipInfo) {
+    if (this.state.shouldClearClipInfo) {
       await clearTempMediaRef()
     }
 
@@ -316,7 +317,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
             await playerSetNowPlayingItem(newItem, position || 0)
           }
 
-          this.setState({ isSaving: false, shouldClearClipInfo:true }, () => {
+          this.setState({ isSaving: false, shouldClearClipInfo: true }, () => {
             // NOTE: setTimeout to prevent an error when Modal and Alert modal try to render at the same time
             setTimeout(() => {
               const alertText = isEditing ? translate('Clip Updated') : translate('Clip Created')
@@ -455,20 +456,21 @@ export class MakeClipScreen extends React.Component<Props, State> {
       playButtonAccessibilityLabel = translate('Episode is loading')
     }
 
-    const jumpBackAccessibilityLabel =
-      `${translate(`Jump back`)} ${jumpBackwardsTime} ${translate('seconds')}`
-    const jumpForwardAccessibilityLabel =
-      `${translate(`Jump forward`)} ${jumpForwardsTime} ${translate('seconds')}`
-    const miniJumpBackAccessibilityLabel =
-      `${translate(`Jump back`)} ${PV.Player.miniJumpSeconds} ${translate('seconds')}`
-    const miniJumpForwardAccessibilityLabel =
-      `${translate(`Jump forward`)} ${PV.Player.miniJumpSeconds} ${translate('seconds')}`
+    const jumpBackAccessibilityLabel = `${translate(`Jump back`)} ${jumpBackwardsTime} ${translate('seconds')}`
+    const jumpForwardAccessibilityLabel = `${translate(`Jump forward`)} ${jumpForwardsTime} ${translate('seconds')}`
+    const miniJumpBackAccessibilityLabel = `${translate(`Jump back`)} ${PV.Player.miniJumpSeconds} ${translate(
+      'seconds'
+    )}`
+    const miniJumpForwardAccessibilityLabel = `${translate(`Jump forward`)} ${PV.Player.miniJumpSeconds} ${translate(
+      'seconds'
+    )}`
 
     const outerWrapperStyle = [styles.outerWrapper, { padding: 10 }, { width: screenWidth }]
 
-    const imageWrapperStyle = screenHeight < PV.Dimensions.smallScreen.height
-      ? [styles.carouselImageWrapper, { width: screenWidth * 0.9 }, { height: '100%' }]
-      : [styles.carouselImageWrapper, { width: screenWidth * 0.9 }]
+    const imageWrapperStyle =
+      screenHeight < PV.Dimensions.smallScreen.height
+        ? [styles.carouselImageWrapper, { width: screenWidth * 0.9 }, { height: '100%' }]
+        : [styles.carouselImageWrapper, { width: screenWidth * 0.9 }]
 
     return (
       <OpaqueBackground>
@@ -502,25 +504,21 @@ export class MakeClipScreen extends React.Component<Props, State> {
               value={isPublicItemSelected.value}
               wrapperStyle={styles.dropdownButtonSelectWrapper}
             />
-            {
-              checkIfVideoFileType(nowPlayingItem) && (
-                <RNView style={outerWrapperStyle}>
-                  <RNView style={imageWrapperStyle}>
-                    <PVVideo disableFullscreen navigation={navigation} />
-                  </RNView>
+            {checkIfVideoFileType(nowPlayingItem) && (
+              <RNView style={outerWrapperStyle}>
+                <RNView style={imageWrapperStyle}>
+                  <PVVideo disableFullscreen navigation={navigation} />
                 </RNView>
-              )
-            }
-            {
-              !checkIfVideoFileType(nowPlayingItem) && (
-                <View style={styles.fillerView} transparent />
-              )
-            }
+              </RNView>
+            )}
+            {!checkIfVideoFileType(nowPlayingItem) && <View style={styles.fillerView} transparent />}
             <View style={styles.wrapperBottom} transparent>
               <View style={styles.wrapperBottomInside} transparent>
                 <TimeInput
                   // eslint-disable-next-line max-len
-                  accessibilityHint={translate('ARIA HINT - tap to set the current playback position as the start time for this clip')}
+                  accessibilityHint={translate(
+                    'ARIA HINT - tap to set the current playback position as the start time for this clip'
+                  )}
                   handlePreview={() => {
                     if (startTime) {
                       playerPreviewStartTime(startTime, endTime)
@@ -536,7 +534,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <View style={styles.wrapperBottomInsideSpacer} transparent />
                 <TimeInput
                   // eslint-disable-next-line max-len
-                  accessibilityHint={translate('ARIA HINT - tap to set the current playback position as the end time for this clip')}
+                  accessibilityHint={translate(
+                    'ARIA HINT - tap to set the current playback position as the end time for this clip'
+                  )}
                   handleClearTime={endTime ? this._clearEndTime : null}
                   handlePreview={() => {
                     if (endTime) {
@@ -568,9 +568,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     }}
                     onPress={this._clearEndTime}
                     testID={`${testIDPrefix}_time_input_clear_button`.prependTestId()}>
-                    <Text style={styles.clearEndTimeText}>
-                      {translate('Remove end time')}
-                    </Text>
+                    <Text style={styles.clearEndTimeText}>{translate('Remove end time')}</Text>
                   </Pressable>
                 )}
               </View>
@@ -595,7 +593,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       testID={`${testIDPrefix}_jump_backward`.prependTestId()}>
                       {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS)}
                       <View
-                        importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper} transparent>
+                        importantForAccessibility='no-hide-descendants'
+                        style={styles.skipTimeTextWrapper}
+                        transparent>
                         <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
                       </View>
                     </PressableWithOpacity>
@@ -763,10 +763,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   onPress={this._hideHowTo}
                   style={{ marginTop: 12 }}
                   testID={`${testIDPrefix}_close`.prependTestId()}>
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    numberOfLines={1}
-                    style={styles.modalButton}>
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.modalButton}>
                     {translate('Got It')}
                   </Text>
                 </PressableWithOpacity>
@@ -808,7 +805,7 @@ const styles = StyleSheet.create({
     backgroundColor: PV.Colors.ink
   },
   contentContainer: {
-    flex: 1,
+    flex: 1
   },
   dropdownButtonSelectWrapper: {
     marginTop: 16

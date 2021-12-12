@@ -9,8 +9,16 @@ import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPlaybackSpeed } from '../services/player'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
-import { ActionSheet, ActivityIndicator, AutoScrollToggle, ClipTableCell, Divider, FlatList,
-  ScrollView, TableSectionSelectors } from './'
+import {
+  ActionSheet,
+  ActivityIndicator,
+  AutoScrollToggle,
+  ClipTableCell,
+  Divider,
+  FlatList,
+  ScrollView,
+  TableSectionSelectors
+} from './'
 
 type Props = {
   isChapters?: boolean
@@ -57,29 +65,30 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     const shouldPlay = true
     const forceUpdateOrderDate = false
     const setCurrentItemNextInQueue = false
-    playerLoadNowPlayingItem(
-      selectedItem,
-      shouldPlay,
-      forceUpdateOrderDate,
-      setCurrentItemNextInQueue
-    )
+    playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   disableAutoscroll = () => {
     if (this.interval) {
-      this.setState({
-        activeChapterRowIndex: null,
-        autoScrollOn: false
-      }, this.clearAutoScrollInterval)
+      this.setState(
+        {
+          activeChapterRowIndex: null,
+          autoScrollOn: false
+        },
+        this.clearAutoScrollInterval
+      )
     }
   }
 
   toggleAutoscroll = () => {
     if (this.interval) {
-      this.setState({
-        activeChapterRowIndex: null,
-        autoScrollOn: false
-      }, this.clearAutoScrollInterval)
+      this.setState(
+        {
+          activeChapterRowIndex: null,
+          autoScrollOn: false
+        },
+        this.clearAutoScrollInterval
+      )
     } else {
       this.enableAutoscroll()
     }
@@ -98,25 +107,23 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     this.clearAutoScrollInterval()
 
     this.setState({ autoScrollOn: true })
-      this.interval = setInterval(() => {
-        const { currentChapter, currentChapters } = this.global
-        const itemHeightsReady = currentChapters.length === this.itemHeights.length
+    this.interval = setInterval(() => {
+      const { currentChapter, currentChapters } = this.global
+      const itemHeightsReady = currentChapters.length === this.itemHeights.length
 
-        if (currentChapter && itemHeightsReady) {
-          if (lastPlayingChapter && currentChapter.id === lastPlayingChapter.id) return 
-          lastPlayingChapter = currentChapter
+      if (currentChapter && itemHeightsReady) {
+        if (lastPlayingChapter && currentChapter.id === lastPlayingChapter.id) return
+        lastPlayingChapter = currentChapter
 
-          const index = currentChapters.findIndex(
-            (item: Record<string, any>) => item.id === currentChapter.id
-          )
+        const index = currentChapters.findIndex((item: Record<string, any>) => item.id === currentChapter.id)
 
-          if (index !== -1) {
-            const indexBefore = index > 0 ? index - 1 : 0
-            this.listRef.scrollToIndex({ index: indexBefore, animated: false })
-            this.setState({ activeChapterRowIndex: index })
-          }
+        if (index !== -1) {
+          const indexBefore = index > 0 ? index - 1 : 0
+          this.listRef.scrollToIndex({ index: indexBefore, animated: false })
+          this.setState({ activeChapterRowIndex: index })
         }
-      }, intervalTime)
+      }
+    }, intervalTime)
   }
 
   clearAutoScrollInterval = () => {
@@ -136,7 +143,8 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     })
   }
 
-  _handleMoreCancelPress = () => new Promise((resolve) => {
+  _handleMoreCancelPress = () =>
+    new Promise((resolve) => {
       setGlobal(
         {
           screenPlayer: {
@@ -170,7 +178,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
         itemType='chapter'
         loadChapterOnPlay
         navigation={navigation}
-        onLayout={(item: any) => this.itemHeights[index] = item.nativeEvent.layout.height}
+        onLayout={(item: any) => (this.itemHeights[index] = item.nativeEvent.layout.height)}
         showPodcastInfo={false}
         testID={`${testID}_item_${index}`}
         transparent
@@ -179,7 +187,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
       <></>
     )
   }
-/* 
+  /* 
   Creating array of itemHeights to determine where to scroll, given the cells
   have a dynamic height. The array can only be populated after the list
   has rendered once, so we're returning a default placehold length and offset
@@ -191,13 +199,13 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
 
     let length = 80
     let offset = 80
-    
+
     if (currentChapters && currentChapters.length === this.itemHeights.length) {
-      length = this.itemHeights[index];
-      offset = this.itemHeights.slice(0,index).reduce((a, c) => a + c, 0)
+      length = this.itemHeights[index]
+      offset = this.itemHeights.slice(0, index).reduce((a, c) => a + c, 0)
     }
 
-    return {length, offset, index}
+    return { length, offset, index }
   }
 
   _ItemSeparatorComponent = () => <Divider />
@@ -223,17 +231,17 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     return (
       <ScrollView fillSpace style={[styles.wrapper, { width }]} transparent>
         <TableSectionSelectors
-          customButtons={!screenReaderEnabled ? (
-            <AutoScrollToggle
-              autoScrollOn={autoScrollOn}
-              toggleAutoscroll={this.toggleAutoscroll}
-            />
-          ) : null}
+          customButtons={
+            !screenReaderEnabled ? (
+              <AutoScrollToggle autoScrollOn={autoScrollOn} toggleAutoscroll={this.toggleAutoscroll} />
+            ) : null
+          }
           disableFilter
           hideDropdown
           includePadding
           selectedFilterLabel={translate('Chapters')}
-          selectedFilterAccessibilityHint={translate('ARIA HINT - This is a list of the chapters for this episode')} />
+          selectedFilterAccessibilityHint={translate('ARIA HINT - This is a list of the chapters for this episode')}
+        />
         {isLoading || (isQuerying && <ActivityIndicator fillSpace testID={getTestID()} />)}
         {!isLoading && !isQuerying && currentChapters && (
           <FlatList

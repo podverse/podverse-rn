@@ -2,16 +2,37 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
 import { PV } from '../resources'
-import { checkIfVideoFileType, videoCheckIfStateIsBuffering, videoCheckIfStateIsPlaying,
+import {
+  checkIfVideoFileType,
+  videoCheckIfStateIsBuffering,
+  videoCheckIfStateIsPlaying,
   videoGetCurrentLoadedTrackId,
-  videoGetRate, videoGetState, videoGetTrackDuration, videoGetTrackPosition, videoHandlePause,
-  videoHandlePauseWithUpdate, videoHandlePlayWithUpdate, videoHandleSeekTo, videoIsLoaded, videoLoadNowPlayingItem,
-  videoSetRate, videoTogglePlay } from '../state/actions/playerVideo'
+  videoGetRate,
+  videoGetState,
+  videoGetTrackDuration,
+  videoGetTrackPosition,
+  videoHandlePause,
+  videoHandlePauseWithUpdate,
+  videoHandlePlayWithUpdate,
+  videoHandleSeekTo,
+  videoIsLoaded,
+  videoLoadNowPlayingItem,
+  videoSetRate,
+  videoTogglePlay
+} from '../state/actions/playerVideo'
 import PVEventEmitter from './eventEmitter'
-import { audioIsLoaded,  audioCheckIfIsPlaying, audioSetRate, audioHandlePlayWithUpdate,
-  audioHandleSeekTo, audioHandlePause, audioAddNowPlayingItemNextInQueue,
-  audioLoadNowPlayingItem, audioGetTrackDuration, audioGetTrackPosition,
-  audioGetCurrentLoadedTrackId, 
+import {
+  audioIsLoaded,
+  audioCheckIfIsPlaying,
+  audioSetRate,
+  audioHandlePlayWithUpdate,
+  audioHandleSeekTo,
+  audioHandlePause,
+  audioAddNowPlayingItemNextInQueue,
+  audioLoadNowPlayingItem,
+  audioGetTrackDuration,
+  audioGetTrackPosition,
+  audioGetCurrentLoadedTrackId,
   audioCheckIfStateIsBuffering,
   audioGetState,
   audioGetRate,
@@ -96,11 +117,11 @@ export const playerSetRateWithLatestPlaybackSpeed = async () => {
   if (Platform.OS === 'ios' && playerType === PV.Player.playerTypes.isAudio) {
     playerSetRate(rate)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    setTimeout( () => playerSetRate(rate), 200)
+    setTimeout(() => playerSetRate(rate), 200)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    setTimeout( () => playerSetRate(rate), 500)
+    setTimeout(() => playerSetRate(rate), 500)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    setTimeout( () => playerSetRate(rate), 800)
+    setTimeout(() => playerSetRate(rate), 800)
   } else {
     playerSetRate(rate)
   }
@@ -174,10 +195,7 @@ export const playerUpdateUserPlaybackPosition = async (skipSetNowPlaying?: boole
     const currentTrackId = await playerGetCurrentLoadedTrackId()
 
     const setPlayerClipIsLoadedIfClip = false
-    const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(
-      currentTrackId,
-      setPlayerClipIsLoadedIfClip
-    )
+    const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(currentTrackId, setPlayerClipIsLoadedIfClip)
 
     if (currentNowPlayingItem) {
       await saveOrResetCurrentlyPlayingItemInHistory(!!shouldAwait, currentNowPlayingItem, !!skipSetNowPlaying)
@@ -195,24 +213,19 @@ export const playerLoadNowPlayingItem = async (
   previousNowPlayingItem: NowPlayingItem | null
 ) => {
   try {
-    if(!item) {
+    if (!item) {
       return
     }
 
     if (!checkIfVideoFileType(item)) {
       audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
     }
-    
+
     const skipSetNowPlaying = true
     await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
 
     if (checkIfVideoFileType(item)) {
-      await videoLoadNowPlayingItem(
-        item,
-        shouldPlay,
-        forceUpdateOrderDate,
-        previousNowPlayingItem
-      )
+      await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, previousNowPlayingItem)
     } else {
       await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
     }
@@ -239,13 +252,9 @@ export const playerSetPositionWhenDurationIsAvailable = async (
           if (interval) clearInterval(interval)
         }, 20000)
 
-        if (
-          duration && duration > 0
-          && (!trackId || (currentTrackId && trackId === currentTrackId))
-          && position >= 0
-        ) {
+        if (duration && duration > 0 && (!trackId || (currentTrackId && trackId === currentTrackId)) && position >= 0) {
           clearInterval(interval)
-          
+
           await playerHandleSeekTo(position)
           // Sometimes seekTo does not work right away for all episodes...
           // to work around this bug, we set another interval to confirm the track
@@ -452,7 +461,7 @@ export const playerUpdateCurrentTrack = async (trackTitle?: string, artworkUrl?:
 }
 
 export const setPlayerJumpBackwards = (val?: string) => {
-  const newValue = val && parseInt(val, 10) > 0 || val === '' ? val : PV.Player.jumpBackSeconds.toString()
+  const newValue = (val && parseInt(val, 10) > 0) || val === '' ? val : PV.Player.jumpBackSeconds.toString()
   if (newValue !== '') {
     AsyncStorage.setItem(PV.Keys.PLAYER_JUMP_BACKWARDS, newValue.toString())
   }
@@ -460,7 +469,7 @@ export const setPlayerJumpBackwards = (val?: string) => {
 }
 
 export const setPlayerJumpForwards = (val?: string) => {
-  const newValue = val && parseInt(val, 10) > 0 || val === '' ? val : PV.Player.jumpSeconds.toString()
+  const newValue = (val && parseInt(val, 10) > 0) || val === '' ? val : PV.Player.jumpSeconds.toString()
   if (newValue !== '') {
     AsyncStorage.setItem(PV.Keys.PLAYER_JUMP_FORWARDS, newValue.toString())
   }

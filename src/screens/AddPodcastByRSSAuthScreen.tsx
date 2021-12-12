@@ -1,7 +1,6 @@
 import { KeyboardAvoidingView, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, NavDismissIcon, PressableWithOpacity,
-  Text, TextInput, View } from '../components'
+import { ActivityIndicator, NavDismissIcon, PressableWithOpacity, Text, TextInput, View } from '../components'
 import { translate } from '../lib/i18n'
 import { navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { PV } from '../resources'
@@ -68,7 +67,7 @@ export class AddPodcastByRSSAuthScreen extends React.Component<Props, State> {
           const credentials = `${username}:${password}`
           const addByRSSSucceeded = await addAddByRSSPodcastWithCredentials(feedUrl, credentials)
           this.setState({ isLoading: false })
-  
+
           if (addByRSSSucceeded) {
             const podcast = await getAddByRSSPodcastLocally(feedUrl)
             this.handleDismiss()
@@ -113,7 +112,6 @@ export class AddPodcastByRSSAuthScreen extends React.Component<Props, State> {
         : [styles.switchOptionText]
 
     return (
-
       <View style={styles.view}>
         <KeyboardAvoidingView
           behavior='position'

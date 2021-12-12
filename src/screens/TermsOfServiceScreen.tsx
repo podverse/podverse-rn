@@ -26,13 +26,9 @@ export class TermsOfServiceScreen extends React.Component<Props> {
 
   render() {
     return (
-      <View
-        style={styles.content}
-        testID='terms_of_service_screen_view'>
+      <View style={styles.content} testID='terms_of_service_screen_view'>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <TableSectionSelectors
-            disableFilter
-            selectedFilterLabel={translate('License')} />
+          <TableSectionSelectors disableFilter selectedFilterLabel={translate('License')} />
           <RNView style={styles.copyLeftWrapper}>
             <Text
               onPress={() => this.showLeavingAppAlert('https://www.gnu.org/licenses/agpl-3.0.en.html')}
@@ -54,9 +50,7 @@ export class TermsOfServiceScreen extends React.Component<Props> {
             </Text>
           </RNView>
           <Divider style={styles.divider} />
-          <TableSectionSelectors
-            disableFilter
-            selectedFilterLabel={translate('Terms of Service')} />
+          <TableSectionSelectors disableFilter selectedFilterLabel={translate('Terms of Service')} />
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {translate('TermsOfServiceScreenText1')}
             {'\n\n'}
@@ -73,9 +67,7 @@ export class TermsOfServiceScreen extends React.Component<Props> {
             {translate('TermsOfServicesScreenText7')}
           </Text>
           <Divider style={styles.divider} />
-          <TableSectionSelectors
-            disableFilter
-            selectedFilterLabel={translate('Popularity Analytics')} />
+          <TableSectionSelectors disableFilter selectedFilterLabel={translate('Popularity Analytics')} />
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {translate('TermsOfServiceScreenMatomoTrackingText1')}
             {'\n\n'}
@@ -88,9 +80,7 @@ export class TermsOfServiceScreen extends React.Component<Props> {
             {translate('TermsOfServiceScreenMatomoTrackingText5')}
           </Text>
           <Divider style={styles.divider} />
-          <TableSectionSelectors
-            disableFilter
-            selectedFilterLabel={translate('Third Party Libraries')} />
+          <TableSectionSelectors disableFilter selectedFilterLabel={translate('Third Party Libraries')} />
           {Object.keys(packageJson.dependencies).map((license) => (
             <Text key={license} style={styles.text}>
               {license}

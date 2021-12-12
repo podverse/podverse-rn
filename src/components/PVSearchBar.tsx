@@ -19,8 +19,7 @@ type Props = {
 }
 
 export const PVSearchBar = (props: Props) => {
-  const { accessible, containerStyle, handleClear,
-    inputRef, onChangeText, placeholder, subText, testID, value } = props
+  const { accessible, containerStyle, handleClear, inputRef, onChangeText, placeholder, subText, testID, value } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const inputStyle = PV.Fonts.fontScale.largest === fontScaleMode ? { fontSize: PV.Fonts.largeSizes.md } : {}
@@ -36,7 +35,8 @@ export const PVSearchBar = (props: Props) => {
             accessibilityRole='button'
             name='times'
             onPress={handleClear}
-            size={20} />
+            size={20}
+          />
         }
         containerStyle={[styles.containerStyle, containerStyle]}
         inputContainerStyle={styles.inputContainerStyle}
@@ -45,15 +45,16 @@ export const PVSearchBar = (props: Props) => {
         placeholder={placeholder}
         ref={inputRef}
         returnKeyType='search'
-        searchIcon={(
+        searchIcon={
           <Icon
             accessible={false}
             color={PV.Colors.white}
             importantForAccessibility='no-hide-descendants'
             name={'search'}
             size={PV.Icons.NAV}
-            solid />
-        )}
+            solid
+          />
+        }
         {...(testID ? { testID: `${testID}_search_bar`.prependTestId() } : {})}
         value={value}
       />

@@ -5,9 +5,13 @@ import { useGlobal } from 'reactn'
 import { checkIfNowPlayingItem, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
-import { playerHandlePlayWithUpdate, playerCheckIfStateIsPlaying,
-  playerHandleSeekTo, playerGetState} from '../services/player'
-  import { setNowPlayingItem } from '../services/userNowPlayingItem'
+import {
+  playerHandlePlayWithUpdate,
+  playerCheckIfStateIsPlaying,
+  playerHandleSeekTo,
+  playerGetState
+} from '../services/player'
+import { setNowPlayingItem } from '../services/userNowPlayingItem'
 import { playerLoadNowPlayingItem, playerTogglePlay, playerUpdatePlayerState } from '../state/actions/player'
 import { Icon, MoreButton, PressableWithOpacity, Text, View } from './'
 
@@ -72,9 +76,20 @@ const MiniProgressBar = (props: BarProps) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { episodeCompleted, episodeDownloading, handleMorePress, item, itemType,
-    loadChapterOnPlay, mediaFileDuration, style, testID, timeLabel, transparent,
-    userPlaybackPosition } = props
+  const {
+    episodeCompleted,
+    episodeDownloading,
+    handleMorePress,
+    item,
+    itemType,
+    loadChapterOnPlay,
+    mediaFileDuration,
+    style,
+    testID,
+    timeLabel,
+    transparent,
+    userPlaybackPosition
+  } = props
   const { episode = {}, podcast = {} } = item
   const convertedItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
   const [player] = useGlobal('player')
@@ -106,7 +121,6 @@ export const TimeRemainingWidget = (props: Props) => {
         PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)
       }
     })
-
   }
 
   const playItem = async () => {
@@ -114,10 +128,10 @@ export const TimeRemainingWidget = (props: Props) => {
     if (loadChapterOnPlay) {
       await handleChapterLoad()
     } else if (
-      nowPlayingItem
-      && !isNowPlayingItem
-      && convertedItem.clipId
-      && convertedItem.episodeId === nowPlayingItem.episodeId
+      nowPlayingItem &&
+      !isNowPlayingItem &&
+      convertedItem.clipId &&
+      convertedItem.episodeId === nowPlayingItem.episodeId
     ) {
       handleClipFromSameEpisodeLoaded()
     } else if (isNowPlayingItem) {
@@ -126,12 +140,7 @@ export const TimeRemainingWidget = (props: Props) => {
       const forceUpdateOrderDate = false
       const shouldPlay = true
       const setCurrentItemNextInQueue = true
-      playerLoadNowPlayingItem(
-        convertedItem,
-        shouldPlay,
-        forceUpdateOrderDate,
-        setCurrentItemNextInQueue
-      )
+      playerLoadNowPlayingItem(convertedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
     }
     requestAppStoreReviewForEpisodePlayed()
   }
@@ -150,36 +159,28 @@ export const TimeRemainingWidget = (props: Props) => {
         onPress={playItem}
         style={iconStyle}
         testID={`${testID}_time_remaining_widget_toggle_play`.prependTestId()}>
-        {isNowPlayingItem
-          ? <Icon name={'pause'} size={13} />
-          : <Icon name={'play'} size={13} />
-        }
+        {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
       </PressableWithOpacity>
-      {(hasStartedItem && !isInvalidDuration && playedTime > 0) && (
+      {hasStartedItem && !isInvalidDuration && playedTime > 0 && (
         <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
       )}
       <View
         accessible={false}
         importantForAccessibility='no-hide-descendants'
         style={{ flexDirection: 'row', flex: 1, alignItems: 'center', height: '100%' }}>
-        {
-          !!timeLabel && (
-            <Text
-              accessible={false}
-              fontSizeLargerScale={PV.Fonts.largeSizes.md}
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-              importantForAccessibility='no-hide-descendants'
-              style={styles.text}>
-              {timeLabel}
-            </Text>
-          )
-        }
+        {!!timeLabel && (
+          <Text
+            accessible={false}
+            fontSizeLargerScale={PV.Fonts.largeSizes.md}
+            fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+            importantForAccessibility='no-hide-descendants'
+            style={styles.text}>
+            {timeLabel}
+          </Text>
+        )}
         {!!episodeCompleted && (
           <View style={styles.icon}>
-            <Icon
-              name={'check'}
-              size={22}
-              style={styles.iconCompleted} />
+            <Icon name={'check'} size={22} style={styles.iconCompleted} />
           </View>
         )}
       </View>
@@ -188,7 +189,8 @@ export const TimeRemainingWidget = (props: Props) => {
           handleMorePress={handleMorePress}
           isLoading={episodeDownloading}
           itemType={itemType}
-          testID={testID} />
+          testID={testID}
+        />
       )}
     </View>
   )

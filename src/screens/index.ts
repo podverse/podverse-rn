@@ -50,4 +50,3 @@ export { ValueTagConsentScreen } from './ValueTagConsentScreen'
 export { ValueTagPreviewScreen } from './ValueTagPreviewScreen'
 export { ValueTagSetupScreen } from './ValueTagSetupScreen'
 export { WebPageScreen } from './WebPageScreen'
-

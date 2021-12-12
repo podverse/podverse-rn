@@ -13,11 +13,7 @@ export const AutoScrollToggle = (props: Props) => {
   const { autoScrollOn, toggleAutoscroll } = props
 
   return (
-    <Pressable
-      accessible={false}
-      activeOpacity={0.7}
-      onPress={toggleAutoscroll}
-      style={styles.wrapper}>
+    <Pressable accessible={false} activeOpacity={0.7} onPress={toggleAutoscroll} style={styles.wrapper}>
       <Text
         accessible={false}
         isNowPlaying={!!autoScrollOn}

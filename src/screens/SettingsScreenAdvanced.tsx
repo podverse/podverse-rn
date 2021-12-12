@@ -21,7 +21,6 @@ type Props = {
 const testIDPrefix = 'settings_screen_advanced'
 
 export class SettingsScreenAdvanced extends React.Component<Props> {
-
   constructor(props: Props) {
     super(props)
   }

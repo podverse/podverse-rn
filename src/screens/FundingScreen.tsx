@@ -3,8 +3,17 @@ import { Alert, Keyboard, Linking, Pressable, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import React, { getGlobal } from 'reactn'
 import AsyncStorage from '@react-native-community/async-storage'
-import { Divider, FastImage, NavDismissIcon, PressableWithOpacity, ScrollView,
-  Text, TextInput, ValueTagInfoView, View } from '../components'
+import {
+  Divider,
+  FastImage,
+  NavDismissIcon,
+  PressableWithOpacity,
+  ScrollView,
+  Text,
+  TextInput,
+  ValueTagInfoView,
+  View
+} from '../components'
 import { ValueTransactionRouteError } from '../components/ValueTagInfoView'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
@@ -33,7 +42,7 @@ export class FundingScreen extends React.Component<Props, State> {
       erroringTransactions: []
     }
   }
-  
+
   static navigationOptions = ({ navigation }) => {
     const { globalTheme } = getGlobal()
 
@@ -52,9 +61,8 @@ export class FundingScreen extends React.Component<Props, State> {
     const { boostAmount, streamingAmount } = session?.valueTagSettings?.lightningNetwork?.lnpay?.globalSettings || {}
 
     const { episodeValue, podcastValue } = nowPlayingItem
-    const valueTags = podcastValueFinal
-      || (episodeValue?.length && episodeValue)
-      || (podcastValue?.length && podcastValue)
+    const valueTags =
+      podcastValueFinal || (episodeValue?.length && episodeValue) || (podcastValue?.length && podcastValue)
 
     // TODO: right now we are assuming the first item will be the lightning network.
     // This will need to be updated to support additional valueTags.
@@ -89,7 +97,7 @@ export class FundingScreen extends React.Component<Props, State> {
 
     if (wallet) {
       const { boostTransactions } = this.state
- 
+
       for (const boostTransaction of boostTransactions) {
         try {
           if (boostTransaction.normalizedValueRecipient.amount >= 1) {
@@ -122,9 +130,7 @@ export class FundingScreen extends React.Component<Props, State> {
     const { url, value } = item
     if (!url || !value) return null
     return (
-      <PressableWithOpacity
-        activeOpacity={0.7}
-        onPress={() => this.handleFollowLink(url)}>
+      <PressableWithOpacity activeOpacity={0.7} onPress={() => this.handleFollowLink(url)}>
         <Text
           key={`${testIDPrefix}-${type}-link-${index}`}
           style={styles.fundingLink}
@@ -161,11 +167,10 @@ export class FundingScreen extends React.Component<Props, State> {
       this.renderFundingLink(item, 'episode', index)
     )
     const hasValueInfo =
-      !!Config.ENABLE_VALUE_TAG_TRANSACTIONS && (
-        podcastValueFinal?.length > 0
-        || nowPlayingItem?.episodeValue?.length > 0
-        || nowPlayingItem?.podcastValue?.length > 0
-      )
+      !!Config.ENABLE_VALUE_TAG_TRANSACTIONS &&
+      (podcastValueFinal?.length > 0 ||
+        nowPlayingItem?.episodeValue?.length > 0 ||
+        nowPlayingItem?.podcastValue?.length > 0)
 
     const podcastTitle = nowPlayingItem?.podcastTitle.trim() || translate('Untitled Podcast')
     const episodeTitle = nowPlayingItem?.episodeTitle.trim() || translate('Untitled Episode')
@@ -173,13 +178,8 @@ export class FundingScreen extends React.Component<Props, State> {
     const headerAccessibilityLabel = `${podcastTitle}, ${episodeTitle}, ${pubDate}`
 
     return (
-      <View
-        style={styles.content}
-        testID='funding_screen_view'>
-        <View
-          accessible
-          accessibilityLabel={headerAccessibilityLabel}
-          style={styles.innerTopView}>
+      <View style={styles.content} testID='funding_screen_view'>
+        <View accessible accessibilityLabel={headerAccessibilityLabel} style={styles.innerTopView}>
           <FastImage isSmall source={nowPlayingItem.podcastShrunkImageUrl} styles={styles.image} />
           <View style={{ flex: 1 }}>
             <Text
@@ -212,7 +212,9 @@ export class FundingScreen extends React.Component<Props, State> {
           {hasValueInfo && (
             <Text
               // eslint-disable-next-line max-len
-              accessibilityHint={translate('ARIA HINT - This section provides the value-for-value information for this podcast')}
+              accessibilityHint={translate(
+                'ARIA HINT - This section provides the value-for-value information for this podcast'
+              )}
               accessibilityLabel={translate('Value-for-Value')}
               accessibilityRole='header'
               style={styles.textHeader}
@@ -227,11 +229,9 @@ export class FundingScreen extends React.Component<Props, State> {
                 accessibilityHint={translate('ARIA HINT - go to the Bitcoin wallet setup screen')}
                 accessibilityLabel={translate('Setup Bitcoin Wallet')}
                 accessibilityRole='button'
-                style={styles.goToValueTagSetupButton} onPress={this._handleValueTagSetupPressed}>
-                <Text
-                  style={styles.goToValueTagSetupButtonText}>
-                  {translate('Setup Bitcoin Wallet')}
-                </Text>
+                style={styles.goToValueTagSetupButton}
+                onPress={this._handleValueTagSetupPressed}>
+                <Text style={styles.goToValueTagSetupButtonText}>{translate('Setup Bitcoin Wallet')}</Text>
               </Pressable>
             </View>
           )}
@@ -327,7 +327,9 @@ export class FundingScreen extends React.Component<Props, State> {
             <View style={styles.fundingLinksWrapper}>
               <Text
                 // eslint-disable-next-line max-len
-                accessibilityHint={translate('ARIA HINT - This section contains links to ways you can support this podcast')}
+                accessibilityHint={translate(
+                  'ARIA HINT - This section contains links to ways you can support this podcast'
+                )}
                 accessibilityLabel={translate('Podcast Funding Links')}
                 accessibilityRole='header'
                 style={styles.textHeader}
@@ -429,7 +431,7 @@ const styles = StyleSheet.create({
   },
   valueTagInfoViewWrapper: {},
   noLnpayView: {
-    marginTop:10
+    marginTop: 10
   },
   noLnPayText: {
     fontSize: PV.Fonts.sizes.lg

@@ -16,7 +16,6 @@ const _speedQuadrupleAndAHalfKey = 4.5
 const _speedQuintupleKey = 5
 
 const speeds = async () => {
-  
   const arr = [
     _speedOneHalfKey,
     _speedThreeQuartersKey,

@@ -22,10 +22,10 @@ export const createSatoshiStreamStats = (
 ) => {
   const podcast = nowPlayingItem?.podcastTitle || translate('Untitled Podcast')
   const episode = nowPlayingItem?.episodeTitle || translate('Untitled Episode')
-  const podcastIndexId = nowPlayingItem?.podcastIndexPodcastId &&
-    parseInt(nowPlayingItem.podcastIndexPodcastId, 10) || null
+  const podcastIndexId =
+    (nowPlayingItem?.podcastIndexPodcastId && parseInt(nowPlayingItem.podcastIndexPodcastId, 10)) || null
   const ts = parseInt(currentPlaybackPosition, 10)
-  const amountNum = (parseInt(amount, 10) * 1000) // in millisats
+  const amountNum = parseInt(amount, 10) * 1000 // in millisats
 
   return {
     7629169: {

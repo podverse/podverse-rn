@@ -33,13 +33,13 @@ const testIDPrefix = 'player_more_action_sheet'
  * As seen on Android device
  */
 type VolumeData = {
-  notification?: number | undefined;
-  ring?: number | undefined;
-  music?: number | undefined;
-  call?: number | undefined;
-  alarm?: number | undefined;
-  system?: number | undefined;
-  value?: number | undefined;
+  notification?: number | undefined
+  ring?: number | undefined
+  music?: number | undefined
+  call?: number | undefined
+  alarm?: number | undefined
+  system?: number | undefined
+  value?: number | undefined
 }
 export class PlayerMoreActionSheet extends React.Component<Props, State> {
   constructor() {
@@ -73,7 +73,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection(translate('subscribe to podcast'))
     if (wasAlerted) return
     const { nowPlayingItem } = this.global.player
-    
+
     try {
       if (nowPlayingItem) {
         if (nowPlayingItem.addByRSSPodcastFeedUrl) {
@@ -161,11 +161,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
           key='volume'
           style={[actionSheetStyles.button, actionSheetStyles.buttonBottom, globalTheme.actionSheetButton]}>
           <View style={styles.volumeSliderWrapper}>
-            <Icon
-              accessible={false}
-              name='volume-down'
-              size={28}
-              style={styles.volumeSliderIcon} />
+            <Icon accessible={false} name='volume-down' size={28} style={styles.volumeSliderIcon} />
             <Slider
               minimumValue={0}
               maximumValue={1}

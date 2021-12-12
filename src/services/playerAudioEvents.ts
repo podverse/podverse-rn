@@ -3,8 +3,10 @@ import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
-import { playerPlayNextChapterOrQueueItem,
-  playerPlayPreviousChapterOrReturnToBeginningOfTrack } from '../state/actions/player'
+import {
+  playerPlayNextChapterOrQueueItem,
+  playerPlayPreviousChapterOrReturnToBeginningOfTrack
+} from '../state/actions/player'
 import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import {
@@ -39,8 +41,7 @@ export const audioResetHistoryItem = async (x: any) => {
     const { mediaFileDuration } = metaEpisode
     if (mediaFileDuration > 59 && mediaFileDuration - 59 < position) {
       const setPlayerClipIsLoadedIfClip = false
-      const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(
-        loadedTrackId, setPlayerClipIsLoadedIfClip)
+      const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(loadedTrackId, setPlayerClipIsLoadedIfClip)
       if (currentNowPlayingItem) {
         const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
         if (autoDeleteEpisodeOnEnd && currentNowPlayingItem?.episodeId) {
@@ -69,10 +70,10 @@ export const audioHandleQueueEnded = (x: any) => {
         AsyncStorage state so we can know when a queue has actually ended or
         when the event is the result of .reset() called within playerLoadNowPlayingItem.
       */
-     const preventHandleQueueEnded = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
-     if (!preventHandleQueueEnded) {
-       await audioResetHistoryItem(x)
-     }
+      const preventHandleQueueEnded = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
+      if (!preventHandleQueueEnded) {
+        await audioResetHistoryItem(x)
+      }
     })()
   }, 0)
 }
@@ -92,7 +93,7 @@ module.exports = async () => {
   PVAudioPlayer.addEventListener('playback-track-changed', (x: any) => {
     (async () => {
       console.log('playback-track-changed', x)
-  
+
       const shouldSkip = await AsyncStorage.getItem(PV.Events.PLAYER_VIDEO_IS_LOADING)
       if (!shouldSkip) {
         syncNowPlayingItemWithTrack()
@@ -105,7 +106,7 @@ module.exports = async () => {
   PVAudioPlayer.addEventListener('playback-queue-ended', (x) => {
     (async () => {
       console.log('playback-queue-ended', x)
-  
+
       const shouldSkip = await AsyncStorage.getItem(PV.Events.PLAYER_VIDEO_IS_LOADING)
       if (!shouldSkip) {
         audioHandleQueueEnded(x)

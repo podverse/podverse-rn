@@ -150,10 +150,7 @@ export class PVActionSheet extends React.Component<Props, State> {
               () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
               ''
             )}>
-            <Text
-              importantForAccessibility='no'
-              numberOfLines={1}
-              style={buttonTextCancelStyle}>
+            <Text importantForAccessibility='no' numberOfLines={1} style={buttonTextCancelStyle}>
               {translate('Cancel')}
             </Text>
           </TouchableHighlight>

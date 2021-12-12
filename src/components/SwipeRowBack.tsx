@@ -25,16 +25,9 @@ export const SwipeRowBack = (props: Props) => {
       style={[styles, s.swipeRowBack, globalTheme.swipeRowBack]}
       testID={`${testID}_swipe_row_back`.prependTestId()}>
       {isLoading ? (
-          <ActivityIndicator
-            accessible={false}
-            importantForAccessibility='no'
-            size='large'
-            testID={testID} />
+        <ActivityIndicator accessible={false} importantForAccessibility='no' size='large' testID={testID} />
       ) : (
-        <Text
-          accessible={false}
-          importantForAccessibility='no'
-          style={s.textWrapper}>
+        <Text accessible={false} importantForAccessibility='no' style={s.textWrapper}>
           {text}
         </Text>
       )}

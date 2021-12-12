@@ -33,9 +33,21 @@ export class ClipTableCell extends React.PureComponent<Props> {
   }
 
   render() {
-    const { handleMorePress, hideImage, isChapter, isNowPlayingItem, item, itemType,
-      loadChapterOnPlay, navigation, onLayout, showEpisodeInfo, showPodcastInfo, testID,
-      transparent } = this.props
+    const {
+      handleMorePress,
+      hideImage,
+      isChapter,
+      isNowPlayingItem,
+      item,
+      itemType,
+      loadChapterOnPlay,
+      navigation,
+      onLayout,
+      showEpisodeInfo,
+      showPodcastInfo,
+      testID,
+      transparent
+    } = this.props
 
     const episodePubDate = item?.episode?.pubDate || ''
     const episodeId = item?.episode?.id || ''
@@ -51,9 +63,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const { downloadsActive, downloadedEpisodeIds, fontScaleMode, screenReaderEnabled } = this.global
     const isDownloaded = downloadedEpisodeIds[episodeId]
     const episodeDownloading = item?.episode?.id && !!downloadsActive[item.episode.id]
-    const chapterImageStyle = item?.linkUrl
-      ? [styles.chapterImage, styles.chapterImageBorder]
-      : styles.chapterImage
+    const chapterImageStyle = item?.linkUrl ? [styles.chapterImage, styles.chapterImageBorder] : styles.chapterImage
 
     const podcastTitleText = podcastTitle.trim()
     const episodeTitleText = episodeTitle.trim()
@@ -64,16 +74,13 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const timeLabelText = clipTime
 
     // eslint-disable-next-line max-len
-    const accessibilityLabel = `${title}, ${showPodcastInfo ? `${podcastTitleText},` : ''} ${showEpisodeInfo ? `${episodeTitleText}, ${pubDate},` : ''} ${accessibilityClipTime}`
+    const accessibilityLabel = `${title}, ${showPodcastInfo ? `${podcastTitleText},` : ''} ${
+      showEpisodeInfo ? `${episodeTitleText}, ${pubDate},` : ''
+    } ${accessibilityClipTime}`
 
     const innerTopView = (
-      <RNView
-        style={styles.innerTopView}
-        {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
-        <RNView
-          accessible
-          accessibilityLabel={accessibilityLabel}
-          style={{ flex: 1, flexDirection: 'column' }}>
+      <RNView style={styles.innerTopView} {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
+        <RNView accessible accessibilityLabel={accessibilityLabel} style={{ flex: 1, flexDirection: 'column' }}>
           {(showEpisodeInfo || showPodcastInfo) && (
             <RNView style={styles.imageAndTopRightTextWrapper}>
               {showPodcastInfo && !!podcastImageUrl && !hideImage && (
@@ -143,18 +150,9 @@ export class ClipTableCell extends React.PureComponent<Props> {
         accessibilityLabel={accessibilityLabel}
         importantForAccessibility={screenReaderEnabled ? 'yes' : 'no-hide-descendants'}
         onPress={screenReaderEnabled ? handleMorePress : null}>
-        <View
-          onLayout={onLayout}
-          transparent={transparent}
-          style={styles.wrapper}>
-          <View
-            accessible={false}
-            importantForAccessibility='no'
-            style={styles.wrapperInner}
-            transparent={transparent}>
-            <RNView style={styles.wrapperTop}>
-              {innerTopView}
-            </RNView>
+        <View onLayout={onLayout} transparent={transparent} style={styles.wrapper}>
+          <View accessible={false} importantForAccessibility='no' style={styles.wrapperInner} transparent={transparent}>
+            <RNView style={styles.wrapperTop}>{innerTopView}</RNView>
             <TimeRemainingWidget
               clipTime={clipTime}
               episodeDownloading={episodeDownloading}

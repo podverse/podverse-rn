@@ -12,12 +12,5 @@ type Props = {
 export const NavItemIcon = (props: Props) => {
   const { name, color = PV.Colors.white, solid } = props
 
-  return (
-    <Icon
-      color={color}
-      name={name}
-      size={PV.Icons.NAV}
-      solid={solid}
-      style={navHeader.buttonIcon} />
-  )
+  return <Icon color={color} name={name} size={PV.Icons.NAV} solid={solid} style={navHeader.buttonIcon} />
 }

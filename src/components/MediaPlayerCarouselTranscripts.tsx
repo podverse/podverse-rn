@@ -6,8 +6,7 @@ import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPlaybackSpeed, playerGetPosition, playerHandleSeekTo } from '../services/player'
 import { PVSearchBar } from './PVSearchBar'
-import { AutoScrollToggle, FlatList, PressableWithOpacity, TableSectionSelectors,
-  Text, View } from './'
+import { AutoScrollToggle, FlatList, PressableWithOpacity, TableSectionSelectors, Text, View } from './'
 
 type Props = {
   navigation?: any
@@ -60,15 +59,13 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
       this.currentSpeaker = ''
     }
 
-    const activeTranscriptStyle = 
-      ((activeTranscriptRowIndex && activeTranscriptRowIndex >= 0)
-      || activeTranscriptRowIndex === 0)
-      && activeTranscriptRowIndex === item.index
-      ? { color: PV.Colors.orange }
-      : {}
+    const activeTranscriptStyle =
+      ((activeTranscriptRowIndex && activeTranscriptRowIndex >= 0) || activeTranscriptRowIndex === 0) &&
+      activeTranscriptRowIndex === item.index
+        ? { color: PV.Colors.orange }
+        : {}
 
-    const accessibilityLabel =
-      `${this.currentSpeaker ? `${this.currentSpeaker}, ` : ''} ${text}, ${startTimeHHMMSS}`
+    const accessibilityLabel = `${this.currentSpeaker ? `${this.currentSpeaker}, ` : ''} ${text}, ${startTimeHHMMSS}`
 
     return (
       <PressableWithOpacity
@@ -95,19 +92,25 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
   disableAutoscroll = () => {
     if (this.interval) {
-      this.setState({
-        activeTranscriptRowIndex: null,
-        autoScrollOn: false
-      }, this.clearAutoScrollInterval)
+      this.setState(
+        {
+          activeTranscriptRowIndex: null,
+          autoScrollOn: false
+        },
+        this.clearAutoScrollInterval
+      )
     }
   }
 
   toggleAutoscroll = () => {
     if (this.interval) {
-      this.setState({
-        activeTranscriptRowIndex: null,
-        autoScrollOn: false
-      }, this.clearAutoScrollInterval)
+      this.setState(
+        {
+          activeTranscriptRowIndex: null,
+          autoScrollOn: false
+        },
+        this.clearAutoScrollInterval
+      )
     } else {
       this.enableAutoscroll()
     }
@@ -125,22 +128,22 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     this.clearAutoScrollInterval()
 
     this.setState({ autoScrollOn: true })
-      this.interval = setInterval(() => {
-        (async () => {
-          const { parsedTranscript } = this.global
-          const currentPosition = await playerGetPosition()
+    this.interval = setInterval(() => {
+      (async () => {
+        const { parsedTranscript } = this.global
+        const currentPosition = await playerGetPosition()
 
-          const index = parsedTranscript.findIndex(
-            (item: Record<string, any>) => item.startTime < currentPosition && item.endTime > currentPosition
-          )
+        const index = parsedTranscript.findIndex(
+          (item: Record<string, any>) => item.startTime < currentPosition && item.endTime > currentPosition
+        )
 
-          if (index !== -1) {
-            const indexBefore = index > 0 ? index - 1 : 0
-            this.listRef.scrollToIndex({ index: indexBefore, animated: false })
-            this.setState({ activeTranscriptRowIndex: index })
-          }
-        })()
-      }, intervalTime)
+        if (index !== -1) {
+          const indexBefore = index > 0 ? index - 1 : 0
+          this.listRef.scrollToIndex({ index: indexBefore, animated: false })
+          this.setState({ activeTranscriptRowIndex: index })
+        }
+      })()
+    }, intervalTime)
   }
 
   clearAutoScrollInterval = () => {
@@ -163,20 +166,20 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     return (
       <View style={{ width }}>
         <TableSectionSelectors
-          customButtons={!screenReaderEnabled ? (
-            <AutoScrollToggle
-              autoScrollOn={autoScrollOn}
-              toggleAutoscroll={this.toggleAutoscroll}
-            />
-          ) : null}
+          customButtons={
+            !screenReaderEnabled ? (
+              <AutoScrollToggle autoScrollOn={autoScrollOn} toggleAutoscroll={this.toggleAutoscroll} />
+            ) : null
+          }
           disableFilter
           hideDropdown
           includePadding
           selectedFilterLabel={translate('Transcript')}
         />
         <PVSearchBar
-          accessibilityHint={
-            translate('ARIA HINT - Type to show only the transcript text that includes this search term')}
+          accessibilityHint={translate(
+            'ARIA HINT - Type to show only the transcript text that includes this search term'
+          )}
           accessibilityLabel={translate('Transcript search input')}
           containerStyle={{
             backgroundColor: PV.Colors.velvet,
@@ -199,7 +202,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
               const searchResults = this.global.parsedTranscript.filter((item: Record<string, any>) => {
                 return item?.text?.toLowerCase().includes(searchText?.toLowerCase())
               })
-  
+
               this.setState(
                 {
                   searchText,

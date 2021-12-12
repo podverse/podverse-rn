@@ -1,2 +1,1 @@
-export type ImportantForAccessibility =
-  "yes" | "auto" | "no" | "no-hide-descendants" | undefined
+export type ImportantForAccessibility = 'yes' | 'auto' | 'no' | 'no-hide-descendants' | undefined

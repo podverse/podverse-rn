@@ -27,10 +27,18 @@ type TableTextCellProps = {
 }
 
 export const TableCell = (props: TableCellProps) => {
-  const { accessibilityHint, accessibilityLabel, accessibilityRole, children,
-    hideChevron = true, includeDivider, testIDPrefix, testIDSuffix,
-    onPress = null } = props
-  
+  const {
+    accessibilityHint,
+    accessibilityLabel,
+    accessibilityRole,
+    children,
+    hideChevron = true,
+    includeDivider,
+    testIDPrefix,
+    testIDSuffix,
+    onPress = null
+  } = props
+
   return (
     <>
       <Pressable
@@ -40,16 +48,17 @@ export const TableCell = (props: TableCellProps) => {
         onPress={onPress}
         style={table.cellWrapper}
         testID={`${testIDPrefix}_table_cell_wrapper${testIDSuffix ? `_${testIDSuffix}` : ''}`.prependTestId()}>
-          <View style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
-            <View style={{flexDirection:"row", alignItems:"center"}}>{children}</View>
-            {!hideChevron &&
-              <Icon
-                style={{marginRight:20}}
-                testID={`${testIDPrefix}_table_cell_chevron${testIDSuffix ? `_${testIDSuffix}` : ''}`.prependTestId()}
-                name="angle-right"
-                size={30}/>
-            }
-          </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>{children}</View>
+          {!hideChevron && (
+            <Icon
+              style={{ marginRight: 20 }}
+              testID={`${testIDPrefix}_table_cell_chevron${testIDSuffix ? `_${testIDSuffix}` : ''}`.prependTestId()}
+              name='angle-right'
+              size={30}
+            />
+          )}
+        </View>
       </Pressable>
       {includeDivider && <Divider />}
     </>
@@ -57,8 +66,15 @@ export const TableCell = (props: TableCellProps) => {
 }
 
 export const TableTextCell = (props: TableTextCellProps) => {
-  const { accessibilityHint, accessibilityLabel, hideChevron = true, onPress = null,
-    testIDPrefix, testIDSuffix, text = '' } = props
+  const {
+    accessibilityHint,
+    accessibilityLabel,
+    hideChevron = true,
+    onPress = null,
+    testIDPrefix,
+    testIDSuffix,
+    text = ''
+  } = props
 
   return (
     <TableCell
@@ -67,15 +83,13 @@ export const TableTextCell = (props: TableTextCellProps) => {
       hideChevron={hideChevron}
       onPress={onPress}
       testIDPrefix={testIDPrefix}
-      testIDSuffix={testIDSuffix}
-      >
+      testIDSuffix={testIDSuffix}>
       <Text
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
         style={table.cellText}
         testID={`${testIDPrefix}_table_cell_text${testIDSuffix ? `_${testIDSuffix}` : ''}`}>
         {text}
       </Text>
-
     </TableCell>
   )
 }

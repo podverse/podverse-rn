@@ -125,8 +125,9 @@ export const PVFlatList = (props: Props) => {
           transparent={transparent}
         />
       )}
-      {showNoInternetConnectionMessage &&
-        <MessageWithAction message={translate('No internet connection')} testID={testID} />}
+      {showNoInternetConnectionMessage && (
+        <MessageWithAction message={translate('No internet connection')} testID={testID} />
+      )}
       {shouldShowResults && (
         <SwipeListView
           closeOnRowPress
@@ -166,12 +167,13 @@ export const PVFlatList = (props: Props) => {
           onEndReachedThreshold={onEndReachedThreshold}
           {...(onRefresh
             ? {
-                refreshControl: 
-                  <RefreshControl 
-                    refreshing={isRefreshing} 
-                    onRefresh={onRefresh} 
+                refreshControl: (
+                  <RefreshControl
+                    refreshing={isRefreshing}
+                    onRefresh={onRefresh}
                     tintColor={globalTheme?.activityIndicator?.color}
                   />
+                )
               }
             : {})}
           renderHiddenItem={renderHiddenItem || _renderHiddenItem}
