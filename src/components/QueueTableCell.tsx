@@ -62,18 +62,20 @@ export class QueueTableCell extends React.PureComponent<Props> {
     const episodeTitleText = episodeTitle.trim()
     const pubDateText = readableDate(episodePubDate)
     // eslint-disable-next-line max-len
-    const accessibilityLabel = `${!!podcastTitle ? `${podcastTitleText}, ` : ''} ${!!episodeTitle ? `${episodeTitleText}, ` : ''} ${!!episodePubDate ? `${pubDateText}` : ''} ${!isClip ? `, ${translate('Full Episode')}` : `, ${clipTitle.trim()}`}`
+    const accessibilityLabel = `${!!podcastTitle ? `${podcastTitleText}, ` : ''} ${
+      !!episodeTitle ? `${episodeTitleText}, ` : ''
+    } ${!!episodePubDate ? `${pubDateText}` : ''} ${
+      !isClip ? `, ${translate('Full Episode')}` : `, ${clipTitle.trim()}`
+    }`
 
     return (
-      <View
-        style={viewStyle}
-        transparent={transparent}
-        testID={testID}>
+      <View style={viewStyle} transparent={transparent} testID={testID}>
         <RNView style={styles.wrapperTop}>
           <Pressable
-            accessibilityHint={isNowPlayingItem
-              ? translate('ARIA HINT - This is the now playing episode')
-              : !isClip
+            accessibilityHint={
+              isNowPlayingItem
+                ? translate('ARIA HINT - This is the now playing episode')
+                : !isClip
                 ? translate('ARIA HINT - tap to play this episode')
                 : translate('ARIA HINT - tap play this clip')
             }

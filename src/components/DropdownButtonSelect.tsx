@@ -5,15 +5,23 @@ import { PV } from '../resources'
 import { Icon, Text, View } from '.'
 
 export const DropdownButtonSelect = (props: any) => {
-  const { accessibilityHint, helpText, hideHelpTextInAccessibility, items,
-    label, onValueChange, placeholder, testID, value, wrapperStyle } = props
+  const {
+    accessibilityHint,
+    helpText,
+    hideHelpTextInAccessibility,
+    items,
+    label,
+    onValueChange,
+    placeholder,
+    testID,
+    value,
+    wrapperStyle
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
   const accessibilityLabel = `${label}${helpText && !hideHelpTextInAccessibility ? `, ${helpText}` : ''}`
 
   return (
-    <View
-      style={[styles.dropdownWrapper, wrapperStyle]}
-      transparent>
+    <View style={[styles.dropdownWrapper, wrapperStyle]} transparent>
       <RNPickerSelect
         items={items}
         onValueChange={onValueChange}
@@ -43,11 +51,7 @@ export const DropdownButtonSelect = (props: any) => {
           />
         </View>
       </RNPickerSelect>
-      <Text
-        accessible={false}
-        accessibilityLabel=''
-        importantForAccessibility='no'
-        style={styles.dropdownHelpText}>
+      <Text accessible={false} accessibilityLabel='' importantForAccessibility='no' style={styles.dropdownHelpText}>
         {helpText}
       </Text>
     </View>

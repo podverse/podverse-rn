@@ -14,8 +14,7 @@ type Props = {
 }
 
 export const NavHeaderButtonText = (props: Props) => {
-  const { accessibilityHint, accessibilityLabel, color, disabled, handlePress,
-    testID, text } = props
+  const { accessibilityHint, accessibilityLabel, color, disabled, handlePress, testID, text } = props
 
   const buttonTextStyle = [navHeader.buttonText]
 

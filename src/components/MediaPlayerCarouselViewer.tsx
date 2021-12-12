@@ -4,8 +4,7 @@ import { translate } from '../lib/i18n'
 import { prefixClipLabel, readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfVideoFileType } from '../state/actions/playerVideo'
-import { ActivityIndicator, FastImage, PressableWithOpacity, PVVideo, ScrollView,
-  Text, TextTicker } from './'
+import { ActivityIndicator, FastImage, PressableWithOpacity, PVVideo, ScrollView, Text, TextTicker } from './'
 
 type Props = {
   handlePressClipInfo: any
@@ -34,7 +33,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     const { handlePressClipInfo, navigation, width } = this.props
     const { currentChapter, player, screenPlayer, screenReaderEnabled } = this.global
     const { isLoading } = screenPlayer
-    
+
     // nowPlayingItem will be undefined when loading from a deep link
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
@@ -81,11 +80,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     )
 
     const clipTitleComponent = (
-      <Text
-        allowFontScaling={false}
-        numberOfLines={1}
-        style={styles.clipTitle}
-        testID={`${testIDPrefix}_clip_title`}>
+      <Text allowFontScaling={false} numberOfLines={1} style={styles.clipTitle} testID={`${testIDPrefix}_clip_title`}>
         {finalClipTitle}
       </Text>
     )
@@ -94,14 +89,13 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       ? [styles.outerWrapper, { paddingBottom: 10, paddingHorizontal: 10 }, { width }]
       : [styles.outerWrapper, { padding: 10 }, { width }]
 
-    const imageWrapperStyle = screenHeight < PV.Dimensions.smallScreen.height
-      ? [styles.carouselImageWrapper, { width: width * 0.9 }, { height: '50%' }]
-      : [styles.carouselImageWrapper, { width: width * 0.9 }]
+    const imageWrapperStyle =
+      screenHeight < PV.Dimensions.smallScreen.height
+        ? [styles.carouselImageWrapper, { width: width * 0.9 }, { height: '50%' }]
+        : [styles.carouselImageWrapper, { width: width * 0.9 }]
 
     return (
-      <ScrollView
-        scrollEnabled={false}
-        contentContainerStyle={outerWrapperStyle}>
+      <ScrollView scrollEnabled={false} contentContainerStyle={outerWrapperStyle}>
         <RNView
           accessible
           accessibilityHint={translate('ARIA HINT - This is the now playing episode')}
@@ -112,18 +106,18 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
           ) : (
             !!nowPlayingItem && (
               <RNView style={styles.episodeTitleWrapper}>
-                {
-                  !screenReaderEnabled ? (
-                    <TextTicker
-                      allowFontScaling={false}
-                      bounce
-                      importantForAccessibility='no-hide-descendants'
-                      loop
-                      textLength={nowPlayingItem?.episodeTitle?.length}>
-                      {episodeTitleComponent}
-                    </TextTicker>
-                  ) : episodeTitleComponent
-                }
+                {!screenReaderEnabled ? (
+                  <TextTicker
+                    allowFontScaling={false}
+                    bounce
+                    importantForAccessibility='no-hide-descendants'
+                    loop
+                    textLength={nowPlayingItem?.episodeTitle?.length}>
+                    {episodeTitleComponent}
+                  </TextTicker>
+                ) : (
+                  episodeTitleComponent
+                )}
                 <Text
                   allowFontScaling={false}
                   isSecondary
@@ -137,22 +131,16 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
           )}
         </RNView>
         <RNView style={imageWrapperStyle}>
-          {
-            checkIfVideoFileType(nowPlayingItem) && (
-              <PVVideo navigation={navigation} />
-            )
-          }
-          {
-            !checkIfVideoFileType(nowPlayingItem) && (
-              <PressableWithOpacity
-                accessible={false}
-                activeOpacity={1}
-                {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
-                style={styles.imageContainer}>
-                <FastImage key={imageUrl} source={imageUrl} styles={imageStyles} />
-              </PressableWithOpacity>
-            )
-          }
+          {checkIfVideoFileType(nowPlayingItem) && <PVVideo navigation={navigation} />}
+          {!checkIfVideoFileType(nowPlayingItem) && (
+            <PressableWithOpacity
+              accessible={false}
+              activeOpacity={1}
+              {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
+              style={styles.imageContainer}>
+              <FastImage key={imageUrl} source={imageUrl} styles={imageStyles} />
+            </PressableWithOpacity>
+          )}
         </RNView>
         {!!clipId && (
           <RNView style={styles.carouselChapterWrapper}>
@@ -161,19 +149,19 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
               accessibilityLabel={clipAccessibilityLabel}
               onPress={handlePressClipInfo}>
               <RNView style={styles.clipWrapper}>
-                {
-                  !screenReaderEnabled ? (
-                    <TextTicker
-                      allowFontScaling={false}
-                      bounce
-                      importantForAccessibility='no-hide-descendants'
-                      loop
-                      styles={styles.clipTitle}
-                      textLength={finalClipTitle?.length}>
-                      {clipTitleComponent}
-                    </TextTicker>
-                  ) : clipTitleComponent
-                }
+                {!screenReaderEnabled ? (
+                  <TextTicker
+                    allowFontScaling={false}
+                    bounce
+                    importantForAccessibility='no-hide-descendants'
+                    loop
+                    styles={styles.clipTitle}
+                    textLength={finalClipTitle?.length}>
+                    {clipTitleComponent}
+                  </TextTicker>
+                ) : (
+                  clipTitleComponent
+                )}
                 <Text allowFontScaling={false} style={styles.clipTime} testID='media_player_carousel_viewer_time'>
                   {readableClipTime(clipStartTime, clipEndTime)}
                 </Text>

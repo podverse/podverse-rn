@@ -38,7 +38,9 @@ export class DownloadTableCell extends React.PureComponent<Props> {
     const statusText = getDownloadStatusText(status)
 
     // eslint-disable-next-line max-len
-    const accessibilityLabel = `${episodeTitle}, ${podcastTitle}, ${statusText}, ${bytesWritten} ${translate('of')} ${bytesTotal}`
+    const accessibilityLabel = `${episodeTitle}, ${podcastTitle}, ${statusText}, ${bytesWritten} ${translate(
+      'of'
+    )} ${bytesTotal}`
 
     return (
       <Pressable

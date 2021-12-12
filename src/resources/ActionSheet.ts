@@ -5,8 +5,11 @@ import Config from 'react-native-config'
 import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
-import { navigateToEpisodeScreenWithItem,
-  navigateToEpisodeScreenWithItemInCurrentStack, navigateToPodcastScreenWithItem } from '../lib/navigate'
+import {
+  navigateToEpisodeScreenWithItem,
+  navigateToEpisodeScreenWithItemInCurrentStack,
+  navigateToPodcastScreenWithItem
+} from '../lib/navigate'
 import { prefixClipLabel, safelyUnwrapNestedVariable } from '../lib/utility'
 import { IActionSheet } from '../resources/Interfaces'
 import { playerGetPosition } from '../services/player'
@@ -31,12 +34,18 @@ const mediaMoreButtons = (
 ) => {
   if (!item || !item.episodeId) return
 
-  const { handleDismiss, handleDownload, handleDeleteClip, includeGoToPodcast, includeGoToEpisodeInEpisodesStack,
-    includeGoToEpisodeInCurrentStack } = config || {}
+  const {
+    handleDismiss,
+    handleDownload,
+    handleDeleteClip,
+    includeGoToPodcast,
+    includeGoToEpisodeInEpisodesStack,
+    includeGoToEpisodeInCurrentStack
+  } = config || {}
   const globalState = getGlobal()
   const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
   const downloadingText = isDownloading ? translate('Downloading Episode') : translate('Download')
-  const downloadingAccessibilityHint = isDownloading ?  '' :  translate('ARIA HINT - download this episode')
+  const downloadingAccessibilityHint = isDownloading ? '' : translate('ARIA HINT - download this episode')
   const isDownloaded = globalState.downloadedEpisodeIds[item.episodeId]
   const buttons = []
   const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session?.userInfo?.id, '')
@@ -56,12 +65,7 @@ const mediaMoreButtons = (
           const shouldPlay = false
           const forceUpdateOrderDate = false
           const setCurrentItemNextInQueue = true
-          await playerLoadNowPlayingItem(
-            item,
-            shouldPlay,
-            forceUpdateOrderDate,
-            setCurrentItemNextInQueue
-          )
+          await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
           await navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
           setTimeout(() => {
             (async () => {
@@ -99,20 +103,16 @@ const mediaMoreButtons = (
         const shouldPlay = true
         const forceUpdateOrderDate = false
         const setCurrentItemNextInQueue = true
-        await playerLoadNowPlayingItem(
-          item,
-          shouldPlay,
-          forceUpdateOrderDate,
-          setCurrentItemNextInQueue
-        )
+        await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
       }
     })
   } else {
     buttons.push({
-      accessibilityHint: itemType === 'episode'
-        ? translate('ARIA HINT - stream this episode')
-        : itemType === 'chapter'
-          ? translate('ARIA HINT - stream this chapter') 
+      accessibilityHint:
+        itemType === 'episode'
+          ? translate('ARIA HINT - stream this episode')
+          : itemType === 'chapter'
+          ? translate('ARIA HINT - stream this chapter')
           : translate('ARIA HINT - stream this clip'),
       accessibilityLabel: translate('Stream'),
       key: PV.Keys.stream,
@@ -125,12 +125,7 @@ const mediaMoreButtons = (
         const shouldPlay = true
         const forceUpdateOrderDate = false
         const setCurrentItemNextInQueue = true
-        await playerLoadNowPlayingItem(
-          item,
-          shouldPlay,
-          forceUpdateOrderDate,
-          setCurrentItemNextInQueue
-        )
+        await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
       }
     })
 
@@ -160,9 +155,10 @@ const mediaMoreButtons = (
   if (!item.addByRSSPodcastFeedUrl) {
     buttons.push(
       {
-        accessibilityHint: itemType === 'episode'
-          ? translate('ARIA HINT - add this episode next in your queue')
-          : itemType === 'clip'
+        accessibilityHint:
+          itemType === 'episode'
+            ? translate('ARIA HINT - add this episode next in your queue')
+            : itemType === 'clip'
             ? translate('ARIA HINT - add this clip next in your queue')
             : translate('ARIA HINT - add this chapter next in your queue'),
         accessibilityLabel: translate('ARIA LABEL - Queue Next'),
@@ -174,9 +170,10 @@ const mediaMoreButtons = (
         }
       },
       {
-        accessibilityHint: itemType === 'episode'
-          ? translate('ARIA HINT - add this episode last in your queue')
-          : itemType === 'clip'
+        accessibilityHint:
+          itemType === 'episode'
+            ? translate('ARIA HINT - add this episode last in your queue')
+            : itemType === 'clip'
             ? translate('ARIA HINT - add this clip last in your queue')
             : translate('ARIA HINT - add this chapter last in your queue'),
         accessibilityLabel: translate('ARIA LABEL - Queue Last'),
@@ -191,9 +188,10 @@ const mediaMoreButtons = (
 
     if (!Config.DISABLE_ADD_TO_PLAYLIST && isLoggedIn) {
       buttons.push({
-        accessibilityHint: itemType === 'episode'
-          ? translate('ARIA HINT - add this episode to a playlist')
-          : itemType === 'clip'
+        accessibilityHint:
+          itemType === 'episode'
+            ? translate('ARIA HINT - add this episode to a playlist')
+            : itemType === 'clip'
             ? translate('ARIA HINT - add this clip to a playlist')
             : translate('ARIA HINT - add this chapter to a playlist'),
         accessibilityLabel: translate('Add to Playlist'),
@@ -209,19 +207,20 @@ const mediaMoreButtons = (
     }
 
     if (!Config.DISABLE_SHARE) {
-      const accessibilityHint = itemType === 'podcast'
-        ? translate('ARIA HINT - share this podcast')
-        : itemType === 'episode'
+      const accessibilityHint =
+        itemType === 'podcast'
+          ? translate('ARIA HINT - share this podcast')
+          : itemType === 'episode'
           ? translate('ARIA HINT - share this episode')
           : itemType === 'clip'
-            ? translate('ARIA HINT - share this clip')
-            : itemType === 'chapter'
-              ? translate('ARIA HINT - share this chapter')
-              : itemType === 'playlist'
-                ? translate('ARIA HINT - share this playlist')
-                : itemType === 'profile'
-                  ? translate('ARIA HINT - share this profile')
-                  : translate('ARIA HINT - share this item')
+          ? translate('ARIA HINT - share this clip')
+          : itemType === 'chapter'
+          ? translate('ARIA HINT - share this chapter')
+          : itemType === 'playlist'
+          ? translate('ARIA HINT - share this playlist')
+          : itemType === 'profile'
+          ? translate('ARIA HINT - share this profile')
+          : translate('ARIA HINT - share this item')
       buttons.push({
         accessibilityHint,
         accessibilityLabel: translate('Share'),

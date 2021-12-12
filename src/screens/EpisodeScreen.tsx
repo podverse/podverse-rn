@@ -46,7 +46,6 @@ type State = {
 const testIDPrefix = 'episode_screen'
 
 export class EpisodeScreen extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
 
@@ -124,7 +123,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const { episodeId } = this.state
     let { episode } = this.state
     const hasInternetConnection = await hasValidNetworkConnection()
-    
+
     if (!hasInternetConnection) {
       this.setState({ hasInternetConnection: !hasInternetConnection })
     } else if (!episode && episodeId) {
@@ -160,13 +159,12 @@ export class EpisodeScreen extends React.Component<Props, State> {
         hasInternetConnection: !!hasInternetConnection
       })
     }
-
-
   }
 
-  _handleCancelPress = () => new Promise((resolve) => {
-    this.setState({ showActionSheet: false }, resolve)
-  })
+  _handleCancelPress = () =>
+    new Promise((resolve) => {
+      this.setState({ showActionSheet: false }, resolve)
+    })
 
   _handleMorePress = (selectedItem: any) => {
     this.setState({
@@ -210,14 +208,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(episodeId)
 
-    const extraHtmlScrollViewPadding = showChaptersCell || showClipsCell
-      ? styles.htmlScrollView
-      : {}
+    const extraHtmlScrollViewPadding = showChaptersCell || showClipsCell ? styles.htmlScrollView : {}
 
     return (
-      <ScrollView
-        style={styles.view}
-        testID='episode_screen_view'>
+      <ScrollView style={styles.view} testID='episode_screen_view'>
         <EpisodeTableHeader
           episode={episode}
           episodeDownloaded={episodeDownloaded}
@@ -231,67 +225,65 @@ export class EpisodeScreen extends React.Component<Props, State> {
           testID={testIDPrefix}
           userPlaybackPosition={userPlaybackPosition}
         />
-        {
-          !isLoading && (
-            <View>
-              {showClipsCell && (
-                <PressableWithOpacity
-                  accessibilityHint={translate('ARIA HINT - show clips from this episode')}
-                  accessibilityLabel={translate('Clips')}
-                  accessibilityRole='button'
-                  activeOpacity={1}
-                  style={styles.showNotesCell}
-                  onPress={() => {
-                    this.props.navigation.navigate(PV.RouteNames.EpisodeMediaRefScreen, {
-                      episode,
-                      viewType: PV.Filters._clipsKey,
-                      title: 'Clips',
-                      initialData: clips,
-                      totalItems: totalClips
-                    })
-                  }}>
-                  <>
-                    <Text style={styles.showNotesCellText} testID={testIDPrefix}>
-                      {translate('Clips')}
-                    </Text>
-                    <Icon name='arrow-right' size={15} />
-                  </>
-                </PressableWithOpacity>
-              )}
-              {showChaptersCell && (
-                <PressableWithOpacity
-                  accessibilityHint={translate('ARIA HINT - show the chapters for this episode')}
-                  accessibilityLabel={translate('Chapters')}
-                  accessibilityRole='button'
-                  activeOpacity={1}
-                  style={styles.showNotesCell}
-                  onPress={() => {
-                    this.props.navigation.navigate(PV.RouteNames.EpisodeMediaRefScreen, {
-                      episode,
-                      viewType: PV.Filters._chaptersKey,
-                      title: 'Chapters',
-                      initialData: chapters,
-                      totalItems: totalChapters
-                    })
-                  }}>
-                  <>
-                    <Text style={styles.showNotesCellText} testID={testIDPrefix}>
-                      {translate('Chapters')}
-                    </Text>
-                    <Icon name='arrow-right' size={15} />
-                  </>
-                </PressableWithOpacity>
-              )}
-              <HTMLScrollView
-                disableScrolling
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                html={episode?.description || ''}
-                sectionTitle={translate('Episode Summary')}
-                style={extraHtmlScrollViewPadding}
-              />
-            </View>
-          )
-        }
+        {!isLoading && (
+          <View>
+            {showClipsCell && (
+              <PressableWithOpacity
+                accessibilityHint={translate('ARIA HINT - show clips from this episode')}
+                accessibilityLabel={translate('Clips')}
+                accessibilityRole='button'
+                activeOpacity={1}
+                style={styles.showNotesCell}
+                onPress={() => {
+                  this.props.navigation.navigate(PV.RouteNames.EpisodeMediaRefScreen, {
+                    episode,
+                    viewType: PV.Filters._clipsKey,
+                    title: 'Clips',
+                    initialData: clips,
+                    totalItems: totalClips
+                  })
+                }}>
+                <>
+                  <Text style={styles.showNotesCellText} testID={testIDPrefix}>
+                    {translate('Clips')}
+                  </Text>
+                  <Icon name='arrow-right' size={15} />
+                </>
+              </PressableWithOpacity>
+            )}
+            {showChaptersCell && (
+              <PressableWithOpacity
+                accessibilityHint={translate('ARIA HINT - show the chapters for this episode')}
+                accessibilityLabel={translate('Chapters')}
+                accessibilityRole='button'
+                activeOpacity={1}
+                style={styles.showNotesCell}
+                onPress={() => {
+                  this.props.navigation.navigate(PV.RouteNames.EpisodeMediaRefScreen, {
+                    episode,
+                    viewType: PV.Filters._chaptersKey,
+                    title: 'Chapters',
+                    initialData: chapters,
+                    totalItems: totalChapters
+                  })
+                }}>
+                <>
+                  <Text style={styles.showNotesCellText} testID={testIDPrefix}>
+                    {translate('Chapters')}
+                  </Text>
+                  <Icon name='arrow-right' size={15} />
+                </>
+              </PressableWithOpacity>
+            )}
+            <HTMLScrollView
+              disableScrolling
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              html={episode?.description || ''}
+              sectionTitle={translate('Episode Summary')}
+              style={extraHtmlScrollViewPadding}
+            />
+          </View>
+        )}
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={() =>

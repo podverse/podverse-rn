@@ -1,17 +1,10 @@
 /* eslint-disable max-len */
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
-import { Alert, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
-import {
-  ActivityIndicator,
-  Button,
-  NumberSelectorWithText,
-  ScrollView,
-  SwitchWithText,
-  View
-} from '../components'
+import { ActivityIndicator, Button, NumberSelectorWithText, ScrollView, SwitchWithText, View } from '../components'
 import {
   setDownloadedEpisodeLimitGlobalCount,
   setDownloadedEpisodeLimitGlobalDefault,
@@ -25,6 +18,7 @@ import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import * as DownloadState from '../state/actions/downloads'
 import { core } from '../styles'
+import { networkSupported } from '../lib/network'
 
 type Props = {
   navigation: any
@@ -44,13 +38,6 @@ type State = {
 const testIDPrefix = 'settings_screen_downloads'
 
 export class SettingsScreenDownloads extends React.Component<Props, State> {
-
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {}
-  }
-
   static navigationOptions = () => ({
     title: translate('Downloads')
   })
@@ -61,14 +48,12 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
     const downloadedEpisodeLimitDefault = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
     const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
 
-    this.setState(
-      {
-        autoDeleteEpisodeOnEnd: !!autoDeleteEpisodeOnEnd,
-        downloadedEpisodeLimitCount,
-        downloadedEpisodeLimitDefault,
-        downloadingWifiOnly: !!downloadingWifiOnly
-      }
-    )
+    this.setState({
+      autoDeleteEpisodeOnEnd: !!autoDeleteEpisodeOnEnd,
+      downloadedEpisodeLimitCount,
+      downloadedEpisodeLimitDefault,
+      downloadingWifiOnly: !!downloadingWifiOnly
+    })
 
     trackPageView('/settings-downloads', 'Settings Screen Downloads')
   }
@@ -77,18 +62,15 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
     const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
     const newValue = downloadingWifiOnly !== 'TRUE'
 
-    NetInfo.fetch().then((state) => {
-      if (!newValue && state.type === 'cellular') {
-        refreshDownloads()
-      }
-    })
+    const state = await NetInfo.fetch()
+    if (!newValue && networkSupported(state)) {
+      refreshDownloads()
+    }
 
     this.setState({ downloadingWifiOnly: newValue }, () => {
-      (async () => {
-        newValue
-          ? await AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
-          : await AsyncStorage.removeItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
-      })()
+      newValue
+        ? AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
+        : AsyncStorage.removeItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
     })
   }
 
@@ -168,9 +150,16 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
   }
 
   render() {
-    const { autoDeleteEpisodeOnEnd, downloadedEpisodeLimitCount, downloadedEpisodeLimitDefault,
-      downloadingWifiOnly, isLoading, showDeleteDownloadedEpisodesDialog, showSetAllDownloadDialog,
-      showSetAllDownloadDialogIsCount } = this.state
+    const {
+      autoDeleteEpisodeOnEnd,
+      downloadedEpisodeLimitCount,
+      downloadedEpisodeLimitDefault,
+      downloadingWifiOnly,
+      isLoading,
+      showDeleteDownloadedEpisodesDialog,
+      showSetAllDownloadDialog,
+      showSetAllDownloadDialogIsCount
+    } = this.state
 
     return (
       <ScrollView
@@ -195,7 +184,8 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
                 onValueChange={this._toggleAutoDeleteEpisodeOnEnd}
                 testID={`${testIDPrefix}_auto_delete_episode`}
                 text={translate('Delete downloaded episodes after end is reached')}
-                value={!!autoDeleteEpisodeOnEnd} />
+                value={!!autoDeleteEpisodeOnEnd}
+              />
             </View>
             <View style={core.itemWrapper}>
               <SwitchWithText
@@ -209,7 +199,9 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
             <View style={core.itemWrapper}>
               <NumberSelectorWithText
                 // eslint-disable-next-line max-len
-                accessibilityHint={translate('ARIA HINT - set the maximum number of downloaded episodes to save from each podcast on your device')}
+                accessibilityHint={translate(
+                  'ARIA HINT - set the maximum number of downloaded episodes to save from each podcast on your device'
+                )}
                 // eslint-disable-next-line max-len
                 accessibilityLabel={`${translate('Default downloaded episode limit for each podcast')}`}
                 handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
@@ -234,7 +226,9 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
               <Dialog.Button
                 label={translate('No')}
                 onPress={this._handleToggleSetAllDownloadDialog}
-                {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_update_download_limit_no_button`.prependTestId() } : {})}
+                {...(testIDPrefix
+                  ? { testID: `${testIDPrefix}_dialog_update_download_limit_no_button`.prependTestId() }
+                  : {})}
               />
               <Dialog.Button
                 label={translate('Yes')}
@@ -243,7 +237,9 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
                     ? this._handleUpdateAllDownloadedEpiosdeLimitCount
                     : this._handleUpdateAllDownloadedEpiosdeLimitDefault
                 }
-                {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_update_download_limit_yes_button`.prependTestId() } : {})}
+                {...(testIDPrefix
+                  ? { testID: `${testIDPrefix}_dialog_update_download_limit_yes_button`.prependTestId() }
+                  : {})}
               />
             </Dialog.Container>
             <Dialog.Container visible={showDeleteDownloadedEpisodesDialog}>
@@ -254,12 +250,16 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
               <Dialog.Button
                 label={translate('No')}
                 onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
-                {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_no`.prependTestId() } : {})}
+                {...(testIDPrefix
+                  ? { testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_no`.prependTestId() }
+                  : {})}
               />
               <Dialog.Button
                 label={translate('Yes')}
                 onPress={this._handleDeleteDownloadedEpisodes}
-                {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_yes`.prependTestId() } : {})}
+                {...(testIDPrefix
+                  ? { testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_yes`.prependTestId() }
+                  : {})}
               />
             </Dialog.Container>
           </>

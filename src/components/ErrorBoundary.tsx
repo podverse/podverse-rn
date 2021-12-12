@@ -34,24 +34,24 @@ export class ErrorBoundary extends React.Component<Props, State> {
     if (!Config.DISABLE_CRASH_LOGS && errorReportingEnabled) {
       // You can also log the error to an error reporting service
       const errorRequestBody = {
-        details: error.message + "\n" + errorInfo.componentStack.slice(0, 500), // Limitting error desc to 500 chars
+        details: error.message + '\n' + errorInfo.componentStack.slice(0, 500), // Limitting error desc to 500 chars
         platform: Platform.OS,
         date: new Date().toDateString(),
         app_version: DeviceInfo.getVersion()
       }
-      
+
       trackCrashEvent(errorRequestBody)
     }
   }
 
   backToApp = () => {
-    this.props.navigation.dispatch(StackActions.reset({
-      index: 0,
-      key: null,
-      actions: [
-        NavigationActions.navigate({routeName:PV.RouteNames.TabNavigator})
-      ]
-    }))
+    this.props.navigation.dispatch(
+      StackActions.reset({
+        index: 0,
+        key: null,
+        actions: [NavigationActions.navigate({ routeName: PV.RouteNames.TabNavigator })]
+      })
+    )
     this.setState({ hasError: false })
   }
 
@@ -63,7 +63,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
           <Image style={styles.image} source={PV.Images.BANNER} resizeMode='contain' />
           <View style={styles.container}>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text} testID='error_boundary_text'>
-              {translate("error_boundary_description")}
+              {translate('error_boundary_description')}
             </Text>
             <Button
               onPress={this.backToApp}

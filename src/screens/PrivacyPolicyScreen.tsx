@@ -9,8 +9,8 @@ type Props = any
 
 export class PrivacyPolicyScreen extends React.Component<Props> {
   static navigationOptions = () => ({
-      title: translate('Privacy Policy')
-    })
+    title: translate('Privacy Policy')
+  })
 
   componentDidMount() {
     trackPageView('/privacy-policy', 'Privacy Policy Screen')
@@ -25,9 +25,7 @@ export class PrivacyPolicyScreen extends React.Component<Props> {
 
   render() {
     return (
-      <View
-        style={styles.content}
-        testID='privacy_policy_screen_view'>
+      <View style={styles.content} testID='privacy_policy_screen_view'>
         <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={PV.HTML.privacyPolicy} />
       </View>
     )

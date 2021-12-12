@@ -3,13 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import RNPickerSelect from 'react-native-picker-select'
-import {
-  Icon,
-  NumberSelectorWithText,
-  ScrollView,
-  Text,
-  View
-} from '../components'
+import { Icon, NumberSelectorWithText, ScrollView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -27,14 +21,13 @@ type State = {
 const testIDPrefix = 'settings_screen_player'
 
 export class SettingsScreenPlayer extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
 
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
 
     this.state = {
-      maximumSpeedOptionSelected: maximumSpeedSelectOptions[1],
+      maximumSpeedOptionSelected: maximumSpeedSelectOptions[1]
     }
   }
 
@@ -47,11 +40,9 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
     const maximumSpeedOptionSelected = maximumSpeedSelectOptions.find((x: any) => x.value === Number(maximumSpeed))
 
-    this.setState(
-      {
-        maximumSpeedOptionSelected: maximumSpeedOptionSelected || maximumSpeedSelectOptions[1]
-      }
-    )
+    this.setState({
+      maximumSpeedOptionSelected: maximumSpeedOptionSelected || maximumSpeedSelectOptions[1]
+    })
 
     trackPageView('/settings-player', 'Settings Screen Player')
   }
@@ -93,7 +84,9 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
         <View style={core.itemWrapper}>
           <NumberSelectorWithText
             // eslint-disable-next-line max-len
-            accessibilityHint={translate('ARIA HINT - set the number of seconds to change when time jump backwards is pressed')}
+            accessibilityHint={translate(
+              'ARIA HINT - set the number of seconds to change when time jump backwards is pressed'
+            )}
             // eslint-disable-next-line max-len
             accessibilityLabel={`${translate('Jump backwards seconds')}`}
             handleChangeText={this._setJumpBackwards}
@@ -106,7 +99,9 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
         <View style={core.itemWrapper}>
           <NumberSelectorWithText
             // eslint-disable-next-line max-len
-            accessibilityHint={translate('ARIA HINT - set the number of seconds to change when time jump forwards is pressed')}
+            accessibilityHint={translate(
+              'ARIA HINT - set the number of seconds to change when time jump forwards is pressed'
+            )}
             // eslint-disable-next-line max-len
             accessibilityLabel={`${translate('Jump forwards seconds')}`}
             handleChangeText={this._setJumpForwards}
@@ -131,13 +126,8 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
               accessibilityLabel={`${translate('Max playback speed')} ${maximumSpeedOptionSelected.label}`}
               importantForAccessibility='yes'
               style={core.selectorWrapper}>
-              <View
-                accessible={false}
-                importantForAccessibility='no-hide-descendants'
-                style={core.selectorWrapperLeft}>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={[core.pickerSelect, globalTheme.text]}>
+              <View accessible={false} importantForAccessibility='no-hide-descendants' style={core.selectorWrapperLeft}>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[core.pickerSelect, globalTheme.text]}>
                   {maximumSpeedOptionSelected.label}
                 </Text>
                 <Icon name='angle-down' size={14} style={[core.pickerSelectIcon, globalTheme.text]} />
@@ -146,9 +136,7 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
                 accessible={false}
                 importantForAccessibility='no-hide-descendants'
                 style={core.selectorWrapperRight}>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={[core.pickerSelect, globalTheme.text]}>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[core.pickerSelect, globalTheme.text]}>
                   {translate('Max playback speed')}
                 </Text>
               </View>

@@ -30,11 +30,7 @@ export const HeaderTitleSelector = (props: Props) => {
       accessibilityLabel={selectedItem.label || (placeholder && placeholder.label)}
       importantForAccessibility='yes'
       style={styles.wrapper}>
-      <Text
-        accessible={false}
-        allowFontScaling={false}
-        importantForAccessibility='no'
-        style={textStyle}>
+      <Text accessible={false} allowFontScaling={false} importantForAccessibility='no' style={textStyle}>
         {selectedItem.label || (placeholder && placeholder.label)}
       </Text>
       <Icon
@@ -43,7 +39,8 @@ export const HeaderTitleSelector = (props: Props) => {
         color={color || darkTheme.text.color}
         name='angle-down'
         size={16}
-        style={styles.angleDown} />
+        style={styles.angleDown}
+      />
     </View>
   )
 

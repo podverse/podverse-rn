@@ -88,9 +88,10 @@ export class TableSectionSelectors extends React.Component<Props, State> {
           {!!selectedFilterLabel && (
             <Text
               accessible={accessible}
-              accessibilityHint={selectedFilterAccessibilityHint
-                ? selectedFilterAccessibilityHint
-                : !disableFilter
+              accessibilityHint={
+                selectedFilterAccessibilityHint
+                  ? selectedFilterAccessibilityHint
+                  : !disableFilter
                   ? translate('ARIA HINT - This is the selected filter for this screen')
                   : ''
               }
@@ -105,38 +106,39 @@ export class TableSectionSelectors extends React.Component<Props, State> {
           )}
         </View>
         {customButtons}
-        {
-          !hideDropdown &&
-            <DropdownButton
-              accessible={!!accessible && !disableFilter}
-              // eslint-disable-next-line max-len
-              accessibilityHint={translate('ARIA HINT - This is the selected sorting filter for this screen select a different filter')}
-              accessibilityLabel={selectedSortLabel}
-              disableFilter={!!disableFilter}
-              importantForAccessibility={!!accessible && !disableFilter ? 'yes' : 'no'}
-              onPress={() => {
-                this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
-                  addByRSSPodcastFeedUrl,
-                  filterScreenTitle,
-                  flatCategoryItems,
-                  handleSelectCategoryItem,
-                  handleSelectCategorySubItem,
-                  handleSelectFilterItem,
-                  handleSelectFromItem,
-                  handleSelectSortItem,
-                  screenName,
-                  selectedCategoryItemKey,
-                  selectedCategorySubItemKey,
-                  selectedSortItemKey,
-                  selectedFilterItemKey,
-                  selectedFromItemKey
-                })
-              }}
-              sortLabel={selectedSortLabel}
-              testID={testID}
-              transparent={transparentDropdownButton}
-            />
-        }
+        {!hideDropdown && (
+          <DropdownButton
+            accessible={!!accessible && !disableFilter}
+            // eslint-disable-next-line max-len
+            accessibilityHint={translate(
+              'ARIA HINT - This is the selected sorting filter for this screen select a different filter'
+            )}
+            accessibilityLabel={selectedSortLabel}
+            disableFilter={!!disableFilter}
+            importantForAccessibility={!!accessible && !disableFilter ? 'yes' : 'no'}
+            onPress={() => {
+              this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
+                addByRSSPodcastFeedUrl,
+                filterScreenTitle,
+                flatCategoryItems,
+                handleSelectCategoryItem,
+                handleSelectCategorySubItem,
+                handleSelectFilterItem,
+                handleSelectFromItem,
+                handleSelectSortItem,
+                screenName,
+                selectedCategoryItemKey,
+                selectedCategorySubItemKey,
+                selectedSortItemKey,
+                selectedFilterItemKey,
+                selectedFromItemKey
+              })
+            }}
+            sortLabel={selectedSortLabel}
+            testID={testID}
+            transparent={transparentDropdownButton}
+          />
+        )}
       </View>
     )
   }

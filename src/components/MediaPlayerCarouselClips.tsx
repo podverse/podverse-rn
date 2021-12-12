@@ -11,8 +11,7 @@ import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList,
-  ScrollView, TableSectionSelectors } from './'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, ScrollView, TableSectionSelectors } from './'
 
 type Props = {
   navigation?: any
@@ -144,12 +143,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     const shouldPlay = true
     const forceUpdateOrderDate = false
     const setCurrentItemNextInQueue = false
-    playerLoadNowPlayingItem(
-      selectedItem,
-      shouldPlay,
-      forceUpdateOrderDate,
-      setCurrentItemNextInQueue
-    )
+    playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   _handleMorePress = (selectedItem: any) => {
@@ -162,17 +156,18 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     })
   }
 
-  _handleMoreCancelPress = () => new Promise((resolve) => {
-    setGlobal(
-      {
-        screenPlayer: {
-          ...this.global.screenPlayer,
-          showMoreActionSheet: false
-        }
-      },
-      resolve
-    )
-  })
+  _handleMoreCancelPress = () =>
+    new Promise((resolve) => {
+      setGlobal(
+        {
+          screenPlayer: {
+            ...this.global.screenPlayer,
+            showMoreActionSheet: false
+          }
+        },
+        resolve
+      )
+    })
 
   _handleDownloadPressed = () => {
     const { selectedItem } = this.global.screenPlayer
@@ -340,7 +335,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
           items={() =>
             PV.ActionSheet.media.moreButtons(
               selectedItem,
-              navigation, 
+              navigation,
               {
                 handleDismiss: this._handleMoreCancelPress,
                 handleDownload: this._handleDownloadPressed,

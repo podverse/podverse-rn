@@ -86,8 +86,7 @@ export const PVTextInput = (props: Props) => {
   const hasText = !!value && value.length
 
   const inputComponent = (
-    <View
-      style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
+    <View style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
       {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
         <Text
           accessible={false}
@@ -127,18 +126,16 @@ export const PVTextInput = (props: Props) => {
     </View>
   )
 
-  return (
-    !!onPress ? (
-      <Pressable
-        accessible={!!onPress}
-        accessibilityHint={accessibilityHint}
-        accessibilityLabel={accessibilityLabel}
-        importantForAccessibility={!!onPress ? 'yes' : 'no'}
-        onPress={onPress}>
-        {inputComponent}
-      </Pressable>
-    ) : (
-      inputComponent
-    )
+  return !!onPress ? (
+    <Pressable
+      accessible={!!onPress}
+      accessibilityHint={accessibilityHint}
+      accessibilityLabel={accessibilityLabel}
+      importantForAccessibility={!!onPress ? 'yes' : 'no'}
+      onPress={onPress}>
+      {inputComponent}
+    </Pressable>
+  ) : (
+    inputComponent
   )
 }

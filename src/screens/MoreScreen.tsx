@@ -94,11 +94,11 @@ export class MoreScreen extends React.Component<Props, State> {
 
   _handleValueTagSetupPressed = async () => {
     const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS)
-    if(consentGivenString && JSON.parse(consentGivenString) === true) {
+    if (consentGivenString && JSON.parse(consentGivenString) === true) {
       this.props.navigation.navigate(PV.RouteNames.ValueTagSetupScreen)
     } else {
       this.props.navigation.navigate(PV.RouteNames.ValueTagPreviewScreen)
-    }  
+    }
   }
 
   _importOpml = async () => {
@@ -106,12 +106,12 @@ export class MoreScreen extends React.Component<Props, State> {
       const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.allFiles]
       })
-      
+
       if (!res) {
         throw new Error('Something went wrong with the import process.')
       } else {
         const contents = await RNFS.readFile(res.uri, 'utf8')
-  
+
         this.setState({ isLoading: true }, () => {
           parseString(contents, async (err: any, result: any) => {
             try {
@@ -120,10 +120,10 @@ export class MoreScreen extends React.Component<Props, State> {
               } else if (!result?.opml?.body[0]?.outline) {
                 throw new Error('OPML file is not in the correct format')
               }
-  
+
               const rssArr = parseOpmlFile(result, true)
               await addAddByRSSPodcasts(rssArr)
-  
+
               this.setState({ isLoading: false }, () => {
                 this.props.navigation.navigate(PV.RouteNames.PodcastsScreen)
               })
@@ -171,22 +171,18 @@ export class MoreScreen extends React.Component<Props, State> {
     const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
     const otherOptions = this._moreOtherOptions(membershipStatus)
 
-    const membershipAccessibilityLabel =
-      `${translate('Membership')}${isLoggedIn ? ' - ' : ''} ${membershipStatus ? membershipStatus : ''}`
+    const membershipAccessibilityLabel = `${translate('Membership')}${isLoggedIn ? ' - ' : ''} ${
+      membershipStatus ? membershipStatus : ''
+    }`
 
     return (
-      <View
-        style={core.backgroundView}
-        testID={`${testIDPrefix}_view`}>
+      <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => {
             return (
               <TableCell
-                accessibilityLabel={item.key === _membershipKey
-                  ? membershipAccessibilityLabel
-                  : item.title
-                }
+                accessibilityLabel={item.key === _membershipKey ? membershipAccessibilityLabel : item.title}
                 onPress={() => this._onPress(item)}
                 testIDPrefix={`${testIDPrefix}_${item.key}`}
                 testIDSuffix=''>
@@ -195,7 +191,8 @@ export class MoreScreen extends React.Component<Props, State> {
                     <Text
                       fontSizeLargestScale={PV.Fonts.largeSizes.md}
                       style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                      {translate('Membership')}{isLoggedIn ? ' - ' : ''}
+                      {translate('Membership')}
+                      {isLoggedIn ? ' - ' : ''}
                     </Text>
                     {isLoggedIn && (
                       <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[table.cellText, membershipTextStyle]}>
@@ -227,12 +224,7 @@ export class MoreScreen extends React.Component<Props, State> {
           ]}
           stickySectionHeadersEnabled={false}
         />
-        {this.state.isLoading && (
-          <ActivityIndicator
-            isOverlay
-            testID={testIDPrefix}
-            transparent={false} />
-        )}
+        {this.state.isLoading && <ActivityIndicator isOverlay testID={testIDPrefix} transparent={false} />}
       </View>
     )
   }

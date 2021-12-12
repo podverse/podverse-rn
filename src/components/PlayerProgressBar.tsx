@@ -1,15 +1,19 @@
 import debounce from 'lodash/debounce'
-import { useState } from 'react';
+import { useState } from 'react'
 import { Animated, Dimensions, StyleSheet, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import React, { getGlobal, useGlobal } from 'reactn'
 import { useProgress } from 'react-native-track-player'
-import { translate } from '../lib/i18n';
+import { translate } from '../lib/i18n'
 import { convertSecToHHMMSS, getMediaRefStartPosition } from '../lib/utility'
 import { PV } from '../resources'
 import { playerHandleSeekTo } from '../services/player'
-import { clearChapterInterval, getChapterForTimeAndSetOnState, loadChapterPlaybackInfo,
-  startChapterInterval } from '../state/actions/playerChapters'
+import {
+  clearChapterInterval,
+  getChapterForTimeAndSetOnState,
+  loadChapterPlaybackInfo,
+  startChapterInterval
+} from '../state/actions/playerChapters'
 import { sliderStyles } from '../styles'
 import { Text } from '.'
 
@@ -65,9 +69,9 @@ const debouncedOnValueChangeChapterTime = debounce(handleOnValueChangeChapter, 7
 })
 
 export function PlayerProgressBar(props: Props) {
-  let isAnimationRunning = false;
+  let isAnimationRunning = false
 
-  const [localState, setLocalState] = useState({   
+  const [localState, setLocalState] = useState({
     clipColorAnimation: new Animated.Value(0),
     slidingPositionOverride: 0
   })
@@ -91,8 +95,14 @@ export function PlayerProgressBar(props: Props) {
     })
   }
 
-  const { backupDuration, clipEndTime, clipStartTime, currentChaptersStartTimePositions,
-    isLoading, isMakeClipScreen } = props;
+  const {
+    backupDuration,
+    clipEndTime,
+    clipStartTime,
+    currentChaptersStartTimePositions,
+    isLoading,
+    isMakeClipScreen
+  } = props
   const { slidingPositionOverride } = localState
   const { position } = useProgress()
   const { duration } = useProgress()
@@ -115,10 +125,9 @@ export function PlayerProgressBar(props: Props) {
     parentScopeDuration = backupDuration
   }
 
-
   const outerPosition = slidingPositionOverride || position || videoPosition || 0
   const newProgressValue = parentScopeDuration > 0 ? outerPosition / parentScopeDuration : 0
-  
+
   const sliderWidth = Dimensions.get('screen').width - sliderStyles.wrapper.marginHorizontal * 2
   const clipStartTimePosition = getMediaRefStartPosition(clipStartTime, sliderWidth, parentScopeDuration)
 
@@ -133,11 +142,9 @@ export function PlayerProgressBar(props: Props) {
   const components = []
   if (currentChaptersStartTimePositions && currentChaptersStartTimePositions.length > 1) {
     for (const currentChaptersStartTimePosition of currentChaptersStartTimePositions) {
-      components.push(<View style={[
-        sliderStyles.clipBarStyle,
-        styles.chapterFlagView,
-        { left: currentChaptersStartTimePosition }
-      ]} />)
+      components.push(
+        <View style={[sliderStyles.clipBarStyle, styles.chapterFlagView, { left: currentChaptersStartTimePosition }]} />
+      )
     }
   }
 
@@ -207,7 +214,8 @@ export function PlayerProgressBar(props: Props) {
           <Text
             accessibilityHint={translate('ARIA HINT - Current playback time')}
             accessibilityLabel={
-              parentScopeDuration > 0 ? convertSecToHHMMSS(parentScopeDuration) : translate('Unknown duration')}
+              parentScopeDuration > 0 ? convertSecToHHMMSS(parentScopeDuration) : translate('Unknown duration')
+            }
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={sliderStyles.time}>
@@ -216,7 +224,8 @@ export function PlayerProgressBar(props: Props) {
           <Text
             accessibilityHint={translate('ARIA HINT - episode duration')}
             accessibilityLabel={
-              parentScopeDuration > 0 ? convertSecToHHMMSS(parentScopeDuration) : translate('Unknown duration')}
+              parentScopeDuration > 0 ? convertSecToHHMMSS(parentScopeDuration) : translate('Unknown duration')
+            }
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={sliderStyles.time}>

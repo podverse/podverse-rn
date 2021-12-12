@@ -1,10 +1,4 @@
-import {
-  Dimensions,
-  Keyboard,
-  Platform,
-  ScrollView,
-  StyleSheet
-} from 'react-native'
+import { Dimensions, Keyboard, Platform, ScrollView, StyleSheet } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { translate } from '../lib/i18n'
@@ -213,9 +207,10 @@ export class SignUp extends React.Component<Props, State> {
           style={styles.passwordValidationInfo}
         />
         <Button
-          accessibilityHint={submitIsDisabled
-            ? translate('ARIA HINT - Type a valid email and matching passwords to enable the sign up button')
-            : ''
+          accessibilityHint={
+            submitIsDisabled
+              ? translate('ARIA HINT - Type a valid email and matching passwords to enable the sign up button')
+              : ''
           }
           accessibilityLabel={translate('Sign Up')}
           disabled={submitIsDisabled}

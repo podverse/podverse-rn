@@ -30,10 +30,12 @@ const test_podcastScreenFull = async () => {
   await elementByIdClick('filter_screen_all-podcasts')
   await elementByIdClick('filter_screen_top-past-week')
   await elementByIdAndClickAndTest('filter_screen_nav_header_button_text', 'podcasts_screen_view')
-  await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_is_subscribed')
+  await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_is_not_subscribed')
 
 
 
+  await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed')
+  await driver.sleep(1000)
   await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_not_subscribed')
   await driver.sleep(1000)
   await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed')

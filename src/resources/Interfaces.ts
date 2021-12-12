@@ -203,8 +203,8 @@ export interface InitialState {
   userAgent?: string
   bannerInfo: BannerInfo
   tempMediaRefInfo: {
-    startTime?: number,
-    endTime?: number | null,
+    startTime?: number
+    endTime?: number | null
     clipTitle?: string
   }
   screenReaderEnabled: boolean

@@ -2,12 +2,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import {
-  ActivityIndicator,
-  ScrollView,
-  SwitchWithText,
-  View
-} from '../components'
+import { ActivityIndicator, ScrollView, SwitchWithText, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -26,7 +21,6 @@ type State = {
 const testIDPrefix = 'settings_screen_queue'
 
 export class SettingsScreenQueue extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
 
@@ -40,11 +34,9 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
   async componentDidMount() {
     const addCurrentItemNextInQueue = await AsyncStorage.getItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE)
 
-    this.setState(
-      {
-        addCurrentItemNextInQueue: !!addCurrentItemNextInQueue
-      }
-    )
+    this.setState({
+      addCurrentItemNextInQueue: !!addCurrentItemNextInQueue
+    })
 
     trackPageView('/settings-queue', 'Settings Screen Queue')
   }

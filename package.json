@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -47,7 +47,7 @@
     "@podverse/podcast-feed-parser": "^1.0.17",
     "@react-native-community/async-storage": "1.12.1",
     "@react-native-community/masked-view": "0.1.11",
-    "@react-native-community/netinfo": "6.0.0",
+    "@react-native-community/netinfo": "7.1.5",
     "@react-native-community/toolbar-android": "0.2.1",
     "@react-native-picker/picker": "1.16.5",
     "@types/base-64": "^0.1.3",

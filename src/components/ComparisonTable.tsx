@@ -7,18 +7,18 @@ type TableLineItem = {
   /**
    * text: The row heading
    */
-  text: string;
-  column1: boolean; 
-  column2: boolean;
-  accessibilityLabel: string;
+  text: string
+  column1: boolean
+  column2: boolean
+  accessibilityLabel: string
 }
 
 type ComparisonTableProps = {
-  column1Title: string;
-  column2Title: string;
-  data: TableLineItem[] | [];
-  mainTitle: string;
-  mainTitleAccessibilityHint: string;
+  column1Title: string
+  column2Title: string
+  data: TableLineItem[] | []
+  mainTitle: string
+  mainTitleAccessibilityHint: string
 }
 
 export const ComparisonTable = (props: ComparisonTableProps) => {
@@ -58,11 +58,7 @@ export const ComparisonTable = (props: ComparisonTableProps) => {
         keyExtractor={(item: any, index: number) => `comparisonTable${index}`}
         renderItem={({ item }) => (
           <>
-            <View
-              accessible
-              accessibilityLabel={item.accessibilityLabel}
-              key={item.text}
-              style={styles.tableRow}>
+            <View accessible accessibilityLabel={item.accessibilityLabel} key={item.text} style={styles.tableRow}>
               <View accessible={false} style={styles.columnTextWrapper}>
                 <Text accessible={false} fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.columnText}>
                   {item.text}
@@ -70,20 +66,12 @@ export const ComparisonTable = (props: ComparisonTableProps) => {
               </View>
               <View accessible={false} style={styles.columnIcon}>
                 {item.column1 && (
-                  <Icon
-                    accessible={false}
-                    name={item.isSmile ? 'smile' : 'check'}
-                    size={26}
-                    style={styles.icon} />
+                  <Icon accessible={false} name={item.isSmile ? 'smile' : 'check'} size={26} style={styles.icon} />
                 )}
               </View>
               <View accessible={false} style={styles.columnIcon}>
                 {item.column2 && (
-                  <Icon
-                    accessible={false}
-                    name={item.isSmile ? 'smile' : 'check'}
-                    size={26}
-                    style={styles.icon} />
+                  <Icon accessible={false} name={item.isSmile ? 'smile' : 'check'} size={26} style={styles.icon} />
                 )}
               </View>
             </View>

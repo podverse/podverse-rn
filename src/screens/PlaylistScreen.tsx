@@ -44,7 +44,6 @@ type State = {
 const testIDPrefix = 'playlist_screen'
 
 export class PlaylistScreen extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
     const subscribedPlaylistIds = safelyUnwrapNestedVariable(
@@ -198,9 +197,10 @@ export class PlaylistScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleCancelPress = () => new Promise((resolve) => {
-    this.setState({ showActionSheet: false }, resolve)
-  })
+  _handleCancelPress = () =>
+    new Promise((resolve) => {
+      this.setState({ showActionSheet: false }, resolve)
+    })
 
   _handleMorePress = (selectedItem: any) => {
     this.setState({
@@ -234,11 +234,9 @@ export class PlaylistScreen extends React.Component<Props, State> {
     const isLoggedInUserPlaylist = playlist?.owner?.id === session.userInfo.id
     const ownerName = playlist?.owner?.name || translate('anonymous')
     const playlistTitle = playlist?.title || translate('Untitled Playlist')
-    
+
     return (
-      <View
-        style={styles.view}
-        testID={`${testIDPrefix}_view`}>
+      <View style={styles.view} testID={`${testIDPrefix}_view`}>
         <PlaylistTableHeader
           createdBy={ownerName}
           handleEditPress={isLoggedInUserPlaylist ? this._handleEditPress : null}

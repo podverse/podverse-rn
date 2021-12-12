@@ -39,10 +39,7 @@ export const PVView = (props: Props) => {
   styles.push(props.style)
 
   return (
-    <View
-      {...props}
-      style={styles}
-      {...(testID ? { testID: testID.prependTestId() } : {})}>
+    <View {...props} style={styles} {...(testID ? { testID: testID.prependTestId() } : {})}>
       {children}
     </View>
   )

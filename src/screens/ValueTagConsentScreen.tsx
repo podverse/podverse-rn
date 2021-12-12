@@ -34,7 +34,7 @@ export class ValueTagConsentScreen extends React.Component<Props, State> {
   }
 
   _acceptAgreement = async () => {
-    await AsyncStorage.setItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS, "true")
+    await AsyncStorage.setItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS, 'true')
     this.props.navigation.navigate(PV.RouteNames.ValueTagSetupScreen)
   }
 
@@ -44,25 +44,15 @@ export class ValueTagConsentScreen extends React.Component<Props, State> {
 
   render() {
     return (
-      <SafeAreaView
-        style={styles.content}
-        testID={`${testIDPrefix}_view`.prependTestId()}>
+      <SafeAreaView style={styles.content} testID={`${testIDPrefix}_view`.prependTestId()}>
         <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title}>
-        {translate("value_tag_consent_title")}
+          {translate('value_tag_consent_title')}
         </Text>
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollviewContent}>
-          <Text style={[styles.text, styles.attentionText]}>
-          {translate("value_tag_consent_text_1")}
-          </Text>
-          <Text style={styles.text}>
-          {translate("value_tag_consent_text_2")}
-          </Text>
-          <Text style={styles.text}>
-          {translate("value_tag_consent_text_3")}
-          </Text>
-          <Text style={styles.text}>
-          {translate("value_tag_consent_text_4")}
-          </Text>
+          <Text style={[styles.text, styles.attentionText]}>{translate('value_tag_consent_text_1')}</Text>
+          <Text style={styles.text}>{translate('value_tag_consent_text_2')}</Text>
+          <Text style={styles.text}>{translate('value_tag_consent_text_3')}</Text>
+          <Text style={styles.text}>{translate('value_tag_consent_text_4')}</Text>
         </ScrollView>
         <CheckBox
           checked={this.state.checkboxSelected}
@@ -72,7 +62,7 @@ export class ValueTagConsentScreen extends React.Component<Props, State> {
           }}
           size={50}
           testID={`${testIDPrefix}_accept_check_box`.prependTestId()}
-          title={translate("value_tag_consent_checkbox_text")}
+          title={translate('value_tag_consent_checkbox_text')}
           textStyle={{ color: PV.Colors.white, fontSize: PV.Fonts.sizes.lg }}
         />
         <Button
