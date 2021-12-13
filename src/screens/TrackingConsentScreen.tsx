@@ -19,8 +19,7 @@ type State = {
 
 const testIDPrefix = 'tracking_consent_screen'
 
-const trackingTermsAndConditions =
-`
+const trackingTermsAndConditions = `
 <h6>
 ${translate('trackingTermsText1')}
 </h6>
@@ -80,7 +79,7 @@ export class TrackingConsentScreen extends React.Component<Props, State> {
     PVEventEmitter.emit(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED)
   }
 
-  _disableTracking = async () => {    
+  _disableTracking = async () => {
     if (Platform.OS !== 'ios') {
       await setTrackingEnabled(false)
     }
@@ -116,9 +115,7 @@ export class TrackingConsentScreen extends React.Component<Props, State> {
       <SafeAreaView testID={`${testIDPrefix}_view`}>
         <View style={styles.view}>
           <View accessible style={{ flex: 1 }}>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              style={styles.header}>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.header}>
               {translate('Analytics Tracking')}
             </Text>
             <HTMLScrollView
@@ -135,19 +132,17 @@ export class TrackingConsentScreen extends React.Component<Props, State> {
             text={topButtonText}
             wrapperStyles={styles.button}
           />
-          {
-            !isIOSInitialPrompt && (
-              <Button
-                accessible
-                accessibilityLabel={iOSAlreadyDetermined ? translate('Back') : translate('No thanks')}
-                isTransparent
-                onPress={iOSAlreadyDetermined ? this._handleDismiss : this._disableTracking}
-                testID={`${testIDPrefix}_bottom_button`}
-                text={iOSAlreadyDetermined ? translate('Back') : translate('No thanks')}
-                wrapperStyles={styles.button}
-              />
-            )
-          }
+          {!isIOSInitialPrompt && (
+            <Button
+              accessible
+              accessibilityLabel={iOSAlreadyDetermined ? translate('Back') : translate('No thanks')}
+              isTransparent
+              onPress={iOSAlreadyDetermined ? this._handleDismiss : this._disableTracking}
+              testID={`${testIDPrefix}_bottom_button`}
+              text={iOSAlreadyDetermined ? translate('Back') : translate('No thanks')}
+              wrapperStyles={styles.button}
+            />
+          )}
         </View>
       </SafeAreaView>
     )

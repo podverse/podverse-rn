@@ -22,8 +22,18 @@ type Props = {
 
 export const PVActivityIndicator = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
-  const { accessible = true, accessibilityHint, accessibilityLabel, fillSpace, importantForAccessibility = 'auto', 
-    isOverlay, onPress, size = 'large', testID, transparent = true } = props
+  const {
+    accessible = true,
+    accessibilityHint,
+    accessibilityLabel,
+    fillSpace,
+    importantForAccessibility = 'auto',
+    isOverlay,
+    onPress,
+    size = 'large',
+    testID,
+    transparent = true
+  } = props
 
   const viewStyle = fillSpace ? { flex: 1 } : {}
   const backgroundColor = transparent ? {} : { backgroundColor: Colors.blackOpaque }
@@ -41,7 +51,8 @@ export const PVActivityIndicator = (props: Props) => {
             animating
             color={globalTheme.activityIndicator.color}
             size={size}
-            testID={`${testID}_activity_indicator`.prependTestId()} />
+            testID={`${testID}_activity_indicator`.prependTestId()}
+          />
         </View>
       )}
       {!isOverlay && (
@@ -57,7 +68,8 @@ export const PVActivityIndicator = (props: Props) => {
               animating
               color={globalTheme.activityIndicator.color}
               size={size}
-              testID={`${testID}_activity_indicator`.prependTestId()} />
+              testID={`${testID}_activity_indicator`.prependTestId()}
+            />
           </View>
         </Pressable>
       )}

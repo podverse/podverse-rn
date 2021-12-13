@@ -1,6 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { convertNowPlayingItemClipToNowPlayingItemEpisode, convertToNowPlayingItem,
-  NowPlayingItem } from 'podverse-shared'
+import {
+  convertNowPlayingItemClipToNowPlayingItemEpisode,
+  convertToNowPlayingItem,
+  NowPlayingItem
+} from 'podverse-shared'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl } from '../lib/utility'
 import { PV } from '../resources'
@@ -130,10 +133,7 @@ export const clearNowPlayingItemOnServer = async () => {
 /*
   Get the nowPlayingItem from 1) history, 2) queue, or 3) downloaded episode storage.
 */
-export const getNowPlayingItemFromLocalStorage = async (
-  trackId: string,
-  setPlayerClipIsLoadedIfClip?: boolean
-) => {
+export const getNowPlayingItemFromLocalStorage = async (trackId: string, setPlayerClipIsLoadedIfClip?: boolean) => {
   if (!trackId) return null
 
   const results = await getHistoryItemsLocally()
@@ -155,7 +155,10 @@ export const getNowPlayingItemFromLocalStorage = async (
     currentNowPlayingItem = await getDownloadedEpisode(trackId)
     if (currentNowPlayingItem) {
       currentNowPlayingItem = convertToNowPlayingItem(
-        currentNowPlayingItem, null, null, currentNowPlayingItem.userPlaybackPosition
+        currentNowPlayingItem,
+        null,
+        null,
+        currentNowPlayingItem.userPlaybackPosition
       )
     }
   }

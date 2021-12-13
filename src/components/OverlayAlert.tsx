@@ -40,7 +40,9 @@ export const OverlayAlert = () => {
         setState({
           hideKey: 'hideFreeTrialExpired',
           // eslint-disable-next-line max-len
-          alertTitle: `${translate('Your free trial expired')}${freeTrialExpiration} ${translate('Please renew your membership to continue using premium features')}`,
+          alertTitle: `${translate('Your free trial expired')}${freeTrialExpiration} ${translate(
+            'Please renew your membership to continue using premium features'
+          )}`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
           alertTitleStyle: globalTheme.overlayAlertDanger,
           linkAction: handleRenewMembership,
@@ -62,7 +64,9 @@ export const OverlayAlert = () => {
         setState({
           hideKey: 'hideMembershipExpired',
           // eslint-disable-next-line max-len
-          alertTitle: `${translate('Your membership expired')}${membershipExpiration}. ${translate('Please renew your membership to continue using premium features')}`,
+          alertTitle: `${translate('Your membership expired')}${membershipExpiration}. ${translate(
+            'Please renew your membership to continue using premium features'
+          )}`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
           alertTitleStyle: globalTheme.overlayAlertDanger,
           linkAction: handleRenewMembership,

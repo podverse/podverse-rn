@@ -83,7 +83,8 @@ export const SwitchWithText = (props: Props) => {
             importantForAccessibility='yes'
             onValueChange={onValueChange}
             value={value}
-            {...(testID ? { testID: `${testID}_switch`.prependTestId() } : {})} />
+            {...(testID ? { testID: `${testID}_switch`.prependTestId() } : {})}
+          />
           <Text
             accessible={false}
             accessibilityLabel=''

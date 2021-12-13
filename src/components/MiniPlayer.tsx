@@ -22,7 +22,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
     const { playbackState } = player
     const { hasErrored } = screenPlayer
     const isDarkMode = globalTheme === darkTheme
-    
+
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
 
@@ -36,7 +36,8 @@ export class MiniPlayer extends React.PureComponent<Props> {
         onPress={() => playerTogglePlay()}
         size={20}
         testID={`${testIDPrefix}_play_button`}
-        wrapperStyle={[playerStyles.icon, playButtonAdjust]} />
+        wrapperStyle={[playerStyles.icon, playButtonAdjust]}
+      />
     )
     if (playerCheckIfStateIsPlaying(playbackState)) {
       playButtonIcon = (
@@ -48,7 +49,8 @@ export class MiniPlayer extends React.PureComponent<Props> {
           onPress={() => playerTogglePlay()}
           size={20}
           testID={`${testIDPrefix}_pause_button`}
-          wrapperStyle={[playerStyles.icon, playButtonAdjust]} />
+          wrapperStyle={[playerStyles.icon, playButtonAdjust]}
+        />
       )
       playButtonAdjust = {}
     } else if (playerCheckIfStateIsBuffering(playbackState)) {
@@ -57,8 +59,8 @@ export class MiniPlayer extends React.PureComponent<Props> {
     }
 
     let nowPlayingAccessibilityLabel = `${translate('ARIA HINT - Now playing')}. `
-    nowPlayingAccessibilityLabel += `${nowPlayingItem.podcastTitle}. `
-    nowPlayingAccessibilityLabel += `${nowPlayingItem.episodeTitle}.`
+    nowPlayingAccessibilityLabel += `${nowPlayingItem?.podcastTitle}. `
+    nowPlayingAccessibilityLabel += `${nowPlayingItem?.episodeTitle}.`
 
     const episodeTitleComponent = (
       <Text
@@ -67,7 +69,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
         numberOfLines={1}
         style={[styles.episodeTitle, globalTheme.playerText]}
         testID={`${testIDPrefix}_episode_title`}>
-        {nowPlayingItem.episodeTitle}
+        {nowPlayingItem?.episodeTitle}
       </Text>
     )
 
@@ -126,44 +128,40 @@ export class MiniPlayer extends React.PureComponent<Props> {
               style={{ flex: 1 }}
               testID={testIDPrefix.prependTestId()}>
               <View style={[styles.player, globalTheme.player]}>
-                {
-                  checkIfVideoFileType(nowPlayingItem) && (
-                    <View style={styles.image}>
-                      <PVVideo isMiniPlayer navigation={navigation} />
-                    </View>
-                  )
-                }
-                {
-                  !checkIfVideoFileType(nowPlayingItem) && (
-                    <FastImage
-                      isSmall
-                      resizeMode='contain'
-                      source={nowPlayingItem.episodeImageUrl || nowPlayingItem.podcastImageUrl}
-                      styles={styles.image}
-                    />
-                  )
-                }
+                {checkIfVideoFileType(nowPlayingItem) && (
+                  <View style={styles.image}>
+                    <PVVideo isMiniPlayer navigation={navigation} />
+                  </View>
+                )}
+                {!checkIfVideoFileType(nowPlayingItem) && (
+                  <FastImage
+                    isSmall
+                    resizeMode='contain'
+                    source={nowPlayingItem.episodeImageUrl || nowPlayingItem.podcastImageUrl}
+                    styles={styles.image}
+                  />
+                )}
                 <View style={styles.textWrapper}>
                   <Text
                     allowFontScaling={false}
                     numberOfLines={1}
                     style={[styles.podcastTitle, globalTheme.playerText]}
                     testID={`${testIDPrefix}_podcast_title`}>
-                    {nowPlayingItem.podcastTitle}
+                    {nowPlayingItem?.podcastTitle}
                   </Text>
-                  {
-                    !screenReaderEnabled ? (
-                      <TextTicker
-                        accessible={false}
-                        allowFontScaling={false}
-                        bounce
-                        importantForAccessibility='no-hide-descendants'
-                        loop
-                        textLength={nowPlayingItem?.episodeTitle?.length}>
-                        {episodeTitleComponent}
-                      </TextTicker>
-                    ) : episodeTitleComponent
-                  }
+                  {!screenReaderEnabled ? (
+                    <TextTicker
+                      accessible={false}
+                      allowFontScaling={false}
+                      bounce
+                      importantForAccessibility='no-hide-descendants'
+                      loop
+                      textLength={nowPlayingItem?.episodeTitle?.length}>
+                      {episodeTitleComponent}
+                    </TextTicker>
+                  ) : (
+                    episodeTitleComponent
+                  )}
                 </View>
               </View>
             </Pressable>
@@ -177,7 +175,8 @@ export class MiniPlayer extends React.PureComponent<Props> {
                   name={'exclamation-triangle'}
                   size={26}
                   testID={`${testIDPrefix}_error`}
-                  wrapperStyle={[playerStyles.icon, playButtonAdjust]} />
+                  wrapperStyle={[playerStyles.icon, playButtonAdjust]}
+                />
               )}
             </View>
           </View>
@@ -189,7 +188,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   clipTitle: {
-    fontSize: PV.Fonts.sizes.xl,
+    fontSize: PV.Fonts.sizes.xl
     // fontWeight: PV.Fonts.weights.semibold,
   },
   clipTitleWrapper: {

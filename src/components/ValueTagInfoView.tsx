@@ -6,8 +6,8 @@ import { PV } from '../resources'
 import { Text, View } from './'
 
 export type ValueTransactionRouteError = {
-  address:string
-  message:string
+  address: string
+  message: string
 }
 
 type Props = {

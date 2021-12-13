@@ -55,8 +55,12 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const isDownloading = downloadsActive[id]
     const isDownloaded = item.addByRSSPodcastFeedUrl ? downloadedEpisodeIds[mediaUrl] : downloadedEpisodeIds[id]
 
-    const episodeCompleted = historyItemsIndex && historyItemsIndex.episodes && id
-      && historyItemsIndex.episodes[id] && historyItemsIndex.episodes[id].completed
+    const episodeCompleted =
+      historyItemsIndex &&
+      historyItemsIndex.episodes &&
+      id &&
+      historyItemsIndex.episodes[id] &&
+      historyItemsIndex.episodes[id].completed
 
     if (!title) title = translate('Untitled Episode')
 
@@ -67,20 +71,17 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const podcastTitleText = podcastTitle.trim()
     const episodeTitleText = title.trim()
     const pubDateText = readableDate(pubDate)
-    const timeLabel = getTimeLabelText(mediaFileDuration, duration, userPlaybackPosition, episodeCompleted)
+    const timeLabel = getTimeLabelText(mediaFileDuration, duration, userPlaybackPosition)
     const timeLabelText = timeLabel ? timeLabel : translate('Unplayed episode')
 
-    const accessibilityLabel =
-      `${showPodcastInfo ? `${podcastTitleText}, ` : ''} ${episodeTitleText}, ${pubDateText}, ${timeLabelText}`
+    const accessibilityLabel = `${
+      showPodcastInfo ? `${podcastTitleText}, ` : ''
+    } ${episodeTitleText}, ${pubDateText}, ${timeLabelText}`
 
     const innerTopView = (
-      <RNView
-        accessible={false}
-        importantForAccessibility='no-hide-descendants'
-        style={styles.innerTopView}>
+      <RNView accessible={false} importantForAccessibility='no-hide-descendants' style={styles.innerTopView}>
         {!!imageUrl && !hideImage && <FastImage isSmall source={imageUrl} styles={styles.image} />}
-        <RNView
-          style={styles.textWrapper}>
+        <RNView style={styles.textWrapper}>
           {showPodcastInfo && podcastTitle && (
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
@@ -136,11 +137,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         importantForAccessibility={screenReaderEnabled ? 'yes' : 'no-hide-descendants'}
         onPress={screenReaderEnabled ? handleMorePress : null}
         style={styles.wrapper}>
-        <RNView
-          accessible={false}
-          importantForAccessibility='no-hide-descendants'
-          style={styles.wrapperTop}>
-          {(handleNavigationPress && !screenReaderEnabled) ? (
+        <RNView accessible={false} importantForAccessibility='no-hide-descendants' style={styles.wrapperTop}>
+          {handleNavigationPress && !screenReaderEnabled ? (
             <Pressable
               accessible={false}
               importantForAccessibility='no-hide-descendants'
@@ -157,9 +155,10 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             isDownloading={isDownloading}
             onPressDelete={() => handleDeletePress(item)}
             onPressDownload={() => handleDownloadPress(item)}
-            testID={testID} />
+            testID={testID}
+          />
         </RNView>
-        {(handleNavigationPress && !screenReaderEnabled) ? (
+        {handleNavigationPress && !screenReaderEnabled ? (
           <Pressable
             accessible={false}
             importantForAccessibility='no-hide-descendants'

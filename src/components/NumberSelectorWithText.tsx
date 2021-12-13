@@ -24,14 +24,27 @@ type Props = {
 }
 
 export const NumberSelectorWithText = (props: Props) => {
-  const { accessibilityHint, accessibilityLabel, editable, handleChangeText, handleOnBlur,
-    handleSubmitEditing,isHHMMSS, isSmallText, selectedNumber = 0, subText, testID, text,
-    textInputOnPress, textInputStyle = {}, wrapperOnPress } = props
+  const {
+    accessibilityHint,
+    accessibilityLabel,
+    editable,
+    handleChangeText,
+    handleOnBlur,
+    handleSubmitEditing,
+    isHHMMSS,
+    isSmallText,
+    selectedNumber = 0,
+    subText,
+    testID,
+    text,
+    textInputOnPress,
+    textInputStyle = {},
+    wrapperOnPress
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   let strNum = ''
-  const parsedNumber =
-    typeof selectedNumber === 'string' ? parseInt(selectedNumber, 10) : selectedNumber
+  const parsedNumber = typeof selectedNumber === 'string' ? parseInt(selectedNumber, 10) : selectedNumber
   if (parsedNumber || parsedNumber === 0) {
     strNum = isHHMMSS ? convertSecToHHMMSS(parsedNumber) : parsedNumber.toString()
   }
@@ -70,17 +83,16 @@ export const NumberSelectorWithText = (props: Props) => {
 
   return (
     <View style={styles.outerWrapper}>
-      {!!wrapperOnPress
-        ? (
-          <Pressable
-            accessibilityHint={accessibilityHint}
-            accessibilityLabel={accessibilityLabel}
-            onPress={wrapperOnPress}>
-            {textInput}
-          </Pressable>
-        )
-        : textInput
-      }
+      {!!wrapperOnPress ? (
+        <Pressable
+          accessibilityHint={accessibilityHint}
+          accessibilityLabel={accessibilityLabel}
+          onPress={wrapperOnPress}>
+          {textInput}
+        </Pressable>
+      ) : (
+        textInput
+      )}
       {subText && (
         <Text
           accessible={false}

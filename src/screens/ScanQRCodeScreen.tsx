@@ -56,14 +56,14 @@
 
 //       try {
 //         const parsedData = parsePayload(scannedData)
-  
+
 //         await addAddByRSSPodcast(parsedData.feedUrl)
 //         const podcast = await getAddByRSSPodcastLocally(parsedData.feedUrl)
-  
+
 //         if (parsedData.userInfo && podcast?.id) {
 //           await saveSpecialUserInfoForPodcast(parsedData.userInfo, podcast.id)
 //         }
-  
+
 //         navigate(PV.RouteNames.PodcastScreen, {
 //           podcast,
 //           addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl

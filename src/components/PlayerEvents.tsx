@@ -59,7 +59,7 @@ export class PlayerEvents extends React.PureComponent<Props> {
       if (nowPlayingItem) {
         playerUpdatePlayerState(nowPlayingItem)
       }
-   
+
       await playerUpdatePlaybackState()
       await getQueueItems()
     })()

@@ -66,10 +66,10 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = ({ navigation }) => ({
-      title: translate('Search'),
-      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-      headerRight: () => null
-    })
+    title: translate('Search'),
+    headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
+    headerRight: () => null
+  })
 
   componentDidMount() {
     this.searchBarInput.focus()
@@ -232,23 +232,20 @@ export class SearchScreen extends React.Component<Props, State> {
     } = this.state
 
     return (
-      <View
-        style={styles.view}
-        testID={`${testIDPrefix}_view`}>
+      <View style={styles.view} testID={`${testIDPrefix}_view`}>
         <ButtonGroup
           buttons={buttons}
           onPress={this._handleSearchTypePress}
           selectedIndex={searchType}
-          testID={`${testIDPrefix}_search_type`} />
+          testID={`${testIDPrefix}_search_type`}
+        />
         <SearchBar
           containerStyle={styles.searchBarContainer}
           handleClear={this._handleSearchBarClear}
           inputRef={(ref: any) => (this.searchBarInput = ref)}
           onChangeText={this._handleSearchBarTextChange}
           placeholder={
-            searchType === _podcastByTitle
-            ? translate('search by podcast title')
-            : translate('search by podcast host')
+            searchType === _podcastByTitle ? translate('search by podcast title') : translate('search by podcast host')
           }
           subText={searchType === _podcastByTitle ? translate('use double quotes for exact matches') : null}
           testID={testIDPrefix}
@@ -268,9 +265,7 @@ export class SearchScreen extends React.Component<Props, State> {
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
             noResultsBottomActionText={!!Config.CURATOR_EMAIL ? translate('Request Podcast') : ''}
-            noResultsBottomActionTextAccessibilityHint={
-              translate('ARIA HINT - send us an email to request a podcast')
-            }
+            noResultsBottomActionTextAccessibilityHint={translate('ARIA HINT - send us an email to request a podcast')}
             noResultsMessage={searchBarText.length > 1 && translate('No podcasts found')}
             noResultsMiddleActionText={translate('Add Custom RSS Feed')}
             noResultsMiddleActionTextAccessibilityHint={translate('ARIA HINT - add a podcast by its RSS feed')}
@@ -314,7 +309,7 @@ export class SearchScreen extends React.Component<Props, State> {
       })
 
       const newFlatListData = [...flatListData, ...results[0]]
-      
+
       this.shouldLoad = true
       return {
         ...newState,
@@ -333,10 +328,7 @@ export class SearchScreen extends React.Component<Props, State> {
 const _podcastByTitle = 0
 const _podcastByHost = 1
 
-const buttons = [
-  translate('Podcast'),
-  translate('Host')
-]
+const buttons = [translate('Podcast'), translate('Host')]
 
 const styles = StyleSheet.create({
   searchBarContainer: {

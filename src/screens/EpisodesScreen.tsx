@@ -89,8 +89,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = () => ({
-      title: translate('Episodes')
-    })
+    title: translate('Episodes')
+  })
 
   async componentDidMount() {
     const { queryFrom } = this.state
@@ -281,9 +281,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
   _ItemSeparatorComponent = () => <Divider style={{ marginHorizontal: 10 }} />
 
-  _handleCancelPress = () => new Promise((resolve) => {
-    this.setState({ showActionSheet: false }, resolve)
-  })
+  _handleCancelPress = () =>
+    new Promise((resolve) => {
+      this.setState({ showActionSheet: false }, resolve)
+    })
 
   _handleMorePress = (selectedItem: any) => {
     this.setState({
@@ -428,9 +429,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         : translate('Search')
 
     return (
-      <View
-        style={styles.view}
-        testID='episodes_screen_view'>
+      <View style={styles.view} testID='episodes_screen_view'>
         <TableSectionSelectors
           filterScreenTitle={translate('Episodes')}
           handleSelectCategoryItem={(x: any) => this._selectCategory(x)}
@@ -463,7 +462,9 @@ export class EpisodesScreen extends React.Component<Props, State> {
             ListHeaderComponent={queryFrom !== PV.Filters._downloadedKey ? this._ListHeaderComponent : null}
             noResultsMessage={
               // eslint-disable-next-line max-len
-              noSubscribedPodcasts ? translate("You are not subscribed to any podcasts yet") : translate('No episodes found')
+              noSubscribedPodcasts
+                ? translate('You are not subscribed to any podcasts yet')
+                : translate('No episodes found')
             }
             noResultsTopActionText={noSubscribedPodcasts ? defaultNoSubscribedPodcastsMessage : ''}
             onEndReached={this._onEndReached}

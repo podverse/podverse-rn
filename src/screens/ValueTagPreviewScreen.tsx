@@ -32,30 +32,29 @@ export class ValueTagPreviewScreen extends React.Component<Props> {
 
   render() {
     return (
-      <SafeAreaView
-        style={styles.content}
-        testID={`${testIDPrefix}_view`.prependTestId()}>
-        <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.xl}
-          style={styles.title}>
+      <SafeAreaView style={styles.content} testID={`${testIDPrefix}_view`.prependTestId()}>
+        <Text fontSizeLargestScale={PV.Fonts.largeSizes.xl} style={styles.title}>
           {translate('value_tag_preview_title')}
         </Text>
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContentView}>
-        <Text fontSizeLargestScale={PV.Fonts.largeSizes.lg}
-          style={styles.text}>{translate('value_tag_preview_boost')}</Text>
-        <Text fontSizeLargestScale={PV.Fonts.largeSizes.lg}
-          style={styles.text}>{translate('value_tag_preview_stream')}</Text>
-        <Image 
-          source={require("../resources/images/crypto_exmpl_1.png")} 
-          resizeMode="contain" 
-          style={styles.previewImage}
-        />
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.lg} style={styles.text}>
+            {translate('value_tag_preview_boost')}
+          </Text>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.lg} style={styles.text}>
+            {translate('value_tag_preview_stream')}
+          </Text>
+          <Image
+            source={require('../resources/images/crypto_exmpl_1.png')}
+            resizeMode='contain'
+            style={styles.previewImage}
+          />
         </ScrollView>
         <Button
           onPress={() => this._navigateToConsentScreen()}
           testID={`${testIDPrefix}_next`}
           text={translate('Next')}
-          wrapperStyles={styles.nextButton} />
+          wrapperStyles={styles.nextButton}
+        />
       </SafeAreaView>
     )
   }
@@ -64,13 +63,13 @@ export class ValueTagPreviewScreen extends React.Component<Props> {
 const styles = StyleSheet.create({
   content: {
     flex: 1,
-    backgroundColor:PV.Colors.ink
+    backgroundColor: PV.Colors.ink
   },
   scrollView: {
-    flex:1
+    flex: 1
   },
   scrollContentView: {
-    padding:20
+    padding: 20
   },
   nextButton: {
     alignItems: 'center',
@@ -81,20 +80,20 @@ const styles = StyleSheet.create({
     width: '90%'
   },
   previewImage: {
-    borderColor:"white", 
-    borderWidth:1, 
-    width:"100%", 
-    height: 250, 
-    marginTop:20
+    borderColor: 'white',
+    borderWidth: 1,
+    width: '100%',
+    height: 250,
+    marginTop: 20
   },
   title: {
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.bold,
-    textAlign:"center",
+    textAlign: 'center',
     marginBottom: 20
   },
   text: {
     fontSize: PV.Fonts.sizes.md,
-    marginVertical:10
+    marginVertical: 10
   }
 })

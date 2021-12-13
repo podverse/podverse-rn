@@ -17,11 +17,10 @@ export class PVSortableList extends React.Component<Props> {
     return (
       <DraggableFlatList
         data={data}
-        keyExtractor={
-          (item: any, index: number) => {
-            const safeKey = safeKeyExtractor('sortable-list', index, item?.clipId || item?.episodeId || item?.id)
-            return `draggable-item-${safeKey}-${isEditing ? 'isEditing' : 'isNotEditing'}`}
-          }
+        keyExtractor={(item: any, index: number) => {
+          const safeKey = safeKeyExtractor('sortable-list', index, item?.clipId || item?.episodeId || item?.id)
+          return `draggable-item-${safeKey}-${isEditing ? 'isEditing' : 'isNotEditing'}`
+        }}
         onDragEnd={onDragEnd}
         renderItem={renderItem}
         style={styles.list}

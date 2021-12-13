@@ -20,9 +20,9 @@ export class PurchasingScreen extends React.Component<Props> {
   }
 
   static navigationOptions = () => ({
-      title: translate('Processing'),
-      headerRight: () => null
-    })
+    title: translate('Processing'),
+    headerRight: () => null
+  })
 
   componentDidMount() {
     trackPageView('/purchasing', 'Purchasing Screen')
@@ -51,9 +51,7 @@ export class PurchasingScreen extends React.Component<Props> {
     const { isLoading, message, showContactSupportLink, showDismissLink, showRetryLink, title } = purchase
 
     return (
-      <SafeAreaView
-        style={styles.safeAreaView}
-        testID={`${testIDPrefix}_view`}>
+      <SafeAreaView style={styles.safeAreaView} testID={`${testIDPrefix}_view`}>
         <View style={styles.view}>
           <Text style={[globalTheme.text, styles.title]}>{title}</Text>
           {!!isLoading && <ActivityIndicator styles={styles.activityIndicator} testID={testIDPrefix} />}

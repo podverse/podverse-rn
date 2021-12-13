@@ -54,7 +54,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
                   {title.trim()}
                 </Text>
               )}
-              {!isSaving &&
+              {!isSaving && (
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary
@@ -62,7 +62,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
                   testID={`${testID}_item_count`}>
                   {translate('items')} {itemCount}
                 </Text>
-              }
+              )}
             </RNView>
             {!!createdBy && (
               <Text

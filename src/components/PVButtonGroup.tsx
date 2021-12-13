@@ -32,7 +32,8 @@ export const PVButtonGroup = (props: Props) => {
       selectedIndex={selectedIndex}
       selectedTextStyle={globalTheme.buttonGroupTextSelected}
       textStyle={[textStyle, globalTheme.buttonGroupText]}
-      testID={`${testID}_button_group`.prependTestId()} />
+      testID={`${testID}_button_group`.prependTestId()}
+    />
   )
 }
 

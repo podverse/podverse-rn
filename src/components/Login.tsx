@@ -60,9 +60,7 @@ export class Login extends React.Component<Props, State> {
     const { email, password, submitIsDisabled } = this.state
 
     return (
-      <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
-        style={styles.scrollView}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent} style={styles.scrollView}>
         <TextInput
           accessibilityHint={translate('ARIA HINT - Type your premium membership email address')}
           autoCapitalize='none'
@@ -97,9 +95,8 @@ export class Login extends React.Component<Props, State> {
           wrapperStyle={core.textInputWrapper}
         />
         <Button
-          accessibilityHint={submitIsDisabled
-            ? translate('ARIA HINT - Type a valid email and password to enable the login button')
-            : ''
+          accessibilityHint={
+            submitIsDisabled ? translate('ARIA HINT - Type a valid email and password to enable the login button') : ''
           }
           accessibilityLabel={translate('Login')}
           disabled={submitIsDisabled}

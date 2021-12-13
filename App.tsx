@@ -20,9 +20,9 @@ import { downloadCategoriesList } from './src/services/category'
 import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
+import { hasValidDownloadingConnection } from './src/lib/network'
 
-LogBox.ignoreLogs(['Warning: componentWillUpdate'])
-LogBox.ignoreAllLogs(true)
+LogBox.ignoreLogs(['EventEmitter.removeListener', "Require cycle"])
 
 type Props = any
 
@@ -85,15 +85,10 @@ class App extends Component<Props, State> {
         return
       }
   
-      if (state.type === 'wifi') {
+      if (await hasValidDownloadingConnection()) {
         refreshDownloads()
-      } else if (state.type === 'cellular') {
-        const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
-        if (downloadingWifiOnly) {
-          pauseDownloadingEpisodesAll()
-        } else {
-          refreshDownloads()
-        }
+      } else {
+        pauseDownloadingEpisodesAll()
       }
     })()
   }

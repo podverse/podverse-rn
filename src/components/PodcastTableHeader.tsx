@@ -70,30 +70,37 @@ export const PodcastTableHeader = (props: Props) => {
                   </Text>
                   {isSubscribed && (
                     <SettingsButton
-                      accessibilityHint={showSettings
-                        // eslint-disable-next-line max-len
-                        ? translate('ARIA HINT - On tap settings will hide and episodes will appear lower on this screen')
-                        // eslint-disable-next-line max-len
-                        : translate('ARIA HINT - On tap the episodes will hide and settings will appear lower on this screen')
+                      accessibilityHint={
+                        showSettings
+                          ? // eslint-disable-next-line max-len
+                            translate(
+                              'ARIA HINT - On tap settings will hide and episodes will appear lower on this screen'
+                            )
+                          : // eslint-disable-next-line max-len
+                            translate(
+                              'ARIA HINT - On tap the episodes will hide and settings will appear lower on this screen'
+                            )
                       }
-                      accessibilityLabel={showSettings
+                      accessibilityLabel={
+                        showSettings
                           ? translate('ARIA HINT - Hide podcast settings')
                           : translate('ARIA HINT - Show podcast settings')
                       }
                       handleToggleSettings={handleToggleSettings}
                       showCheckmark={showSettings}
-                      testID={`${testID}_settings`} />
+                      testID={`${testID}_settings`}
+                    />
                   )}
                 </View>
                 <View style={styles.contentWrapperBottom}>
-                  {!!handleToggleSubscribe &&
+                  {!!handleToggleSubscribe && (
                     <SubscribeButton
                       handleToggleSubscribe={handleToggleSubscribe}
                       isSubscribed={isSubscribed}
                       isSubscribing={isSubscribing}
                       testID={testID}
                     />
-                  }
+                  )}
                   {isSubscribed && (
                     <View style={styles.autoDownloadContainer}>
                       <Text
@@ -106,14 +113,16 @@ export const PodcastTableHeader = (props: Props) => {
                       </Text>
                       <IndicatorDownload style={{ marginLeft: 6 }} />
                       <Switch
-                        accessibilityHint={autoDownloadOn
-                          ? translate('ARIA HINT - stop auto downloading new episodes from this podcast')
-                          // eslint-disable-next-line max-len
-                          : translate('ARIA HINT - auto download new episodes from this podcast when they are released')
+                        accessibilityHint={
+                          autoDownloadOn
+                            ? translate('ARIA HINT - stop auto downloading new episodes from this podcast')
+                            : // eslint-disable-next-line max-len
+                              translate(
+                                'ARIA HINT - auto download new episodes from this podcast when they are released'
+                              )
                         }
-                        accessibilityLabel={autoDownloadOn
-                          ? translate('Auto Downloading On')
-                          : translate('Auto Downloading Off')
+                        accessibilityLabel={
+                          autoDownloadOn ? translate('Auto Downloading On') : translate('Auto Downloading Off')
                         }
                         onValueChange={handleToggleAutoDownload}
                         style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }], marginLeft: 5 }}
@@ -134,10 +143,9 @@ export const PodcastTableHeader = (props: Props) => {
                 accessibilityLabel={finalDescription}
                 onPress={handleNavigateToPodcastInfoScreen}>
                 <RNView>
-                  <Text
-                    numberOfLines={2}
-                    style={styles.descriptionText}
-                    testID={`${testID}_description_text`}>{finalDescription}</Text>
+                  <Text numberOfLines={2} style={styles.descriptionText} testID={`${testID}_description_text`}>
+                    {finalDescription}
+                  </Text>
                   {/* <Text
                     numberOfLines={1}
                     style={styles.descriptionText}

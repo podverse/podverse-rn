@@ -1,5 +1,5 @@
-import AsyncStorage from "@react-native-community/async-storage"
-import { PV } from "../resources"
+import AsyncStorage from '@react-native-community/async-storage'
+import { PV } from '../resources'
 
 export const getStartPodcastFromTime = async (podcastId?: string) => {
   if (podcastId) {
@@ -25,9 +25,6 @@ export const setStartPodcastFromTime = async (podcastId?: string, seconds?: numb
       allStartPodcastFromTime[podcastId] = seconds
     }
 
-    await AsyncStorage.setItem(
-      PV.Keys.START_PODCAST_FROM_TIME,
-      JSON.stringify(allStartPodcastFromTime)
-    )
+    await AsyncStorage.setItem(PV.Keys.START_PODCAST_FROM_TIME, JSON.stringify(allStartPodcastFromTime))
   }
 }

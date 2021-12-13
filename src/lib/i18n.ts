@@ -3,18 +3,18 @@ import * as RNLocalize from 'react-native-localize'
 const translationGetters = {
   // lazy requires (metro bundler does not support symlinks)
   en: () => require('../resources/i18n/translations/en.json'),
-  es: () => require('../resources/i18n/translations/es.json')
+  es: () => require('../resources/i18n/translations/es.json'),
+  lt: () => require('../resources/i18n/translations/lt.json')
 }
 
 class Internationalizer {
   static instance: Internationalizer
   translationConfig: any
-  
+
   constructor(translationConfig: any) {
     this.translationConfig = translationConfig
   }
-  
-  
+
   static initializeTranslator = () => {
     if (!Internationalizer.instance) {
       const fallback = { languageTag: 'en', isRTL: false }

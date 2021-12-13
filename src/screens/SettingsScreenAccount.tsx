@@ -2,10 +2,7 @@
 import { Alert, StyleSheet } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
-import {
-  Button,
-  ScrollView
-} from '../components'
+import { Button, ScrollView } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -26,12 +23,11 @@ type State = {
 const testIDPrefix = 'settings_screen_account'
 
 export class SettingsScreenAccount extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
 
     this.state = {
-      deleteAccountDialogText: '',
+      deleteAccountDialogText: ''
     }
   }
 

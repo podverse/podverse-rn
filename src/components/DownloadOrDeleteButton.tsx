@@ -42,7 +42,8 @@ export const DownloadOrDeleteButton = (props: Props) => {
         <ActivityIndicator
           accessibilityLabel={translate('Download in progress')}
           styles={[styles.activityIndicator]}
-          testID={`${testID}_download`} />
+          testID={`${testID}_download`}
+        />
       </View>
     )
   } else if (isDownloaded) {

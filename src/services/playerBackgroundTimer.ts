@@ -21,8 +21,7 @@ import {
   playerUpdateUserPlaybackPosition,
   setClipHasEnded
 } from './player'
-import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally,
-  setNowPlayingItemLocally } from './userNowPlayingItem'
+import { getNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './userNowPlayingItem'
 import { removeQueueItem } from './queue'
 
 const debouncedSetPlaybackPosition = debounce(playerSetPositionWhenDurationIsAvailable, 1000, {
@@ -43,15 +42,15 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
     debouncedSetPlaybackPosition(currentNowPlayingItem.clipStartTime || 0)
   } else if (
-    !currentNowPlayingItem.clipId
-    && currentNowPlayingItem.userPlaybackPosition
-    && currentNowPlayingItem.userPlaybackPosition >= 5
+    !currentNowPlayingItem.clipId &&
+    currentNowPlayingItem.userPlaybackPosition &&
+    currentNowPlayingItem.userPlaybackPosition >= 5
   ) {
     debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
   } else {
     const { podcastId } = currentNowPlayingItem
     const startPodcastFromTime = await getStartPodcastFromTime(podcastId)
-    
+
     if (!currentNowPlayingItem.clipId && startPodcastFromTime) {
       debouncedSetPlaybackPosition(startPodcastFromTime, trackId)
     }
@@ -101,7 +100,9 @@ export const syncNowPlayingItemWithTrack = () => {
           clearInterval(retryInterval)
         } else {
           const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(
-            currentTrackId, setPlayerClipIsLoadedIfClip)
+            currentTrackId,
+            setPlayerClipIsLoadedIfClip
+          )
           if (currentNowPlayingItem && retryInterval) {
             clearInterval(retryInterval)
             await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
@@ -204,11 +205,7 @@ const handleValueStreamingMinutePassed = async () => {
   const valueTag = podcastValueFinal || nowPlayingItem.episodeValue || nowPlayingItem.podcastValue
 
   if (valueTag) {
-    await saveStreamingValueTransactionsToTransactionQueue(
-      valueTag,
-      nowPlayingItem,
-      streamingAmount
-    )
+    await saveStreamingValueTransactionsToTransactionQueue(valueTag, nowPlayingItem, streamingAmount)
   }
 }
 
@@ -239,16 +236,14 @@ const handleBackgroundTimerInterval = () => {
       if (playerCheckIfStateIsPlaying(playbackState)) {
         valueStreamingIntervalSecondCount++
 
-        if (
-          valueStreamingIntervalSecondCount
-          && valueStreamingIntervalSecondCount % 60 === 0) {        
+        if (valueStreamingIntervalSecondCount && valueStreamingIntervalSecondCount % 60 === 0) {
           await handleValueStreamingMinutePassed()
         }
       }
-      
+
       if (valueStreamingIntervalSecondCount === 600) {
-        valueStreamingIntervalSecondCount = 1;
-        (async () => {
+        valueStreamingIntervalSecondCount = 1
+        ;(async () => {
           const { errors, transactions, totalAmount } = await processValueTransactionQueue()
           if (transactions.length > 0 && totalAmount > 0) {
             setGlobal({

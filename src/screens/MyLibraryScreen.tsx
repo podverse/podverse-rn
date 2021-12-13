@@ -18,14 +18,13 @@ type State = {
 const testIDPrefix = 'my_library_screen'
 
 export class MyLibraryScreen extends React.Component<Props, State> {
-
   state = {
     options: []
   }
 
   static navigationOptions = () => ({
-      title: translate('My Library')
-    })
+    title: translate('My Library')
+  })
 
   componentDidMount() {
     trackPageView('/myLibrary', 'My Library Screen')
@@ -78,18 +77,16 @@ export class MyLibraryScreen extends React.Component<Props, State> {
     const featureOptions = this._myLibraryOptions(isLoggedIn)
 
     return (
-      <View
-        style={core.backgroundView}
-        testID={`${testIDPrefix}_view`}>
+      <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => {
-            const accessibilityLabel = item.key === _downloadsKey && downloadsActiveCount > 0
-              ? `${item.title} - ${downloadsActiveCount} ${downloadsActiveCount === 1
-                ? translate('Download in progress')
-                : translate('Downloads in progress')
-              }`
-              : item.key === _downloadsKey
+            const accessibilityLabel =
+              item.key === _downloadsKey && downloadsActiveCount > 0
+                ? `${item.title} - ${downloadsActiveCount} ${
+                    downloadsActiveCount === 1 ? translate('Download in progress') : translate('Downloads in progress')
+                  }`
+                : item.key === _downloadsKey
                 ? `${item.title} - ${translate('No downloads in progress')}`
                 : item.title
 
@@ -97,27 +94,31 @@ export class MyLibraryScreen extends React.Component<Props, State> {
               <TableCell
                 accessibilityLabel={accessibilityLabel}
                 testIDPrefix={`${testIDPrefix}_${item.key}`}
-                testIDSuffix='' 
+                testIDSuffix=''
                 onPress={() => this._onPress(item)}>
                 {item.key === _downloadsKey ? (
                   <RNView style={core.row}>
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                      style={table.cellText}>
+                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={table.cellText}>
                       {item.title}
                     </Text>
-                    {item.key === _downloadsKey && downloadsActiveCount > 0 &&
+                    {item.key === _downloadsKey &&
+                      downloadsActiveCount > 0 &&
                       fontScaleMode !== PV.Fonts.fontScale.larger &&
                       fontScaleMode !== PV.Fonts.fontScale.largest && (
                         <Badge
-                          badgeStyle={{ width:25, height:25, backgroundColor: PV.Colors.redLighter, borderRadius:12.5 }}
+                          badgeStyle={{
+                            width: 25,
+                            height: 25,
+                            backgroundColor: PV.Colors.redLighter,
+                            borderRadius: 12.5
+                          }}
                           containerStyle={{
                             position: 'absolute',
                             right: -32,
                             top: 0
                           }}
                           status='error'
-                          textStyle={{fontSize:PV.Fonts.largeSizes.xxl, fontWeight:PV.Fonts.weights.bold}}
+                          textStyle={{ fontSize: PV.Fonts.largeSizes.xxl, fontWeight: PV.Fonts.weights.bold }}
                           value={downloadsActiveCount}
                         />
                       )}

@@ -1,7 +1,6 @@
 import { NowPlayingItem } from 'podverse-shared'
 import { Pressable, StyleSheet, View } from 'react-native'
 import React from 'reactn'
-import { translate } from '../lib/i18n'
 import { prefixClipLabel, readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { Text } from './'
@@ -18,15 +17,13 @@ export class PlayerClipInfoBar extends React.PureComponent<Props> {
     const { globalTheme } = this.global
 
     return (
-      <Pressable
-        onPress={handleOnPress}
-        testID={'player_clip_info_bar'.prependTestId()}>
+      <Pressable onPress={handleOnPress} testID={'player_clip_info_bar'.prependTestId()}>
         <View style={[styles.wrapper, globalTheme.player]}>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
             style={[styles.title, globalTheme.playerText]}>
-            {nowPlayingItem.clipTitle || prefixClipLabel(nowPlayingItem.episodeTitle)}
+            {nowPlayingItem?.clipTitle || prefixClipLabel(nowPlayingItem?.episodeTitle)}
           </Text>
           {!!clipStartTime && (
             <Text

@@ -127,7 +127,7 @@ export const addOrUpdateHistoryItemLocally = async (
   mediaFileDuration?: number | null
 ) => {
   playbackPosition = Math.floor(playbackPosition) || 0
-  mediaFileDuration = mediaFileDuration && Math.floor(mediaFileDuration) || 0
+  mediaFileDuration = (mediaFileDuration && Math.floor(mediaFileDuration)) || 0
   const results = await getHistoryItemsLocally()
   const { userHistoryItems } = results
   const filteredItems = filterItemFromHistoryItems(userHistoryItems, item)
@@ -248,7 +248,7 @@ const getHistoryItemsFromServer = async (page: number) => {
   const { userHistoryItems, userHistoryItemsCount } = response.data
 
   const combinedUserHistoryItems = unionBy(userHistoryItems, localUserHistoryItems, 'episodeId') as NowPlayingItem[]
-  const countDifference = (userHistoryItems.length + localUserHistoryItems.length) - combinedUserHistoryItems.length
+  const countDifference = userHistoryItems.length + localUserHistoryItems.length - combinedUserHistoryItems.length
   const combinedUserHistoryItemsCount = userHistoryItemsCount + localUserHistoryItems.length - countDifference
   await setAllHistoryItemsLocally(combinedUserHistoryItems)
 
@@ -274,12 +274,11 @@ const generateHistoryItemsIndex = (historyItems: any[]) => {
     episodes: {},
     mediaRefs: {}
   }
-  
+
   if (!historyItems) {
     historyItems = []
   }
   for (const historyItem of historyItems) {
-
     if (historyItem.mediaRefId) {
       historyItemsIndex.mediaRefs[historyItem.mediaRefId] = {
         mediaFileDuration: historyItem.mediaFileDuration || historyItem.episodeDuration,
