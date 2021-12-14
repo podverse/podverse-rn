@@ -8,9 +8,9 @@ export const isOnMinimumAllowedVersion = async () => {
     const isConnected = await hasValidNetworkConnection()
 
     if (!isConnected) {
-      console.log('No connection. Skipping version check')
       return true
     }
+
     const response = await request({
       endpoint: '/meta/min-mobile-version',
       method: 'GET',

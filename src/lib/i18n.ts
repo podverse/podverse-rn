@@ -1,4 +1,5 @@
 import * as RNLocalize from 'react-native-localize'
+import Config from 'react-native-config'
 
 const translationGetters = {
   // lazy requires (metro bundler does not support symlinks)
@@ -30,7 +31,7 @@ class Internationalizer {
     if (Internationalizer.instance.translationConfig[key]) {
       return Internationalizer.instance.translationConfig[key]
     } else {
-      return `[Missing tranlation for key: ${key}]`
+      return Config.IS_DEV ? `[Missing tranlation for key: ${key}]` : translationGetters.en()[key]
     }
   }
 }

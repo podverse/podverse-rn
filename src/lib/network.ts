@@ -23,25 +23,19 @@ export const hasValidNetworkConnection = async () => {
     return false
   } else {
     const state = await NetInfo.fetch()
-    return state.isInternetReachable && networkSupported(state)
+    return (state.type === NetInfoStateType.wifi || networkSupported(state)) && state.isInternetReachable
   }
 }
 
 export const hasValidDownloadingConnection = async () => {
-  const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
   const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
 
-  if (offlineModeEnabled) {
-    return false
-  }
-
   const state = await NetInfo.fetch()
-
   if (downloadingWifiOnly && state.type !== NetInfoStateType.wifi) {
     return false
   }
 
-  return networkSupported(state)
+  return hasValidNetworkConnection()
 }
 
 export const networkSupported = (state: NetInfoState) => {

@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
+import { hasValidNetworkConnection } from '../lib/network'
 import { FlatList, Icon, NavHeaderButtonText, Text, View } from '../components'
 import { generateSections } from '../lib/filters'
 import { translate } from '../lib/i18n'
@@ -21,6 +22,7 @@ type State = {
   selectedFromItemKey?: string
   selectedSortItemKey?: string
   screenName: string
+  isOffline: boolean
 }
 
 type Item = {
@@ -54,7 +56,8 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey: '',
       selectedFilterItemKey: '',
       selectedFromItemKey: '',
-      selectedSortItemKey: ''
+      selectedSortItemKey: '',
+      isOffline: false
     }
   }
 
@@ -76,7 +79,7 @@ export class FilterScreen extends React.Component<Props, State> {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     trackPageView('/filter', 'Filter Screen')
     const { navigation } = this.props
     const { flatCategoryItems } = this.state
@@ -99,6 +102,8 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedSortItemKey
     })
 
+    const isOffline = await hasValidNetworkConnection()
+
     this.setState({
       screenName,
       sections,
@@ -106,7 +111,8 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFromItemKey,
-      selectedSortItemKey: newSelectedSortItemKey
+      selectedSortItemKey: newSelectedSortItemKey,
+      isOffline: !isOffline
     })
   }
 
@@ -242,6 +248,11 @@ export class FilterScreen extends React.Component<Props, State> {
         accessibilityLabel={item.labelShort || item.label || item.title}
         importantForAccessibility='yes'
         onPress={async () => {
+          if(this.state.isOffline) {
+            // We don't want filters to be selectable when offline
+            return
+          }
+
           const { categoryValueOverride, handleSelect } = await this.getSelectHandler(section, item)
           const newState = (await this.getNewLocalState(section, item)) as any
 
@@ -258,6 +269,9 @@ export class FilterScreen extends React.Component<Props, State> {
           </Text>
           {isActive && (
             <Icon name='check' size={24} style={styles.itemIcon} testID={`${testIDPrefix}_${value}_check`} />
+          )}
+          {!isActive && this.state.isOffline && item.key !== PV.Filters._downloadedKey && (
+            <Icon name='times' size={24} style={styles.unavailableIcon} testID={`${testIDPrefix}_${value}_times`} />
           )}
         </View>
       </Pressable>
@@ -302,6 +316,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginRight: 36,
     color: PV.Colors.brandBlueLight
+  },
+  unavailableIcon: {
+    marginTop: 4,
+    marginRight: 36,
+    color: PV.Colors.grayDark
   },
   itemSubText: {
     fontSize: PV.Fonts.sizes.xxxl,
