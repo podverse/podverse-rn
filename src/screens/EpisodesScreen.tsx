@@ -40,7 +40,7 @@ type State = {
   isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
-  queryFrom: string | null
+  queryFrom: string
   queryPage: number
   querySort: string | null
   searchBarText: string
@@ -57,6 +57,7 @@ const testIDPrefix = 'episodes_screen'
 
 export class EpisodesScreen extends React.Component<Props, State> {
   shouldLoad: boolean
+  _unsubscribe: any | null 
 
   constructor(props: Props) {
     super(props)
@@ -96,25 +97,25 @@ export class EpisodesScreen extends React.Component<Props, State> {
     const { queryFrom } = this.state
     const hasInternetConnection = await hasValidNetworkConnection()
     const from = hasInternetConnection ? queryFrom : PV.Filters._downloadedKey
-    this.setState(
-      {
-        queryFrom: from
-      },
-      () => {
-        (async () => {
-          const newState = await this._queryData(from)
-          this.setState(newState)
-        })()
-      }
-    )
+    this.handleSelectFilterItem(from)
 
     PVEventEmitter.on(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
 
     trackPageView('/episodes', 'Episodes Screen')
+    this._unsubscribe = this.props.navigation.addListener('willFocus', () => {
+      this._setDownloadedDataIfOffline()
+    });
   }
 
   componentWillUnmount() {
     PVEventEmitter.removeListener(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
+  }
+
+  _setDownloadedDataIfOffline = async () => {
+    const isConnected = await hasValidNetworkConnection()
+    if(!isConnected) {
+      this.handleSelectFilterItem(PV.Filters._downloadedKey)
+    }
   }
 
   _handleToggleSubscribeEvent = () => {

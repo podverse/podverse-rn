@@ -253,7 +253,7 @@ export const handleEnrichingPlayerState = (item: NowPlayingItem) => {
 }
 
 const enrichParsedTranscript = (item: NowPlayingItem) => {
-  if (item.episodeTranscript && item.episodeTranscript[0] && item.episodeTranscript[0].url) {
+  if (item?.episodeTranscript && item.episodeTranscript[0] && item.episodeTranscript[0].url) {
     setGlobal({ parsedTranscript: [] }, async () => {
       try {
         const parsedTranscript =

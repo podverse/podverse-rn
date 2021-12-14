@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import NetInfo, { NetInfoState, NetInfoSubscription } from '@react-native-community/netinfo'
+import NetInfo, { NetInfoSubscription } from '@react-native-community/netinfo'
 import React, { Component } from 'react'
 import { Image, LogBox, Platform, StatusBar, View } from 'react-native'
 import Config from 'react-native-config'
@@ -63,7 +63,6 @@ class App extends Component<Props, State> {
       globalTheme = lightTheme
     }
 
-    await this.checkAppVersion()
     await this.setupGlobalState(globalTheme)
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
   }
@@ -72,13 +71,12 @@ class App extends Component<Props, State> {
     this.unsubscribeNetListener && this.unsubscribeNetListener()
   }
 
-  handleNetworkChange = (state: NetInfoState) => {
+  handleNetworkChange = () => {
     (async () => {
       // isInternetReachable will be false
-      if (!state.isInternetReachable) {
-        return
-      }
-  
+
+      await this.checkAppVersion()
+      this.setState({ appReady: true })
       // Don't continue handleNetworkChange when internet is first reachable on initial app launch
       if (ignoreHandleNetworkChange) {
         ignoreHandleNetworkChange = false
@@ -102,9 +100,6 @@ class App extends Component<Props, State> {
         globalTheme: theme,
         fontScaleMode,
         fontScale
-      },
-      () => {
-        this.setState({ appReady: true })
       }
     )
   }
