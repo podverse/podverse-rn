@@ -88,7 +88,8 @@ let isInitialLoad = true
 
 export class PodcastsScreen extends React.Component<Props, State> {
   shouldLoad: boolean
-
+  _unsubscribe: any | null 
+  
   constructor(props: Props) {
     super(props)
 
@@ -164,6 +165,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
       Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
     }
+
+    this._unsubscribe = navigation.addListener('willFocus', () => {
+      this._setDownloadedDataIfOffline()
+    });
   }
 
   componentWillUnmount() {
@@ -176,6 +181,16 @@ export class PodcastsScreen extends React.Component<Props, State> {
       this._handleNavigateToAddPodcastByRSSAuthScreen
     )
     PVEventEmitter.removeListener(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
+    this._unsubscribe?.()
+  }
+
+  _setDownloadedDataIfOffline = async () => {
+    const isConnected = await hasValidNetworkConnection()
+    if(!isConnected) {
+      const preventIsLoading = false
+      const preventAutoDownloading = true
+      this.handleSelectFilterItem(PV.Filters._downloadedKey, preventIsLoading, preventAutoDownloading)
+    }
   }
 
   _handleTrackingTermsAcknowledged = async () => {
@@ -372,7 +387,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     const preventIsLoading = false
     const preventAutoDownloading = true
-    this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
+    await this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
 
     // Set the appUserAgent one time on initialization, then retrieve from a constant
     // using the getAppUserAgent method, or from the global state (for synchronous access).
@@ -391,13 +406,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
         const preventIsLoading = true
         const preventAutoDownloading = false
-        this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
+        await this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
 
         await initDownloads()
         await initializePlayer()
         await initializePlaybackSpeed()
         initializeValueProcessor()
 
+        this._setDownloadedDataIfOffline()
         trackPageView('/podcasts', 'Podcasts Screen')
       })()
     })
