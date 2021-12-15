@@ -12,13 +12,13 @@ const test_settingsScreenFull = async () => {
   await elementByIdAndClickAndTest('more_screen_Settings_table_cell_wrapper', 'settings_screen_view')
   await elementByIdToggle('settings_screen_offline_mode_switch')
 
-  await elementByIdAndClickAndTest('settings_screen_downloads_table_cell_wrapper', 'settings_screen_downloads_view', 'Downloads')
-  await elementByIdToggle('settings_screen_downloads_only_allow_downloading_when_connected_to_wifi_switch', 'Downloads: Only Allow Wifi Downloading')
-  await elementByIdToggle('settings_screen_downloads_auto_delete_episode_switch')
+  // await elementByIdAndClickAndTest('settings_screen_downloads_table_cell_wrapper', 'settings_screen_downloads_view', 'Downloads')
+  // await elementByIdToggle('settings_screen_downloads_only_allow_downloading_when_connected_to_wifi_switch', 'Downloads: Only Allow Wifi Downloading')
+  // await elementByIdToggle('settings_screen_downloads_auto_delete_episode_switch')
   // await elementByIdClick('settings_screen_downloads_limit_the_number_of_downloaded_episodes_switch')
   // await elementByIdClick('settings_screen_downloads_dialog_update_download_limit_yes_button')
   // await sendKeysToElementById('settings_screen_downloads_default_downloaded_episode_limit_sub_text', '10') //TODO: Cannot dismiss alert text with "settings_screen_downloads_dialog_update_download_limit_yes_button"
-  await driver.back()
+  // await driver.back()
   
   await elementByIdAndClickAndTest('settings_screen_history_table_cell_wrapper', 'settings_screen_history_view', 'History')
   // await elementByIdClick('settings_screen_history_clear_history_button', 'History: Clear History button') //TODO: Needs ID for confirming clear.

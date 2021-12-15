@@ -20,10 +20,10 @@ const test_nonLoggedInScreensDidLoadTests = async () => {
   //   // My Library Screen
   await elementByIdAndClickAndTest('tab_my_library_screen', 'my_library_screen_view')
     // TODO
-  await elementByIdAndClickAndTest('my_library_screen_Downloads_table_cell_wrapper', 'downloads_screen_view', noTestLabel, goBackKey)
+  // await elementByIdAndClickAndTest('my_library_screen_Downloads_table_cell_wrapper', 'downloads_screen_view', noTestLabel, goBackKey)
   await elementByIdAndClickAndTest('my_library_screen_Queue_table_cell_wrapper', 'queue_screen_view', noTestLabel, goBackKey)
   await elementByIdAndClickAndTest('my_library_screen_History_table_cell_wrapper', 'history_screen_view', noTestLabel, goBackKey)
-  await elementCheckIfPresent('my_library_screen_Downloads_table_cell_wrapper')
+  // await elementCheckIfPresent('my_library_screen_Downloads_table_cell_wrapper')
   await elementCheckIfPresent('my_library_screen_Queue_table_cell_wrapper')
   await elementCheckIfPresent('my_library_screen_History_table_cell_wrapper')
   await elementCheckIfNotPresent('my_library_screen_MyClips_table_cell_wrapper')
