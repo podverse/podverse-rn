@@ -6748,9 +6748,10 @@ plist@^3.0.2, plist@^3.0.4:
     base64-js "^1.5.1"
     xmlbuilder "^9.0.7"
 
-podverse-shared@^3.2.3:
-  version "3.2.3"
-  resolved "https://registry.npmjs.org/podverse-shared/-/podverse-shared-3.2.3.tgz"
+podverse-shared@^4.1.3:
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.1.3.tgz#52911f3e803aea775d54f328b09368991a572161"
+  integrity sha512-KME06yJVz6xSYC5Y+4XTkL6uRoasafovE65JQKw9SpGbaqNP3j7Wt8mQOdLNjb8Eyb8REvwtEOgjazDsjq1eig==
   dependencies:
     typescript "3.9.7"
 
