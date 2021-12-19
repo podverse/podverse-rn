@@ -3,6 +3,9 @@ import { translate } from '../lib/i18n'
 import { Filters } from './Filters'
 
 const {
+  _mediaTypeKey,
+  _mediaTypeAllContent,
+  _mediaTypeVideoOnly,
   _subscribedKey,
   _downloadedKey,
   _allPodcastsKey,
@@ -30,6 +33,17 @@ const {
 } = Filters
 
 const _top = [_topPastDay, _topPastWeek, _topPastMonth, _topPastYear, _topAllTime]
+
+const mediaTypeItems = [
+  {
+    label: translate('All Content'),
+    value: _mediaTypeAllContent
+  },
+  {
+    label: translate('Video Only'),
+    value: _mediaTypeVideoOnly
+  }
+]
 
 const sortAlphabeticalItem = {
   label: translate('A-Z'),
@@ -161,6 +175,7 @@ const fromItems = allFromListItems.filter((item: any) => {
 })
 
 export const FilterOptions = {
+  mediaTypeItems,
   fromItems,
   typeItems,
   sortItems,

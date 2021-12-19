@@ -91,9 +91,11 @@ export const generateSections = (options: any) => {
     selectedCategoryItemKey,
     selectedCategorySubItemKey,
     selectedFilterItemKey,
-    selectedFromItemKey
+    selectedFromItemKey,
+    selectedMediaTypeItemKey
   } = options
 
+  const mediaTypeItems = PV.FilterOptions.mediaTypeItems
   let filterItems: any[] = []
   let fromItems: any[] = []
   let sections: any[] = []
@@ -102,6 +104,7 @@ export const generateSections = (options: any) => {
   const newSelectedFilterItemKey = selectedFilterItemKey
   const newSelectedSortItemKey = getDefaultSortForFilter(options)
   const newSelectedFromItemKey = selectedFromItemKey
+  const newSelectedMediaTypeItemKey = selectedMediaTypeItemKey
 
   /* If the key does not match any filter type, assume it is a category id. */
   const includeCategories =
@@ -132,6 +135,13 @@ export const generateSections = (options: any) => {
       sections = includeCategories
         ? [
             {
+              title: translate('Media Type'),
+              data: mediaTypeItems,
+              value: PV.Filters._sectionMediaTypeKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
               title: translate('Filter'),
               data: filterItems,
               value: PV.Filters._sectionFilterKey,
@@ -154,6 +164,13 @@ export const generateSections = (options: any) => {
             }
           ]
         : [
+            {
+              title: translate('Media Type'),
+              data: mediaTypeItems,
+              value: PV.Filters._sectionMediaTypeKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
             {
               title: translate('Filter'),
               data: filterItems,
@@ -213,6 +230,13 @@ export const generateSections = (options: any) => {
       sections = includeCategories
         ? [
             {
+              title: translate('Media Type'),
+              data: mediaTypeItems,
+              value: PV.Filters._sectionMediaTypeKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
               title: translate('Filter'),
               data: filterItems,
               value: PV.Filters._sectionFilterKey,
@@ -235,6 +259,13 @@ export const generateSections = (options: any) => {
             }
           ]
         : [
+            {
+              title: translate('Media Type'),
+              data: mediaTypeItems,
+              value: PV.Filters._sectionMediaTypeKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
             {
               title: translate('Filter'),
               data: filterItems,
@@ -336,6 +367,13 @@ export const generateSections = (options: any) => {
       sections = includeCategories
         ? [
             {
+              title: translate('Media Type'),
+              data: mediaTypeItems,
+              value: PV.Filters._sectionMediaTypeKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
               title: translate('Filter'),
               data: filterItems,
               value: PV.Filters._sectionFilterKey,
@@ -358,6 +396,13 @@ export const generateSections = (options: any) => {
             }
           ]
         : [
+            {
+              title: translate('Media Type'),
+              data: mediaTypeItems,
+              value: PV.Filters._sectionMediaTypeKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
             {
               title: translate('Filter'),
               data: filterItems,
@@ -427,6 +472,7 @@ export const generateSections = (options: any) => {
     newSelectedCategorySubItemKey,
     newSelectedFilterItemKey,
     newSelectedFromItemKey,
+    newSelectedMediaTypeItemKey,
     newSelectedSortItemKey,
     sections
   }

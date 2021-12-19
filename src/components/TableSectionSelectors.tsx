@@ -14,6 +14,7 @@ type Props = {
   handleSelectCategorySubItem?: any
   handleSelectFilterItem?: any
   handleSelectFromItem?: any
+  handleSelectMediaTypeItem?: any
   handleSelectSortItem?: any
   hideDropdown?: boolean
   disableFilter?: boolean
@@ -26,6 +27,7 @@ type Props = {
   selectedFilterItemKey?: string | null
   selectedFilterLabel?: string | null
   selectedFromItemKey?: string | null
+  selectedMediaTypeItemKey?: string | null
   selectedSortItemKey?: string | null
   selectedSortLabel?: string | null
   testID?: string
@@ -62,6 +64,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       handleSelectCategorySubItem,
       handleSelectFilterItem,
       handleSelectFromItem,
+      handleSelectMediaTypeItem,
       handleSelectSortItem,
       hideDropdown,
       includePadding,
@@ -71,7 +74,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       selectedFilterItemKey,
       selectedFilterLabel,
       selectedFilterAccessibilityHint,
-      selectedFromItemKey,
+      selectedMediaTypeItemKey,
       selectedSortItemKey,
       selectedSortLabel,
       testID,
@@ -125,13 +128,14 @@ export class TableSectionSelectors extends React.Component<Props, State> {
                 handleSelectCategorySubItem,
                 handleSelectFilterItem,
                 handleSelectFromItem,
+                handleSelectMediaTypeItem,
                 handleSelectSortItem,
                 screenName,
                 selectedCategoryItemKey,
                 selectedCategorySubItemKey,
                 selectedSortItemKey,
                 selectedFilterItemKey,
-                selectedFromItemKey
+                selectedMediaTypeItemKey
               })
             }}
             sortLabel={selectedSortLabel}
