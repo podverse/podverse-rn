@@ -8,7 +8,8 @@ export const getEpisodes = async (query: any = {}) => {
     ...(query.podcastId ? { podcastId: query.podcastId } : {}),
     ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
     ...(query.includePodcast ? { includePodcast: query.includePodcast } : {}),
-    ...(query.sincePubDate ? { sincePubDate: query.sincePubDate } : {})
+    ...(query.sincePubDate ? { sincePubDate: query.sincePubDate } : {}),
+    ...(query.hasVideo ? { hasVideo: query.hasVideo } : {})
   } as any
 
   if (query.categories && query.categories) {
