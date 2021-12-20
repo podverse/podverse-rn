@@ -229,13 +229,13 @@ export const generateSections = (options: any) => {
 
       sections = includeCategories
         ? [
-            // {
-            //   title: translate('Media Type'),
-            //   data: mediaTypeItems,
-            //   value: PV.Filters._sectionMediaTypeKey,
-            //   accessibilityHint: translate(filterAccessibilityHint),
-            //   accessibilityRole: 'header'
-            // },
+            {
+              title: translate('Media Type'),
+              data: mediaTypeItems,
+              value: PV.Filters._sectionMediaTypeKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
             {
               title: translate('Filter'),
               data: filterItems,
@@ -259,13 +259,13 @@ export const generateSections = (options: any) => {
             }
           ]
         : [
-            // {
-            //   title: translate('Media Type'),
-            //   data: mediaTypeItems,
-            //   value: PV.Filters._sectionMediaTypeKey,
-            //   accessibilityHint: translate(filterAccessibilityHint),
-            //   accessibilityRole: 'header'
-            // },
+            {
+              title: translate('Media Type'),
+              data: mediaTypeItems,
+              value: PV.Filters._sectionMediaTypeKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
             {
               title: translate('Filter'),
               data: filterItems,

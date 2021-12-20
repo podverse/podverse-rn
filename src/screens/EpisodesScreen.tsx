@@ -41,6 +41,7 @@ type State = {
   isLoadingMore: boolean
   isRefreshing: boolean
   queryFrom: string
+  queryMediaType: string | null
   queryPage: number
   querySort: string | null
   searchBarText: string
@@ -76,6 +77,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       isLoadingMore: false,
       isRefreshing: false,
       queryFrom: hasSubscribedPodcasts ? PV.Filters._subscribedKey : Config.DEFAULT_QUERY_EPISODES_SCREEN,
+      queryMediaType: PV.Filters._mediaTypeAllContent,
       queryPage: 1,
       querySort: hasSubscribedPodcasts ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek,
       searchBarText: '',
@@ -121,6 +123,29 @@ export class EpisodesScreen extends React.Component<Props, State> {
   _handleToggleSubscribeEvent = () => {
     const { queryFrom } = this.state
     if (queryFrom) this.handleSelectFilterItem(queryFrom)
+  }
+
+  handleSelectMediaTypeItem = (selectedKey: string) => {
+    if (!selectedKey) {
+      return
+    }
+
+    this.setState(
+      {
+        endOfResultsReached: false,
+        flatListData: [],
+        flatListDataTotalCount: null,
+        isLoading: true,
+        queryMediaType: selectedKey,
+        queryPage: 1
+      },
+      () => {
+        (async () => {
+          const newState = await this._queryData(selectedKey, this.state)
+          this.setState(newState)
+        })()
+      }
+    )
   }
 
   handleSelectFilterItem = async (selectedKey: string) => {
@@ -402,6 +427,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       isLoadingMore,
       isRefreshing,
       queryFrom,
+      queryMediaType,
       querySort,
       searchBarText,
       selectedCategory,
@@ -436,6 +462,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           handleSelectCategoryItem={(x: any) => this._selectCategory(x)}
           handleSelectCategorySubItem={(x: any) => this._selectCategory(x, true)}
           handleSelectFilterItem={this.handleSelectFilterItem}
+          handleSelectMediaTypeItem={this.handleSelectMediaTypeItem}
           handleSelectSortItem={this.handleSelectSortItem}
           includePadding
           navigation={navigation}
@@ -444,6 +471,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           selectedCategorySubItemKey={selectedCategorySub}
           selectedFilterItemKey={queryFrom}
           selectedFilterLabel={selectedFilterLabel}
+          selectedMediaTypeItemKey={queryMediaType}
           selectedSortItemKey={querySort}
           selectedSortLabel={selectedSortLabel}
           testID={testIDPrefix}
@@ -520,13 +548,22 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
     try {
       let { flatListData } = this.state
-      const { queryFrom, querySort, selectedCategory, selectedCategorySub } = this.state
+      const { queryFrom, queryMediaType, querySort, selectedCategory, selectedCategorySub } = this.state
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
       const { queryPage, searchAllFieldsText } = queryOptions
 
+      const isMediaTypeSelected = PV.FilterOptions.mediaTypeItems.some((option) => option.value === filterKey)
+      const isSubscribedSelected = filterKey === PV.Filters._subscribedKey
+        || (isMediaTypeSelected && queryFrom === PV.Filters._subscribedKey)
+      const isDownloadedSelected = filterKey === PV.Filters._downloadedKey
+        || (isMediaTypeSelected && queryFrom === PV.Filters._downloadedKey)
+      const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey
+        || (isMediaTypeSelected && queryFrom === PV.Filters._allPodcastsKey)
+      newState.queryMediaType = isMediaTypeSelected ? filterKey : queryMediaType
+
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
-      if (filterKey === PV.Filters._subscribedKey) {
+      if (isSubscribedSelected) {
         let results = []
 
         if (podcastId) {
@@ -536,7 +573,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
             podcastId,
             ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
             subscribedOnly: true,
-            includePodcast: true
+            includePodcast: true,
+            ...(newState.queryMediaType === PV.Filters._mediaTypeVideoOnly ? { hasVideo: true } : {})
           })
         }
 
@@ -546,17 +584,17 @@ export class EpisodesScreen extends React.Component<Props, State> {
         }
 
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
-      } else if (filterKey === PV.Filters._downloadedKey) {
+      } else if (isDownloadedSelected) {
         const downloadedEpisodes = await getDownloadedEpisodes()
         newState.flatListData = [...downloadedEpisodes]
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = downloadedEpisodes.length
-      } else if (filterKey === PV.Filters._allPodcastsKey) {
+      } else if (isAllPodcastsSelected) {
         const results = await this._queryAllEpisodes(querySort, queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
       } else if (PV.FilterOptions.screenFilters.EpisodesScreen.sort.some((option) => option === filterKey)) {
         let results = await getEpisodes({
@@ -565,7 +603,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
           sort: filterKey,
           ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
           subscribedOnly: queryFrom === PV.Filters._subscribedKey,
-          includePodcast: true
+          includePodcast: true,
+          ...(newState.queryMediaType === PV.Filters._mediaTypeVideoOnly ? { hasVideo: true } : {})
         })
 
         const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally()
@@ -574,7 +613,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         }
 
         newState.flatListData = results[0]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
         newState = assignCategoryToStateForSortSelect(newState, selectedCategory, selectedCategorySub)
       } else {
@@ -583,15 +622,16 @@ export class EpisodesScreen extends React.Component<Props, State> {
           newState,
           queryOptions,
           selectedCategory,
-          selectedCategorySub
+          selectedCategorySub,
+          isMediaTypeSelected
         )
+
         const categories = assignedCategoryData.categories
-        filterKey = assignedCategoryData.newFilterKey
         newState = assignedCategoryData.newState
 
         const results = await this._queryEpisodesByCategory(categories, querySort, queryPage)
         newState.flatListData = results[0]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
       }
 
@@ -607,7 +647,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _queryAllEpisodes = async (sort: string | null, page = 1) => {
-    const { searchBarText: searchAllFieldsText } = this.state
+    const { queryMediaType, searchBarText: searchAllFieldsText } = this.state
     const cleanedSort =
       sort === PV.Filters._mostRecentKey || sort === PV.Filters._randomKey ? PV.Filters._topPastWeek : sort
 
@@ -615,14 +655,15 @@ export class EpisodesScreen extends React.Component<Props, State> {
       sort: cleanedSort,
       page,
       ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-      includePodcast: true
+      includePodcast: true,
+      ...(queryMediaType === PV.Filters._mediaTypeVideoOnly ? { hasVideo: true } : {})
     })
 
     return results
   }
 
   _queryEpisodesByCategory = async (categoryId?: string | null, sort?: string | null, page = 1) => {
-    const { searchBarText: searchAllFieldsText } = this.state
+    const { queryMediaType, searchBarText: searchAllFieldsText } = this.state
     const cleanedSort =
       sort === PV.Filters._mostRecentKey || sort === PV.Filters._randomKey ? PV.Filters._topPastWeek : sort
 
@@ -631,7 +672,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
       sort: cleanedSort,
       page,
       ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-      includePodcast: true
+      includePodcast: true,
+      ...(queryMediaType === PV.Filters._mediaTypeVideoOnly ? { hasVideo: true } : {})
     })
     return results
   }

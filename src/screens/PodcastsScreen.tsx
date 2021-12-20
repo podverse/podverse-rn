@@ -453,7 +453,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       return
     }
 
-    const { queryMediaType, querySort } = this.state
+    const { querySort } = this.state
     const sort = getDefaultSortForFilter({
       screenName: PV.RouteNames.PodcastsScreen,
       selectedFilterItemKey: selectedKey,
@@ -472,7 +472,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         flatListDataTotalCount: null,
         isLoading: !preventIsLoading,
         queryFrom: selectedKey,
-        queryMediaType,
         queryPage: 1,
         querySort: sort,
         searchBarText: '',
