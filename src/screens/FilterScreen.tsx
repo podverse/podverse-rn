@@ -20,6 +20,7 @@ type State = {
   selectedCategorySubItemKey?: string
   selectedFilterItemKey?: string
   selectedFromItemKey?: string
+  selectedMediaTypeItemKey?: string
   selectedSortItemKey?: string
   screenName: string
   isOffline: boolean
@@ -56,6 +57,7 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey: '',
       selectedFilterItemKey: '',
       selectedFromItemKey: '',
+      selectedMediaTypeItemKey: '',
       selectedSortItemKey: '',
       isOffline: false
     }
@@ -89,6 +91,7 @@ export class FilterScreen extends React.Component<Props, State> {
     const selectedCategorySubItemKey = navigation.getParam('selectedCategorySubItemKey')
     const selectedFilterItemKey = navigation.getParam('selectedFilterItemKey')
     const selectedFromItemKey = navigation.getParam('selectedFromItemKey')
+    const selectedMediaTypeItemKey = navigation.getParam('selectedMediaTypeItemKey')
     const selectedSortItemKey = navigation.getParam('selectedSortItemKey')
 
     const { newSelectedSortItemKey, sections } = generateSections({
@@ -99,6 +102,7 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFromItemKey,
+      selectedMediaTypeItemKey,
       selectedSortItemKey
     })
 
@@ -111,6 +115,7 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFromItemKey,
+      selectedMediaTypeItemKey,
       selectedSortItemKey: newSelectedSortItemKey,
       isOffline: !isOffline
     })
@@ -124,17 +129,27 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFromItemKey,
+      selectedMediaTypeItemKey,
       selectedSortItemKey
     } = this.state
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
     const options = { addByRSSPodcastFeedUrl, flatCategoryItems, screenName } as any
 
-    if (section.value === PV.Filters._sectionFromKey) {
+    if (section.value === PV.Filters._sectionMediaTypeKey) {
+      options.selectedMediaTypeItemKey = item.value
+      options.selectedFromItemKey = selectedFromItemKey
+      options.selectedFilterItemKey = selectedFilterItemKey
+      options.selectedSortItemKey = selectedSortItemKey
+      options.selectedCategoryItemKey = selectedCategoryItemKey
+      options.selectedCategorySubItemKey = selectedCategorySubItemKey
+    } else if (section.value === PV.Filters._sectionFromKey) {
       options.selectedFromItemKey = item.value
       options.selectedFilterItemKey = selectedFilterItemKey
+      options.selectedMediaTypeItemKey = selectedMediaTypeItemKey
       options.selectedSortItemKey = selectedSortItemKey
     } else if (section.value === PV.Filters._sectionFilterKey) {
       options.selectedFilterItemKey = item.value
+      options.selectedMediaTypeItemKey = selectedMediaTypeItemKey
       options.selectedSortItemKey = selectedSortItemKey
       if (item.value === PV.Filters._categoryKey) {
         const defaultCategory = await getDefaultCategory()
@@ -148,6 +163,7 @@ export class FilterScreen extends React.Component<Props, State> {
         options.selectedCategoryItemKey = item?.value || item?.id
       }
       options.selectedFilterItemKey = selectedFilterItemKey
+      options.selectedMediaTypeItemKey = selectedMediaTypeItemKey
       options.selectedSortItemKey = selectedSortItemKey
     } else if (section.value === PV.Filters._sectionSortKey) {
       options.selectedSortItemKey = item?.value
@@ -155,6 +171,7 @@ export class FilterScreen extends React.Component<Props, State> {
       options.selectedCategoryItemKey = selectedCategoryItemKey
       options.selectedCategorySubItemKey = selectedCategorySubItemKey
       options.selectedFromItemKey = selectedFromItemKey
+      options.selectedMediaTypeItemKey = selectedMediaTypeItemKey
     }
 
     const {
@@ -162,6 +179,7 @@ export class FilterScreen extends React.Component<Props, State> {
       newSelectedCategorySubItemKey,
       newSelectedFilterItemKey,
       newSelectedFromItemKey,
+      newSelectedMediaTypeItemKey,
       newSelectedSortItemKey,
       sections
     } = generateSections(options)
@@ -171,6 +189,7 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey: newSelectedCategorySubItemKey,
       selectedFilterItemKey: newSelectedFilterItemKey,
       selectedFromItemKey: newSelectedFromItemKey,
+      selectedMediaTypeItemKey: newSelectedMediaTypeItemKey,
       selectedSortItemKey: newSelectedSortItemKey,
       sections
     }
@@ -180,7 +199,9 @@ export class FilterScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     let handleSelect: any
     let categoryValueOverride = ''
-    if (section.value === PV.Filters._sectionFromKey) {
+    if (section.value === PV.Filters._sectionMediaTypeKey) {
+      handleSelect = navigation.getParam('handleSelectMediaTypeItem')
+    } else if (section.value === PV.Filters._sectionFromKey) {
       handleSelect = navigation.getParam('handleSelectFromItem')
     } else if (section.value === PV.Filters._sectionFilterKey) {
       if (item.value === PV.Filters._categoryKey) {
@@ -208,6 +229,7 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFromItemKey,
+      selectedMediaTypeItemKey,
       selectedSortItemKey
     } = this.state
 
@@ -234,7 +256,8 @@ export class FilterScreen extends React.Component<Props, State> {
         isActive = true
       }
     } else {
-      isActive = [selectedFilterItemKey, selectedFromItemKey, selectedSortItemKey].includes(value)
+      isActive = [selectedFilterItemKey, selectedFromItemKey,
+        selectedMediaTypeItemKey, selectedSortItemKey].includes(value)
     }
 
     const isSubCategory = item.parentId

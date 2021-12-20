@@ -80,7 +80,8 @@ export class PlayerScreen extends React.Component<Props> {
       ),
       headerRight: () => (
         <RNView style={core.row}>
-          {!!showFundingIcon && <NavFundingIcon globalTheme={globalTheme} navigation={navigation} />}
+          {/* Always show NavFundingIcon in dev, otherwise funding tag will be unavailable to Appium tests. */}
+          {(Config.IS_DEV || !!showFundingIcon) && <NavFundingIcon globalTheme={globalTheme} navigation={navigation} />}
           {!addByRSSPodcastFeedUrl && (
             <RNView style={core.row}>
               <NavMakeClipIcon

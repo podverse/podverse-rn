@@ -140,7 +140,7 @@ export class MyLibraryScreen extends React.Component<Props, State> {
   }
 }
 
-const _downloadsKey = 'Active Downloads'
+const _downloadsKey = 'ActiveDownloads'
 const _queueKey = 'Queue'
 const _historyKey = 'History'
 const _myClipsKey = 'MyClips'
