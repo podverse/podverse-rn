@@ -73,13 +73,14 @@ export const findPodcastsByFeedUrls = async (feedUrls: string[]) => {
   return response && response.data
 }
 
-export const getSubscribedPodcasts = async (subscribedPodcastIds: string[]) => {
+export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], videoOnlyMode?: boolean) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
 
   const query = {
     podcastIds: subscribedPodcastIds,
     sort: PV.Filters._alphabeticalKey,
-    maxResults: true
+    maxResults: true,
+    ...(videoOnlyMode ? { hasVideo: true } : {})
   }
   const isConnected = await hasValidNetworkConnection()
 

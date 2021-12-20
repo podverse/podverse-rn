@@ -140,6 +140,8 @@ export class FilterScreen extends React.Component<Props, State> {
       options.selectedFromItemKey = selectedFromItemKey
       options.selectedFilterItemKey = selectedFilterItemKey
       options.selectedSortItemKey = selectedSortItemKey
+      options.selectedCategoryItemKey = selectedCategoryItemKey
+      options.selectedCategorySubItemKey = selectedCategorySubItemKey
     } else if (section.value === PV.Filters._sectionFromKey) {
       options.selectedFromItemKey = item.value
       options.selectedFilterItemKey = selectedFilterItemKey

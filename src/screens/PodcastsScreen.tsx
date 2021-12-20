@@ -875,7 +875,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _querySubscribedPodcasts = async (preventAutoDownloading?: boolean) => {
-    await getSubscribedPodcasts()
+    const { queryMediaType } = this.state
+    const hasVideo = queryMediaType === PV.Filters._mediaTypeVideoOnly
+    await getSubscribedPodcasts(hasVideo)
     await parseAllAddByRSSPodcasts()
     await combineWithAddByRSSPodcasts()
     if (!preventAutoDownloading) {
@@ -940,6 +942,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         || (isMediaTypeSelected && queryFrom === PV.Filters._downloadedKey)
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey
         || (isMediaTypeSelected && queryFrom === PV.Filters._allPodcastsKey)
+      newState.queryMediaType = isMediaTypeSelected ? filterKey : prevState.queryMediaType
 
       if (isSubscribedSelected) {
         await getAuthUserInfo() // get the latest subscribedPodcastIds first
@@ -952,7 +955,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.showNoInternetConnectionMessage = !hasInternetConnection
         const results = await this._queryAllPodcasts(querySort, newState.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
       } else if (PV.FilterOptions.screenFilters.PodcastsScreen.sort.some((option) => option === filterKey)) {
         newState.showNoInternetConnectionMessage = !hasInternetConnection
@@ -964,7 +967,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           ...(queryMediaType === PV.Filters._mediaTypeVideoOnly ? { hasVideo: true } : {})
         })
         newState.flatListData = results[0]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
         newState = assignCategoryToStateForSortSelect(newState, selectedCategory, selectedCategorySub)
       } else {
@@ -975,15 +978,16 @@ export class PodcastsScreen extends React.Component<Props, State> {
           newState,
           queryOptions,
           selectedCategory,
-          selectedCategorySub
+          selectedCategorySub,
+          isMediaTypeSelected
         )
+
         const categories = assignedCategoryData.categories
-        filterKey = assignedCategoryData.newFilterKey
         newState = assignedCategoryData.newState
 
         const results = await this._queryPodcastsByCategory(categories, querySort, newState.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
       }
     } catch (error) {
