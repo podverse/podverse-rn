@@ -5,6 +5,9 @@ import { IFilters } from './Interfaces'
  */
 
 export const Filters: IFilters = {
+  _mediaTypeKey: 'mediaType',
+  _mediaTypeAllContent: 'mediaTypeAllContent',
+  _mediaTypeVideoOnly: 'mediaTypeVideoOnly',
   _subscribedKey: 'subscribed',
   _downloadedKey: 'downloaded',
   _allPodcastsKey: 'all-podcasts',
@@ -34,5 +37,6 @@ export const Filters: IFilters = {
   _sectionFromKey: 'section-from',
   _sectionMyPlaylistsKey: 'section-my-playlists',
   _sectionSortKey: 'section-sort',
-  _sectionSubscribedPlaylistsKey: 'section-subscribed-playlists'
+  _sectionSubscribedPlaylistsKey: 'section-subscribed-playlists',
+  _sectionMediaTypeKey: 'section-media-type'
 }

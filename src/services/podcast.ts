@@ -36,7 +36,8 @@ export const getPodcasts = async (query: any = {}) => {
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
     ...(searchAuthor ? { searchAuthor } : {}),
-    ...(searchTitle ? { searchTitle } : {})
+    ...(searchTitle ? { searchTitle } : {}),
+    ...(query.hasVideo ? { hasVideo: query.hasVideo } : {})
   } as any
 
   if (query.categories) {
@@ -72,13 +73,14 @@ export const findPodcastsByFeedUrls = async (feedUrls: string[]) => {
   return response && response.data
 }
 
-export const getSubscribedPodcasts = async (subscribedPodcastIds: string[]) => {
+export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], videoOnlyMode?: boolean) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
 
   const query = {
     podcastIds: subscribedPodcastIds,
     sort: PV.Filters._alphabeticalKey,
-    maxResults: true
+    maxResults: true,
+    ...(videoOnlyMode ? { hasVideo: true } : {})
   }
   const isConnected = await hasValidNetworkConnection()
 

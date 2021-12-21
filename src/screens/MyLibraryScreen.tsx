@@ -140,7 +140,7 @@ export class MyLibraryScreen extends React.Component<Props, State> {
   }
 }
 
-const _downloadsKey = 'Downloads'
+const _downloadsKey = 'ActiveDownloads'
 const _queueKey = 'Queue'
 const _historyKey = 'History'
 const _myClipsKey = 'MyClips'
@@ -150,7 +150,7 @@ const _profilesKey = 'Profiles'
 
 const allMyLibraryFeatures = [
   {
-    title: translate('Downloads'),
+    title: translate('Active Downloads'),
     key: _downloadsKey,
     routeName: PV.RouteNames.DownloadsScreen
   },

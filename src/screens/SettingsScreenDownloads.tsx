@@ -38,6 +38,12 @@ type State = {
 const testIDPrefix = 'settings_screen_downloads'
 
 export class SettingsScreenDownloads extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props)
+
+    this.state = {}
+  }
+
   static navigationOptions = () => ({
     title: translate('Downloads')
   })

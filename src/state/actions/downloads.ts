@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import type { PodcastMedium } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { getEpisodes } from '../../services/episode'
 import {
@@ -47,11 +48,13 @@ export type DownloadTaskState = {
   percent?: number
   podcastCredentialsRequired?: boolean
   podcastFunding?: any
+  podcastHasVideo: boolean
   podcastHideDynamicAdsWarning?: boolean
   podcastId?: string
   podcastImageUrl?: string
   podcastIsExplicit?: boolean
   podcastLinkUrl?: string
+  podcastMedium: PodcastMedium
   podcastShrunkImageUrl?: string
   podcastSortableTitle?: boolean
   podcastTitle?: string
