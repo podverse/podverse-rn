@@ -2,6 +2,7 @@ import { Modal, StyleSheet } from 'react-native'
 import React from 'reactn'
 import Orientation from 'react-native-orientation-locker'
 import Video from 'react-native-video-controls'
+import { convertUrlToSecureHTTPS, encodeSpacesInString } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { syncNowPlayingItemWithTrack } from '../services/playerBackgroundTimer'
@@ -41,6 +42,8 @@ type State = {
   transitionPlaybackState?: any // remember what the playback state was between navigations
   uri?: string
 }
+
+let lastNowPlayingItemUri = ''
 export class PVVideo extends React.PureComponent<Props, State> {
   videoRef: any | null = null
   willFocusListener: any
@@ -158,8 +161,9 @@ export class PVVideo extends React.PureComponent<Props, State> {
     })
   }
 
-  /* If there is still a videoPosition in globalState, use that instead of
-     digging it out of the local storage. This is needed to handle going in
+  /* If there is still a videoPosition in globalState AND the current episodeMediaUrl
+     is the same as the last episodeMediaUrl, use the video position from globalState
+     instead of digging it out of the local storage. This is needed to handle going in
      and out of fullscreen mode immediately. */
   _setupNowPlayingItemPlayer = async () => {
     const { player } = this.global
@@ -167,7 +171,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
     const { videoPosition: lastVideoPosition } = videoInfo
     const handlePlayAfterSeek = true
 
-    if (lastVideoPosition) {
+    if (nowPlayingItem.episodeMediaUrl === lastNowPlayingItemUri && lastVideoPosition) {
       this._handleSeekTo(lastVideoPosition, handlePlayAfterSeek)
     } else {
       const nowPlayingItemFromHistory = await getNowPlayingItemFromLocalStorage(
@@ -181,6 +185,9 @@ export class PVVideo extends React.PureComponent<Props, State> {
         handlePlayAfterSeek
       )
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    lastNowPlayingItemUri = nowPlayingItem.episodeMediaUrl
   }
 
   _handleDestroyPlayer = () => {
@@ -307,7 +314,9 @@ export class PVVideo extends React.PureComponent<Props, State> {
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
 
-    const pvVideo = uri ? (
+    const finalUri = encodeSpacesInString(convertUrlToSecureHTTPS(uri || '').trim())
+
+    const pvVideo = finalUri ? (
       <Video
         disableBack={!isFullscreen || isMiniPlayer}
         disablePlayPause={!isFullscreen || isMiniPlayer}
@@ -321,8 +330,8 @@ export class PVVideo extends React.PureComponent<Props, State> {
           this._handlePause()
         }}
         onEnterFullscreen={this._enableFullscreen}
-        // onError={() => {
-        //   console.log('PVVideo onError')
+        // onError={(error) => {
+        //   console.log('PVVideo onError', error)
         // }}
         onLoad={(payload: any) => {
           const { duration } = payload
@@ -367,7 +376,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
         rate={1}
         ref={(ref: Video) => (this.videoRef = ref)}
         source={{
-          uri,
+          uri: finalUri,
           headers: {
             'User-Agent': userAgent,
             ...(Authorization ? { Authorization } : {})
