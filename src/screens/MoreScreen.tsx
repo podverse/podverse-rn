@@ -245,6 +245,11 @@ const _exportOpml = 'ExportOpml'
 
 const allMoreFeatures = [
   {
+    title: translate('Login'),
+    key: _loginKey,
+    routeName: PV.RouteNames.AuthNavigator
+  },
+  {
     title: translate('Add Custom RSS Feed'),
     key: _addPodcastByRSSKey,
     routeName: PV.RouteNames.AddPodcastByRSSScreen
@@ -269,10 +274,5 @@ const allMoreFeatures = [
   {
     title: translate('Log out'),
     key: _logoutKey
-  },
-  {
-    title: translate('Login'),
-    key: _loginKey,
-    routeName: PV.RouteNames.AuthNavigator
   }
 ]

@@ -14,6 +14,7 @@ const test_fundingPresent = async () => {
   await elementByIdAndClickAndTest('search_screen_action_sheet_goToPodcast_button', 'podcast_screen_is_not_subscribed')
   await elementByIdClick('podcast_screen_episode_item_0_time_remaining_widget_toggle_play')
   await elementByIdAndClickAndTest('mini_player', 'player_screen_view')
+  await driver.sleep(10000)
   await elementWaitFor('nav_funding_icon')
   await driver.back()
   await driver.back()

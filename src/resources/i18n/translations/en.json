@@ -1,6 +1,7 @@
 {
 	"10 per year after that": "$10 per year after that",
 	"A-Z": "A-Z",
+  "All Content": "All Content",
 	"ARIA HINT - Contact Us button": "open your email client and email us.",
 	"ARIA HINT - Current playback time": "Current playback time",
 	"ARIA HINT - Currently selected filter": "Currently selected filter",
@@ -374,6 +375,7 @@
 	"Make Clip": "Make Clip",
   "Mark as Played": "Mark as Played",
 	"Max playback speed": "Max. playback speed",
+  "Media Type": "Media Type",
 	"Membership": "Membership",
 	"More Info": "More Info",
 	"More player options": "More player options",
@@ -578,6 +580,7 @@
 	"Verify Password": "Verify Password",
 	"Verify Your Email": "Verify Your Email",
 	"Visual Design": "Visual Design",
+  "Video Only": "Video Only",
 	"Wallet Admin Key": "Wallet Admin Key",
 	"Wallet ID (For An Existing Wallet)": "Wallet ID (For An Existing Wallet)",
 	"Wallet Name (Optional)": "Wallet Name (Optional)",
