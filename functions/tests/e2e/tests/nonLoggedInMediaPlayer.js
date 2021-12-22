@@ -15,8 +15,8 @@ const test_nonLoggedInMediaPlayer = async () => {
   await elementByIdClick('filter_screen_nav_header_button_text')
 
   await elementByIdClick('episodes_screen_episode_item_0_time_remaining_widget_toggle_play')
-  await elementByIdAndClickAndTest('mini_player_pause_button_icon_button', 'mini_player_play_button_icon_button')
-  await elementByIdAndClickAndTest('mini_player_play_button_icon_button', 'mini_player_pause_button_icon_button')
+  // await elementByIdAndClickAndTest('mini_player_pause_button_icon_button', 'mini_player_play_button_icon_button')
+  // await elementByIdAndClickAndTest('mini_player_play_button_icon_button', 'mini_player_pause_button_icon_button')
 
   await elementByIdAndClickAndTest('mini_player', 'player_screen_view')
   // await elementByIdAndClickAndTest('nav_share_icon', 'player_screen_share_action_sheet_cancel_button')
@@ -32,8 +32,8 @@ const test_nonLoggedInMediaPlayer = async () => {
   await elementByIdAndClickAndTest('player_controls_sleep_timer_icon_button', 'sleep_timer_screen_view', noTestLabel, goBackKey)
   await elementByIdClick('player_controls_playback_rate')
 
-  await elementByIdClick('player_controls_pause_button_icon_button')
-  await elementByIdClick('player_controls_play_button_icon_button')
+  // await elementByIdClick('player_controls_pause_button_icon_button')
+  // await elementByIdClick('player_controls_play_button_icon_button')
 
   await elementByIdClick('player_controls_previous_track')
   await elementByIdClick('player_controls_jump_backward')
