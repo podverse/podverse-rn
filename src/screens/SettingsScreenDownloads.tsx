@@ -6,21 +6,18 @@ import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import RNFS from 'react-native-fs'
 
-import {
-  ActivityIndicator,
-  Button,
-  NumberSelectorWithText,
-  ScrollView,
-  SwitchWithText,
-  View
-} from '../components'
+import { ActivityIndicator, Button, NumberSelectorWithText, ScrollView, SwitchWithText, View } from '../components'
 import {
   setDownloadedEpisodeLimitGlobalCount,
   setDownloadedEpisodeLimitGlobalDefault,
   updateAllDownloadedEpisodeLimitCounts,
   updateAllDownloadedEpisodeLimitDefaults
 } from '../lib/downloadedEpisodeLimiter'
-import { removeAllDownloadedPodcasts } from '../lib/downloadedPodcast'
+import {
+  moveDownloadedPodcastsToExternalStorage,
+  removeAllDownloadedPodcasts,
+  removeDownloadedPodcastsFromInternalStorage
+} from '../lib/downloadedPodcast'
 import { refreshDownloads } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
@@ -147,6 +144,40 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
     })
   }
 
+  _askToTransferDownloads = () => {
+    return new Promise((resolve) => {
+      Alert.alert(
+        translate('External Storage Enabled'),
+        translate('Would you like your previous downloads to be transfered or deleted?'),
+        [
+          {
+            text: translate('Transfer'),
+            onPress: async () => {
+              try {
+                await moveDownloadedPodcastsToExternalStorage()
+              } catch (err) {
+                console.log('Ext Storage Move Error: ', err.message)
+              }
+              resolve(true)
+            }
+          },
+          {
+            text: translate('Delete'),
+            onPress: async () => {
+              try {
+                await removeDownloadedPodcastsFromInternalStorage()
+                await DownloadState.updateDownloadedPodcasts()
+              } catch (err) {
+                console.log('Ext Storage Deletion Error: ', err.message)
+              }
+              resolve(true)
+            }
+          }
+        ]
+      )
+    })
+  }
+
   _handleToggleExternalStorage = async () => {
     const { customDownloadLocation } = this.state
     if (customDownloadLocation) {
@@ -158,7 +189,8 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
             text: translate('OK'),
             onPress: async () => {
               try {
-                await RNFS.unlink(customDownloadLocation)
+                await removeAllDownloadedPodcasts()
+                await DownloadState.updateDownloadedPodcasts()
               } catch (err) {
                 console.log('Ext Storage Deletion Error: ', err.message)
               }
@@ -189,7 +221,8 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
         })
 
         if (grantedWrite === PermissionsAndroid.RESULTS.GRANTED && grantedRead === PermissionsAndroid.RESULTS.GRANTED) {
-          this._setExtDownloadFileLocation()
+          await this._setExtDownloadFileLocation()
+          await this._askToTransferDownloads()
         } else {
           Alert.alert(
             translate('Permission Denied'),
