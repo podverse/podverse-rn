@@ -2,6 +2,8 @@ import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
+import AsyncStorage from '@react-native-community/async-storage'
+import { PV } from '../resources'
 import { getSecureUrl } from '../services/tools'
 import { getPodcastCredentialsHeader } from '../services/parser'
 import { getPodcastFeedUrlAuthority } from '../services/podcast'
@@ -46,7 +48,10 @@ export const cancelDownloadTask = (episodeId: string) => {
 export const deleteDownloadedEpisode = async (episode: any) => {
   const ext = getExtensionFromUrl(episode.mediaUrl)
   const downloader = await BackgroundDownloader()
-  const path = `${downloader.directories.documents}/${episode.id}${ext}`
+  const customLocation = await AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  const folderPath = customLocation ? customLocation : downloader.directories.documents
+
+  const path = `${folderPath}/${episode.id}${ext}`
 
   try {
     await RNFS.unlink(path)
@@ -149,7 +154,11 @@ export const downloadEpisode = async (
   }
 
   const downloader = await BackgroundDownloader()
-  const destination = `${downloader.directories.documents}/${episode.id}${ext}`
+  const customLocation = await AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  const folderPath = customLocation ? customLocation : downloader.directories.documents
+
+  
+  const destination = `${folderPath}/${episode.id}${ext}`
   const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
 
   let downloadUrl = episode.mediaUrl
@@ -352,15 +361,17 @@ export const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: strin
 export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string) => {
   const ext = getExtensionFromUrl(episodeMediaUrl)
   const downloader = await BackgroundDownloader()
-
+  const customLocation = await AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  const folderPath = customLocation ? customLocation : downloader.directories.documents
+  
   /* If downloaded episode is for an addByRSSPodcast, then the episodeMediaUrl
      will be the id, so remove the URL params from the URL, and don't append
      an extension to the file path.
   */
   if (id && id.indexOf('http') > -1) {
     const idWithoutUrlParams = id.split('?')[0]
-    return `${downloader.directories.documents}/${idWithoutUrlParams}`
+    return `${folderPath}/${idWithoutUrlParams}`
   } else {
-    return `${downloader.directories.documents}/${id}${ext}`
+    return `${folderPath}/${id}${ext}`
   }
 }

@@ -983,7 +983,7 @@ SOFTWARE.
 
 MIT License
 
-Copyright (c) 2020 Elyx0 <elyx00@gmail.com> (@Elyx0)
+Copyright (c) 2016 Elyx0
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

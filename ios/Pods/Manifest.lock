@@ -246,7 +246,7 @@ PODS:
     - react-native-config/App (= 1.4.3)
   - react-native-config/App (1.4.3):
     - React-Core
-  - react-native-document-picker (6.0.2):
+  - react-native-document-picker (7.1.2):
     - React-Core
   - react-native-in-app-review (3.2.2):
     - React
@@ -640,7 +640,7 @@ SPEC CHECKSUMS:
   react-native-background-downloader: 4a034cf39a3b00fac57364984e360a4f180a5efb
   react-native-background-timer: 029c606b3fd6dd476b153e177c518b6ade4c169f
   react-native-config: 387b1ea507bc50a2059e69149dac1342b9532f58
-  react-native-document-picker: b5bebda9a4e4d965cd32b6b8a233ab6c8c1aecb1
+  react-native-document-picker: b0f989906fda1c1af4257cf0c7958229defe51ac
   react-native-in-app-review: 00a66a085c61dbd4474041dc14e7bfee81a86130
   react-native-netinfo: a3ece35948490a9507da0c56694da525b83357df
   react-native-orientation-locker: 998c0744e26624407dac068c04c605b4af7304a2
