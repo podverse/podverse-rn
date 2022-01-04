@@ -347,7 +347,14 @@ export const audioHandleStop = () => {
 
 export const audioHandlePlay = () => {
   PVAudioPlayer.play()
-  playerSetRateWithLatestPlaybackSpeed()
+
+  /*
+    Adding setTimeout because it seems calling .play() then immediately setting the rate
+    seems to be causing the user to have to trigger the remote-play event twice to resume playback.
+  */
+  setTimeout(() => {
+    playerSetRateWithLatestPlaybackSpeed()
+  }, 1000)
 }
 
 export const audioHandlePlayWithUpdate = () => {
