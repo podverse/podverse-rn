@@ -1,9 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import RNFS from 'react-native-fs'
 import { PV } from '../resources'
 import { sortPodcastArrayAlphabetically } from '../services/podcast'
 import { clearNowPlayingItem, getNowPlayingItem } from '../services/userNowPlayingItem'
 import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
-import { deleteDownloadedEpisode } from './downloader'
+import { BackgroundDownloader, deleteDownloadedEpisode } from './downloader'
+import { getExtensionFromUrl } from './utility'
 
 export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) => {
   delete episode.podcast
@@ -171,5 +173,44 @@ const setDownloadedPodcasts = async (podcasts: any[]) => {
   podcasts = sortPodcastArrayAlphabetically(podcasts)
   if (Array.isArray(podcasts)) {
     await AsyncStorage.setItem(PV.Keys.DOWNLOADED_PODCASTS, JSON.stringify(podcasts))
+  }
+}
+
+export const removeDownloadedPodcastsFromInternalStorage = async () => {
+  const podcasts = await getDownloadedPodcasts()
+  for (const podcast of podcasts) {
+    for (const episode of podcast.episodes) {
+      try {
+        const ext = getExtensionFromUrl(episode.mediaUrl)
+        const downloader = await BackgroundDownloader()
+        const path = `${downloader.directories.documents}/${episode.id}${ext}`
+
+        await RNFS.unlink(path)
+      } catch (error) {
+        console.log('Error deleting episode: ', episode.id)
+      }
+    }
+  }
+}
+
+export const moveDownloadedPodcastsToExternalStorage = async () => {
+  const podcasts = await getDownloadedPodcasts()
+  const downloader = await BackgroundDownloader()
+  const destinationFolder = await AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+
+  for (const podcast of podcasts) {
+    for (const episode of podcast.episodes) {
+      try {
+        const ext = getExtensionFromUrl(episode.mediaUrl)
+        const source = `${downloader.directories.documents}/${episode.id}${ext}`
+        const dest = `${destinationFolder}/${episode.id}${ext}`
+
+        if (destinationFolder) {
+          await RNFS.moveFile(source, dest)
+        }
+      } catch (error) {
+        console.log('Error moving episode: ', episode.id)
+      }
+    }
   }
 }
