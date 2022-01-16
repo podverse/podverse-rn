@@ -7,6 +7,7 @@ import { NavigationActions, StackActions } from 'react-navigation'
 import { trackCrashEvent } from '../lib/crashManager'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
+import { playerClearNowPlayingItem } from '../state/actions/player'
 import { Button, Text } from './'
 
 type Props = {
@@ -30,6 +31,8 @@ export class ErrorBoundary extends React.Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     const { errorReportingEnabled } = this.global
+
+    playerClearNowPlayingItem()
 
     if (!Config.DISABLE_CRASH_LOGS && errorReportingEnabled) {
       // You can also log the error to an error reporting service

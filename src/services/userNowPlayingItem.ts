@@ -117,6 +117,8 @@ export const clearNowPlayingItemLocally = async () => {
 export const clearNowPlayingItemOnServer = async () => {
   const bearerToken = await getBearerToken()
 
+  await clearNowPlayingItemLocally()
+  
   await request({
     endpoint: '/user-now-playing-item',
     method: 'DELETE',
@@ -126,8 +128,6 @@ export const clearNowPlayingItemOnServer = async () => {
     },
     opts: { credentials: 'include' }
   })
-
-  await clearNowPlayingItemLocally()
 }
 
 /*
