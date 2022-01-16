@@ -1,9 +1,11 @@
 /* eslint-disable max-len */
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, PermissionsAndroid, Platform, Alert, Linking } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
+import RNFS from 'react-native-fs'
+
 import { ActivityIndicator, Button, NumberSelectorWithText, ScrollView, SwitchWithText, View } from '../components'
 import {
   setDownloadedEpisodeLimitGlobalCount,
@@ -11,7 +13,11 @@ import {
   updateAllDownloadedEpisodeLimitCounts,
   updateAllDownloadedEpisodeLimitDefaults
 } from '../lib/downloadedEpisodeLimiter'
-import { removeAllDownloadedPodcasts } from '../lib/downloadedPodcast'
+import {
+  moveDownloadedPodcastsToExternalStorage,
+  removeAllDownloadedPodcasts,
+  removeDownloadedPodcastsFromInternalStorage
+} from '../lib/downloadedPodcast'
 import { refreshDownloads } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
@@ -33,6 +39,7 @@ type State = {
   showDeleteDownloadedEpisodesDialog?: boolean
   showSetAllDownloadDialog?: boolean
   showSetAllDownloadDialogIsCount?: boolean
+  customDownloadLocation?: string | null
 }
 
 const testIDPrefix = 'settings_screen_downloads'
@@ -53,12 +60,14 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
     const downloadedEpisodeLimitCount = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT)
     const downloadedEpisodeLimitDefault = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
     const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
+    const customDownloadLocation = await AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
 
     this.setState({
       autoDeleteEpisodeOnEnd: !!autoDeleteEpisodeOnEnd,
       downloadedEpisodeLimitCount,
       downloadedEpisodeLimitDefault,
-      downloadingWifiOnly: !!downloadingWifiOnly
+      downloadingWifiOnly: !!downloadingWifiOnly,
+      customDownloadLocation
     })
 
     trackPageView('/settings-downloads', 'Settings Screen Downloads')
@@ -135,6 +144,149 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
     })
   }
 
+  _askToTransferDownloads = () => {
+    return new Promise((resolve) => {
+      Alert.alert(
+        translate('External Storage Enabled'),
+        translate('Would you like your previous downloads to be transfered or deleted?'),
+        [
+          {
+            text: translate('Transfer'),
+            onPress: async () => {
+              try {
+                await moveDownloadedPodcastsToExternalStorage()
+              } catch (err) {
+                console.log('Ext Storage Move Error: ', err.message)
+              }
+              resolve(true)
+            }
+          },
+          {
+            text: translate('Delete'),
+            onPress: async () => {
+              try {
+                await removeDownloadedPodcastsFromInternalStorage()
+                await DownloadState.updateDownloadedPodcasts()
+              } catch (err) {
+                console.log('Ext Storage Deletion Error: ', err.message)
+              }
+              resolve(true)
+            }
+          }
+        ]
+      )
+    })
+  }
+
+  _handleToggleExternalStorage = async () => {
+    const { customDownloadLocation } = this.state
+    if (customDownloadLocation) {
+      Alert.alert(
+        translate('Disable External Storage?'),
+        translate('All downloaded episodes will be deleted from External Storage.'),
+        [
+          {
+            text: translate('OK'),
+            onPress: async () => {
+              try {
+                await removeAllDownloadedPodcasts()
+                await DownloadState.updateDownloadedPodcasts()
+              } catch (err) {
+                console.log('Ext Storage Deletion Error: ', err.message)
+              }
+              await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+              this.setState({ customDownloadLocation: null })
+            }
+          },
+          {
+            text: translate('Nevermind')
+          }
+        ]
+      )
+    } else {
+      try {
+        const grantedWrite = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE, {
+          title: translate('Podverse External Storage Permission'),
+          message: translate("Podverse would like to access your device's external storage to store downloaded media."),
+          buttonNegative: translate('Cancel'),
+          buttonPositive: translate('Approve')
+        })
+        const grantedRead = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
+          title: translate('Podverse External Storage Permission'),
+          message: translate(
+            "Podverse would like to access your device's external storage to access your downloaded media."
+          ),
+          buttonNegative: translate('Cancel'),
+          buttonPositive: translate('Approve')
+        })
+
+        if (grantedWrite === PermissionsAndroid.RESULTS.GRANTED && grantedRead === PermissionsAndroid.RESULTS.GRANTED) {
+          await this._setExtDownloadFileLocation()
+          await this._askToTransferDownloads()
+        } else {
+          Alert.alert(
+            translate('Permission Denied'),
+            translate('The device does not allow Podverse to access the external storage for downloads.'),
+            [
+              {
+                text: translate('OK'),
+                onPress: async () => {
+                  await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+                  this.setState({ customDownloadLocation: null })
+                }
+              },
+              {
+                text: translate('Go To Settings'),
+                onPress: () => {
+                  Linking.openSettings()
+                }
+              }
+            ]
+          )
+        }
+      } catch (err) {
+        console.log(err)
+        await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+        this.setState({ customDownloadLocation: null })
+      }
+    }
+  }
+
+  _setExtDownloadFileLocation = async () => {
+    try {
+      const extPath = RNFS.ExternalStorageDirectoryPath + '/Podverse'
+      try {
+        const resp = await RNFS.stat(extPath)
+        if (!resp.isDirectory()) {
+          throw new Error('File does not exist') // This error message is to match RNFS message and attempt to create the folder.
+        }
+      } catch (error) {
+        if (error.message === 'File does not exist') {
+          await RNFS.mkdir(extPath)
+        }
+      }
+
+      await AsyncStorage.setItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION, extPath)
+      this.setState({ customDownloadLocation: extPath })
+    } catch (err) {
+      Alert.alert(
+        translate('Error Setting External Storage'),
+        translate(
+          'Something went wrong when trying to create a Podverse folder in your external storage card. More Info: '
+        ) + err.message,
+        [
+          {
+            text: translate('OK'),
+            onPress: async () => {
+              await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+              this.setState({ customDownloadLocation: null })
+            }
+          }
+        ]
+      )
+    }
+  }
+
   _handleDeleteDownloadedEpisodes = () => {
     this.setState(
       {
@@ -164,7 +316,8 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
       isLoading,
       showDeleteDownloadedEpisodesDialog,
       showSetAllDownloadDialog,
-      showSetAllDownloadDialogIsCount
+      showSetAllDownloadDialogIsCount,
+      customDownloadLocation
     } = this.state
 
     return (
@@ -184,6 +337,17 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
                 value={!!downloadingWifiOnly}
               />
             </View>
+            {Platform.OS === 'android' && (
+              <View style={core.itemWrapper}>
+                <SwitchWithText
+                  accessibilityLabel={translate('Use External Storage For Downloads')}
+                  onValueChange={this._handleToggleExternalStorage}
+                  testID={`${testIDPrefix}_external_storage_location`}
+                  text={translate('Use External Storage For Downloads')}
+                  value={!!customDownloadLocation}
+                />
+              </View>
+            )}
             <View style={core.itemWrapper}>
               <SwitchWithText
                 accessibilityLabel={translate('Delete downloaded episodes after end is reached')}

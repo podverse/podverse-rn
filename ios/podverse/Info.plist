@@ -26,7 +26,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLIconFile</key>
-			<string></string>
+			<string/>
 			<key>CFBundleURLName</key>
 			<string>podverse</string>
 			<key>CFBundleURLSchemes</key>
@@ -94,7 +94,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-    <key>NSUserTrackingUsageDescription</key>
+	<key>NSUserTrackingUsageDescription</key>
 	<string>$(PRODUCT_NAME) requests your permission to enable tracking so your app interactions can affect popularity rankings.</string>
 </dict>
 </plist>
