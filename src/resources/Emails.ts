@@ -15,7 +15,7 @@ const featureRequestSubject = 'Feature Request: '
 const featureRequestBody = 'Please describe the feature you would like added to Podverse.'
 const podcastRequestSubject = 'Podcast Request: '
 const podcastRequestBody = 'Please provide the name of the podcast, and the name of the host if you know it.'
-const generalSubject = 'General: '
+const generalSubject = ''
 
 export const Emails = {
   BUG_REPORT: {

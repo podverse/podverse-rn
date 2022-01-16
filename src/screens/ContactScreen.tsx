@@ -1,7 +1,7 @@
 import { Linking, SectionList } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
-import { Divider, TableSectionSelectors, Text, View, ActivityIndicator, TableCell } from '../components'
+import { Divider, TableCell, TableSectionSelectors, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { createEmailLinkUrl } from '../lib/utility'
 import { PV } from '../resources'

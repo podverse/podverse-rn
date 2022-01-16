@@ -18,6 +18,7 @@ type Props = {
   isSecondary?: any
   numberOfLines?: number
   onPress?: any
+  selectable?: boolean
   style?: any
   testID: string
 }
