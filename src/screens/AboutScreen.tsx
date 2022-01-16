@@ -42,7 +42,7 @@ export class AboutScreen extends React.Component<Props> {
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {'All Podverse software is provided under a free and open source licence.' +
               ' Features that require updating our servers are available only with a Premium membership.' +
-              ' Sign up today and get 1 year of Premium for free!'}
+              ' Sign up today and get 3 months of Premium for free!'}
           </Text>
           <Divider style={styles.divider} />
           <Text accessibilityRole='header' fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
