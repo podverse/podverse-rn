@@ -1,6 +1,7 @@
 import { NowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import React, { getGlobal } from 'reactn'
+import { getHistoryItemsIndex } from '../services/userHistoryItem'
 import {
   ActivityIndicator,
   Divider,
@@ -217,6 +218,16 @@ export class QueueScreen extends React.Component<Props, State> {
       const shouldPlay = true
       const forceUpdateOrderDate = false
       const setCurrentItemNextInQueue = true
+      if(!item?.clipId) {
+        const {episodes} = await getHistoryItemsIndex()
+        if(episodes) {
+          const foundEpisode = item?.episodeId ? episodes[item.episodeId] : null
+          if(foundEpisode) {
+            item.userPlaybackPosition = foundEpisode.userPlaybackPosition
+          }
+        }
+      }
+
       await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
       await getQueueItems()
       this.setState({ isLoading: false })
