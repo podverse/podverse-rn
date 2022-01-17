@@ -25,7 +25,7 @@ Premium features:
 - Create and share playlists
 - Subscribe to playlists
 
-All Podverse software is provided under a free and open source (FOSS) licence. Features that require updating our servers are available only with a Premium membership. Sign up today and get 1 year of Premium for free 🥳
+All Podverse software is provided under a free and open source (FOSS) licence. Features that require updating our servers are available only with a Premium membership. Sign up today and get 3 months of Premium for free 🥳
 
 Available on the [App Store](https://apps.apple.com/us/app/podverse/id1390888454) and the [Google Play Store](https://play.google.com/store/apps/details?id=com.podverse).
 
