@@ -290,9 +290,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
                   await navigation.goBack(null)
                   resolve(null)
                 })()
-              }, 1000)
+              }, 400)
             })()
-          }, 1000)
+          }, 400)
         } else if (Platform.OS === 'ios') {
           await navigation.goBack(null)
           await navigation.goBack(null)
