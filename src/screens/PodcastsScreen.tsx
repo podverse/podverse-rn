@@ -355,29 +355,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
             })
           }
         } else if (path === PV.DeepLinks.Playlist.pathPrefix) {
-          await navigate(PV.RouteNames.MoreScreen)
+          await navigate(PV.RouteNames.MyLibraryScreen)
           await navigate(PV.RouteNames.PlaylistsScreen, {
             navToPlaylistWithId: id
           })
-        } else if (path === PV.DeepLinks.Playlists.path) {
-          await navigate(PV.RouteNames.MoreScreen)
-          await navigate(PV.RouteNames.PlaylistsScreen)
         } else if (path === PV.DeepLinks.Podcast.pathPrefix) {
           await navigate(PV.RouteNames.PodcastScreen, {
             podcastId: id
           })
-        } else if (path === PV.DeepLinks.Podcasts.path) {
-          await navigate(PV.RouteNames.PodcastsScreen)
         } else if (path === PV.DeepLinks.Profile.pathPrefix) {
-          await navigate(PV.RouteNames.MoreScreen)
+          await navigate(PV.RouteNames.MyLibraryScreen)
           await navigate(PV.RouteNames.ProfilesScreen, {
             navToProfileWithId: id
           })
-        } else if (path === PV.DeepLinks.Profiles.path) {
-          await navigate(PV.RouteNames.MoreScreen)
-          await navigate(PV.RouteNames.ProfilesScreen)
-        } else if (path === PV.DeepLinks.Search.path) {
-          await navigate(PV.RouteNames.SearchScreen)
         } else {
           await navigate(PV.RouteNames.PodcastsScreen)
         }
