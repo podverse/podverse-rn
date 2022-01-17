@@ -125,6 +125,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
+    Linking.getInitialURL().then((initialUrl) => {
+      if(initialUrl) {
+        this._handleOpenURLEvent({url:initialUrl})
+      }
+    })
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -299,6 +304,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _handleDeepLinkClip = async (mediaRefId: string) => {
     if (mediaRefId) {
+      const { navigation } = this.props
+      const { navigate } = navigation
+
       try {
         const currentItem = await getNowPlayingItem()
         if (!currentItem || (mediaRefId && mediaRefId !== currentItem.mediaRefId)) {
@@ -311,6 +319,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
             await playerLoadNowPlayingItem(newItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
           }
         }
+
+        navigate(PV.RouteNames.PlayerScreen)
       } catch (error) {
         console.log(error)
       }
@@ -325,8 +335,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       if (url) {
         const route = url.replace(/.*?:\/\//g, '')
         const splitPath = route.split('/')
-        const path = splitPath[0] ? splitPath[0] : ''
-        const id = splitPath[1] ? splitPath[1] : ''
+        const path = splitPath[1] ? splitPath[1] : ''
+        const id = splitPath[2] ? splitPath[2] : ''
 
         await this._goBackWithDelay()
 
