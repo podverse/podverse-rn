@@ -3,7 +3,11 @@ import NetInfo, { NetInfoCellularGeneration, NetInfoState, NetInfoStateType } fr
 import { Alert } from 'react-native'
 import { PV } from '../resources'
 
-const supportedGenerations = [NetInfoCellularGeneration['4g'], NetInfoCellularGeneration['5g']]
+const supportedGenerations = [
+  NetInfoCellularGeneration['3g'],
+  NetInfoCellularGeneration['4g'],
+  NetInfoCellularGeneration['5g']
+]
 
 export const alertIfNoNetworkConnection = async (str?: string) => {
   const isConnected = await hasValidNetworkConnection()
@@ -18,13 +22,16 @@ export const alertIfNoNetworkConnection = async (str?: string) => {
 
 export const hasValidNetworkConnection = async () => {
   const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
-
+  
   if (offlineModeEnabled) {
     return false
-  } else {
-    const state = await NetInfo.fetch()
-    return (state.type === NetInfoStateType.wifi || networkSupported(state)) && state.isInternetReachable
   }
+
+  const state = await NetInfo.fetch()
+  
+  const networkValid = state.type === NetInfoStateType.wifi || cellNetworkSupported(state)
+
+  return networkValid && state.isInternetReachable
 }
 
 export const hasValidDownloadingConnection = async () => {
@@ -38,7 +45,7 @@ export const hasValidDownloadingConnection = async () => {
   return hasValidNetworkConnection()
 }
 
-export const networkSupported = (state: NetInfoState) => {
+export const cellNetworkSupported = (state: NetInfoState) => {
   if (
     state.type === NetInfoStateType.cellular &&
     state.details.cellularGeneration &&
