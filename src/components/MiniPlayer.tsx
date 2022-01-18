@@ -128,7 +128,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
               style={{ flex: 1 }}
               testID={testIDPrefix.prependTestId()}>
               <View style={[styles.player, globalTheme.player]}>
-                {checkIfVideoFileType(nowPlayingItem) && (
+                {!!checkIfVideoFileType(nowPlayingItem) && (
                   <View style={styles.image}>
                     <PVVideo isMiniPlayer navigation={navigation} />
                   </View>

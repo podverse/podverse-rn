@@ -168,12 +168,12 @@ export class MembershipScreen extends React.Component<Props, State> {
           <View>
             <View style={styles.textRowCentered}>
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.subTextCentered}>
-                {translate('Get 1 year of Premium for free')}
+                {translate('Get 3 months of Premium for free')}
               </Text>
             </View>
             <View style={styles.textRowCentered}>
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.subTextCentered}>
-                {translate('10 per year after that')}
+                {translate('18 per year after that')}
               </Text>
             </View>
             <View style={styles.textRowCentered}>
