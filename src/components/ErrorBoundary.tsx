@@ -34,7 +34,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
 
     playerClearNowPlayingItem()
 
-    if (!Config.DISABLE_CRASH_LOGS && errorReportingEnabled) {
+    if (!Config.DISABLE_CRASH_LOGS && errorReportingEnabled && !Config.IS_DEV) {
       // You can also log the error to an error reporting service
       const errorRequestBody = {
         details: error.message + '\n' + errorInfo.componentStack.slice(0, 500), // Limitting error desc to 500 chars
