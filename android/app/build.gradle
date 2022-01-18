@@ -136,7 +136,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         ndkVersion rootProject.ext.ndkVersion
         versionName "4.2.1"
-        versionCode 5036
+        versionCode 5037
         multiDexEnabled true
         missingDimensionStrategy 'store', 'play'
     }
