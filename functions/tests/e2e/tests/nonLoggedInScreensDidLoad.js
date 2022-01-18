@@ -2,7 +2,6 @@
 const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, elementWaitFor, goBackKey, noTestLabel, elementCheckIfPresent, elementCheckIfNotPresent } = require('../driver/helpers/elements')
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
-const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
 
 const test_nonLoggedInScreensDidLoadTests = async () => {
   console.log('_Non Logged In Screens Did Load_')
@@ -43,9 +42,9 @@ const test_nonLoggedInScreensDidLoadTests = async () => {
   await elementByIdClick('auth_screen_sign_up_button')
   await driver.back()
   await elementByIdAndClickAndTest('more_screen_Membership_table_cell_wrapper', 'membership_screen_view', noTestLabel, goBackKey)
-  await elementByIdAndClickAndTest('more_screen_About_table_cell_wrapper', 'about_screen_view', noTestLabel, goBackKey)
-  await performScroll(scrollDownKey, 2)
-  await elementByIdAndClickAndTest('more_screen_TermsOfService_table_cell_wrapper', 'terms_of_service_screen_view', noTestLabel, goBackKey)
+  // await elementByIdAndClickAndTest('more_screen_About_table_cell_wrapper', 'about_screen_view', noTestLabel, goBackKey)
+  // await performScroll(scrollDownKey, 2)
+  // await elementByIdAndClickAndTest('more_screen_TermsOfService_table_cell_wrapper', 'terms_of_service_screen_view', noTestLabel, goBackKey)
 
 }
 

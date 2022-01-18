@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, elementByIdClick, goBackKey, noTestLabel } = require('../driver/helpers/elements')
+const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
+
 const test_nonLoggedInMediaPlayer = async () => {
   console.log('_Non Logged In Media Player_')
   const driver = getDriver()
@@ -9,6 +11,7 @@ const test_nonLoggedInMediaPlayer = async () => {
 
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
+  await performScroll(scrollDownKey, 2)
   await elementByIdAndClickAndTest('filter_screen_top-past-month', 'filter_screen_top-past-month_check_icon_button')
 
   // go back
