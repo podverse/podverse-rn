@@ -9,6 +9,7 @@ import Orientation from 'react-native-orientation-locker'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
+import messaging from '@react-native-firebase/messaging';
 import { isOnMinimumAllowedVersion } from './src/services/versioning'
 import { UpdateRequiredOverlay, OverlayAlert, BoostDropdownBanner } from './src/components'
 import { refreshDownloads } from './src/lib/downloader'
@@ -42,13 +43,27 @@ class App extends Component<Props, State> {
     super(props)
 
     Orientation.lockToPortrait()
-
+    
+    this.requestUserPermission()
     this.state = {
       appReady: false,
       minVersionMismatch: false
     }
     this.unsubscribeNetListener = null
     downloadCategoriesList()
+  }
+
+  async requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  
+    if (enabled) {
+      const token = await messaging().getToken()
+      console.log('FCM token:', token);
+      // TODO: Save FCM token on user object on server
+    }
   }
 
   async componentDidMount() {

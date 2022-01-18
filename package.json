@@ -44,6 +44,8 @@
     "@react-native-community/masked-view": "0.1.11",
     "@react-native-community/netinfo": "7.1.7",
     "@react-native-community/toolbar-android": "0.2.1",
+    "@react-native-firebase/app": "^14.2.2",
+    "@react-native-firebase/messaging": "^14.2.2",
     "@react-native-picker/picker": "1.16.5",
     "@types/base-64": "^0.1.3",
     "@types/react-native-video": "^5.0.9",
