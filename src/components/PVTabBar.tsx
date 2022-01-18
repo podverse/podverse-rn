@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import NetInfo from '@react-native-community/netinfo'
+import React from 'react'
+import { useNetInfo } from '@react-native-community/netinfo'
 import { BottomTabBar } from 'react-navigation-tabs'
 import { useGlobal } from 'reactn'
 import { StyleSheet } from 'react-native'
@@ -17,21 +17,9 @@ export const PVTabBar = (props: Props) => {
   const { navigation } = props
   const [player] = useGlobal<any>('player')
   const [offlineModeEnabled] = useGlobal<any>('offlineModeEnabled')
-  const [appOffline, setAppOffine] = useState(false)
+  const netInfo = useNetInfo()
 
-  useEffect(() => {
-    NetInfo.fetch().then((initialState) => {
-      setAppOffine(!initialState.isConnected || !initialState.isInternetReachable)
-    })
-
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      setAppOffine(!state.isConnected || !state.isInternetReachable)
-    })
-
-    return () => {
-      unsubscribe()
-    }
-  }, [])
+  const appOffline = netInfo.isInternetReachable === false
 
   return (
     <View testID='tabbar'>
@@ -39,7 +27,7 @@ export const PVTabBar = (props: Props) => {
       {(appOffline || offlineModeEnabled) && (
         <View testID='offline-banner' style={styles.offlineBanner}>
           <Text testID='offline-banner-text' style={styles.offlineBannerText}>
-            {translate('OFFLINE MODE ENABLED')}
+            {appOffline ? translate('WEAK OR NO CONNECTION') : translate('OFFLINE MODE ENABLED')}
           </Text>
         </View>
       )}
