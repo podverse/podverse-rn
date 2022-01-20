@@ -18,7 +18,7 @@ type Props = any
 
 export class AboutScreen extends React.Component<Props> {
   static navigationOptions = () => ({
-    title: translate('About brandName')
+    title: translate('About')
   })
 
   componentDidMount() {
@@ -42,7 +42,7 @@ export class AboutScreen extends React.Component<Props> {
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {'All Podverse software is provided under a free and open source licence.' +
               ' Features that require updating our servers are available only with a Premium membership.' +
-              ' Sign up today and get 1 year of Premium for free!'}
+              ' Sign up today and get 3 months of Premium for free!'}
           </Text>
           <Divider style={styles.divider} />
           <Text accessibilityRole='header' fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
@@ -83,14 +83,6 @@ export class AboutScreen extends React.Component<Props> {
           <Divider style={styles.divider} />
           <RNView style={styles.socialLinksWrapper}>
             <Icon
-              accessibilityLabel={translate('Social Media - reddit')}
-              accessibilityRole='button'
-              name='reddit'
-              onPress={() => this.handleFollowLink(PV.URLs.social.reddit)}
-              size={28}
-              style={[button.iconOnlySmall, styles.icon]}
-            />
-            <Icon
               accessibilityLabel={translate('Social Media - Twitter')}
               accessibilityRole='button'
               name='twitter'
@@ -99,26 +91,26 @@ export class AboutScreen extends React.Component<Props> {
               style={[button.iconOnlySmall, styles.icon]}
             />
             <Icon
-              accessibilityLabel={translate('Social Media - Facebook')}
-              accessibilityRole='button'
-              name='facebook'
-              onPress={() => this.handleFollowLink(PV.URLs.social.facebook)}
-              size={28}
-              style={[button.iconOnlySmall, styles.icon]}
-            />
-            <Icon
-              accessibilityLabel={translate('Social Media - LinkedIn')}
-              accessibilityRole='button'
-              name='linkedin'
-              onPress={() => this.handleFollowLink(PV.URLs.social.linkedin)}
-              size={28}
-              style={[button.iconOnlySmall, styles.icon]}
-            />
-            <Icon
               accessibilityLabel={translate('Social Media - GitHub')}
               accessibilityRole='button'
               name='github'
               onPress={() => this.handleFollowLink(PV.URLs.social.github)}
+              size={28}
+              style={[button.iconOnlySmall, styles.icon]}
+            />
+            <Icon
+              accessibilityLabel={translate('Social Media - Discord')}
+              accessibilityRole='button'
+              name='discord'
+              onPress={() => this.handleFollowLink(PV.URLs.social.discord)}
+              size={28}
+              style={[button.iconOnlySmall, styles.icon]}
+            />
+            <Icon
+              accessibilityLabel={translate('Social Media - Mastodon')}
+              accessibilityRole='button'
+              name='mastodon'
+              onPress={() => this.handleFollowLink(PV.URLs.social.mastodonAccount)}
               size={28}
               style={[button.iconOnlySmall, styles.icon]}
             />

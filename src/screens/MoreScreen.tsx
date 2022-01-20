@@ -8,7 +8,7 @@ import RNFS from 'react-native-fs'
 import { Divider, TableSectionSelectors, Text, View, ActivityIndicator, TableCell } from '../components'
 import { translate } from '../lib/i18n'
 import { exportSubscribedPodcastsAsOPML } from '../lib/opmlExport'
-import { createEmailLinkUrl, getMembershipStatus, parseOpmlFile } from '../lib/utility'
+import { getMembershipStatus, parseOpmlFile } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { logoutUser } from '../state/actions/auth'
@@ -63,11 +63,17 @@ export class MoreScreen extends React.Component<Props, State> {
         routeName: PV.RouteNames.MembershipScreen
       },
       {
-        title: translate('Contact Us'),
-        key: _contactKey
+        title: translate('Contact'),
+        key: _contactKey,
+        routeName: PV.RouteNames.ContactScreen
       },
       {
-        title: translate('About brandName'),
+        title: translate('Support'),
+        key: _supportKey,
+        routeName: PV.RouteNames.SupportScreen
+      },
+      {
+        title: translate('About'),
         key: _aboutKey,
         routeName: PV.RouteNames.AboutScreen
       },
@@ -146,9 +152,7 @@ export class MoreScreen extends React.Component<Props, State> {
 
   _onPress = (item: any) => {
     const { navigation } = this.props
-    if (item.key === _contactKey) {
-      Linking.openURL(createEmailLinkUrl(PV.Emails.CONTACT_US))
-    } else if (item.key === _logoutKey) {
+    if (item.key === _logoutKey) {
       logoutUser()
     } else if (item.key === _bitcoinWalletKey) {
       this._handleValueTagSetupPressed()
@@ -239,6 +243,7 @@ const _logoutKey = 'Logout'
 const _membershipKey = 'Membership'
 const _privacyPolicyKey = 'PrivacyPolicy'
 const _settingsKey = 'Settings'
+const _supportKey = 'Support'
 const _termsOfServiceKey = 'TermsOfService'
 const _importOpml = 'ImportOpml'
 const _exportOpml = 'ExportOpml'

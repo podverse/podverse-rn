@@ -1081,10 +1081,10 @@
   version "0.1.11"
   resolved "https://registry.npmjs.org/@react-native-community/masked-view/-/masked-view-0.1.11.tgz"
 
-"@react-native-community/netinfo@7.1.5":
-  version "7.1.5"
-  resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-7.1.5.tgz#65c07505b1b211275b77879f4234c7a0ee67a2de"
-  integrity sha512-ang81EGRileiqrwWCHkrIBuxrhl0ocWIWYPMTHox3c6L1tDZkhtk8PkNRMWkDWsEQHLF/A0vR3DV4dSYCC/gxQ==
+"@react-native-community/netinfo@7.1.7":
+  version "7.1.7"
+  resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-7.1.7.tgz#10e96922c90a0ff9755dcfbfc92a9d83ec45cd87"
+  integrity sha512-QCEuvbTAD7vyCsSsgbWedhTfXlClp4TVHVWYYMjnN7nz6xgZbSp+MI3oo7X5C4JlDHpRm/Q+63hsCgAqKt3WVA==
 
 "@react-native-community/toolbar-android@0.2.1":
   version "0.2.1"
@@ -7009,9 +7009,10 @@ react-native-dialog@*, react-native-dialog@8.2.0:
   version "8.2.0"
   resolved "https://registry.npmjs.org/react-native-dialog/-/react-native-dialog-8.2.0.tgz"
 
-react-native-document-picker@6.0.2:
-  version "6.0.2"
-  resolved "https://registry.npmjs.org/react-native-document-picker/-/react-native-document-picker-6.0.2.tgz"
+react-native-document-picker@7.1.2:
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-7.1.2.tgz#99c11a166c65f0fc4184f14067b7ea7a088252ed"
+  integrity sha512-9lVkvv37H2axi69t7IWhDBEEqF/sLXoIS0v3ROCgpcVRY0dyo+XZO5nBGUZtoBnqxiYBEoXDfWtCBmCU8h0/1Q==
   dependencies:
     invariant "^2.2.4"
 
