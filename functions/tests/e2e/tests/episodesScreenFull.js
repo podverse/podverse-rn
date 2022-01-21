@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, elementByIdClick, elementByIdHasText, elementCheckIfNotPresent, goBackKey, noTestLabel } = require('../driver/helpers/elements')
+const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
 const test_episodesScreenFull = async () => {
   console.log('_Episodes Screen Full_')
   const driver = getDriver()
@@ -14,8 +15,8 @@ const test_episodesScreenFull = async () => {
 
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
-  await elementByIdAndClickAndTest('filter_screen_all-podcasts', 'filter_screen_all-podcasts_check_icon_button') //1a
-  await elementByIdAndClickAndTest('filter_screen_downloaded', 'filter_screen_downloaded_check_icon_button') //2a
+  await elementByIdAndClickAndTest('filter_screen_all-podcasts', 'filter_screen_all-podcasts_check_icon_button') // 1a
+  await elementByIdAndClickAndTest('filter_screen_downloaded', 'filter_screen_downloaded_check_icon_button') // 2a
 
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
@@ -24,8 +25,8 @@ const test_episodesScreenFull = async () => {
   // navigate back to filter screen
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
-  await elementCheckIfNotPresent('filter_screen_subscribed_check_icon_button') //1b
-  await elementByIdAndClickAndTest('filter_screen_subscribed', 'filter_screen_subscribed_check_icon_button') //8a
+  await elementCheckIfNotPresent('filter_screen_subscribed_check_icon_button') // 1b
+  await elementByIdAndClickAndTest('filter_screen_subscribed', 'filter_screen_subscribed_check_icon_button') // 8a
   
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
@@ -34,8 +35,8 @@ const test_episodesScreenFull = async () => {
   // navigate back to filter screen
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
-  await elementCheckIfNotPresent('filter_screen_downloaded_check_icon_button') //2b
-  await elementByIdAndClickAndTest('filter_screen_top-past-day', 'filter_screen_top-past-day_check_icon_button') //3a
+  await elementCheckIfNotPresent('filter_screen_downloaded_check_icon_button') // 2b
+  await elementByIdAndClickAndTest('filter_screen_top-past-day', 'filter_screen_top-past-day_check_icon_button') // 3a
 
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
@@ -44,8 +45,8 @@ const test_episodesScreenFull = async () => {
   // navigate back to filter screen
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
-  await elementByIdAndClickAndTest('filter_screen_top-past-week', 'filter_screen_top-past-week_check_icon_button') //4a
-  await elementCheckIfNotPresent('filter_screen_top-past-day_check_icon_button') //3b
+  await elementByIdAndClickAndTest('filter_screen_top-past-week', 'filter_screen_top-past-week_check_icon_button') // 4a
+  await elementCheckIfNotPresent('filter_screen_top-past-day_check_icon_button') // 3b
 
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
@@ -54,8 +55,9 @@ const test_episodesScreenFull = async () => {
   // navigate back to filter screen
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
-  await elementByIdAndClickAndTest('filter_screen_top-past-month', 'filter_screen_top-past-month_check_icon_button') //5a
-  await elementCheckIfNotPresent('filter_screen_top-past-week_check_icon_button') //4b
+  await performScroll(scrollDownKey, 1)
+  await elementByIdAndClickAndTest('filter_screen_top-past-month', 'filter_screen_top-past-month_check_icon_button') // 5a
+  await elementCheckIfNotPresent('filter_screen_top-past-week_check_icon_button') // 4b
 
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
@@ -64,8 +66,9 @@ const test_episodesScreenFull = async () => {
   // navigate back to filter screen
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
-  await elementByIdAndClickAndTest('filter_screen_top-past-year', 'filter_screen_top-past-year_check_icon_button') //6a
-  await elementCheckIfNotPresent('filter_screen_top-past-month_check_icon_button') //5b
+  await performScroll(scrollDownKey, 2)
+  await elementByIdAndClickAndTest('filter_screen_top-past-year', 'filter_screen_top-past-year_check_icon_button') // 6a
+  await elementCheckIfNotPresent('filter_screen_top-past-month_check_icon_button') // 5b
 
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
@@ -74,8 +77,9 @@ const test_episodesScreenFull = async () => {
   // navigate back to filter screen
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
   
-  await elementByIdAndClickAndTest('filter_screen_top-all-time', 'filter_screen_top-all-time_check_icon_button') //7a
-  await elementCheckIfNotPresent('filter_screen_top-past-year_check_icon_button') //6b
+  await performScroll(scrollDownKey, 2)
+  await elementByIdAndClickAndTest('filter_screen_top-all-time', 'filter_screen_top-all-time_check_icon_button') // 7a
+  await elementCheckIfNotPresent('filter_screen_top-past-year_check_icon_button') // 6b
 
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
@@ -84,8 +88,9 @@ const test_episodesScreenFull = async () => {
   // navigate back to filter screen
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
+  await performScroll(scrollDownKey, 2)
   await elementByIdAndClickAndTest('filter_screen_top-past-year', 'filter_screen_top-past-year_check_icon_button')
-  await elementCheckIfNotPresent('filter_screen_top-all-time_check_icon_button') //7b
+  await elementCheckIfNotPresent('filter_screen_top-all-time_check_icon_button') // 7b
   await elementByIdAndClickAndTest('filter_screen_category', 'filter_screen_category_check_icon_button')
 
   // go back
@@ -95,14 +100,14 @@ const test_episodesScreenFull = async () => {
   // navigate back to filter screen
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
-  await elementCheckIfNotPresent('filter_screen_podcasts_check_icon_button') //8b
+  await elementCheckIfNotPresent('filter_screen_podcasts_check_icon_button') // 8b
 
-  await elementByIdAndClickAndTest('filter_screen_all-podcasts', 'filter_screen_all-podcasts_check_icon_button') //1a
+  await elementByIdAndClickAndTest('filter_screen_all-podcasts', 'filter_screen_all-podcasts_check_icon_button') // 1a
   await elementByIdClick('filter_screen_top-past-week')
 
   await elementByIdAndClickAndTest('filter_screen_nav_header_button_text', 'episodes_screen_view')
   
-  //END FILTER TESTS
+  // END FILTER TESTS
 
   await elementByIdClick('episodes_screen_episode_item_0_time_remaining_widget_toggle_play')
 
