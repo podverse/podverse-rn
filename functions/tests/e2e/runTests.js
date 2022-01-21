@@ -63,9 +63,9 @@ const runTests = async (customCapabilities) => {
     await test_nonLoggedInMediaPlayer()
     await test_queueScreenEditFeature()
     await test_historyScreenEditFeature()
-    await test_fundingPresent()
-    await test_LNPaySetup()
-    await test_bitcoinWallet()
+    // await test_fundingPresent()
+    // await test_LNPaySetup()
+    // await test_bitcoinWallet()
 
 
 

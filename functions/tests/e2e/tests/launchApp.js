@@ -5,7 +5,7 @@ const { elementByIdAndClickAndTest, elementByIdClick } = require('../driver/help
 const test_launchApp = async () => {
   const driver = getDriver()
 
-  if (process.env.DEVICE_TYPE !== 'F-Droid') {
+  if (process.env.DEVICE_TYPE !== 'f-droid') {
     await driver.waitForElementById('tracking_consent_screen_top_button_button')
     await elementByIdClick('tracking_consent_screen_top_button_button')
   }
