@@ -17,7 +17,6 @@ const testIDPrefix = 'contact_screen'
 const _generalKey = 'general'
 const _featureRequestKey = 'featureRequest'
 const _bugReportKey = 'bugReport'
-const _podcastRequestKey = 'podcastRequest'
 const _joinOurDiscordKey = 'joinOurDiscord'
 
 const emailOptions = [
@@ -28,10 +27,6 @@ const emailOptions = [
   {
     key: _featureRequestKey,
     title: translate('Feature Request')
-  },
-  {
-    key: _podcastRequestKey,
-    title: translate('Podcast Request')
   },
   {
     key: _generalKey,
@@ -60,8 +55,6 @@ export class ContactScreen extends React.Component<Props> {
       Linking.openURL(createEmailLinkUrl(PV.Emails.BUG_REPORT))
     } else if (item.key === _featureRequestKey) {
       Linking.openURL(createEmailLinkUrl(PV.Emails.FEATURE_REQUEST))
-    } else if (item.key === _podcastRequestKey) {
-      Linking.openURL(createEmailLinkUrl(PV.Emails.PODCAST_REQUEST))
     } else if (item.key === _generalKey) {
       Linking.openURL(createEmailLinkUrl(PV.Emails.GENERAL_CONTACT))
     } else if (item.key === _joinOurDiscordKey) {

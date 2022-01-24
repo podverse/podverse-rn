@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { Alert, Linking, StyleSheet } from 'react-native'
+import { Alert, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import {
@@ -16,7 +16,7 @@ import {
 import { translate } from '../lib/i18n'
 import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { createEmailLinkUrl, isOdd, safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
+import { isOdd, safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
 import { trackPageView } from '../services/tracking'
@@ -216,10 +216,6 @@ export class SearchScreen extends React.Component<Props, State> {
     this.setState({ showActionSheet: false })
   }
 
-  _navToRequestPodcastEmail = () => {
-    Linking.openURL(createEmailLinkUrl(PV.Emails.REQUEST_PODCAST))
-  }
-
   render() {
     const {
       flatListData,
@@ -258,14 +254,11 @@ export class SearchScreen extends React.Component<Props, State> {
             dataTotalCount={flatListDataTotalCount}
             disableLeftSwipe
             extraData={flatListData}
-            handleNoResultsBottomAction={!!Config.CURATOR_EMAIL ? this._navToRequestPodcastEmail : null}
             handleNoResultsMiddleAction={this._handleAddPodcastByRSSURLNavigation}
             handleNoResultsTopAction={!Config.DISABLE_QR_SCANNER ? this._handleAddPodcastByRSSQRCodeNavigation : null}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
-            noResultsBottomActionText={!!Config.CURATOR_EMAIL ? translate('Request Podcast') : ''}
-            noResultsBottomActionTextAccessibilityHint={translate('ARIA HINT - send us an email to request a podcast')}
             noResultsMessage={searchBarText.length > 1 && translate('No podcasts found')}
             noResultsMiddleActionText={translate('Add Custom RSS Feed')}
             noResultsMiddleActionTextAccessibilityHint={translate('ARIA HINT - add a podcast by its RSS feed')}
