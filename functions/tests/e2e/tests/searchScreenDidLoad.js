@@ -3,6 +3,8 @@ const { getDriver } = require('../driver/driverFactory')
 const { confirmAndroidAlert } = require('../driver/helpers/alerts')
 const { elementByIdAndClickAndTest, elementByIdClick, elementWaitFor, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
+const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
+
 const test_searchScreenDidLoad = async () => {
   console.log('_Search Screen Did Load_')
   const driver = getDriver()
@@ -53,6 +55,7 @@ const test_searchScreenDidLoad = async () => {
     // Log Out 
 
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+  await performScroll(scrollUpKey, 2)
   await elementByIdAndClickAndTest('more_screen_Logout_table_cell_wrapper', 'more_screen_view')
   await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
 

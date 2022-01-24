@@ -3,6 +3,8 @@ const { getDriver } = require('../driver/driverFactory')
 const { confirmAndroidAlert } = require('../driver/helpers/alerts')
 const { elementByIdAndClickAndTest, elementByIdClick, elementByIdHasText, elementCheckIfNotPresent, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
+const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
+
 
 
 const test_myProfileScreenFull = async () => {
@@ -131,6 +133,7 @@ const test_myProfileScreenFull = async () => {
     // Log Out
 
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+  await performScroll(scrollUpKey, 2)
   await elementByIdAndClickAndTest('more_screen_Logout_table_cell_wrapper', 'more_screen_view')
   await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
 }

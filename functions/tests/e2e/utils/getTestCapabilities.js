@@ -1,6 +1,8 @@
+const { isAndroid, isFDroid, isIOS } = require('./misc')
+
 const getTestCapabilities = (customCapabilities) => {
 
-  const capabilities = process.env.DEVICE_TYPE === 'android' || process.env.DEVICE_TYPE === 'f-droid' ?
+  const capabilities = isAndroid || isFDroid ?
     {
       'device': 'Google Pixel 3',
       'os_version': '9.0'
@@ -11,9 +13,6 @@ const getTestCapabilities = (customCapabilities) => {
     }
   
   let bsApp = ''
-  const isAndroid = process.env.DEVICE_TYPE === 'android'
-  const isFDroid = process.env.DEVICE_TYPE === 'f-droid'
-  const isIOS = process.env.DEVICE_TYPE === 'ios'
   
   if (isAndroid) {
     console.log('Testing Android')

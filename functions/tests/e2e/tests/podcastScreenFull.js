@@ -68,6 +68,7 @@ const test_podcastScreenFull = async () => {
   // Log Out 
 
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+  await performScroll(scrollUpKey, 2)
   await elementByIdAndClickAndTest('more_screen_Logout_table_cell_wrapper', 'more_screen_view')
   await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
 }
