@@ -10,8 +10,7 @@ import { playerGetPosition, playerGetDuration, playerUpdateCurrentTrack } from '
 export const clearChapterPlaybackInfo = async (nowPlayingItem?: NowPlayingItem) => { 
   if (nowPlayingItem) {
     const imageUrl = nowPlayingItem.episodeImageUrl
-      || nowPlayingItem.podcastShrunkImageUrl
-      || nowPlayingItem.podcastImageUrl
+    || nowPlayingItem.podcastImageUrl
     playerUpdateCurrentTrack(nowPlayingItem.episodeTitle, imageUrl)
   }
 
