@@ -956,9 +956,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
-      } else if (PV.FilterOptions.screenFilters.PodcastsScreen.sort.some((option) => option === filterKey)) {
+      } else if (
+        PV.FilterOptions.screenFilters.PodcastsScreen.sort.some((option) => option === filterKey)
+        || PV.FilterOptions.screenFilters.PodcastsScreen.subscribedSort.some((option) => option === filterKey)
+      ) {
         newState.showNoInternetConnectionMessage = !hasInternetConnection
-
         const results = await getPodcasts({
           ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedCategorySub),
           sort: filterKey,
