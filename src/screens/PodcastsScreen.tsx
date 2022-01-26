@@ -35,7 +35,7 @@ import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudio'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
 import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
-import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
+import { initDownloads, removeDownloadedPodcast, updateDownloadedPodcasts } from '../state/actions/downloads'
 import { updateWalletInfo } from '../state/actions/lnpay'
 import {
   initializePlaybackSpeed,
@@ -230,18 +230,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           showMiniPlayer()
         }
 
+        updateDownloadedPodcasts()
         await playerUpdatePlaybackState()
-
-        // NOTE UPDATE: I don't think this is working...commenting out for now.
-        // NOTE: On iOS, when returning to the app from the background while the player was paused,
-        // sometimes the player will be in an idle state, requiring the user to press play twice to
-        // reload the item in the player and begin playing. By calling audioInitializePlayerQueue once whenever
-        // the idle playback-state event is called, it automatically reloads the item.
-        // I don't think this issue is happening on Android, so we're not using this workaround on Android.
-        // const isIdle = await playerCheckIdlePlayerState()
-        // if (Platform.OS === 'ios' && isIdle) {
-        //   await audioInitializePlayerQueue()
-        // }
       }
 
       if (nextAppState === 'background' || nextAppState === 'inactive') {
