@@ -110,7 +110,10 @@ export class DownloadsScreen extends React.Component<Props, State> {
           dataTotalCount={downloadsArray.length}
           disableLeftSwipe={false}
           extraData={downloadsArray}
-          keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.episodeId)}
+          keyExtractor={(item: any) => {
+            const ignoreIndex = -1
+            return safeKeyExtractor(testIDPrefix, ignoreIndex, item?.episodeId)
+          }}
           ItemSeparatorComponent={this._ItemSeparatorComponent}
           noResultsMessage={translate('No downloads in progress')}
           renderHiddenItem={this._renderHiddenItem}

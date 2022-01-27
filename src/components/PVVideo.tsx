@@ -369,7 +369,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
         }}
         // onReadyForDisplay={}
         paused={!isReadyToPlay || !playerCheckIfStateIsPlaying(playbackState)}
-        poster={nowPlayingItem.episodeImageUrl || nowPlayingItem.shrunkPodcastImageUrl}
+        poster={nowPlayingItem.episodeImageUrl || nowPlayingItem.podcastImageUrl}
         progressUpdateInterval={1000}
         /* The props.rate is only used in the Video constructor.
           Call this.videoRef.setState({ rate }) to change the rate. */

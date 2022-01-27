@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { SectionList, Alert } from 'react-native'
+import { Linking, SectionList, Alert } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import { parseString } from 'react-native-xml2js'
