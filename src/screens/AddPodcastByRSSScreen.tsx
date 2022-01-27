@@ -67,7 +67,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   }
 
   _navToRequestPodcastEmail = () => {
-    Linking.openURL(createEmailLinkUrl(PV.Emails.REQUEST_PODCAST))
+    Linking.openURL(createEmailLinkUrl(PV.Emails.PODCAST_REQUEST))
   }
 
   _handleChangeText = (value: string) => {

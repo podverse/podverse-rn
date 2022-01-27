@@ -34,8 +34,8 @@ try {
   await elementByIdAndClickAndTest('my_library_screen_Profiles_table_cell_wrapper', 'profiles_screen_view')
   await elementByIdAndClickAndTest('profiles_screen_profile_0', 'profile_screen_view')
   // TODO: Click succeeds but check fails
-  // await elementByIdAndClickAndTest('profile_screen_subscribe_button', 'profile_screen_is_not_subscribed')
-  // await elementByIdAndClickAndTest('profile_screen_subscribe_button', 'profile_screen_is_subscribed')
+  await elementByIdAndClickAndTest('profile_screen_subscribe_button', 'profile_screen_is_not_subscribed')
+  await elementByIdAndClickAndTest('profile_screen_subscribe_button', 'profile_screen_is_subscribed')
   await driver.back()
   await driver.back()
 
