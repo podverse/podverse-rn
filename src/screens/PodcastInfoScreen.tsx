@@ -36,7 +36,13 @@ export class PodcastInfoScreen extends React.Component<Props, State> {
     const { podcast, podcastId } = this.state
 
     const titleToEncode = podcast ? podcast.title : translate('no info available')
-    trackPageView('/podcast/info/' + getTrackingIdText(podcastId), translate('PodcastInfoScreen - '), titleToEncode)
+    const addByRSSPodcastFeedUrl = podcast?.addByRSSPodcastFeedUrl
+
+    trackPageView(
+      '/podcast/info/' + getTrackingIdText(podcastId, !!addByRSSPodcastFeedUrl),
+      translate('PodcastInfoScreen - '),
+      titleToEncode
+    )
   }
 
   showLeavingAppAlert = (url: string) => {

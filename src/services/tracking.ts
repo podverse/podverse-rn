@@ -61,8 +61,8 @@ export const trackPageView = async (path: string, title: string, titleToEncode?:
 }
 
 /* Don't track custom URLs as podcastIds or episodeIds since they could contain PII */
-export const getTrackingIdText = (id?: string) => {
-  if (id && id.indexOf('http') >= 0) {
+export const getTrackingIdText = (id?: string, isAddedByRss?: boolean) => {
+  if (isAddedByRss) {
     return 'custom-url'
   } else {
     return id || 'id-missing'

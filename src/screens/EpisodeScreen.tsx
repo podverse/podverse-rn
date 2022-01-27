@@ -109,14 +109,20 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    const { navigation } = this.props
     const { episode, episodeId } = this.state
     this._initializePageData()
     const episodeTitle = episode?.title ? episode.title : translate('Untitled Episode')
     const titleToEncode = episode?.podcast
       ? episode.podcast.title + ' - ' + episodeTitle
       : translate('no info available')
+    const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
-    trackPageView('/episode/' + getTrackingIdText(episodeId), translate('Episode Screen - '), titleToEncode)
+    trackPageView(
+      '/episode/' + getTrackingIdText(episodeId, !!addByRSSPodcastFeedUrl),
+      translate('Episode Screen - '),
+      titleToEncode
+    )
   }
 
   async _initializePageData() {
