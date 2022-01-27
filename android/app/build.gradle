@@ -135,7 +135,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         ndkVersion rootProject.ext.ndkVersion
-        versionCode 5038
+        versionCode 5039
         versionName "4.2.2"
         multiDexEnabled true
         missingDimensionStrategy 'store', 'play'
