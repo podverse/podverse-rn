@@ -203,7 +203,6 @@ module.exports = async () => {
     playerPlayNextChapterOrQueueItem()
   })
 
-
   /*
     iOS triggers remote-duck with permanent: true when the player app returns to foreground,
     but only in case where the track was paused before app going to background,
