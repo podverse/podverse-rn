@@ -203,55 +203,36 @@ module.exports = async () => {
     playerPlayNextChapterOrQueueItem()
   })
 
+
+  /*
+    iOS triggers remote-duck with permanent: true when the player app returns to foreground,
+    but only in case where the track was paused before app going to background,
+    so we need to check if the track is playing before making it stop or pause
+    as a result of remote-duck.
+    Thanks to nesinervink and bakkerjoeri for help resolving this issue:
+    https://github.com/react-native-kit/react-native-track-player/issues/687#issuecomment-660149163
+
+    See #1263 for wasPausedByDuck explanation:
+    https://github.com/DoubleSymmetry/react-native-track-player/issues/1263
+
+    alwaysPauseOnInterruption issues on Android:
+    https://github.com/DoubleSymmetry/react-native-track-player/issues/1009
+  */
+  let wasPausedByDuck = false
   PVAudioPlayer.addEventListener('remote-duck', (x: any) => {
     (async () => {
       console.log('remote-duck', x)
       const { paused, permanent } = x
-
-      /*
-        When text messages come in while alwaysPauseOnInterruption is on,
-        the remote-duck event fires with  {"paused": true, "permanent": false}.
-        When alwaysPauseOnInterruption is true for Android, then remote-duck fires
-        every time a text message notification is received, which we don't want to happen...
-        We do however want it to pause from apps like Google Maps notifications.
-        Maybe Google Maps fires off it's own remote-duck event
-        and we don't need alwaysPauseOnInterruption true on Android?...
-      */
-      /*
-        2021-12-10 It appears this code below was causing the player to resume playing
-        when it should be paused but a text notification is received.
-        By commenting out this code, apps like Google Maps may not do remote-duck
-        handling properly, but the text notification bug makes the app unusable
-        so I'm commenting it out for now.
-      */
-      // if (Platform.OS === 'android') {
-      //   if (permanent) {
-      //     audioHandleStop()
-      //   } else if (paused) {
-      //     audioHandlePauseWithUpdate()
-      //   } else if (!permanent) {
-      //     audioHandlePlayWithUpdate()
-      //   }
-      // }
-
-      /*
-        iOS triggers remote-duck with permanent: true when the player app returns to foreground,
-        but only in case the track was paused before app going to background,
-        so we need to check if the track is playing before making it stop or pause
-        as a result of remote-duck.
-        Thanks to nesinervink and bakkerjoeri for help resolving this issue:
-        https://github.com/react-native-kit/react-native-track-player/issues/687#issuecomment-660149163
-      */
-      if (Platform.OS === 'ios') {
-        const currentState = await audioGetState()
-        const isPlaying = audioCheckIfIsPlaying(currentState)
-        if (permanent && isPlaying) {
-          audioHandleStop()
-        } else if (paused) {
-          audioHandlePauseWithUpdate()
-        } else if (!permanent) {
-          audioHandlePlayWithUpdate()
-        }
+      const currentState = await audioGetState()
+      const isPlaying = audioCheckIfIsPlaying(currentState)
+      if (permanent && isPlaying) {
+        audioHandleStop()
+      } else if (isPlaying && paused) {
+        wasPausedByDuck = true
+        audioHandlePauseWithUpdate()
+      } else if (!permanent && wasPausedByDuck) {
+        wasPausedByDuck = false
+        audioHandlePlayWithUpdate()
       }
     })()
   })
