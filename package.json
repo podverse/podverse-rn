@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.2.2",
+  "version": "4.2.3",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -55,7 +55,7 @@
     "appcenter": "4.0.0",
     "appcenter-analytics": "4.0.0",
     "appcenter-crashes": "4.0.0",
-    "axios": "0.21.2",
+    "axios": "0.25.0",
     "bad-words": "3.0.3",
     "base-64": "^1.0.0",
     "bottleneck": "2.19.5",
@@ -161,7 +161,9 @@
     "@react-native-picker/picker": "1.16.5",
     "react-native-safe-area-view": "2.0.0",
     "underscore": "1.12.1",
-    "trim": "0.0.3"
+    "trim": "0.0.3",
+    "node-fetch": "2.6.7",
+    "follow-redirects": "1.14.7"
   },
   "isSwift": true
 }
