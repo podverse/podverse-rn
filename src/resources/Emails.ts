@@ -13,6 +13,8 @@ const checkoutIssueBody = `Please explain your issue below and we'll get back to
 } / Version: ${getVersion()} build ${getBuildNumber()}`
 const featureRequestSubject = 'Feature Request: '
 const featureRequestBody = 'Please describe the feature you would like added to Podverse.'
+const podcastRequestSubject = 'Podcast Request: '
+const podcastRequestBody = 'Please provide the name of the podcast, and the name of the host if you know it.'
 const generalSubject = ''
 
 export const Emails = {
@@ -35,5 +37,10 @@ export const Emails = {
     email: Config.CONTACT_EMAIL,
     subject: generalSubject,
     body: bugReportBody
+  },
+  PODCAST_REQUEST: {
+    email: Config.CONTACT_EMAIL,
+    subject: podcastRequestSubject,
+    body: podcastRequestBody
   }
 }

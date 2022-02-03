@@ -104,7 +104,7 @@ export const audioUpdateTrackPlayerCapabilities = () => {
       See alwaysPauseOnInterruption comment in the playerAudioEvents file
       for an explanation why we are enabling it on iOS only.
     */
-    alwaysPauseOnInterruption: Platform.OS === 'ios',
+    // alwaysPauseOnInterruption: Platform.OS === 'ios',
     stopWithApp: true,
     backwardJumpInterval: parseInt(jumpBackwardsTime, 10),
     forwardJumpInterval: parseInt(jumpForwardsTime, 10)

@@ -1,4 +1,5 @@
-import { StyleSheet } from 'react-native'
+import { Linking, StyleSheet } from 'react-native'
+import Config from 'react-native-config'
 import React from 'reactn'
 import {
   ActivityIndicator,
@@ -9,9 +10,11 @@ import {
   SwitchWithText,
   Text,
   TextInput,
+  TextLink,
   View
 } from '../components'
 import { translate } from '../lib/i18n'
+import { createEmailLinkUrl } from '../lib/utility'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { trackPageView } from '../services/tracking'
@@ -61,6 +64,10 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
     })
 
     trackPageView('/add-custom-rss-feed', 'Add Custom RSS Feed Screen')
+  }
+
+  _navToRequestPodcastEmail = () => {
+    Linking.openURL(createEmailLinkUrl(PV.Emails.PODCAST_REQUEST))
   }
 
   _handleChangeText = (value: string) => {
@@ -172,6 +179,16 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
               {translate('AddPodcastByRSSScreenText2')}
             </Text>
+            {!!Config.CURATOR_EMAIL && (
+              <TextLink
+                accessibilityHint={translate('ARIA HINT - open your email client to request a podcast by email')}
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                onPress={this._navToRequestPodcastEmail}
+                style={styles.textLink}
+                testID={`${testIDPrefix}_request_podcast`}
+                text={translate('Request Podcast')}
+              />
+            )}
           </ScrollView>
         )}
       </View>
