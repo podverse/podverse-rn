@@ -6,7 +6,7 @@ const translationGetters = {
   en: () => require('../resources/i18n/translations/en.json'),
   es: () => require('../resources/i18n/translations/es.json'),
   lt: () => require('../resources/i18n/translations/lt.json'),
-  nb_NO: () => require('../resources/i18n/translations/nb_NO.json')
+  nb: () => require('../resources/i18n/translations/nb_NO.json')
 }
 
 class Internationalizer {
