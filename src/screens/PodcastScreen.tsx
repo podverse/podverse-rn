@@ -201,7 +201,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         const titleToEncode = podcast ? podcast.title : translate('no info available')
         trackPageView(
           '/podcast/' + getTrackingIdText(podcastId, !!addByRSSPodcastFeedUrl),
-          translate('PodcastsScreen - '),
+          'Podcast Screen - ',
           titleToEncode
         )
       }

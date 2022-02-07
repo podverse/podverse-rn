@@ -120,7 +120,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     trackPageView(
       '/episode/' + getTrackingIdText(episodeId, !!addByRSSPodcastFeedUrl),
-      translate('Episode Screen - '),
+      'Episode Screen - ',
       titleToEncode
     )
   }
