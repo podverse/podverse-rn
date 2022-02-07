@@ -40,7 +40,7 @@ export class PodcastInfoScreen extends React.Component<Props, State> {
 
     trackPageView(
       '/podcast/info/' + getTrackingIdText(podcastId, !!addByRSSPodcastFeedUrl),
-      translate('PodcastInfoScreen - '),
+      'PodcastInfoScreen - ',
       titleToEncode
     )
   }
