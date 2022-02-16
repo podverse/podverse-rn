@@ -3,6 +3,7 @@ import debounce from 'lodash/debounce'
 import { Alert, AppState, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
 import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
+import { endConnection as iapEndConnection, initConnection as iapInitConnection } from 'react-native-iap'
 import React from 'reactn'
 import { convertToNowPlayingItem } from 'podverse-shared'
 import {
@@ -125,6 +126,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
+
+    iapInitConnection()
+    
     Linking.getInitialURL().then((initialUrl) => {
       // settimeout here gives a chance to the rest of 
       // the app to have finished loading and navigate correctly
@@ -183,6 +187,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
+    iapEndConnection()
     AppState.removeEventListener('change', this._handleAppStateChange)
     Linking.removeEventListener('url', this._handleOpenURLEvent)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises

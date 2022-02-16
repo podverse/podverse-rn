@@ -1,6 +1,7 @@
 import * as RNIap from 'react-native-iap'
 import { setGlobal } from 'reactn'
 import { androidHandleStatusCheck as androidHandleStatusCheckService } from '../../services/purchase.android'
+import { removeAvailablePurchaseFromSecureStorage } from '../../services/purchaseShared'
 import { getAuthUserInfo } from './auth'
 import {
   handleStatusCancel,
@@ -27,6 +28,7 @@ export const androidHandleStatusCheck = async (productId: string, transactionId:
       const { code } = response
       if (code === 0) {
         await RNIap.consumePurchaseAndroid(purchaseToken)
+        await removeAvailablePurchaseFromSecureStorage(transactionId)
         await handleStatusSuccessful()
       } else if (code === 1) {
         handleStatusCancel()
@@ -35,6 +37,7 @@ export const androidHandleStatusCheck = async (productId: string, transactionId:
       } else if (code === 3) {
         showPurchaseSomethingWentWrongError()
       } else if (code === 4) {
+        await removeAvailablePurchaseFromSecureStorage(transactionId)
         await handleStatusSuccessful()
       } else {
         showPurchaseSomethingWentWrongError()

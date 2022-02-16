@@ -7072,7 +7072,8 @@ react-native-haptic-feedback@1.11.0:
 
 react-native-iap@7.2.1:
   version "7.2.1"
-  resolved "https://registry.npmjs.org/react-native-iap/-/react-native-iap-7.2.1.tgz"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-7.2.1.tgz#f1eca6133d1df05af722c06e7862345049c7ebff"
+  integrity sha512-kNMSmW/ME5yOFBf2MJpGYtpZ47Te6auqrg3Tgd0RyJTHtROUbjlYJnNe6oCneYZ1GimV4NlWQ+Oa4se2EZO12g==
   dependencies:
     dooboolab-welcome "1.3.2"
 
