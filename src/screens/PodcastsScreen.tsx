@@ -126,9 +126,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
   async componentDidMount() {
     const { navigation } = this.props
     Linking.getInitialURL().then((initialUrl) => {
-      if(initialUrl) {
-        this._handleOpenURLEvent({url:initialUrl})
-      }
+      // settimeout here gives a chance to the rest of 
+      // the app to have finished loading and navigate correctly
+      setTimeout(() => {
+        if(initialUrl) {
+          this._handleOpenURLEvent({url:initialUrl})
+        }
+      }, 300);
     })
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
