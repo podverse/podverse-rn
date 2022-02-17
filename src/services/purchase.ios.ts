@@ -8,6 +8,8 @@ export const iosHandlePurchaseStatusCheck = async (transactionReceipt: string) =
     const { finishedTransactionIds } = response.data
     if (finishedTransactionIds && Array.isArray(finishedTransactionIds)) {
       for (const transactionId of finishedTransactionIds) {
+        // finishTransaction should return a promise, but there appears to be
+        // a bug in react-native-iap 8.0.4 https://github.com/dooboolab/react-native-iap/issues/1645
         finishTransaction({ transactionId } as any)
         await removeAvailablePurchaseFromSecureStorage(transactionId)
       }
