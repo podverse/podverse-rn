@@ -1,6 +1,5 @@
 import { Platform } from 'react-native'
 import {
-  getAvailablePurchases,
   InAppPurchase,
   Purchase,
   PurchaseError,
@@ -9,8 +8,6 @@ import {
 } from 'react-native-iap'
 import React from 'reactn'
 import { PV } from '../resources'
-import { addAvailablePurchasesToSecureStorage,
-  getAvailablePurchasesFromSecureStorage } from '../services/purchaseShared'
 import { androidHandleStatusCheck } from '../state/actions/purchase.android'
 import { iosHandlePurchaseStatusCheck } from '../state/actions/purchase.ios'
 
@@ -46,18 +43,6 @@ export class PurchaseListener extends React.Component<Props> {
         }
       })()
     }
-
-    const processPurchasesOnAppLaunch = () => {
-      (async () => {
-        const purchases = await getAvailablePurchases()
-        await addAvailablePurchasesToSecureStorage(purchases)
-        const availablePurchasesFromSecureStorage
-          = await getAvailablePurchasesFromSecureStorage()
-        availablePurchasesFromSecureStorage.forEach(processPurchase)
-      })()
-    }
-    
-    processPurchasesOnAppLaunch()
 
     this.purchaseUpdateSubscription = purchaseUpdatedListener(processPurchase)
 
