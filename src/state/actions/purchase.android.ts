@@ -1,4 +1,4 @@
-import * as RNIap from 'react-native-iap'
+import { finishTransaction } from 'react-native-iap'
 import { setGlobal } from 'reactn'
 import { androidHandleStatusCheck as androidHandleStatusCheckService } from '../../services/purchase.android'
 import { getAuthUserInfo } from './auth'
@@ -26,7 +26,8 @@ export const androidHandleStatusCheck = async (productId: string, transactionId:
     if (response) {
       const { code } = response
       if (code === 0) {
-        await RNIap.consumePurchaseAndroid(purchaseToken)
+        const isConsumable = true
+        await finishTransaction({ transactionId } as any, isConsumable)
         await handleStatusSuccessful()
       } else if (code === 1) {
         handleStatusCancel()
