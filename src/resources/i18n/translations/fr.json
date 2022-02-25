@@ -476,7 +476,7 @@
     "trackingTermsText3": "Activez le suivi des écoutes pour être pris en compte dans ces classements.",
     "unsubscribe from podcast": "ne plus suivre le podcast",
     "unsubscribe from this profile": "ne plus suivre ce profil",
-    "use double quotes for exact matches": "utilisez des \"guillemets\" pour des correspondances exactes",
+    "use double quotes for exact matches": "utilisez des \"guillemets droits\" pour des correspondances exactes",
     "value_tag_consent_checkbox_text": "J'ai lu et j'accepte les conditions d'utilisation",
     "value_tag_consent_text_1": "Acceptez toutes les conditions suivantes pour utiliser cette fonctionnalité expérimentale :",
     "value_tag_consent_text_2": "- Podverse n'est pas responsable des fonds et des transactions perdus ou corrompus.",
@@ -706,5 +706,11 @@
     "Yes Allow Data": "Oui, autoriser les données mobiles",
     "Libre Libraries": "Bibliothèques libres",
     "Social Media - Twitter": "Suivez-nous sur Twitter",
-    "Value Settings": "Paramètres de valeur"
+    "Value Settings": "Paramètres de valeur",
+    "ARIA HINT - This section provides the value-for-value information for this podcast": "Informations sur le rapport qualité-prix pour ce podcast",
+    "Transcript search input": "Entrée de la recherche de transcription",
+    "Transcript": "Transcription",
+    "Value-for-Value": "Rapport qualité-prix",
+    "Streaming splits per minute": "Fractionnement du streaming (par minute)",
+    "Show your support": "Montrez votre soutien"
 }
