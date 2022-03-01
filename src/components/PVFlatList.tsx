@@ -104,11 +104,14 @@ export const PVFlatList = (props: Props) => {
   const isEndOfResults = !isLoadingMore && data && dataTotalCount && dataTotalCount > 0 && data.length >= dataTotalCount
   const useSectionList = Array.isArray(sections) && sections.length > 0
   const shouldShowResults = (!noResultsFound && !showNoInternetConnectionMessage) || useSectionList
+  const shouldShowNoResultsFoundMessage = !disableNoResultsMessage &&
+    !isLoadingMore &&
+    !showNoInternetConnectionMessage &&
+    noResultsFound
 
   return (
     <View style={styles.view} transparent={transparent}>
-      {!noResultsMessage && ListHeaderComponent && !Config.DISABLE_FILTER_TEXT_QUERY && <ListHeaderComponent />}
-      {!disableNoResultsMessage && !isLoadingMore && !showNoInternetConnectionMessage && noResultsFound && (
+      {shouldShowNoResultsFoundMessage && (
         <MessageWithAction
           bottomActionHandler={handleNoResultsBottomAction}
           bottomActionText={noResultsBottomActionText}
@@ -131,6 +134,7 @@ export const PVFlatList = (props: Props) => {
       {shouldShowResults && (
         <SwipeListView
           closeOnRowPress
+          contentOffset={{ x: 0, y: 66 }}
           data={data}
           disableLeftSwipe={disableLeftSwipe}
           disableRightSwipe
@@ -163,6 +167,7 @@ export const PVFlatList = (props: Props) => {
 
             return null
           }}
+          ListHeaderComponent={ListHeaderComponent}
           onEndReached={onEndReached}
           onEndReachedThreshold={onEndReachedThreshold}
           {...(onRefresh
