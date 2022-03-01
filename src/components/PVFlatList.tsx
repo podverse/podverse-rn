@@ -134,7 +134,7 @@ export const PVFlatList = (props: Props) => {
       {shouldShowResults && (
         <SwipeListView
           closeOnRowPress
-          contentOffset={{ x: 0, y: 66 }}
+          contentOffset={{ x: 0, y: 67 }}
           data={data}
           disableLeftSwipe={disableLeftSwipe}
           disableRightSwipe
