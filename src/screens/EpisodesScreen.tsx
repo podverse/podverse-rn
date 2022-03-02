@@ -298,7 +298,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
         <SearchBar
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
-          onClear={this._handleSearchBarClear}
+          handleClear={this._handleSearchBarClear}
+          placeholder={translate('search for episode title')}
           value={searchBarText}
         />
       </View>
@@ -368,11 +369,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarClear = () => {
-    this.setState({
-      flatListData: [],
-      flatListDataTotalCount: null,
-      searchBarText: ''
-    })
+    this._handleSearchBarTextChange('')
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -479,6 +476,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && queryFrom && (
           <FlatList
+            contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset}
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
             disableLeftSwipe={queryFrom !== PV.Filters._downloadedKey}
@@ -488,7 +486,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
-            ListHeaderComponent={queryFrom !== PV.Filters._downloadedKey ? this._ListHeaderComponent : null}
+            ListHeaderComponent={this._ListHeaderComponent}
             noResultsMessage={
               // eslint-disable-next-line max-len
               noSubscribedPodcasts

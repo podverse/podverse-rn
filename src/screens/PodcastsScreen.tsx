@@ -605,7 +605,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         <SearchBar
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
-          onClear={this._handleSearchBarClear}
+          handleClear={this._handleSearchBarClear}
           value={searchBarText}
         />
       </View>
@@ -686,11 +686,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarClear = () => {
-    this.setState({
-      flatListData: [],
-      flatListDataTotalCount: null,
-      searchBarText: ''
-    })
+    this._handleSearchBarTextChange('')
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -832,11 +828,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
-              ListHeaderComponent={
-                queryFrom !== PV.Filters._subscribedKey && queryFrom !== PV.Filters._downloadedKey
-                  ? this._ListHeaderComponent
-                  : null
-              }
               noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - go to the search screen')}
               noResultsTopActionText={noSubscribedPodcasts ? defaultNoSubscribedPodcastsMessage : ''}
               noResultsMessage={

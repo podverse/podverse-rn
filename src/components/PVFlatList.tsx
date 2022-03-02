@@ -1,6 +1,5 @@
 import React from 'react'
 import { RefreshControl, StyleSheet } from 'react-native'
-import Config from 'react-native-config'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
@@ -8,6 +7,10 @@ import { PV } from '../resources'
 import { ActivityIndicator, MessageWithAction, View } from './'
 
 type Props = {
+  contentOffset?: {
+    x: number
+    y: number
+  }
   data?: any
   dataTotalCount?: number | null
   disableLeftSwipe: boolean
@@ -53,6 +56,7 @@ const _renderHiddenItem = (transparent?: boolean) => <View transparent={transpar
 
 export const PVFlatList = (props: Props) => {
   const {
+    contentOffset = { x: 0, y: 0 },
     data,
     dataTotalCount,
     disableLeftSwipe = true,
@@ -111,6 +115,68 @@ export const PVFlatList = (props: Props) => {
 
   return (
     <View style={styles.view} transparent={transparent}>
+      <SwipeListView
+        closeOnRowPress
+        contentOffset={contentOffset}
+        data={shouldShowResults ? data : []}
+        disableLeftSwipe={disableLeftSwipe}
+        disableRightSwipe
+        extraData={extraData}
+        ItemSeparatorComponent={ItemSeparatorComponent}
+        keyExtractor={keyExtractor}
+        onScrollBeginDrag={onScrollBeginDrag}
+        ListFooterComponent={() => {
+          if (isLoadingMore && !isEndOfResults) {
+            return (
+              <View
+                accessible={false}
+                style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}
+                transparent={transparent}>
+                <ActivityIndicator accessible={false} testID={testID} />
+              </View>
+            )
+          } else if (!isLoadingMore && !isEndOfResults) {
+            return <View style={[styles.isLoadingMoreCell]} transparent={transparent} />
+          }
+          // else if (isEndOfResults && !isCompleteData) {
+          //   return (
+          //     <View style={[styles.lastCell, globalTheme.tableCellBorder]} transparent={transparent}>
+          //       <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.lastCellText]}>
+          //         {translate('End of results')}
+          //       </Text>
+          //     </View>
+          //   )
+          // }
+
+          return null
+        }}
+        ListHeaderComponent={ListHeaderComponent}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={onEndReachedThreshold}
+        {...(onRefresh
+          ? {
+              refreshControl: (
+                <RefreshControl
+                  refreshing={isRefreshing}
+                  onRefresh={onRefresh}
+                  tintColor={globalTheme?.activityIndicator?.color}
+                />
+              )
+            }
+          : {})}
+        renderHiddenItem={renderHiddenItem || _renderHiddenItem}
+        renderSectionHeader={renderSectionHeader}
+        renderItem={renderItem}
+        rightOpenValue={-120}
+        sections={sections}
+        stickySectionHeadersEnabled={!!stickySectionHeadersEnabled}
+        style={[globalTheme.flatList, transparent ? { backgroundColor: 'transparent' } : {},
+          !shouldShowResults ? styles.noResultsFlatList : {}]}
+        useFlatList={!useSectionList}
+        useSectionList={useSectionList}
+        listViewRef={listRef}
+        getItemLayout={getItemLayout}
+      />
       {shouldShowNoResultsFoundMessage && (
         <MessageWithAction
           bottomActionHandler={handleNoResultsBottomAction}
@@ -130,69 +196,6 @@ export const PVFlatList = (props: Props) => {
       )}
       {showNoInternetConnectionMessage && (
         <MessageWithAction message={translate('No internet connection')} testID={testID} />
-      )}
-      {shouldShowResults && (
-        <SwipeListView
-          closeOnRowPress
-          contentOffset={{ x: 0, y: 67 }}
-          data={data}
-          disableLeftSwipe={disableLeftSwipe}
-          disableRightSwipe
-          extraData={extraData}
-          ItemSeparatorComponent={ItemSeparatorComponent}
-          keyExtractor={keyExtractor}
-          onScrollBeginDrag={onScrollBeginDrag}
-          ListFooterComponent={() => {
-            if (isLoadingMore && !isEndOfResults) {
-              return (
-                <View
-                  accessible={false}
-                  style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}
-                  transparent={transparent}>
-                  <ActivityIndicator accessible={false} testID={testID} />
-                </View>
-              )
-            } else if (!isLoadingMore && !isEndOfResults) {
-              return <View style={[styles.isLoadingMoreCell]} transparent={transparent} />
-            }
-            // else if (isEndOfResults && !isCompleteData) {
-            //   return (
-            //     <View style={[styles.lastCell, globalTheme.tableCellBorder]} transparent={transparent}>
-            //       <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.lastCellText]}>
-            //         {translate('End of results')}
-            //       </Text>
-            //     </View>
-            //   )
-            // }
-
-            return null
-          }}
-          ListHeaderComponent={ListHeaderComponent}
-          onEndReached={onEndReached}
-          onEndReachedThreshold={onEndReachedThreshold}
-          {...(onRefresh
-            ? {
-                refreshControl: (
-                  <RefreshControl
-                    refreshing={isRefreshing}
-                    onRefresh={onRefresh}
-                    tintColor={globalTheme?.activityIndicator?.color}
-                  />
-                )
-              }
-            : {})}
-          renderHiddenItem={renderHiddenItem || _renderHiddenItem}
-          renderSectionHeader={renderSectionHeader}
-          renderItem={renderItem}
-          rightOpenValue={-120}
-          sections={sections}
-          stickySectionHeadersEnabled={!!stickySectionHeadersEnabled}
-          style={[globalTheme.flatList, transparent ? { backgroundColor: 'transparent' } : {}]}
-          useFlatList={!useSectionList}
-          useSectionList={useSectionList}
-          listViewRef={listRef}
-          getItemLayout={getItemLayout}
-        />
       )}
     </View>
   )
@@ -218,6 +221,10 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     paddingVertical: 12,
     textAlign: 'center'
+  },
+  noResultsFlatList: {
+    flexGrow: 0,
+    flexShrink: 0
   },
   view: {
     flex: 1

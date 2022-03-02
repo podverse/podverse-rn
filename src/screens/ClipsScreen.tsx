@@ -233,7 +233,8 @@ export class ClipsScreen extends React.Component<Props, State> {
         <SearchBar
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
-          onClear={this._handleSearchBarClear}
+          handleClear={this._handleSearchBarClear}
+          placeholder={translate('search for clip title')}
           value={searchBarText}
         />
       </View>
@@ -431,6 +432,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && queryFrom && (
           <FlatList
+            contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset}
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
             disableLeftSwipe

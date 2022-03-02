@@ -374,14 +374,18 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _ListHeaderComponent = () => {
-    const { searchBarText } = this.state
+    const { searchBarText, viewType } = this.state
+    const placeholder = viewType === PV.Filters._clipsKey
+      ? translate('search for clip title')
+      : translate('search for episode title')
 
     return (
       <View style={styles.ListHeaderComponent}>
         <SearchBar
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
-          onClear={this._handleSearchBarClear}
+          handleClear={this._handleSearchBarClear}
+          placeholder={placeholder}
           value={searchBarText}
         />
       </View>
@@ -527,7 +531,7 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarClear = () => {
-    this.setState({ searchBarText: '' })
+    this._handleSearchBarTextChange('')
   }
 
   _toggleSubscribeToPodcast = async () => {
@@ -901,6 +905,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
             {!isLoading && flatListData && podcast && (
               <FlatList
+                contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset}
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
                 disableLeftSwipe={viewType !== PV.Filters._downloadedKey}
@@ -909,14 +914,9 @@ export class PodcastScreen extends React.Component<Props, State> {
                 isRefreshing={isRefreshing}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
                 keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
-                ListHeaderComponent={
-                  viewType === PV.Filters._episodesKey || viewType === PV.Filters._clipsKey
-                    ? this._ListHeaderComponent
-                    : null
-                }
+                ListHeaderComponent={this._ListHeaderComponent}
                 noResultsMessage={noResultsMessage}
                 onEndReached={this._onEndReached}
-                renderHiddenItem={this._renderHiddenItem}
                 renderItem={this._renderItem}
                 showNoInternetConnectionMessage={offlineModeEnabled || showNoInternetConnectionMessage}
               />
