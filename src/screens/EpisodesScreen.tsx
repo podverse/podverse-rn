@@ -369,7 +369,13 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarClear = () => {
-    this._handleSearchBarTextChange('')
+    this.setState({
+      endOfResultsReached: false,
+      flatListData: [],
+      flatListDataTotalCount: null
+    }, () => {
+      this._handleSearchBarTextChange('')
+    })
   }
 
   _handleSearchBarTextChange = (text: string) => {

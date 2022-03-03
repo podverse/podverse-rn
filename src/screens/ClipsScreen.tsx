@@ -270,7 +270,13 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarClear = () => {
-    this._handleSearchBarTextChange('')
+    this.setState({
+      endOfResultsReached: false,
+      flatListData: [],
+      flatListDataTotalCount: null
+    }, () => {
+      this._handleSearchBarTextChange('')
+    })
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -536,7 +542,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           includePodcast: true
         })
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === PV.Filters._downloadedKey) {
         const downloadedEpisodeIdsObj = await getDownloadedEpisodeIds()
@@ -550,12 +556,12 @@ export class ClipsScreen extends React.Component<Props, State> {
           includePodcast: true
         })
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === PV.Filters._allPodcastsKey) {
         const results = await this._queryAllMediaRefs(querySort, queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
       } else if (PV.FilterOptions.screenFilters.ClipsScreen.sort.some((option) => option === filterKey)) {
         let results = []
@@ -569,7 +575,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         })
 
         newState.flatListData = results[0]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
         newState = assignCategoryToStateForSortSelect(newState, selectedCategory, selectedCategorySub)
       } else {
@@ -586,7 +592,7 @@ export class ClipsScreen extends React.Component<Props, State> {
 
         const results = await this._queryMediaRefsByCategory(categories, querySort, queryPage)
         newState.flatListData = results[0]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
       }
     } catch (error) {
