@@ -270,11 +270,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarClear = () => {
-    this.setState({
-      flatListData: [],
-      flatListDataTotalCount: null,
-      searchBarText: ''
-    })
+    this._handleSearchBarTextChange('')
   }
 
   _handleSearchBarTextChange = (text: string) => {
