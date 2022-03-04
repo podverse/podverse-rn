@@ -231,10 +231,11 @@ export class ClipsScreen extends React.Component<Props, State> {
     return (
       <View style={core.ListHeaderComponent}>
         <SearchBar
-          inputContainerStyle={core.searchBar}
-          onChangeText={this._handleSearchBarTextChange}
           handleClear={this._handleSearchBarClear}
-          placeholder={translate('search for clip title')}
+          icon='filter'
+          onChangeText={this._handleSearchBarTextChange}
+          placeholder={translate('filter by title')}
+          testID={`${testIDPrefix}_filter_bar`}
           value={searchBarText}
         />
       </View>

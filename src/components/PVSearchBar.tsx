@@ -10,6 +10,7 @@ type Props = {
   accessible?: boolean
   containerStyle?: any
   handleClear?: any
+  icon?: 'search' | 'filter'
   inputRef?: any
   onChangeText: any
   placeholder?: string
@@ -19,10 +20,13 @@ type Props = {
 }
 
 export const PVSearchBar = (props: Props) => {
-  const { accessible, containerStyle, handleClear, inputRef, onChangeText, placeholder, subText, testID, value } = props
+  const { accessible, containerStyle, handleClear, icon = 'search',
+    inputRef, onChangeText, placeholder, subText, testID, value } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const inputStyle = PV.Fonts.fontScale.largest === fontScaleMode ? { fontSize: PV.Fonts.largeSizes.md } : {}
+  const iconName = icon === 'filter' ? 'filter' : 'search'
+  const iconColor = icon === 'filter' ? PV.Colors.grayLighter : PV.Colors.white
 
   return (
     <RNView>
@@ -48,9 +52,9 @@ export const PVSearchBar = (props: Props) => {
         searchIcon={
           <Icon
             accessible={false}
-            color={PV.Colors.white}
+            color={iconColor}
             importantForAccessibility='no-hide-descendants'
-            name={'search'}
+            name={iconName}
             size={PV.Icons.NAV}
             solid
           />
@@ -83,8 +87,8 @@ const styles = StyleSheet.create({
     borderWidth: 0
   },
   inputStyle: {
-    fontSize: PV.Fonts.sizes.xxl,
     borderWidth: 0,
+    fontSize: PV.Fonts.sizes.xxl,
     marginLeft: 18
   },
   imageStyle: {

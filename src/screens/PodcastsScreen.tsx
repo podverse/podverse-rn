@@ -603,9 +603,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
     return (
       <View style={core.ListHeaderComponent}>
         <SearchBar
-          inputContainerStyle={core.searchBar}
-          onChangeText={this._handleSearchBarTextChange}
           handleClear={this._handleSearchBarClear}
+          icon='filter'
+          onChangeText={this._handleSearchBarTextChange}
+          placeholder={translate('filter by title')}
+          testID={`${testIDPrefix}_filter_bar`}
           value={searchBarText}
         />
       </View>
@@ -825,6 +827,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
           {!isLoading && queryFrom && (
             <FlatList
+              contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset}
               data={flatListData}
               dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={queryFrom !== PV.Filters._subscribedKey && queryFrom !== PV.Filters._downloadedKey}
@@ -834,6 +837,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
+              ListHeaderComponent={this._ListHeaderComponent}
               noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - go to the search screen')}
               noResultsTopActionText={noSubscribedPodcasts ? defaultNoSubscribedPodcastsMessage : ''}
               noResultsMessage={

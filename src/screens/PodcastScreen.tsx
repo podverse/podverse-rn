@@ -32,6 +32,7 @@ import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import {
+  checkIfContainsStringMatch,
   getAuthorityFeedUrlFromArray,
   getUsernameAndPasswordFromCredentials,
   safeKeyExtractor,
@@ -376,16 +377,17 @@ export class PodcastScreen extends React.Component<Props, State> {
   _ListHeaderComponent = () => {
     const { searchBarText, viewType } = this.state
     const placeholder = viewType === PV.Filters._clipsKey
-      ? translate('search for clip title')
-      : translate('search for episode title')
+      ? translate('filter by title')
+      : translate('filter by title')
 
     return (
       <View style={styles.ListHeaderComponent}>
         <SearchBar
-          inputContainerStyle={core.searchBar}
-          onChangeText={this._handleSearchBarTextChange}
           handleClear={this._handleSearchBarClear}
+          icon='filter'
+          onChangeText={this._handleSearchBarTextChange}
           placeholder={placeholder}
+          testID={`${testIDPrefix}_filter_bar`}
           value={searchBarText}
         />
       </View>
@@ -521,13 +523,37 @@ export class PodcastScreen extends React.Component<Props, State> {
       },
       () => {
         (async () => {
-          const state = await this._queryData(viewType, {
-            searchAllFieldsText: queryOptions.searchAllFieldsText
-          })
-          this.setState(state)
+          const { podcast } = this.state
+          const { addByRSSPodcastFeedUrl } = podcast
+          if (addByRSSPodcastFeedUrl) {
+            this._handleSearchAddByRSSEpisodes(queryOptions.searchAllFieldsText)
+          } else {
+            const state = await this._queryData(viewType, {
+              searchAllFieldsText: queryOptions.searchAllFieldsText
+            })
+            this.setState(state)
+          }
         })()
       }
     )
+  }
+
+  _handleSearchAddByRSSEpisodes = (searchAllFieldsText: string) => {
+    const { podcast } = this.state
+    const episodes = podcast?.episodes || []
+    const filteredResult = []
+    for (const episode of episodes) {
+      if (episode.title && checkIfContainsStringMatch(searchAllFieldsText, episode.title)) {
+        filteredResult.push(episode)
+      }
+    }
+
+    this.setState({
+      endOfResultsReached: true,
+      flatListData: filteredResult,
+      flatListDataTotalCount: filteredResult.length,
+      isLoadingMore: false
+    })
   }
 
   _handleSearchBarClear = () => {
