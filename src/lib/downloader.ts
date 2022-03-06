@@ -157,7 +157,6 @@ export const downloadEpisode = async (
   const customLocation = await AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
   const folderPath = customLocation ? customLocation : downloader.directories.documents
 
-  
   const destination = `${folderPath}/${episode.id}${ext}`
   const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
 
@@ -363,7 +362,7 @@ export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string)
   const downloader = await BackgroundDownloader()
   const customLocation = await AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
   const folderPath = customLocation ? customLocation : downloader.directories.documents
-  
+
   /* If downloaded episode is for an addByRSSPodcast, then the episodeMediaUrl
      will be the id, so remove the URL params from the URL, and don't append
      an extension to the file path.

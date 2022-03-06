@@ -50,9 +50,10 @@ export class SupportScreen extends React.Component<Props> {
   render() {
     return (
       <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
-        <ScrollView
-          style={styles.scrollView}>
-          <Text style={styles.text}>Podverse creates free and open source software to expand what is possible in podcasting.</Text>
+        <ScrollView style={styles.scrollView}>
+          <Text style={styles.text}>
+            Podverse creates free and open source software to expand what is possible in podcasting.
+          </Text>
           <Text style={styles.text}>Below are a few ways you can support the project:</Text>
           <Divider style={styles.divider} />
           <Text style={styles.headerText}>{translate('Support')}</Text>
@@ -82,7 +83,10 @@ export class SupportScreen extends React.Component<Props> {
           <Text style={styles.listText}>- SEO</Text>
           <Text style={styles.listText}>- Creating Memes</Text>
           <Text style={styles.listText}>- Other ideas?</Text>
-          <Text style={styles.text}>If you are interested in helping Podverse in any capacity, please join our Discord server or send us an email!</Text>
+          <Text style={styles.text}>
+            If you are interested in helping Podverse in any capacity, please join our Discord server or send us an
+            email!
+          </Text>
           <TextLink
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             onPress={this.joinOurDiscordServer}

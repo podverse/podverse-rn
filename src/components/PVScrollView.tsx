@@ -21,6 +21,7 @@ type Props = {
   style?: any
   testID?: string
   transparent?: boolean
+  keyboardShouldPersistTaps?: string
 }
 
 export const PVScrollView = (props: Props) => {
