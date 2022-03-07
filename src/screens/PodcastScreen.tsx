@@ -349,7 +349,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             (async () => {
               const newState = await this._queryData(viewType, {
                 queryPage: queryPage + 1,
-                searchAllFieldsText: this.state.searchBarText
+                searchTitle: this.state.searchBarText
               })
               this.setState(newState)
             })()
@@ -509,7 +509,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         searchBarText: text
       },
       () => {
-        this._handleSearchBarTextQuery(viewType, { searchAllFieldsText: text })
+        this._handleSearchBarTextQuery(viewType, { searchTitle: text })
       }
     )
   }
@@ -526,10 +526,10 @@ export class PodcastScreen extends React.Component<Props, State> {
           const { podcast } = this.state
           const { addByRSSPodcastFeedUrl } = podcast
           if (addByRSSPodcastFeedUrl) {
-            this._handleSearchAddByRSSEpisodes(queryOptions.searchAllFieldsText)
+            this._handleSearchAddByRSSEpisodes(queryOptions.searchTitle)
           } else {
             const state = await this._queryData(viewType, {
-              searchAllFieldsText: queryOptions.searchAllFieldsText
+              searchTitle: queryOptions.searchTitle
             })
             this.setState(state)
           }
@@ -538,12 +538,12 @@ export class PodcastScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleSearchAddByRSSEpisodes = (searchAllFieldsText: string) => {
+  _handleSearchAddByRSSEpisodes = (searchTitle: string) => {
     const { podcast } = this.state
     const episodes = podcast?.episodes || []
     const filteredResult = []
     for (const episode of episodes) {
-      if (episode.title && checkIfContainsStringMatch(searchAllFieldsText, episode.title)) {
+      if (episode.title && checkIfContainsStringMatch(searchTitle, episode.title)) {
         filteredResult.push(episode)
       }
     }
@@ -937,7 +937,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
             {!isLoading && flatListData && podcast && (
               <FlatList
-                contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset}
+                contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset()}
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
                 disableLeftSwipe={viewType !== PV.Filters._downloadedKey}
@@ -993,32 +993,32 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _queryEpisodes = async (sort: string | null, page = 1) => {
-    const { podcastId, searchBarText: searchAllFieldsText } = this.state
+    const { podcastId, searchBarText: searchTitle } = this.state
     const results = await getEpisodes({
       sort,
       page,
       podcastId,
-      ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+      ...(searchTitle ? { searchTitle } : {})
     })
 
     return results
   }
 
   _queryClips = async (sort: string | null, page = 1) => {
-    const { podcastId, searchBarText: searchAllFieldsText } = this.state
+    const { podcastId, searchBarText: searchTitle } = this.state
     const results = await getMediaRefs({
       sort,
       page,
       podcastId,
       includeEpisode: true,
-      ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+      ...(searchTitle ? { searchTitle } : {})
     })
     return results
   }
 
   _queryData = async (
     filterKey: string | null,
-    queryOptions: { queryPage?: number; searchAllFieldsText?: string } = {}
+    queryOptions: { queryPage?: number; searchTitle?: string } = {}
   ) => {
     const { flatListData, podcast, querySort, viewType } = this.state
     const newState = {

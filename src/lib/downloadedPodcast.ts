@@ -5,7 +5,7 @@ import { sortPodcastArrayAlphabetically } from '../services/podcast'
 import { clearNowPlayingItem, getNowPlayingItem } from '../services/userNowPlayingItem'
 import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
 import { BackgroundDownloader, deleteDownloadedEpisode } from './downloader'
-import { getExtensionFromUrl } from './utility'
+import { checkIfContainsStringMatch, getExtensionFromUrl } from './utility'
 
 export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) => {
   delete episode.podcast
@@ -97,10 +97,17 @@ export const getDownloadedPodcast = async (podcastId: string) => {
   return downloadedPodcast
 }
 
-export const getDownloadedPodcasts = async () => {
+export const getDownloadedPodcasts = async (searchTitle?: string) => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_PODCASTS)
-    return itemsString ? JSON.parse(itemsString) : []
+    let items = itemsString ? JSON.parse(itemsString) : []
+
+    if (searchTitle) {
+      items = items.filter((podcast: any) =>
+        checkIfContainsStringMatch(searchTitle, podcast.title))
+    }
+
+    return items
   } catch (error) {
     return []
   }

@@ -196,7 +196,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             (async () => {
               const newState = await this._queryData(queryFrom, {
                 queryPage: this.state.queryPage,
-                searchAllFieldsText: this.state.searchBarText
+                searchTitle: this.state.searchBarText
               })
               this.setState(newState)
             })()
@@ -217,7 +217,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         (async () => {
           const newState = await this._queryData(queryFrom, {
             queryPage: 1,
-            searchAllFieldsText: this.state.searchBarText
+            searchTitle: this.state.searchBarText
           })
           this.setState(newState)
         })()
@@ -290,7 +290,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       },
       () => {
         this._handleSearchBarTextQuery(queryFrom, {
-          searchAllFieldsText: text
+          searchTitle: text
         })
       }
     )
@@ -306,7 +306,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       () => {
         (async () => {
           const state = await this._queryData(queryFrom, {
-            searchAllFieldsText: queryOptions.searchAllFieldsText
+            searchTitle: queryOptions.searchTitle
           })
           this.setState(state)
         })()
@@ -435,7 +435,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && queryFrom && (
           <FlatList
-            contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset}
+            contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset()}
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
             disableLeftSwipe
@@ -507,7 +507,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     queryOptions: {
       isSubCategory?: boolean
       queryPage?: number
-      searchAllFieldsText?: string
+      searchTitle?: string
     } = {}
   ) => {
     let newState = {
@@ -529,7 +529,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       let { flatListData } = this.state
       const { queryFrom, querySort, selectedCategory, selectedCategorySub } = this.state
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
-      const { queryPage, searchAllFieldsText } = queryOptions
+      const { queryPage, searchTitle } = queryOptions
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
@@ -538,7 +538,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           sort: querySort,
           page: queryPage,
           podcastId,
-          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          ...(searchTitle ? { searchTitle } : {}),
           subscribedOnly: true,
           includePodcast: true
         })
@@ -552,7 +552,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           sort: querySort,
           page: queryPage,
           episodeId: downloadedEpisodeIds,
-          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          ...(searchTitle ? { searchTitle } : {}),
           subscribedOnly: true,
           includePodcast: true
         })
@@ -570,7 +570,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedCategorySub),
           ...(queryFrom === PV.Filters._subscribedKey ? { podcastId } : {}),
           sort: filterKey,
-          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          ...(searchTitle ? { searchTitle } : {}),
           subscribedOnly: queryFrom === PV.Filters._subscribedKey,
           includePodcast: true
         })
@@ -611,11 +611,11 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _queryAllMediaRefs = async (sort: string | null, page = 1) => {
-    const { searchBarText: searchAllFieldsText } = this.state
+    const { searchBarText: searchTitle } = this.state
     const results = await getMediaRefs({
       sort,
       page,
-      ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+      ...(searchTitle ? { searchTitle } : {}),
       includePodcast: true
     })
 
@@ -623,12 +623,12 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _queryMediaRefsByCategory = async (categoryId?: string | null, sort?: string | null, page = 1) => {
-    const { searchBarText: searchAllFieldsText } = this.state
+    const { searchBarText: searchTitle } = this.state
     const results = await getMediaRefs({
       categories: categoryId,
       sort,
       page,
-      ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+      ...(searchTitle ? { searchTitle } : {}),
       includePodcast: true
     })
     return results
