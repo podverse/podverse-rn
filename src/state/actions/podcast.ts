@@ -14,7 +14,7 @@ import {
 } from '../../services/podcast'
 import { updateDownloadedPodcasts } from './downloads'
 
-export const combineWithAddByRSSPodcasts = async (searchTitle?: string) => {
+export const combineWithAddByRSSPodcasts = async (searchTitle?: string, hasVideo?: boolean) => {
   const combinedPodcasts = await combineWithAddByRSSPodcastsService()
   let finalPodcasts = []
 
@@ -23,6 +23,10 @@ export const combineWithAddByRSSPodcasts = async (searchTitle?: string) => {
       checkIfContainsStringMatch(searchTitle, podcast.title))
   } else {
     finalPodcasts = combinedPodcasts
+  }
+
+  if (hasVideo) {
+    finalPodcasts = finalPodcasts.filter((podcast) => podcast.hasVideo)
   }
 
   setGlobal({

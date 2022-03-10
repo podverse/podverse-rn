@@ -297,6 +297,11 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
   podcast.value = meta.value
 
   const episodes = [] as any[]
+
+  /* If a feed has more video episodes than audio episodes, mark it as a hasVideo podcast. */
+  let videoCount = 0
+  let audioCount = 0
+
   if (parsedEpisodes && Array.isArray(parsedEpisodes)) {
     parsedEpisodes.sort((a, b) => (new Date(b.pubDate) as any) - (new Date(a.pubDate) as any))
 
@@ -342,6 +347,13 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
       episode.soundbite = parsedEpisode.soundbite
       episode.title = parsedEpisode.title && parsedEpisode.title.trim()
       episode.value = parsedEpisode.value
+
+      if (parsedEpisode.mediaType && parsedEpisode.mediaType.indexOf('video') >= 0) {
+        videoCount++
+      } else {
+        audioCount++
+      }
+
       episodes.push(episode)
     }
   }
@@ -349,6 +361,8 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
   episodes.sort((a, b) => (new Date(b.pubDate) as any) - (new Date(a.pubDate) as any))
 
   podcast.episodes = episodes
+  podcast.hasVideo = videoCount > audioCount
+
   await addAddByRSSPodcastFeedUrlLocally(feedUrl)
   await addParsedAddByRSSPodcastLocally(podcast)
 

@@ -378,13 +378,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _initializeScreenData = async () => {
     const { navigation } = this.props
+    const { queryMediaType, searchBarText } = this.state
+    const hasVideo = queryMediaType === PV.Filters._mediaTypeVideoOnly
     await initPlayerState(this.global)
     await initializeSettings()
 
     // Load the AsyncStorage authenticatedUser and subscribed podcasts immediately,
     // before getting the latest from server and parsing the addByPodcastFeedUrls in getAuthUserInfo.
     await getAuthenticatedUserInfoLocally()
-    await combineWithAddByRSSPodcasts()
+    await combineWithAddByRSSPodcasts(searchBarText, hasVideo)
 
     const preventIsLoading = false
     const preventAutoDownloading = true
@@ -891,7 +893,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
        this screen's local state. */
     this.setState({ isLoadingMore: false })
 
-    await combineWithAddByRSSPodcasts(searchBarText)
+    await combineWithAddByRSSPodcasts(searchBarText, hasVideo)
 
     if (!preventAutoDownloading) {
       await handleAutoDownloadEpisodes()
