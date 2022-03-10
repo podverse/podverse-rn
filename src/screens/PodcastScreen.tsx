@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { convertToNowPlayingItem } from 'podverse-shared'
+import { convertToNowPlayingItem, Episode } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
@@ -747,6 +747,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       podcast,
       podcastId,
       querySort,
+      searchBarText,
       selectedFilterLabel,
       selectedSortLabel,
       selectedItem,
@@ -781,7 +782,13 @@ export class PodcastScreen extends React.Component<Props, State> {
       const downloadedPodcast = downloadedPodcasts.find(
         (x: any) => (podcast && x.id === podcast.id) || x.id === podcastId
       )
-      flatListData = (downloadedPodcast && downloadedPodcast.episodes) || []
+      let episodes = downloadedPodcast.episodes || []
+      if (searchBarText) {
+        episodes = episodes.filter((episode: Episode) =>
+        episode?.title && checkIfContainsStringMatch(searchBarText, episode.title))
+      }
+
+      flatListData = episodes      
       flatListDataTotalCount = flatListData.length
     }
 
