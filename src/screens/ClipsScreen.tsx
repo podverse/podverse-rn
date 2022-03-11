@@ -13,7 +13,6 @@ import {
   TableSectionSelectors,
   View
 } from '../components'
-import { getDownloadedEpisodeIds } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
@@ -195,8 +194,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           () => {
             (async () => {
               const newState = await this._queryData(queryFrom, {
-                queryPage: this.state.queryPage,
-                searchTitle: this.state.searchBarText
+                queryPage: this.state.queryPage
               })
               this.setState(newState)
             })()
@@ -216,8 +214,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       () => {
         (async () => {
           const newState = await this._queryData(queryFrom, {
-            queryPage: 1,
-            searchTitle: this.state.searchBarText
+            queryPage: 1
           })
           this.setState(newState)
         })()
@@ -289,14 +286,12 @@ export class ClipsScreen extends React.Component<Props, State> {
         searchBarText: text
       },
       () => {
-        this._handleSearchBarTextQuery(queryFrom, {
-          searchTitle: text
-        })
+        this._handleSearchBarTextQuery(queryFrom)
       }
     )
   }
 
-  _handleSearchBarTextQuery = (queryFrom: string | null, queryOptions: any) => {
+  _handleSearchBarTextQuery = (queryFrom: string | null) => {
     this.setState(
       {
         flatListData: [],
@@ -305,9 +300,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       },
       () => {
         (async () => {
-          const state = await this._queryData(queryFrom, {
-            searchTitle: queryOptions.searchTitle
-          })
+          const state = await this._queryData(queryFrom)
           this.setState(state)
         })()
       }
@@ -507,7 +500,6 @@ export class ClipsScreen extends React.Component<Props, State> {
     queryOptions: {
       isSubCategory?: boolean
       queryPage?: number
-      searchTitle?: string
     } = {}
   ) => {
     let newState = {
@@ -527,9 +519,9 @@ export class ClipsScreen extends React.Component<Props, State> {
 
     try {
       let { flatListData } = this.state
-      const { queryFrom, querySort, selectedCategory, selectedCategorySub } = this.state
+      const { queryFrom, querySort, searchBarText, selectedCategory, selectedCategorySub } = this.state
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
-      const { queryPage, searchTitle } = queryOptions
+      const { queryPage } = queryOptions
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
@@ -538,21 +530,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           sort: querySort,
           page: queryPage,
           podcastId,
-          ...(searchTitle ? { searchTitle } : {}),
-          subscribedOnly: true,
-          includePodcast: true
-        })
-        newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = results[0].length < 20
-        newState.flatListDataTotalCount = results[1]
-      } else if (filterKey === PV.Filters._downloadedKey) {
-        const downloadedEpisodeIdsObj = await getDownloadedEpisodeIds()
-        const downloadedEpisodeIds = Object.keys(downloadedEpisodeIdsObj)
-        const results = await getMediaRefs({
-          sort: querySort,
-          page: queryPage,
-          episodeId: downloadedEpisodeIds,
-          ...(searchTitle ? { searchTitle } : {}),
+          ...(searchBarText ? { searchTitle: searchBarText } : {}),
           subscribedOnly: true,
           includePodcast: true
         })
@@ -570,7 +548,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedCategorySub),
           ...(queryFrom === PV.Filters._subscribedKey ? { podcastId } : {}),
           sort: filterKey,
-          ...(searchTitle ? { searchTitle } : {}),
+          ...(searchBarText ? { searchTitle: searchBarText } : {}),
           subscribedOnly: queryFrom === PV.Filters._subscribedKey,
           includePodcast: true
         })
