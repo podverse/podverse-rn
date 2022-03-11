@@ -377,14 +377,16 @@ export class PodcastScreen extends React.Component<Props, State> {
   _ListHeaderComponent = () => {
     const { searchBarText, viewType } = this.state
     const placeholder = viewType === PV.Filters._clipsKey
-      ? translate('filter by title')
-      : translate('filter by title')
+      ? translate('Search')
+      : translate('Search')
 
     return (
       <View style={styles.ListHeaderComponent}>
         <SearchBar
           handleClear={this._handleSearchBarClear}
+          hideIcon
           icon='filter'
+          noContainerPadding
           onChangeText={this._handleSearchBarTextChange}
           placeholder={placeholder}
           testID={`${testIDPrefix}_filter_bar`}

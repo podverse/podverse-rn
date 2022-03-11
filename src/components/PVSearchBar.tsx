@@ -10,8 +10,10 @@ type Props = {
   accessible?: boolean
   containerStyle?: any
   handleClear?: any
+  hideIcon?: boolean
   icon?: 'search' | 'filter'
   inputRef?: any
+  noContainerPadding?: boolean
   onChangeText: any
   placeholder?: string
   subText?: string
@@ -20,13 +22,17 @@ type Props = {
 }
 
 export const PVSearchBar = (props: Props) => {
-  const { accessible, containerStyle, handleClear, icon = 'search',
-    inputRef, onChangeText, placeholder, subText, testID, value } = props
+  const { accessible, containerStyle, handleClear, hideIcon, icon = 'search',
+    inputRef, noContainerPadding, onChangeText, placeholder, subText, testID, value } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const inputStyle = PV.Fonts.fontScale.largest === fontScaleMode ? { fontSize: PV.Fonts.largeSizes.md } : {}
   const iconName = icon === 'filter' ? 'filter' : 'search'
   const iconColor = icon === 'filter' ? PV.Colors.grayLighter : PV.Colors.white
+
+  const finalContainerStyle = noContainerPadding
+    ? { ...containerStyle, paddingVertical: 0 }
+    : containerStyle
 
   return (
     <RNView>
@@ -42,14 +48,14 @@ export const PVSearchBar = (props: Props) => {
             size={20}
           />
         }
-        containerStyle={[styles.containerStyle, containerStyle]}
+        containerStyle={[styles.containerStyle, finalContainerStyle]}
         inputContainerStyle={styles.inputContainerStyle}
         inputStyle={[styles.inputStyle, globalTheme.textInput, inputStyle]}
         onChangeText={onChangeText}
         placeholder={placeholder}
         ref={inputRef}
         returnKeyType='search'
-        searchIcon={
+        searchIcon={!!hideIcon ? null :
           <Icon
             accessible={false}
             color={iconColor}
@@ -79,6 +85,9 @@ export const PVSearchBar = (props: Props) => {
 const styles = StyleSheet.create({
   containerStyle: {
     backgroundColor: 'transparent',
+    borderBottomColor: 'white',
+    borderBottomWidth: 0.3,
+    borderTopColor: 'transparent',
     borderWidth: 0,
     paddingHorizontal: 12
   },

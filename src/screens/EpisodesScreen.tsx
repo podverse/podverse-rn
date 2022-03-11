@@ -301,9 +301,11 @@ export class EpisodesScreen extends React.Component<Props, State> {
       <View style={core.ListHeaderComponent}>
         <SearchBar
           handleClear={this._handleSearchBarClear}
+          hideIcon
           icon='filter'
+          noContainerPadding
           onChangeText={this._handleSearchBarTextChange}
-          placeholder={translate('filter by title')}
+          placeholder={translate('Search')}
           testID={`${testIDPrefix}_filter_bar`}
           value={searchBarText}
         />
