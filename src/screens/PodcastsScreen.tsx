@@ -90,8 +90,8 @@ let isInitialLoad = true
 
 export class PodcastsScreen extends React.Component<Props, State> {
   shouldLoad: boolean
-  _unsubscribe: any | null 
-  
+  _unsubscribe: any | null
+
   constructor(props: Props) {
     super(props)
 
@@ -128,15 +128,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { navigation } = this.props
 
     iapInitConnection()
-    
+
     Linking.getInitialURL().then((initialUrl) => {
-      // settimeout here gives a chance to the rest of 
+      // settimeout here gives a chance to the rest of
       // the app to have finished loading and navigate correctly
       setTimeout(() => {
-        if(initialUrl) {
-          this._handleOpenURLEvent({url:initialUrl})
+        if (initialUrl) {
+          this._handleOpenURLEvent({ url: initialUrl })
         }
-      }, 300);
+      }, 300)
     })
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
@@ -183,7 +183,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     this._unsubscribe = navigation.addListener('willFocus', () => {
       this._setDownloadedDataIfOffline()
-    });
+    })
   }
 
   componentWillUnmount() {
@@ -202,7 +202,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _setDownloadedDataIfOffline = async () => {
     const isConnected = await hasValidNetworkConnection()
-    if(!isConnected) {
+    if (!isConnected) {
       const preventIsLoading = false
       const preventAutoDownloading = true
       this.handleSelectFilterItem(PV.Filters._downloadedKey, preventIsLoading, preventAutoDownloading)
@@ -336,9 +336,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const splitPath = route.split('/')
         const path = splitPath[1] ? splitPath[1] : ''
         const id = splitPath[2] ? splitPath[2] : ''
+        const urlParamsString = splitPath[splitPath.length - 1].split('?')[1]
+        const urlParams = {}
+        if (urlParamsString) {
+          const urlParamsArr = urlParamsString.split('&')
+          if (urlParamsArr.length) {
+            urlParamsArr.forEach((param) => {
+              const [key, value] = param.split('=')
+              urlParams[key] = value
+            })
+          }
+        }
 
         await this._goBackWithDelay()
-
         if (path === PV.DeepLinks.Clip.pathPrefix) {
           await this._handleDeepLinkClip(id)
         } else if (path === PV.DeepLinks.Episode.pathPrefix) {
@@ -366,6 +376,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
           await navigate(PV.RouteNames.MyLibraryScreen)
           await navigate(PV.RouteNames.ProfilesScreen, {
             navToProfileWithId: id
+          })
+        } else if (path.startsWith(PV.DeepLinks.Account.resetPassword)) {
+          navigate(PV.RouteNames.ResetPasswordScreen, {
+            resetToken: urlParams.token
           })
         } else {
           await navigate(PV.RouteNames.PodcastsScreen)
@@ -934,12 +948,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
       const hasInternetConnection = await hasValidNetworkConnection()
       const isMediaTypeSelected = PV.FilterOptions.mediaTypeItems.some((option) => option.value === filterKey)
-      const isSubscribedSelected = filterKey === PV.Filters._subscribedKey
-        || (isMediaTypeSelected && queryFrom === PV.Filters._subscribedKey)
-      const isDownloadedSelected = filterKey === PV.Filters._downloadedKey
-        || (isMediaTypeSelected && queryFrom === PV.Filters._downloadedKey)
-      const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey
-        || (isMediaTypeSelected && queryFrom === PV.Filters._allPodcastsKey)
+      const isSubscribedSelected =
+        filterKey === PV.Filters._subscribedKey || (isMediaTypeSelected && queryFrom === PV.Filters._subscribedKey)
+      const isDownloadedSelected =
+        filterKey === PV.Filters._downloadedKey || (isMediaTypeSelected && queryFrom === PV.Filters._downloadedKey)
+      const isAllPodcastsSelected =
+        filterKey === PV.Filters._allPodcastsKey || (isMediaTypeSelected && queryFrom === PV.Filters._allPodcastsKey)
       newState.queryMediaType = isMediaTypeSelected ? filterKey : prevState.queryMediaType
 
       if (isSubscribedSelected) {
@@ -956,8 +970,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
       } else if (
-        PV.FilterOptions.screenFilters.PodcastsScreen.sort.some((option) => option === filterKey)
-        || PV.FilterOptions.screenFilters.PodcastsScreen.subscribedSort.some((option) => option === filterKey)
+        PV.FilterOptions.screenFilters.PodcastsScreen.sort.some((option) => option === filterKey) ||
+        PV.FilterOptions.screenFilters.PodcastsScreen.subscribedSort.some((option) => option === filterKey)
       ) {
         newState.showNoInternetConnectionMessage = !hasInternetConnection
         const results = await getPodcasts({
@@ -993,7 +1007,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     } catch (error) {
       console.log('PodcastsScreen _queryData error', error)
     }
-    
+
     newState.flatListData = this.cleanFlatListData(newState.flatListData)
 
     this.shouldLoad = true

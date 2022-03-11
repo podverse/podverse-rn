@@ -58,7 +58,7 @@ const testIDPrefix = 'episodes_screen'
 
 export class EpisodesScreen extends React.Component<Props, State> {
   shouldLoad: boolean
-  _unsubscribe: any | null 
+  _unsubscribe: any | null
 
   constructor(props: Props) {
     super(props)
@@ -106,7 +106,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
     trackPageView('/episodes', 'Episodes Screen')
     this._unsubscribe = this.props.navigation.addListener('willFocus', () => {
       this._setDownloadedDataIfOffline()
-    });
+    })
   }
 
   componentWillUnmount() {
@@ -115,7 +115,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
   _setDownloadedDataIfOffline = async () => {
     const isConnected = await hasValidNetworkConnection()
-    if(!isConnected) {
+    if (!isConnected) {
       this.handleSelectFilterItem(PV.Filters._downloadedKey)
     }
   }
@@ -553,12 +553,12 @@ export class EpisodesScreen extends React.Component<Props, State> {
       const { queryPage, searchAllFieldsText } = queryOptions
 
       const isMediaTypeSelected = PV.FilterOptions.mediaTypeItems.some((option) => option.value === filterKey)
-      const isSubscribedSelected = filterKey === PV.Filters._subscribedKey
-        || (isMediaTypeSelected && queryFrom === PV.Filters._subscribedKey)
-      const isDownloadedSelected = filterKey === PV.Filters._downloadedKey
-        || (isMediaTypeSelected && queryFrom === PV.Filters._downloadedKey)
-      const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey
-        || (isMediaTypeSelected && queryFrom === PV.Filters._allPodcastsKey)
+      const isSubscribedSelected =
+        filterKey === PV.Filters._subscribedKey || (isMediaTypeSelected && queryFrom === PV.Filters._subscribedKey)
+      const isDownloadedSelected =
+        filterKey === PV.Filters._downloadedKey || (isMediaTypeSelected && queryFrom === PV.Filters._downloadedKey)
+      const isAllPodcastsSelected =
+        filterKey === PV.Filters._allPodcastsKey || (isMediaTypeSelected && queryFrom === PV.Filters._allPodcastsKey)
       newState.queryMediaType = isMediaTypeSelected ? filterKey : queryMediaType
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData

@@ -68,8 +68,8 @@ export class PlayerScreen extends React.Component<Props> {
       podcastFunding?.length > 0 ||
       episodeFunding?.length > 0 ||
       (Config.ENABLE_VALUE_TAG_TRANSACTIONS && podcastValueFinal?.length > 0) ||
-        episodeValue?.length > 0 ||
-        podcastValue?.length > 0
+      episodeValue?.length > 0 ||
+      podcastValue?.length > 0
 
     return {
       title: '',
@@ -81,8 +81,9 @@ export class PlayerScreen extends React.Component<Props> {
       headerRight: () => (
         <RNView style={core.row}>
           {/* Always show NavFundingIcon in dev, otherwise funding tag will be unavailable to Appium tests. */}
-          {(!!Config.IS_DEV
-            || !!showFundingIcon) && <NavFundingIcon globalTheme={globalTheme} navigation={navigation} />}
+          {(!!Config.IS_DEV || !!showFundingIcon) && (
+            <NavFundingIcon globalTheme={globalTheme} navigation={navigation} />
+          )}
           {!addByRSSPodcastFeedUrl && (
             <RNView style={core.row}>
               <NavMakeClipIcon

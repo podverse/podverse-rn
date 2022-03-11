@@ -92,7 +92,10 @@ export const trackPlayerScreenPageView = (item: any) => {
       )
     }
     if (item?.podcastId) {
-      trackPageView('/podcast/' + getTrackingIdText(item.podcastId, !!item.addByRSSPodcastFeedUrl), 'Player Screen - Podcast - ' + encodeURIComponent(item.podcastTitle))
+      trackPageView(
+        '/podcast/' + getTrackingIdText(item.podcastId, !!item.addByRSSPodcastFeedUrl),
+        'Player Screen - Podcast - ' + encodeURIComponent(item.podcastTitle)
+      )
     }
   } catch (error) {
     console.log('trackPlayerScreenPageView error', error)
