@@ -715,5 +715,12 @@
     "favorite podcasts on brandName": "favorittmerk nettradioopptak på Podverse",
     "trackingTermsText2": "Popularitetsrangering på Podverse sorteres etter unike lyttere for innhold.",
     "Libre Libraries": "Frie bibliotek",
-    "Streaming Amount for this podcast": "Strømmingsmengde for dette nettradioopptaket"
+    "Streaming Amount for this podcast": "Strømmingsmengde for dette nettradioopptaket",
+    "New Password": "Nytt passord",
+    "Something went wrong when resetting your password": "Noe gikk galt under tilbakestilling av passord",
+    "Submit": "Send inn",
+    "Success": "Vellykket",
+    "Your password was changed succesfully": "Passordet ditt ble endret",
+    "Reset Password Failed": "Kunne ikke tilbakestille passord",
+    "Show your support": "Vis din støtte"
 }
