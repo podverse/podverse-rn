@@ -37,5 +37,8 @@ export const DeepLinks = {
   },
   Search: {
     path: 'search'
+  },
+  Account: {
+    resetPassword: 'reset-password'
   }
 }

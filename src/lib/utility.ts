@@ -566,7 +566,7 @@ export const convertUrlToSecureHTTPS = (originalUrl: string) => {
 }
 
 export const encodeSpacesInString = (str: string) => {
-  return str.replace(/ /g,"%20")
+  return str.replace(/ /g, '%20')
 }
 
 export const getUniqueArrayByKey = (arr: any[], key: string) => {

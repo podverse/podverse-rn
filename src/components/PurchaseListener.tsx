@@ -22,7 +22,7 @@ export class PurchaseListener extends React.Component<Props> {
   componentDidMount() {
     const { navigation } = this.props
 
-    this.purchaseUpdateSubscription = purchaseUpdatedListener((purchase: InAppPurchase | Purchase) => {
+    const processPurchase = (purchase: InAppPurchase | Purchase) => {
       (async () => {
         const { productId, purchaseToken, transactionId, transactionReceipt } = purchase
 
@@ -42,7 +42,9 @@ export class PurchaseListener extends React.Component<Props> {
           }
         }
       })()
-    })
+    }
+
+    this.purchaseUpdateSubscription = purchaseUpdatedListener(processPurchase)
 
     this.purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
       console.log('purchaseErrorListener', error)
