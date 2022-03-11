@@ -574,8 +574,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             (async () => {
               const nextPage = queryPage + 1
               const newState = await this._queryData(queryFrom, this.state, {
-                queryPage: nextPage,
-                searchTitle: this.state.searchBarText
+                queryPage: nextPage
               })
               this.setState(newState)
             })()
