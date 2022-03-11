@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { encode as btoa } from 'base-64'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { downloadEpisode } from '../lib/downloader'
-import { convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
+import { checkIfContainsStringMatch, convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { getAutoDownloadSettings, getAutoDownloadsLastRefreshDate } from './autoDownloads'
@@ -25,7 +25,11 @@ export const hasAddByRSSEpisodesLocally = async () => {
   return results.length > 0
 }
 
-export const combineEpisodesWithAddByRSSEpisodesLocally = async (results: any[]) => {
+export const combineEpisodesWithAddByRSSEpisodesLocally = async (
+  results: any[],
+  searchTitle?: string,
+  hasVideo?: boolean
+) => {
   let mostRecentDate = ''
   let oldestDate = ''
 
@@ -48,10 +52,19 @@ export const combineEpisodesWithAddByRSSEpisodesLocally = async (results: any[])
   mostRecentDate = mostRecentDate ? mostRecentDate : new Date().toString()
   oldestDate = oldestDate ? oldestDate : new Date(0).toString()
 
-  const addByRSSEpisodes =
+  let addByRSSEpisodes =
     results.length > 0
       ? await getAddByRSSEpisodesLocallyByDateRange(new Date(mostRecentDate), new Date(oldestDate))
       : await getAddByRSSEpisodesLocally()
+
+  if (searchTitle) {
+    addByRSSEpisodes = addByRSSEpisodes.filter((episode) => episode.title
+      && checkIfContainsStringMatch(searchTitle, episode.title))
+  }
+
+  if (hasVideo) {
+    addByRSSEpisodes = addByRSSEpisodes.filter((episode) => episode.hasVideo)
+  }
 
   const sortedResults = [...results[0], ...addByRSSEpisodes].sort((a: any, b: any) => {
     const dateA = new Date(a.pubDate) as any

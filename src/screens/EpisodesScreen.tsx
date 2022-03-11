@@ -170,7 +170,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
         flatListData: [],
         flatListDataTotalCount: null,
         isLoading: false,
-        isLoadingMore: true,
         queryFrom: selectedKey,
         queryPage: 1,
         querySort: sort,
@@ -264,8 +263,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           () => {
             (async () => {
               const newState = await this._queryData(queryFrom, {
-                queryPage: this.state.queryPage,
-                searchTitle: this.state.searchBarText
+                queryPage: this.state.queryPage
               })
               this.setState(newState)
             })()
@@ -285,8 +283,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       () => {
         (async () => {
           const newState = await this._queryData(queryFrom, {
-            queryPage: 1,
-            searchTitle: this.state.searchBarText
+            queryPage: 1
           })
           this.setState(newState)
         })()
@@ -392,10 +389,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
       isLoadingMore: true,
       searchBarText: text
     })
-    this._handleSearchBarTextQuery(queryFrom, { searchTitle: text })
+    this._handleSearchBarTextQuery(queryFrom)
   }
 
-  _handleSearchBarTextQuery = (queryFrom: string | null, queryOptions: any) => {
+  _handleSearchBarTextQuery = (queryFrom: string | null) => {
     this.setState(
       {
         flatListData: [],
@@ -404,9 +401,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       },
       () => {
         (async () => {
-          const state = await this._queryData(queryFrom, {
-            searchTitle: queryOptions.searchTitle
-          })
+          const state = await this._queryData(queryFrom)
           this.setState(state)
         })()
       }
@@ -465,6 +460,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
         ? translate('Scan QR Code')
         : translate('Search')
 
+    const isCategoryScreen = queryFrom === PV.Filters._categoryKey
+
     return (
       <View style={styles.view} testID='episodes_screen_view'>
         <TableSectionSelectors
@@ -489,6 +486,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && queryFrom && (
           <FlatList
+            {...(isCategoryScreen ? {} : { contentOffset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset() } )}
             contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset()}
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
@@ -499,7 +497,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
-            ListHeaderComponent={this._ListHeaderComponent}
+            {...(isCategoryScreen ? {} : 
+              { ListHeaderComponent: this._ListHeaderComponent } )}
             noResultsMessage={
               // eslint-disable-next-line max-len
               noSubscribedPodcasts
@@ -540,7 +539,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
     queryOptions: {
       isCategorySub?: boolean
       queryPage?: number
-      searchTitle?: string
     } = {}
   ) => {
     let newState = {
@@ -557,12 +555,15 @@ export class EpisodesScreen extends React.Component<Props, State> {
       return newState
     }
 
-    try {
-      let { flatListData } = this.state
-      const { queryFrom, queryMediaType, querySort, selectedCategory, selectedCategorySub } = this.state
-      const podcastId = this.global.session.userInfo.subscribedPodcastIds
-      const { queryPage, searchTitle } = queryOptions
+    let { flatListData } = this.state
+    const { queryFrom, queryMediaType, querySort, searchBarText: searchTitle,
+      selectedCategory, selectedCategorySub } = this.state
 
+    try {
+      const podcastId = this.global.session.userInfo.subscribedPodcastIds
+      const { queryPage } = queryOptions
+
+      const hasVideo = queryMediaType === PV.Filters._mediaTypeVideoOnly
       const isMediaTypeSelected = PV.FilterOptions.mediaTypeItems.some((option) => option.value === filterKey)
       const isSubscribedSelected = filterKey === PV.Filters._subscribedKey
         || (isMediaTypeSelected && queryFrom === PV.Filters._subscribedKey)
@@ -590,15 +591,18 @@ export class EpisodesScreen extends React.Component<Props, State> {
         }
 
         const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally()
-        if (querySort === PV.Filters._mostRecentKey && hasAddByRSSEpisodes) {
-          results = await combineEpisodesWithAddByRSSEpisodesLocally(results)
+        if (
+          querySort === PV.Filters._mostRecentKey
+          && hasAddByRSSEpisodes) {
+          results = await combineEpisodesWithAddByRSSEpisodesLocally(results, searchTitle, hasVideo)
         }
 
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
       } else if (isDownloadedSelected) {
-        const downloadedEpisodes = await getDownloadedEpisodes()
+        const podcastSearchTitle = ''
+        const downloadedEpisodes = await getDownloadedEpisodes(podcastSearchTitle, searchTitle, hasVideo)
         newState.flatListData = [...downloadedEpisodes]
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = downloadedEpisodes.length
@@ -620,7 +624,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
         const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally()
         if (queryFrom === PV.Filters._subscribedKey && filterKey === PV.Filters._mostRecentKey && hasAddByRSSEpisodes) {
-          results = await combineEpisodesWithAddByRSSEpisodesLocally(results)
+          results = await combineEpisodesWithAddByRSSEpisodesLocally(results, searchTitle)
         }
 
         newState.flatListData = results[0]
@@ -674,7 +678,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _queryEpisodesByCategory = async (categoryId?: string | null, sort?: string | null, page = 1) => {
-    const { queryMediaType, searchBarText: searchTitle } = this.state
+    const { queryMediaType } = this.state
     const cleanedSort =
       sort === PV.Filters._mostRecentKey || sort === PV.Filters._randomKey ? PV.Filters._topPastWeek : sort
 
@@ -682,7 +686,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
       categories: categoryId,
       sort: cleanedSort,
       page,
-      ...(searchTitle ? { searchTitle } : {}),
       includePodcast: true,
       ...(queryMediaType === PV.Filters._mediaTypeVideoOnly ? { hasVideo: true } : {})
     })

@@ -806,7 +806,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         ? translate('Scan QR Code')
         : translate('Search')
 
-    const isCategoryScreen = !!selectedCategory
+    const isCategoryScreen = queryFrom === PV.Filters._categoryKey
 
     return (
       <View style={styles.view} testID={`${testIDPrefix}_view`}>
@@ -948,6 +948,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         selectedCategory,
         selectedCategorySub
       } = prevState
+      
+      const hasVideo = queryMediaType === PV.Filters._mediaTypeVideoOnly
 
       const hasInternetConnection = await hasValidNetworkConnection()
       const isMediaTypeSelected = PV.FilterOptions.mediaTypeItems.some((option) => option.value === filterKey)
@@ -963,7 +965,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await getAuthUserInfo() // get the latest subscribedPodcastIds first
         await this._querySubscribedPodcasts(preventAutoDownloading)
       } else if (isDownloadedSelected) {
-        const podcasts = await getDownloadedPodcasts(searchTitle)
+        const podcasts = await getDownloadedPodcasts(searchTitle, hasVideo)
         newState.flatListData = [...podcasts]
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = podcasts.length

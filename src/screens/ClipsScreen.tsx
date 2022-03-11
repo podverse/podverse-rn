@@ -408,6 +408,8 @@ export class ClipsScreen extends React.Component<Props, State> {
 
     const showOfflineMessage = offlineModeEnabled
 
+    const isCategoryScreen = queryFrom === PV.Filters._categoryKey
+
     return (
       <View style={styles.view} testID={`${testIDPrefix}_view`}>
         <TableSectionSelectors
@@ -430,7 +432,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && queryFrom && (
           <FlatList
-            contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset()}
+            {...(isCategoryScreen ? {} : { contentOffset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset() } )}
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
             disableLeftSwipe
@@ -440,7 +442,8 @@ export class ClipsScreen extends React.Component<Props, State> {
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
-            ListHeaderComponent={this._ListHeaderComponent}
+            {...(isCategoryScreen ? {} : 
+              { ListHeaderComponent: this._ListHeaderComponent } )}
             noResultsTopActionText={noSubscribedPodcasts ? translate('Search') : ''}
             noResultsMessage={
               noSubscribedPodcasts ? translate('You are not subscribed to any podcasts') : translate('No clips found')
