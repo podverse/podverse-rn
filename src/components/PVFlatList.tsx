@@ -95,7 +95,7 @@ export const PVFlatList = (props: Props) => {
   } = props
 
   const [globalTheme] = useGlobal('globalTheme')
-  let noResultsFound = !dataTotalCount
+  let noResultsFound = data?.length === 0 || !dataTotalCount
   if (sections) {
     noResultsFound = true
     for (const section of sections) {
