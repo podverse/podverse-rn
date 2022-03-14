@@ -1,5 +1,5 @@
 import { getGlobal, setGlobal } from 'reactn'
-import { safelyUnwrapNestedVariable } from '../../lib/utility'
+import { checkIfContainsStringMatch, safelyUnwrapNestedVariable } from '../../lib/utility'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import {
@@ -14,11 +14,24 @@ import {
 } from '../../services/podcast'
 import { updateDownloadedPodcasts } from './downloads'
 
-export const combineWithAddByRSSPodcasts = async () => {
+export const combineWithAddByRSSPodcasts = async (searchTitle?: string, hasVideo?: boolean) => {
   const combinedPodcasts = await combineWithAddByRSSPodcastsService()
+  let finalPodcasts = []
+
+  if (searchTitle) {
+    finalPodcasts = combinedPodcasts.filter((podcast) =>
+      checkIfContainsStringMatch(searchTitle, podcast.title))
+  } else {
+    finalPodcasts = combinedPodcasts
+  }
+
+  if (hasVideo) {
+    finalPodcasts = finalPodcasts.filter((podcast) => podcast.hasVideo)
+  }
+
   setGlobal({
-    subscribedPodcasts: combinedPodcasts,
-    subscribedPodcastsTotalCount: combinedPodcasts?.length
+    subscribedPodcasts: finalPodcasts,
+    subscribedPodcastsTotalCount: finalPodcasts?.length
   })
 }
 

@@ -213,12 +213,6 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
               )
             }
           }}
-          onClear={() => {
-            this.setState({
-              searchText: '',
-              searchResults: []
-            })
-          }}
           testID='transcript_search_bar'
           value={this.state.searchText}
         />

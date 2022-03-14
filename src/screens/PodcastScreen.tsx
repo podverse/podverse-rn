@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { convertToNowPlayingItem } from 'podverse-shared'
+import { convertToNowPlayingItem, Episode } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
@@ -32,6 +32,7 @@ import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import {
+  checkIfContainsStringMatch,
   getAuthorityFeedUrlFromArray,
   getUsernameAndPasswordFromCredentials,
   safeKeyExtractor,
@@ -348,7 +349,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             (async () => {
               const newState = await this._queryData(viewType, {
                 queryPage: queryPage + 1,
-                searchAllFieldsText: this.state.searchBarText
+                searchTitle: this.state.searchBarText
               })
               this.setState(newState)
             })()
@@ -374,14 +375,21 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _ListHeaderComponent = () => {
-    const { searchBarText } = this.state
+    const { searchBarText, viewType } = this.state
+    const placeholder = viewType === PV.Filters._clipsKey
+      ? translate('Search')
+      : translate('Search')
 
     return (
       <View style={styles.ListHeaderComponent}>
         <SearchBar
-          inputContainerStyle={core.searchBar}
+          handleClear={this._handleSearchBarClear}
+          hideIcon
+          icon='filter'
+          noContainerPadding
           onChangeText={this._handleSearchBarTextChange}
-          onClear={this._handleSearchBarClear}
+          placeholder={placeholder}
+          testID={`${testIDPrefix}_filter_bar`}
           value={searchBarText}
         />
       </View>
@@ -503,7 +511,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         searchBarText: text
       },
       () => {
-        this._handleSearchBarTextQuery(viewType, { searchAllFieldsText: text })
+        this._handleSearchBarTextQuery(viewType, { searchTitle: text })
       }
     )
   }
@@ -517,17 +525,47 @@ export class PodcastScreen extends React.Component<Props, State> {
       },
       () => {
         (async () => {
-          const state = await this._queryData(viewType, {
-            searchAllFieldsText: queryOptions.searchAllFieldsText
-          })
-          this.setState(state)
+          const { podcast } = this.state
+          const { addByRSSPodcastFeedUrl } = podcast
+          if (addByRSSPodcastFeedUrl) {
+            this._handleSearchAddByRSSEpisodes(queryOptions.searchTitle)
+          } else {
+            const state = await this._queryData(viewType, {
+              searchTitle: queryOptions.searchTitle
+            })
+            this.setState(state)
+          }
         })()
       }
     )
   }
 
+  _handleSearchAddByRSSEpisodes = (searchTitle: string) => {
+    const { podcast } = this.state
+    const episodes = podcast?.episodes || []
+    const filteredResult = []
+    for (const episode of episodes) {
+      if (episode.title && checkIfContainsStringMatch(searchTitle, episode.title)) {
+        filteredResult.push(episode)
+      }
+    }
+
+    this.setState({
+      endOfResultsReached: true,
+      flatListData: filteredResult,
+      flatListDataTotalCount: filteredResult.length,
+      isLoadingMore: false
+    })
+  }
+
   _handleSearchBarClear = () => {
-    this.setState({ searchBarText: '' })
+    this.setState({
+      endOfResultsReached: false,
+      flatListData: [],
+      flatListDataTotalCount: null
+    }, () => {
+      this._handleSearchBarTextChange('')
+    })
   }
 
   _toggleSubscribeToPodcast = async () => {
@@ -711,6 +749,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       podcast,
       podcastId,
       querySort,
+      searchBarText,
       selectedFilterLabel,
       selectedSortLabel,
       selectedItem,
@@ -745,7 +784,13 @@ export class PodcastScreen extends React.Component<Props, State> {
       const downloadedPodcast = downloadedPodcasts.find(
         (x: any) => (podcast && x.id === podcast.id) || x.id === podcastId
       )
-      flatListData = (downloadedPodcast && downloadedPodcast.episodes) || []
+      let episodes = downloadedPodcast.episodes || []
+      if (searchBarText) {
+        episodes = episodes.filter((episode: Episode) =>
+        episode?.title && checkIfContainsStringMatch(searchBarText, episode.title))
+      }
+
+      flatListData = episodes      
       flatListDataTotalCount = flatListData.length
     }
 
@@ -901,6 +946,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
             {!isLoading && flatListData && podcast && (
               <FlatList
+                contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset()}
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
                 disableLeftSwipe={viewType !== PV.Filters._downloadedKey}
@@ -909,14 +955,9 @@ export class PodcastScreen extends React.Component<Props, State> {
                 isRefreshing={isRefreshing}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
                 keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
-                ListHeaderComponent={
-                  viewType === PV.Filters._episodesKey || viewType === PV.Filters._clipsKey
-                    ? this._ListHeaderComponent
-                    : null
-                }
+                ListHeaderComponent={this._ListHeaderComponent}
                 noResultsMessage={noResultsMessage}
                 onEndReached={this._onEndReached}
-                renderHiddenItem={this._renderHiddenItem}
                 renderItem={this._renderItem}
                 showNoInternetConnectionMessage={offlineModeEnabled || showNoInternetConnectionMessage}
               />
@@ -961,32 +1002,32 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _queryEpisodes = async (sort: string | null, page = 1) => {
-    const { podcastId, searchBarText: searchAllFieldsText } = this.state
+    const { podcastId, searchBarText: searchTitle } = this.state
     const results = await getEpisodes({
       sort,
       page,
       podcastId,
-      ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+      ...(searchTitle ? { searchTitle } : {})
     })
 
     return results
   }
 
   _queryClips = async (sort: string | null, page = 1) => {
-    const { podcastId, searchBarText: searchAllFieldsText } = this.state
+    const { podcastId, searchBarText: searchTitle } = this.state
     const results = await getMediaRefs({
       sort,
       page,
       podcastId,
       includeEpisode: true,
-      ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+      ...(searchTitle ? { searchTitle } : {})
     })
     return results
   }
 
   _queryData = async (
     filterKey: string | null,
-    queryOptions: { queryPage?: number; searchAllFieldsText?: string } = {}
+    queryOptions: { queryPage?: number; searchTitle?: string } = {}
   ) => {
     const { flatListData, podcast, querySort, viewType } = this.state
     const newState = {

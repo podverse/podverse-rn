@@ -421,7 +421,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     try {
       const results = await this._queryClips()
       newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      newState.endOfResultsReached = results[0].length < 20
       newState.flatListDataTotalCount = results[1]
       newState.querySort = this._validSort()
       this.shouldLoad = true

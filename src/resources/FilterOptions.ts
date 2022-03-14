@@ -180,7 +180,7 @@ export const FilterOptions = {
   sortItems,
   screenFilters: {
     ClipsScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
+      type: [_subscribedKey, _allPodcastsKey, _categoryKey],
       sort: [_mostRecentKey, ..._top]
     },
     EpisodeMediaRefScreen: {
