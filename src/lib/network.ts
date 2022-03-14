@@ -22,17 +22,17 @@ export const alertIfNoNetworkConnection = async (str?: string) => {
 
 export const hasValidNetworkConnection = async (): Promise<boolean> => {
   const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
-  
+
   if (offlineModeEnabled) {
     return false
   }
 
   const state = await NetInfo.fetch()
-  if(state.isInternetReachable === null) {
+  if (state.isInternetReachable === null) {
     return new Promise((resolve) => {
       setTimeout(() => {
         NetInfo.fetch().then((currState) => {
-          if(currState.isInternetReachable === null) {
+          if (currState.isInternetReachable === null) {
             resolve(false)
           } else {
             const networkValid = currState.type === NetInfoStateType.wifi || cellNetworkSupported(currState)
@@ -41,7 +41,7 @@ export const hasValidNetworkConnection = async (): Promise<boolean> => {
         })
       }, 200)
     })
-  } else { 
+  } else {
     const networkValid = state.type === NetInfoStateType.wifi || cellNetworkSupported(state)
     return networkValid && state.isInternetReachable === true
   }

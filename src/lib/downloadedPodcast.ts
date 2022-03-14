@@ -5,7 +5,7 @@ import { sortPodcastArrayAlphabetically } from '../services/podcast'
 import { clearNowPlayingItem, getNowPlayingItem } from '../services/userNowPlayingItem'
 import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
 import { BackgroundDownloader, deleteDownloadedEpisode } from './downloader'
-import { getExtensionFromUrl } from './utility'
+import { checkIfContainsStringMatch, getExtensionFromUrl } from './utility'
 
 export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) => {
   delete episode.podcast
@@ -71,19 +71,25 @@ export const getDownloadedPodcastEpisodeCounts = async () => {
   return podcastEpisodeCounts
 }
 
-export const getDownloadedEpisodes = async () => {
-  const episodes = []
-  const downloadedPodcasts = await getDownloadedPodcasts()
+export const getDownloadedEpisodes = async (
+  searchPodcastTitle?: string,
+  searchEpisodeTitle?: string,
+  hasVideo?: boolean
+) => {
+  const finalEpisodes = []
+  const downloadedPodcasts = await getDownloadedPodcasts(searchPodcastTitle, hasVideo)
 
   for (const podcast of downloadedPodcasts) {
     for (const episode of podcast.episodes) {
-      episode.podcast = podcast
-      episodes.push(episode)
+      if (!searchEpisodeTitle || checkIfContainsStringMatch(searchEpisodeTitle, episode.title)) {
+        episode.podcast = podcast
+        finalEpisodes.push(episode)
+      }
     }
   }
 
-  episodes.sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))
-  return episodes
+  finalEpisodes.sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))
+  return finalEpisodes
 }
 
 export const getDownloadedEpisode = async (episodeId: string) => {
@@ -97,10 +103,21 @@ export const getDownloadedPodcast = async (podcastId: string) => {
   return downloadedPodcast
 }
 
-export const getDownloadedPodcasts = async () => {
+export const getDownloadedPodcasts = async (searchTitle?: string, hasVideo?: boolean) => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_PODCASTS)
-    return itemsString ? JSON.parse(itemsString) : []
+    let items = itemsString ? JSON.parse(itemsString) : []
+
+    if (searchTitle) {
+      items = items.filter((podcast: any) =>
+        checkIfContainsStringMatch(searchTitle, podcast.title))
+    }
+
+    if (hasVideo) {
+      items = items.filter((podcast: any) => podcast.hasVideo)
+    }
+
+    return items
   } catch (error) {
     return []
   }

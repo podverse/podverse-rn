@@ -20,7 +20,7 @@ export const Alerts = {
     const type = item.clipId ? translate('Clip') : translate('Episode')
 
     return {
-      message: `${translate('Do you want to resume ')}${item?.podcastTitle} - ${title}?`,
+      message: `${translate('Do you want to resume ')} ${item?.podcastTitle} - ${title}?`,
       title: `${translate('Recent ')}${type}`,
       buttons: [
         { text: translate('No') },
