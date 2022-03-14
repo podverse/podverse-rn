@@ -34,7 +34,7 @@ export const getPodcasts = async (query: any = {}) => {
   const filteredQuery = {
     ...(query.maxResults ? { maxResults: true } : {}),
     ...(query.page ? { page: query.page } : { page: 1 }),
-    ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
+    ...(query.sort ? { sort: query.sort } : {}),
     ...(searchAuthor ? { searchAuthor } : {}),
     ...(searchTitle ? { searchTitle } : {}),
     ...(query.hasVideo ? { hasVideo: query.hasVideo } : {})

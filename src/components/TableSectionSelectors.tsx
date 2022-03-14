@@ -107,18 +107,16 @@ export class TableSectionSelectors extends React.Component<Props, State> {
               {selectedFilterLabel}
             </Text>
           )}
-          {
-            PV.Filters._mediaTypeVideoOnly === selectedMediaTypeItemKey && (
-              <Icon
-                accessible={false}
-                color={PV.Colors.white}
-                name='video'
-                size={21}
-                style={styles.selectedFilterLabelIcon}
-                testID={`${testID}_video_only`}
-              />
-            )
-          }
+          {PV.Filters._mediaTypeVideoOnly === selectedMediaTypeItemKey && (
+            <Icon
+              accessible={false}
+              color={PV.Colors.white}
+              name='video'
+              size={21}
+              style={styles.selectedFilterLabelIcon}
+              testID={`${testID}_video_only`}
+            />
+          )}
         </View>
         {customButtons}
         {!hideDropdown && (

@@ -218,11 +218,11 @@ export class QueueScreen extends React.Component<Props, State> {
       const shouldPlay = true
       const forceUpdateOrderDate = false
       const setCurrentItemNextInQueue = true
-      if(!item?.clipId) {
-        const {episodes} = await getHistoryItemsIndex()
-        if(episodes) {
+      if (!item?.clipId) {
+        const { episodes } = await getHistoryItemsIndex()
+        if (episodes) {
           const foundEpisode = item?.episodeId ? episodes[item.episodeId] : null
-          if(foundEpisode) {
+          if (foundEpisode) {
             item.userPlaybackPosition = foundEpisode.userPlaybackPosition
           }
         }

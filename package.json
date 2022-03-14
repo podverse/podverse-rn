@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.2.5",
+  "version": "4.2.6",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -29,7 +29,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "yarn format && git add . && lint-staged"
     }
   },
   "lint-staged": {
@@ -38,7 +38,7 @@
       "git add"
     ],
     "src/**/*.{ts,tsx}": [
-      "eslint",
+      "eslint --fix",
       "git add"
     ]
   },
