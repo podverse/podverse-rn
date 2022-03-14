@@ -270,13 +270,16 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarClear = () => {
-    this.setState({
-      endOfResultsReached: false,
-      flatListData: [],
-      flatListDataTotalCount: null
-    }, () => {
-      this._handleSearchBarTextChange('')
-    })
+    this.setState(
+      {
+        endOfResultsReached: false,
+        flatListData: [],
+        flatListDataTotalCount: null
+      },
+      () => {
+        this._handleSearchBarTextChange('')
+      }
+    )
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -432,7 +435,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && queryFrom && (
           <FlatList
-            {...(isCategoryScreen ? {} : { contentOffset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset() } )}
+            {...(isCategoryScreen ? {} : { contentOffset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset() })}
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
             disableLeftSwipe
@@ -442,8 +445,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
-            {...(isCategoryScreen ? {} : 
-              { ListHeaderComponent: this._ListHeaderComponent } )}
+            {...(isCategoryScreen ? {} : { ListHeaderComponent: this._ListHeaderComponent })}
             noResultsTopActionText={noSubscribedPodcasts ? translate('Search') : ''}
             noResultsMessage={
               noSubscribedPodcasts ? translate('You are not subscribed to any podcasts') : translate('No clips found')

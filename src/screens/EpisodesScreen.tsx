@@ -373,13 +373,16 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarClear = () => {
-    this.setState({
-      endOfResultsReached: false,
-      flatListData: [],
-      flatListDataTotalCount: null
-    }, () => {
-      this._handleSearchBarTextChange('')
-    })
+    this.setState(
+      {
+        endOfResultsReached: false,
+        flatListData: [],
+        flatListDataTotalCount: null
+      },
+      () => {
+        this._handleSearchBarTextChange('')
+      }
+    )
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -486,7 +489,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && queryFrom && (
           <FlatList
-            {...(isCategoryScreen ? {} : { contentOffset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset() } )}
+            {...(isCategoryScreen ? {} : { contentOffset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset() })}
             contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset()}
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
@@ -497,8 +500,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
-            {...(isCategoryScreen ? {} : 
-              { ListHeaderComponent: this._ListHeaderComponent } )}
+            {...(isCategoryScreen ? {} : { ListHeaderComponent: this._ListHeaderComponent })}
             noResultsMessage={
               // eslint-disable-next-line max-len
               noSubscribedPodcasts
@@ -556,8 +558,14 @@ export class EpisodesScreen extends React.Component<Props, State> {
     }
 
     let { flatListData } = this.state
-    const { queryFrom, queryMediaType, querySort, searchBarText: searchTitle,
-      selectedCategory, selectedCategorySub } = this.state
+    const {
+      queryFrom,
+      queryMediaType,
+      querySort,
+      searchBarText: searchTitle,
+      selectedCategory,
+      selectedCategorySub
+    } = this.state
 
     try {
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
@@ -591,9 +599,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         }
 
         const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally()
-        if (
-          querySort === PV.Filters._mostRecentKey
-          && hasAddByRSSEpisodes) {
+        if (querySort === PV.Filters._mostRecentKey && hasAddByRSSEpisodes) {
           results = await combineEpisodesWithAddByRSSEpisodesLocally(results, searchTitle, hasVideo)
         }
 

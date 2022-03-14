@@ -17,9 +17,7 @@ export const FlatList = {
   ListHeaderHiddenSearchBar: {
     contentOffset: () => {
       const { height } = Dimensions.get('screen')
-      return height >= 1200
-        ? { x: 0, y: 67 }
-        : { x: 0, y: 0 }
+      return height >= 1200 ? { x: 0, y: 67 } : { x: 0, y: 0 }
     }
   }
 }

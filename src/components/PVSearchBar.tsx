@@ -22,17 +22,27 @@ type Props = {
 }
 
 export const PVSearchBar = (props: Props) => {
-  const { accessible, containerStyle, handleClear, hideIcon, icon = 'search',
-    inputRef, noContainerPadding, onChangeText, placeholder, subText, testID, value } = props
+  const {
+    accessible,
+    containerStyle,
+    handleClear,
+    hideIcon,
+    icon = 'search',
+    inputRef,
+    noContainerPadding,
+    onChangeText,
+    placeholder,
+    subText,
+    testID,
+    value
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const inputStyle = PV.Fonts.fontScale.largest === fontScaleMode ? { fontSize: PV.Fonts.largeSizes.md } : {}
   const iconName = icon === 'filter' ? 'filter' : 'search'
   const iconColor = icon === 'filter' ? PV.Colors.grayLighter : PV.Colors.white
 
-  const finalContainerStyle = noContainerPadding
-    ? { ...containerStyle, paddingVertical: 0 }
-    : containerStyle
+  const finalContainerStyle = noContainerPadding ? { ...containerStyle, paddingVertical: 0 } : containerStyle
 
   return (
     <RNView>
@@ -55,15 +65,17 @@ export const PVSearchBar = (props: Props) => {
         placeholder={placeholder}
         ref={inputRef}
         returnKeyType='search'
-        searchIcon={!!hideIcon ? null :
-          <Icon
-            accessible={false}
-            color={iconColor}
-            importantForAccessibility='no-hide-descendants'
-            name={iconName}
-            size={PV.Icons.NAV}
-            solid
-          />
+        searchIcon={
+          !!hideIcon ? null : (
+            <Icon
+              accessible={false}
+              color={iconColor}
+              importantForAccessibility='no-hide-descendants'
+              name={iconName}
+              size={PV.Icons.NAV}
+              solid
+            />
+          )
         }
         {...(testID ? { testID: `${testID}_search_bar`.prependTestId() } : {})}
         value={value}

@@ -619,9 +619,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { searchBarText } = this.state
 
     return (
-      <View
-        style={core.ListHeaderComponent}
-        testID={`${testIDPrefix}_filter_wrapper`}>
+      <View style={core.ListHeaderComponent} testID={`${testIDPrefix}_filter_wrapper`}>
         <SearchBar
           handleClear={this._handleSearchBarClear}
           hideIcon
@@ -710,14 +708,17 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarClear = () => {
-    this.setState({
-      endOfResultsReached: false,
-      flatListData: [],
-      flatListDataTotalCount: null,
-      isLoadingMore: true
-    }, () => {
-      this._handleSearchBarTextChange('')
-    })
+    this.setState(
+      {
+        endOfResultsReached: false,
+        flatListData: [],
+        flatListDataTotalCount: null,
+        isLoadingMore: true
+      },
+      () => {
+        this._handleSearchBarTextChange('')
+      }
+    )
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -847,7 +848,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
           {!isLoading && queryFrom && (
             <FlatList
-              {...(isCategoryScreen ? {} : { contentOffset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset() } )}
+              {...(isCategoryScreen ? {} : { contentOffset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset() })}
               data={flatListData}
               dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={queryFrom !== PV.Filters._subscribedKey && queryFrom !== PV.Filters._downloadedKey}
@@ -857,8 +858,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
-              {...(isCategoryScreen ? {} : 
-                { ListHeaderComponent: this._ListHeaderComponent } )}
+              {...(isCategoryScreen ? {} : { ListHeaderComponent: this._ListHeaderComponent })}
               noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - go to the search screen')}
               noResultsTopActionText={noSubscribedPodcasts ? defaultNoSubscribedPodcastsMessage : ''}
               noResultsMessage={
@@ -961,7 +961,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         selectedCategory,
         selectedCategorySub
       } = prevState
-      
+
       const hasVideo = queryMediaType === PV.Filters._mediaTypeVideoOnly
 
       const hasInternetConnection = await hasValidNetworkConnection()

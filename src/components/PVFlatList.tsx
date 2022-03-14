@@ -108,10 +108,8 @@ export const PVFlatList = (props: Props) => {
   const isEndOfResults = !isLoadingMore && data && dataTotalCount && dataTotalCount > 0 && data.length >= dataTotalCount
   const useSectionList = Array.isArray(sections) && sections.length > 0
   const shouldShowResults = (!noResultsFound && !showNoInternetConnectionMessage) || useSectionList
-  const shouldShowNoResultsFoundMessage = !disableNoResultsMessage &&
-    !isLoadingMore &&
-    !showNoInternetConnectionMessage &&
-    noResultsFound
+  const shouldShowNoResultsFoundMessage =
+    !disableNoResultsMessage && !isLoadingMore && !showNoInternetConnectionMessage && noResultsFound
 
   return (
     <View style={styles.view} transparent={transparent}>
@@ -170,8 +168,11 @@ export const PVFlatList = (props: Props) => {
         rightOpenValue={-120}
         sections={sections}
         stickySectionHeadersEnabled={!!stickySectionHeadersEnabled}
-        style={[globalTheme.flatList, transparent ? { backgroundColor: 'transparent' } : {},
-          !shouldShowResults ? styles.noResultsFlatList : {}]}
+        style={[
+          globalTheme.flatList,
+          transparent ? { backgroundColor: 'transparent' } : {},
+          !shouldShowResults ? styles.noResultsFlatList : {}
+        ]}
         useFlatList={!useSectionList}
         useSectionList={useSectionList}
         listViewRef={listRef}
