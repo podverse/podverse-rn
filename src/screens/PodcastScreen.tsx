@@ -376,9 +376,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _ListHeaderComponent = () => {
     const { searchBarText, viewType } = this.state
-    const placeholder = viewType === PV.Filters._clipsKey
-      ? translate('Search')
-      : translate('Search')
+    const placeholder = viewType === PV.Filters._clipsKey ? translate('Search') : translate('Search')
 
     return (
       <View style={styles.ListHeaderComponent}>
@@ -559,13 +557,16 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarClear = () => {
-    this.setState({
-      endOfResultsReached: false,
-      flatListData: [],
-      flatListDataTotalCount: null
-    }, () => {
-      this._handleSearchBarTextChange('')
-    })
+    this.setState(
+      {
+        endOfResultsReached: false,
+        flatListData: [],
+        flatListDataTotalCount: null
+      },
+      () => {
+        this._handleSearchBarTextChange('')
+      }
+    )
   }
 
   _toggleSubscribeToPodcast = async () => {
@@ -786,11 +787,12 @@ export class PodcastScreen extends React.Component<Props, State> {
       )
       let episodes = downloadedPodcast.episodes || []
       if (searchBarText) {
-        episodes = episodes.filter((episode: Episode) =>
-        episode?.title && checkIfContainsStringMatch(searchBarText, episode.title))
+        episodes = episodes.filter(
+          (episode: Episode) => episode?.title && checkIfContainsStringMatch(searchBarText, episode.title)
+        )
       }
 
-      flatListData = episodes      
+      flatListData = episodes
       flatListDataTotalCount = flatListData.length
     }
 
@@ -1025,10 +1027,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     return results
   }
 
-  _queryData = async (
-    filterKey: string | null,
-    queryOptions: { queryPage?: number; searchTitle?: string } = {}
-  ) => {
+  _queryData = async (filterKey: string | null, queryOptions: { queryPage?: number; searchTitle?: string } = {}) => {
     const { flatListData, podcast, querySort, viewType } = this.state
     const newState = {
       isLoading: false,

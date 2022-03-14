@@ -58,8 +58,9 @@ export const combineEpisodesWithAddByRSSEpisodesLocally = async (
       : await getAddByRSSEpisodesLocally()
 
   if (searchTitle) {
-    addByRSSEpisodes = addByRSSEpisodes.filter((episode) => episode.title
-      && checkIfContainsStringMatch(searchTitle, episode.title))
+    addByRSSEpisodes = addByRSSEpisodes.filter(
+      (episode) => episode.title && checkIfContainsStringMatch(searchTitle, episode.title)
+    )
   }
 
   if (hasVideo) {
