@@ -109,8 +109,7 @@ export const getDownloadedPodcasts = async (searchTitle?: string, hasVideo?: boo
     let items = itemsString ? JSON.parse(itemsString) : []
 
     if (searchTitle) {
-      items = items.filter((podcast: any) =>
-        checkIfContainsStringMatch(searchTitle, podcast.title))
+      items = items.filter((podcast: any) => checkIfContainsStringMatch(searchTitle, podcast.title))
     }
 
     if (hasVideo) {

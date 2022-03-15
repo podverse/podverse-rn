@@ -22,17 +22,27 @@ type Props = {
 }
 
 export const PVSearchBar = (props: Props) => {
-  const { accessible, containerStyle, handleClear, hideIcon, icon = 'search',
-    inputRef, noContainerPadding, onChangeText, placeholder, subText, testID, value } = props
+  const {
+    accessible,
+    containerStyle,
+    handleClear,
+    hideIcon,
+    icon = 'search',
+    inputRef,
+    noContainerPadding,
+    onChangeText,
+    placeholder,
+    subText,
+    testID,
+    value
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const inputStyle = PV.Fonts.fontScale.largest === fontScaleMode ? { fontSize: PV.Fonts.largeSizes.md } : {}
   const iconName = icon === 'filter' ? 'filter' : 'search'
   const iconColor = icon === 'filter' ? PV.Colors.grayLighter : PV.Colors.white
 
-  const finalContainerStyle = noContainerPadding
-    ? { ...containerStyle, paddingVertical: 0 }
-    : containerStyle
+  const finalContainerStyle = noContainerPadding ? { ...containerStyle, paddingVertical: 0 } : containerStyle
 
   return (
     <RNView>
@@ -40,27 +50,30 @@ export const PVSearchBar = (props: Props) => {
         accessible={accessible}
         autoCorrect={false}
         clearIcon={
-          <Icon
-            accessibilityLabel={translate('Clear input')}
-            accessibilityRole='button'
-            name='times'
-            onPress={handleClear}
-            size={20}
-          />
+          value ? (
+            <Icon
+              accessibilityLabel={translate('Clear input')}
+              accessibilityRole='button'
+              name='times'
+              onPress={handleClear}
+              size={20}
+            />
+          ) : null
         }
+        onClear={handleClear}
         containerStyle={[styles.containerStyle, finalContainerStyle]}
         inputContainerStyle={styles.inputContainerStyle}
-        inputStyle={[styles.inputStyle, globalTheme.textInput, inputStyle]}
+        inputStyle={[globalTheme.textInput, styles.inputStyle, inputStyle]}
         onChangeText={onChangeText}
         placeholder={placeholder}
         ref={inputRef}
         returnKeyType='search'
-        searchIcon={!!hideIcon ? null :
+        searchIcon={
           <Icon
             accessible={false}
             color={iconColor}
             importantForAccessibility='no-hide-descendants'
-            name={iconName}
+            name={!!hideIcon ? null : iconName}
             size={PV.Icons.NAV}
             solid
           />
@@ -92,13 +105,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12
   },
   inputContainerStyle: {
-    backgroundColor: 'transparent',
-    borderWidth: 0
+    backgroundColor: PV.Colors.velvet,
+    borderRadius: 6,
+    borderWidth: 0,
+    marginVertical: 5,
+    height: 40
   },
   inputStyle: {
     borderWidth: 0,
     fontSize: PV.Fonts.sizes.xxl,
-    marginLeft: 18
+    marginHorizontal: 10
   },
   imageStyle: {
     width: 28,
