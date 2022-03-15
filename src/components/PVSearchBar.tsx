@@ -50,32 +50,33 @@ export const PVSearchBar = (props: Props) => {
         accessible={accessible}
         autoCorrect={false}
         clearIcon={
-          <Icon
-            accessibilityLabel={translate('Clear input')}
-            accessibilityRole='button'
-            name='times'
-            onPress={handleClear}
-            size={20}
-          />
+          value ? (
+            <Icon
+              accessibilityLabel={translate('Clear input')}
+              accessibilityRole='button'
+              name='times'
+              onPress={handleClear}
+              size={20}
+            />
+          ) : null
         }
+        onClear={handleClear}
         containerStyle={[styles.containerStyle, finalContainerStyle]}
         inputContainerStyle={styles.inputContainerStyle}
-        inputStyle={[styles.inputStyle, globalTheme.textInput, inputStyle]}
+        inputStyle={[globalTheme.textInput, styles.inputStyle, inputStyle]}
         onChangeText={onChangeText}
         placeholder={placeholder}
         ref={inputRef}
         returnKeyType='search'
         searchIcon={
-          !!hideIcon ? null : (
-            <Icon
-              accessible={false}
-              color={iconColor}
-              importantForAccessibility='no-hide-descendants'
-              name={iconName}
-              size={PV.Icons.NAV}
-              solid
-            />
-          )
+          <Icon
+            accessible={false}
+            color={iconColor}
+            importantForAccessibility='no-hide-descendants'
+            name={!!hideIcon ? null : iconName}
+            size={PV.Icons.NAV}
+            solid
+          />
         }
         {...(testID ? { testID: `${testID}_search_bar`.prependTestId() } : {})}
         value={value}
@@ -104,13 +105,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12
   },
   inputContainerStyle: {
-    backgroundColor: 'transparent',
-    borderWidth: 0
+    backgroundColor: PV.Colors.velvet,
+    borderRadius: 6,
+    borderWidth: 0,
+    marginVertical: 5,
+    height: 40
   },
   inputStyle: {
     borderWidth: 0,
     fontSize: PV.Fonts.sizes.xxl,
-    marginLeft: 18
+    marginHorizontal: 10
   },
   imageStyle: {
     width: 28,

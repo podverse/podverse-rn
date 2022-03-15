@@ -66,7 +66,7 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = ({ navigation }) => ({
-    title: translate('Search'),
+    title: translate('Find'),
     headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
     headerRight: () => null
   })

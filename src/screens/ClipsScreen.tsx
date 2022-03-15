@@ -223,7 +223,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _ListHeaderComponent = () => {
-    const { searchBarText } = this.state
+    const { searchBarText, selectedFilterLabel } = this.state
 
     return (
       <View style={core.ListHeaderComponent}>
@@ -233,7 +233,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           icon='filter'
           noContainerPadding
           onChangeText={this._handleSearchBarTextChange}
-          placeholder={translate('Search')}
+          placeholder={translate('Search') + ' ' + selectedFilterLabel?.toLocaleLowerCase()}
           testID={`${testIDPrefix}_filter_bar`}
           value={searchBarText}
         />
