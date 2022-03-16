@@ -713,7 +713,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
-        isLoading: false
+        isLoadingMore: true
       },
       () => {
         this._handleSearchBarTextChange('')

@@ -338,7 +338,6 @@ export class PodcastScreen extends React.Component<Props, State> {
     ) {
       if (distanceFromEnd > -1) {
         this.shouldLoad = false
-
         this.setState(
           {
             isLoadingMore: true
@@ -503,7 +502,6 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     this.setState(
       {
-        isLoadingMore: true,
         searchBarText: text
       },
       () => {
@@ -560,7 +558,8 @@ export class PodcastScreen extends React.Component<Props, State> {
       {
         endOfResultsReached: false,
         flatListData: [],
-        flatListDataTotalCount: null
+        flatListDataTotalCount: null,
+        isLoadingMore: true
       },
       () => {
         this._handleSearchBarTextChange('')
@@ -950,7 +949,7 @@ export class PodcastScreen extends React.Component<Props, State> {
                 dataTotalCount={flatListDataTotalCount}
                 disableLeftSwipe={viewType !== PV.Filters._downloadedKey}
                 extraData={flatListData}
-                isLoadingMore
+                isLoadingMore={isLoadingMore}
                 isRefreshing={isRefreshing}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
                 keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}

@@ -37,7 +37,6 @@ type State = {
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
-  isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
   queryFrom: string
@@ -73,7 +72,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
-      isLoading: false,
       isLoadingMore: true,
       isRefreshing: false,
       queryFrom: hasSubscribedPodcasts ? PV.Filters._subscribedKey : Config.DEFAULT_QUERY_EPISODES_SCREEN,
@@ -135,7 +133,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
-        isLoading: false,
         isLoadingMore: true,
         queryMediaType: selectedKey,
         queryPage: 1
@@ -149,7 +146,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
     )
   }
 
-  handleSelectFilterItem = async (selectedKey: string) => {
+  handleSelectFilterItem = async (selectedKey: string, keepSearchTitle?: boolean) => {
     if (!selectedKey) {
       return
     }
@@ -169,11 +166,11 @@ export class EpisodesScreen extends React.Component<Props, State> {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
-        isLoading: false,
+        isLoadingMore: true,
         queryFrom: selectedKey,
         queryPage: 1,
         querySort: sort,
-        searchBarText: '',
+        searchBarText: keepSearchTitle ? this.state.searchBarText : '',
         selectedFilterLabel,
         selectedSortLabel
       },
@@ -198,7 +195,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
-        isLoading: false,
         isLoadingMore: true,
         queryPage: 1,
         querySort: selectedKey,
@@ -231,7 +227,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
     this.setState(
       {
         endOfResultsReached: false,
-        isLoading: false,
         isLoadingMore: true,
         ...((isCategorySub ? { selectedCategorySub: selectedKey } : { selectedCategory: selectedKey }) as any),
         flatListData: [],
@@ -377,7 +372,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
       {
         endOfResultsReached: false,
         flatListData: [],
-        flatListDataTotalCount: null
+        flatListDataTotalCount: null,
+        isLoadingMore: true
       },
       () => {
         this._handleSearchBarTextChange('')
@@ -386,16 +382,20 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextChange = (text: string) => {
-    this.setState({
-      isLoading: false,
-      searchBarText: text
-    })
-    this._handleSearchBarTextQuery()
+    this.setState(
+      {
+        searchBarText: text
+      },
+      () => {
+        this._handleSearchBarTextQuery()
+      }
+    )
   }
 
   _handleSearchBarTextQuery = () => {
     const queryFrom = PV.Filters._allPodcastsKey
-    this.handleSelectFilterItem(queryFrom)
+    const keepSearchTitle = true
+    this.handleSelectFilterItem(queryFrom, keepSearchTitle)
   }
 
   _handleSearchNavigation = () => {
@@ -528,7 +528,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
     } = {}
   ) => {
     let newState = {
-      isLoading: false,
       isLoadingMore: false,
       isRefreshing: false,
       showNoInternetConnectionMessage: false
