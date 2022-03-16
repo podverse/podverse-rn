@@ -223,7 +223,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _ListHeaderComponent = () => {
-    const { searchBarText, selectedFilterLabel } = this.state
+    const { searchBarText } = this.state
 
     return (
       <View style={core.ListHeaderComponent}>
@@ -233,7 +233,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           icon='filter'
           noContainerPadding
           onChangeText={this._handleSearchBarTextChange}
-          placeholder={translate('Search') + ' ' + selectedFilterLabel?.toLocaleLowerCase()}
+          placeholder={translate('Search clips')}
           testID={`${testIDPrefix}_filter_bar`}
           value={searchBarText}
         />
@@ -283,33 +283,20 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextChange = (text: string) => {
-    const { queryFrom } = this.state
-
     this.setState(
       {
-        isLoadingMore: true,
+        isLoading: true,
         searchBarText: text
       },
       () => {
-        this._handleSearchBarTextQuery(queryFrom)
+        this._handleSearchBarTextQuery()
       }
     )
   }
 
-  _handleSearchBarTextQuery = (queryFrom: string | null) => {
-    this.setState(
-      {
-        flatListData: [],
-        flatListDataTotalCount: null,
-        queryPage: 1
-      },
-      () => {
-        (async () => {
-          const state = await this._queryData(queryFrom)
-          this.setState(state)
-        })()
-      }
-    )
+  _handleSearchBarTextQuery = () => {
+    const queryFrom = PV.Filters._allPodcastsKey
+    this.handleSelectFilterItem(queryFrom)
   }
 
   _handleDownloadPressed = () => {
@@ -435,7 +422,6 @@ export class ClipsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && queryFrom && (
           <FlatList
-            {...(isCategoryScreen ? {} : { contentOffset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset() })}
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
             disableLeftSwipe
@@ -445,8 +431,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
-            {...(isCategoryScreen ? {} : { ListHeaderComponent: this._ListHeaderComponent })}
-            noResultsTopActionText={noSubscribedPodcasts ? translate('Search') : ''}
+            ListHeaderComponent={this._ListHeaderComponent}
             noResultsMessage={
               noSubscribedPodcasts ? translate('You are not subscribed to any podcasts') : translate('No clips found')
             }

@@ -66,7 +66,6 @@ type State = {
   flatListData: any[]
   flatListDataTotalCount: number | null
   hasInternetConnection: boolean
-  isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
   isSubscribing: boolean
@@ -120,7 +119,6 @@ export class PodcastScreen extends React.Component<Props, State> {
       flatListData: [],
       flatListDataTotalCount: null,
       hasInternetConnection: false,
-      isLoading: viewType !== PV.Filters._downloadedKey || !podcast,
       isLoadingMore: false,
       isRefreshing: false,
       isSubscribing: false,
@@ -160,7 +158,7 @@ export class PodcastScreen extends React.Component<Props, State> {
               urlPath={PV.URLs.webPaths.podcast}
             />
           )}
-          <NavSearchIcon navigation={navigation} />
+          {/* <NavSearchIcon navigation={navigation} /> */}
         </RNView>
       )
     } as NavigationStackOptions
@@ -220,7 +218,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
-        isLoading: true,
+        isLoadingMore: true,
         limitDownloadedEpisodes: downloadedEpisodeLimit && downloadedEpisodeLimit > 0,
         podcastId,
         queryPage: 1
@@ -249,7 +247,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             this.setState(
               {
                 ...newState,
-                isLoading: false,
+                isLoadingMore: false,
                 podcast: newPodcast
               },
               () => {
@@ -261,7 +259,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             this.setState(
               {
                 ...newState,
-                isLoading: false,
+                isLoadingMore: false,
                 ...(newPodcast ? { podcast: newPodcast } : { podcast })
               },
               () => {
@@ -290,7 +288,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
-        isLoading: true,
+        isLoadingMore: true,
         queryPage: 1,
         searchBarText: '',
         selectedFilterLabel,
@@ -315,7 +313,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
-        isLoading: true,
+        isLoadingMore: true,
         queryPage: 1,
         querySort: selectedKey,
         selectedSortLabel
@@ -376,7 +374,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _ListHeaderComponent = () => {
     const { searchBarText, viewType } = this.state
-    const placeholder = viewType === PV.Filters._clipsKey ? translate('Search') : translate('Search')
+    const placeholder = viewType === PV.Filters._clipsKey ? translate('Search clips') : translate('Search episodes')
 
     return (
       <View style={styles.ListHeaderComponent}>
@@ -519,6 +517,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       {
         flatListData: [],
         flatListDataTotalCount: null,
+        isLoadingMore: true,
         queryPage: 1
       },
       () => {
@@ -705,7 +704,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     const finalFeedUrl = this._getFinalFeedUrl()
 
     if (finalFeedUrl) {
-      this.setState({ isLoading: true }, () => {
+      this.setState({ isLoadingMore: true }, () => {
         (async () => {
           try {
             if (showUsernameAndPassword && username && password) {
@@ -715,13 +714,13 @@ export class PodcastScreen extends React.Component<Props, State> {
               await removePodcastCredentials(finalFeedUrl)
             }
             this.setState({
-              isLoading: false,
+              isLoadingMore: false,
               showSettings: false
             })
           } catch (error) {
             console.log('_handleSavePodcastByRSSURL', error)
             this.setState({
-              isLoading: false,
+              isLoadingMore: false,
               showSettings: false
             })
           }
@@ -741,7 +740,6 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     const {
       downloadedEpisodeLimit,
-      isLoading,
       isLoadingMore,
       isRefreshing,
       isSubscribing,
@@ -810,8 +808,8 @@ export class PodcastScreen extends React.Component<Props, State> {
           handleToggleAutoDownload={this._handleToggleAutoDownload}
           handleToggleSettings={this._handleToggleSettings}
           handleToggleSubscribe={this._toggleSubscribeToPodcast}
-          isLoading={isLoading && !podcast}
-          isNotFound={!isLoading && !podcast}
+          isLoading={isLoadingMore && !podcast}
+          isNotFound={!isLoadingMore && !podcast}
           isSubscribed={isSubscribed}
           isSubscribing={isSubscribing}
           podcastImageUrl={podcast && (podcast.shrunkImageUrl || podcast.imageUrl)}
@@ -945,15 +943,14 @@ export class PodcastScreen extends React.Component<Props, State> {
         )}
         {!showSettings && (
           <View style={styles.view}>
-            {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
-            {!isLoading && flatListData && podcast && (
+            {flatListData && podcast && (
               <FlatList
-                contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset()}
+                contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset}
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
                 disableLeftSwipe={viewType !== PV.Filters._downloadedKey}
                 extraData={flatListData}
-                isLoadingMore={isLoadingMore}
+                isLoadingMore
                 isRefreshing={isRefreshing}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
                 keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
@@ -1030,7 +1027,6 @@ export class PodcastScreen extends React.Component<Props, State> {
   _queryData = async (filterKey: string | null, queryOptions: { queryPage?: number; searchTitle?: string } = {}) => {
     const { flatListData, podcast, querySort, viewType } = this.state
     const newState = {
-      isLoading: false,
       isLoadingMore: false,
       isRefreshing: false,
       showNoInternetConnectionMessage: false
