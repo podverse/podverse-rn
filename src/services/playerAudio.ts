@@ -330,14 +330,14 @@ export const audioTogglePlay = async () => {
   const state = await audioGetState()
 
   if (state === State.None) {
-    audioHandlePlay()
+    audioHandlePlayWithUpdate()
     return
   }
 
   if (state === State.Playing) {
-    audioHandlePause()
+    audioHandlePauseWithUpdate()
   } else {
-    audioHandlePlay()
+    audioHandlePlayWithUpdate()
   }
 }
 
