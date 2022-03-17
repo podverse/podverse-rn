@@ -50,6 +50,9 @@ type State = {
   showActionSheet: boolean
   showDeleteConfirmDialog?: boolean
   showNoInternetConnectionMessage?: boolean
+  tempQueryEnabled: boolean
+  tempQueryFrom: string | null
+  tempQuerySort: string | null
 }
 
 const testIDPrefix = 'clips_screen'
@@ -80,7 +83,10 @@ export class ClipsScreen extends React.Component<Props, State> {
       selectedCategorySub: null,
       selectedFilterLabel: hasSubscribedPodcasts ? translate('Subscribed') : translate('All Podcasts'),
       selectedSortLabel: translate('recent'),
-      showActionSheet: false
+      showActionSheet: false,
+      tempQueryEnabled: false,
+      tempQueryFrom: hasSubscribedPodcasts ? PV.Filters._subscribedKey : PV.Filters._allPodcastsKey,
+      tempQuerySort: PV.Filters._mostRecentKey
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
@@ -298,9 +304,45 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextQuery = () => {
-    const queryFrom = PV.Filters._allPodcastsKey
-    const keepSearchTitle = true
-    this.handleSelectFilterItem(queryFrom, keepSearchTitle)
+    const { searchBarText, tempQueryEnabled } = this.state
+
+    if (!searchBarText) {
+      this._handleRestoreSavedQuery()
+    } else {
+      const { queryFrom, querySort } = this.state
+      const tempQueryObj = !tempQueryEnabled
+        ? {
+            tempQueryEnabled: true,
+            tempQueryFrom: queryFrom,
+            tempQuerySort: querySort
+          }
+        : {
+            tempQueryEnabled: true,
+            tempQueryFrom: this.state.tempQueryFrom,
+            tempQuerySort: this.state.tempQuerySort
+          }
+      this.setState(tempQueryObj, () => {
+        const queryFrom = PV.Filters._allPodcastsKey
+        const keepSearchTitle = true
+        this.handleSelectFilterItem(queryFrom, keepSearchTitle)
+      })
+    }
+  }
+
+  _handleRestoreSavedQuery = () => {
+    const { tempQueryFrom, tempQuerySort } = this.state
+    this.setState(
+      {
+        queryFrom: tempQueryFrom,
+        querySort: tempQuerySort,
+        tempQueryEnabled: false
+      },
+      () => {
+        const restoredQueryFrom = tempQueryFrom || PV.Filters._subscribedKey
+        const keepSearchTitle = false
+        this.handleSelectFilterItem(restoredQueryFrom, keepSearchTitle)
+      }
+    )
   }
 
   _handleDownloadPressed = () => {
