@@ -69,8 +69,8 @@ export class ClipsScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
-      isLoading: true,
-      isLoadingMore: false,
+      isLoading: false,
+      isLoadingMore: true,
       isRefreshing: false,
       queryFrom: hasSubscribedPodcasts ? PV.Filters._subscribedKey : PV.Filters._allPodcastsKey,
       queryPage: 1,
@@ -97,7 +97,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     trackPageView('/clips', 'Clips Screen')
   }
 
-  handleSelectFilterItem = async (selectedKey: string) => {
+  handleSelectFilterItem = async (selectedKey: string, keepSearchTitle?: boolean) => {
     if (!selectedKey) {
       return
     }
@@ -111,11 +111,12 @@ export class ClipsScreen extends React.Component<Props, State> {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
-        isLoading: true,
+        isLoading: false,
+        isLoadingMore: true,
         queryFrom: selectedKey,
         queryPage: 1,
         querySort,
-        searchBarText: '',
+        searchBarText: keepSearchTitle ? this.state.searchBarText : '',
         selectedFilterLabel,
         selectedSortLabel
       },
@@ -140,7 +141,8 @@ export class ClipsScreen extends React.Component<Props, State> {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
-        isLoading: true,
+        isLoading: false,
+        isLoadingMore: true,
         queryPage: 1,
         querySort: selectedKey,
         selectedSortLabel
@@ -164,7 +166,8 @@ export class ClipsScreen extends React.Component<Props, State> {
     this.setState(
       {
         endOfResultsReached: false,
-        isLoading: true,
+        isLoading: false,
+        isLoadingMore: true,
         ...((isSubCategory ? { selectedCategorySub: selectedKey } : { selectedCategory: selectedKey }) as any),
         flatListData: [],
         flatListDataTotalCount: null,
@@ -223,7 +226,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _ListHeaderComponent = () => {
-    const { searchBarText, selectedFilterLabel } = this.state
+    const { searchBarText } = this.state
 
     return (
       <View style={core.ListHeaderComponent}>
@@ -233,7 +236,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           icon='filter'
           noContainerPadding
           onChangeText={this._handleSearchBarTextChange}
-          placeholder={translate('Search') + ' ' + selectedFilterLabel?.toLocaleLowerCase()}
+          placeholder={translate('Search clips')}
           testID={`${testIDPrefix}_filter_bar`}
           value={searchBarText}
         />
@@ -274,7 +277,8 @@ export class ClipsScreen extends React.Component<Props, State> {
       {
         endOfResultsReached: false,
         flatListData: [],
-        flatListDataTotalCount: null
+        flatListDataTotalCount: null,
+        isLoadingMore: true
       },
       () => {
         this._handleSearchBarTextChange('')
@@ -283,33 +287,20 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextChange = (text: string) => {
-    const { queryFrom } = this.state
-
     this.setState(
       {
-        isLoadingMore: true,
         searchBarText: text
       },
       () => {
-        this._handleSearchBarTextQuery(queryFrom)
+        this._handleSearchBarTextQuery()
       }
     )
   }
 
-  _handleSearchBarTextQuery = (queryFrom: string | null) => {
-    this.setState(
-      {
-        flatListData: [],
-        flatListDataTotalCount: null,
-        queryPage: 1
-      },
-      () => {
-        (async () => {
-          const state = await this._queryData(queryFrom)
-          this.setState(state)
-        })()
-      }
-    )
+  _handleSearchBarTextQuery = () => {
+    const queryFrom = PV.Filters._allPodcastsKey
+    const keepSearchTitle = true
+    this.handleSelectFilterItem(queryFrom, keepSearchTitle)
   }
 
   _handleDownloadPressed = () => {
@@ -411,8 +402,6 @@ export class ClipsScreen extends React.Component<Props, State> {
 
     const showOfflineMessage = offlineModeEnabled
 
-    const isCategoryScreen = queryFrom === PV.Filters._categoryKey
-
     return (
       <View style={styles.view} testID={`${testIDPrefix}_view`}>
         <TableSectionSelectors
@@ -435,7 +424,6 @@ export class ClipsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && queryFrom && (
           <FlatList
-            {...(isCategoryScreen ? {} : { contentOffset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset() })}
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
             disableLeftSwipe
@@ -445,8 +433,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
-            {...(isCategoryScreen ? {} : { ListHeaderComponent: this._ListHeaderComponent })}
-            noResultsTopActionText={noSubscribedPodcasts ? translate('Search') : ''}
+            ListHeaderComponent={this._ListHeaderComponent}
             noResultsMessage={
               noSubscribedPodcasts ? translate('You are not subscribed to any podcasts') : translate('No clips found')
             }

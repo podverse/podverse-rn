@@ -97,7 +97,7 @@ export class HistoryScreen extends React.Component<Props, State> {
               </RNView>
             )}
           </RNView>
-          {navigation.getParam('showMoreNavButton') && <NavSearchIcon navigation={navigation} />}
+          {/* {navigation.getParam('showMoreNavButton') && <NavSearchIcon navigation={navigation} />} */}
         </RNView>
       )
     }

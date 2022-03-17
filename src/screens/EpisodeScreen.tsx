@@ -102,7 +102,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
               urlPath={PV.URLs.webPaths.episode}
             />
           )}
-          <NavSearchIcon navigation={navigation} />
+          {/* <NavSearchIcon navigation={navigation} /> */}
         </RNView>
       )
     }

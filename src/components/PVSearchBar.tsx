@@ -98,9 +98,7 @@ export const PVSearchBar = (props: Props) => {
 const styles = StyleSheet.create({
   containerStyle: {
     backgroundColor: 'transparent',
-    borderBottomColor: 'white',
-    borderBottomWidth: 0.3,
-    borderTopColor: 'transparent',
+    borderColor: 'transparent',
     borderWidth: 0,
     paddingHorizontal: 12
   },

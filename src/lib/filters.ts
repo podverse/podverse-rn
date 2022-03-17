@@ -46,7 +46,11 @@ export const getDefaultSortForFilter = (options: any) => {
       }
       break
     case PV.RouteNames.PodcastsScreen:
-      if (selectedFilterItemKey === PV.Filters._downloadedKey || selectedFilterItemKey === PV.Filters._subscribedKey) {
+      if (
+        selectedFilterItemKey === PV.Filters._downloadedKey ||
+        selectedFilterItemKey === PV.Filters._subscribedKey ||
+        selectedFilterItemKey === PV.Filters._customFeedsKey
+      ) {
         newSelectedSortItemKey = PV.Filters._alphabeticalKey
       } else {
         newSelectedSortItemKey = !PV.FilterOptions.screenFilters.PodcastsScreen.sort.includes(newSelectedSortItemKey)
@@ -334,7 +338,11 @@ export const generateSections = (options: any) => {
 
       break
     case PV.RouteNames.PodcastsScreen:
-      if (selectedFilterItemKey === PV.Filters._downloadedKey || selectedFilterItemKey === PV.Filters._subscribedKey) {
+      if (
+        selectedFilterItemKey === PV.Filters._downloadedKey ||
+        selectedFilterItemKey === PV.Filters._subscribedKey ||
+        selectedFilterItemKey === PV.Filters._customFeedsKey
+      ) {
         newSelectedCategoryItemKey = ''
         newSelectedCategorySubItemKey = ''
         sortItems = sortItems.filter((item) => item.value === PV.Filters._alphabeticalKey)
