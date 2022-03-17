@@ -10,6 +10,7 @@ import {
   getPodcast as getPodcastService,
   getSubscribedPodcasts as getSubscribedPodcastsService,
   insertOrRemovePodcastFromAlphabetizedArray,
+  setSubscribedPodcasts,
   toggleSubscribeToPodcast as toggleSubscribeToPodcastService
 } from '../../services/podcast'
 import { updateDownloadedPodcasts } from './downloads'
@@ -57,7 +58,8 @@ export const toggleSubscribeToPodcast = async (id: string) => {
         const subscribedPodcastIds = await toggleSubscribeToPodcastService(id)
         const subscribedPodcast = await getPodcastService(id)
         let { subscribedPodcasts = [] } = globalState
-        subscribedPodcasts = insertOrRemovePodcastFromAlphabetizedArray(subscribedPodcasts, subscribedPodcast)
+        subscribedPodcasts = insertOrRemovePodcastFromAlphabetizedArray(subscribedPodcasts, subscribedPodcast) as any
+        await setSubscribedPodcasts(subscribedPodcasts)
         const subscribedPodcastsTotalCount = subscribedPodcasts ? subscribedPodcasts.length : 0
 
         setGlobal(

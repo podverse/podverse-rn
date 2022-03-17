@@ -54,7 +54,7 @@ export const getPodcasts = async (query: any = {}) => {
   return response && response.data
 }
 
-const setSubscribedPodcasts = async (subscribedPodcasts: any[]) => {
+export const setSubscribedPodcasts = async (subscribedPodcasts: any[]) => {
   if (Array.isArray(subscribedPodcasts)) {
     await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts))
   }

@@ -128,7 +128,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           {userIsPublic && userId && (
             <NavShareIcon profileName={userName} urlId={userId} urlPath={PV.URLs.webPaths.profile} />
           )}
-          <NavSearchIcon navigation={navigation} />
+          {/* <NavSearchIcon navigation={navigation} /> */}
         </RNView>
       )
     } as NavigationStackOptions
