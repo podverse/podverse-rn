@@ -101,8 +101,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
-      isLoading: true,
-      isLoadingMore: false,
+      isLoading: false,
+      isLoadingMore: true,
       isRefreshing: false,
       isUnsubscribing: false,
       queryFrom: null,
@@ -462,7 +462,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
   handleSelectFilterItem = async (
     selectedKey: string,
     preventIsLoading?: boolean,
-    preventAutoDownloading?: boolean
+    preventAutoDownloading?: boolean,
+    keepSearchTitle?: boolean
   ) => {
     if (!selectedKey) {
       return
@@ -486,11 +487,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
         flatListData: [],
         flatListDataTotalCount: null,
         isLoading: false,
-        isLoadingMore: true,
+        isLoadingMore: !preventIsLoading,
         queryFrom: selectedKey,
         queryPage: 1,
         querySort: sort,
-        searchBarText: '',
+        searchBarText: keepSearchTitle ? this.state.searchBarText : '',
         selectedCategory: null,
         selectedCategorySub: null,
         selectedFilterLabel,
@@ -578,7 +579,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     if (queryFrom !== PV.Filters._subscribedKey && !endOfResultsReached && this.shouldLoad) {
       if (distanceFromEnd > -1) {
         this.shouldLoad = false
-
         this.setState(
           {
             isLoadingMore: true
@@ -616,7 +616,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _ListHeaderComponent = () => {
-    const { searchBarText, selectedFilterLabel } = this.state
+    const { searchBarText } = this.state
 
     return (
       <View style={core.ListHeaderComponent} testID={`${testIDPrefix}_filter_wrapper`}>
@@ -626,7 +626,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           icon='filter'
           noContainerPadding
           onChangeText={this._handleSearchBarTextChange}
-          placeholder={translate('Search') + ' ' + selectedFilterLabel?.toLocaleLowerCase()}
+          placeholder={translate('Search podcasts')}
           testID={`${testIDPrefix}_filter_bar`}
           value={searchBarText}
         />
@@ -722,35 +722,22 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextChange = (text: string) => {
-    const { queryFrom } = this.state
-
     this.setState(
       {
         searchBarText: text
       },
       () => {
-        this._handleSearchBarTextQuery(queryFrom, this.state, {}, { searchTitle: text })
+        this._handleSearchBarTextQuery()
       }
     )
   }
 
-  _handleSearchBarTextQuery = (queryFrom: string | null, prevState: any, newState: any, queryOptions: any) => {
-    this.setState(
-      {
-        flatListData: [],
-        flatListDataTotalCount: null,
-        isLoadingMore: true,
-        queryPage: 1
-      },
-      () => {
-        (async () => {
-          prevState.flatListData = []
-          prevState.flatListDataTotalCount = null
-          const state = await this._queryData(queryFrom, prevState, newState)
-          this.setState(state)
-        })()
-      }
-    )
+  _handleSearchBarTextQuery = () => {
+    const queryFrom = PV.Filters._allPodcastsKey
+    const preventIsLoading = false
+    const preventAutoDownloading = true
+    const keepSearchTitle = true
+    this.handleSelectFilterItem(queryFrom, preventIsLoading, preventAutoDownloading, keepSearchTitle)
   }
 
   _handleSearchNavigation = () => {
@@ -815,11 +802,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const showOfflineMessage =
       offlineModeEnabled && queryFrom !== PV.Filters._downloadedKey && queryFrom !== PV.Filters._subscribedKey
 
-    const defaultNoSubscribedPodcastsMessage =
-      Config.DEFAULT_ACTION_NO_SUBSCRIBED_PODCASTS === PV.Keys.DEFAULT_ACTION_BUTTON_SCAN_QR_CODE
-        ? translate('Scan QR Code')
-        : translate('Search')
-
     const isCategoryScreen = queryFrom === PV.Filters._categoryKey
 
     return (
@@ -845,10 +827,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
             selectedSortLabel={selectedSortLabel}
             testID={testIDPrefix}
           />
-          {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
-          {!isLoading && queryFrom && (
+          {queryFrom && (
             <FlatList
-              {...(isCategoryScreen ? {} : { contentOffset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset() })}
               data={flatListData}
               dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={queryFrom !== PV.Filters._subscribedKey && queryFrom !== PV.Filters._downloadedKey}
@@ -859,8 +839,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               {...(isCategoryScreen ? {} : { ListHeaderComponent: this._ListHeaderComponent })}
-              noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - go to the search screen')}
-              noResultsTopActionText={noSubscribedPodcasts ? defaultNoSubscribedPodcastsMessage : ''}
               noResultsMessage={
                 // eslint-disable-next-line max-len
                 noSubscribedPodcasts
@@ -900,12 +878,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     await getSubscribedPodcasts(hasVideo)
 
     if (!searchBarText) await parseAllAddByRSSPodcasts()
-
-    /* Don't wait for queryData or combineWithAddByRSSPodcasts to finish
-       to set isLoadingMore to false because subscribed podcasts are updated
-       elsewhere on global state before queryData finishes and updates
-       this screen's local state. */
-    this.setState({ isLoadingMore: false })
 
     await combineWithAddByRSSPodcasts(searchBarText, hasVideo)
 

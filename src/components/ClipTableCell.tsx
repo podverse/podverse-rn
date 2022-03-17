@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.thin
   },
   image: {
+    flex: 0,
     height: images.medium.height,
     marginRight: 12,
     width: images.medium.width
@@ -210,8 +211,7 @@ const styles = StyleSheet.create({
   imageAndTopRightTextWrapper: {
     flex: 1,
     flexDirection: 'row',
-    marginBottom: 8,
-    alignItems: 'center'
+    marginBottom: 8
   },
   innerTopView: {
     flex: 1,
