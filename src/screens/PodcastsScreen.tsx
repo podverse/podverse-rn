@@ -22,7 +22,13 @@ import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty } from '../lib/utility'
+import {
+  createEmailLinkUrl,
+  getAppUserAgent,
+  safeKeyExtractor,
+  setAppUserAgent,
+  setCategoryQueryProperty
+} from '../lib/utility'
 import { PV } from '../resources'
 import { handleAutoDownloadEpisodes } from '../services/autoDownloads'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
@@ -769,6 +775,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this._initializeScreenData()
   }
 
+  _navToRequestPodcastEmail = () => {
+    Linking.openURL(createEmailLinkUrl(PV.Emails.PODCAST_REQUEST))
+  }
+
   render() {
     const { navigation } = this.props
     const {
@@ -777,6 +787,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       queryFrom,
       queryMediaType,
       querySort,
+      searchBarText,
       selectedCategory,
       selectedCategorySub,
       selectedFilterLabel,
@@ -841,7 +852,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
                 queryFrom !== PV.Filters._customFeedsKey
               }
               extraData={flatListData}
-              handleNoResultsTopAction={this._handleNoResultsTopAction}
+              handleNoResultsTopAction={!!Config.CURATOR_EMAIL ? this._navToRequestPodcastEmail : null}
               keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
@@ -853,6 +864,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
                   ? translate('You are not subscribed to any podcasts yet')
                   : translate('No podcasts found')
               }
+              noResultsTopActionText={!!Config.CURATOR_EMAIL && searchBarText ? translate('Request Podcast') : ''}
+              noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - send us an email to request a podcast')}
               onEndReached={this._onEndReached}
               onRefresh={
                 queryFrom === PV.Filters._subscribedKey || queryFrom === PV.Filters._customFeedsKey
@@ -862,6 +875,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderPodcastItem}
               showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
+              testID={testIDPrefix}
             />
           )}
         </RNView>
