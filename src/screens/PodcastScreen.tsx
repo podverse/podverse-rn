@@ -7,13 +7,11 @@ import { NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
 import {
   ActionSheet,
-  ActivityIndicator,
   Button,
   ClipTableCell,
   Divider,
   EpisodeTableCell,
   FlatList,
-  NavSearchIcon,
   NavShareIcon,
   NumberSelectorWithText,
   PodcastTableHeader,
@@ -95,6 +93,7 @@ const testIDPrefix = 'podcast_screen'
 
 export class PodcastScreen extends React.Component<Props, State> {
   shouldLoad: boolean
+  listRef = null
 
   constructor(props: Props) {
     super(props)
@@ -252,6 +251,14 @@ export class PodcastScreen extends React.Component<Props, State> {
               },
               () => {
                 this._updateCredentialsState()
+                // Adding a no time setTimeout for the listref to have populated
+                // in the next event loop otherwise, there will be no ref to call scroll to yet
+                setTimeout(() => {
+                  this.listRef?.scrollToOffset({
+                    animated: false,
+                    offset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset.y
+                  })
+                })
               }
             )
           } catch (error) {
@@ -372,21 +379,25 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _ListHeaderComponent = () => {
-    const { searchBarText, viewType } = this.state
+    const { searchBarText, viewType, flatListDataTotalCount } = this.state
     const placeholder = viewType === PV.Filters._clipsKey ? translate('Search clips') : translate('Search episodes')
+
+    const shouldShowSearchBar = searchBarText || (flatListDataTotalCount && flatListDataTotalCount > 3)
 
     return (
       <View style={styles.ListHeaderComponent}>
-        <SearchBar
-          handleClear={this._handleSearchBarClear}
-          hideIcon
-          icon='filter'
-          noContainerPadding
-          onChangeText={this._handleSearchBarTextChange}
-          placeholder={placeholder}
-          testID={`${testIDPrefix}_filter_bar`}
-          value={searchBarText}
-        />
+        {shouldShowSearchBar && (
+          <SearchBar
+            handleClear={this._handleSearchBarClear}
+            hideIcon
+            icon='filter'
+            noContainerPadding
+            onChangeText={this._handleSearchBarTextChange}
+            placeholder={placeholder}
+            testID={`${testIDPrefix}_filter_bar`}
+            value={searchBarText}
+          />
+        )}
       </View>
     )
   }
@@ -799,7 +810,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       (viewType === PV.Filters._clipsKey && translate('No clips found'))
 
     return (
-      <View style={styles.view} testID={`${testIDPrefix}_view`}>
+      <View style={styles.headerView} testID={`${testIDPrefix}_view`}>
         <PodcastTableHeader
           autoDownloadOn={autoDownloadOn}
           description={podcast && podcast.description}
@@ -944,7 +955,6 @@ export class PodcastScreen extends React.Component<Props, State> {
           <View style={styles.view}>
             {flatListData && podcast && (
               <FlatList
-                contentOffset={PV.FlatList.ListHeaderHiddenSearchBar.contentOffset}
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
                 disableLeftSwipe={viewType !== PV.Filters._downloadedKey}
@@ -957,6 +967,7 @@ export class PodcastScreen extends React.Component<Props, State> {
                 noResultsMessage={noResultsMessage}
                 onEndReached={this._onEndReached}
                 renderItem={this._renderItem}
+                listRef={(ref) => (this.listRef = ref)}
                 showNoInternetConnectionMessage={offlineModeEnabled || showNoInternetConnectionMessage}
               />
             )}
@@ -1136,7 +1147,15 @@ const styles = StyleSheet.create({
     marginTop: 28
   },
   toggleLimitDownloadsSwitchWrapper: {},
+  ListHeaderComponent: {
+    paddingTop: 15
+  },
   view: {
+    flex: 1,
+    borderTopColor: PV.Colors.grayLight,
+    borderTopWidth: StyleSheet.hairlineWidth
+  },
+  headerView: {
     flex: 1
   }
 })
