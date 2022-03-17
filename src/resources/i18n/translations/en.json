@@ -253,6 +253,7 @@
 	"Create and share playlists": "— Create and share playlists",
 	"Custom API domain description": "Enter a valid base URL for a custom Podverse API instance.",
 	"Custom API domain": "Custom API domain",
+  "Custom Feeds": "Custom Feeds",
 	"Custom web domain description": "Enter a valid base URL for a custom Podverse web instance.",
 	"Custom web domain subtext": "Set custom domains to use an alternate server for your app data.",
 	"Custom web domain": "Web domain",
