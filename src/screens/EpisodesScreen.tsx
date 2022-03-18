@@ -412,9 +412,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             tempQueryMediaType: queryMediaType,
             tempQuerySort: querySort
           }
-        : {
-            tempQueryEnabled: true
-          }
+        : {}
       this.setState(tempQueryObj, () => {
         const queryFrom = PV.Filters._allPodcastsKey
         const keepSearchTitle = true

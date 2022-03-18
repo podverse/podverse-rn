@@ -315,9 +315,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             tempQueryFrom: queryFrom,
             tempQuerySort: querySort
           }
-        : {
-            tempQueryEnabled: true
-          }
+        : {}
       this.setState(tempQueryObj, () => {
         const queryFrom = PV.Filters._allPodcastsKey
         const keepSearchTitle = true
