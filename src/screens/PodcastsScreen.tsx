@@ -748,12 +748,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextQuery = () => {
-    const { searchBarText, tempQueryEnabled } = this.state
+    const { queryFrom, queryMediaType, querySort, searchBarText, tempQueryEnabled } = this.state
     if (!searchBarText) {
       this._handleRestoreSavedQuery()
     } else {
-      const { queryFrom, queryMediaType, querySort } = this.state
-      const tempQueryObj = !tempQueryEnabled
+      const tempQueryObj: any = !tempQueryEnabled
         ? {
             tempQueryEnabled: true,
             tempQueryFrom: queryFrom,
@@ -761,10 +760,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             tempQuerySort: querySort
           }
         : {
-            tempQueryEnabled: true,
-            tempQueryFrom: this.state.tempQueryFrom,
-            tempQueryMediaType: this.state.tempQueryMediaType,
-            tempQuerySort: this.state.tempQuerySort
+            tempQueryEnabled: true
           }
       this.setState(tempQueryObj, () => {
         const queryFrom = PV.Filters._allPodcastsKey
