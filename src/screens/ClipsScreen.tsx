@@ -324,38 +324,6 @@ export class ClipsScreen extends React.Component<Props, State> {
     }
   }
 
-  /*
-
-NEW in Podverse web:
-
-Cross-app Twitter comments 🎉
-
-Podcasters can now create an official Twitter thread for each episode
-and make it available to every podcast app. Just add a link to a tweet
-in your RSS feed.
-
-Podcasting 2.0 #FOSS #OpenSource 
-
-<screenshot>
-PodLand link on Podverse
-
-
-
-Special thanks to @johnspurlock for creating the Threadcap cross-app comments library 🙏
-
-Threadcap makes it easy to load comments from social media platforms into any app.
-Just pass a link to a social media post to Threadcap,
-and it returns the full comment data in an easy to parse format.
-
-Threadcap currently supports ActivityPub and Twitter comments.
-
-https://www.npmjs.com/package/threadcap
-
-
-
-
-*/
-
   _handleRestoreSavedQuery = () => {
     const { tempQueryFrom, tempQuerySort } = this.state
     this.setState(
