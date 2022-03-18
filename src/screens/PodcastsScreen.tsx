@@ -7,7 +7,6 @@ import { endConnection as iapEndConnection, initConnection as iapInitConnection 
 import React from 'reactn'
 import { convertToNowPlayingItem } from 'podverse-shared'
 import {
-  ActivityIndicator,
   Divider,
   FlatList,
   PlayerEvents,
@@ -87,6 +86,10 @@ type State = {
   selectedSortLabel?: string | null
   showDataSettingsConfirmDialog: boolean
   showNoInternetConnectionMessage?: boolean
+  tempQueryEnabled: boolean
+  tempQueryFrom: string | null
+  tempQueryMediaType: string | null
+  tempQuerySort: string | null
 }
 
 const testIDPrefix = 'podcasts_screen'
@@ -118,7 +121,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
       selectedCategorySub: null,
       selectedFilterLabel: translate('Subscribed'),
       showDataSettingsConfirmDialog: false,
-      selectedSortLabel: translate('A-Z')
+      selectedSortLabel: translate('A-Z'),
+      tempQueryEnabled: false,
+      tempQueryFrom: null,
+      tempQueryMediaType: null,
+      tempQuerySort: null
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
@@ -741,11 +748,45 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextQuery = () => {
-    const queryFrom = PV.Filters._allPodcastsKey
-    const preventIsLoading = false
-    const preventAutoDownloading = true
-    const keepSearchTitle = true
-    this.handleSelectFilterItem(queryFrom, preventIsLoading, preventAutoDownloading, keepSearchTitle)
+    const { queryFrom, queryMediaType, querySort, searchBarText, tempQueryEnabled } = this.state
+    if (!searchBarText) {
+      this._handleRestoreSavedQuery()
+    } else {
+      const tempQueryObj: any = !tempQueryEnabled
+        ? {
+            tempQueryEnabled: true,
+            tempQueryFrom: queryFrom,
+            tempQueryMediaType: queryMediaType,
+            tempQuerySort: querySort
+          }
+        : {}
+      this.setState(tempQueryObj, () => {
+        const queryFrom = PV.Filters._allPodcastsKey
+        const preventIsLoading = false
+        const preventAutoDownloading = true
+        const keepSearchTitle = true
+        this.handleSelectFilterItem(queryFrom, preventIsLoading, preventAutoDownloading, keepSearchTitle)
+      })
+    }
+  }
+
+  _handleRestoreSavedQuery = () => {
+    const { tempQueryFrom, tempQueryMediaType, tempQuerySort } = this.state
+    this.setState(
+      {
+        queryFrom: tempQueryFrom,
+        queryMediaType: tempQueryMediaType,
+        querySort: tempQuerySort,
+        tempQueryEnabled: false
+      },
+      () => {
+        const restoredQueryFrom = tempQueryFrom || PV.Filters._subscribedKey
+        const preventIsLoading = false
+        const preventAutoDownloading = true
+        const keepSearchTitle = false
+        this.handleSelectFilterItem(restoredQueryFrom, preventIsLoading, preventAutoDownloading, keepSearchTitle)
+      }
+    )
   }
 
   _handleSearchNavigation = () => {
