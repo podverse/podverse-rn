@@ -1,6 +1,6 @@
 import debounce from 'lodash/debounce'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
-import { Alert } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
@@ -50,6 +50,9 @@ type State = {
   showActionSheet: boolean
   showDeleteConfirmDialog?: boolean
   showNoInternetConnectionMessage?: boolean
+  tempQueryEnabled: boolean
+  tempQueryFrom: string | null
+  tempQuerySort: string | null
 }
 
 const testIDPrefix = 'clips_screen'
@@ -80,7 +83,10 @@ export class ClipsScreen extends React.Component<Props, State> {
       selectedCategorySub: null,
       selectedFilterLabel: hasSubscribedPodcasts ? translate('Subscribed') : translate('All Podcasts'),
       selectedSortLabel: translate('recent'),
-      showActionSheet: false
+      showActionSheet: false,
+      tempQueryEnabled: false,
+      tempQueryFrom: hasSubscribedPodcasts ? PV.Filters._subscribedKey : PV.Filters._allPodcastsKey,
+      tempQuerySort: PV.Filters._mostRecentKey
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
@@ -298,9 +304,74 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextQuery = () => {
-    const queryFrom = PV.Filters._allPodcastsKey
-    const keepSearchTitle = true
-    this.handleSelectFilterItem(queryFrom, keepSearchTitle)
+    const { queryFrom, querySort, searchBarText, tempQueryEnabled } = this.state
+
+    if (!searchBarText) {
+      this._handleRestoreSavedQuery()
+    } else {
+      const tempQueryObj: any = !tempQueryEnabled
+        ? {
+            tempQueryEnabled: true,
+            tempQueryFrom: queryFrom,
+            tempQuerySort: querySort
+          }
+        : {
+            tempQueryEnabled: true
+          }
+      this.setState(tempQueryObj, () => {
+        const queryFrom = PV.Filters._allPodcastsKey
+        const keepSearchTitle = true
+        this.handleSelectFilterItem(queryFrom, keepSearchTitle)
+      })
+    }
+  }
+
+  /*
+
+NEW in Podverse web:
+
+Cross-app Twitter comments 🎉
+
+Podcasters can now create an official Twitter thread for each episode
+and make it available to every podcast app. Just add a link to a tweet
+in your RSS feed.
+
+Podcasting 2.0 #FOSS #OpenSource 
+
+<screenshot>
+PodLand link on Podverse
+
+
+
+Special thanks to @johnspurlock for creating the Threadcap cross-app comments library 🙏
+
+Threadcap makes it easy to load comments from social media platforms into any app.
+Just pass a link to a social media post to Threadcap,
+and it returns the full comment data in an easy to parse format.
+
+Threadcap currently supports ActivityPub and Twitter comments.
+
+https://www.npmjs.com/package/threadcap
+
+
+
+
+*/
+
+  _handleRestoreSavedQuery = () => {
+    const { tempQueryFrom, tempQuerySort } = this.state
+    this.setState(
+      {
+        queryFrom: tempQueryFrom,
+        querySort: tempQuerySort,
+        tempQueryEnabled: false
+      },
+      () => {
+        const restoredQueryFrom = tempQueryFrom || PV.Filters._subscribedKey
+        const keepSearchTitle = false
+        this.handleSelectFilterItem(restoredQueryFrom, keepSearchTitle)
+      }
+    )
   }
 
   _handleDownloadPressed = () => {
