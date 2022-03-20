@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View as RNView } from 'react-native'
+import { Platform, StyleSheet, View as RNView } from 'react-native'
 import { SearchBar } from 'react-native-elements'
 import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
   inputStyle: {
     borderWidth: 0,
     fontSize: PV.Fonts.sizes.xxl,
-    marginHorizontal: 10
+    marginHorizontal: 10,
+    paddingVertical: Platform.OS === 'android' ? 3 : 0
   },
   imageStyle: {
     width: 28,
