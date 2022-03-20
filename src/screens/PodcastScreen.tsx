@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { convertToNowPlayingItem, Episode } from 'podverse-shared'
-import { StyleSheet, View as RNView } from 'react-native'
+import { Platform, StyleSheet, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
@@ -253,12 +253,14 @@ export class PodcastScreen extends React.Component<Props, State> {
                 this._updateCredentialsState()
                 // Adding a no time setTimeout for the listref to have populated
                 // in the next event loop otherwise, there will be no ref to call scroll to yet
-                setTimeout(() => {
-                  this.listRef?.scrollToOffset({
-                    animated: false,
-                    offset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset.y
+                if (Platform.OS === 'ios') {
+                  setTimeout(() => {
+                    this.listRef?.scrollToOffset({
+                      animated: false,
+                      offset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset.y
+                    })
                   })
-                })
+                }
               }
             )
           } catch (error) {
