@@ -971,7 +971,6 @@ export class PodcastScreen extends React.Component<Props, State> {
                 renderItem={this._renderItem}
                 listRef={(ref) => (this.listRef = ref)}
                 showNoInternetConnectionMessage={offlineModeEnabled || showNoInternetConnectionMessage}
-                contentOffset={{ x: 0, y: 30 }}
               />
             )}
             <ActionSheet
