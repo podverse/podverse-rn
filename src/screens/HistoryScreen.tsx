@@ -1,5 +1,6 @@
 import { NowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
+import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
 import { ActivityIndicator, FlatList, NavHeaderButtonText, OpaqueBackground, QueueTableCell, View } from '../components'
 import { translate } from '../lib/i18n'
@@ -52,14 +53,11 @@ export class HistoryScreen extends React.Component<Props, State> {
     const textColor = isTransparent ? globalTheme.text.color : ''
 
     return {
-      ...(!isTransparent
-        ? {}
-        : {
-            headerTransparent: true,
-            headerStyle: {},
-            headerTintColor: globalTheme.text.color
-          }),
       headerTitle: translate('History'),
+      headerStyle: {
+        backgroundColor: globalTheme.view.backgroundColor
+      },
+      headerTintColor: globalTheme.text.color,
       headerRight: () => (
         <RNView style={[core.row]}>
           <RNView>
@@ -92,7 +90,7 @@ export class HistoryScreen extends React.Component<Props, State> {
           {/* {navigation.getParam('showMoreNavButton') && <NavSearchIcon navigation={navigation} />} */}
         </RNView>
       )
-    }
+    } as NavigationStackOptions
   }
 
   async componentDidMount() {

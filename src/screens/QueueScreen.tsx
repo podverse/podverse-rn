@@ -1,5 +1,6 @@
 import { NowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
+import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
 import { getHistoryItemsIndex } from '../services/userHistoryItem'
 import {
@@ -68,13 +69,10 @@ export class QueueScreen extends React.Component<Props, State> {
     const allowViewTypeChange = navigation.getParam('allowViewTypeChange')
 
     return {
-      ...(!isTransparent
-        ? {}
-        : {
-            headerTransparent: true,
-            headerStyle: {},
-            headerTintColor: globalTheme.text.color
-          }),
+      headerStyle: {
+        backgroundColor: globalTheme.view.backgroundColor
+      },
+      headerTintColor: globalTheme.text.color,
       headerTitle: allowViewTypeChange ? (
         <HeaderTitleSelector
           color={textColor}
@@ -144,7 +142,7 @@ export class QueueScreen extends React.Component<Props, State> {
           {/* {navigation.getParam('showMoreNavButton') && <NavSearchIcon navigation={navigation} />} */}
         </RNView>
       )
-    }
+    } as NavigationStackOptions
   }
 
   componentDidMount() {
