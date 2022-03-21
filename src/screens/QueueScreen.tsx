@@ -9,7 +9,6 @@ import {
   HeaderTitleSelector,
   MessageWithAction,
   NavHeaderButtonText,
-  NavSearchIcon,
   OpaqueBackground,
   QueueTableCell,
   SortableList,

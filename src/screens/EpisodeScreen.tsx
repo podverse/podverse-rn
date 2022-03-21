@@ -6,7 +6,6 @@ import {
   EpisodeTableHeader,
   HTMLScrollView,
   Icon,
-  NavSearchIcon,
   NavShareIcon,
   PressableWithOpacity,
   ScrollView,

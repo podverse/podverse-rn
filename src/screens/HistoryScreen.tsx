@@ -1,15 +1,7 @@
 import { NowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import React, { getGlobal } from 'reactn'
-import {
-  ActivityIndicator,
-  FlatList,
-  NavHeaderButtonText,
-  NavSearchIcon,
-  OpaqueBackground,
-  QueueTableCell,
-  View
-} from '../components'
+import { ActivityIndicator, FlatList, NavHeaderButtonText, OpaqueBackground, QueueTableCell, View } from '../components'
 import { translate } from '../lib/i18n'
 import { overrideImageUrlWithChapterImageUrl, safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
