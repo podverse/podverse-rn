@@ -16,7 +16,8 @@ import { parseAllAddByRSSPodcasts, setAddByRSSPodcastFeedUrlsLocally } from '../
 import { setAllQueueItemsLocally } from '../../services/queue'
 import { setAllHistoryItemsLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemLocally,
-  getNowPlayingItemOnServer } from '../../services/userNowPlayingItem'
+  getNowPlayingItemOnServer, 
+  setNowPlayingItemLocally} from '../../services/userNowPlayingItem'
 import { getLNWallet } from './lnpay'
 import { combineWithAddByRSSPodcasts, getSubscribedPodcasts } from './podcast'
 import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './valueTag'
@@ -140,6 +141,14 @@ export const askToSyncWithNowPlayingItem = async (navigation: any) => {
         askToSyncWithLastHistoryItem.message,
         askToSyncWithLastHistoryItem.buttons
       )
+    } else if (
+      !localNowPlayingItem.clipId
+      && localNowPlayingItem.episodeId === serverNowPlayingItem.episodeId
+    ) {
+      // If the server and local nowPlayingItem's are the same episode,
+      // then resume from the server item's userPlaybackPosition
+      // instead of the localNowPlayingItem's
+      await setNowPlayingItemLocally(serverNowPlayingItem, serverNowPlayingItem.userPlaybackPosition || 0)
     }
   }
 }
