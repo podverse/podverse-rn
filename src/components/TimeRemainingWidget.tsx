@@ -186,6 +186,7 @@ export const TimeRemainingWidget = (props: Props) => {
       </View>
       {!!handleMorePress && (
         <MoreButton
+          accessible={false}
           handleMorePress={handleMorePress}
           isLoading={episodeDownloading}
           itemType={itemType}

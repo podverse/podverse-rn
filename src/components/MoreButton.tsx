@@ -6,6 +6,7 @@ import { PV } from '../resources'
 import { ActivityIndicator, PressableWithOpacity } from '.'
 
 type Props = {
+  accessible: boolean
   handleMorePress: any
   isLoading?: boolean
   itemType: 'episode' | 'clip' | 'chapter'
@@ -13,11 +14,12 @@ type Props = {
 }
 
 export const MoreButton = (props: Props) => {
-  const { handleMorePress, isLoading, itemType, testID } = props
+  const { accessible = true, handleMorePress, isLoading, itemType, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <PressableWithOpacity
+      accessible={accessible}
       accessibilityHint={`${translate('ARIA HINT - show more options for this')} ${translate(itemType)}`}
       accessibilityLabel={translate('More')}
       accessibilityRole='button'
