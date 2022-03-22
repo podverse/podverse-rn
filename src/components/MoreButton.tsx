@@ -29,6 +29,7 @@ export const MoreButton = (props: Props) => {
         right: 10,
         top: 10
       }}
+      importantForAccessibility={accessible ? 'yes' : 'no-hide-descendants'}
       onPress={handleMorePress}
       testID={`${testID}_more_button`.prependTestId()}>
       {!isLoading ? (
