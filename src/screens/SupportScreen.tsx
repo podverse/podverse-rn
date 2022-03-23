@@ -35,12 +35,8 @@ export class SupportScreen extends React.Component<Props> {
     this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
   }
 
-  donateWithPayPal = () => {
-    this.handleFollowLink('https://www.paypal.com/donate?hosted_button_id=YKMNUDUCRTUPC')
-  }
-
-  donateWithPatreon = () => {
-    this.handleFollowLink('https://www.patreon.com/podverse')
+  showYourSupport = () => {
+    this.handleFollowLink('https://podverse.fm/support')
   }
 
   joinOurDiscordServer = () => {
@@ -54,12 +50,13 @@ export class SupportScreen extends React.Component<Props> {
   render() {
     return (
       <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
-        <ScrollView
-          style={styles.scrollView}>
-          <Text style={styles.text}>Podverse creates free and open source software to expand what is possible in podcasting.</Text>
+        <ScrollView style={styles.scrollView}>
+          <Text style={styles.text}>
+            Podverse creates free and open source software to expand what is possible in podcasting.
+          </Text>
           <Text style={styles.text}>Below are a few ways you can support the project:</Text>
           <Divider style={styles.divider} />
-          <Text style={styles.headerText}>Membership</Text>
+          <Text style={styles.headerText}>{translate('Support')}</Text>
           <TextLink
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             onPress={this.handeBuyAPodverseMembership}
@@ -67,25 +64,12 @@ export class SupportScreen extends React.Component<Props> {
             testID={`${testIDPrefix}_buy_a_membership`}
             text={'Buy a Podverse premium membership'}
           />
-          <Divider style={styles.divider} />
-          <Text style={styles.headerText}>Donate</Text>
-          <Text style={styles.text}>Bitcoin Wallet Address:</Text>
-          <Text selectable style={styles.text}>bc1q7crmsdwhqks803729v0ewpfhf3ft5vzd6vwxkt</Text>
-          <Text style={styles.text}>Bitcoin Lightning Node Address:</Text>
-          <Text selectable style={styles.text}>02b92193a4c9d035c81f8076ae4a4aba04b7ea8e04058eb3296f894e6ccd5f2e6e</Text>
           <TextLink
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            onPress={this.donateWithPayPal}
+            onPress={this.showYourSupport}
             style={styles.textLink}
-            testID={`${testIDPrefix}_donate_with_paypal`}
-            text={'Donate with PayPal'}
-          />
-          <TextLink
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            onPress={this.donateWithPatreon}
-            style={styles.textLink}
-            testID={`${testIDPrefix}_donate_with_patreon`}
-            text={'Donate with Patreon'}
+            testID={`${testIDPrefix}_show_your_support`}
+            text={'Show your support'}
           />
           <Divider style={styles.divider} />
           <Text style={styles.headerText}>Contribute</Text>
@@ -99,7 +83,10 @@ export class SupportScreen extends React.Component<Props> {
           <Text style={styles.listText}>- SEO</Text>
           <Text style={styles.listText}>- Creating Memes</Text>
           <Text style={styles.listText}>- Other ideas?</Text>
-          <Text style={styles.text}>If you are interested in helping Podverse in any capacity, please join our Discord server or send us an email!</Text>
+          <Text style={styles.text}>
+            If you are interested in helping Podverse in any capacity, please join our Discord server or send us an
+            email!
+          </Text>
           <TextLink
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             onPress={this.joinOurDiscordServer}

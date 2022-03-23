@@ -439,7 +439,7 @@
 				INFOPLIST_FILE = podverse/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 4.2.4;
+				MARKETING_VERSION = 4.2.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -474,7 +474,7 @@
 				INFOPLIST_FILE = podverse/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 4.2.4;
+				MARKETING_VERSION = 4.2.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

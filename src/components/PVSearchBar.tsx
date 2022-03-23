@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View as RNView } from 'react-native'
+import { Platform, StyleSheet, View as RNView } from 'react-native'
 import { SearchBar } from 'react-native-elements'
 import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
@@ -10,7 +10,10 @@ type Props = {
   accessible?: boolean
   containerStyle?: any
   handleClear?: any
+  hideIcon?: boolean
+  icon?: 'search' | 'filter'
   inputRef?: any
+  noContainerPadding?: boolean
   onChangeText: any
   placeholder?: string
   subText?: string
@@ -19,10 +22,27 @@ type Props = {
 }
 
 export const PVSearchBar = (props: Props) => {
-  const { accessible, containerStyle, handleClear, inputRef, onChangeText, placeholder, subText, testID, value } = props
+  const {
+    accessible,
+    containerStyle,
+    handleClear,
+    hideIcon,
+    icon = 'search',
+    inputRef,
+    noContainerPadding,
+    onChangeText,
+    placeholder,
+    subText,
+    testID,
+    value
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const inputStyle = PV.Fonts.fontScale.largest === fontScaleMode ? { fontSize: PV.Fonts.largeSizes.md } : {}
+  const iconName = icon === 'filter' ? 'filter' : 'search'
+  const iconColor = icon === 'filter' ? PV.Colors.grayLighter : PV.Colors.white
+
+  const finalContainerStyle = noContainerPadding ? { ...containerStyle, paddingVertical: 0 } : containerStyle
 
   return (
     <RNView>
@@ -30,17 +50,20 @@ export const PVSearchBar = (props: Props) => {
         accessible={accessible}
         autoCorrect={false}
         clearIcon={
-          <Icon
-            accessibilityLabel={translate('Clear input')}
-            accessibilityRole='button'
-            name='times'
-            onPress={handleClear}
-            size={20}
-          />
+          value ? (
+            <Icon
+              accessibilityLabel={translate('Clear input')}
+              accessibilityRole='button'
+              name='times'
+              onPress={handleClear}
+              size={20}
+            />
+          ) : null
         }
-        containerStyle={[styles.containerStyle, containerStyle]}
+        onClear={handleClear}
+        containerStyle={[styles.containerStyle, finalContainerStyle]}
         inputContainerStyle={styles.inputContainerStyle}
-        inputStyle={[styles.inputStyle, globalTheme.textInput, inputStyle]}
+        inputStyle={[globalTheme.textInput, styles.inputStyle, inputStyle]}
         onChangeText={onChangeText}
         placeholder={placeholder}
         ref={inputRef}
@@ -48,9 +71,9 @@ export const PVSearchBar = (props: Props) => {
         searchIcon={
           <Icon
             accessible={false}
-            color={PV.Colors.white}
+            color={iconColor}
             importantForAccessibility='no-hide-descendants'
-            name={'search'}
+            name={!!hideIcon ? null : iconName}
             size={PV.Icons.NAV}
             solid
           />
@@ -75,17 +98,22 @@ export const PVSearchBar = (props: Props) => {
 const styles = StyleSheet.create({
   containerStyle: {
     backgroundColor: 'transparent',
+    borderColor: 'transparent',
     borderWidth: 0,
     paddingHorizontal: 12
   },
   inputContainerStyle: {
-    backgroundColor: 'transparent',
-    borderWidth: 0
+    backgroundColor: PV.Colors.velvet,
+    borderRadius: 6,
+    borderWidth: 0,
+    marginVertical: 5,
+    height: 40
   },
   inputStyle: {
-    fontSize: PV.Fonts.sizes.xxl,
     borderWidth: 0,
-    marginLeft: 18
+    fontSize: PV.Fonts.sizes.xxl,
+    marginHorizontal: 10,
+    paddingVertical: Platform.OS === 'android' ? 3 : 0
   },
   imageStyle: {
     width: 28,

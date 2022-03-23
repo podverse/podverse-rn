@@ -1,12 +1,12 @@
 import { request } from './request'
 
 export const getEpisodes = async (query: any = {}) => {
-  const searchAllFieldsText = query.searchAllFieldsText ? encodeURIComponent(query.searchAllFieldsText) : ''
+  const searchTitle = query.searchTitle ? encodeURIComponent(query.searchTitle) : ''
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
-    ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
+    ...(query.sort ? { sort: query.sort } : {}),
     ...(query.podcastId ? { podcastId: query.podcastId } : {}),
-    ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+    ...(searchTitle ? { searchTitle } : {}),
     ...(query.includePodcast ? { includePodcast: query.includePodcast } : {}),
     ...(query.sincePubDate ? { sincePubDate: query.sincePubDate } : {}),
     ...(query.hasVideo ? { hasVideo: query.hasVideo } : {})

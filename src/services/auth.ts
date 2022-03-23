@@ -209,6 +209,20 @@ export const sendVerificationEmail = async (email: string) => {
   return response && response.data
 }
 
+export const resetPassword = async (newPassword: string, resetToken: string) => {
+  const response = await request({
+    endpoint: '/auth/reset-password',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: {
+      password: newPassword,
+      resetPasswordToken: resetToken
+    }
+  })
+
+  return response && response.data
+}
+
 export const signUp = async (credentials: Credentials) => {
   const response = await request({
     endpoint: '/auth/sign-up',

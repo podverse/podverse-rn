@@ -243,20 +243,19 @@ const handleBackgroundTimerInterval = () => {
 
       if (valueStreamingIntervalSecondCount === 600) {
         valueStreamingIntervalSecondCount = 1
-        ;(async () => {
-          const { errors, transactions, totalAmount } = await processValueTransactionQueue()
-          if (transactions.length > 0 && totalAmount > 0) {
-            setGlobal({
-              bannerInfo: {
-                show: true,
-                description: translate('Streaming Value Sent'),
-                errors,
-                transactions,
-                totalAmount
-              }
-            })
-          }
-        })()
+
+        const { errors, transactions, totalAmount } = await processValueTransactionQueue()
+        if (transactions.length > 0 && totalAmount > 0) {
+          setGlobal({
+            bannerInfo: {
+              show: true,
+              description: translate('Streaming Value Sent'),
+              errors,
+              transactions,
+              totalAmount
+            }
+          })
+        }
       }
     }
   })

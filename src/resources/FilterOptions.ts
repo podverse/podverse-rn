@@ -8,6 +8,7 @@ const {
   _subscribedKey,
   _downloadedKey,
   _allPodcastsKey,
+  _customFeedsKey,
   _categoryKey,
   _alphabeticalKey,
   _mostRecentKey,
@@ -70,6 +71,10 @@ const allFilterTypeItems = [
   {
     label: translate('Category'),
     value: _categoryKey
+  },
+  {
+    label: translate('Custom Feeds'),
+    value: _customFeedsKey
   },
   {
     label: translate('My Clips'),
@@ -180,7 +185,7 @@ export const FilterOptions = {
   sortItems,
   screenFilters: {
     ClipsScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
+      type: [_subscribedKey, _allPodcastsKey, _categoryKey],
       sort: [_mostRecentKey, ..._top]
     },
     EpisodeMediaRefScreen: {
@@ -204,9 +209,9 @@ export const FilterOptions = {
       addByPodcastRSSFeedURLSort: [_mostRecentKey]
     },
     PodcastsScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _customFeedsKey],
       sort: [..._top],
-      subscribedSort: [_alphabeticalKey, ..._top]
+      subscribedSort: [_alphabeticalKey]
     },
     ProfileScreen: {
       type: [_podcastsKey, _clipsKey, _playlistsKey],

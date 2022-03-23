@@ -41,6 +41,7 @@ import {
   ProfilesScreen,
   PurchasingScreen,
   QueueScreen,
+  ResetPasswordScreen,
   // ScanQRCodeScreen,
   SearchScreen,
   SettingsScreen,
@@ -73,17 +74,18 @@ const defaultNavigationOptions = ({ navigation }) => {
     headerTintColor: darkTheme.text.color,
     headerTitleStyle: {
       fontWeight: 'bold'
-    },
-    headerRight: () => <NavSearchIcon navigation={navigation} />,
-    // Prevent white screen flash on navigation on Android
-    ...(Platform.OS === 'android' ? { animationEnabled: false } : {}),
-    ...(Platform.OS === 'android' ? { backgroundColor: 'transparent' } : {})
+    }
+  //   headerRight: () => <NavSearchIcon navigation={navigation} />,
+  //   // Prevent white screen flash on navigation on Android
+  //   ...(Platform.OS === 'android' ? { animationEnabled: false } : {}),
+  //   ...(Platform.OS === 'android' ? { backgroundColor: 'transparent' } : {})
   } as NavigationStackOptions
 }
 
 const AuthNavigator = createStackNavigator(
   {
-    [PV.RouteNames.AuthScreen]: AuthScreen
+    [PV.RouteNames.AuthScreen]: AuthScreen,
+    [PV.RouteNames.ResetPasswordScreen]: ResetPasswordScreen
   },
   {
     defaultNavigationOptions

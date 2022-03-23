@@ -11,6 +11,7 @@ export const Filters: IFilters = {
   _subscribedKey: 'subscribed',
   _downloadedKey: 'downloaded',
   _allPodcastsKey: 'all-podcasts',
+  _customFeedsKey: 'custom-feeds',
   _categoryKey: 'category',
   _alphabeticalKey: 'alphabetical',
   _mostRecentKey: 'most-recent',

@@ -11,5 +11,8 @@ export const FlatList = {
   },
   lastCell: {
     height: 72
+  },
+  ListHeaderHiddenSearchBar: {
+    contentOffset: { x: 0, y: 67 }
   }
 }
