@@ -122,7 +122,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
   return isLoggedIn
 }
 
-export const askToSyncWithNowPlayingItem = async (navigation: any) => {
+export const askToSyncWithNowPlayingItem = async (callback: any) => {
   const localNowPlayingItem = await getNowPlayingItemLocally()
   const serverNowPlayingItem = await getNowPlayingItemOnServer()
 
@@ -134,7 +134,7 @@ export const askToSyncWithNowPlayingItem = async (navigation: any) => {
     ) {
       const askToSyncWithLastHistoryItem = PV.Alerts.ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM(
         serverNowPlayingItem,
-        navigation
+        callback
       )
       Alert.alert(
         askToSyncWithLastHistoryItem.title,
@@ -149,7 +149,12 @@ export const askToSyncWithNowPlayingItem = async (navigation: any) => {
       // then resume from the server item's userPlaybackPosition
       // instead of the localNowPlayingItem's
       await setNowPlayingItemLocally(serverNowPlayingItem, serverNowPlayingItem.userPlaybackPosition || 0)
+      callback()
+    } else {
+      callback()
     }
+  } else {
+    callback()
   }
 }
 

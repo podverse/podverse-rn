@@ -4204,6 +4204,11 @@ hosted-git-info@^2.1.4, hosted-git-info@^2.7.1, hosted-git-info@^2.8.9:
   version "2.8.9"
   resolved "https://registry.npmjs.org/hosted-git-info/-/hosted-git-info-2.8.9.tgz"
 
+html-entities@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/html-entities/-/html-entities-2.3.2.tgz#760b404685cb1d794e4f4b744332e3b00dcfe488"
+  integrity sha512-c3Ab/url5ksaT0WyleslpBEthOzWhrjQbg75y7XUsfSzi3Dgzt0l8w5e7DylRn15MTlMMD58dTfzddNS2kcAjQ==
+
 htmlparser2-without-node-native@^3.9.0:
   version "3.9.2"
   resolved "https://registry.yarnpkg.com/htmlparser2-without-node-native/-/htmlparser2-without-node-native-3.9.2.tgz"
@@ -5889,6 +5894,11 @@ mockdate@^3.0.2:
   version "3.0.5"
   resolved "https://registry.npmjs.org/mockdate/-/mockdate-3.0.5.tgz"
 
+moment@^2.29.1:
+  version "2.29.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
+  integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
+
 move-concurrently@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/move-concurrently/-/move-concurrently-1.0.1.tgz"
@@ -6753,11 +6763,12 @@ plist@^3.0.2, plist@^3.0.4:
     base64-js "^1.5.1"
     xmlbuilder "^9.0.7"
 
-podverse-shared@^4.2.17:
-  version "4.2.17"
-  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.2.17.tgz#ae6e0546f98a499d7b5c5010be5fea6184b39725"
-  integrity sha512-uFufZCyhwj4COgp6VGndbbyV5KwRYOwH30aTakl9H39XJjrfzJT4jUzjCMo+saITKRlw1EDpuZmEm5/X5NanOw==
+podverse-shared@^4.2.22:
+  version "4.2.22"
+  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.2.22.tgz#7ebcce3b88928da83cfa55c8cc883deb978284c8"
+  integrity sha512-gZESEAMT7qUu9BxYWVnYce53dK+wgaOcD6wGrYeILefyklCiyV3bll4n31H4No7jwNP+ZDpePcGRVgq3BiGVZA==
   dependencies:
+    html-entities "^2.3.2"
     striptags "^3.2.0"
     typescript "3.9.7"
 

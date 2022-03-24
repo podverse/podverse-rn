@@ -2,7 +2,7 @@ import { NowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
-import { ActivityIndicator, FlatList, NavHeaderButtonText, OpaqueBackground, QueueTableCell, View } from '../components'
+import { ActivityIndicator, FlatList, NavHeaderButtonText, QueueTableCell, View } from '../components'
 import { translate } from '../lib/i18n'
 import { overrideImageUrlWithChapterImageUrl, safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
@@ -194,8 +194,6 @@ export class HistoryScreen extends React.Component<Props, State> {
 
   render() {
     const { historyItems = [] } = this.global.session.userInfo
-    const { currentChapter, player } = this.global
-    const { nowPlayingItem } = player
     const { isLoading, isLoadingMore, isRemoving, isTransparent } = this.state
 
     const view = (
@@ -220,13 +218,7 @@ export class HistoryScreen extends React.Component<Props, State> {
       </View>
     )
 
-    const imageUrl = overrideImageUrlWithChapterImageUrl(nowPlayingItem, currentChapter)
-
-    if (isTransparent) {
-      return <OpaqueBackground imageUrl={imageUrl}>{view}</OpaqueBackground>
-    } else {
-      return view
-    }
+    return view
   }
 
   _queryData = async (page = 1) => {
