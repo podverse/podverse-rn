@@ -36,8 +36,8 @@ export const initializeSettings = async () => {
     checkIfTrackingIsEnabled(),
     PV.URLs.api(),
     PV.URLs.web(),
-    AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_BACKWARDS) || PV.Player.jumpBackSeconds,
-    AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_FORWARDS) || PV.Player.jumpSeconds,
+    AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_BACKWARDS),
+    AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_FORWARDS),
     AsyncStorage.getItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE)
   ])
 
@@ -58,8 +58,8 @@ export const initializeSettings = async () => {
     errorReportingEnabled,
     listenTrackingEnabled,
     offlineModeEnabled,
-    jumpBackwardsTime,
-    jumpForwardsTime,
+    jumpBackwardsTime: jumpBackwardsTime || PV.Player.jumpBackSeconds,
+    jumpForwardsTime: jumpForwardsTime || PV.Player.jumpSeconds,
     urlsAPI,
     urlsWeb,
     addCurrentItemNextInQueue: !!addCurrentItemNextInQueue
