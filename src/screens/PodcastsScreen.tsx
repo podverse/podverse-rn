@@ -423,27 +423,31 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.setGlobal({ userAgent })
     this.setState({ isLoadingMore: false }, () => {
       (async () => {
+        let isLoggedIn = false
         try {
-          const isLoggedIn = await getAuthUserInfo()
-          if (isLoggedIn) await askToSyncWithNowPlayingItem(navigation)
+          isLoggedIn = await getAuthUserInfo()
+          if (isLoggedIn) await askToSyncWithNowPlayingItem(this._initializeScreenDataPart2)
         } catch (error) {
           console.log('initializeScreenData getAuthUserInfo', error)
           // If getAuthUserInfo fails, continue with the networkless version of the app
         }
-
-        const preventIsLoading = true
-        const preventAutoDownloading = false
-        await this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
-
-        await initDownloads()
-        await initializePlayer()
-        await initializePlaybackSpeed()
-        initializeValueProcessor()
-
-        this._setDownloadedDataIfOffline()
-        trackPageView('/podcasts', 'Podcasts Screen')
+        if (!isLoggedIn) this._initializeScreenDataPart2()
       })()
     })
+  }
+
+  _initializeScreenDataPart2 = async () => {
+    const preventIsLoading = true
+    const preventAutoDownloading = false
+    await this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
+
+    await initDownloads()
+    await initializePlayer()
+    await initializePlaybackSpeed()
+    initializeValueProcessor()
+
+    this._setDownloadedDataIfOffline()
+    trackPageView('/podcasts', 'Podcasts Screen')
   }
 
   handleSelectMediaTypeItem = (selectedKey: string) => {
