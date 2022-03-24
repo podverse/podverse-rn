@@ -63,10 +63,12 @@ export const playerCheckActiveType = async () => {
 
 export const playerHandleResumeAfterClipHasEnded = async () => {
   await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
-  const nowPlayingItem = await getNowPlayingItemLocally()
+  const [nowPlayingItem, playbackPosition, mediaFileDuration] = await Promise.all([
+    getNowPlayingItemLocally(),
+    playerGetPosition(),
+    playerGetDuration()
+  ])
   const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(nowPlayingItem)
-  const playbackPosition = await playerGetPosition()
-  const mediaFileDuration = await playerGetDuration()
   await addOrUpdateHistoryItem(nowPlayingItemEpisode, playbackPosition, mediaFileDuration)
   PVEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
@@ -245,8 +247,10 @@ export const playerSetPositionWhenDurationIsAvailable = async (
   return new Promise((resolve) => {
     const interval = setInterval(() => {
       (async () => {
-        const duration = await playerGetDuration()
-        const currentTrackId = await playerGetCurrentLoadedTrackId()
+        const [duration, currentTrackId] = await Promise.all([
+          playerGetDuration(),
+          playerGetCurrentLoadedTrackId()
+        ])
 
         setTimeout(() => {
           if (interval) clearInterval(interval)

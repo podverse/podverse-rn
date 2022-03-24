@@ -109,8 +109,10 @@ export class ClipsScreen extends React.Component<Props, State> {
     }
 
     const { querySort } = this.state
-    const selectedFilterLabel = await getSelectedFilterLabel(selectedKey)
-    const selectedSortLabel = await getSelectedSortLabel(querySort)
+    const [selectedFilterLabel, selectedSortLabel] = await Promise.all([
+      getSelectedFilterLabel(selectedKey),
+      getSelectedSortLabel(querySort)
+    ])
 
     this.setState(
       {

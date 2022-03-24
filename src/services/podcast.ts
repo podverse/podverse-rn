@@ -112,8 +112,11 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], vide
 }
 
 export const combineWithAddByRSSPodcasts = async () => {
-  const subscribedPodcastsResults = await getSubscribedPodcastsLocally()
-  const addByRSSPodcastsResults = await getAddByRSSPodcastsLocally()
+  const [subscribedPodcastsResults, addByRSSPodcastsResults] = await Promise.all([
+    getSubscribedPodcastsLocally(),
+    getAddByRSSPodcastsLocally()
+  ])
+
   const subscribedPodcasts =
     subscribedPodcastsResults[0] && Array.isArray(subscribedPodcastsResults[0]) ? subscribedPodcastsResults[0] : []
   const addByRSSPodcasts = Array.isArray(addByRSSPodcastsResults) ? addByRSSPodcastsResults : []
@@ -159,8 +162,12 @@ export const subscribeToPodcastIfNotAlready = async (alreadySubscribedPodcasts: 
 }
 
 export const toggleSubscribeToPodcast = async (id: string, skipRequestReview = false) => {
-  const isLoggedIn = await checkIfLoggedIn()
-  const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
+  const [isLoggedIn, itemsString, addByRSSPodcastsString, globalDownloadedEpisodeLimitDefault] = await Promise.all([
+    checkIfLoggedIn(),
+    AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS),
+    AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCASTS),
+    AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
+  ])
   let isUnsubscribing = false
   let isUnsubscribingAddByRSS = false
 
@@ -169,16 +176,12 @@ export const toggleSubscribeToPodcast = async (id: string, skipRequestReview = f
     isUnsubscribing = Array.isArray(podcastIds) && podcastIds.some((x: string) => id === x)
   }
 
-  const addByRSSPodcastsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCASTS)
   if (!isUnsubscribing && addByRSSPodcastsString) {
     const addByRSSPodcasts = JSON.parse(addByRSSPodcastsString)
     isUnsubscribingAddByRSS =
       Array.isArray(addByRSSPodcasts) && addByRSSPodcasts.some((podcast: any) => podcast.addByRSSPodcastFeedUrl === id)
   }
 
-  const globalDownloadedEpisodeLimitDefault = await AsyncStorage.getItem(
-    PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT
-  )
   if (globalDownloadedEpisodeLimitDefault) {
     let globalDownloadedEpisodeLimitCount = (await AsyncStorage.getItem(
       PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT

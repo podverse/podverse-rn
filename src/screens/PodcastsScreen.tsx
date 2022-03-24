@@ -168,12 +168,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
       if (!appHasLaunched) {
-        await AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
-        await AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE')
-        await AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5')
-        await AsyncStorage.setItem(PV.Keys.CENSOR_NSFW_TEXT, 'TRUE')
-        await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5')
 
+        await Promise.all([
+          AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true'),
+          AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE'),
+          AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5'),
+          AsyncStorage.setItem(PV.Keys.CENSOR_NSFW_TEXT, 'TRUE'),
+          AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5')
+        ])
+        
         if (!Config.DISABLE_CRASH_LOGS) {
           await AsyncStorage.setItem(PV.Keys.ERROR_REPORTING_ENABLED, 'TRUE')
         }
@@ -401,7 +404,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _initializeScreenData = async () => {
-    const { navigation } = this.props
     const { queryMediaType, searchBarText } = this.state
     const hasVideo = queryMediaType === PV.Filters._mediaTypeVideoOnly
     await initPlayerState(this.global)
@@ -439,11 +441,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _initializeScreenDataPart2 = async () => {
     const preventIsLoading = true
     const preventAutoDownloading = false
-    await this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
 
-    await initDownloads()
-    await initializePlayer()
-    await initializePlaybackSpeed()
+    await Promise.all([
+      this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading),
+      initDownloads(),
+      initializePlayer(),
+      initializePlaybackSpeed()
+    ])
+
     initializeValueProcessor()
 
     this._setDownloadedDataIfOffline()

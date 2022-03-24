@@ -33,8 +33,11 @@ export const clearHistoryItems = async () => {
 
 export const getHistoryItems = async (page: number, existingItems: any[]) => {
   const globalState = getGlobal()
-  const { userHistoryItems, userHistoryItemsCount } = await getHistoryItemsService(page)
-  const historyItemsIndex = await getHistoryItemsIndexLocally()
+  const [{ userHistoryItems, userHistoryItemsCount }, historyItemsIndex] = await Promise.all([
+    getHistoryItemsService(page),
+    getHistoryItemsIndexLocally()
+  ])
+
   const historyQueryPage = page || 1
 
   let combinedHistoryItems = [] as any

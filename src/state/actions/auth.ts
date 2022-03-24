@@ -32,14 +32,16 @@ export type Credentials = {
 
 export const getAuthUserInfo = async () => {
   try {
-    const results = await getAuthenticatedUserInfo()
+    const [results, lnpayEnabled, boostAmount, streamingAmount] = await Promise.all([
+      getAuthenticatedUserInfo(),
+      AsyncStorage.getItem(PV.Keys.LNPAY_ENABLED),
+      AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT),
+      AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_STREAMING_AMOUNT)
+    ])
     const userInfo = results[0]
     const isLoggedIn = results[1]
     const shouldShowAlert = shouldShowMembershipAlert(userInfo)
-    let lnpayEnabled = await AsyncStorage.getItem(PV.Keys.LNPAY_ENABLED)
-    lnpayEnabled = lnpayEnabled ? JSON.parse(lnpayEnabled) : false
-    const boostAmount = await AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT)
-    const streamingAmount = await AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_STREAMING_AMOUNT)
+    const lnpayEnabledParsed = lnpayEnabled ? JSON.parse(lnpayEnabled) : false
 
     const globalState = getGlobal()
     setGlobal({
@@ -50,7 +52,7 @@ export const getAuthUserInfo = async () => {
           ...globalState.session.valueTagSettings,
           lightningNetwork: {
             lnpay: {
-              lnpayEnabled,
+              lnpayEnabled: lnpayEnabledParsed,
               globalSettings: {
                 boostAmount: boostAmount ? Number(boostAmount) : DEFAULT_BOOST_PAYMENT,
                 streamingAmount: streamingAmount ? Number(streamingAmount) : DEFAULT_STREAMING_PAYMENT
@@ -123,8 +125,10 @@ export const getAuthenticatedUserInfoLocally = async () => {
 }
 
 export const askToSyncWithNowPlayingItem = async (callback: any) => {
-  const localNowPlayingItem = await getNowPlayingItemLocally()
-  const serverNowPlayingItem = await getNowPlayingItemOnServer()
+  const [localNowPlayingItem, serverNowPlayingItem] = await Promise.all([
+    getNowPlayingItemLocally(),
+    getNowPlayingItemOnServer()
+  ])
 
   if (serverNowPlayingItem) {
     if (
