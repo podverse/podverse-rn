@@ -6,7 +6,6 @@ import {
   EpisodeTableHeader,
   HTMLScrollView,
   Icon,
-  NavSearchIcon,
   NavShareIcon,
   PressableWithOpacity,
   ScrollView,
@@ -222,9 +221,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
           episode={episode}
           episodeDownloaded={episodeDownloaded}
           episodeDownloading={episodeDownloading}
-          handleMorePress={() =>
+          handleMorePress={() => {
             this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast, userPlaybackPosition))
-          }
+          }}
           isLoading={isLoading}
           mediaFileDuration={mediaFileDuration}
           navigation={navigation}

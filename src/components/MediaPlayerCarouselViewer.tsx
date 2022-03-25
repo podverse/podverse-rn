@@ -136,6 +136,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             <PressableWithOpacity
               accessible={false}
               activeOpacity={1}
+              disabled={!clipUrl}
               {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
               style={styles.imageContainer}>
               <FastImage key={imageUrl} source={imageUrl} styles={imageStyles} />

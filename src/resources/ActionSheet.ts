@@ -324,8 +324,11 @@ const hasTriedStreamingWithoutWifiAlert = async (handleDismiss: any, navigation:
     return false
   }
 
-  const netInfoState = await NetInfo.fetch()
-  const hasTried = await AsyncStorage.getItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI)
+  const [netInfoState, hasTried] = await Promise.all([
+    NetInfo.fetch(),
+    AsyncStorage.getItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI)
+  ])
+
   const showAlert = netInfoState.type !== 'wifi' && !hasTried
   if (showAlert) {
     await AsyncStorage.setItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI, 'TRUE')
@@ -340,8 +343,11 @@ const hasTriedDownloadingWithoutWifiAlert = async (handleDismiss: any, navigatio
     return false
   }
 
-  const netInfoState = await NetInfo.fetch()
-  const hasTried = await AsyncStorage.getItem(PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI)
+  const [netInfoState, hasTried] = await Promise.all([
+    NetInfo.fetch(),
+    AsyncStorage.getItem(PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI)
+  ])
+
   const showAlert = netInfoState.type !== 'wifi' && !hasTried
   if (showAlert) {
     await AsyncStorage.setItem(PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI, 'TRUE')

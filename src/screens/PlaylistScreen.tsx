@@ -9,7 +9,6 @@ import {
   Divider,
   EpisodeTableCell,
   FlatList,
-  NavSearchIcon,
   NavShareIcon,
   PlaylistTableHeader,
   View

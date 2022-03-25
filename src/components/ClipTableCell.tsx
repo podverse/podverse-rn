@@ -79,10 +79,14 @@ export class ClipTableCell extends React.PureComponent<Props> {
     } ${accessibilityClipTime}`
 
     const innerTopView = (
-      <RNView style={styles.innerTopView} {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
-        <RNView accessible accessibilityLabel={accessibilityLabel} style={{ flex: 1, flexDirection: 'column' }}>
+      <RNView
+        accessible={false}
+        importantForAccessibility='no-hide-descendants'
+        style={styles.innerTopView}
+        {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
+        <RNView accessible={false} style={{ flex: 1, flexDirection: 'column' }}>
           {(showEpisodeInfo || showPodcastInfo) && (
-            <RNView style={styles.imageAndTopRightTextWrapper}>
+            <RNView accessible={false} style={styles.imageAndTopRightTextWrapper}>
               {showPodcastInfo && !!podcastImageUrl && !hideImage && (
                 <FastImage isSmall source={podcastImageUrl} styles={styles.image} />
               )}
@@ -132,6 +136,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
             </RNView>
           )}
           <Text
+            accessible={false}
             accessibilityLabel={title}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             isNowPlaying={isNowPlayingItem}

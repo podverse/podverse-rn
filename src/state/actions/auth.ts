@@ -15,7 +15,9 @@ import { getWalletInfo } from '../../services/lnpay'
 import { parseAllAddByRSSPodcasts, setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
 import { setAllQueueItemsLocally } from '../../services/queue'
 import { setAllHistoryItemsLocally } from '../../services/userHistoryItem'
-import { getNowPlayingItemLocally, getNowPlayingItemOnServer } from '../../services/userNowPlayingItem'
+import { getNowPlayingItemLocally,
+  getNowPlayingItemOnServer, 
+  setNowPlayingItemLocally} from '../../services/userNowPlayingItem'
 import { getLNWallet } from './lnpay'
 import { combineWithAddByRSSPodcasts, getSubscribedPodcasts } from './podcast'
 import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './valueTag'
@@ -30,14 +32,16 @@ export type Credentials = {
 
 export const getAuthUserInfo = async () => {
   try {
-    const results = await getAuthenticatedUserInfo()
+    const [results, lnpayEnabled, boostAmount, streamingAmount] = await Promise.all([
+      getAuthenticatedUserInfo(),
+      AsyncStorage.getItem(PV.Keys.LNPAY_ENABLED),
+      AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT),
+      AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_STREAMING_AMOUNT)
+    ])
     const userInfo = results[0]
     const isLoggedIn = results[1]
     const shouldShowAlert = shouldShowMembershipAlert(userInfo)
-    let lnpayEnabled = await AsyncStorage.getItem(PV.Keys.LNPAY_ENABLED)
-    lnpayEnabled = lnpayEnabled ? JSON.parse(lnpayEnabled) : false
-    const boostAmount = await AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT)
-    const streamingAmount = await AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_STREAMING_AMOUNT)
+    const lnpayEnabledParsed = lnpayEnabled ? JSON.parse(lnpayEnabled) : false
 
     const globalState = getGlobal()
     setGlobal({
@@ -48,7 +52,7 @@ export const getAuthUserInfo = async () => {
           ...globalState.session.valueTagSettings,
           lightningNetwork: {
             lnpay: {
-              lnpayEnabled,
+              lnpayEnabled: lnpayEnabledParsed,
               globalSettings: {
                 boostAmount: boostAmount ? Number(boostAmount) : DEFAULT_BOOST_PAYMENT,
                 streamingAmount: streamingAmount ? Number(streamingAmount) : DEFAULT_STREAMING_PAYMENT
@@ -120,9 +124,11 @@ export const getAuthenticatedUserInfoLocally = async () => {
   return isLoggedIn
 }
 
-export const askToSyncWithNowPlayingItem = async (navigation: any) => {
-  const localNowPlayingItem = await getNowPlayingItemLocally()
-  const serverNowPlayingItem = await getNowPlayingItemOnServer()
+export const askToSyncWithNowPlayingItem = async (callback: any) => {
+  const [localNowPlayingItem, serverNowPlayingItem] = await Promise.all([
+    getNowPlayingItemLocally(),
+    getNowPlayingItemOnServer()
+  ])
 
   if (serverNowPlayingItem) {
     if (
@@ -132,14 +138,27 @@ export const askToSyncWithNowPlayingItem = async (navigation: any) => {
     ) {
       const askToSyncWithLastHistoryItem = PV.Alerts.ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM(
         serverNowPlayingItem,
-        navigation
+        callback
       )
       Alert.alert(
         askToSyncWithLastHistoryItem.title,
         askToSyncWithLastHistoryItem.message,
         askToSyncWithLastHistoryItem.buttons
       )
+    } else if (
+      !localNowPlayingItem.clipId
+      && localNowPlayingItem.episodeId === serverNowPlayingItem.episodeId
+    ) {
+      // If the server and local nowPlayingItem's are the same episode,
+      // then resume from the server item's userPlaybackPosition
+      // instead of the localNowPlayingItem's
+      await setNowPlayingItemLocally(serverNowPlayingItem, serverNowPlayingItem.userPlaybackPosition || 0)
+      callback()
+    } else {
+      callback()
     }
+  } else {
+    callback()
   }
 }
 

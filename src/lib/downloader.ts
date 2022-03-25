@@ -47,10 +47,11 @@ export const cancelDownloadTask = (episodeId: string) => {
 
 export const deleteDownloadedEpisode = async (episode: any) => {
   const ext = getExtensionFromUrl(episode.mediaUrl)
-  const downloader = await BackgroundDownloader()
-  const customLocation = await AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  const [downloader, customLocation] = await Promise.all([
+    BackgroundDownloader(),
+    AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  ])
   const folderPath = customLocation ? customLocation : downloader.directories.documents
-
   const path = `${folderPath}/${episode.id}${ext}`
 
   try {
@@ -153,8 +154,10 @@ export const downloadEpisode = async (
     finalFeedUrl = await getPodcastFeedUrlAuthority(podcast.id)
   }
 
-  const downloader = await BackgroundDownloader()
-  const customLocation = await AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  const [downloader, customLocation] = await Promise.all([
+    BackgroundDownloader(),
+    AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  ])
   const folderPath = customLocation ? customLocation : downloader.directories.documents
 
   const destination = `${folderPath}/${episode.id}${ext}`
@@ -228,8 +231,10 @@ export const downloadEpisode = async (
 }
 
 export const initDownloads = async () => {
-  const episodes = await getDownloadingEpisodes()
-  const downloader = await BackgroundDownloader()
+  const [episodes, downloader] = await Promise.all([
+    getDownloadingEpisodes(),
+    BackgroundDownloader()
+  ])
   existingDownloadTasks = await downloader.checkForExistingDownloads()
 
   let timeout = 0
@@ -359,8 +364,10 @@ export const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: strin
 
 export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string) => {
   const ext = getExtensionFromUrl(episodeMediaUrl)
-  const downloader = await BackgroundDownloader()
-  const customLocation = await AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  const [downloader, customLocation] = await Promise.all([
+    BackgroundDownloader(),
+    AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  ])
   const folderPath = customLocation ? customLocation : downloader.directories.documents
 
   /* If downloaded episode is for an addByRSSPodcast, then the episodeMediaUrl

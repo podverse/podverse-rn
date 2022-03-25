@@ -23,14 +23,18 @@ export const checkIfLoggedIn = async () => {
 }
 
 export const checkIfShouldUseServerData = async () => {
-  const isLoggedIn = await checkIfLoggedIn()
-  const isConnected = await hasValidNetworkConnection()
+  const [isLoggedIn, isConnected] = await Promise.all([
+    checkIfLoggedIn(),
+    hasValidNetworkConnection()
+  ]) 
   return isLoggedIn && isConnected
 }
 
 export const getAuthenticatedUserInfo = async () => {
-  const bearerToken = await getBearerToken()
-  const isConnected = await hasValidNetworkConnection()
+  const [bearerToken, isConnected] = await Promise.all([
+    getBearerToken(),
+    hasValidNetworkConnection()
+  ])
 
   if (isConnected && bearerToken) {
     return getAuthenticatedUserInfoFromServer(bearerToken)
@@ -142,13 +146,23 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
   const data = (response && response.data) || {}
   const { addByRSSPodcastFeedUrls, subscribedPodcastIds = [] } = data
   const page = 1
-  const { userHistoryItems, userHistoryItemsCount } = await getHistoryItems(page)
+
+  const [
+    { userHistoryItems, userHistoryItemsCount },
+    historyItemsIndex,
+    queueItems
+  ] = await Promise.all([
+    getHistoryItems(page),
+    getHistoryItemsIndex(),
+    getQueueItems()
+  ])
+
   // Add history and queue properities to response to be added to the global state
   data.historyItems = userHistoryItems
   data.historyItemsCount = userHistoryItemsCount
-  data.historyItemsIndex = await getHistoryItemsIndex()
+  data.historyItemsIndex = historyItemsIndex
   data.historyQueryPage = page
-  data.queueItems = await getQueueItems()
+  data.queueItems = queueItems
 
   if (Array.isArray(addByRSSPodcastFeedUrls)) {
     await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS, JSON.stringify(addByRSSPodcastFeedUrls))
