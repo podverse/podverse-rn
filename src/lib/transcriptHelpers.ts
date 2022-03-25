@@ -26,6 +26,7 @@ const parseTranscriptFile = (data: any, transcriptType: TranscriptType) => {
   } else if (transcriptType === 'application/srt') {
     parsedTranscript = parseSRTFile(data)
   } else if (transcriptType === 'text/html') {
+    // parseHTMLFile isn't working for at least this RSS feed https://feeds.buzzsprout.com/1.rss
     parsedTranscript = parseHTMLFile(data)
   } else if (transcriptType === 'text/vtt') {
     parsedTranscript = parseVTTFile(data)

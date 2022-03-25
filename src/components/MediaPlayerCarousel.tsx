@@ -340,8 +340,8 @@ const mediaPlayerCarouselComponents = (
   screenWidth: number,
   navigation: any,
   hasChapters: boolean,
-  hasTranscript: boolean,
   hasComments: boolean,
+  hasTranscript: boolean,
   screenReaderEnabled: boolean,
   accessibilityItemSelectedValue?: string | null
 ) => {
