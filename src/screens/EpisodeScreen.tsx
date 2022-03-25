@@ -222,7 +222,6 @@ export class EpisodeScreen extends React.Component<Props, State> {
           episodeDownloaded={episodeDownloaded}
           episodeDownloading={episodeDownloading}
           handleMorePress={() => {
-            console.log('more pressed')
             this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast, userPlaybackPosition))
           }}
           isLoading={isLoading}
