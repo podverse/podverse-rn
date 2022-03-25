@@ -210,9 +210,11 @@ export const removeDownloadedPodcastsFromInternalStorage = async () => {
 }
 
 export const moveDownloadedPodcastsToExternalStorage = async () => {
-  const podcasts = await getDownloadedPodcasts()
-  const downloader = await BackgroundDownloader()
-  const destinationFolder = await AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  const [podcasts, downloader, destinationFolder] = await Promise.all([
+    getDownloadedPodcasts(),
+    BackgroundDownloader(),
+    AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  ])
 
   for (const podcast of podcasts) {
     for (const episode of podcast.episodes) {

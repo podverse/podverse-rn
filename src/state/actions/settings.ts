@@ -11,19 +11,35 @@ import { checkIfTrackingIsEnabled } from '../../services/tracking'
 import { removeLNPayWallet } from './lnpay'
 
 export const initializeSettings = async () => {
-  const censorNSFWText = await AsyncStorage.getItem(PV.Keys.CENSOR_NSFW_TEXT)
-  const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
-  const customAPIDomain = await AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN)
-  const customAPIDomainEnabled = await AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN_ENABLED)
-  const customWebDomain = await AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN)
-  const customWebDomainEnabled = await AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED)
-  const errorReportingEnabled = await AsyncStorage.getItem(PV.Keys.ERROR_REPORTING_ENABLED)
-  const listenTrackingEnabled = await checkIfTrackingIsEnabled()
-  const urlsAPI = await PV.URLs.api()
-  const urlsWeb = await PV.URLs.web()
-  const jumpBackwardsTime = await AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_BACKWARDS) || PV.Player.jumpBackSeconds
-  const jumpForwardsTime = await AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_FORWARDS) || PV.Player.jumpSeconds
-  const addCurrentItemNextInQueue = await AsyncStorage.getItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE)
+  const [
+    censorNSFWText,
+    offlineModeEnabled,
+    customAPIDomain,
+    customAPIDomainEnabled,
+    customWebDomain,
+    customWebDomainEnabled,
+    errorReportingEnabled,
+    listenTrackingEnabled,
+    urlsAPI,
+    urlsWeb,
+    jumpBackwardsTime,
+    jumpForwardsTime,
+    addCurrentItemNextInQueue
+  ] = await Promise.all([
+    AsyncStorage.getItem(PV.Keys.CENSOR_NSFW_TEXT),
+    AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED),
+    AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN),
+    AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN_ENABLED),
+    AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN),
+    AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED),
+    AsyncStorage.getItem(PV.Keys.ERROR_REPORTING_ENABLED),
+    checkIfTrackingIsEnabled(),
+    PV.URLs.api(),
+    PV.URLs.web(),
+    AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_BACKWARDS),
+    AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_FORWARDS),
+    AsyncStorage.getItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE)
+  ])
 
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) {
     try {
@@ -42,8 +58,8 @@ export const initializeSettings = async () => {
     errorReportingEnabled,
     listenTrackingEnabled,
     offlineModeEnabled,
-    jumpBackwardsTime,
-    jumpForwardsTime,
+    jumpBackwardsTime: jumpBackwardsTime || PV.Player.jumpBackSeconds,
+    jumpForwardsTime: jumpForwardsTime || PV.Player.jumpSeconds,
     urlsAPI,
     urlsWeb,
     addCurrentItemNextInQueue: !!addCurrentItemNextInQueue

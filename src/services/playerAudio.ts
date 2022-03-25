@@ -152,8 +152,10 @@ export const audioLoadNowPlayingItem = async (
 
   PVAudioPlayer.pause()
 
-  const lastPlayingItem = await getNowPlayingItemLocally()
-  const historyItemsIndex = await getHistoryItemsIndexLocally()
+  const [lastPlayingItem, historyItemsIndex] = await Promise.all([
+    getNowPlayingItemLocally(),
+    getHistoryItemsIndexLocally()
+  ])
 
   const { clipId, episodeId } = item
   if (!clipId && episodeId) {
@@ -263,8 +265,10 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
   }
 
   if (episodeId) {
-    const isDownloadedFile = await checkIfFileIsDownloaded(episodeId, episodeMediaUrl)
-    const filePath = await getDownloadedFilePath(episodeId, episodeMediaUrl)
+    const [isDownloadedFile, filePath] = await Promise.all([
+      checkIfFileIsDownloaded(episodeId, episodeMediaUrl),
+      getDownloadedFilePath(episodeId, episodeMediaUrl)
+    ])
 
     if (isDownloadedFile) {
       track = {

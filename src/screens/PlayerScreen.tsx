@@ -2,6 +2,7 @@ import { convertNowPlayingItemToMediaRef } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import { Config } from 'react-native-config'
 import Share from 'react-native-share'
+import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal, setGlobal } from 'reactn'
 import { clearTempMediaRef } from '../state/actions/mediaRef'
 import {
@@ -13,8 +14,8 @@ import {
   NavMakeClipIcon,
   NavQueueIcon,
   NavShareIcon,
-  OpaqueBackground,
   PlayerControls,
+  SafeAreaView,
   View
 } from '../components'
 import { translate } from '../lib/i18n'
@@ -73,8 +74,9 @@ export class PlayerScreen extends React.Component<Props> {
 
     return {
       title: '',
-      headerTransparent: true,
-      headerStyle: {},
+      headerStyle: {
+        backgroundColor: globalTheme.view.backgroundColor
+      },
       headerLeft: () => (
         <NavDismissIcon globalTheme={globalTheme} handlePress={navigation.dismiss} testID={testIDPrefix} />
       ),
@@ -105,7 +107,7 @@ export class PlayerScreen extends React.Component<Props> {
           )}
         </RNView>
       )
-    }
+    } as NavigationStackOptions
   }
 
   async componentDidMount() {
@@ -286,7 +288,7 @@ export class PlayerScreen extends React.Component<Props> {
 
     return (
       <React.Fragment>
-        <OpaqueBackground imageUrl={imageUrl}>
+        <SafeAreaView style={styles.view}>
           <View style={styles.view} transparent testID='player_screen_view'>
             <MediaPlayerCarousel hasChapters={hasChapters} navigation={navigation} />
             <PlayerControls navigation={navigation} />
@@ -305,7 +307,7 @@ export class PlayerScreen extends React.Component<Props> {
               title={translate('Share')}
             />
           </View>
-        </OpaqueBackground>
+        </SafeAreaView>
       </React.Fragment>
     )
   }

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-regexp-exec */
 import AsyncStorage from '@react-native-community/async-storage'
 import he from 'he'
+import moment from 'moment'
 import { NowPlayingItem } from 'podverse-shared'
 import Config from 'react-native-config'
 import { getUserAgent } from 'react-native-device-info'
@@ -39,18 +40,9 @@ export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
   }
 }
 
-const getMonth = (date: any) => {
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  return monthNames[date.getMonth()]
-}
-
-export const readableDate = (date: string) => {
-  const dateObj = new Date(date)
-  const year = dateObj.getFullYear()
-  const monthAbbreviation = getMonth(dateObj)
-  const day = dateObj.getDate()
-
-  return `${monthAbbreviation} ${day}, ${year}`
+export const readableDate = (date: Date, withTime?: boolean) => {
+  const format = withTime ? 'MMM Do YYYY, h:mm:ss a' : 'MMM Do YYYY'
+  return moment(date).format(format)
 }
 
 export const getHHMMSSArray = (sec: number) => {

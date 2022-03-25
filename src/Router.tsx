@@ -1,10 +1,10 @@
-import { Image, Platform, View } from 'react-native'
+import { Image, View } from 'react-native'
 import Config from 'react-native-config'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator, NavigationStackOptions, NavigationStackProp } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { Component } from 'react'
-import { DownloadsActiveBadge, ErrorBoundary, NavSearchIcon, PVTabBar, TabBarLabel } from './components'
+import { DownloadsActiveBadge, ErrorBoundary, PVTabBar, TabBarLabel } from './components'
 import { PV } from './resources'
 import {
   AboutScreen,

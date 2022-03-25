@@ -69,21 +69,24 @@ export class FundingScreen extends React.Component<Props, State> {
     const valueTag = valueTags[0]
 
     const roundDownBoostTransactions = true
-    const boostTransactions = await convertValueTagIntoValueTransactions(
-      valueTag,
-      nowPlayingItem,
-      PV.ValueTag.ACTION_BOOST,
-      boostAmount,
-      roundDownBoostTransactions
-    )
     const roundDownStreamingTransactions = false
-    const streamingTransactions = await convertValueTagIntoValueTransactions(
-      valueTag,
-      nowPlayingItem,
-      PV.ValueTag.ACTION_STREAMING,
-      streamingAmount,
-      roundDownStreamingTransactions
-    )
+    const [boostTransactions, streamingTransactions] = await Promise.all([
+      convertValueTagIntoValueTransactions(
+        valueTag,
+        nowPlayingItem,
+        PV.ValueTag.ACTION_BOOST,
+        boostAmount,
+        roundDownBoostTransactions
+      ),
+      convertValueTagIntoValueTransactions(
+        valueTag,
+        nowPlayingItem,
+        PV.ValueTag.ACTION_STREAMING,
+        streamingAmount,
+        roundDownStreamingTransactions
+      )
+    ])
+
     this.setState({ boostTransactions, streamingTransactions }, () => {
       this.checkForErroringTransactions()
     })

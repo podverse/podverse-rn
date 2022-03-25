@@ -120,13 +120,18 @@ module.exports = async () => {
 
       PVEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
-      const clipHasEnded = await getClipHasEnded()
-      const nowPlayingItem = await getNowPlayingItemLocally()
+      const [clipHasEnded, nowPlayingItem] = await Promise.all([
+        getClipHasEnded(),
+        getNowPlayingItemLocally()
+      ])
 
       if (nowPlayingItem) {
         const { clipEndTime } = nowPlayingItem
-        const currentPosition = await audioGetTrackPosition()
-        const currentState = await audioGetState()
+        const [currentPosition, currentState] = await Promise.all([
+          audioGetTrackPosition(),
+          audioGetState()
+        ])
+
         const isPlaying = audioCheckIfIsPlaying(currentState)
 
         const shouldHandleAfterClip = clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying

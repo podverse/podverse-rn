@@ -4,11 +4,13 @@ import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
+import { checkIfHasSupportedCommentTag } from 'podverse-shared'
 import { PV } from '../resources'
 import { translate } from '../lib/i18n'
 import { sendBoost } from '../lib/valueTagHelpers'
 import { audioCheckIfIsPlaying } from '../services/playerAudio'
 import { toggleValueStreaming } from '../state/actions/valueTag'
+import { MediaPlayerCarouselComments } from './MediaPlayerCarouselComments'
 import {
   ActivityIndicator,
   DropdownButtonSelect,
@@ -44,6 +46,7 @@ const _nowPlayingInfoKey = '_nowPlayingInfoKey'
 const _episodeSummaryKey = '_episodeSummaryKey'
 const _chaptersKey = '_chaptersKey'
 const _clipsKey = '_clipsKey'
+const _commentsKey = '_commentsKey'
 const _transcriptKey = '_transcriptKey'
 
 const accessibilityNowPlayingInfo = {
@@ -130,8 +133,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { parsedTranscript, player } = this.global
     const { episode } = player
     const hasChapters = episode?.chaptersUrl
+    const hasComments = !!checkIfHasSupportedCommentTag(episode)
     const hasTranscript = !!parsedTranscript
-    const items = accessibilitySelectorItems(hasChapters, hasTranscript)
+    const items = accessibilitySelectorItems(hasChapters, hasComments, hasTranscript)
     const accessibilityItemSelected = items.find((x) => x.value === selectedKey)
     this.setState({ accessibilityItemSelected })
   }
@@ -142,7 +146,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { parsedTranscript, player, podcastValueFinal, screenReaderEnabled } = this.global
     const { episode, nowPlayingItem, playbackState } = player
     const hasChapters = episode?.chaptersUrl
+    const hasComments = !!checkIfHasSupportedCommentTag(episode)
     const hasTranscript = !!parsedTranscript
+
     const { lightningNetwork, streamingEnabled } = this.global.session?.valueTagSettings || {}
     const { lnpay } = lightningNetwork || {}
     const { globalSettings, lnpayEnabled } = lnpay || {}
@@ -151,6 +157,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
     let itemCount = 3
     if (hasChapters) itemCount++
+    if (hasComments) itemCount++
     if (hasTranscript) itemCount++
 
     const satStreamText = streamingEnabled ? translate('Stream On') : translate('Stream Off')
@@ -176,6 +183,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       screenWidth,
       navigation,
       hasChapters,
+      hasComments,
       hasTranscript,
       screenReaderEnabled,
       accessibilityItemSelected?.value || null
@@ -187,7 +195,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           <>
             <DropdownButtonSelect
               accessibilityHint={translate('ARIA HINT - This is the now playing info selector')}
-              items={accessibilitySelectorItems(hasChapters, hasTranscript)}
+              items={accessibilitySelectorItems(hasChapters, hasComments, hasTranscript)}
               label={accessibilityItemSelected?.label}
               onValueChange={this._handleAccessibilitySelectChange}
               placeholder={placeholderItem}
@@ -289,7 +297,7 @@ const placeholderItem = {
   value: null
 }
 
-const accessibilitySelectorItems = (hasChapters: boolean, hasTranscript: boolean) => {
+const accessibilitySelectorItems = (hasChapters: boolean, hasComments: boolean, hasTranscript: boolean) => {
   const items = [
     accessibilityNowPlayingInfo,
     {
@@ -310,9 +318,16 @@ const accessibilitySelectorItems = (hasChapters: boolean, hasTranscript: boolean
     value: _clipsKey
   })
 
+  if (hasComments) {
+    items.push({
+      label: translate('Comments'),
+      value: _commentsKey
+    })
+  }
+
   if (hasTranscript) {
     items.push({
-      label: translate('Chapters'),
+      label: translate('Transcript'),
       value: _transcriptKey
     })
   }
@@ -325,18 +340,11 @@ const mediaPlayerCarouselComponents = (
   screenWidth: number,
   navigation: any,
   hasChapters: boolean,
+  hasComments: boolean,
   hasTranscript: boolean,
   screenReaderEnabled: boolean,
   accessibilityItemSelectedValue?: string | null
 ) => {
-  let finalSelectedValue = accessibilityItemSelectedValue
-  if (
-    (finalSelectedValue === _chaptersKey && !hasChapters) ||
-    (finalSelectedValue === _transcriptKey && !hasTranscript)
-  ) {
-    finalSelectedValue = _nowPlayingInfoKey
-  }
-
   return (
     <>
       {screenReaderEnabled ? (
@@ -357,6 +365,9 @@ const mediaPlayerCarouselComponents = (
           {accessibilityItemSelectedValue === _clipsKey && (
             <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
           )}
+          {accessibilityItemSelectedValue === _commentsKey && (
+            <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />
+          )}
           {accessibilityItemSelectedValue === _transcriptKey && <MediaPlayerCarouselTranscripts width={screenWidth} />}
         </>
       ) : (
@@ -369,6 +380,7 @@ const mediaPlayerCarouselComponents = (
           <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
           {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
           <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
+          {hasComments && <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />}
           {hasTranscript && <MediaPlayerCarouselTranscripts width={screenWidth} />}
         </>
       )}

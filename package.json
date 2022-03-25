@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.2.7",
+  "version": "4.2.8",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -26,11 +26,6 @@
     "test:e2e:ios": "export $(cat .env | xargs) && DEVICE_TYPE=ios BROWSERSTACK_DEVICE='iPhone 12 Pro Max' BROWSERSTACK_OS_VERSION='13.0' node ./functions/tests/e2e/index.js",
     "postinstall": "patch-package",
     "version_update": "babel-node ./scripts/update_version.js"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn format && git add . && lint-staged"
-    }
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -64,7 +59,8 @@
     "linkifyjs": "2.1.9",
     "lodash": "4.17.21",
     "lodash.memoize": "4.1.2",
-    "podverse-shared": "^4.1.3",
+    "moment": "^2.29.1",
+    "podverse-shared": "^4.2.22",
     "react": "17.0.1",
     "react-native": "0.66.1",
     "react-native-background-downloader": "2.3.4",
