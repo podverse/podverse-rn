@@ -36,10 +36,12 @@ export const toggleLNPayFeature = async (toggle: boolean) => {
   const globalState = getGlobal()
   const defaultBoostAmount = DEFAULT_BOOST_PAYMENT
   const defaultStreamingAmount = DEFAULT_STREAMING_PAYMENT
-  
-  await AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, String(defaultBoostAmount))
-  await AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_STREAMING_AMOUNT, String(defaultStreamingAmount))
-  await AsyncStorage.setItem(PV.Keys.LNPAY_ENABLED, String(toggle))
+
+  Promise.all([
+    AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, String(defaultBoostAmount)),
+    AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_STREAMING_AMOUNT, String(defaultStreamingAmount)),
+    AsyncStorage.setItem(PV.Keys.LNPAY_ENABLED, String(toggle))
+  ])
 
   setGlobal({
     session: {

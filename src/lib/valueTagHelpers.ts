@@ -160,8 +160,10 @@ const convertValueTagIntoValueTransaction = async (
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
 
   const timestamp = Date.now()
-  const speed = await playerGetRate()
-  const currentPlaybackPosition = await playerGetPosition()
+  const [speed, currentPlaybackPosition] = await Promise.all([
+    playerGetRate(),
+    playerGetPosition()
+  ])
   const pubkey = 'podverse-pubkey'
 
   const satoshiStreamStats = createSatoshiStreamStats(
@@ -376,20 +378,20 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
 
   try {
-    const transactionQueue = await getValueTransactionQueue()
-
     // TODO: right now we are assuming the first item will be the lightning network
     // this will need to be updated to support additional valueTags
     const valueTag = valueTags[0]
-
     const roundDownStreamingTransactions = false
-    const valueTransactions = await convertValueTagIntoValueTransactions(
-      valueTag,
-      nowPlayingItem,
-      'streaming',
-      amount,
-      roundDownStreamingTransactions
-    )
+    const [transactionQueue, valueTransactions] = await Promise.all([
+      getValueTransactionQueue(),
+      convertValueTagIntoValueTransactions(
+        valueTag,
+        nowPlayingItem,
+        'streaming',
+        amount,
+        roundDownStreamingTransactions
+      )
+    ])
 
     for (const transaction of valueTransactions) {
       transactionQueue.push(transaction)

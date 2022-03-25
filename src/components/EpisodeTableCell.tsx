@@ -81,9 +81,10 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const innerTopView = (
       <RNView accessible={false} importantForAccessibility='no-hide-descendants' style={styles.innerTopView}>
         {!!imageUrl && !hideImage && <FastImage isSmall source={imageUrl} styles={styles.image} />}
-        <RNView style={styles.textWrapper}>
+        <RNView accessible={false} style={styles.textWrapper}>
           {showPodcastInfo && podcastTitle && (
             <Text
+              accessible={false}
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               isSecondary
               numberOfLines={1}
@@ -94,6 +95,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           )}
           {title && (
             <Text
+              accessible={false}
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               numberOfLines={2}
               style={titleStyle}
@@ -103,6 +105,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           )}
           <RNView style={styles.textWrapperBottomRow}>
             <Text
+              accessible={false}
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               isSecondary
               style={styles.pubDate}

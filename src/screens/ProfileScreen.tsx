@@ -10,7 +10,6 @@ import {
   Divider,
   FlatList,
   MessageWithAction,
-  NavSearchIcon,
   NavShareIcon,
   PlaylistTableCell,
   PodcastTableCell,

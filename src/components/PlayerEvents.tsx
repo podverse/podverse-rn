@@ -61,7 +61,7 @@ export class PlayerEvents extends React.PureComponent<Props> {
       }
 
       await playerUpdatePlaybackState()
-      await getQueueItems()
+      getQueueItems()
     })()
   }
 

@@ -15,7 +15,7 @@ const _sendVerificationEmailMessage = translate(
 const _cancelText = translate('Cancel')
 
 export const Alerts = {
-  ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM: (item: NowPlayingItem) => {
+  ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM: (item: NowPlayingItem, callback: any) => {
     const title = item.clipId ? item.clipTitle : item.episodeTitle
     const type = item.clipId ? translate('Clip') : translate('Episode')
 
@@ -23,7 +23,10 @@ export const Alerts = {
       message: `${translate('Do you want to resume ')} ${item?.podcastTitle} - ${title}?`,
       title: `${translate('Recent ')}${type}`,
       buttons: [
-        { text: translate('No') },
+        {
+          text: translate('No'),
+          onPress: callback
+        },
         {
           text: translate('Yes'),
           onPress: async () => {
@@ -31,6 +34,7 @@ export const Alerts = {
             const forceUpdateOrderDate = false
             const setCurrentItemNextInQueue = false
             await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+            callback()
           }
         }
       ]

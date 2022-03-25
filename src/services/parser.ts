@@ -158,12 +158,14 @@ export const setAddByRSSPodcastFeedUrlsLocally = async (addByRSSPodcastFeedUrls:
 }
 
 export const parseAllAddByRSSPodcasts = async () => {
-  const urls = await getAddByRSSPodcastFeedUrlsLocally()
+
+  const [urls, autoDownloadPodcastSettings, allAddByRSSPodcastCredentials] = await Promise.all([
+    getAddByRSSPodcastFeedUrlsLocally(),
+    getAutoDownloadSettings(),
+    getAllPodcastCredentials()
+  ])
   const parsedPodcasts = []
   const finalParsedPodcasts = []
-  const autoDownloadPodcastSettings = await getAutoDownloadSettings()
-
-  const allAddByRSSPodcastCredentials = await getAllPodcastCredentials()
 
   for (const url of urls) {
     try {

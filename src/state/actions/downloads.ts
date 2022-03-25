@@ -123,13 +123,23 @@ export const getDownloadStatusText = (status?: string) => {
 }
 
 export const initDownloads = async () => {
-  const { downloadsActive, downloadsArray } = await initDownloadsService()
-  const downloadedEpisodeIds = await getDownloadedEpisodeIdsService()
-  const downloadedPodcastEpisodeCounts = await getDownloadedPodcastEpisodeCountsService()
-  const downloadedPodcasts = await getDownloadedPodcastsService()
-  const autoDownloadSettings = await getAutoDownloadSettingsService()
-  const downloadedEpisodeLimitCount = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT)
-  const downloadedEpisodeLimitDefault = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
+  const [
+    { downloadsActive, downloadsArray },
+    downloadedEpisodeIds,
+    downloadedPodcastEpisodeCounts,
+    downloadedPodcasts,
+    autoDownloadSettings,
+    downloadedEpisodeLimitCount,
+    downloadedEpisodeLimitDefault
+  ] = await Promise.all([
+    initDownloadsService(),
+    getDownloadedEpisodeIdsService(),
+    getDownloadedPodcastEpisodeCountsService(),
+    getDownloadedPodcastsService(),
+    getAutoDownloadSettingsService(),
+    AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT),
+    AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
+  ])
 
   // TODO: There is a race condition preventing this state from being set properly on app launch :(
   // I don't know where the problem is coming from...
@@ -198,9 +208,11 @@ export const updateAutoDownloadSettingsAddByRSS = (addByRSSPodcastFeedUrl: strin
 }
 
 export const updateDownloadedPodcasts = async (cb?: any) => {
-  const downloadedEpisodeIds = await getDownloadedEpisodeIdsService()
-  const downloadedPodcastEpisodeCounts = await getDownloadedPodcastEpisodeCountsService()
-  const downloadedPodcasts = await getDownloadedPodcastsService()
+  const [downloadedEpisodeIds, downloadedPodcastEpisodeCounts, downloadedPodcasts] = await Promise.all([
+    getDownloadedEpisodeIdsService(),
+    getDownloadedPodcastEpisodeCountsService(),
+    getDownloadedPodcastsService()
+  ])
 
   setGlobal(
     {

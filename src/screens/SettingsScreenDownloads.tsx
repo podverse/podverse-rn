@@ -56,11 +56,19 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
   })
 
   async componentDidMount() {
-    const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
-    const downloadedEpisodeLimitCount = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT)
-    const downloadedEpisodeLimitDefault = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
-    const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
-    const customDownloadLocation = await AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+    const [
+      autoDeleteEpisodeOnEnd,
+      downloadedEpisodeLimitCount,
+      downloadedEpisodeLimitDefault,
+      downloadingWifiOnly,
+      customDownloadLocation
+    ] = await Promise.all([
+      AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END),
+      AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT),
+      AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT),
+      AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY),
+      AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+    ])
 
     this.setState({
       autoDeleteEpisodeOnEnd: !!autoDeleteEpisodeOnEnd,
