@@ -61,8 +61,11 @@ export const saveOrResetCurrentlyPlayingItemInHistory = async (
   nowPlayingItem: NowPlayingItem,
   skipSetNowPlaying: boolean
 ) => {
-  const lastPosition = await playerGetPosition()
-  const duration = await playerGetDuration()
+  const [lastPosition, duration] = await Promise.all([
+    playerGetPosition(),
+    playerGetDuration()
+  ])
+
   const forceUpdateOrderDate = false
 
   if (duration > 0 && lastPosition >= duration - 10) {

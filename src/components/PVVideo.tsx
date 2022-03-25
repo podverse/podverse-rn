@@ -249,8 +249,10 @@ export class PVVideo extends React.PureComponent<Props, State> {
     const { clipEndTime } = nowPlayingItem
     const clipHasEnded = await getClipHasEnded()
     if (clipHasEnded) {
-      const currentPosition = await videoGetTrackPosition()
-      const currentState = await videoGetState()
+      const [currentPosition, currentState] = await Promise.all([
+        videoGetTrackPosition(),
+        videoGetState()
+      ])
       const isPlaying = videoCheckIfStateIsPlaying(currentState)
       const shouldHandleAfterClip = clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying
       if (shouldHandleAfterClip) {

@@ -49,10 +49,24 @@ export class Login extends React.Component<Props, State> {
     })
   }
 
+  emailBlur = () => {
+    const { email } = this.state
+    if (email) {
+      this.setState({ email: email.trim() })
+    }
+  }
+
   passwordChanged = (password: string) => {
     this.setState({ password }, () => {
       this.checkIfSubmitIsDisabled()
     })
+  }
+
+  passwordBlur = () => {
+    const { password } = this.state
+    if (password) {
+      this.setState({ password: password.trim() })
+    }
   }
 
   render() {
@@ -67,6 +81,7 @@ export class Login extends React.Component<Props, State> {
           autoCompleteType='email'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           keyboardType='email-address'
+          onBlur={this.emailBlur}
           onChangeText={this.emailChanged}
           onSubmitEditing={() => {
             this.secondTextInput.focus()
@@ -85,6 +100,7 @@ export class Login extends React.Component<Props, State> {
           inputRef={(input) => {
             this.secondTextInput = input
           }}
+          onBlur={this.passwordBlur}
           onChangeText={this.passwordChanged}
           placeholder={translate('Password')}
           returnKeyType='done'

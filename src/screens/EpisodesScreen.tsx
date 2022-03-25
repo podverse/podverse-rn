@@ -166,8 +166,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
       selectedSortItemKey: querySort
     })
 
-    const selectedFilterLabel = await getSelectedFilterLabel(selectedKey)
-    const selectedSortLabel = await getSelectedSortLabel(sort)
+    const [selectedFilterLabel, selectedSortLabel] = await Promise.all([
+      getSelectedFilterLabel(selectedKey),
+      getSelectedSortLabel(sort)
+    ])
 
     this.setState(
       {

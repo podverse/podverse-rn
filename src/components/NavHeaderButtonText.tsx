@@ -26,6 +26,7 @@ export const NavHeaderButtonText = (props: Props) => {
     <PressableWithOpacity
       accessibilityHint={accessibilityHint}
       accessibilityLabel={accessibilityLabel}
+      accessibilityRole='button'
       disabled={disabled}
       onPress={handlePress}
       testID={`${testID}_nav_header_button_text`.prependTestId()}>

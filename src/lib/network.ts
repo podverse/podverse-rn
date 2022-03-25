@@ -48,9 +48,11 @@ export const hasValidNetworkConnection = async (): Promise<boolean> => {
 }
 
 export const hasValidDownloadingConnection = async () => {
-  const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
+  const [downloadingWifiOnly, state] = await Promise.all([
+    AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY),
+    NetInfo.fetch()
+  ])
 
-  const state = await NetInfo.fetch()
   if (downloadingWifiOnly && state.type !== NetInfoStateType.wifi) {
     return false
   }
