@@ -118,6 +118,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       currentChapters,
       currentChaptersStartTimePositions,
       globalTheme,
+      hidePlaybackSpeedButton,
       jumpBackwardsTime,
       jumpForwardsTime,
       player,
@@ -273,19 +274,23 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               <Icon name='moon' size={20} solid testID={`${testIDPrefix}_sleep_timer`} />
             </View>
           </PressableWithOpacity>
-          <PressableWithOpacity
-            accessibilityHint={translate('ARIA HINT - current playback speed')}
-            accessibilityLabel={`${playbackRate}X`}
-            accessibilityRole='button'
-            hitSlop={hitSlop}
-            onPress={this._adjustSpeed}>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-              style={[styles.playerControlsBottomButton, styles.playerControlsBottomRowText]}
-              testID={`${testIDPrefix}_playback_rate`}>
-              {`${playbackRate}X`}
-            </Text>
-          </PressableWithOpacity>
+          {
+            !hidePlaybackSpeedButton && (
+              <PressableWithOpacity
+                accessibilityHint={translate('ARIA HINT - current playback speed')}
+                accessibilityLabel={`${playbackRate}X`}
+                accessibilityRole='button'
+                hitSlop={hitSlop}
+                onPress={this._adjustSpeed}>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  style={[styles.playerControlsBottomButton, styles.playerControlsBottomRowText]}
+                  testID={`${testIDPrefix}_playback_rate`}>
+                  {`${playbackRate}X`}
+                </Text>
+              </PressableWithOpacity>
+            )
+          }
           <PressableWithOpacity
             accessibilityHint={translate('ARIA HINT - show more player screen options')}
             accessibilityLabel={translate('More player options')}
