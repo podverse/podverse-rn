@@ -196,8 +196,7 @@ module.exports = async () => {
   })
 
   PVAudioPlayer.addEventListener('remote-stop', () => {
-    audioHandlePause()
-    PVEventEmitter.emit(PV.Events.PLAYER_REMOTE_STOP)
+    audioHandlePauseWithUpdate()
   })
 
   PVAudioPlayer.addEventListener('remote-previous', () => {
@@ -230,7 +229,7 @@ module.exports = async () => {
       const currentState = await audioGetState()
       const isPlaying = audioCheckIfIsPlaying(currentState)
       if (permanent && isPlaying) {
-        audioHandleStop()
+        audioHandlePauseWithUpdate()
       } else if (isPlaying && paused) {
         wasPausedByDuck = true
         audioHandlePauseWithUpdate()
