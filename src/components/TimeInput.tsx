@@ -76,8 +76,15 @@ export const TimeInput = (props: Props) => {
             top: 4
           }}
           onPress={handlePreview}
+          style={{ flex: 1 }}
           testID={`${testID}_time_input_preview_button`.prependTestId()}>
-          <Icon color={globalTheme.dropdownButtonText.color} name='play' size={20} style={styles.previewIcon} />
+          <View style={styles.previewIconWrapper}>
+            <Icon
+              color={globalTheme.dropdownButtonText.color}
+              name='play'
+              size={20}
+              style={styles.previewIcon} />
+          </View>
         </PressableWithOpacity>
       )}
     </View>
@@ -91,6 +98,9 @@ const styles = StyleSheet.create({
     lineHeight: 47,
     marginBottom: 4,
     paddingHorizontal: 16
+  },
+  previewIconWrapper: {
+    alignItems: 'center'
   },
   row: {
     alignItems: 'center'
