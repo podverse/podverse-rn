@@ -1,4 +1,6 @@
 {
+  "_translatorsField": "",
+  "_translatorsFieldExample": "Jane Doe<https://jane.doe.homepage>,Joe Bloggs,Juan Perez<https://some.socialmedia/juan>",
   "15 minutes": "15 minutes",
   "30 minutes": "30 minutes",
   "45 minutes": "45 minutes",
@@ -596,6 +598,7 @@
 	"Transcript search input": "Transcript search input",
 	"Transcript": "Transcript",
 	"Transfer": "Transfer",
+  "Translators": "Translators",
 	"Type DELETE in the input below to confirm": "Type \"Delete\" below to confirm.",
 	"Unknown duration": "Unknown duration",
 	"Unplayed episode": "Unplayed episode",

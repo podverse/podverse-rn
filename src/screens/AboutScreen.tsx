@@ -1,3 +1,4 @@
+import { parseCommaDelimitedNamesAndURLsString } from 'podverse-shared'
 import { Alert, Linking, Pressable, StyleSheet, View as RNView } from 'react-native'
 import { getBuildNumber, getVersion } from 'react-native-device-info'
 import React from 'reactn'
@@ -6,6 +7,7 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { button } from '../styles'
+const { _translatorsField } = require('../resources/i18n/translations/en.json')
 const contributorsList = require('../resources/Contributors.json')
 const maintainersList = require('../resources/Maintainers.json')
 
@@ -14,7 +16,14 @@ type Contributor = {
   link: string
 }
 
+type Translator = {
+  name: string
+  url?: string
+}
+
 type Props = any
+
+const translatorsList = parseCommaDelimitedNamesAndURLsString(_translatorsField) as Translator[]
 
 export class AboutScreen extends React.Component<Props> {
   static navigationOptions = () => ({
@@ -31,7 +40,7 @@ export class AboutScreen extends React.Component<Props> {
       { text: 'Yes', onPress: () => Linking.openURL(url) }
     ])
   }
-
+  
   render() {
     return (
       <View style={styles.content} testID='about_screen_view'>
@@ -53,8 +62,11 @@ export class AboutScreen extends React.Component<Props> {
             return (
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                isSecondary={!contributor.link}
                 key={`maintainers_${index}`}
-                onPress={() => this.handleFollowLink(contributor.link)}
+                {...(contributor.link ? {
+                  onPress: () => this.handleFollowLink(contributor.link)
+                } : {})}
                 style={style}>
                 {contributor.name}
               </Text>
@@ -70,13 +82,44 @@ export class AboutScreen extends React.Component<Props> {
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 key={`contributors_${index}`}
-                style={style}
-                onPress={() => this.handleFollowLink(contributor.link)}>
+                isSecondary={!contributor.link}
+                {...(contributor.link ? {
+                  onPress: () => this.handleFollowLink(contributor.link)
+                } : {})}
+                style={style}>
                 {contributor.name}
               </Text>
             )
           })}
           <Divider style={styles.divider} />
+          {
+            translatorsList.length > 0 && (
+              <>
+                <Text
+                  accessibilityRole='header'
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  style={styles.sectionTitle}>
+                  {translate('Translators')}
+                </Text>
+                {translatorsList.map((translator: Translator, index: number) => {
+                  const style = translator.url ? [styles.text, styles.link] : styles.text
+                  return (
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                      key={`contributors_${index}`}
+                      isSecondary={!translator.url}
+                      {...(translator.url ? {
+                        onPress: () => this.handleFollowLink(translator.url)
+                      } : {})}
+                      style={style}>
+                      {translator.name}
+                    </Text>
+                  )
+                })}
+                <Divider style={styles.divider} />
+              </>
+            )
+          }
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={styles.text}>{`Version ${getVersion()} Build ${getBuildNumber()}`}</Text>

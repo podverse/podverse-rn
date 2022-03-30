@@ -21,6 +21,7 @@ import {
   PlayerProgressBar,
   PressableWithOpacity,
   PVVideo,
+  SafeAreaView,
   Text,
   TextInput,
   TimeInput,
@@ -474,7 +475,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
         : [styles.carouselImageWrapper, { width: screenWidth * 0.9 }]
 
     return (
-      <>
+      <SafeAreaView style={styles.view}>
         <View style={styles.view} transparent testID='make_clip_screen_view'>
           <View style={styles.contentContainer}>
             <View style={styles.wrapperTop} transparent>
@@ -772,7 +773,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
             </RNView>
           </Modal>
         )}
-      </>
+      </SafeAreaView>
     )
   }
 }

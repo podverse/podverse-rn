@@ -28,11 +28,11 @@ export const Comment = ({ children, comment }: Props) => {
   return (
     <View style={[styles.wrapper, globalTheme.flatList]}>
       <View style={styles.innerWrapper}>
-        <View style={styles.innerTopWrapper}>
-          {profileIcon ? <FastImage styles={styles.profileIcon} source={profileIcon} isSmall /> : null}
-          <Text style={styles.username}>{username}</Text>
-        </View>
         <PressableWithOpacity onPress={() => handleFollowLink(url)}>
+          <View style={styles.innerTopWrapper}>
+            {profileIcon ? <FastImage styles={styles.profileIcon} source={profileIcon} isSmall /> : null}
+            <Text style={styles.username}>{username}</Text>
+          </View>
           <View style={styles.innerLinkWrapper}>
             <Text style={styles.content}>{content}</Text>
             <Text style={styles.published}>{readableDate(published, withTime)}</Text>
@@ -47,19 +47,22 @@ export const Comment = ({ children, comment }: Props) => {
 
 const styles = {
   content: {
+    flexWrap: 'wrap',
     fontSize: PV.Fonts.sizes.xl
   },
   indentWrapper: {
-    marginLeft: 8,
-    marginTop: 24
+    marginLeft: 10
   },
-  innerLinkWrapper: {},
+  innerLinkWrapper: {
+  },
   innerTopWrapper: {
     alignItems: 'center',
     flexDirection: 'row',
-    marginBottom: 10
+    marginBottom: 9
   },
-  innerWrapper: {},
+  innerWrapper: {
+    marginBottom: 20
+  },
   profileIcon: {
     height: 36,
     marginRight: 10,
@@ -68,14 +71,13 @@ const styles = {
   published: {
     color: PV.Colors.grayLighter,
     fontSize: PV.Fonts.sizes.md,
-    marginTop: 8
+    marginTop: 6
   },
   username: {
     color: PV.Colors.skyLight,
+    flex: 1,
+    flexWrap: 'wrap',
     fontSize: PV.Fonts.sizes.xl
   },
-  wrapper: {
-    marginHorizontal: 8,
-    marginBottom: 24
-  }
+  wrapper: {}
 }
