@@ -18,7 +18,7 @@ const test_loggedInScreensDidLoadTests = async () => {
   await elementByIdClick('login_submit_button')
   await driver.sleep(4000)
   
-  await confirmAndroidAlert()
+  // await confirmAndroidAlert()
   
     // Podcasts Screen
   await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')

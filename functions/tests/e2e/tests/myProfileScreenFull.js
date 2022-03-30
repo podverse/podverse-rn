@@ -20,7 +20,7 @@ const test_myProfileScreenFull = async () => {
   await elementByIdClick('login_submit_button')
   await driver.sleep(4000)
   try {
-    await confirmAndroidAlert()
+    // await confirmAndroidAlert()
   } catch (err) {
     console.log('confirmAndroidAlert err')
   }
@@ -70,7 +70,7 @@ const test_myProfileScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top – day')
+  await elementByIdHasText('profile_screen_dropdown_button_text', 'top — day')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
@@ -80,7 +80,7 @@ const test_myProfileScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top – week')
+  await elementByIdHasText('profile_screen_dropdown_button_text', 'top — week')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
@@ -90,7 +90,7 @@ const test_myProfileScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top – month')
+  await elementByIdHasText('profile_screen_dropdown_button_text', 'top — month')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
@@ -100,7 +100,7 @@ const test_myProfileScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top – year')
+  await elementByIdHasText('profile_screen_dropdown_button_text', 'top — year')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
   
@@ -110,7 +110,7 @@ const test_myProfileScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top – all time')
+  await elementByIdHasText('profile_screen_dropdown_button_text', 'top — all time')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 

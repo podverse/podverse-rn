@@ -22,7 +22,7 @@ await elementByIdClick('login_submit_button')
 await driver.sleep(7000)
 
 try {
-  await confirmAndroidAlert()
+  // await confirmAndroidAlert()
 } catch (err) {
   console.log('confirmAndroidAlert err')
   console.log(err)

@@ -5,8 +5,8 @@ const { elementByIdAndClickAndTest, elementByIdClick, elementWaitFor, goBackKey,
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
 const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
 
-const test_searchScreenDidLoad = async () => {
-  console.log('_Search Screen Did Load_')
+const test_searchBars = async () => {
+  console.log('_Search Bars_')
   const driver = getDriver()
 
   // Login
@@ -23,7 +23,7 @@ const test_searchScreenDidLoad = async () => {
     console.log('confirmAndroidAlert err')
   }
 
-  await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
+  await sendKeysToElementById('podcasts_screen_filter_bar_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
   // TODO: fails on podcast item 0
   // await elementWaitFor('search_screen_podcast_item_0')
   // await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'podcasts_screen_view')
@@ -52,5 +52,5 @@ const test_searchScreenDidLoad = async () => {
 }
 
 module.exports = {
-  test_searchScreenDidLoad
+  test_searchBars
 }
