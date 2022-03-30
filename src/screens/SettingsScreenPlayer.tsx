@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import RNPickerSelect from 'react-native-picker-select'
-import { Icon, NumberSelectorWithText, ScrollView, Text, View } from '../components'
+import { Icon, NumberSelectorWithText, ScrollView, SwitchWithText, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -36,7 +36,9 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
   })
 
   async componentDidMount() {
-    const maximumSpeed = await AsyncStorage.getItem(PV.Keys.PLAYER_MAXIMUM_SPEED)
+    const [maximumSpeed] = await Promise.all([
+      AsyncStorage.getItem(PV.Keys.PLAYER_MAXIMUM_SPEED)
+    ])
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
     const maximumSpeedOptionSelected = maximumSpeedSelectOptions.find((x: any) => x.value === Number(maximumSpeed))
 
@@ -71,9 +73,21 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
     handleFinishSettingPlayerTime()
   }
 
+  _toggleHidePlaybackSpeedButton = () => {
+    const { hidePlaybackSpeedButton } = this.global
+    const newHidePlaybackSpeedButton = !hidePlaybackSpeedButton
+    this.setGlobal({ hidePlaybackSpeedButton: newHidePlaybackSpeedButton }, () => {
+      (async () => {
+        newHidePlaybackSpeedButton
+          ? await AsyncStorage.setItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON, 'TRUE')
+          : await AsyncStorage.removeItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON)
+      })()
+    })
+  }
+
   render() {
     const { maximumSpeedOptionSelected } = this.state
-    const { globalTheme, jumpBackwardsTime, jumpForwardsTime } = this.global
+    const { globalTheme, hidePlaybackSpeedButton, jumpBackwardsTime, jumpForwardsTime } = this.global
     const isDarkMode = globalTheme === darkTheme
 
     return (
@@ -142,6 +156,15 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
               </View>
             </View>
           </RNPickerSelect>
+        </View>
+        <View style={core.itemWrapper}>
+          <SwitchWithText
+            accessibilityLabel={translate('Hide playback speed button')}
+            onValueChange={this._toggleHidePlaybackSpeedButton}
+            testID={`${testIDPrefix}_hide_playback_speed_button`}
+            text={translate('Hide playback speed button')}
+            value={hidePlaybackSpeedButton}
+          />
         </View>
       </ScrollView>
     )

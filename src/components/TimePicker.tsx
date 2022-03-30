@@ -15,8 +15,13 @@ type Props = {
 
 const generatePickerNumberItems = (total: number, key: string) => {
   const arr = [] as any
+
+  const style = Platform.OS === 'android' ? {
+    fontSize: PV.Fonts.sizes.huge
+  } : {}
+
   for (let i = 0; i < total; i++) {
-    arr.push(<Picker.Item key={i + key} label={i.toString()} value={i} />)
+    arr.push(<Picker.Item style={style} key={i + key} label={i.toString()} value={i} />)
   }
 
   return arr

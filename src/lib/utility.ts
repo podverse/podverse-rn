@@ -61,6 +61,41 @@ export const getHHMMSSArray = (sec: number) => {
   return parsedArray
 }
 
+export const convertSecToHHMMSSAccessibilityLabel = (sec: number) => {
+  let totalSec = Math.floor(sec)
+  const hours = Math.floor(totalSec / 3600)
+  totalSec %= 3600
+  const minutes = Math.floor(totalSec / 60)
+  const seconds = Math.floor(totalSec % 60)
+
+  let readableTime = ''
+  if (hours) {
+    if (hours === 1) {
+      readableTime += `${hours} ${translate('hour')} `
+    } else {
+      readableTime += `${hours} ${translate('hours')} `
+    }
+  }
+
+  if (minutes) {
+    if (minutes === 1) {
+      readableTime += `${minutes} ${translate('minute')} `
+    } else {
+      readableTime += `${minutes} ${translate('minutes')} `
+    }
+  }
+
+  if (seconds) {
+    if (seconds === 1) {
+      readableTime += `${seconds} ${translate('second')} `
+    } else {
+      readableTime += `${seconds} ${translate('seconds')} `
+    }
+  }
+
+  return readableTime
+}
+
 export const convertSecToHHMMSS = (sec: number) => {
   let totalSec = Math.floor(sec)
   const hours = Math.floor(totalSec / 3600)

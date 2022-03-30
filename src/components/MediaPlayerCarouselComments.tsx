@@ -125,7 +125,9 @@ const generateCommentNodes = (comment: PVComment) => {
 }
 
 const styles = StyleSheet.create({
-  commentsWrapper: {},
+  commentsWrapper: {
+    marginHorizontal: 8
+  },
   headerText: {},
   noResultsFound: {
     flex: 1,

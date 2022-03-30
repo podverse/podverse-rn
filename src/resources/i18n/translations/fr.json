@@ -725,5 +725,8 @@
     "Search clips": "Recherche de clips",
     "Search episodes": "Recherche d'épisodes",
     "Search podcasts": "Recherche de podcasts",
-    "Enable Lightning Pay switch description": "Activez cette fonctionnalité expérimentale pour ajouter un portefeuille Bitcoin afin de soutenir les podcasts par le biais du streaming Sats et du boost."
+    "Enable Lightning Pay switch description": "Activez cette fonctionnalité expérimentale pour ajouter un portefeuille Bitcoin afin de soutenir les podcasts par le biais du streaming Sats et du boost.",
+    "Comments": "Commentaires",
+    "Comments are loading": "Chargement des commentaires",
+    "No comments found": "Aucun commentaire"
 }
