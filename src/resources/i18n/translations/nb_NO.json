@@ -726,5 +726,20 @@
     "Search podcasts": "Søk etter nettradioopptak",
     "Search episodes": "Søk etter episoder",
     "Custom Feeds": "Egendefinerte informasjonskanaler",
-    "Search clips": "Søk etter klipp"
+    "Search clips": "Søk etter klipp",
+    "15 minutes": "15 minutter",
+    "Comments are loading": "Laster inn kommentarer …",
+    "30 minutes": "30 minutter",
+    "Comments": "Kommetarer",
+    "Translators": "Oversettere",
+    "hour": "time",
+    "minute": "minutt",
+    "second": "sekund",
+    "No comments found": "Fant ingen kommentarer",
+    "1 hour": "1 time",
+    "45 minutes": "45 minutter",
+    "2 hours": "2 timer",
+    "1 hour 30 minutes": "1 time og 30 minutter",
+    "_translatorsFieldExample": "Kari Nordmann<https://kari.nordmann.hjemmeside>,Ola Nordmann,Nord Olamann<https://noe.sosialemedier/juan>",
+    "Hide playback speed button": "Skjul knapp for hastighetsinnstilling"
 }
