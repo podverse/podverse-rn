@@ -18,6 +18,7 @@ import { hasValidNetworkConnection } from '../lib/network'
 import { replaceLinebreaksWithBrTags } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
+import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRefs } from '../services/mediaRef'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
@@ -108,6 +109,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    // Updates to historyItemsIndex do not force this component to re-render,
+    // so we force it to re-render on the PLAYER_HISTORY_INDEX_DID_UPDATE event.
+    PVEventEmitter.on(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE, () => this.forceUpdate())
+
     const { navigation } = this.props
     const { episode, episodeId } = this.state
     this._initializePageData()
@@ -122,6 +127,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
       'Episode Screen - ',
       titleToEncode
     )
+  }
+
+  componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE)
   }
 
   async _initializePageData() {

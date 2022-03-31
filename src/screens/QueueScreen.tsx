@@ -24,7 +24,7 @@ import { audioMovePlayerItemToNewPosition, audioSyncPlayerWithQueue } from '../s
 import { trackPageView } from '../services/tracking'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { addQueueItemToServer, getQueueItems, removeQueueItem, setAllQueueItemsLocally } from '../state/actions/queue'
-import { getHistoryItems, removeHistoryItem } from '../state/actions/userHistoryItem'
+import { getHistoryItems, removeHistoryItem, updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import { core } from '../styles'
 
 type Props = {
@@ -144,6 +144,10 @@ export class QueueScreen extends React.Component<Props, State> {
   componentDidMount() {
     const { navigation } = this.props
 
+    // Updates to historyItemsIndex do not force this component to re-render,
+    // so we force it to re-render on the PLAYER_HISTORY_INDEX_DID_UPDATE event.
+    PVEventEmitter.on(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE, () => this.forceUpdate())
+
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, this._getQueueItems)
 
@@ -159,6 +163,7 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, this._getQueueItems)
   }

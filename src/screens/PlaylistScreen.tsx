@@ -19,6 +19,7 @@ import { navigateToEpisodeScreenWithItem } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import { trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
@@ -98,9 +99,17 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    // Updates to historyItemsIndex do not force this component to re-render,
+    // so we force it to re-render on the PLAYER_HISTORY_INDEX_DID_UPDATE event.
+    PVEventEmitter.on(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE, () => this.forceUpdate())
+
     const { playlistId } = this.state
     this._initializePageData()
     trackPageView('/playlist/' + playlistId, 'Playlist Screen')
+  }
+
+  componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE)
   }
 
   _initializePageData() {

@@ -102,12 +102,16 @@ export class EpisodesScreen extends React.Component<Props, State> {
   })
 
   async componentDidMount() {
+    // Updates to historyItemsIndex do not force this component to re-render,
+    // so we force it to re-render on the PLAYER_HISTORY_INDEX_DID_UPDATE event.
+    PVEventEmitter.on(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE, () => this.forceUpdate())
+
+    PVEventEmitter.on(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
+
     const { queryFrom } = this.state
     const hasInternetConnection = await hasValidNetworkConnection()
     const from = hasInternetConnection ? queryFrom : PV.Filters._downloadedKey
     this.handleSelectFilterItem(from)
-
-    PVEventEmitter.on(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
 
     trackPageView('/episodes', 'Episodes Screen')
     this._unsubscribe = this.props.navigation.addListener('willFocus', () => {
@@ -116,6 +120,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE)
     PVEventEmitter.removeListener(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
   }
 

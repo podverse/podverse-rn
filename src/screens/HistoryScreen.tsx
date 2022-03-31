@@ -6,6 +6,7 @@ import { ActivityIndicator, FlatList, NavHeaderButtonText, QueueTableCell, View 
 import { translate } from '../lib/i18n'
 import { overrideImageUrlWithChapterImageUrl, safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import { trackPageView } from '../services/tracking'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { getHistoryItems, removeHistoryItem } from '../state/actions/userHistoryItem'
@@ -94,6 +95,10 @@ export class HistoryScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    // Updates to historyItemsIndex do not force this component to re-render,
+    // so we force it to re-render on the PLAYER_HISTORY_INDEX_DID_UPDATE event.
+    PVEventEmitter.on(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE, () => this.forceUpdate())
+
     const { navigation } = this.props
 
     navigation.setParams({
@@ -111,6 +116,10 @@ export class HistoryScreen extends React.Component<Props, State> {
     }
 
     trackPageView('/history', 'History Screen')
+  }
+
+  componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE)
   }
 
   _startEditing = () => {
