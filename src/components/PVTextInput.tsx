@@ -112,6 +112,7 @@ export const PVTextInput = (props: Props) => {
         onFocus={onFocus}
         onChange={onChange}
         onChangeText={onChangeText}
+        onPressIn={onPress}
         onSubmitEditing={onSubmitEditing}
         placeholder={placeholder}
         placeholderTextColor={placeholderTextColor || globalTheme.placeholderText.color}
