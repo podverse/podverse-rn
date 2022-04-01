@@ -145,6 +145,8 @@ export const askToSyncWithNowPlayingItem = async (callback: any) => {
         askToSyncWithLastHistoryItem.message,
         askToSyncWithLastHistoryItem.buttons
       )
+
+      return
     } else if (
       !localNowPlayingItem.clipId
       && localNowPlayingItem.episodeId === serverNowPlayingItem.episodeId
@@ -153,13 +155,9 @@ export const askToSyncWithNowPlayingItem = async (callback: any) => {
       // then resume from the server item's userPlaybackPosition
       // instead of the localNowPlayingItem's
       await setNowPlayingItemLocally(serverNowPlayingItem, serverNowPlayingItem.userPlaybackPosition || 0)
-      if (callback) callback()
-    } else {
-      if (callback) callback()
     }
-  } else {
-    if (callback) callback()
   }
+  callback?.()
 }
 
 // If a new player item should be loaded, the local history/queue must be up-to-date
