@@ -946,14 +946,27 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
               </View>
             )}
             <Divider style={styles.divider} />
-            <Button
-              accessibilityHint={translate('ARIA HINT - delete all the episodes you have downloaded for this podcast')}
-              accessibilityLabel={translate('Delete Downloaded Episodes')}
-              onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
-              wrapperStyles={styles.settingsDeletebutton}
-              testID={`${testIDPrefix}_delete_downloaded_episodes`}
-              text={translate('Delete Downloaded Episodes')}
-            />
+            <View style={styles.itemWrapper}>
+              <Button
+                accessibilityHint={
+                  translate('ARIA HINT - delete all the episodes you have downloaded for this podcast')}
+                accessibilityLabel={translate('Delete Downloaded Episodes')}
+                onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
+                wrapperStyles={styles.button}
+                testID={`${testIDPrefix}_delete_downloaded_episodes`}
+                text={translate('Delete Downloaded Episodes')}
+              />
+            </View>
+            <View style={styles.itemWrapper}>
+              <Button
+                accessibilityHint={translate('ARIA HINT - go to the bulk mark as played screen for this podcast')}
+                accessibilityLabel={translate('Bulk mark as played')}
+                onPress={this._handleGoToBulkMarkAsPlayedScreen}
+                wrapperStyles={styles.button}
+                testID={`${testIDPrefix}_bulk_mark_as_played`}
+                text={translate('Bulk mark as played')}
+              />
+            </View>
           </ScrollView>
         )}
         {!showSettings && (
@@ -1116,14 +1129,14 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.lg
   },
   divider: {
-    marginBottom: 24,
-    marginTop: 12
+    marginTop: 32
   },
   itemWrapper: {
     marginTop: 32
   },
-  settingsDeletebutton: {
-    margin: 8,
+  button: {
+    marginBottom: 0,
+    marginHorizontal: 8,
     borderRadius: 8
   },
   settingsHelpText: {
