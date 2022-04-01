@@ -28,6 +28,7 @@ import { trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { core } from '../styles'
+import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
 
 type Props = {
   navigation?: any
@@ -59,7 +60,7 @@ type State = {
 
 const testIDPrefix = 'episodes_screen'
 
-export class EpisodesScreen extends React.Component<Props, State> {
+export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
   shouldLoad: boolean
   _unsubscribe: any | null
 
@@ -102,9 +103,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   })
 
   async componentDidMount() {
-    // Updates to historyItemsIndex do not force this component to re-render,
-    // so we force it to re-render on the PLAYER_HISTORY_INDEX_DID_UPDATE event.
-    PVEventEmitter.on(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE, () => this.forceUpdate())
+    super.componentDidMount()
 
     PVEventEmitter.on(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
 
@@ -120,7 +119,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    PVEventEmitter.removeListener(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE)
+    super.componentWillUnmount()
     PVEventEmitter.removeListener(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
   }
 

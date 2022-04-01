@@ -18,12 +18,12 @@ import { hasValidNetworkConnection } from '../lib/network'
 import { replaceLinebreaksWithBrTags } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
-import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRefs } from '../services/mediaRef'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import { retriveNowPlayingItemChapters } from '../state/actions/playerChapters'
 import { core } from '../styles'
+import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
 
 type Props = {
   navigation?: any
@@ -45,7 +45,7 @@ type State = {
 
 const testIDPrefix = 'episode_screen'
 
-export class EpisodeScreen extends React.Component<Props, State> {
+export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
   constructor(props: Props) {
     super(props)
 
@@ -109,9 +109,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    // Updates to historyItemsIndex do not force this component to re-render,
-    // so we force it to re-render on the PLAYER_HISTORY_INDEX_DID_UPDATE event.
-    PVEventEmitter.on(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE, () => this.forceUpdate())
+    super.componentDidMount()
 
     const { navigation } = this.props
     const { episode, episodeId } = this.state
@@ -127,10 +125,6 @@ export class EpisodeScreen extends React.Component<Props, State> {
       'Episode Screen - ',
       titleToEncode
     )
-  }
-
-  componentWillUnmount() {
-    PVEventEmitter.removeListener(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE)
   }
 
   async _initializePageData() {
