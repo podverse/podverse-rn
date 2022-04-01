@@ -68,8 +68,7 @@ PVAudioPlayer.getTrackDuration = async () => {
 }
 
 PVAudioPlayer.setupPlayer({
-  waitForBuffer: false,
-  iosCategoryOptions: [IOSCategoryOptions.DuckOthers]
+  waitForBuffer: false
 }).then(() => {
   audioUpdateTrackPlayerCapabilities()
 })
