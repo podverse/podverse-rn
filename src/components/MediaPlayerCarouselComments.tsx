@@ -47,33 +47,37 @@ export class MediaPlayerCarouselComments extends React.PureComponent<Props, Stat
           item.platform === SocialInteractionKeys.platform.twitter
       )
 
-      if (activityPub?.url) {
-        this.setState({ isLoading: true }, async () => {
-          try {
-            const comment = await getEpisodeProxyActivityPub(episode.id)
-            const commentNodes = generateCommentNodes(comment)
-            this.setState({
-              commentNodes,
-              isLoading: false
-            })
-          } catch (error) {
-            console.log('MediaPlayerCarouselComments activityPub error', error)
-            this.setState({ isLoading: false })
-          }
+      if (activityPub?.uri || activityPub?.url) {
+        this.setState({ isLoading: true }, () => {
+          (async () => {
+            try {
+              const comment = await getEpisodeProxyActivityPub(episode.id)
+              const commentNodes = generateCommentNodes(comment)
+              this.setState({
+                commentNodes,
+                isLoading: false
+              })
+            } catch (error) {
+              console.log('MediaPlayerCarouselComments activityPub error', error)
+              this.setState({ isLoading: false })
+            }
+          })()
         })
-      } else if (twitter?.url) {
-        this.setState({ isLoading: true }, async () => {
-          try {
-            const comment = await getEpisodeProxyTwitter(episode.id)
-            const commentNodes = generateCommentNodes(comment)
-            this.setState({
-              commentNodes,
-              isLoading: false
-            })
-          } catch (error) {
-            console.log('MediaPlayerCarouselComments twitter error', error)
-            this.setState({ isLoading: false })
-          }
+      } else if (twitter?.uri || twitter?.url) {
+        this.setState({ isLoading: true }, () => {
+          (async () => {
+            try {
+              const comment = await getEpisodeProxyTwitter(episode.id)
+              const commentNodes = generateCommentNodes(comment)
+              this.setState({
+                commentNodes,
+                isLoading: false
+              })
+            } catch (error) {
+              console.log('MediaPlayerCarouselComments twitter error', error)
+              this.setState({ isLoading: false })
+            }
+          })()
         })
       }
     }
