@@ -126,3 +126,32 @@ export const markAsPlayed = async (item: NowPlayingItem) => {
     await updateHistoryItemsIndex()
   }
 }
+
+export const toggleMarkAsPlayed = async (item: NowPlayingItem, shouldMarkAsPlayed: boolean) => {
+  const { session } = getGlobal()
+  const { historyItemsIndex } = session.userInfo
+
+  if (item.episodeId) {
+    let playbackPosition = 0
+    let mediaFileDuration = null
+    const historyItem = historyItemsIndex?.episodes[item.episodeId]
+    if (historyItem) {
+      mediaFileDuration = historyItem.mediaFileDuration || 0
+      playbackPosition = historyItem.userPlaybackPosition
+    }
+  
+    const forceUpdateOrderDate = false
+    const skipSetNowPlaying = true
+    const completed = shouldMarkAsPlayed
+
+    await addOrUpdateHistoryItem(
+      item,
+      playbackPosition,
+      mediaFileDuration,
+      forceUpdateOrderDate,
+      skipSetNowPlaying,
+      completed
+    )
+    await updateHistoryItemsIndex()
+  }
+}

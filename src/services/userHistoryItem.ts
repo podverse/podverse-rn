@@ -177,7 +177,7 @@ const addOrUpdateHistoryItemOnServer = async (
       forceUpdateOrderDate: forceUpdateOrderDate === false ? false : true,
       ...(mediaFileDuration || mediaFileDuration === 0 ? { mediaFileDuration: Math.floor(mediaFileDuration) } : {}),
       userPlaybackPosition: playbackPosition,
-      ...(completed ? { completed } : {})
+      ...(completed === true || completed === false ? { completed } : {})
     },
     opts: { credentials: 'include' }
   })
