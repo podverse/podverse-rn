@@ -7082,10 +7082,10 @@ react-native-haptic-feedback@1.11.0:
   version "1.11.0"
   resolved "https://registry.npmjs.org/react-native-haptic-feedback/-/react-native-haptic-feedback-1.11.0.tgz"
 
-react-native-iap@8.0.4:
-  version "8.0.4"
-  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-8.0.4.tgz#ca9d09609158cbf05500c3ec0162b978a7d00978"
-  integrity sha512-SZha2Zq8Vs+8sPudoaX1lzJJmIkgnofqG3oOEWL7xe6gIQXlC/nMqpi+RcwxjyoZV8JhMpkyBpWbaYOIms4/XA==
+react-native-iap@8.0.7:
+  version "8.0.7"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-8.0.7.tgz#78397ad7df2decd31240d89846ab026c8f9ec4d1"
+  integrity sha512-YVZp9g01oSIZ5sT0wxjrYw0kjLUuABH0+PTTxgSUgGQewnGlO9fUIu1fixXkC8nKFS1QhGJLlbaOzVfv+9uRqA==
   dependencies:
     dooboolab-welcome "1.3.2"
 
