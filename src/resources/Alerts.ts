@@ -25,7 +25,7 @@ export const Alerts = {
       buttons: [
         {
           text: translate('No'),
-          onPress: callback
+          onPress: () => { if (callback) callback() }
         },
         {
           text: translate('Yes'),
@@ -34,7 +34,7 @@ export const Alerts = {
             const forceUpdateOrderDate = false
             const setCurrentItemNextInQueue = false
             await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
-            callback()
+            if (callback) callback()
           }
         }
       ]

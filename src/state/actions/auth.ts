@@ -153,12 +153,12 @@ export const askToSyncWithNowPlayingItem = async (callback: any) => {
       // then resume from the server item's userPlaybackPosition
       // instead of the localNowPlayingItem's
       await setNowPlayingItemLocally(serverNowPlayingItem, serverNowPlayingItem.userPlaybackPosition || 0)
-      callback()
+      if (callback) callback()
     } else {
-      callback()
+      if (callback) callback()
     }
   } else {
-    callback()
+    if (callback) callback()
   }
 }
 
