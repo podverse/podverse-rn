@@ -124,7 +124,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
   return isLoggedIn
 }
 
-export const askToSyncWithNowPlayingItem = async (callback: any) => {
+export const askToSyncWithNowPlayingItem = async (callback?: any) => {
   const [localNowPlayingItem, serverNowPlayingItem] = await Promise.all([
     getNowPlayingItemLocally(),
     getNowPlayingItemOnServer()
@@ -179,7 +179,7 @@ const syncItemsWithLocalStorage = async (userInfo: any) => {
   }
 }
 
-export const loginUser = async (credentials: Credentials, navigation: any) => {
+export const loginUser = async (credentials: Credentials) => {
   try {
     const userInfo = await login(credentials.email, credentials.password)
     const globalState = getGlobal()
@@ -195,7 +195,7 @@ export const loginUser = async (credentials: Credentials, navigation: any) => {
       try {
         await syncItemsWithLocalStorage(userInfo)
         await getSubscribedPodcasts()
-        await askToSyncWithNowPlayingItem(navigation)
+        await askToSyncWithNowPlayingItem()
         await parseAllAddByRSSPodcasts()
         await combineWithAddByRSSPodcasts()
       } catch (error) {
