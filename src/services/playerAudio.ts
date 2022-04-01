@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from 'podverse-shared'
-import TrackPlayer, { Capability, IOSCategoryOptions, PitchAlgorithm, State, Track } from 'react-native-track-player'
+import TrackPlayer, { Capability, PitchAlgorithm, State, Track } from 'react-native-track-player'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../lib/downloader'
