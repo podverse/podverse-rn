@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
+import OmniAural from 'omniaural'
 import { Alert } from 'react-native'
 import Config from 'react-native-config'
 import Share from 'react-native-share'
@@ -16,7 +17,7 @@ import { playerGetPosition } from '../services/player'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
-import { markAsPlayed } from '../state/actions/userHistoryItem'
+import { toggleMarkAsPlayed } from '../state/actions/userHistoryItem'
 import { PV } from './PV'
 
 const mediaMoreButtons = (
@@ -51,6 +52,7 @@ const mediaMoreButtons = (
   const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session?.userInfo?.id, '')
   const isLoggedIn = safelyUnwrapNestedVariable(() => globalState.session?.isLoggedIn, '')
   const globalTheme = safelyUnwrapNestedVariable(() => globalState.globalTheme, {})
+  const historyItemsIndex = safelyUnwrapNestedVariable(() => globalState.session?.userInfo?.historyItemsIndex, {})
 
   if (item.ownerId && item.ownerId === loggedInUserId) {
     buttons.push(
@@ -268,14 +270,17 @@ const mediaMoreButtons = (
   }
 
   if (itemType === 'episode') {
+    const completed = historyItemsIndex.episodes[item.episodeId]?.completed
+    const label = completed ? translate('Mark as Unplayed') : translate('Mark as Played')
     buttons.push({
-      accessibilityLabel: translate('Mark as Played'),
+      accessibilityLabel: label,
       key: PV.Keys.mark_as_played,
-      text: translate('Mark as Played'),
+      text: label,
       onPress: async () => {
         await handleDismiss()
         if (isLoggedIn) {
-          await markAsPlayed(item)
+          const shouldMarkAsPlayed = !completed
+          await toggleMarkAsPlayed(item, shouldMarkAsPlayed)
         } else {
           Alert.alert(
             PV.Alerts.LOGIN_TO_MARK_EPISODES_AS_PLAYED.title,

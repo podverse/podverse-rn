@@ -33,10 +33,10 @@ export const clearHistoryItems = async () => {
 
 export const getHistoryItems = async (page: number, existingItems: any[]) => {
   const globalState = getGlobal()
-  const [{ userHistoryItems, userHistoryItemsCount }, historyItemsIndex] = await Promise.all([
-    getHistoryItemsService(page),
-    getHistoryItemsIndexLocally()
-  ])
+
+  const { userHistoryItems, userHistoryItemsCount } = await getHistoryItemsService(page)
+  await updateHistoryItemsIndex()
+  const historyItemsIndex = await getHistoryItemsIndexLocally()
 
   const historyQueryPage = page || 1
 
@@ -115,6 +115,35 @@ export const markAsPlayed = async (item: NowPlayingItem) => {
     const forceUpdateOrderDate = false
     const skipSetNowPlaying = true
     const completed = true
+    await addOrUpdateHistoryItem(
+      item,
+      playbackPosition,
+      mediaFileDuration,
+      forceUpdateOrderDate,
+      skipSetNowPlaying,
+      completed
+    )
+    await updateHistoryItemsIndex()
+  }
+}
+
+export const toggleMarkAsPlayed = async (item: NowPlayingItem, shouldMarkAsPlayed: boolean) => {
+  const { session } = getGlobal()
+  const { historyItemsIndex } = session.userInfo
+
+  if (item.episodeId) {
+    let playbackPosition = 0
+    let mediaFileDuration = null
+    const historyItem = historyItemsIndex?.episodes[item.episodeId]
+    if (historyItem) {
+      mediaFileDuration = historyItem.mediaFileDuration || 0
+      playbackPosition = historyItem.userPlaybackPosition
+    }
+  
+    const forceUpdateOrderDate = false
+    const skipSetNowPlaying = true
+    const completed = shouldMarkAsPlayed
+
     await addOrUpdateHistoryItem(
       item,
       playbackPosition,

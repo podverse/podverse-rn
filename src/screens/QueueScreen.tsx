@@ -26,6 +26,7 @@ import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { addQueueItemToServer, getQueueItems, removeQueueItem, setAllQueueItemsLocally } from '../state/actions/queue'
 import { getHistoryItems, removeHistoryItem } from '../state/actions/userHistoryItem'
 import { core } from '../styles'
+import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
 
 type Props = {
   navigation?: any
@@ -42,7 +43,7 @@ type State = {
 
 const testIDPrefix = 'queue_screen'
 
-export class QueueScreen extends React.Component<Props, State> {
+export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
   shouldLoad: boolean
 
   constructor(props: Props) {
@@ -142,6 +143,8 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    super.componentDidMount()
+
     const { navigation } = this.props
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -159,6 +162,7 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
+    super.componentWillUnmount()
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, this._getQueueItems)
   }

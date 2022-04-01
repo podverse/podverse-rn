@@ -149,13 +149,13 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
 
   const [
     { userHistoryItems, userHistoryItemsCount },
-    historyItemsIndex,
     queueItems
   ] = await Promise.all([
     getHistoryItems(page),
-    getHistoryItemsIndex(),
     getQueueItems()
   ])
+  // getHistoryItemsIndex must be called after getHistoryItems finishes.
+  const historyItemsIndex = await getHistoryItemsIndex()
 
   // Add history and queue properities to response to be added to the global state
   data.historyItems = userHistoryItems
