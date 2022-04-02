@@ -23,6 +23,7 @@ import { trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { core } from '../styles'
+import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
 
 type Props = {
   navigation?: any
@@ -42,7 +43,7 @@ type State = {
 
 const testIDPrefix = 'playlist_screen'
 
-export class PlaylistScreen extends React.Component<Props, State> {
+export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
   constructor(props: Props) {
     super(props)
     const subscribedPlaylistIds = safelyUnwrapNestedVariable(
@@ -98,6 +99,8 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    super.componentDidMount()
+
     const { playlistId } = this.state
     this._initializePageData()
     trackPageView('/playlist/' + playlistId, 'Playlist Screen')

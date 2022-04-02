@@ -658,8 +658,9 @@ export const parseOpmlFile = (data: any, topLevel = false): string[] => {
   for (const item of outlineArr) {
     if (item.$?.type?.toLowerCase() === 'rss') {
       const url = item.$?.xmlurl || item.$?.xmlUrl
-      if (url) {
-        resultArr.push(url)
+      const decodedUrl = decodeURIComponent(url)
+      if (decodedUrl) {
+        resultArr.push(decodedUrl)
       }
     } else {
       if (item.outline) {

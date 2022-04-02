@@ -192,8 +192,7 @@ const styles = StyleSheet.create({
   podcastTitle: {
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.bold,
-    justifyContent: 'flex-start',
-    marginTop: 1
+    justifyContent: 'flex-start'
   },
   textWrapper: {
     flex: 1,
@@ -202,7 +201,8 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     paddingHorizontal: 8,
-    paddingVertical: 10,
+    paddingTop: 14,
+    paddingBottom: 10,
     marginHorizontal: 8,
     borderBottomColor: PV.Colors.gray,
     borderBottomWidth: 1
