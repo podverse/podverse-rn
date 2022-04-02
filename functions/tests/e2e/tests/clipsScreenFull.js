@@ -13,20 +13,20 @@ const test_clipsScreenFull = async () => {
   await elementByIdClick('filter_screen_all-podcasts')
   await elementByIdClick('filter_screen_top-past-week')
 
-  await elementByIdHasText('clips_screen_dropdown_button_text', 'top – week')
+  await elementByIdHasText('clips_screen_dropdown_button_text', 'top — week')
   await elementByIdHasText('clips_screen_table_section_header_title_text', 'All Podcasts')
 
   await elementByIdAndClickAndTest('clips_screen_dropdown_button', 'filter_screen_view')
 
   await elementByIdAndClickAndTest('filter_screen_all-podcasts', 'filter_screen_all-podcasts_check_icon_button') // 1a
-  await elementByIdAndClickAndTest('filter_screen_downloaded', 'filter_screen_downloaded_check_icon_button') // 2a
+  // await elementByIdAndClickAndTest('filter_screen_downloaded', 'filter_screen_downloaded_check_icon_button') // 2a
 
-  // go back
-  await elementByIdClick('filter_screen_nav_header_button_text')
-  // check title text
-  await elementByIdHasText('clips_screen_table_section_header_title_text', 'Downloaded')
-  // navigate back to filter screen
-  await elementByIdAndClickAndTest('clips_screen_dropdown_button', 'filter_screen_view')
+  // // go back
+  // await elementByIdClick('filter_screen_nav_header_button_text')
+  // // check title text
+  // await elementByIdHasText('clips_screen_table_section_header_title_text', 'Downloaded')
+  // // navigate back to filter screen
+  // await elementByIdAndClickAndTest('clips_screen_dropdown_button', 'filter_screen_view')
 
   await elementCheckIfNotPresent('filter_screen_subscribed_check_icon_button') // 1b
   await elementByIdAndClickAndTest('filter_screen_subscribed', 'filter_screen_subscribed_check_icon_button') // 8a
@@ -44,7 +44,7 @@ const test_clipsScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('clips_screen_dropdown_button_text', 'top – day')
+  await elementByIdHasText('clips_screen_dropdown_button_text', 'top — day')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('clips_screen_dropdown_button', 'filter_screen_view')
 
@@ -54,7 +54,7 @@ const test_clipsScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('clips_screen_dropdown_button_text', 'top – week')
+  await elementByIdHasText('clips_screen_dropdown_button_text', 'top — week')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('clips_screen_dropdown_button', 'filter_screen_view')
 
@@ -64,7 +64,7 @@ const test_clipsScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('clips_screen_dropdown_button_text', 'top – month')
+  await elementByIdHasText('clips_screen_dropdown_button_text', 'top — month')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('clips_screen_dropdown_button', 'filter_screen_view')
 
@@ -74,7 +74,7 @@ const test_clipsScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('clips_screen_dropdown_button_text', 'top – year')
+  await elementByIdHasText('clips_screen_dropdown_button_text', 'top — year')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('clips_screen_dropdown_button', 'filter_screen_view')
   
@@ -84,7 +84,7 @@ const test_clipsScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('clips_screen_dropdown_button_text', 'top – all time')
+  await elementByIdHasText('clips_screen_dropdown_button_text', 'top — all time')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('clips_screen_dropdown_button', 'filter_screen_view')
 
