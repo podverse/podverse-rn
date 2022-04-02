@@ -284,8 +284,6 @@ export class PlayerScreen extends React.Component<Props> {
 
     const hasChapters = episode && episode.chaptersUrl
 
-    const imageUrl = overrideImageUrlWithChapterImageUrl(nowPlayingItem, currentChapter)
-
     return (
       <React.Fragment>
         <SafeAreaView style={styles.view}>
