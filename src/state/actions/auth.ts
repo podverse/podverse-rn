@@ -124,7 +124,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
   return isLoggedIn
 }
 
-export const askToSyncWithNowPlayingItem = async (callback: any) => {
+export const askToSyncWithNowPlayingItem = async (callback?: any) => {
   const [localNowPlayingItem, serverNowPlayingItem] = await Promise.all([
     getNowPlayingItemLocally(),
     getNowPlayingItemOnServer()
@@ -145,6 +145,8 @@ export const askToSyncWithNowPlayingItem = async (callback: any) => {
         askToSyncWithLastHistoryItem.message,
         askToSyncWithLastHistoryItem.buttons
       )
+
+      return
     } else if (
       !localNowPlayingItem.clipId
       && localNowPlayingItem.episodeId === serverNowPlayingItem.episodeId
@@ -153,13 +155,9 @@ export const askToSyncWithNowPlayingItem = async (callback: any) => {
       // then resume from the server item's userPlaybackPosition
       // instead of the localNowPlayingItem's
       await setNowPlayingItemLocally(serverNowPlayingItem, serverNowPlayingItem.userPlaybackPosition || 0)
-      callback()
-    } else {
-      callback()
     }
-  } else {
-    callback()
   }
+  callback?.()
 }
 
 // If a new player item should be loaded, the local history/queue must be up-to-date
@@ -181,7 +179,7 @@ const syncItemsWithLocalStorage = async (userInfo: any) => {
   }
 }
 
-export const loginUser = async (credentials: Credentials, navigation: any) => {
+export const loginUser = async (credentials: Credentials) => {
   try {
     const userInfo = await login(credentials.email, credentials.password)
     const globalState = getGlobal()
@@ -197,7 +195,7 @@ export const loginUser = async (credentials: Credentials, navigation: any) => {
       try {
         await syncItemsWithLocalStorage(userInfo)
         await getSubscribedPodcasts()
-        await askToSyncWithNowPlayingItem(navigation)
+        await askToSyncWithNowPlayingItem()
         await parseAllAddByRSSPodcasts()
         await combineWithAddByRSSPodcasts()
       } catch (error) {

@@ -23,6 +23,7 @@ import {
 } from './player'
 import { getNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './userNowPlayingItem'
 import { removeQueueItem } from './queue'
+import { addOrUpdateHistoryItem } from './userHistoryItem'
 
 const debouncedSetPlaybackPosition = debounce(playerSetPositionWhenDurationIsAvailable, 1000, {
   leading: true,
@@ -58,8 +59,19 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
 
   PVEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
 
-  // Call playerUpdateUserPlaybackPosition to make sure the current item is saved as the userNowPlayingItem
-  await playerUpdateUserPlaybackPosition()
+  // Call addOrUpdateHistoryItem to make sure the current item is saved as the userNowPlayingItem.
+  // I think this is necessary when the next episode plays from the background queue
+  // outside of the usual loadPlayerItem process.
+  // Also, keep the currentNowPlayingItem.userPlaybackPosition if available,
+  // because if we use the currentPosition, then it will be a time position
+  // less than 00:01, because there is a delay before debouncedSetPlaybackPosition
+  // adjusts the timestamp to the correct position.
+  const currentPosition = await playerGetPosition()
+  addOrUpdateHistoryItem(
+    currentNowPlayingItem, 
+    currentNowPlayingItem.userPlaybackPosition || currentPosition,
+    currentNowPlayingItem.episodeDuration
+  )
 
   handleEnrichingPlayerState(currentNowPlayingItem)
 }

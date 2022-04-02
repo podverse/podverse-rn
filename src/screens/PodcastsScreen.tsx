@@ -413,10 +413,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // before getting the latest from server and parsing the addByPodcastFeedUrls in getAuthUserInfo.
     await getAuthenticatedUserInfoLocally()
     await combineWithAddByRSSPodcasts(searchBarText, hasVideo)
-
-    const preventIsLoading = false
-    const preventAutoDownloading = true
-    await this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
+  
+    this._handleInitialDefaultQuery()
 
     // Set the appUserAgent one time on initialization, then retrieve from a constant
     // using the getAppUserAgent method, or from the global state (for synchronous access).
@@ -439,11 +437,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _initializeScreenDataPart2 = async () => {
-    const preventIsLoading = true
-    const preventAutoDownloading = false
-
     await Promise.all([
-      this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading),
+      this._handleInitialDefaultQuery,
       initDownloads(),
       initializePlayer(),
       initializePlaybackSpeed()
@@ -453,6 +448,17 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     this._setDownloadedDataIfOffline()
     trackPageView('/podcasts', 'Podcasts Screen')
+  }
+
+  _handleInitialDefaultQuery = async () => {
+    const isConnected = await hasValidNetworkConnection()
+    const preventIsLoading = true
+    const preventAutoDownloading = false
+    if (isConnected) {
+      this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
+    } else {
+      this._setDownloadedDataIfOffline()
+    }
   }
 
   handleSelectMediaTypeItem = (selectedKey: string) => {

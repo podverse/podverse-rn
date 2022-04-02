@@ -8,6 +8,7 @@ import PVEventEmitter from '../services/eventEmitter'
 import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { playerUpdatePlaybackState, playerUpdatePlayerState } from '../state/actions/player'
 import { getQueueItems } from '../state/actions/queue'
+import { getHistoryItems } from '../state/actions/userHistoryItem'
 
 type Props = any
 
@@ -20,18 +21,20 @@ export class PlayerEvents extends React.PureComponent<Props> {
 
   componentDidMount() {
     PVEventEmitter.on(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI, this._playerCannotStreamWithoutWifi)
+    PVEventEmitter.on(PV.Events.PLAYER_HISTORY_INDEX_SHOULD_UPDATE, this._historyItemsShouldUpdate)
+    PVEventEmitter.on(PV.Events.PLAYER_PLAYBACK_ERROR, this._handlePlayerPlaybackError)
     PVEventEmitter.on(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED, this._refreshNowPlayingItem)
     PVEventEmitter.on(PV.Events.PLAYER_STATE_CHANGED, this._playerStateUpdated)
     PVEventEmitter.on(PV.Events.PLAYER_TRACK_CHANGED, this._refreshNowPlayingItem)
-    PVEventEmitter.on(PV.Events.PLAYER_PLAYBACK_ERROR, this._handlePlayerPlaybackError)
   }
 
   componentWillUnmount() {
     PVEventEmitter.removeListener(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
+    PVEventEmitter.removeListener(PV.Events.PLAYER_HISTORY_INDEX_SHOULD_UPDATE)
+    PVEventEmitter.removeListener(PV.Events.PLAYER_PLAYBACK_ERROR)
     PVEventEmitter.removeListener(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
     PVEventEmitter.removeListener(PV.Events.PLAYER_STATE_CHANGED)
     PVEventEmitter.removeListener(PV.Events.PLAYER_TRACK_CHANGED)
-    PVEventEmitter.removeListener(PV.Events.PLAYER_PLAYBACK_ERROR)
   }
 
   _playerCannotStreamWithoutWifi = () => {
@@ -62,6 +65,13 @@ export class PlayerEvents extends React.PureComponent<Props> {
 
       await playerUpdatePlaybackState()
       getQueueItems()
+    })()
+  }
+
+  _historyItemsShouldUpdate = () => {
+    (async () => {
+      await getHistoryItems(1, [])
+      PVEventEmitter.emit(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE)
     })()
   }
 

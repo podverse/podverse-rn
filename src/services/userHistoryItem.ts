@@ -3,6 +3,7 @@ import { unionBy } from 'lodash'
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
 import { playerGetDuration, playerGetPosition } from './player'
 import { request } from './request'
@@ -21,9 +22,14 @@ export const addOrUpdateHistoryItem = async (
   }
 
   const useServerData = await checkIfShouldUseServerData()
-  return useServerData
-    ? addOrUpdateHistoryItemOnServer(item, playbackPosition, mediaFileDuration, forceUpdateOrderDate, completed)
-    : addOrUpdateHistoryItemLocally(item, playbackPosition, mediaFileDuration)
+  const func = useServerData
+    ? () => addOrUpdateHistoryItemOnServer(item, playbackPosition, mediaFileDuration, forceUpdateOrderDate, completed)
+    : () => addOrUpdateHistoryItemLocally(item, playbackPosition, mediaFileDuration)
+  await func()
+
+  // The historyItemsIndex does not automatically trigger components to re-render,
+  // so we are manually forcing those components to re-render by emitting this event.
+  PVEventEmitter.emit(PV.Events.PLAYER_HISTORY_INDEX_SHOULD_UPDATE)
 }
 
 export const addOrUpdateHistoryItemConditionalAsync = async (
@@ -171,7 +177,7 @@ const addOrUpdateHistoryItemOnServer = async (
       forceUpdateOrderDate: forceUpdateOrderDate === false ? false : true,
       ...(mediaFileDuration || mediaFileDuration === 0 ? { mediaFileDuration: Math.floor(mediaFileDuration) } : {}),
       userPlaybackPosition: playbackPosition,
-      ...(completed ? { completed } : {})
+      ...(completed === true || completed === false ? { completed } : {})
     },
     opts: { credentials: 'include' }
   })
