@@ -321,7 +321,7 @@ export const combineLocalHistoryItemsWithServerMetaHistoryItems =
 export const getHistoryItemsIndexLocally = async () => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.HISTORY_ITEMS_INDEX)
-    const historyItemsIndex = itemsString ? JSON.parse(itemsString) : []
+    const historyItemsIndex = itemsString ? JSON.parse(itemsString) : defaultHistoryItemsIndex
     return historyItemsIndex
   } catch (error) {
     return defaultHistoryItemsIndex
