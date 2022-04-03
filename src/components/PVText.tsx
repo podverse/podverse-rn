@@ -57,7 +57,7 @@ export const PVText = (props: Props) => {
     textStyle.push({ fontSize: fontSizeLargestScale })
   }
 
-  const isValidTextNode = typeof children === 'string'
+  const isValidTextNode = typeof children === 'string' || typeof children === 'number'
 
   return (isValidTextNode ?
     <Text
@@ -72,7 +72,7 @@ export const PVText = (props: Props) => {
       selectable={selectable}
       style={textStyle}
       {...(testID ? { testID: testID.prependTestId() } : {})}>
-      {children.sanitize(censorNSFWText)}
+      {children.toString().sanitize(censorNSFWText)}
     </Text> : null
   )
 }
