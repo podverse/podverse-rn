@@ -1,11 +1,12 @@
 const { getDriver } = require('../driverFactory')
 const { logKeyEnd, logKeyStart, logTestInfo } = require('../../utils/logger')
+const { testIDResourceID } = require('../../utils/misc')
 
 const goBackKey = true
 const noTestLabel = null
 
 const elementByIdAndClickAndTest = async (id, waitForElementId, testLabel, back) => {
-  id = `com.podverse:id/${id}`
+  id = `${testIDResourceID}${id}`
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
   await driver.waitForElementById(id, 10000)
@@ -17,7 +18,7 @@ const elementByIdAndClickAndTest = async (id, waitForElementId, testLabel, back)
 }
 
 const elementByIdClick = async (id, testLabel, back) => {
-  id = `com.podverse:id/${id}`
+  id = `${testIDResourceID}${id}`
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
   await driver.waitForElementById(id, 10000)
@@ -28,7 +29,7 @@ const elementByIdClick = async (id, testLabel, back) => {
 }
 
 const elementCheckIfPresent = async (id, testLabel) => {
-  id = `com.podverse:id/${id}`
+  id = `${testIDResourceID}${id}`
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
   // elementById throws an error if it cannot find a matching element
@@ -37,7 +38,7 @@ const elementCheckIfPresent = async (id, testLabel) => {
 }
 
 const elementCheckIfNotPresent = async (id, testLabel) => {
-  id = `com.podverse:id/${id}`
+  id = `${testIDResourceID}${id}`
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
 
@@ -59,7 +60,7 @@ const elementCheckIfNotPresent = async (id, testLabel) => {
 }
 
 const elementWaitFor = async (id, testLabel) => {
-  id = `com.podverse:id/${id}`
+  id = `${testIDResourceID}${id}`
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
   await driver.waitForElementById(id, 10000)
@@ -67,7 +68,7 @@ const elementWaitFor = async (id, testLabel) => {
 }
 
 const elementByIdToggle = async (id, testLabel) => {
-  id = `com.podverse:id/${id}`
+  id = `${testIDResourceID}${id}`
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
   await driver.waitForElementById(id, 10000)
@@ -83,7 +84,7 @@ const elementByIdHasText = async (id, text, testLabel) => {
     testLabel = id + ', "' + text + '" '
   }
   const label = `${testLabel}: text check`
-  id = `com.podverse:id/${id}`
+  id = `${testIDResourceID}${id}`
   const driver = getDriver()
   logTestInfo(logKeyStart, id, label)
   await driver.waitForElementById(id, 10000)
@@ -104,7 +105,7 @@ const elementByIdGetText = async (id, testLabel) => {
     testLabel = id + ', "' 
   }
   const label = `${testLabel}: text check`
-  id = `com.podverse:id/${id}`
+  id = `${testIDResourceID}${id}`
   const driver = getDriver()
   logTestInfo(logKeyStart, id, label)
   await driver.waitForElementById(id, 10000)

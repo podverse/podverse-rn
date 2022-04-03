@@ -8,7 +8,7 @@ import PVEventEmitter from '../services/eventEmitter'
 import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { playerUpdatePlaybackState, playerUpdatePlayerState } from '../state/actions/player'
 import { getQueueItems } from '../state/actions/queue'
-import { getHistoryItems } from '../state/actions/userHistoryItem'
+import { getHistoryItems, updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 
 type Props = any
 
@@ -70,7 +70,7 @@ export class PlayerEvents extends React.PureComponent<Props> {
 
   _historyItemsShouldUpdate = () => {
     (async () => {
-      await getHistoryItems(1, [])
+      await updateHistoryItemsIndex()
       PVEventEmitter.emit(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE)
     })()
   }

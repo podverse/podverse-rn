@@ -3,6 +3,8 @@ const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, elementByIdClick, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
 const { confirmAndroidAlert } = require('../driver/helpers/alerts')
+const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
+
 
 
 
@@ -21,7 +23,7 @@ await elementByIdClick('login_submit_button')
 await driver.sleep(7000)
 
 try {
-  await confirmAndroidAlert()
+  // await confirmAndroidAlert()
 } catch (err) {
   console.log('confirmAndroidAlert err')
   console.log(err)
@@ -43,6 +45,7 @@ try {
     // Log Out
 
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+  await performScroll(scrollUpKey, 2)
   await elementByIdAndClickAndTest('more_screen_Logout_table_cell_wrapper', 'more_screen_view')
   await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
 }
