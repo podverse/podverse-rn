@@ -795,18 +795,20 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
     if (viewType === PV.Filters._downloadedKey) {
       const { downloadedPodcasts } = this.global
-      const downloadedPodcast = downloadedPodcasts.find(
-        (x: any) => (podcast && x.id === podcast.id) || x.id === podcastId
-      )
-      let episodes = downloadedPodcast.episodes || []
-      if (searchBarText) {
-        episodes = episodes.filter(
-          (episode: Episode) => episode?.title && checkIfContainsStringMatch(searchBarText, episode.title)
+      if (Array.isArray(downloadedPodcasts)) {
+        const downloadedPodcast = downloadedPodcasts.find(
+          (x: any) => (podcast && x.id === podcast.id) || x.id === podcastId
         )
+        let episodes = downloadedPodcast.episodes || []
+        if (searchBarText) {
+          episodes = episodes.filter(
+            (episode: Episode) => episode?.title && checkIfContainsStringMatch(searchBarText, episode.title)
+          )
+        }
+  
+        flatListData = episodes
+        flatListDataTotalCount = flatListData.length
       }
-
-      flatListData = episodes
-      flatListDataTotalCount = flatListData.length
     }
 
     const noResultsMessage =
