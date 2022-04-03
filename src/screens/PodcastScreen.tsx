@@ -459,7 +459,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
         testId = `${testIDPrefix}_episode_item_${index}`
       }
 
-      const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
+      const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item?.id)
 
       return (
         <EpisodeTableCell
@@ -650,7 +650,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     const { podcast } = this.state
     this.setState({ downloadedEpisodeLimit: value })
     const int = parseInt(value, 10)
-    if (int) setDownloadedEpisodeLimit(podcast.id, int)
+    if (int && podcast?.id) setDownloadedEpisodeLimit(podcast.id, int)
   }
 
   _handleNavigateToStartPodcastFromTimeScreen = () => {
@@ -791,13 +791,13 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     let { flatListData, flatListDataTotalCount } = this.state
     const { autoDownloadSettings } = this.global
     const autoDownloadOn =
-      (podcast && autoDownloadSettings[podcast.id]) || (podcastId && autoDownloadSettings[podcastId])
+      (podcast && podcast.id && autoDownloadSettings[podcast.id]) || (podcastId && autoDownloadSettings[podcastId])
 
     if (viewType === PV.Filters._downloadedKey) {
       const { downloadedPodcasts } = this.global
       if (Array.isArray(downloadedPodcasts)) {
         const downloadedPodcast = downloadedPodcasts.find(
-          (x: any) => (podcast && x.id === podcast.id) || x.id === podcastId
+          (x: any) => (podcast && (x.id && x.id === podcast.id)) || (x.id  && x.id === podcastId)
         )
         let episodes = downloadedPodcast.episodes || []
         if (searchBarText) {
