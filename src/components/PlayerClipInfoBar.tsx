@@ -12,7 +12,9 @@ type Props = {
 
 export class PlayerClipInfoBar extends React.PureComponent<Props> {
   render() {
-    const { handleOnPress, nowPlayingItem } = this.props
+    const { handleOnPress } = this.props
+    let { nowPlayingItem } = this.props
+    nowPlayingItem = nowPlayingItem || {}
     const { clipEndTime, clipStartTime } = nowPlayingItem
     const { globalTheme } = this.global
 
