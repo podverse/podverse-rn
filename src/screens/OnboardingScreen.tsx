@@ -48,10 +48,10 @@ export class OnboardingScreen extends React.Component<Props> {
           <Text style={styles.text}>{translate('Sync podcasts across devices')}</Text>
         </View>
         <PressableWithOpacity style={styles.signInButton} onPress={this.goToLogin}>
-          <Text style={styles.signInButtonText}>Login / Register</Text>
+          <Text style={styles.signInButtonText}>{translate('Login / Register')}</Text>
         </PressableWithOpacity>
         <PressableWithOpacity style={styles.skipSignInButton} onPress={this.dismissOnboarding}>
-          <Text style={styles.skipSignInText}>No Thanks</Text>
+          <Text style={styles.skipSignInText}>{translate('No Thanks')}</Text>
         </PressableWithOpacity>
       </SafeAreaView>
     )
