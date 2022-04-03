@@ -3,6 +3,7 @@ const { test_launchApp } = require('./tests/launchApp')
 const { test_nonLoggedInScreensDidLoadTests } = require('./tests/nonLoggedInScreensDidLoad')
 const { test_loggedInScreensDidLoadTests } = require('./tests/loggedInScreensDidLoad')
 const { test_searchScreenDidLoad } = require('./tests/searchScreenDidLoad')
+const { test_searchBars } = require('./tests/searchBars')
 const { test_tableSectionSelectors } = require('./tests/tableSectionSelectors')
 const { test_nonLoggedInMediaPlayer } = require('./tests/nonLoggedInMediaPlayer')
 const { test_podcastScreenFull } = require('./tests/podcastScreenFull')
@@ -58,11 +59,16 @@ const runTests = async (customCapabilities) => {
     await test_myProfileScreenFull()
     await test_playlistsScreenFull()
     await test_settingsScreenFull()
-    await test_searchScreenDidLoad()
+
     await test_tableSectionSelectors()
     await test_nonLoggedInMediaPlayer()
     await test_queueScreenEditFeature()
     await test_historyScreenEditFeature()
+    await test_searchBars()
+
+
+
+// Currently Disabled
     // await test_fundingPresent()
     // await test_LNPaySetup()
     // await test_bitcoinWallet()

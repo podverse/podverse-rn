@@ -3,6 +3,8 @@ const { getDriver } = require('../driver/driverFactory')
 const { confirmAndroidAlert } = require('../driver/helpers/alerts')
 const { elementByIdAndClickAndTest, elementByIdClick, elementByIdHasText, elementCheckIfNotPresent, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
+const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
+
 
 
 const test_myProfileScreenFull = async () => {
@@ -18,7 +20,7 @@ const test_myProfileScreenFull = async () => {
   await elementByIdClick('login_submit_button')
   await driver.sleep(4000)
   try {
-    await confirmAndroidAlert()
+    // await confirmAndroidAlert()
   } catch (err) {
     console.log('confirmAndroidAlert err')
   }
@@ -68,7 +70,7 @@ const test_myProfileScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top – day')
+  await elementByIdHasText('profile_screen_dropdown_button_text', 'top — day')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
@@ -78,7 +80,7 @@ const test_myProfileScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top – week')
+  await elementByIdHasText('profile_screen_dropdown_button_text', 'top — week')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
@@ -88,7 +90,7 @@ const test_myProfileScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top – month')
+  await elementByIdHasText('profile_screen_dropdown_button_text', 'top — month')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
@@ -98,7 +100,7 @@ const test_myProfileScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top – year')
+  await elementByIdHasText('profile_screen_dropdown_button_text', 'top — year')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
   
@@ -108,7 +110,7 @@ const test_myProfileScreenFull = async () => {
   // go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   // check dropdown text
-  await elementByIdHasText('profile_screen_dropdown_button_text', 'top – all time')
+  await elementByIdHasText('profile_screen_dropdown_button_text', 'top — all time')
   // navigate back to filter screen
   await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
@@ -131,6 +133,7 @@ const test_myProfileScreenFull = async () => {
     // Log Out
 
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+  await performScroll(scrollUpKey, 2)
   await elementByIdAndClickAndTest('more_screen_Logout_table_cell_wrapper', 'more_screen_view')
   await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
 }
