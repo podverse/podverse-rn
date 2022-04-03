@@ -52,7 +52,6 @@ export const audioResetHistoryItem = async (x: any) => {
         const skipSetNowPlaying = false
         const completed = true
         await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate, skipSetNowPlaying, completed)
-        await updateHistoryItemsIndex()
       }
     }
   }

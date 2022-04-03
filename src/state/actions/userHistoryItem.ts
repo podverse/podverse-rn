@@ -1,14 +1,19 @@
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
+import { checkIfShouldUseServerData } from '../../services/auth'
 import {
   addOrUpdateHistoryItem,
   clearHistoryItems as clearHistoryItemsService,
+  defaultHistoryItemsIndex,
   filterItemFromHistoryItems,
   filterItemFromHistoryItemsIndex,
+  generateHistoryItemsIndex,
   getHistoryItems as getHistoryItemsService,
   getHistoryItemsIndex,
   getHistoryItemsIndexLocally,
-  removeHistoryItem as removeHistoryItemService
+  getHistoryItemsLocally,
+  removeHistoryItem as removeHistoryItemService,
+  setHistoryItemsIndexLocally
 } from '../../services/userHistoryItem'
 
 export const clearHistoryItems = async () => {
@@ -64,7 +69,15 @@ export const getHistoryItems = async (page: number, existingItems: any[]) => {
 
 export const updateHistoryItemsIndex = async () => {
   const globalState = getGlobal()
-  const historyItemsIndex = await getHistoryItemsIndex()
+  const useServerData = await checkIfShouldUseServerData()
+  let historyItemsIndex = defaultHistoryItemsIndex
+  if (useServerData) {
+    historyItemsIndex = await getHistoryItemsIndex()
+  } else {
+    const { userHistoryItems: localHistoryItems } = await getHistoryItemsLocally()
+    historyItemsIndex = generateHistoryItemsIndex(localHistoryItems)
+    await setHistoryItemsIndexLocally(historyItemsIndex)
+  }
 
   setGlobal({
     session: {
@@ -123,7 +136,6 @@ export const markAsPlayed = async (item: NowPlayingItem) => {
       skipSetNowPlaying,
       completed
     )
-    await updateHistoryItemsIndex()
   }
 }
 
@@ -152,6 +164,5 @@ export const toggleMarkAsPlayed = async (item: NowPlayingItem, shouldMarkAsPlaye
       skipSetNowPlaying,
       completed
     )
-    await updateHistoryItemsIndex()
   }
 }

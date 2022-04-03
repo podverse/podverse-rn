@@ -287,7 +287,6 @@ export const videoResetHistoryItem = async () => {
     const skipSetNowPlaying = false
     const completed = true
     await addOrUpdateHistoryItem(nowPlayingItem, 0, null, forceUpdateOrderDate, skipSetNowPlaying, completed)
-    await updateHistoryItemsIndex()
   }
 }
 
