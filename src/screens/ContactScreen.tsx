@@ -19,6 +19,7 @@ const _featureRequestKey = 'featureRequest'
 const _bugReportKey = 'bugReport'
 const _podcastRequestKey = 'podcastRequest'
 const _joinOurDiscordKey = 'joinOurDiscord'
+const _joinOurXMPPServerKey = 'joinOurXMPPServer'
 
 const emailOptions = [
   {
@@ -41,6 +42,10 @@ const emailOptions = [
 
 const liveChatOptions = [
   {
+    key: _joinOurXMPPServerKey,
+    title: translate('Join our XMPP server')
+  },
+  {
     key: _joinOurDiscordKey,
     title: translate('Join our Discord')
   }
@@ -56,6 +61,7 @@ export class ContactScreen extends React.Component<Props> {
   }
 
   _onPress = (item: any) => {
+    const { navigation } = this.props
     if (item.key === _bugReportKey) {
       Linking.openURL(createEmailLinkUrl(PV.Emails.BUG_REPORT))
     } else if (item.key === _featureRequestKey) {
@@ -64,6 +70,8 @@ export class ContactScreen extends React.Component<Props> {
       Linking.openURL(createEmailLinkUrl(PV.Emails.PODCAST_REQUEST))
     } else if (item.key === _generalKey) {
       Linking.openURL(createEmailLinkUrl(PV.Emails.GENERAL_CONTACT))
+    } else if (item.key === _joinOurXMPPServerKey) {
+      navigation.navigate(PV.RouteNames.ContactXMPPChatScreen)      
     } else if (item.key === _joinOurDiscordKey) {
       Linking.openURL(Config.URL_SOCIAL_DISCORD)
     }

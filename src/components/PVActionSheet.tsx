@@ -118,7 +118,7 @@ export class PVActionSheet extends React.Component<Props, State> {
                 numberOfLines={1}
                 style={[actionSheetStyles.buttonText, buttonTextStyle]}
                 {...(testID ? { testID: `${testID}_action_sheet_${item.key}_text`.prependTestId() } : {})}>
-                {item.text}
+                {item.text || ''}
               </Text>
               {item.isDownloading && <ActivityIndicator size='small' styles={actionSheetStyles.activityIndicator} />}
               {((item.key === PV.Keys.queue_next && isLoadingQueueNext) ||

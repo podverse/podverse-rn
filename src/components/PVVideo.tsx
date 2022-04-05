@@ -245,10 +245,10 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
   _handleResumeAfterClipHasEnded = async () => {
     let shouldContinue = true
-    const { nowPlayingItem } = this.global.player
-    const { clipEndTime } = nowPlayingItem
     const clipHasEnded = await getClipHasEnded()
     if (clipHasEnded) {
+      const { nowPlayingItem } = this.global.player
+      const { clipEndTime } = nowPlayingItem
       const [currentPosition, currentState] = await Promise.all([
         videoGetTrackPosition(),
         videoGetState()

@@ -62,14 +62,14 @@ export class SupportScreen extends React.Component<Props> {
             onPress={this.handeBuyAPodverseMembership}
             style={styles.textLink}
             testID={`${testIDPrefix}_buy_a_membership`}
-            text={'Buy a Podverse premium membership'}
+            text={translate('Buy a Podverse premium membership')}
           />
           <TextLink
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             onPress={this.showYourSupport}
             style={styles.textLink}
             testID={`${testIDPrefix}_show_your_support`}
-            text={'Show your support'}
+            text={translate('Show your support')}
           />
           <Divider style={styles.divider} />
           <Text style={styles.headerText}>Contribute</Text>
@@ -84,22 +84,23 @@ export class SupportScreen extends React.Component<Props> {
           <Text style={styles.listText}>- Creating Memes</Text>
           <Text style={styles.listText}>- Other ideas?</Text>
           <Text style={styles.text}>
-            If you are interested in helping Podverse in any capacity, please join our Discord server or send us an
-            email!
+            If you are interested in contributing to Podverse,
+            please join our official XMPP chat server, Discord server,
+            or send us an email!
           </Text>
           <TextLink
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             onPress={this.joinOurDiscordServer}
             style={styles.textLink}
             testID={`${testIDPrefix}_join_our_discord_server`}
-            text={'Join our Discord server'}
+            text={translate('Chat with us on Discord')}
           />
           <TextLink
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             onPress={this.sendUsAnEmail}
             style={styles.textLink}
             testID={`${testIDPrefix}_send_us_an_email`}
-            text={'Send us an email'}
+            text={translate('Send us an email')}
           />
         </ScrollView>
       </View>
