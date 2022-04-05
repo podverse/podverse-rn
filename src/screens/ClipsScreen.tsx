@@ -1,6 +1,6 @@
 import debounce from 'lodash/debounce'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
-import { Alert, Platform } from 'react-native'
+import { Alert } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {

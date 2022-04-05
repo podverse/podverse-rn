@@ -39,6 +39,11 @@ export const URLs = {
     discord: Config.URL_SOCIAL_DISCORD || '',
     mastodonAccount: Config.URL_SOCIAL_MASTODON_ACCOUNT || ''
   },
+  xmpp: {
+    serverDomain: Config.URL_XMPP_SERVER_DOMAIN,
+    serverGroups: Config.URL_XMPP_SERVER_GROUPS,
+    webClientUrl: Config.URL_XMPP_WEB_CLIENT
+  },
   web: async () => {
     const [isEnabled, baseUrlOverride] = await Promise.all([
       AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED),

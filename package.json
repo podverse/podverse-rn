@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.3.1",
+  "version": "4.3.2",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -102,7 +102,7 @@
     "react-native-xml2js": "1.0.3",
     "react-navigation": "4.4.4",
     "react-navigation-stack": "2.10.4",
-    "react-navigation-tabs": "2.11.1",
+    "react-navigation-tabs": "2.11.2",
     "reactn": "2.2.7",
     "semver": "7.3.5",
     "standard": "16.0.3",

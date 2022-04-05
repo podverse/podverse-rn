@@ -117,7 +117,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                 'ARIA HINT - This is the membership status of your currently logged-in account'
               )}
               accessibilityLabel={statusAccessibilityLabel}
-              style={styles.textRow}>
+              style={styles.textRowCentered}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 style={styles.label}
@@ -137,7 +137,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                 'ARIA HINT - This is the date your premium membership will expire unless it is renewed'
               )}
               accessibilityLabel={expiresAccessibilityLabel}
-              style={styles.textRow}>
+              style={styles.textRowCentered}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 style={styles.label}

@@ -204,7 +204,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
           (async () => {
             try {
               await deleteMediaRef(mediaRefIdToDelete)
-              flatListData = flatListData.filter((x: any) => x.id !== mediaRefIdToDelete)
+              flatListData = flatListData.filter((x: any) => x && x.id !== mediaRefIdToDelete)
               flatListDataTotalCount = flatListData.length
             } catch (error) {
               if (error.response) {

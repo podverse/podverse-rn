@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
-import OmniAural from 'omniaural'
 import { Alert } from 'react-native'
 import Config from 'react-native-config'
 import Share from 'react-native-share'

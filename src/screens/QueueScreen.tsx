@@ -243,8 +243,9 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
     }
   }
 
-  _renderHistoryItem = ({ item = {} as NowPlayingItem, index }) => {
+  _renderHistoryItem = ({ item, index }) => {
     const { isEditing } = this.state
+    item = item || {}
 
     return (
       <View>

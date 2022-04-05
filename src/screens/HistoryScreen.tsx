@@ -135,8 +135,9 @@ export class HistoryScreen extends HistoryIndexListenerScreen<Props, State> {
     }
   }
 
-  _renderHistoryItem = ({ item = {}, index }: { item: NowPlayingItem; index: number }) => {
+  _renderHistoryItem = ({ item, index }: { item: NowPlayingItem; index: number }) => {
     const { isEditing, isTransparent } = this.state
+    item = item || {}
 
     return (
       <QueueTableCell

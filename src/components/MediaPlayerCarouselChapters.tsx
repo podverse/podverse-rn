@@ -111,11 +111,11 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
       const { currentChapter, currentChapters } = this.global
       const itemHeightsReady = currentChapters.length === this.itemHeights.length
 
-      if (currentChapter && itemHeightsReady) {
+      if (currentChapter?.id && itemHeightsReady) {
         if (lastPlayingChapter && currentChapter.id === lastPlayingChapter.id) return
         lastPlayingChapter = currentChapter
 
-        const index = currentChapters.findIndex((item: Record<string, any>) => item.id === currentChapter.id)
+        const index = currentChapters.findIndex((item: Record<string, any>) => item?.id === currentChapter.id)
 
         if (index !== -1) {
           const indexBefore = index > 0 ? index - 1 : 0

@@ -10,7 +10,7 @@ type Props = {
   accessibilityLabel?: string
   accessibilityRole?: AccessibilityRole
   allowFontScaling?: boolean
-  children?: any
+  children?: string
   fontSizeLargerScale?: number
   fontSizeLargestScale?: number
   importantForAccessibility?: ImportantForAccessibility
@@ -24,7 +24,23 @@ type Props = {
 }
 
 export const PVText = (props: Props) => {
-  const { fontSizeLargerScale, fontSizeLargestScale, isNowPlaying, isSecondary, testID } = props
+  const { 
+    accessible,
+    accessibilityHint,
+    accessibilityLabel,
+    accessibilityRole,
+    allowFontScaling,
+    children,    
+    fontSizeLargerScale,
+    fontSizeLargestScale,
+    importantForAccessibility,
+    isNowPlaying,
+    isSecondary,
+    numberOfLines,
+    onPress,
+    selectable,
+    style,
+    testID } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const [censorNSFWText] = useGlobal('censorNSFWText')
@@ -34,16 +50,29 @@ export const PVText = (props: Props) => {
     ? globalTheme.textNowPlaying
     : globalTheme.text
 
-  const textStyle = [globalThemeText, props.style]
+  const textStyle = [globalThemeText, style]
   if (fontScaleMode === PV.Fonts.fontScale.larger && fontSizeLargerScale) {
     textStyle.push({ fontSize: fontSizeLargerScale })
   } else if (fontScaleMode === PV.Fonts.fontScale.largest && fontSizeLargestScale) {
     textStyle.push({ fontSize: fontSizeLargestScale })
   }
 
-  return (
-    <Text {...props} style={textStyle} {...(testID ? { testID: testID.prependTestId() } : {})}>
-      {typeof props.children === 'string' ? props.children?.sanitize(censorNSFWText) : props.children}
-    </Text>
+  const isValidTextNode = typeof children === 'string' || typeof children === 'number'
+
+  return (isValidTextNode ?
+    <Text
+      accessible={accessible}
+      accessibilityHint={accessibilityHint}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityRole={accessibilityRole}
+      allowFontScaling={allowFontScaling}
+      importantForAccessibility={importantForAccessibility}
+      numberOfLines={numberOfLines}
+      onPress={onPress}
+      selectable={selectable}
+      style={textStyle}
+      {...(testID ? { testID: testID.prependTestId() } : {})}>
+      {children.toString().sanitize(censorNSFWText)}
+    </Text> : null
   )
 }
