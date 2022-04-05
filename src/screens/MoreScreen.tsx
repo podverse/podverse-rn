@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Linking, SectionList, Alert } from 'react-native'
+import { SectionList, Alert } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import { parseString } from 'react-native-xml2js'
@@ -171,7 +171,7 @@ export class MoreScreen extends React.Component<Props, State> {
 
     const featureOptions = this._moreFeaturesOptions(isLoggedIn)
 
-    const membershipStatus = getMembershipStatus(userInfo) || null
+    const membershipStatus = getMembershipStatus(userInfo) || ''
     const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
     const otherOptions = this._moreOtherOptions(membershipStatus)
 
@@ -192,12 +192,13 @@ export class MoreScreen extends React.Component<Props, State> {
                 testIDSuffix=''>
                 {item.key === _membershipKey ? (
                   <>
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                      style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                      {translate('Membership')}
-                      {isLoggedIn ? ' - ' : ''}
-                    </Text>
+                    {!isLoggedIn && (
+                      <Text
+                        fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                        style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+                        {`${translate('Membership')}`}
+                      </Text>
+                    )}
                     {isLoggedIn && (
                       <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[table.cellText, membershipTextStyle]}>
                         {membershipStatus}

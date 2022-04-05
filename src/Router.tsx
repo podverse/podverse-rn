@@ -215,7 +215,7 @@ const MoreNavigator = createStackNavigator(
           </View>
         )
       },
-      tabBarLabel: (props) => <TabBarLabel {...props} title={translate('More')} />,
+      tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.More.title} />,
       tabBarTestID: 'tab_more_screen'.prependTestId()
     }
   }
@@ -256,12 +256,12 @@ const MyLibraryNavigator = createStackNavigator(
       tabBarIcon: ({ tintColor }: { tintColor: any }) => {
         return (
           <View>
-            <Image source={PV.Tabs.Queue.icon} style={{ tintColor }} resizeMode={'contain'} />
+            <Image source={PV.Tabs.MyLibrary.icon} style={{ tintColor }} resizeMode={'contain'} />
             <DownloadsActiveBadge />
           </View>
         )
       },
-      tabBarLabel: (props) => <TabBarLabel {...props} title='My Library' />,
+      tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.MyLibrary.title} />,
       tabBarTestID: 'tab_my_library_screen'.prependTestId()
     }
   }

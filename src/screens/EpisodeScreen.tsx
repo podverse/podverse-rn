@@ -208,8 +208,8 @@ export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
 
     if (episode?.description) episode.description = replaceLinebreaksWithBrTags(episode.description)
 
-    const episodeDownloaded = episode && !!downloadedEpisodeIds[episode.id]
-    const episodeDownloading = episode && !!downloadsActive[episode.id]
+    const episodeDownloaded = episodeId && !!downloadedEpisodeIds[episodeId]
+    const episodeDownloading = episodeId && !!downloadsActive[episodeId]
 
     const showClipsCell = hasInternetConnection && totalClips > 0
     const showChaptersCell = hasInternetConnection && !!episode?.chaptersUrl
