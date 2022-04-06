@@ -728,5 +728,10 @@
     "Enable Lightning Pay switch description": "Activez cette fonctionnalité expérimentale pour ajouter un portefeuille Bitcoin afin de soutenir les podcasts par le biais du streaming Sats et du boost.",
     "Comments": "Commentaires",
     "Comments are loading": "Chargement des commentaires",
-    "No comments found": "Aucun commentaire"
+    "No comments found": "Aucun commentaire",
+    "ContactXMPPText2": "Si vous avez un compte XMPP, vous pouvez vous connecter à notre client officiel de discussion en ligne :",
+    "ContactXMPPServerDomain": "Domaine du serveur XMPP",
+    "ContactXMPPServerGroups": "Domaine des groupes XMPP",
+    "Join our XMPP server": "Rejoindre notre serveur XMPP",
+    "ContactXMPPText1": "XMPP est une technologie gratuite et ouverte qui permet à quiconque de créer et d'héberger sa propre plateforme de discussion universelle."
 }
