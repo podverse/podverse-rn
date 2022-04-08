@@ -740,5 +740,17 @@
     "1 hour 30 minutes": "1 time og 30 minutter",
     "_translatorsFieldExample": "Kari Nordmann<https://kari.nordmann.hjemmeside>,Ola Nordmann,Nord Olamann<https://noe.sosialemedier/juan>",
     "Hide playback speed button": "Skjul knapp for hastighetsinnstilling",
-    "Mark as Unplayed": "Marker som uspilt"
+    "Mark as Unplayed": "Marker som uspilt",
+    "Join our XMPP server": "Ta del i vår XMPP-tjener",
+    "ContactXMPPServerGroups": "XMPP-gruppedomene",
+    "Chat with us on Discord": "Sludre med oss på Discord",
+    "Official chat": "Offisiell sludring",
+    "Buy a Podverse premium membership": "Kjøp et Podverse premium-medlemskap",
+    "ContactXMPPServerDomain": "XMPP-tjenerdomene",
+    "Podverse Premium": "Podverse premium",
+    "Send us an email": "Send oss en e-post",
+    "ContactXMPPText1": "XMPP er en fri og åpen teknologi som lar alle opprette og vertstjene sin egen universelle sludringsplattform.",
+    "Login / Register": "Logg inn/registrer deg",
+    "XMPP Chat": "XMPP-sludring",
+    "ContactXMPPText2": "Hvis du har en XMPP-konto kan du logge inn på vår officielle vev-sludreklient:"
 }
