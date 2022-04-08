@@ -182,8 +182,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       clipEndTime = currentChapter?.endTime
     }
 
-    const jumpBackAccessibilityLabel = `${translate(`Jump back`)} ${jumpBackwardsTime} ${translate('seconds')}`
-    const jumpForwardAccessibilityLabel = `${translate(`Jump forward`)} ${jumpForwardsTime} ${translate('seconds')}`
+    const jumpBackAccessibilityLabel = `${translate('Jump back')} ${jumpBackwardsTime} ${translate('seconds')}`
+    const jumpForwardAccessibilityLabel = `${translate('Jump forward')} ${jumpForwardsTime} ${translate('seconds')}`
 
     const previousButtonAccessibilityLabel =
       currentChapters && currentChapters.length > 1

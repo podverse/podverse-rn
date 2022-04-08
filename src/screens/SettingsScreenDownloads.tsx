@@ -215,7 +215,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
       try {
         const grantedWrite = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE, {
           title: translate('Podverse External Storage Permission'),
-          message: translate("Podverse would like to access your device's external storage to store downloaded media."),
+          message: translate(`Podverse would like to access your device's external storage to store downloaded media.`),
           buttonNegative: translate('Cancel'),
           buttonPositive: translate('Approve')
         })
