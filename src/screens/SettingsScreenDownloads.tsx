@@ -207,7 +207,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
             }
           },
           {
-            text: translate('Nevermind')
+            text: translate('Cancel')
           }
         ]
       )
