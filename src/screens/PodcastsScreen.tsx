@@ -213,9 +213,26 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this._unsubscribe?.()
   }
 
+  /*
+      TODO: disabling automatic offline detection within the FilterScreen
+      since it is preventing the app from being usable for
+      some iOS users. It seems this bug is affecting data plan users,
+      not WiFi users.
+
+      BUT we'll continue handling offline mode when it is manually
+      selected by the user in Settings.
+  */
   _setDownloadedDataIfOffline = async () => {
-    const isConnected = await hasValidNetworkConnection()
-    if (!isConnected) {
+    // const isConnected = await hasValidNetworkConnection()
+    // if (!isConnected) {
+    //   const preventIsLoading = false
+    //   const preventAutoDownloading = true
+    //   this.handleSelectFilterItem(PV.Filters._downloadedKey, preventIsLoading, preventAutoDownloading)
+    // }
+
+    const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
+
+    if (offlineModeEnabled) {
       const preventIsLoading = false
       const preventAutoDownloading = true
       this.handleSelectFilterItem(PV.Filters._downloadedKey, preventIsLoading, preventAutoDownloading)
@@ -923,11 +940,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               noResultsTopActionText={!!Config.CURATOR_EMAIL && searchBarText ? translate('Request Podcast') : ''}
               noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - send us an email to request a podcast')}
               onEndReached={this._onEndReached}
-              onRefresh={
-                queryFrom === PV.Filters._subscribedKey || queryFrom === PV.Filters._customFeedsKey
-                  ? this._onRefresh
-                  : null
-              }
+              onRefresh={this._onRefresh}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderPodcastItem}
               showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
