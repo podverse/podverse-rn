@@ -34,7 +34,7 @@ export class ContactXMPPChatScreen extends React.Component<Props> {
         <Text style={styles.headerText}>{translate('ContactXMPPText1')}</Text>
         <Text style={styles.text}>{translate('ContactXMPPText2')}</Text>
         <TextLink onPress={this._handleWebClientLinkPress} style={styles.linkText} text={PV.URLs.xmpp.webClientUrl} />
-        <Text style={styles.text}>{translate('ContactXMPPServerDomain')}</Text>
+        <Text style={styles.text}>{translate('ContactXMPPChatRooms')}</Text>
         <Text selectable style={styles.url}>{PV.URLs.xmpp.serverDomain}</Text>
         <Text style={styles.text}>{translate('ContactXMPPServerGroups')}</Text>
         <Text selectable style={styles.url}>{PV.URLs.xmpp.serverGroups}</Text>
