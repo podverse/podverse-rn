@@ -752,5 +752,6 @@
     "ContactXMPPText1": "XMPP er en fri og åpen teknologi som lar alle opprette og vertstjene sin egen universelle sludringsplattform.",
     "Login / Register": "Logg inn/registrer deg",
     "XMPP Chat": "XMPP-sludring",
-    "ContactXMPPText2": "Hvis du har en XMPP-konto kan du logge inn på vår officielle vev-sludreklient:"
+    "ContactXMPPText2": "Hvis du har en XMPP-konto kan du logge inn på vår officielle vev-sludreklient:",
+    "_translatorsField": "Allan Nordhøy, <epost@anotheragency.no>"
 }
