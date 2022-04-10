@@ -1,6 +1,6 @@
 import { Alert, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, ComparisonTable, Text, TextLink, View } from '../components'
+import { ActivityIndicator, Button, ComparisonTable, Text, TextLink, View } from '../components'
 import { translate } from '../lib/i18n'
 import { getMembershipExpiration, getMembershipStatus, readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -151,15 +151,16 @@ export class MembershipScreen extends React.Component<Props, State> {
                 {readableDate(expirationDate)}
               </Text>
             </View>
-            <View style={styles.textRowCentered}>
-              <TextLink
+            <View style={styles.buttonWrapper}>
+              <Button
                 accessibilityHint={translate('ARIA HINT - renew your premium membership')}
                 disabled={disableButton}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                isSuccess
                 onPress={this.handleRenewPress}
-                style={styles.subText}
                 testID={`${testIDPrefix}_renew_membership`}
                 text={translate('Renew Membership')}
+                wrapperStyles={styles.button}
               />
             </View>
           </View>
@@ -168,7 +169,12 @@ export class MembershipScreen extends React.Component<Props, State> {
           <View>
             <View style={styles.textRowCentered}>
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.subTextCentered}>
-                {translate('Get 3 months of Premium for free')}
+                {translate('Enjoy Podverse Premium')}
+              </Text>
+            </View>
+            <View style={styles.textRowCentered}>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.subTextCentered}>
+                {translate('3 months free')}
               </Text>
             </View>
             <View style={styles.textRowCentered}>
@@ -176,15 +182,15 @@ export class MembershipScreen extends React.Component<Props, State> {
                 {translate('18 per year after that')}
               </Text>
             </View>
-            <View style={styles.textRowCentered}>
-              <TextLink
-                accessibilityHint={translate('ARIA HINT - sign up for your premium membership')}
+            <View style={styles.buttonWrapper}>
+              <Button
                 disabled={disableButton}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                isPrimary
                 onPress={this.handleSignUpPress}
-                style={styles.subText}
                 testID={`${testIDPrefix}_sign_up`}
                 text={translate('Sign Up')}
+                wrapperStyles={styles.button}
               />
             </View>
           </View>
@@ -207,68 +213,109 @@ export class MembershipScreen extends React.Component<Props, State> {
 
 const comparisonData = [
   {
-    text: translate('subscribe to podcasts'),
+    text: translate('Subscribe to podcasts'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('ARIA HINT - Membership - Subscribe to podcasts')
+    accessibilityLabel: translate('Subscribe to podcasts')
   },
   {
-    text: translate('download episodes'),
+    text: translate('Download episodes'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('ARIA HINT - Membership - Download episodes')
+    accessibilityLabel: translate('Download episodes')
   },
   {
-    text: translate('drag-and-drop queue'),
+    text: translate('Video playback'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('ARIA HINT - Membership - Drag and drop queue')
+    accessibilityLabel: translate('Video playback')
   },
   {
-    text: translate('sleep timer'),
+    text: translate('Sleep timer'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('ARIA HINT - Membership - Sleep timer')
+    accessibilityLabel: translate('Sleep timer')
   },
   {
-    text: translate('create and share clips'),
+    text: translate('Podcasting 2.0 chapters'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('Podcasting 2.0 chapters')
+  },
+  {
+    text: translate('Podcasting 2.0 cross-app comments'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('Podcasting 2.0 cross-app comments')
+  },
+  {
+    text: translate('Podcasting 2.0 transcripts'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('Podcasting 2.0 transcripts')
+  },
+  {
+    text: translate('OPML import and export'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('OPML import and export')
+  },
+  {
+    text: translate('Screen-reader accessibility'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('Screen-reader accessibility')
+  },
+  {
+    text: translate('Sync your subscriptions and queue across all your devices'),
+    column1: false,
+    column2: true,
+    accessibilityLabel: translate('Sync your subscriptions and queue across all your devices')
+  },
+  {
+    text: translate('Create and share podcast clips'),
     column1: false,
     column2: true,
     accessibilityLabel: translate('ARIA HINT - Membership - Create and share clips')
   },
   {
-    text: translate('sync your subscriptions on all devices'),
+    text: translate('Create and share playlists'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('ARIA HINT - Membership - Sync your subscriptions on all devices')
+    accessibilityLabel: translate('Create and share playlists')
   },
   {
-    text: translate('sync your queue on all devices'),
+    text: translate('Mark episodes as played'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('ARIA HINT - Membership - Sync your queue on all devices')
+    accessibilityLabel: translate('Mark episodes as played')
   },
   {
-    text: translate('create playlists'),
+    text: translate('Subscribe to listener profiles'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('ARIA HINT - Membership - Create playlists')
+    accessibilityLabel: translate('Subscribe to listener profiles')
   },
   {
-    text: translate('download a backup of your data'),
-    column1: false,
-    column2: true,
-    accessibilityLabel: translate('ARIA HINT - Membership - Download a backup of your data')
-  },
-  {
-    text: translate('support free and open source software'),
+    text: translate('Support open source software'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('ARIA HINT - Membership - Support free and open source software')
+    accessibilityLabel: translate('Support open source software'),
+    isSmile: true
   }
 ]
 
 const styles = StyleSheet.create({
+  button: {
+    borderRadius: 30,
+    height: 32,
+    marginBottom: 16
+  },
+  buttonWrapper: {
+    marginBottom: 16,
+    marginTop: 20,
+    paddingHorizontal: 32
+  },
   label: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold

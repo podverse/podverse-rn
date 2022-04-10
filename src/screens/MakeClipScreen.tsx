@@ -399,7 +399,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   _showClipPrivacyNote = () => {
-    Alert.alert(translate('Clip Settings'), translate(`Only with Link means only people who`), [
+    Alert.alert(translate('Clip Settings'), translate('Only with Link means only people who'), [
       {
         text: translate('Premium Info'),
         onPress: () => this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
@@ -458,12 +458,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
       playButtonAccessibilityLabel = translate('Episode is loading')
     }
 
-    const jumpBackAccessibilityLabel = `${translate(`Jump back`)} ${jumpBackwardsTime} ${translate('seconds')}`
-    const jumpForwardAccessibilityLabel = `${translate(`Jump forward`)} ${jumpForwardsTime} ${translate('seconds')}`
-    const miniJumpBackAccessibilityLabel = `${translate(`Jump back`)} ${PV.Player.miniJumpSeconds} ${translate(
+    const jumpBackAccessibilityLabel = `${translate('Jump back')} ${jumpBackwardsTime} ${translate('seconds')}`
+    const jumpForwardAccessibilityLabel = `${translate('Jump forward')} ${jumpForwardsTime} ${translate('seconds')}`
+    const miniJumpBackAccessibilityLabel = `${translate('Jump back')} ${PV.Player.miniJumpSeconds} ${translate(
       'seconds'
     )}`
-    const miniJumpForwardAccessibilityLabel = `${translate(`Jump forward`)} ${PV.Player.miniJumpSeconds} ${translate(
+    const miniJumpForwardAccessibilityLabel = `${translate('Jump forward')} ${PV.Player.miniJumpSeconds} ${translate(
       'seconds'
     )}`
 
