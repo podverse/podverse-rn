@@ -20,29 +20,43 @@ export class ContactXMPPChatScreen extends React.Component<Props> {
     trackPageView('/contact-xmpp-chat-screen', 'Contact XMPP Chat Screen')
   }
 
-  _handleWebClientLinkPress = () => {
+  _handleWebClientLinkPress = (url: string) => {
     Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
       { text: 'Cancel' },
-      { text: 'Yes', onPress: () => Linking.openURL(PV.URLs.xmpp.webClientUrl) }
+      { text: 'Yes', onPress: () => Linking.openURL(url) }
     ])
   }
 
   render() {
-
     return (
       <ScrollView contentContainerStyle={styles.scrollViewContent} testID={`${testIDPrefix}_view`}>
         <Text style={styles.headerText}>{translate('ContactXMPPText1')}</Text>
         <Text style={styles.text}>{translate('ContactXMPPText2')}</Text>
-        <TextLink onPress={this._handleWebClientLinkPress} style={styles.linkText} text={PV.URLs.xmpp.webClientUrl} />
+        <TextLink
+          onPress={() => this._handleWebClientLinkPress(PV.URLs.xmpp.webClientUrl)}
+          style={styles.linkText}
+          text={PV.URLs.xmpp.webClientUrl} />
         <Text style={styles.text}>{translate('ContactXMPPChatRooms')}</Text>
-        <Text selectable style={styles.url}>{PV.URLs.xmpp.serverDomain}</Text>
-        <Text style={styles.text}>{translate('ContactXMPPServerGroups')}</Text>
-        <Text selectable style={styles.url}>{PV.URLs.xmpp.serverGroups}</Text>
+        <Text selectable style={styles.url}>{PV.URLs.xmpp.chatRooms.general}</Text>
+        <Text selectable style={styles.url}>{PV.URLs.xmpp.chatRooms.dev}</Text>
+        <Text selectable style={styles.url}>{PV.URLs.xmpp.chatRooms.translations}</Text>
+        <Text style={styles.text}>{translate('brandName chat is powered by')}</Text>
+        <TextLink 
+          onPress={() => this._handleWebClientLinkPress(PV.URLs.xmpp.libraries.prosody)}
+          style={styles.linkText}
+          text='Prosody' />
+        <TextLink 
+          onPress={() => this._handleWebClientLinkPress(PV.URLs.xmpp.libraries.snikket)}
+          style={styles.linkText}
+          text='Snikket' />
+        <TextLink
+          onPress={() => this._handleWebClientLinkPress(PV.URLs.xmpp.libraries.converse)}
+          style={styles.linkText}
+          text='Converse' />
       </ScrollView>
     )
   }
 }
-
 
 const styles = StyleSheet.create({
   divider: {
@@ -64,6 +78,7 @@ const styles = StyleSheet.create({
     marginTop: 32
   },
   url: {
-    fontSize: PV.Fonts.sizes.xxl
+    fontSize: PV.Fonts.sizes.xxl,
+    marginTop: 8
   }
 })
