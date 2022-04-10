@@ -58,6 +58,7 @@ export const ComparisonTable = (props: ComparisonTableProps) => {
         keyExtractor={(item: any, index: number) => `comparisonTable${index}`}
         renderItem={({ item }) => (
           <>
+            <Divider />
             <View accessible accessibilityLabel={item.accessibilityLabel} key={item.text} style={styles.tableRow}>
               <View accessible={false} style={styles.columnTextWrapper}>
                 <Text accessible={false} fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.columnText}>
@@ -75,7 +76,6 @@ export const ComparisonTable = (props: ComparisonTableProps) => {
                 )}
               </View>
             </View>
-            <Divider />
           </>
         )}
       />
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   columnText: {
     fontSize: PV.Fonts.sizes.xl,
     marginLeft: 8,
-    paddingVertical: 4
+    paddingVertical: 12
   },
   columnTextWrapper: {
     flex: 1,
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 0,
     flexDirection: 'row',
-    minHeight: 40
+    minHeight: 48
   },
   tableHeaderTextLeft: {
     flex: 1,
