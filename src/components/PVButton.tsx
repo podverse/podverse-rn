@@ -10,6 +10,7 @@ type Props = {
   accessibilityLabel?: string
   accessible?: boolean
   disabled?: boolean
+  hasBorder?: boolean
   isDisabledStyle?: boolean
   isLoading?: boolean
   isPrimary?: boolean
@@ -28,6 +29,7 @@ export const PVButton = (props: Props) => {
     accessibilityLabel,
     accessible,
     disabled,
+    hasBorder,
     isDisabledStyle,
     isLoading,
     isPrimary,
@@ -49,7 +51,8 @@ export const PVButton = (props: Props) => {
   const isSuccessTextStyle = isSuccess ? globalTheme.buttonSuccessText : null
   const isWarningStyle = isWarning ? globalTheme.buttonWarningWrapper : null
   const isWarningTextStyle = isWarning ? globalTheme.buttonWarningText : null
-  const isTransparentStyle = isTransparent ? globalTheme.buttonTransparentWrapper : null
+  const isTransparentStyle = isTransparent || hasBorder ? globalTheme.buttonTransparentWrapper : null
+  const hasBorderStyle = hasBorder ? core.buttonBorder : null
 
   return (
     <PressableWithOpacity
@@ -65,6 +68,7 @@ export const PVButton = (props: Props) => {
         isSuccessStyle,
         isWarningStyle,
         isTransparentStyle,
+        hasBorderStyle,
         wrapperStyles
       ]}
       disabled={disabled || isLoading}
@@ -80,6 +84,7 @@ export const PVButton = (props: Props) => {
             core.buttonText,
             globalTheme.buttonPrimaryText,
             disabledTextStyle,
+            hasBorderStyle,
             isPrimaryTextStyle,
             isSuccessTextStyle,
             isWarningTextStyle
