@@ -1,4 +1,4 @@
-Copylefted libre podcast manager for Android, iOS, and the web. \
+Free and open source podcast manager for Android, iOS, and the web. \
 Check it out at [podverse.fm](https://podverse.fm/)
 
 - Subscribe to podcasts

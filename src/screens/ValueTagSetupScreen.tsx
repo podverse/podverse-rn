@@ -82,7 +82,7 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
             onValueChange={this._showLNPaySetup}
             subText={lnpayEnabled ? '' : translate('Enable Lightning Pay switch description')}
             testID={`${testIDPrefix}_lnpay_mode`}
-            text={translate(`Enable LNPay`)}
+            text={translate('Enable LNPay')}
             value={lnpayEnabled}
             wrapperStyle={styles.switchWithTextWrapper}
           />

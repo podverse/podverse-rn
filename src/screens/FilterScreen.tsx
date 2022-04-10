@@ -1,6 +1,7 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
-import { hasValidNetworkConnection } from '../lib/network'
+// import { hasValidNetworkConnection } from '../lib/network'
 import { FlatList, Icon, NavHeaderButtonText, Text, View } from '../components'
 import { generateSections } from '../lib/filters'
 import { translate } from '../lib/i18n'
@@ -106,7 +107,18 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedSortItemKey
     })
 
-    const isOffline = await hasValidNetworkConnection()
+    /*
+      TODO: disabling automatic offline detection within the FilterScreen
+      since it is preventing the app from being usable for
+      some iOS users. It seems this bug is affecting data plan users,
+      not WiFi users.
+
+      BUT we'll continue handling offline mode when it is manually
+      selected by the user in Settings.
+    */
+    // const isOffline = await hasValidNetworkConnection()
+    
+    const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
 
     this.setState({
       screenName,
@@ -117,7 +129,8 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedFromItemKey,
       selectedMediaTypeItemKey,
       selectedSortItemKey: newSelectedSortItemKey,
-      isOffline: !isOffline
+      // isOffline: !isOffline
+      isOffline: offlineModeEnabled
     })
   }
 

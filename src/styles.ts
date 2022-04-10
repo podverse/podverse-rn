@@ -85,16 +85,20 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   buttonPrimaryWrapper: {
-    backgroundColor: PV.Colors.brandColor
+    backgroundColor: PV.Colors.brandColor,
+    borderColor: PV.Colors.brandColor,
   },
   buttonDisabledWrapper: {
-    backgroundColor: PV.Colors.gray
+    backgroundColor: PV.Colors.gray,
+    borderColor: PV.Colors.gray,
   },
   buttonSuccessWrapper: {
-    backgroundColor: PV.Colors.greenDarker
+    backgroundColor: PV.Colors.greenDarker,
+    borderColor: PV.Colors.greenDarker,
   },
   buttonWarningWrapper: {
-    backgroundColor: PV.Colors.redDarker
+    backgroundColor: PV.Colors.redDarker,
+    borderColor: PV.Colors.redDarker,
   },
   buttonTransparentWrapper: {
     backgroundColor: 'transparent'
@@ -328,16 +332,20 @@ export const lightTheme = StyleSheet.create({
     color: PV.Colors.black
   },
   buttonPrimaryWrapper: {
-    backgroundColor: PV.Colors.grayLighter
+    backgroundColor: PV.Colors.grayLighter,
+    borderWrapper: PV.Colors.grayLighter
   },
   buttonDisabledWrapper: {
-    backgroundColor: PV.Colors.grayDarker
+    backgroundColor: PV.Colors.grayDarker,
+    borderWrapper: PV.Colors.grayDarker
   },
   buttonSuccessWrapper: {
-    backgroundColor: PV.Colors.greenLighter
+    backgroundColor: PV.Colors.greenLighter,
+    borderWrapper: PV.Colors.greenLighter
   },
   buttonWarningWrapper: {
-    backgroundColor: PV.Colors.redLighter
+    backgroundColor: PV.Colors.redLighter,
+    borderWrapper: PV.Colors.redLighter
   },
   buttonTransparentWrapper: {
     backgroundColor: 'transparent'
@@ -562,6 +570,12 @@ export const core = StyleSheet.create({
     marginBottom: 24,
     marginTop: 0,
     minHeight: 56,
+  },
+  buttonBorder: {
+    borderWidth: 1,
+    borderRadius: 18,
+    minWidth: 120,
+    minHeight: 36
   },
   buttonText: {
     fontSize: PV.Fonts.sizes.xl,
