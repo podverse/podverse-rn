@@ -45,6 +45,11 @@ export const URLs = {
       dev: Config.URL_XMPP_CHAT_ROOM_DEV,
       translations: Config.URL_XMPP_CHAT_ROOM_TRANSLATIONS
     },
+    libraries: {
+      prosody: 'https://prosody.im/',
+      snikket: 'https://snikket.org/',
+      converse: 'https://conversejs.org/'
+    },
     webClientUrl: Config.URL_XMPP_WEB_CLIENT
   },
   web: async () => {
