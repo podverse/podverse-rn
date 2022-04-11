@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo, { NetInfoCellularGeneration, NetInfoState, NetInfoStateType } from '@react-native-community/netinfo'
 import { Alert } from 'react-native'
 import { PV } from '../resources'
+import { request } from '../services/request'
 
 const supportedGenerations = [
   NetInfoCellularGeneration['3g'],
@@ -20,6 +21,11 @@ export const alertIfNoNetworkConnection = async (str?: string) => {
   return false
 }
 
+/*
+  Added a fallback isInternetReachable helper that tries to ping our own self-hosted server
+  for internet reachability, to handle edge cases where NetInfo always returns false
+  for some devices.
+*/
 export const hasValidNetworkConnection = async (): Promise<boolean> => {
   const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
 
@@ -31,20 +37,47 @@ export const hasValidNetworkConnection = async (): Promise<boolean> => {
   if (state.isInternetReachable === null) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        NetInfo.fetch().then((currState) => {
+        NetInfo.fetch().then(async (currState) => {
           if (currState.isInternetReachable === null) {
-            resolve(false)
+            const isInternetReachable = await checkFallbackInternetReachability()
+            resolve(isInternetReachable)
           } else {
             const networkValid = currState.type === NetInfoStateType.wifi || cellNetworkSupported(currState)
-            resolve(networkValid && currState.isInternetReachable === true)
+            let isInternetReachable = networkValid && currState.isInternetReachable === true
+            if (!isInternetReachable) {
+              isInternetReachable = await checkFallbackInternetReachability()
+            }
+            resolve(isInternetReachable)
           }
         })
       }, 200)
     })
   } else {
     const networkValid = state.type === NetInfoStateType.wifi || cellNetworkSupported(state)
-    return networkValid && state.isInternetReachable === true
+    let isInternetReachable = networkValid && state.isInternetReachable === true
+    if (!isInternetReachable) {
+      isInternetReachable = await checkFallbackInternetReachability()
+    }
+    return isInternetReachable
   }
+}
+
+export const checkFallbackInternetReachability = async () => {
+  let isInternetReachable = false
+
+  try {
+    const response = await request({
+      endpoint: '/network-reachability-check',
+      method: 'HEAD',
+      timeout: 4000
+    })
+
+    isInternetReachable = response.status === 204
+  } catch (error) {
+    //
+  }
+
+  return isInternetReachable
 }
 
 export const hasValidDownloadingConnection = async () => {
