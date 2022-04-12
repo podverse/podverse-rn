@@ -267,10 +267,10 @@ const comparisonData = [
     accessibilityLabel: translate('Screen-reader accessibility')
   },
   {
-    text: translate('Sync your subscriptions and queue across all your devices'),
+    text: translate('Sync your subscriptions, queue, and history across all your devices'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('Sync your subscriptions and queue across all your devices')
+    accessibilityLabel: translate('Sync your subscriptions, queue, and history across all your devices')
   },
   {
     text: translate('Create and share podcast clips'),
