@@ -75,6 +75,7 @@ const addDLTask = (episode: any, podcast: any) =>
     episodeLinkUrl: episode.linkUrl,
     episodeMediaUrl: episode.mediaUrl,
     episodePubDate: episode.pubDate,
+    episodeSubtitle: episode.subtitle,
     episodeTitle: episode.title,
     episodeTranscript: episode.transcript,
     episodeValue: episode.value,
