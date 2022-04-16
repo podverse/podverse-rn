@@ -42,6 +42,7 @@ export type DownloadTaskState = {
   episodeLinkUrl?: string
   episodeMediaUrl: string
   episodePubDate?: string
+  episodeSubtitle?: string
   episodeTitle?: string
   episodeTranscript?: any
   episodeValue?: any
@@ -90,6 +91,7 @@ export const convertDownloadTaskStateToEpisode = (downloadTaskState: any) => {
     episodeImageUrl,
     episodeMediaUrl,
     episodePubDate,
+    episodeSubtitle,
     episodeTitle
   } = downloadTaskState
 
@@ -100,6 +102,7 @@ export const convertDownloadTaskStateToEpisode = (downloadTaskState: any) => {
     imageUrl: episodeImageUrl,
     mediaUrl: episodeMediaUrl,
     pubDate: episodePubDate,
+    subtitle: episodeSubtitle,
     title: episodeTitle
   }
 }

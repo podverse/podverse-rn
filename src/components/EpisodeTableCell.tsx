@@ -41,12 +41,13 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     } = this.props
 
     const { duration, id, mediaUrl, pubDate = '', podcast = {} } = item
-    let { description = '', title = '' } = item
+    let { description = '', subtitle = '', title = '' } = item
 
     const podcastTitle = podcast.title || translate('Untitled Podcast')
-    description = removeHTMLFromString(description)
-    description = decodeHTMLString(description)
-    description = description?.trim() || ''
+    let summaryText = subtitle || description
+    summaryText = removeHTMLFromString(summaryText)
+    summaryText = decodeHTMLString(summaryText)
+    summaryText = summaryText?.trim() || ''
 
     const { downloadedEpisodeIds, downloadsActive, fontScaleMode, screenReaderEnabled, session } = this.global
     const { userInfo } = session
@@ -128,7 +129,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         numberOfLines={2}
         style={descriptionStyle}
         testID={`${testID}_description`}>
-        {description}
+        {summaryText}
       </Text>
     )
 

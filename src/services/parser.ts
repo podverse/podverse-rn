@@ -308,6 +308,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
 
   podcast.linkUrl = meta.link
   podcast.sortableTitle = convertToSortableTitle(title)
+  podcast.subtitle = meta.subtitle && meta.subtitle.trim()
   podcast.title = title
   podcast.type = meta.type
   podcast.value = meta.value
@@ -361,6 +362,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
       episode.pubDate = isValidDate(pubDate) ? pubDate : new Date()
 
       episode.soundbite = parsedEpisode.soundbite
+      episode.subtitle = parsedEpisode.subtitle && parsedEpisode.subtitle.trim()
       episode.title = parsedEpisode.title && parsedEpisode.title.trim()
       episode.value = parsedEpisode.value
 
