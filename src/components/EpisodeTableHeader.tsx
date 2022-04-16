@@ -1,7 +1,7 @@
 import React, { useGlobal } from 'reactn'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { translate } from '../lib/i18n'
-import { getTimeLabelText, readableDate } from '../lib/utility'
+import { generateEpisodeAccessibilityText, getTimeLabelText, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
 import { ActivityIndicator, FastImage, IndicatorDownload, Text } from './'
@@ -65,7 +65,7 @@ export const EpisodeTableHeader = (props: Props) => {
 
   const pubDateText = readableDate(pubDate)
   const timeLabel = getTimeLabelText(mediaFileDuration, duration, userPlaybackPosition, episodeCompleted)
-  const timeLabelText = timeLabel ? timeLabel : translate('Unplayed episode')
+  const timeLabelText = generateEpisodeAccessibilityText(episodeCompleted, timeLabel)
 
   const accessibilityLabel = `${podcastTitleText}, ${episodeTitleText}, ${pubDateText}, ${timeLabelText}`
 

@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { decodeHTMLString, getTimeLabelText, readableDate, removeHTMLFromString } from '../lib/utility'
+import { decodeHTMLString, generateEpisodeAccessibilityText, getTimeLabelText, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { images } from '../styles'
 import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
@@ -73,7 +73,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const episodeTitleText = title.trim()
     const pubDateText = readableDate(pubDate)
     const timeLabel = getTimeLabelText(mediaFileDuration, duration, userPlaybackPosition)
-    const timeLabelText = timeLabel ? timeLabel : translate('Unplayed episode')
+    const timeLabelText = generateEpisodeAccessibilityText(episodeCompleted, timeLabel)
 
     const accessibilityLabel = `${
       showPodcastInfo ? `${podcastTitleText}, ` : ''
