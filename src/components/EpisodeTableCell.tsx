@@ -44,7 +44,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     let { description = '', subtitle = '', title = '' } = item
 
     const podcastTitle = podcast.title || translate('Untitled Podcast')
-    let summaryText = subtitle || description
+    let summaryText = subtitle && subtitle !== description ? subtitle : description
     summaryText = removeHTMLFromString(summaryText)
     summaryText = decodeHTMLString(summaryText)
     summaryText = summaryText?.trim() || ''
