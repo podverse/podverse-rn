@@ -1,6 +1,6 @@
 import { PV } from '../resources'
 import { InitialState } from '../resources/Interfaces'
-import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './actions/lnpay'
+import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './actions/valueTag'
 
 const initialTheme: InitialState = {
   globalTheme: {},
@@ -20,30 +20,36 @@ const initialTheme: InitialState = {
   customWebDomain: '',
   customWebDomainEnabled: false,
   errorReportingEnabled: false,
+  listenTrackingEnabled: false,
   offlineModeEnabled: false,
+  jumpBackwardsTime: PV.Player.jumpBackSeconds.toString(),
+  jumpForwardsTime: PV.Player.jumpSeconds.toString(),
+  addCurrentItemNextInQueue: true,
   overlayAlert: {
     shouldShowAlert: false
   },
-  parsedTranscript: [],
-  parser: {
-    addByRSSPodcastAuthModal: {
-      feedUrl: ''
-    }
-  },
+  parsedTranscript: null,
+  currentChapter: null,
+  currentChapters: [],
+  currentChaptersStartTimePositions: [],
   player: {
-    currentChapter: null,
-    currentChapters: [],
     hasErrored: false,
-    isPlaying: false,
+    episode: null,
     nowPlayingItem: null,
     playbackRate: 1,
     shouldContinuouslyPlay: false,
     showMakeClip: false,
     showMiniPlayer: false,
+    playbackState: null,
     sleepTimer: {
       defaultTimeRemaining: PV.Player.defaultSleepTimerInSeconds,
       isActive: false,
       timeRemaining: PV.Player.defaultSleepTimerInSeconds
+    },
+    videoInfo: {
+      videoDuration: 0,
+      videoIsLoaded: false,
+      videoPosition: 0
     }
   },
   playlists: {
@@ -78,15 +84,18 @@ const initialTheme: InitialState = {
     isLoading: false,
     isLoadingMore: false,
     isQuerying: false,
+    mediaRefIdToDelete: '',
     queryFrom: PV.Filters._fromThisEpisodeKey,
     queryPage: 1,
     querySort: PV.Filters._topPastWeek,
     selectedFromLabel: '',
+    showDeleteConfirmDialog: false,
     showFullClipInfo: false,
     showHeaderActionSheet: false,
     showMoreActionSheet: false,
     showNoInternetConnectionMessage: false,
-    showShareActionSheet: false
+    showShareActionSheet: false,
+    viewType: null
   },
   screenPlaylist: {
     flatListData: [],
@@ -99,6 +108,9 @@ const initialTheme: InitialState = {
       email: '',
       freeTrialExpiration: '',
       historyItems: [],
+      historyItemsCount: 0,
+      historyItemsIndex: null,
+      historyQueryPage: 1,
       id: '',
       membershipExpiration: '',
       name: '',
@@ -129,8 +141,14 @@ const initialTheme: InitialState = {
   userAgent: '',
   bannerInfo: {
     show: false,
-    description: '',
-  }
+    description: ''
+  },
+  tempMediaRefInfo: {
+    startTime: undefined,
+    endTime: null,
+    clipTitle: undefined
+  },
+  screenReaderEnabled: false
 }
 
 export default initialTheme

@@ -1,5 +1,5 @@
 import { getGlobal, setGlobal } from 'reactn'
-import { safelyUnwrapNestedVariable } from '../../lib/utility'
+import { checkIfContainsStringMatch, safelyUnwrapNestedVariable } from '../../lib/utility'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import {
@@ -10,22 +10,36 @@ import {
   getPodcast as getPodcastService,
   getSubscribedPodcasts as getSubscribedPodcastsService,
   insertOrRemovePodcastFromAlphabetizedArray,
+  setSubscribedPodcasts,
   toggleSubscribeToPodcast as toggleSubscribeToPodcastService
 } from '../../services/podcast'
 import { updateDownloadedPodcasts } from './downloads'
 
-export const combineWithAddByRSSPodcasts = async () => {
+export const combineWithAddByRSSPodcasts = async (searchTitle?: string, hasVideo?: boolean) => {
   const combinedPodcasts = await combineWithAddByRSSPodcastsService()
+  let finalPodcasts = []
+
+  if (searchTitle) {
+    finalPodcasts = combinedPodcasts.filter((podcast) =>
+      checkIfContainsStringMatch(searchTitle, podcast.title))
+  } else {
+    finalPodcasts = combinedPodcasts
+  }
+
+  if (hasVideo) {
+    finalPodcasts = finalPodcasts.filter((podcast) => podcast.hasVideo)
+  }
+
   setGlobal({
-    subscribedPodcasts: combinedPodcasts,
-    subscribedPodcastsTotalCount: combinedPodcasts?.length
+    subscribedPodcasts: finalPodcasts,
+    subscribedPodcastsTotalCount: finalPodcasts?.length
   })
 }
 
-export const getSubscribedPodcasts = async () => {
+export const getSubscribedPodcasts = async (hasVideo?: boolean) => {
   const globalState = getGlobal() 
   const subscribedPodcastIds = globalState.session.userInfo.subscribedPodcastIds || []
-  const data = await getSubscribedPodcastsService(subscribedPodcastIds)
+  const data = await getSubscribedPodcastsService(subscribedPodcastIds, hasVideo)
   const subscribedPodcasts = data[0] || []
   const subscribedPodcastsTotalCount = data[1] || 0
 
@@ -44,7 +58,8 @@ export const toggleSubscribeToPodcast = async (id: string) => {
         const subscribedPodcastIds = await toggleSubscribeToPodcastService(id)
         const subscribedPodcast = await getPodcastService(id)
         let { subscribedPodcasts = [] } = globalState
-        subscribedPodcasts = insertOrRemovePodcastFromAlphabetizedArray(subscribedPodcasts, subscribedPodcast)
+        subscribedPodcasts = insertOrRemovePodcastFromAlphabetizedArray(subscribedPodcasts, subscribedPodcast) as any
+        await setSubscribedPodcasts(subscribedPodcasts)
         const subscribedPodcastsTotalCount = subscribedPodcasts ? subscribedPodcasts.length : 0
 
         setGlobal(

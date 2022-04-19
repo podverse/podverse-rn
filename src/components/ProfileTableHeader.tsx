@@ -10,6 +10,7 @@ type Props = {
   handleToggleSubscribe?: any
   id?: string
   isLoading?: boolean
+  isLoggedInUserProfile?: boolean | string
   isNotFound?: boolean
   isSubscribed?: boolean
   isSubscribing?: boolean
@@ -23,6 +24,7 @@ export const ProfileTableHeader = (props: Props) => {
     handleToggleSubscribe,
     id,
     isLoading,
+    isLoggedInUserProfile,
     isNotFound,
     isSubscribed,
     isSubscribing,
@@ -34,22 +36,40 @@ export const ProfileTableHeader = (props: Props) => {
     <View>
       {isLoading && (
         <View style={styles.wrapper}>
-          <ActivityIndicator fillSpace />
+          <ActivityIndicator fillSpace testID={testID} />
         </View>
       )}
       {!isLoading && !isNotFound && (
         <View style={styles.wrapper}>
-          <View style={styles.textWrapper}>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.name}>
-              {name}
-            </Text>
+          <View
+            accessible
+            accessibilityHint={
+              isLoggedInUserProfile
+                ? translate('ARIA HINT - This is your profile name')
+                : translate('ARIA HINT - This is the profile name')
+            }
+            accessibilityLabel={name}
+            style={styles.textWrapper}>
+            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.name}>
+                {name}
+              </Text>
+            </View>
           </View>
-          {handleEditPress && (
-            <Icon name='pencil-alt' onPress={() => handleEditPress(id)} size={26} style={button.iconOnlyMedium} />
+          {!!handleEditPress && (
+            <Icon
+              accessibilityHint={translate('ARIA HINT - go to the edit my profile screen')}
+              accessibilityLabel={translate('Edit My Profile')}
+              name='pencil-alt'
+              onPress={() => handleEditPress(id)}
+              size={26}
+              style={button.iconOnlyMedium}
+            />
           )}
-          {handleToggleSubscribe && (
+          {!!handleToggleSubscribe && (
             <SubscribeButton
               handleToggleSubscribe={handleToggleSubscribe}
+              isProfile
               isSubscribed={isSubscribed}
               isSubscribing={isSubscribing}
               testID={testID}
@@ -77,7 +97,6 @@ const styles = StyleSheet.create({
     marginRight: 8
   },
   name: {
-    flex: 0,
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.bold
   },
@@ -86,8 +105,9 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold
   },
   textWrapper: {
-    flex: 1,
-    marginVertical: 8
+    flexDirection: 'column',
+    justifyContent: 'center',
+    flex: 1
   },
   wrapper: {
     alignItems: 'center',

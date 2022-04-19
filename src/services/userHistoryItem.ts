@@ -1,8 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { unionBy } from 'lodash'
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
+import { playerGetDuration, playerGetPosition } from './player'
 import { request } from './request'
 import { setNowPlayingItem } from './userNowPlayingItem'
 
@@ -11,16 +14,88 @@ export const addOrUpdateHistoryItem = async (
   playbackPosition: number,
   mediaFileDuration?: number | null,
   forceUpdateOrderDate?: boolean,
-  skipSetNowPlaying?: boolean
+  skipSetNowPlaying?: boolean,
+  completed?: boolean
 ) => {
   if (!skipSetNowPlaying) {
     await setNowPlayingItem(item, playbackPosition)
   }
 
   const useServerData = await checkIfShouldUseServerData()
-  return useServerData
-    ? addOrUpdateHistoryItemOnServer(item, playbackPosition, mediaFileDuration, forceUpdateOrderDate)
-    : addOrUpdateHistoryItemLocally(item, playbackPosition, mediaFileDuration)
+  const func = useServerData
+    ? () => addOrUpdateHistoryItemOnServer(item, playbackPosition, mediaFileDuration, forceUpdateOrderDate, completed)
+    : () => addOrUpdateHistoryItemLocally(item, playbackPosition, mediaFileDuration)
+  await func()
+
+  // The historyItemsIndex does not automatically trigger components to re-render,
+  // so we are manually forcing those components to re-render by emitting this event.
+  PVEventEmitter.emit(PV.Events.PLAYER_HISTORY_INDEX_SHOULD_UPDATE)
+}
+
+export const addOrUpdateHistoryItemConditionalAsync = async (
+  shouldAwait: boolean,
+  item: NowPlayingItem,
+  playbackPosition: number,
+  mediaFileDuration?: number | null,
+  forceUpdateOrderDate?: boolean,
+  skipSetNowPlaying?: boolean,
+  completed?: boolean
+) => {
+  if (shouldAwait) {
+    await addOrUpdateHistoryItem(
+      item,
+      playbackPosition,
+      mediaFileDuration,
+      forceUpdateOrderDate,
+      skipSetNowPlaying,
+      completed
+    )
+  } else {
+    addOrUpdateHistoryItem(
+      item,
+      playbackPosition,
+      mediaFileDuration,
+      forceUpdateOrderDate,
+      skipSetNowPlaying,
+      completed
+    )
+  }
+}
+
+export const saveOrResetCurrentlyPlayingItemInHistory = async (
+  shouldAwait: boolean,
+  nowPlayingItem: NowPlayingItem,
+  skipSetNowPlaying: boolean
+) => {
+  const [lastPosition, duration] = await Promise.all([
+    playerGetPosition(),
+    playerGetDuration()
+  ])
+
+  const forceUpdateOrderDate = false
+
+  if (duration > 0 && lastPosition >= duration - 10) {
+    const startPlaybackPosition = 0
+    const completed = true
+    await addOrUpdateHistoryItemConditionalAsync(
+      !!shouldAwait,
+      nowPlayingItem,
+      startPlaybackPosition,
+      duration,
+      forceUpdateOrderDate,
+      skipSetNowPlaying,
+      completed
+    )
+  } else if (lastPosition > 0) {
+    await addOrUpdateHistoryItemConditionalAsync(
+      !!shouldAwait,
+      nowPlayingItem,
+      lastPosition,
+      duration,
+      forceUpdateOrderDate,
+      skipSetNowPlaying
+    )
+  }
 }
 
 export const clearHistoryItems = async () => {
@@ -58,10 +133,10 @@ export const getHistoryItemIndexInfoForEpisode = (episodeId: string) => {
 export const addOrUpdateHistoryItemLocally = async (
   item: NowPlayingItem,
   playbackPosition: number,
-  mediaFileDuration?: number | null,
+  mediaFileDuration?: number | null
 ) => {
   playbackPosition = Math.floor(playbackPosition) || 0
-  mediaFileDuration = mediaFileDuration && Math.floor(mediaFileDuration) || 0
+  mediaFileDuration = (mediaFileDuration && Math.floor(mediaFileDuration)) || 0
   const results = await getHistoryItemsLocally()
   const { userHistoryItems } = results
   const filteredItems = filterItemFromHistoryItems(userHistoryItems, item)
@@ -75,7 +150,8 @@ const addOrUpdateHistoryItemOnServer = async (
   nowPlayingItem: NowPlayingItem,
   playbackPosition: number,
   mediaFileDuration?: number | null,
-  forceUpdateOrderDate?: boolean
+  forceUpdateOrderDate?: boolean,
+  completed?: boolean
 ) => {
   playbackPosition = Math.floor(playbackPosition) || 0
   await addOrUpdateHistoryItemLocally(nowPlayingItem, playbackPosition, mediaFileDuration)
@@ -100,14 +176,16 @@ const addOrUpdateHistoryItemOnServer = async (
       mediaRefId: clipId,
       forceUpdateOrderDate: forceUpdateOrderDate === false ? false : true,
       ...(mediaFileDuration || mediaFileDuration === 0 ? { mediaFileDuration: Math.floor(mediaFileDuration) } : {}),
-      userPlaybackPosition: playbackPosition
+      userPlaybackPosition: playbackPosition,
+      ...(completed === true || completed === false ? { completed } : {})
     },
     opts: { credentials: 'include' }
   })
 }
 
 const clearHistoryItemsLocally = async () => {
-  return setAllHistoryItemsLocally([])
+  await setAllHistoryItemsLocally([])
+  await setHistoryItemsIndexLocally(defaultHistoryItemsIndex)
 }
 
 const clearHistoryItemsOnServer = async () => {
@@ -152,20 +230,42 @@ export const getHistoryItemsLocally = async () => {
 const getHistoryItemsFromServer = async (page: number) => {
   const bearerToken = await getBearerToken()
 
-  const response = await request({
-    endpoint: '/user-history-item',
-    method: 'GET',
-    headers: { Authorization: bearerToken },
-    query: {
-      page
-    },
-    opts: { credentials: 'include' }
-  })
+  const results = await getHistoryItemsLocally()
+  const { userHistoryItems: localUserHistoryItems } = results
+
+  /* If user membership is expired, we don't want the 401 error to crash the app,
+     so return an empty response body instead. */
+  let response = {
+    data: {
+      userHistoryItems: [],
+      userHistoryItemsCount: 0
+    }
+  }
+  try {
+    response = await request({
+      endpoint: '/user-history-item',
+      method: 'GET',
+      headers: { Authorization: bearerToken },
+      query: {
+        page
+      },
+      opts: { credentials: 'include' }
+    })
+  } catch (error) {
+    console.log('getHistoryItemsFromServer error', error)
+  }
 
   const { userHistoryItems, userHistoryItemsCount } = response.data
-  await setAllHistoryItemsLocally(userHistoryItems)
 
-  return { userHistoryItems, userHistoryItemsCount }
+  const combinedUserHistoryItems = unionBy(userHistoryItems, localUserHistoryItems, 'episodeId') as NowPlayingItem[]
+  const countDifference = userHistoryItems.length + localUserHistoryItems.length - combinedUserHistoryItems.length
+  const combinedUserHistoryItemsCount = userHistoryItemsCount + localUserHistoryItems.length - countDifference
+  await setAllHistoryItemsLocally(combinedUserHistoryItems)
+
+  return {
+    userHistoryItems: combinedUserHistoryItems,
+    userHistoryItemsCount: combinedUserHistoryItemsCount
+  }
 }
 
 export const filterItemFromHistoryItemsIndex = (historyItemsIndex: any, item: any) => {
@@ -179,11 +279,8 @@ export const filterItemFromHistoryItemsIndex = (historyItemsIndex: any, item: an
   return historyItemsIndex
 }
 
-const generateHistoryItemsIndex = (historyItems: any[]) => {
-  const historyItemsIndex = {
-    episodes: {},
-    mediaRefs: {}
-  }
+export const generateHistoryItemsIndex = (historyItems: any[]) => {
+  const historyItemsIndex = defaultHistoryItemsIndex
 
   if (!historyItems) {
     historyItems = []
@@ -197,10 +294,12 @@ const generateHistoryItemsIndex = (historyItems: any[]) => {
     } else if (historyItem.episodeId) {
       historyItemsIndex.episodes[historyItem.episodeId] = {
         mediaFileDuration: historyItem.mediaFileDuration || historyItem.episodeDuration,
-        userPlaybackPosition: historyItem.userPlaybackPosition
+        userPlaybackPosition: historyItem.userPlaybackPosition,
+        ...(historyItem.completed ? { completed: historyItem.completed } : {})
       }
     }
   }
+
   return historyItemsIndex
 }
 
@@ -209,25 +308,51 @@ export const getHistoryItemEpisodeFromIndexLocally = async (episodeId: string) =
   return historyItemsIndex.episodes[episodeId]
 }
 
-export const getHistoryItemsIndexLocally = async () => {
+export const combineLocalHistoryItemsWithServerMetaHistoryItems =
+  async (serverMetaHistoryItems: any) => {
   const results = await getHistoryItemsLocally()
-  const { userHistoryItems } = results
-  return generateHistoryItemsIndex(userHistoryItems)
+  const { userHistoryItems: localUserHistoryItems } = results
+  const combinedHistoryItems = Object.assign(localUserHistoryItems, serverMetaHistoryItems)
+  const newHistoryItemsIndex = generateHistoryItemsIndex(combinedHistoryItems)
+  await setHistoryItemsIndexLocally(newHistoryItemsIndex)
+  return newHistoryItemsIndex
+}
+
+export const getHistoryItemsIndexLocally = async () => {
+  try {
+    const itemsString = await AsyncStorage.getItem(PV.Keys.HISTORY_ITEMS_INDEX)
+    const historyItemsIndex = itemsString ? JSON.parse(itemsString) : defaultHistoryItemsIndex
+    return historyItemsIndex
+  } catch (error) {
+    return defaultHistoryItemsIndex
+  }
 }
 
 const getHistoryItemsIndexFromServer = async () => {
-  const bearerToken = await getBearerToken()
-  const response = (await request({
-    endpoint: '/user-history-item/metadata',
-    method: 'GET',
-    headers: {
-      Authorization: bearerToken,
-      'Content-Type': 'application/json'
+  /* If user membership is expired, we don't want the 401 error to crash the app,
+     so return an empty response body instead. */
+  let response = {
+    data: {
+      userHistoryItems: []
     }
-  })) as any
+  }
 
-  const { userHistoryItems } = response.data
-  return generateHistoryItemsIndex(userHistoryItems)
+  try {
+    const bearerToken = await getBearerToken()
+    response = (await request({
+      endpoint: '/user-history-item/metadata',
+      method: 'GET',
+      headers: {
+        Authorization: bearerToken,
+        'Content-Type': 'application/json'
+      }
+    })) as any
+  } catch (error) {
+    console.log('getHistoryItemsIndexFromServer error', error)
+  }
+
+  const { userHistoryItems: serverMetaHistoryItems } = response.data
+  return combineLocalHistoryItemsWithServerMetaHistoryItems(serverMetaHistoryItems)
 }
 
 const removeHistoryItemLocally = async (item: NowPlayingItem) => {
@@ -257,6 +382,16 @@ const removeHistoryItemOnServer = async (episodeId?: string, mediaRefId?: string
 export const setAllHistoryItemsLocally = async (items: NowPlayingItem[]) => {
   if (Array.isArray(items)) {
     await AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(items))
+    const newHistoryItemsIndex = generateHistoryItemsIndex(items)
+    await setHistoryItemsIndexLocally(newHistoryItemsIndex)
   }
+
   return items
 }
+
+export const setHistoryItemsIndexLocally = async (historyItemsIndex: any) => {
+  historyItemsIndex = historyItemsIndex || defaultHistoryItemsIndex
+  await AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS_INDEX, JSON.stringify(historyItemsIndex))
+}
+
+export const defaultHistoryItemsIndex = { episodes: {}, mediaRefs: {} }

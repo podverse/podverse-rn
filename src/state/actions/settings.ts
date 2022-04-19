@@ -1,19 +1,47 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import Config from 'react-native-config'
-import { setGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
+import {
+  setPlayerJumpBackwards as setPlayerJumpBackwardsService,
+  setPlayerJumpForwards as setPlayerJumpForwardsService,
+  playerUpdateTrackPlayerCapabilities
+} from '../../services/player'
+import { checkIfTrackingIsEnabled } from '../../services/tracking'
 import { removeLNPayWallet } from './lnpay'
 
 export const initializeSettings = async () => {
-  const censorNSFWText = await AsyncStorage.getItem(PV.Keys.CENSOR_NSFW_TEXT)
-  const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
-  const customAPIDomain = await AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN)
-  const customAPIDomainEnabled = await AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN_ENABLED)
-  const customWebDomain = await AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN)
-  const customWebDomainEnabled = await AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED)
-  const errorReportingEnabled = await AsyncStorage.getItem(PV.Keys.ERROR_REPORTING_ENABLED)
-  const urlsAPI = await PV.URLs.api()
-  const urlsWeb = await PV.URLs.web()
+  const [
+    censorNSFWText,
+    offlineModeEnabled,
+    customAPIDomain,
+    customAPIDomainEnabled,
+    customWebDomain,
+    customWebDomainEnabled,
+    errorReportingEnabled,
+    listenTrackingEnabled,
+    urlsAPI,
+    urlsWeb,
+    jumpBackwardsTime,
+    jumpForwardsTime,
+    addCurrentItemNextInQueue,
+    hidePlayerPlaybackSpeed
+  ] = await Promise.all([
+    AsyncStorage.getItem(PV.Keys.CENSOR_NSFW_TEXT),
+    AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED),
+    AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN),
+    AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN_ENABLED),
+    AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN),
+    AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED),
+    AsyncStorage.getItem(PV.Keys.ERROR_REPORTING_ENABLED),
+    checkIfTrackingIsEnabled(),
+    PV.URLs.api(),
+    PV.URLs.web(),
+    AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_BACKWARDS),
+    AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_FORWARDS),
+    AsyncStorage.getItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE),
+    AsyncStorage.getItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON)
+  ])
 
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) {
     try {
@@ -30,9 +58,17 @@ export const initializeSettings = async () => {
     customWebDomain: customWebDomain ? customWebDomain : PV.URLs.webDefaultBaseUrl,
     customWebDomainEnabled: customWebDomainEnabled === 'TRUE',
     errorReportingEnabled,
+    listenTrackingEnabled,
     offlineModeEnabled,
+    jumpBackwardsTime: jumpBackwardsTime || PV.Player.jumpBackSeconds,
+    jumpForwardsTime: jumpForwardsTime || PV.Player.jumpSeconds,
     urlsAPI,
-    urlsWeb
+    urlsWeb,
+    addCurrentItemNextInQueue: !!addCurrentItemNextInQueue,
+    hidePlayerPlaybackSpeed: !!hidePlayerPlaybackSpeed
+  }, () => {
+    // Call handleFinishSettingPlayerTime in case a custom jump time is available.
+    handleFinishSettingPlayerTime()
   })
 }
 
@@ -104,4 +140,36 @@ export const setOfflineModeEnabled = (value: boolean) => {
       ? await AsyncStorage.setItem(PV.Keys.OFFLINE_MODE_ENABLED, 'TRUE')
       : await AsyncStorage.removeItem(PV.Keys.OFFLINE_MODE_ENABLED)
   })
+}
+
+export const setPlayerJumpBackwards = (val?: string) => {
+  const newValue = setPlayerJumpBackwardsService(val)
+  setGlobal({ jumpBackwardsTime: newValue })
+}
+
+export const setPlayerJumpForwards = (val?: string) => {
+  const newValue = setPlayerJumpForwardsService(val)
+  setGlobal({ jumpForwardsTime: newValue })
+}
+
+export const handleFinishSettingPlayerTime = () => {
+  const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
+  const newJumpBackwardsTime = jumpBackwardsTime === '' ? PV.Player.jumpBackSeconds : jumpBackwardsTime
+  const newJumpForwardsTime = jumpForwardsTime === '' ? PV.Player.jumpSeconds : jumpForwardsTime
+  setGlobal({
+    jumpBackwardsTime: newJumpBackwardsTime,
+    jumpForwardsTime: newJumpForwardsTime
+  }, () => {
+    playerUpdateTrackPlayerCapabilities()
+  })
+}
+
+export const setAddCurrentItemNextInQueue = async (val: boolean) => {
+  if (val) {
+    await AsyncStorage.setItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE, 'TRUE')
+    setGlobal({ addCurrentItemNextInQueue: !!val })
+  } else {
+    await AsyncStorage.removeItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE)
+    setGlobal({ addCurrentItemNextInQueue: false })
+  }
 }

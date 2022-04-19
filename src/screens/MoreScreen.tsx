@@ -1,4 +1,5 @@
-import { Linking, SectionList, Alert } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
+import { SectionList, Alert } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import { parseString } from 'react-native-xml2js'
@@ -7,7 +8,7 @@ import RNFS from 'react-native-fs'
 import { Divider, TableSectionSelectors, Text, View, ActivityIndicator, TableCell } from '../components'
 import { translate } from '../lib/i18n'
 import { exportSubscribedPodcastsAsOPML } from '../lib/opmlExport'
-import { createEmailLinkUrl, getMembershipStatus, testProps, parseOpmlFile } from '../lib/utility'
+import { getMembershipStatus, parseOpmlFile } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { logoutUser } from '../state/actions/auth'
@@ -62,11 +63,17 @@ export class MoreScreen extends React.Component<Props, State> {
         routeName: PV.RouteNames.MembershipScreen
       },
       {
-        title: translate('Contact Us'),
-        key: _contactKey
+        title: translate('Contact'),
+        key: _contactKey,
+        routeName: PV.RouteNames.ContactScreen
       },
       {
-        title: translate('About brandName'),
+        title: translate('Support'),
+        key: _supportKey,
+        routeName: PV.RouteNames.SupportScreen
+      },
+      {
+        title: translate('About'),
         key: _aboutKey,
         routeName: PV.RouteNames.AboutScreen
       },
@@ -91,34 +98,48 @@ export class MoreScreen extends React.Component<Props, State> {
     return options
   }
 
+  _handleValueTagSetupPressed = async () => {
+    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS)
+    if (consentGivenString && JSON.parse(consentGivenString) === true) {
+      this.props.navigation.navigate(PV.RouteNames.ValueTagSetupScreen)
+    } else {
+      this.props.navigation.navigate(PV.RouteNames.ValueTagPreviewScreen)
+    }
+  }
+
   _importOpml = async () => {
     try {
-      const res = await DocumentPicker.pick({
+      const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.allFiles]
       })
-      const contents = await RNFS.readFile(res.uri, 'utf8')
 
-      this.setState({ isLoading: true }, () => {
-        parseString(contents, async (err: any, result: any) => {
-          try {
-            if (err) {
-              throw err
-            } else if (!result?.opml?.body[0]?.outline) {
-              throw new Error('OPML file is not in the correct format')
+      if (!res) {
+        throw new Error('Something went wrong with the import process.')
+      } else {
+        const contents = await RNFS.readFile(res.uri, 'utf8')
+
+        this.setState({ isLoading: true }, () => {
+          parseString(contents, async (err: any, result: any) => {
+            try {
+              if (err) {
+                throw err
+              } else if (!result?.opml?.body[0]?.outline) {
+                throw new Error('OPML file is not in the correct format')
+              }
+
+              const rssArr = parseOpmlFile(result, true)
+              await addAddByRSSPodcasts(rssArr)
+
+              this.setState({ isLoading: false }, () => {
+                this.props.navigation.navigate(PV.RouteNames.PodcastsScreen)
+              })
+            } catch (error) {
+              console.log('Error parsing podcast: ', error)
+              this.setState({ isLoading: false })
             }
-
-            const rssArr = parseOpmlFile(result, true)
-            await addAddByRSSPodcasts(rssArr)
-
-            this.setState({ isLoading: false }, () => {
-              this.props.navigation.navigate(PV.RouteNames.PodcastsScreen)
-            })
-          } catch (error) {
-            console.log('Error parsing podcast: ', error)
-            this.setState({ isLoading: false })
-          }
+          })
         })
-      })
+      }
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -131,10 +152,10 @@ export class MoreScreen extends React.Component<Props, State> {
 
   _onPress = (item: any) => {
     const { navigation } = this.props
-    if (item.key === _contactKey) {
-      Linking.openURL(createEmailLinkUrl(PV.Emails.CONTACT_US))
-    } else if (item.key === _logoutKey) {
+    if (item.key === _logoutKey) {
       logoutUser()
+    } else if (item.key === _bitcoinWalletKey) {
+      this._handleValueTagSetupPressed()
     } else if (item.key === _importOpml) {
       this._importOpml()
     } else if (item.key === _exportOpml) {
@@ -150,30 +171,36 @@ export class MoreScreen extends React.Component<Props, State> {
 
     const featureOptions = this._moreFeaturesOptions(isLoggedIn)
 
-    const membershipStatus = getMembershipStatus(userInfo) || null
+    const membershipStatus = getMembershipStatus(userInfo) || ''
     const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
     const otherOptions = this._moreOtherOptions(membershipStatus)
 
+    const membershipAccessibilityLabel = `${translate('Membership')}${isLoggedIn ? ' - ' : ''} ${
+      membershipStatus ? membershipStatus : ''
+    }`
+
     return (
-      <View style={core.backgroundView} {...testProps(`${testIDPrefix}_view`)}>
+      <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
-          renderItem={({ item }) => (
-              <TableCell 
-                testIDPrefix={`${testIDPrefix}_${item.key}`}
-                testIDSuffix=''
+          renderItem={({ item }) => {
+            return (
+              <TableCell
+                accessibilityLabel={item.key === _membershipKey ? membershipAccessibilityLabel : item.title}
                 onPress={() => this._onPress(item)}
-              >
+                testIDPrefix={`${testIDPrefix}_${item.key}`}
+                testIDSuffix=''>
                 {item.key === _membershipKey ? (
                   <>
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                      style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                      {translate('Membership')}
-                    </Text>
+                    {!isLoggedIn && (
+                      <Text
+                        fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                        style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+                        {`${translate('Membership')}`}
+                      </Text>
+                    )}
                     {isLoggedIn && (
                       <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[table.cellText, membershipTextStyle]}>
-                        <Text>- </Text>
                         {membershipStatus}
                       </Text>
                     )}
@@ -186,7 +213,8 @@ export class MoreScreen extends React.Component<Props, State> {
                   </Text>
                 )}
               </TableCell>
-          )}
+            )
+          }}
           renderSectionHeader={({ section }) => (
             <TableSectionSelectors
               disableFilter
@@ -201,7 +229,7 @@ export class MoreScreen extends React.Component<Props, State> {
           ]}
           stickySectionHeadersEnabled={false}
         />
-        {this.state.isLoading && <ActivityIndicator isOverlay transparent={false} />}
+        {this.state.isLoading && <ActivityIndicator isOverlay testID={testIDPrefix} transparent={false} />}
       </View>
     )
   }
@@ -216,11 +244,17 @@ const _logoutKey = 'Logout'
 const _membershipKey = 'Membership'
 const _privacyPolicyKey = 'PrivacyPolicy'
 const _settingsKey = 'Settings'
+const _supportKey = 'Support'
 const _termsOfServiceKey = 'TermsOfService'
 const _importOpml = 'ImportOpml'
 const _exportOpml = 'ExportOpml'
 
 const allMoreFeatures = [
+  {
+    title: translate('Login'),
+    key: _loginKey,
+    routeName: PV.RouteNames.AuthNavigator
+  },
   {
     title: translate('Add Custom RSS Feed'),
     key: _addPodcastByRSSKey,
@@ -228,8 +262,7 @@ const allMoreFeatures = [
   },
   {
     title: translate('Bitcoin Wallet'),
-    key: _bitcoinWalletKey,
-    routeName: PV.RouteNames.ValueTagSetupScreen
+    key: _bitcoinWalletKey
   },
   {
     title: translate('Settings'),
@@ -247,10 +280,5 @@ const allMoreFeatures = [
   {
     title: translate('Log out'),
     key: _logoutKey
-  },
-  {
-    title: translate('Login'),
-    key: _loginKey,
-    routeName: PV.RouteNames.AuthNavigator
   }
 ]

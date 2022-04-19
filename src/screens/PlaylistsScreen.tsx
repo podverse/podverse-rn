@@ -1,10 +1,18 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, Divider, FlatList, MessageWithAction, PlaylistTableCell,
-  SwipeRowBack, TableSectionSelectors, View } from '../components'
+import {
+  ActivityIndicator,
+  Divider,
+  FlatList,
+  MessageWithAction,
+  PlaylistTableCell,
+  SwipeRowBack,
+  TableSectionSelectors,
+  View
+} from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { safeKeyExtractor, testProps } from '../lib/utility'
+import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { trackPageView } from '../services/tracking'
@@ -37,8 +45,8 @@ export class PlaylistsScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = () => ({
-      title: translate('Playlists')
-    })
+    title: translate('Playlists')
+  })
 
   async componentDidMount() {
     const { navigation } = this.props
@@ -77,6 +85,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
     return (
       <PlaylistTableCell
+        accessibilityHint={translate('ARIA HINT - tap to go to this playlist')}
         {...(isSubscribed ? { createdBy: ownerName } : {})}
         itemCount={item.itemCount}
         onPress={() =>
@@ -120,18 +129,22 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
   _renderHiddenItem = ({ item, index, section }, rowMap) => {
     const { isRemoving } = this.state
+    const sectionKey = section.value
     const buttonText =
       section.value === PV.Filters._sectionMyPlaylistsKey ? translate('Delete') : translate('Unsubscribe')
-      
-    const onPress = section.value === PV.Filters._sectionMyPlaylistsKey
-      ? this._handleHiddenItemPressDelete
-      : this._handleHiddenItemPressUnsubscribe
+
+    const onPress =
+      section.value === PV.Filters._sectionMyPlaylistsKey
+        ? this._handleHiddenItemPressDelete
+        : this._handleHiddenItemPressUnsubscribe
+
+    const testIDSuffix = section.value === PV.Filters._sectionMyPlaylistsKey ? 'delete' : 'unsubscribe'
 
     return (
       <SwipeRowBack
         isLoading={isRemoving}
         onPress={() => onPress(item.id, rowMap)}
-        testID={`${testIDPrefix}_playlist_item_${index}`}
+        testID={`${testIDPrefix}_playlist_${sectionKey}_item_${index}_${testIDSuffix}`}
         text={buttonText}
       />
     )
@@ -181,9 +194,9 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     const showOfflineMessage = offlineModeEnabled
 
     return (
-      <View style={styles.view} {...testProps('playlists_screen_view')}>
+      <View style={styles.view} testID={`${testIDPrefix}_view`}>
         <View style={styles.view}>
-          {isLoading && <ActivityIndicator fillSpace />}
+          {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
           {!isLoading && this.global.session.isLoggedIn && (
             <FlatList
               disableLeftSwipe={false}

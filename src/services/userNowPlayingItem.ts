@@ -1,8 +1,16 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { convertToNowPlayingItem, NowPlayingItem } from 'podverse-shared'
+import {
+  convertNowPlayingItemClipToNowPlayingItemEpisode,
+  convertToNowPlayingItem,
+  NowPlayingItem
+} from 'podverse-shared'
+import { getDownloadedEpisode } from '../lib/downloadedPodcast'
+import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
+import { getQueueItemsLocally } from './queue'
 import { request } from './request'
+import { getHistoryItemsLocally } from './userHistoryItem'
 
 export const getNowPlayingItem = async () => {
   const useServerData = await checkIfShouldUseServerData()
@@ -109,6 +117,8 @@ export const clearNowPlayingItemLocally = async () => {
 export const clearNowPlayingItemOnServer = async () => {
   const bearerToken = await getBearerToken()
 
+  await clearNowPlayingItemLocally()
+
   await request({
     endpoint: '/user-now-playing-item',
     method: 'DELETE',
@@ -118,6 +128,49 @@ export const clearNowPlayingItemOnServer = async () => {
     },
     opts: { credentials: 'include' }
   })
+}
 
-  await clearNowPlayingItemLocally()
+/*
+  Get the nowPlayingItem from 1) history, 2) queue, or 3) downloaded episode storage.
+*/
+export const getNowPlayingItemFromLocalStorage = async (trackId: string, setPlayerClipIsLoadedIfClip?: boolean) => {
+  if (!trackId) return null
+
+  const results = await getHistoryItemsLocally()
+
+  const { userHistoryItems } = results
+  let currentNowPlayingItem = userHistoryItems.find((x: any) =>
+    checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId)
+  )
+
+  if (!currentNowPlayingItem) {
+    const queueItems = await getQueueItemsLocally()
+    const queueItemIndex = queueItems.findIndex((x: any) =>
+      checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId)
+    )
+    currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
+  }
+
+  if (!currentNowPlayingItem) {
+    currentNowPlayingItem = await getDownloadedEpisode(trackId)
+    if (currentNowPlayingItem) {
+      currentNowPlayingItem = convertToNowPlayingItem(
+        currentNowPlayingItem,
+        null,
+        null,
+        currentNowPlayingItem.userPlaybackPosition
+      )
+    }
+  }
+
+  if (setPlayerClipIsLoadedIfClip && currentNowPlayingItem?.clipId) {
+    await AsyncStorage.setItem(PV.Keys.PLAYER_CLIP_IS_LOADED, 'TRUE')
+  }
+
+  const playerClipIsLoaded = await AsyncStorage.getItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
+  if (!playerClipIsLoaded && currentNowPlayingItem?.clipId) {
+    currentNowPlayingItem = convertNowPlayingItemClipToNowPlayingItemEpisode(currentNowPlayingItem)
+  }
+
+  return currentNowPlayingItem
 }

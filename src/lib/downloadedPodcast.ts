@@ -1,9 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import RNFS from 'react-native-fs'
 import { PV } from '../resources'
 import { sortPodcastArrayAlphabetically } from '../services/podcast'
 import { clearNowPlayingItem, getNowPlayingItem } from '../services/userNowPlayingItem'
 import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
-import { deleteDownloadedEpisode } from './downloader'
+import { BackgroundDownloader, deleteDownloadedEpisode } from './downloader'
+import { checkIfContainsStringMatch, getExtensionFromUrl } from './utility'
 
 export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) => {
   delete episode.podcast
@@ -69,19 +71,25 @@ export const getDownloadedPodcastEpisodeCounts = async () => {
   return podcastEpisodeCounts
 }
 
-export const getDownloadedEpisodes = async () => {
-  const episodes = []
-  const downloadedPodcasts = await getDownloadedPodcasts()
+export const getDownloadedEpisodes = async (
+  searchPodcastTitle?: string,
+  searchEpisodeTitle?: string,
+  hasVideo?: boolean
+) => {
+  const finalEpisodes = []
+  const downloadedPodcasts = await getDownloadedPodcasts(searchPodcastTitle, hasVideo)
 
   for (const podcast of downloadedPodcasts) {
     for (const episode of podcast.episodes) {
-      episode.podcast = podcast
-      episodes.push(episode)
+      if (!searchEpisodeTitle || checkIfContainsStringMatch(searchEpisodeTitle, episode.title)) {
+        episode.podcast = podcast
+        finalEpisodes.push(episode)
+      }
     }
   }
 
-  episodes.sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))
-  return episodes
+  finalEpisodes.sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))
+  return finalEpisodes
 }
 
 export const getDownloadedEpisode = async (episodeId: string) => {
@@ -95,10 +103,20 @@ export const getDownloadedPodcast = async (podcastId: string) => {
   return downloadedPodcast
 }
 
-export const getDownloadedPodcasts = async () => {
+export const getDownloadedPodcasts = async (searchTitle?: string, hasVideo?: boolean) => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_PODCASTS)
-    return itemsString ? JSON.parse(itemsString) : []
+    let items = itemsString ? JSON.parse(itemsString) : []
+
+    if (searchTitle) {
+      items = items.filter((podcast: any) => checkIfContainsStringMatch(searchTitle, podcast.title))
+    }
+
+    if (hasVideo) {
+      items = items.filter((podcast: any) => podcast.hasVideo)
+    }
+
+    return items
   } catch (error) {
     return []
   }
@@ -171,5 +189,46 @@ const setDownloadedPodcasts = async (podcasts: any[]) => {
   podcasts = sortPodcastArrayAlphabetically(podcasts)
   if (Array.isArray(podcasts)) {
     await AsyncStorage.setItem(PV.Keys.DOWNLOADED_PODCASTS, JSON.stringify(podcasts))
+  }
+}
+
+export const removeDownloadedPodcastsFromInternalStorage = async () => {
+  const podcasts = await getDownloadedPodcasts()
+  for (const podcast of podcasts) {
+    for (const episode of podcast.episodes) {
+      try {
+        const ext = getExtensionFromUrl(episode.mediaUrl)
+        const downloader = await BackgroundDownloader()
+        const path = `${downloader.directories.documents}/${episode.id}${ext}`
+
+        await RNFS.unlink(path)
+      } catch (error) {
+        console.log('Error deleting episode: ', episode.id)
+      }
+    }
+  }
+}
+
+export const moveDownloadedPodcastsToExternalStorage = async () => {
+  const [podcasts, downloader, destinationFolder] = await Promise.all([
+    getDownloadedPodcasts(),
+    BackgroundDownloader(),
+    AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  ])
+
+  for (const podcast of podcasts) {
+    for (const episode of podcast.episodes) {
+      try {
+        const ext = getExtensionFromUrl(episode.mediaUrl)
+        const source = `${downloader.directories.documents}/${episode.id}${ext}`
+        const dest = `${destinationFolder}/${episode.id}${ext}`
+
+        if (destinationFolder) {
+          await RNFS.moveFile(source, dest)
+        }
+      } catch (error) {
+        console.log('Error moving episode: ', episode.id)
+      }
+    }
   }
 }

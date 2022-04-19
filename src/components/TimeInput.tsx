@@ -1,29 +1,50 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Pressable, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
-import { convertSecToHHMMSS, testProps } from '../lib/utility'
+import { convertSecToHHMMSS } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
-import { Text } from './'
+import { PressableWithOpacity, Text } from './'
 
 type Props = {
+  accessibilityHint?: string
   handleClearTime?: any
   handlePreview?: any
   handleSetTime: any
-  labelText: string
+  labelText?: string
   placeholder?: string
+  previewAccessibilityHint?: string
+  previewAccessibilityLabel?: string
   testID: string
   time?: number | null
 }
 
 export const TimeInput = (props: Props) => {
-  const { handlePreview, handleSetTime, labelText, placeholder, testID, time } = props
+  const {
+    accessibilityHint,
+    handlePreview,
+    handleSetTime,
+    labelText,
+    placeholder,
+    previewAccessibilityHint,
+    previewAccessibilityLabel,
+    testID,
+    time
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
+  const text = time || time === 0 ? convertSecToHHMMSS(time) : placeholder
+
+  const accessibilityLabel = `${labelText}, ${text}`
 
   return (
     <View style={styles.timeInputWrapper}>
-      <TouchableWithoutFeedback onPress={handleSetTime} {...testProps(`${testID}_time_input_set_button`)}>
+      <Pressable
+        accessibilityHint={accessibilityHint}
+        accessibilityLabel={accessibilityLabel}
+        accessibilityRole='button'
+        onPress={handleSetTime}
+        testID={`${testID}_time_input_set_button`.prependTestId()}>
         <View style={styles.timeInputTextWrapper}>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -38,13 +59,16 @@ export const TimeInput = (props: Props) => {
                 globalTheme.textInput,
                 time || time === 0 ? {} : globalTheme.placeholderText
               ]}>
-              {time || time === 0 ? convertSecToHHMMSS(time) : placeholder}
+              {text}
             </Text>
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
       {(time || time === 0) && (
-        <TouchableOpacity
+        <PressableWithOpacity
+          accessibilityHint={previewAccessibilityHint}
+          accessibilityLabel={previewAccessibilityLabel}
+          accessibilityRole='button'
           hitSlop={{
             bottom: 4,
             left: 4,
@@ -52,9 +76,16 @@ export const TimeInput = (props: Props) => {
             top: 4
           }}
           onPress={handlePreview}
-          {...testProps(`${testID}_time_input_preview_button`)}>
-          <Icon color={globalTheme.dropdownButtonText.color} name='play' size={20} style={styles.previewIcon} />
-        </TouchableOpacity>
+          style={{ flex: 1 }}
+          testID={`${testID}_time_input_preview_button`.prependTestId()}>
+          <View style={styles.previewIconWrapper}>
+            <Icon
+              color={globalTheme.dropdownButtonText.color}
+              name='play'
+              size={20}
+              style={styles.previewIcon} />
+          </View>
+        </PressableWithOpacity>
       )}
     </View>
   )
@@ -65,7 +96,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     lineHeight: 47,
-    marginBottom: 4
+    marginBottom: 4,
+    paddingHorizontal: 16
+  },
+  previewIconWrapper: {
+    alignItems: 'center'
   },
   row: {
     alignItems: 'center'
@@ -88,11 +123,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     height: 71,
-    paddingHorizontal: 16,
     paddingVertical: 12
   },
   timeInputTextWrapper: {
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: 'column',
+    paddingHorizontal: 16
   }
 })

@@ -23,14 +23,18 @@ export const checkIfLoggedIn = async () => {
 }
 
 export const checkIfShouldUseServerData = async () => {
-  const isLoggedIn = await checkIfLoggedIn()
-  const isConnected = await hasValidNetworkConnection()
+  const [isLoggedIn, isConnected] = await Promise.all([
+    checkIfLoggedIn(),
+    hasValidNetworkConnection()
+  ]) 
   return isLoggedIn && isConnected
 }
 
 export const getAuthenticatedUserInfo = async () => {
-  const bearerToken = await getBearerToken()
-  const isConnected = await hasValidNetworkConnection()
+  const [bearerToken, isConnected] = await Promise.all([
+    getBearerToken(),
+    hasValidNetworkConnection()
+  ])
 
   if (isConnected && bearerToken) {
     return getAuthenticatedUserInfoFromServer(bearerToken)
@@ -142,13 +146,23 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
   const data = (response && response.data) || {}
   const { addByRSSPodcastFeedUrls, subscribedPodcastIds = [] } = data
   const page = 1
-  const { userHistoryItems, userHistoryItemsCount } = await getHistoryItems(page)
+
+  const [
+    { userHistoryItems, userHistoryItemsCount },
+    queueItems
+  ] = await Promise.all([
+    getHistoryItems(page),
+    getQueueItems()
+  ])
+  // getHistoryItemsIndex must be called after getHistoryItems finishes.
+  const historyItemsIndex = await getHistoryItemsIndex()
+
   // Add history and queue properities to response to be added to the global state
   data.historyItems = userHistoryItems
   data.historyItemsCount = userHistoryItemsCount
-  data.historyItemsIndex = await getHistoryItemsIndex()
+  data.historyItemsIndex = historyItemsIndex
   data.historyQueryPage = page
-  data.queueItems = await getQueueItems()
+  data.queueItems = queueItems
 
   if (Array.isArray(addByRSSPodcastFeedUrls)) {
     await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS, JSON.stringify(addByRSSPodcastFeedUrls))
@@ -203,6 +217,20 @@ export const sendVerificationEmail = async (email: string) => {
     headers: { 'Content-Type': 'application/json' },
     body: {
       email
+    }
+  })
+
+  return response && response.data
+}
+
+export const resetPassword = async (newPassword: string, resetToken: string) => {
+  const response = await request({
+    endpoint: '/auth/reset-password',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: {
+      password: newPassword,
+      resetPasswordToken: resetToken
     }
   })
 

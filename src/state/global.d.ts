@@ -1,6 +1,6 @@
 import { TranscriptRow } from 'podverse-shared'
 import 'reactn'
-import { BannerInfo, GlobalTheme, UserInfo } from '../resources/Interfaces'
+import { BannerInfo, GlobalTheme, UserInfo, TempMediaRef } from '../resources/Interfaces'
 
 declare module 'reactn/default' {
   export interface State {
@@ -13,30 +13,38 @@ declare module 'reactn/default' {
     downloadedEpisodeIds: any
     downloadedPodcastEpisodeCounts: any
     downloadedEpisodeLimitCount: number
-    downloadedEpisodeLimitDefault: number | null
+    downloadedEpisodeLimitDefault: boolean | null
     downloadedPodcasts: any[]
     offlineModeEnabled: any
+    jumpBackwardsTime: string
+    jumpForwardsTime: string
+    addCurrentItemNextInQueue: boolean
     overlayAlert: {
       shouldShowAlert: boolean
     }
-    parsedTranscript: TranscriptRow[]
-    parser: {
-      addByRSSPodcastAuthModal: {
-        feedUrl: string
-      }
-    }
+    parsedTranscript: TranscriptRow[] | null
+    currentChapter: any
+    currentChapters: any
+    currentChaptersStartTimePositions: any
     player: {
       backupDuration?: number
-      currentChapter: any
-      currentChapters: any
       hasErrored: boolean
-      isPlaying: boolean
       nowPlayingItem: any
       playbackRate: number
       showMakeClip: boolean
       showMiniPlayer: boolean
       shouldContinuouslyPlay: boolean
-      sleepTimer: any
+      playbackState: any
+      sleepTimer: {
+        defaultTimeRemaining: number
+        isActive: boolean
+        timeRemaining: number
+      }
+      videoInfo: {
+        videoDuration: number
+        videoIsLoaded: boolean
+        videoPosition: number
+      }
     }
     playlists: {
       myPlaylists: []
@@ -70,12 +78,14 @@ declare module 'reactn/default' {
       isLoading: boolean
       isLoadingMore: boolean
       isQuerying: boolean
+      mediaRefIdToDelete?: string
       queryFrom: string | null
       queryPage: number
       querySort: string | null
       selectedFromLabel?: string | null
       selectedItem?: any
       selectedSortLabel?: string | null
+      showDeleteConfirmDialog: boolean
       showFullClipInfo: boolean
       showHeaderActionSheet: boolean
       showMoreActionSheet: boolean
@@ -114,9 +124,13 @@ declare module 'reactn/default' {
     customWebDomain?: string
     customWebDomainEnabled?: boolean
     errorReportingEnabled: boolean
+    listenTrackingEnabled: boolean
     urlsAPI?: any
     urlsWeb?: any
     userAgent?: string
     bannerInfo: BannerInfo
+    tempMediaRefInfo: TempMediaRef
+    screenReaderEnabled: boolean
+    hidePlaybackSpeedButton: boolean
   }
 }

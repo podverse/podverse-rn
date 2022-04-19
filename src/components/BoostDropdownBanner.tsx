@@ -72,7 +72,7 @@ export const BoostDropdownBanner = () => {
   }
 
   const erroringTransactions = errors.map((error) => {
-    return {message: error.error.message, address: error.details.address}
+    return { message: error.error.message, address: error.details.address }
   })
 
   return (

@@ -1,9 +1,9 @@
-import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { readableClipTime, readableDate } from '../lib/utility'
+import { prefixClipLabel, readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { button } from '../styles'
+import { button, images } from '../styles'
 import { FastImage, Icon, Text, View } from '.'
 
 type Props = {
@@ -17,6 +17,8 @@ type Props = {
   hideBottomRow?: boolean
   hideDivider?: boolean
   isActive?: boolean
+  isNowPlayingItem?: boolean
+  isPlaylistScreen?: boolean
   onPress?: any
   podcastImageUrl?: string
   podcastTitle?: string
@@ -31,7 +33,6 @@ export class QueueTableCell extends React.PureComponent<Props> {
     const {
       clipEndTime,
       clipStartTime,
-      clipTitle = translate('Untitled Clip'),
       drag,
       episodePubDate = '',
       episodeTitle = translate('Untitled Episode'),
@@ -39,6 +40,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
       hideBottomRow,
       hideDivider,
       isActive,
+      isNowPlayingItem,
       onPress,
       podcastImageUrl,
       podcastTitle = translate('Untitled Podcast'),
@@ -48,81 +50,113 @@ export class QueueTableCell extends React.PureComponent<Props> {
       transparent
     } = this.props
 
+    const clipTitle = this.props.clipTitle || prefixClipLabel(episodeTitle)
+
     const viewStyle = isActive
       ? [styles.wrapper, styles.wrapperActive, hideDivider ? { borderBottomWidth: 0 } : {}]
       : [styles.wrapper, hideDivider ? { borderBottomWidth: 0 } : {}]
 
+    const isClip = !!clipStartTime && !!clipTitle
+
+    const podcastTitleText = podcastTitle.trim()
+    const episodeTitleText = episodeTitle.trim()
+    const pubDateText = readableDate(episodePubDate)
+    // eslint-disable-next-line max-len
+    const accessibilityLabel = `${!!podcastTitle ? `${podcastTitleText}, ` : ''} ${
+      !!episodeTitle ? `${episodeTitleText}, ` : ''
+    } ${!!episodePubDate ? `${pubDateText}` : ''} ${
+      !isClip ? `, ${translate('Full Episode')}` : `, ${clipTitle.trim()}`
+    }`
+
     return (
-      <TouchableWithoutFeedback onLongPress={drag} onPress={onPress}>
-        <View
-          style={viewStyle}
-          transparent={transparent}
-          testID={testID}>
-          <RNView style={styles.wrapperTop}>
-            <FastImage isSmall key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
-            <RNView style={styles.textWrapper}>
-              {!!podcastTitle && (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  isSecondary
-                  numberOfLines={1}
-                  style={styles.podcastTitle}
-                  testID={`${testID}_podcast_title`}>
-                  {podcastTitle.trim()}
-                </Text>
-              )}
-              {!!episodeTitle && (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={2}
-                  style={styles.episodeTitle}
-                  testID={`${testID}_episode_title`}>
-                  {episodeTitle.trim()}
-                </Text>
-              )}
-              {!!episodePubDate && (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  isSecondary
-                  numberOfLines={1}
-                  style={styles.episodePubDate}
-                  testID={`${testID}_episode_pub_date`}>
-                  {readableDate(episodePubDate)}
-                </Text>
-              )}
+      <View style={viewStyle} transparent={transparent} testID={testID}>
+        <RNView style={styles.wrapperTop}>
+          <Pressable
+            accessibilityHint={
+              isNowPlayingItem
+                ? translate('ARIA HINT - This is the now playing episode')
+                : !isClip
+                ? translate('ARIA HINT - tap to play this episode')
+                : translate('ARIA HINT - tap play this clip')
+            }
+            accessibilityLabel={accessibilityLabel}
+            accessibilityRole='none'
+            onLongPress={drag}
+            onPress={onPress}
+            style={{ flex: 1 }}>
+            <RNView style={styles.wrapperTappableInner}>
+              <FastImage isSmall key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
+              <RNView style={styles.textWrapper}>
+                {!!podcastTitle && (
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                    isSecondary
+                    numberOfLines={1}
+                    style={styles.podcastTitle}
+                    testID={`${testID}_podcast_title`}>
+                    {podcastTitleText}
+                  </Text>
+                )}
+                {!!episodeTitle && (
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    numberOfLines={2}
+                    style={styles.episodeTitle}
+                    testID={`${testID}_episode_title`}>
+                    {episodeTitleText}
+                  </Text>
+                )}
+                {!!episodePubDate && (
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                    isSecondary
+                    numberOfLines={1}
+                    style={styles.episodePubDate}
+                    testID={`${testID}_episode_pub_date`}>
+                    {pubDateText}
+                  </Text>
+                )}
+              </RNView>
+              {!!showMoveButton && <Icon isSecondary name='arrows-alt-v' size={28} style={button.iconOnlyMedium} />}
             </RNView>
-            {!!showMoveButton && <Icon isSecondary name='arrows-alt-v' size={28} style={button.iconOnlyMedium} />}
-            {!!showRemoveButton && !!handleRemovePress && (
-              <Icon
-                name='times'
-                onPress={handleRemovePress}
-                size={28}
-                style={button.iconOnlyMedium}
-                testID={`${testID}_remove_button`}
-              />
+          </Pressable>
+          {!!showRemoveButton && !!handleRemovePress && (
+            <Icon
+              accessibilityHint={translate('ARIA HINT - remove this item')}
+              accessibilityLabel={translate('Remove')}
+              accessibilityRole='button'
+              name='times'
+              onPress={handleRemovePress}
+              size={28}
+              style={button.iconOnlyMedium}
+              testID={`${testID}_remove_button`}
+            />
+          )}
+        </RNView>
+        {!hideBottomRow && (
+          <RNView style={styles.wrapperBottom}>
+            <Text
+              accessible={false}
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              importantForAccessibility='no'
+              numberOfLines={1}
+              style={styles.clipTitle}
+              testID={`${testID}_bottom_text`}>
+              {!isClip ? translate('Full Episode') : clipTitle.trim()}
+            </Text>
+            {!!clipStartTime && (
+              <Text
+                accessible={false}
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                importantForAccessibility='no'
+                style={styles.clipTime}
+                testID={`${testID}_clip_time`}>
+                {readableClipTime(clipStartTime, clipEndTime)}
+              </Text>
             )}
           </RNView>
-          {!hideBottomRow && (
-            <RNView style={styles.wrapperBottom}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                numberOfLines={1}
-                style={styles.clipTitle}
-                testID={`${testID}_bottom_text`}>
-                {!!clipStartTime && !!clipTitle ? clipTitle.trim() : translate('Full Episode')}
-              </Text>
-              {!!clipStartTime && (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  style={styles.clipTime}
-                  testID={`${testID}_clip_time`}>
-                  {readableClipTime(clipStartTime, clipEndTime)}
-                </Text>
-              )}
-            </RNView>
-          )}
-        </View>
-      </TouchableWithoutFeedback>
+        )}
+      </View>
     )
   }
 }
@@ -151,23 +185,24 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 0,
-    height: 64,
+    height: images.medium.height,
     marginRight: 12,
-    width: 64
+    width: images.medium.width
   },
   podcastTitle: {
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.bold,
-    justifyContent: 'flex-start',
-    marginTop: 1
+    justifyContent: 'flex-start'
   },
   textWrapper: {
     flex: 1,
-    paddingRight: 8
+    paddingRight: 8,
+    justifyContent: 'center'
   },
   wrapper: {
     paddingHorizontal: 8,
-    paddingVertical: 10,
+    paddingTop: 14,
+    paddingBottom: 10,
     marginHorizontal: 8,
     borderBottomColor: PV.Colors.gray,
     borderBottomWidth: 1
@@ -183,6 +218,10 @@ const styles = StyleSheet.create({
   wrapperBottom: {
     flexDirection: 'row',
     marginTop: 8
+  },
+  wrapperTappableInner: {
+    flex: 0,
+    flexDirection: 'row'
   },
   wrapperTop: {
     alignItems: 'center',

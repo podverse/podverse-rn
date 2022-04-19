@@ -2,8 +2,10 @@ import Config from 'react-native-config'
 import React, { getGlobal } from 'reactn'
 import { GlobalTheme } from '../../src/resources/Interfaces'
 import { darkTheme } from '../../src/styles'
+import { translate } from '../lib/i18n'
 import { getMakeClipIsPublic, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import { NavItemIcon, NavItemWrapper } from './'
 
 type Props = {
@@ -18,10 +20,15 @@ export const NavMakeClipIcon = (props: Props) => {
   const { getInitialProgressValue, navigation } = props
 
   const handlePress = async () => {
-    const initialProgressValue = await getInitialProgressValue()
-    const isPublic = await getMakeClipIsPublic()
+    const [initialProgressValue, isPublic] = await Promise.all([
+      getInitialProgressValue(),
+      getMakeClipIsPublic()
+    ])
+
     const { globalTheme, session } = getGlobal()
     const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
+
+    PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS)
 
     navigation.navigate(PV.RouteNames.MakeClipScreen, {
       initialProgressValue,
@@ -37,7 +44,12 @@ export const NavMakeClipIcon = (props: Props) => {
   }
 
   return (
-    <NavItemWrapper handlePress={handlePress} testID='nav_make_clip_icon'>
+    <NavItemWrapper
+      accessibilityHint={translate('ARIA HINT - make a clip from this episode')}
+      accessibilityLabel={translate('Make Clip')}
+      accessibilityRole='button'
+      handlePress={handlePress}
+      testID='nav_make_clip_icon'>
       <NavItemIcon name='cut' color={color} />
     </NavItemWrapper>
   )

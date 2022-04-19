@@ -1,4 +1,4 @@
-import { Picker } from '@react-native-community/picker'
+import { Picker } from '@react-native-picker/picker'
 import React from 'react'
 import { Platform, StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
@@ -15,8 +15,13 @@ type Props = {
 
 const generatePickerNumberItems = (total: number, key: string) => {
   const arr = [] as any
+
+  const style = Platform.OS === 'android' ? {
+    fontSize: PV.Fonts.sizes.huge
+  } : {}
+
   for (let i = 0; i < total; i++) {
-    arr.push(<Picker.Item key={i + key} label={i.toString()} value={i} />)
+    arr.push(<Picker.Item style={style} key={i + key} label={i.toString()} value={i} />)
   }
 
   return arr
@@ -53,6 +58,7 @@ export const TimePicker = (props: Props) => {
       <View style={styles.pickersWrapper}>
         <View style={styles.pickerColumn}>
           <Picker
+            accessibilityLabel={translate('hours')}
             enabled={!isActive}
             itemStyle={[styles.timeNumber, globalTheme.text]}
             onValueChange={(itemValue) => {
@@ -62,12 +68,17 @@ export const TimePicker = (props: Props) => {
             style={styles.timeNumberColumn}>
             {hourItems}
           </Picker>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} style={[stylesText, globalTheme.text]}>
+          <Text
+            accessible={false}
+            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+            importantForAccessibility='no'
+            style={[stylesText, globalTheme.text]}>
             {translate('hours')}
           </Text>
         </View>
         <View style={styles.pickerColumn}>
           <Picker
+            accessibilityLabel={translate('minutes')}
             enabled={!isActive}
             itemStyle={[styles.timeNumber, globalTheme.text]}
             onValueChange={(itemValue) => {
@@ -77,12 +88,17 @@ export const TimePicker = (props: Props) => {
             style={styles.timeNumberColumn}>
             {minuteItems}
           </Picker>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} style={[stylesText, globalTheme.text]}>
+          <Text
+            accessible={false}
+            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+            importantForAccessibility='no'
+            style={[stylesText, globalTheme.text]}>
             {translate('minutes')}
           </Text>
         </View>
         <View style={styles.pickerColumn}>
           <Picker
+            accessibilityLabel={translate('seconds')}
             enabled={!isActive}
             itemStyle={[styles.timeNumber, globalTheme.text]}
             onValueChange={(itemValue) => {
@@ -92,7 +108,11 @@ export const TimePicker = (props: Props) => {
             style={styles.timeNumberColumn}>
             {secondItems}
           </Picker>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} style={[stylesText, globalTheme.text]}>
+          <Text
+            accessible={false}
+            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+            importantForAccessibility='no'
+            style={[stylesText, globalTheme.text]}>
             {translate('seconds')}
           </Text>
         </View>

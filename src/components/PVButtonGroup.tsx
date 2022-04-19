@@ -9,10 +9,11 @@ type Props = {
   onPress: any
   selectedIndex: number
   styles?: any
+  testID: string
 }
 
 export const PVButtonGroup = (props: Props) => {
-  const { buttons, onPress, selectedIndex } = props
+  const { buttons, onPress, selectedIndex, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
 
@@ -21,6 +22,7 @@ export const PVButtonGroup = (props: Props) => {
 
   return (
     <ButtonGroup
+      accessible={false}
       activeOpacity={0.7}
       buttons={buttons}
       buttonStyle={[styles.button, globalTheme.buttonGroup]}
@@ -30,6 +32,7 @@ export const PVButtonGroup = (props: Props) => {
       selectedIndex={selectedIndex}
       selectedTextStyle={globalTheme.buttonGroupTextSelected}
       textStyle={[textStyle, globalTheme.buttonGroupText]}
+      testID={`${testID}_button_group`.prependTestId()}
     />
   )
 }

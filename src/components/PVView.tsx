@@ -1,9 +1,29 @@
 import React from 'react'
-import { View } from 'react-native'
+import { AccessibilityRole, View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
+import { ImportantForAccessibility } from '../lib/accessibilityHelpers'
 
-export const PVView = (props: any) => {
+type Props = {
+  accessible?: boolean
+  accessibilityHint?: string
+  accessibilityLabel?: string
+  accessibilityRole?: AccessibilityRole
+  allowFontScaling?: boolean
+  children?: any
+  fontSizeLargerScale?: number
+  fontSizeLargestScale?: number
+  hasZebraStripe?: boolean
+  importantForAccessibility?: ImportantForAccessibility
+  isSecondary?: any
+  numberOfLines?: number
+  onLayout?: any
+  onPress?: any
+  style?: any
+  testID: string
+  transparent?: boolean
+}
+
+export const PVView = (props: Props) => {
   const { children, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
   const styles = [globalTheme.view]
@@ -19,7 +39,7 @@ export const PVView = (props: any) => {
   styles.push(props.style)
 
   return (
-    <View {...props} style={styles} {...(testID ? testProps(testID) : {})}>
+    <View {...props} style={styles} {...(testID ? { testID: testID.prependTestId() } : {})}>
       {children}
     </View>
   )

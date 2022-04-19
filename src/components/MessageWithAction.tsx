@@ -4,14 +4,17 @@ import { PV } from '../resources'
 import { ActivityIndicator, Button, SafeAreaView, Text } from './'
 
 type Props = {
+  bottomActionAccessibilityHint?: string
   bottomActionHandler?: any
   bottomActionText?: string
   isLoading?: boolean
   message?: string
+  middleActionAccessibilityHint?: string
   middleActionHandler?: any
   middleActionText?: string
   subMessage?: string
   testID: string
+  topActionAccessibilityHint?: string
   topActionHandler?: any
   topActionText?: string
   transparent?: boolean
@@ -20,14 +23,17 @@ type Props = {
 
 export const MessageWithAction = (props: Props) => {
   const {
+    bottomActionAccessibilityHint,
     bottomActionHandler,
     bottomActionText,
     isLoading,
     message,
+    middleActionAccessibilityHint,
     middleActionHandler,
     middleActionText,
     subMessage,
     testID,
+    topActionAccessibilityHint,
     topActionHandler,
     topActionText,
     transparent,
@@ -39,6 +45,7 @@ export const MessageWithAction = (props: Props) => {
     <SafeAreaView style={[styles.view, containerStyle]} transparent={transparent}>
       {!!message && (
         <Text
+          accessible
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           style={[globalTheme.text, styles.message]}
           testID={`${testID}_message_with_action_message`}>
@@ -47,6 +54,7 @@ export const MessageWithAction = (props: Props) => {
       )}
       {!!subMessage && (
         <Text
+          accessible
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
           style={[globalTheme.text, styles.subMessage]}
           testID={`${testID}_message_with_action_sub_message`}>
@@ -55,6 +63,8 @@ export const MessageWithAction = (props: Props) => {
       )}
       {!isLoading && !!topActionText && !!topActionHandler && (
         <Button
+          accessibilityHint={topActionAccessibilityHint}
+          accessibilityLabel={topActionText}
           onPress={topActionHandler}
           testID={`${testID}_message_with_action_top_button`}
           text={topActionText}
@@ -63,6 +73,8 @@ export const MessageWithAction = (props: Props) => {
       )}
       {!isLoading && !!middleActionText && !!middleActionHandler && (
         <Button
+          accessibilityHint={middleActionAccessibilityHint}
+          accessibilityLabel={middleActionText}
           onPress={middleActionHandler}
           testID={`${testID}_message_with_action_middle_button`}
           text={middleActionText}
@@ -71,13 +83,15 @@ export const MessageWithAction = (props: Props) => {
       )}
       {!isLoading && !!bottomActionText && !!bottomActionHandler && (
         <Button
+          accessibilityHint={bottomActionAccessibilityHint}
+          accessibilityLabel={bottomActionText}
           onPress={bottomActionHandler}
           testID={`${testID}_message_with_action_bottom_button`}
           text={bottomActionText}
           wrapperStyles={[styles.button, styles.bottomButton]}
         />
       )}
-      {isLoading && <ActivityIndicator fillSpace />}
+      {isLoading && <ActivityIndicator fillSpace testID={testID} />}
     </SafeAreaView>
   )
 }

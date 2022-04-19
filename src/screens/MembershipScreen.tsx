@@ -1,9 +1,8 @@
 import { Alert, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, ComparisonTable, Text, TextLink, View } from '../components'
+import { ActivityIndicator, Button, ComparisonTable, Text, TextLink, View } from '../components'
 import { translate } from '../lib/i18n'
-import { hasValidNetworkConnection } from '../lib/network'
-import { getMembershipExpiration, getMembershipStatus, readableDate, testProps } from '../lib/utility'
+import { getMembershipExpiration, getMembershipStatus, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { buy1YearPremium } from '../services/purchaseShared'
 import { trackPageView } from '../services/tracking'
@@ -19,13 +18,11 @@ type Props = {
 type State = {
   disableButton: boolean
   isLoading: boolean
-  showNoInternetConnectionMessage?: boolean
 }
 
 const testIDPrefix = 'membership_screen'
 
 export class MembershipScreen extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
 
@@ -36,8 +33,8 @@ export class MembershipScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = () => ({
-      title: translate('Membership')
-    })
+    title: translate('Membership')
+  })
 
   async componentDidMount() {
     try {
@@ -46,12 +43,7 @@ export class MembershipScreen extends React.Component<Props, State> {
       //
     }
 
-    const hasInternetConnection = await hasValidNetworkConnection()
-
-    this.setState({
-      isLoading: false,
-      showNoInternetConnectionMessage: !hasInternetConnection
-    })
+    this.setState({ isLoading: false })
 
     trackPageView('/membership', 'Membership Screen')
   }
@@ -104,50 +96,72 @@ export class MembershipScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { disableButton, isLoading, showNoInternetConnectionMessage } = this.state
+    const { disableButton, isLoading } = this.state
     const { globalTheme, session } = this.global
     const { isLoggedIn, userInfo } = session
     const membershipStatus = getMembershipStatus(userInfo)
     const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
     const expirationDate = getMembershipExpiration(userInfo)
+    const statusAccessibilityLabel = `${translate('Status')}: ${membershipStatus}`
+    const expiresAccessibilityLabel = `${translate('Expires')}: ${readableDate(expirationDate)}`
 
     return (
-      <View style={styles.wrapper} {...testProps('membership_screen_view')}>
-        {isLoading && isLoggedIn && <ActivityIndicator fillSpace />}
-        {!isLoading && showNoInternetConnectionMessage && (
-          <View style={styles.textRowCentered}>
-            <Text style={[styles.subText, { textAlign: 'center' }]}>
-              {translate('Connect to the internet and reload this page to sign up for Premium')}
-            </Text>
-          </View>
-        )}
+      <View style={styles.wrapper} testID={`${testIDPrefix}_view`}>
+        {isLoading && isLoggedIn && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && isLoggedIn && !!membershipStatus && (
           <View>
-            <View style={styles.textRow}>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.label}>
+            <View
+              accessible
+              // eslint-disable-next-line max-len
+              accessibilityHint={translate(
+                'ARIA HINT - This is the membership status of your currently logged-in account'
+              )}
+              accessibilityLabel={statusAccessibilityLabel}
+              style={styles.textRowCentered}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={styles.label}
+                testID={`${testIDPrefix}_status_label`}>
                 {translate('Status')}{' '}
               </Text>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.text, membershipTextStyle]}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={[styles.text, membershipTextStyle]}
+                testID={`${testIDPrefix}_status_membership`}>
                 {membershipStatus}
               </Text>
             </View>
-            <View style={styles.textRow}>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.label}>
-                {`Expires: `}
+            <View
+              accessible
+              accessibilityHint={translate(
+                'ARIA HINT - This is the date your premium membership will expire unless it is renewed'
+              )}
+              accessibilityLabel={expiresAccessibilityLabel}
+              style={styles.textRowCentered}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={styles.label}
+                testID={`${testIDPrefix}_expires`}>
+                {`${translate('Expires')}: `}
               </Text>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={styles.text}
+                testID={`${testIDPrefix}_expiration_date`}>
                 {readableDate(expirationDate)}
               </Text>
             </View>
-            <View style={styles.textRowCentered}>
-              <TextLink
+            <View style={styles.buttonWrapper}>
+              <Button
+                accessibilityHint={translate('ARIA HINT - renew your premium membership')}
                 disabled={disableButton}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                isSuccess
                 onPress={this.handleRenewPress}
-                style={styles.subText}
-                {...testProps(`${testIDPrefix}_renew_membership`)}>
-                {translate('Renew Membership')}
-              </TextLink>
+                testID={`${testIDPrefix}_renew_membership`}
+                text={translate('Renew Membership')}
+                wrapperStyles={styles.button}
+              />
             </View>
           </View>
         )}
@@ -155,23 +169,29 @@ export class MembershipScreen extends React.Component<Props, State> {
           <View>
             <View style={styles.textRowCentered}>
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.subTextCentered}>
-                {translate('Get 1 year of Premium for free')}
+                {translate('Enjoy Podverse Premium')}
               </Text>
             </View>
             <View style={styles.textRowCentered}>
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.subTextCentered}>
-                {translate('10 per year after that')}
+                {translate('3 months free')}
               </Text>
             </View>
             <View style={styles.textRowCentered}>
-              <TextLink
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.subTextCentered}>
+                {translate('18 per year after that')}
+              </Text>
+            </View>
+            <View style={styles.buttonWrapper}>
+              <Button
                 disabled={disableButton}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                isPrimary
                 onPress={this.handleSignUpPress}
-                style={styles.subText}
-                {...testProps(`${testIDPrefix}_sign_up`)}>
-                {translate('Sign Up')}
-              </TextLink>
+                testID={`${testIDPrefix}_sign_up`}
+                text={translate('Sign Up')}
+                wrapperStyles={styles.button}
+              />
             </View>
           </View>
         )}
@@ -181,7 +201,8 @@ export class MembershipScreen extends React.Component<Props, State> {
               column1Title={translate('Free')}
               column2Title={translate('Premium')}
               data={comparisonData}
-              mainTitle='Features'
+              mainTitle={translate('Features')}
+              mainTitleAccessibilityHint={translate('ARIA HINT - Membership features header')}
             />
           </View>
         )}
@@ -192,63 +213,109 @@ export class MembershipScreen extends React.Component<Props, State> {
 
 const comparisonData = [
   {
-    text: translate('subscribe to podcasts'),
+    text: translate('Subscribe to podcasts'),
     column1: true,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('Subscribe to podcasts')
   },
   {
-    text: translate('download episodes'),
+    text: translate('Download episodes'),
     column1: true,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('Download episodes')
   },
   {
-    text: translate('drag-and-drop queue'),
+    text: translate('Video playback'),
     column1: true,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('Video playback')
   },
   {
-    text: translate('sleep timer'),
+    text: translate('Sleep timer'),
     column1: true,
-    column2: true
-  },
-  // {
-  //   text: translate('light - dark mode'),
-  //   column1: true,
-  //   column2: true
-  // },
-  {
-    text: translate('create and share clips'),
-    column1: false,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('Sleep timer')
   },
   {
-    text: translate('sync your subscriptions on all devices'),
-    column1: false,
-    column2: true
-  },
-  {
-    text: translate('sync your queue on all devices'),
-    column1: false,
-    column2: true
-  },
-  {
-    text: translate('create playlists'),
-    column1: false,
-    column2: true
-  },
-  {
-    text: translate('download a backup of your data'),
-    column1: false,
-    column2: true
-  },
-  {
-    text: translate('support free and open source software'),
+    text: translate('Podcasting 2.0 chapters'),
     column1: true,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('Podcasting 2.0 chapters')
+  },
+  {
+    text: translate('Podcasting 2.0 cross-app comments'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('Podcasting 2.0 cross-app comments')
+  },
+  {
+    text: translate('Podcasting 2.0 transcripts'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('Podcasting 2.0 transcripts')
+  },
+  {
+    text: translate('OPML import and export'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('OPML import and export')
+  },
+  {
+    text: translate('Screen-reader accessibility'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('Screen-reader accessibility')
+  },
+  {
+    text: translate('Sync your subscriptions, queue, and history across all your devices'),
+    column1: false,
+    column2: true,
+    accessibilityLabel: translate('Sync your subscriptions, queue, and history across all your devices')
+  },
+  {
+    text: translate('Create and share podcast clips'),
+    column1: false,
+    column2: true,
+    accessibilityLabel: translate('ARIA HINT - Membership - Create and share clips')
+  },
+  {
+    text: translate('Create and share playlists'),
+    column1: false,
+    column2: true,
+    accessibilityLabel: translate('Create and share playlists')
+  },
+  {
+    text: translate('Mark episodes as played'),
+    column1: false,
+    column2: true,
+    accessibilityLabel: translate('Mark episodes as played')
+  },
+  {
+    text: translate('Subscribe to listener profiles'),
+    column1: false,
+    column2: true,
+    accessibilityLabel: translate('Subscribe to listener profiles')
+  },
+  {
+    text: translate('Support open source software'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('Support open source software'),
+    isSmile: true
   }
 ]
 
 const styles = StyleSheet.create({
+  button: {
+    borderRadius: 30,
+    height: 32,
+    marginBottom: 16
+  },
+  buttonWrapper: {
+    marginBottom: 16,
+    marginTop: 20,
+    paddingHorizontal: 32
+  },
   label: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold

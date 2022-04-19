@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/prefer-regexp-exec */
 import AsyncStorage from '@react-native-community/async-storage'
 import he from 'he'
+import moment from 'moment'
 import { NowPlayingItem } from 'podverse-shared'
 import Config from 'react-native-config'
 import { getUserAgent } from 'react-native-device-info'
 import InAppReview from 'react-native-in-app-review'
 import { PV } from '../resources'
+import { translate } from './i18n'
 
 const cheerio = require('react-native-cheerio')
 
@@ -38,18 +40,9 @@ export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
   }
 }
 
-const getMonth = (date: any) => {
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  return monthNames[date.getMonth()]
-}
-
-export const readableDate = (date: string) => {
-  const dateObj = new Date(date)
-  const year = dateObj.getFullYear()
-  const monthAbbreviation = getMonth(dateObj)
-  const day = dateObj.getDate()
-
-  return `${monthAbbreviation} ${day}, ${year}`
+export const readableDate = (date: Date, withTime?: boolean) => {
+  const format = withTime ? 'MMM Do YYYY, h:mm:ss a' : 'MMM Do YYYY'
+  return moment(date).format(format)
 }
 
 export const getHHMMSSArray = (sec: number) => {
@@ -66,6 +59,41 @@ export const getHHMMSSArray = (sec: number) => {
 
   const parsedArray = delimitedArray.map((x) => parseInt(x, 10))
   return parsedArray
+}
+
+export const convertSecToHHMMSSAccessibilityLabel = (sec: number) => {
+  let totalSec = Math.floor(sec)
+  const hours = Math.floor(totalSec / 3600)
+  totalSec %= 3600
+  const minutes = Math.floor(totalSec / 60)
+  const seconds = Math.floor(totalSec % 60)
+
+  let readableTime = ''
+  if (hours) {
+    if (hours === 1) {
+      readableTime += `${hours} ${translate('hour')} `
+    } else {
+      readableTime += `${hours} ${translate('hours')} `
+    }
+  }
+
+  if (minutes) {
+    if (minutes === 1) {
+      readableTime += `${minutes} ${translate('minute')} `
+    } else {
+      readableTime += `${minutes} ${translate('minutes')} `
+    }
+  }
+
+  if (seconds) {
+    if (seconds === 1) {
+      readableTime += `${seconds} ${translate('second')} `
+    } else {
+      readableTime += `${seconds} ${translate('seconds')} `
+    }
+  }
+
+  return readableTime
 }
 
 export const convertSecToHHMMSS = (sec: number) => {
@@ -111,10 +139,11 @@ export const convertSecToHHMMSS = (sec: number) => {
 
 export const convertSecToHhoursMMinutes = (sec: number) => {
   let totalSec = Math.floor(sec)
+
   const hours = Math.floor(totalSec / 3600)
   totalSec %= 3600
-  const minutes = Math.floor(totalSec / 60)
 
+  const minutes = Math.floor(totalSec / 60)
   let result = `${minutes} min`
 
   if (hours >= 1) {
@@ -124,11 +153,11 @@ export const convertSecToHhoursMMinutes = (sec: number) => {
   return result
 }
 
-export const readableClipTime = (startTime: number, endTime?: number) => {
+export const readableClipTime = (startTime: number, endTime?: number, useTo?: boolean) => {
   const s = convertSecToHHMMSS(startTime)
   if ((startTime || startTime === 0) && endTime) {
     const e = convertSecToHHMMSS(endTime)
-    return `${s} - ${e}`
+    return `${s} ${useTo ? 'to' : '-'} ${e}`
   } else {
     return `Start: ${s}`
   }
@@ -181,14 +210,17 @@ export const removeHTMLAttributesFromString = (html: string) => {
 }
 
 export const removeExtraInfoFromEpisodeDescription = (html: string) => {
-  html = html.replace('<p>Show Notes</p>', '')
+  html = html.replace('<p>Episode Summary</p>', '')
   return html.replace(/<p>\s*<\/p>/, '')
 }
 
 export const filterHTMLElementsFromString = (html: string) => {
   if (html) {
     // eslint-disable-next-line max-len
-    const finalHtml = html.replace(/<audio.*>.*?<\/audio>|<video.*>.*?<\/video>|<iframe.*>.*?<\/iframe>|<img.*>.*?<\/img>|<img.*>/gi, '')
+    const finalHtml = html.replace(
+      /<audio.*>.*?<\/audio>|<video.*>.*?<\/video>|<iframe.*>.*?<\/iframe>|<img.*>.*?<\/img>|<img.*>/gi,
+      ''
+    )
     return finalHtml
   }
   return html
@@ -412,7 +444,7 @@ export const convertTranscriptTimestampToSeconds = (timestamp: string) => {
   let hhmmss = timestamp.split(',')[0]
   // VTT time stamps use this formatting: 00:02:45.170
   hhmmss = timestamp.split('.')[0]
-  return convertHHMMSSToSeconds(hhmmss)  
+  return convertHHMMSSToSeconds(hhmmss)
 }
 
 export const convertHHMMSSToAnchorTags = (html: string) => {
@@ -437,6 +469,13 @@ export function validateHHMMSSString(hhmmss: string) {
     '^(([0-9][0-9]):([0-5][0-9]):([0-5][0-9]))$|(([0-9]):([0-5][0-9]):([0-5][0-9]))$|^(([0-5][0-9]):([0-5][0-9]))$|^(([0-9]):([0-5][0-9]))$|^([0-5][0-9])$|^([0-9])'
   )
   return regex.test(hhmmss)
+}
+
+export function convertHoursMinutesSecondsToSeconds(hours: number, minutes: number, seconds: number) {
+  let totalSeconds = hours * 3600
+  totalSeconds += minutes * 60
+  totalSeconds += seconds
+  return totalSeconds
 }
 
 export function convertHHMMSSToSeconds(hhmmssString: string) {
@@ -553,8 +592,8 @@ export const convertUrlToSecureHTTPS = (originalUrl: string) => {
   return originalUrl ? originalUrl.replace('http://', 'https://') : ''
 }
 
-export const testProps = (id: string) => {
-  return { testID: id, accessibilityLabel: id }
+export const encodeSpacesInString = (str: string) => {
+  return str.replace(/ /g, '%20')
 }
 
 export const getUniqueArrayByKey = (arr: any[], key: string) => {
@@ -584,7 +623,7 @@ export const requestAppStoreReview = () => {
 }
 
 export const requestAppStoreReviewForEpisodePlayed = async () => {
-  const EPISODES_PLAYED_LIMIT = 10
+  const EPISODES_PLAYED_LIMIT = 20
   const numberOfPlayedEpisodesString: string | null = await AsyncStorage.getItem(PV.Keys.NUMBER_OF_EPISODES_PLAYED)
   let numberOfPlayedEpisodes = numberOfPlayedEpisodesString ? Number(numberOfPlayedEpisodesString) : 0
   if (numberOfPlayedEpisodes < EPISODES_PLAYED_LIMIT) {
@@ -619,8 +658,9 @@ export const parseOpmlFile = (data: any, topLevel = false): string[] => {
   for (const item of outlineArr) {
     if (item.$?.type?.toLowerCase() === 'rss') {
       const url = item.$?.xmlurl || item.$?.xmlUrl
-      if (url) {
-        resultArr.push(url)
+      const decodedUrl = decodeURIComponent(url)
+      if (decodedUrl) {
+        resultArr.push(decodedUrl)
       }
     } else {
       if (item.outline) {
@@ -633,14 +673,93 @@ export const parseOpmlFile = (data: any, topLevel = false): string[] => {
 }
 
 export const numberWithCommas = (x?: number) => {
-  if (!x || x === 0) return x  
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  if (!x || x === 0) return x
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
 export const safeKeyExtractor = (listName: string, index: number, id?: string) => {
-  if (id) {
+  if (id && index === -1) {
     return id
+  } else if (id) {
+    return id + index
   } else {
     return `${listName}_${index}`
   }
+}
+
+export const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
+  return item && nowPlayingItem && (nowPlayingItem.clipId === item.id || nowPlayingItem.episodeId === item.id)
+}
+
+export const getAuthorityFeedUrlFromArray = (feedUrlObjects: any[]) => {
+  const obj = feedUrlObjects.find((feedUrlObject) => feedUrlObject.isAuthority)
+  return obj?.url || null
+}
+
+export const getUsernameAndPasswordFromCredentials = (credentials: string) => {
+  let username = ''
+  let password = ''
+
+  if (credentials) {
+    const splitCredentials = credentials.split(':')
+    username = splitCredentials[0] || ''
+    password = splitCredentials[1] || ''
+  }
+
+  return {
+    username,
+    password
+  }
+}
+
+export const getTimeLabelText = (
+  mediaFileDuration?: number,
+  episodeDuration?: number,
+  userPlaybackPosition?: number,
+  completed?: boolean,
+  clipTime?: string
+) => {
+  const hasStartedItem = !!mediaFileDuration
+  const totalTime = mediaFileDuration || episodeDuration || 0
+  const playedTime = userPlaybackPosition || 0
+
+  let timeLabel = ''
+  if (totalTime) {
+    timeLabel = convertSecToHhoursMMinutes(totalTime)
+    if (hasStartedItem && playedTime > 0) {
+      timeLabel = convertSecToHhoursMMinutes(totalTime - playedTime) + ' left'
+    }
+  }
+
+  if (clipTime) {
+    timeLabel = clipTime
+  }
+
+  return timeLabel
+}
+
+export const getMediaRefStartPosition = (clipStartTime?: number | null, sliderWidth?: number, duration?: number) => {
+  let clipStartTimePosition = 0
+
+  if (duration && clipStartTime && sliderWidth) {
+    clipStartTimePosition = sliderWidth * (clipStartTime / duration)
+  }
+
+  return clipStartTimePosition
+}
+
+export const prefixClipLabel = (episodeTitle?: string) => {
+  let title = ''
+  if (episodeTitle) {
+    title = `(${translate('Clip')}) ${episodeTitle}`.trim()
+  } else {
+    title = translate('Untitled Clip')
+  }
+  return title
+}
+
+export const checkIfContainsStringMatch = (matchStr: string, currentStr: string) => {
+  const lowercaseString = matchStr.toLowerCase()
+  const regex = new RegExp(`${lowercaseString}|${lowercaseString}.|.${lowercaseString}.|.${lowercaseString}`)
+  return regex.test(currentStr.toLowerCase())
 }

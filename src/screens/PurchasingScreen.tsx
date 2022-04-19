@@ -1,8 +1,8 @@
-import { Linking, Platform, StyleSheet, TouchableOpacity } from 'react-native'
+import { Linking, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, SafeAreaView, Text, View } from '../components'
+import { ActivityIndicator, PressableWithOpacity, SafeAreaView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
-import { createEmailLinkUrl, testProps } from '../lib/utility'
+import { createEmailLinkUrl } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { androidHandleStatusCheck } from '../state/actions/purchase.android'
@@ -12,15 +12,17 @@ type Props = {
   navigation?: any
 }
 
+const testIDPrefix = 'purchasing_screen'
+
 export class PurchasingScreen extends React.Component<Props> {
   constructor(props: Props) {
     super(props)
   }
 
   static navigationOptions = () => ({
-      title: translate('Processing'),
-      headerRight: () => null
-    })
+    title: translate('Processing'),
+    headerRight: () => null
+  })
 
   componentDidMount() {
     trackPageView('/purchasing', 'Purchasing Screen')
@@ -49,25 +51,25 @@ export class PurchasingScreen extends React.Component<Props> {
     const { isLoading, message, showContactSupportLink, showDismissLink, showRetryLink, title } = purchase
 
     return (
-      <SafeAreaView style={styles.safeAreaView} {...testProps('purchasing_screen_view')}>
+      <SafeAreaView style={styles.safeAreaView} testID={`${testIDPrefix}_view`}>
         <View style={styles.view}>
           <Text style={[globalTheme.text, styles.title]}>{title}</Text>
-          {!!isLoading && <ActivityIndicator styles={styles.activityIndicator} />}
+          {!!isLoading && <ActivityIndicator styles={styles.activityIndicator} testID={testIDPrefix} />}
           {!!message && <Text style={[globalTheme.text, styles.message]}>{message}</Text>}
           {!isLoading && showRetryLink && (
-            <TouchableOpacity onPress={this._handleRetryProcessing}>
+            <PressableWithOpacity onPress={this._handleRetryProcessing}>
               <Text style={[globalTheme.text, styles.button]}>Retry</Text>
-            </TouchableOpacity>
+            </PressableWithOpacity>
           )}
           {!isLoading && showContactSupportLink && (
-            <TouchableOpacity onPress={this._handleContactSupportPress}>
+            <PressableWithOpacity onPress={this._handleContactSupportPress}>
               <Text style={[globalTheme.text, styles.button]}>Contact Support</Text>
-            </TouchableOpacity>
+            </PressableWithOpacity>
           )}
           {!isLoading && showDismissLink && (
-            <TouchableOpacity onPress={this._handleDismiss}>
+            <PressableWithOpacity onPress={this._handleDismiss}>
               <Text style={[globalTheme.text, styles.button]}>{translate('Close')}</Text>
-            </TouchableOpacity>
+            </PressableWithOpacity>
           )}
         </View>
       </SafeAreaView>

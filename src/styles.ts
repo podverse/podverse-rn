@@ -85,16 +85,23 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   buttonPrimaryWrapper: {
-    backgroundColor: PV.Colors.brandColor
+    backgroundColor: PV.Colors.brandColor,
+    borderColor: PV.Colors.brandColor,
   },
   buttonDisabledWrapper: {
-    backgroundColor: PV.Colors.gray
+    backgroundColor: PV.Colors.gray,
+    borderColor: PV.Colors.gray,
   },
   buttonSuccessWrapper: {
-    backgroundColor: PV.Colors.greenDarker
+    backgroundColor: PV.Colors.greenDarker,
+    borderColor: PV.Colors.greenDarker,
   },
   buttonWarningWrapper: {
-    backgroundColor: PV.Colors.redDarker
+    backgroundColor: PV.Colors.redDarker,
+    borderColor: PV.Colors.redDarker,
+  },
+  buttonTransparentWrapper: {
+    backgroundColor: 'transparent'
   },
   divider: {
     backgroundColor: PV.Colors.grayDark + '80'
@@ -217,6 +224,9 @@ export const darkTheme = StyleSheet.create({
     borderBottomColor: PV.Colors.grayDarker, // override native style,
     marginBottom: 24
   },
+  textNowPlaying: {
+    color: PV.Colors.orange
+  },
   textSecondary: {
     color: PV.Colors.grayLightest
   },
@@ -322,16 +332,23 @@ export const lightTheme = StyleSheet.create({
     color: PV.Colors.black
   },
   buttonPrimaryWrapper: {
-    backgroundColor: PV.Colors.grayLighter
+    backgroundColor: PV.Colors.grayLighter,
+    borderWrapper: PV.Colors.grayLighter
   },
   buttonDisabledWrapper: {
-    backgroundColor: PV.Colors.grayDarker
+    backgroundColor: PV.Colors.grayDarker,
+    borderWrapper: PV.Colors.grayDarker
   },
   buttonSuccessWrapper: {
-    backgroundColor: PV.Colors.greenLighter
+    backgroundColor: PV.Colors.greenLighter,
+    borderWrapper: PV.Colors.greenLighter
   },
   buttonWarningWrapper: {
-    backgroundColor: PV.Colors.redLighter
+    backgroundColor: PV.Colors.redLighter,
+    borderWrapper: PV.Colors.redLighter
+  },
+  buttonTransparentWrapper: {
+    backgroundColor: 'transparent'
   },
   divider: {
     backgroundColor: PV.Colors.grayLight
@@ -452,6 +469,9 @@ export const lightTheme = StyleSheet.create({
     borderTopColor: PV.Colors.grayLighter, // override native styles
     borderBottomColor: PV.Colors.grayLighter // override native style
   },
+  textNowPlaying: {
+    color: PV.Colors.orange
+  },
   textSecondary: {
     color: PV.Colors.grayDarkest
   },
@@ -488,6 +508,13 @@ export const tabbar = StyleSheet.create({
   }
 })
 
+export const images = StyleSheet.create({
+  medium: {
+    height: Platform.OS === 'ios' ? 64 : 74,
+    width: Platform.OS === 'ios' ? 64 : 74
+  }
+})
+
 export const button = StyleSheet.create({
   iconOnlyLarge: {
     flex: 0,
@@ -499,8 +526,8 @@ export const button = StyleSheet.create({
   },
   iconOnlyMedium: {
     flex: 0,
-    height: 64,
-    lineHeight: 64,
+    height: images.medium.height,
+    lineHeight: images.medium.height,
     textAlign: 'center',
     width: 44,
     zIndex: 1000000
@@ -537,9 +564,18 @@ export const core = StyleSheet.create({
     flex: 1
   },
   button: {
+    borderRadius: 8,
     justifyContent: 'center',
+    marginHorizontal: 12,
+    marginBottom: 24,
+    marginTop: 0,
     minHeight: 56,
-    borderRadius: 8
+  },
+  buttonBorder: {
+    borderWidth: 1,
+    borderRadius: 18,
+    minWidth: 120,
+    minHeight: 36
   },
   buttonText: {
     fontSize: PV.Fonts.sizes.xl,
@@ -562,6 +598,13 @@ export const core = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold,
     marginBottom: 16
   },
+  itemWrapper: {
+    marginBottom: 24
+  },
+  itemWrapperReducedHeight: {
+    marginTop: -4,
+    marginBottom: 16
+  },
   ListHeaderComponent: {
     borderBottomWidth: 0,
     borderTopWidth: 0,
@@ -569,6 +612,16 @@ export const core = StyleSheet.create({
     minHeight: PV.FlatList.searchBar.height,
     justifyContent: 'center',
     marginBottom: 8
+  },
+  pickerSelect: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    marginVertical: 14
+  },
+  pickerSelectIcon: {
+    flex: 0,
+    paddingLeft: 4
   },
   row: {
     backgroundColor: 'transparent',
@@ -598,7 +651,7 @@ export const core = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    minWidth: 51,
+    minWidth: 76,
     textAlign: 'center'
   },
   selectorWrapperRight: {
@@ -623,7 +676,8 @@ export const core = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     marginBottom: 16,
-    marginTop: 0
+    marginTop: 0,
+    minWidth: 76
   },
   view: {
     alignItems: 'center',
@@ -707,19 +761,19 @@ export const sliderStyles = StyleSheet.create({
   },
   wrapper: {
     minHeight: 50,
-    marginHorizontal: 15
+    marginHorizontal: PV.Player.sliderStyles.wrapper.marginHorizontal
   }
 })
 
 export const table = StyleSheet.create({
   cellText: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.semibold,
-    paddingLeft: 8
+    fontWeight: PV.Fonts.weights.semibold
   },
   cellWrapper: {
-    justifyContent:"center",
-    minHeight: PV.Table.cells.standard.height
+    justifyContent: "center",
+    minHeight: PV.Table.cells.standard.height,
+    paddingLeft: 8
   }
 })
 

@@ -3,27 +3,51 @@ import React, { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Divider, Icon, Text, View } from './'
 
-export const ComparisonTable = (props: any) => {
-  const { column1Title, column2Title, data, mainTitle } = props
+type TableLineItem = {
+  /**
+   * text: The row heading
+   */
+  text: string
+  column1: boolean
+  column2: boolean
+  accessibilityLabel: string
+}
+
+type ComparisonTableProps = {
+  column1Title: string
+  column2Title: string
+  data: TableLineItem[] | []
+  mainTitle: string
+  mainTitleAccessibilityHint: string
+}
+
+export const ComparisonTable = (props: ComparisonTableProps) => {
+  const { column1Title, column2Title, data, mainTitle, mainTitleAccessibilityHint } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <View style={styles.wrapper}>
       <View style={[styles.tableHeaderRow, globalTheme.tableSectionHeader]}>
         <Text
+          accessibilityHint={mainTitleAccessibilityHint}
+          accessibilityLabel={mainTitle}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
           style={[styles.tableHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
           {mainTitle}
         </Text>
         <Text
+          accessible={false}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          importantForAccessibility='no'
           numberOfLines={1}
           style={[styles.tableHeaderTextRight, globalTheme.tableSectionHeaderText]}>
           {column1Title}
         </Text>
         <Text
+          accessible={false}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          importantForAccessibility='no'
           numberOfLines={1}
           style={[styles.tableHeaderTextRight, globalTheme.tableSectionHeaderText]}>
           {column2Title}
@@ -34,20 +58,24 @@ export const ComparisonTable = (props: any) => {
         keyExtractor={(item: any, index: number) => `comparisonTable${index}`}
         renderItem={({ item }) => (
           <>
-            <View key={item.text} style={styles.tableRow}>
-              <View style={styles.columnTextWrapper}>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.columnText}>
+            <Divider />
+            <View accessible accessibilityLabel={item.accessibilityLabel} key={item.text} style={styles.tableRow}>
+              <View accessible={false} style={styles.columnTextWrapper}>
+                <Text accessible={false} fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.columnText}>
                   {item.text}
                 </Text>
               </View>
-              <View style={styles.columnIcon}>
-                {item.column1 && <Icon name={item.isSmile ? 'smile' : 'check'} size={26} style={styles.icon} />}
+              <View accessible={false} style={styles.columnIcon}>
+                {item.column1 && (
+                  <Icon accessible={false} name={item.isSmile ? 'smile' : 'check'} size={26} style={styles.icon} />
+                )}
               </View>
-              <View style={styles.columnIcon}>
-                {item.column2 && <Icon name={item.isSmile ? 'smile' : 'check'} size={26} style={styles.icon} />}
+              <View accessible={false} style={styles.columnIcon}>
+                {item.column2 && (
+                  <Icon accessible={false} name={item.isSmile ? 'smile' : 'check'} size={26} style={styles.icon} />
+                )}
               </View>
             </View>
-            <Divider />
           </>
         )}
       />
@@ -66,7 +94,7 @@ const styles = StyleSheet.create({
   columnText: {
     fontSize: PV.Fonts.sizes.xl,
     marginLeft: 8,
-    paddingVertical: 4
+    paddingVertical: 12
   },
   columnTextWrapper: {
     flex: 1,
@@ -79,7 +107,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 0,
     flexDirection: 'row',
-    minHeight: 40
+    minHeight: 48
   },
   tableHeaderTextLeft: {
     flex: 1,

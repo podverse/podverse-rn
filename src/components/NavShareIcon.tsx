@@ -47,7 +47,7 @@ export const NavShareIcon = (props: Props) => {
     if (episodeTitle) title += ` – ${episodeTitle}`
     if (endingText) title += `${endingText}`
     if (profileName) {
-      title = `${profileName || translate('anonymous')} - ${translate(`favorite podcasts on brandName`)}`
+      title = `${profileName || translate('anonymous')} - ${translate('favorite podcasts on brandName')}`
     }
 
     try {
@@ -67,7 +67,12 @@ export const NavShareIcon = (props: Props) => {
   }
 
   return (
-    <NavItemWrapper handlePress={handlePress ? handlePress : onShare} testID='nav_share_icon'>
+    <NavItemWrapper
+      accessibilityHint={translate('ARIA HINT - share this podcast')}
+      accessibilityLabel={translate('Share')}
+      accessibilityRole='button'
+      handlePress={handlePress ? handlePress : onShare}
+      testID='nav_share_icon'>
       <NavItemIcon name='share-square' solid color={color} />
     </NavItemWrapper>
   )

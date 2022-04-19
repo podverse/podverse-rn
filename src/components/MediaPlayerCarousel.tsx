@@ -1,27 +1,25 @@
-import { Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
+import { Dimensions, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
+import { checkIfHasSupportedCommentTag } from 'podverse-shared'
 import { PV } from '../resources'
 import { translate } from '../lib/i18n'
 import { sendBoost } from '../lib/valueTagHelpers'
-
-const HapticOptions = {
-  enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false
-}
-
+import { audioCheckIfIsPlaying } from '../services/playerAudio'
 import { toggleValueStreaming } from '../state/actions/valueTag'
-import { PVTrackPlayer } from '../services/player'
+import { MediaPlayerCarouselComments } from './MediaPlayerCarouselComments'
 import {
   ActivityIndicator,
+  DropdownButtonSelect,
   MediaPlayerCarouselChapters,
   MediaPlayerCarouselClips,
   MediaPlayerCarouselShowNotes,
   MediaPlayerCarouselTranscripts,
   MediaPlayerCarouselViewer,
+  PressableWithOpacity,
   ScrollView,
   Text,
   View
@@ -33,6 +31,7 @@ type Props = {
 }
 
 type State = {
+  accessibilityItemSelected: any
   activeIndex: number
   boostIsSending: boolean
   boostWasSent: boolean
@@ -40,6 +39,20 @@ type State = {
 }
 
 const screenWidth = Dimensions.get('screen').width
+
+const testIDPrefix = 'media_player_carousel'
+
+const _nowPlayingInfoKey = '_nowPlayingInfoKey'
+const _episodeSummaryKey = '_episodeSummaryKey'
+const _chaptersKey = '_chaptersKey'
+const _clipsKey = '_clipsKey'
+const _commentsKey = '_commentsKey'
+const _transcriptKey = '_transcriptKey'
+
+const accessibilityNowPlayingInfo = {
+  label: translate('Now Playing Info'),
+  value: _nowPlayingInfoKey
+}
 
 export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   carousel: any
@@ -51,6 +64,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     super(props)
 
     this.state = {
+      accessibilityItemSelected: accessibilityNowPlayingInfo,
       activeIndex: 0,
       boostIsSending: false,
       boostWasSent: false,
@@ -88,7 +102,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   _attemptBoost = () => {
-    ReactNativeHapticFeedback.trigger('impactHeavy', HapticOptions)
+    ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
     this.setState({ boostIsSending: true }, () => {
       this.explosion && this.explosion.start()
       const { podcastValueFinal } = this.global
@@ -111,26 +125,39 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   _toggleSatStreaming = () => {
-    ReactNativeHapticFeedback.trigger('impactHeavy', HapticOptions)
+    ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
     toggleValueStreaming()
+  }
+
+  _handleAccessibilitySelectChange = (selectedKey: string) => {
+    const { parsedTranscript, player } = this.global
+    const { episode } = player
+    const hasChapters = episode?.chaptersUrl
+    const hasComments = !!checkIfHasSupportedCommentTag(episode)
+    const hasTranscript = !!parsedTranscript
+    const items = accessibilitySelectorItems(hasChapters, hasComments, hasTranscript)
+    const accessibilityItemSelected = items.find((x) => x.value === selectedKey)
+    this.setState({ accessibilityItemSelected })
   }
 
   render() {
     const { navigation } = this.props
-    const { activeIndex, boostIsSending, boostWasSent, explosionOrigin } = this.state
-    const { parsedTranscript, player, podcastValueFinal } = this.global
+    const { accessibilityItemSelected, activeIndex, boostIsSending, boostWasSent, explosionOrigin } = this.state
+    const { parsedTranscript, player, podcastValueFinal, screenReaderEnabled } = this.global
     const { episode, nowPlayingItem, playbackState } = player
     const hasChapters = episode?.chaptersUrl
-    const hasTranscript = parsedTranscript?.length > 0
+    const hasComments = !!checkIfHasSupportedCommentTag(episode)
+    const hasTranscript = !!parsedTranscript
+
     const { lightningNetwork, streamingEnabled } = this.global.session?.valueTagSettings || {}
-    const { lnpay } = lightningNetwork
+    const { lnpay } = lightningNetwork || {}
     const { globalSettings, lnpayEnabled } = lnpay || {}
     const { boostAmount, streamingAmount } = globalSettings || {}
-    const isPlaying = playbackState === PVTrackPlayer.STATE_PLAYING
-
+    const isPlaying = audioCheckIfIsPlaying(playbackState)
 
     let itemCount = 3
     if (hasChapters) itemCount++
+    if (hasComments) itemCount++
     if (hasTranscript) itemCount++
 
     const satStreamText = streamingEnabled ? translate('Stream On') : translate('Stream Off')
@@ -146,45 +173,75 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       : [styles.boostButtonSubText]
 
     const hasValueInfo =
-      !!Config.ENABLE_VALUE_TAG_TRANSACTIONS && (
-        podcastValueFinal?.length > 0
-        || nowPlayingItem?.episodeValue?.length > 0
-        || nowPlayingItem?.podcastValue?.length > 0
-      )
+      !!Config.ENABLE_VALUE_TAG_TRANSACTIONS &&
+      (podcastValueFinal?.length > 0 ||
+        nowPlayingItem?.episodeValue?.length > 0 ||
+        nowPlayingItem?.podcastValue?.length > 0)
+
+    const carouselComponents = mediaPlayerCarouselComponents(
+      this._handlePressClipInfo,
+      screenWidth,
+      navigation,
+      hasChapters,
+      hasComments,
+      hasTranscript,
+      screenReaderEnabled,
+      accessibilityItemSelected?.value || null
+    )
 
     return (
       <View style={styles.wrapper} transparent>
-        <ScrollView
-          bounces={false}
-          decelerationRate='fast'
-          horizontal
-          onMomentumScrollEnd={this.onScrollEnd}
-          pagingEnabled={false}
-          scrollViewRef={(ref: any) => (this.scrollView = ref)}
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={screenWidth}
-          snapToStart
-          transparent>
-          <MediaPlayerCarouselViewer handlePressClipInfo={this._handlePressClipInfo} width={screenWidth} />
-          <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
-          {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
-          <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
-          {hasTranscript && <MediaPlayerCarouselTranscripts width={screenWidth} />}
-        </ScrollView>
-        <Dots
-          active={activeIndex}
-          activeColor={PV.Colors.skyDark}
-          activeDotHeight={9}
-          activeDotWidth={9}
-          length={itemCount}
-          paddingVertical={12}
-          passiveColor={PV.Colors.grayLighter}
-          passiveDotHeight={8}
-          passiveDotWidth={8}
-        />
+        {screenReaderEnabled && (
+          <>
+            <DropdownButtonSelect
+              accessibilityHint={translate('ARIA HINT - This is the now playing info selector')}
+              items={accessibilitySelectorItems(hasChapters, hasComments, hasTranscript)}
+              label={accessibilityItemSelected?.label}
+              onValueChange={this._handleAccessibilitySelectChange}
+              placeholder={placeholderItem}
+              testID={testIDPrefix}
+              value={accessibilityItemSelected?.value || null}
+              wrapperStyle={styles.accessibilitySelectWrapper}
+            />
+            {carouselComponents}
+          </>
+        )}
+        {!screenReaderEnabled && (
+          <>
+            <ScrollView
+              bounces={false}
+              decelerationRate='fast'
+              horizontal
+              onMomentumScrollEnd={this.onScrollEnd}
+              pagingEnabled={false}
+              scrollViewRef={(ref: any) => (this.scrollView = ref)}
+              showsHorizontalScrollIndicator={false}
+              snapToInterval={screenWidth}
+              snapToStart
+              transparent>
+              {carouselComponents}
+            </ScrollView>
+            <View accessible={false} importantForAccessibility='no-hide-descendants'>
+              <Dots
+                active={activeIndex}
+                activeColor={PV.Colors.skyDark}
+                activeDotHeight={9}
+                activeDotWidth={9}
+                length={itemCount}
+                paddingVertical={12}
+                passiveColor={PV.Colors.grayLighter}
+                passiveDotHeight={8}
+                passiveDotWidth={8}
+              />
+            </View>
+          </>
+        )}
         {!!Config.ENABLE_VALUE_TAG_TRANSACTIONS && lnpayEnabled && hasValueInfo && (
           <View style={styles.boostButtonsContainer}>
-            <TouchableOpacity onPress={this._toggleSatStreaming} style={styles.boostButton}>
+            <PressableWithOpacity
+              onPress={this._toggleSatStreaming}
+              style={styles.boostButton}
+              testID={'stream_button'.prependTestId()}>
               <Text style={streamingButtonMainTextStyles} testID='stream_button_text_1'>
                 {satStreamText.toUpperCase()}
               </Text>
@@ -192,18 +249,19 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                 {streamingAmount} {translate('sats / min')}
               </Text>
               {streamingEnabled && isPlaying && (
-                <ActivityIndicator size={15} styles={{ position: 'absolute', right: 20 }} />
+                <ActivityIndicator size={15} styles={{ position: 'absolute', right: 20 }} testID={testIDPrefix} />
               )}
-            </TouchableOpacity>
-            <TouchableOpacity
+            </PressableWithOpacity>
+            <PressableWithOpacity
+              disabled={boostIsSending || boostWasSent}
               onLayout={(event) => {
                 this.setState({ explosionOrigin: event.nativeEvent.layout.y })
               }}
-              disabled={boostIsSending || boostWasSent}
+              onPress={this._attemptBoost}
               style={styles.boostButton}
-              onPress={this._attemptBoost}>
+              testID={'boost_button'.prependTestId()}>
               {boostIsSending ? (
-                <ActivityIndicator />
+                <ActivityIndicator testID={testIDPrefix} />
               ) : (
                 <>
                   <Text style={styles.boostButtonMainText} testID='boost_button_text_1'>
@@ -216,7 +274,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                   )}
                 </>
               )}
-            </TouchableOpacity>
+            </PressableWithOpacity>
           </View>
         )}
         {
@@ -234,9 +292,106 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 }
 
+const placeholderItem = {
+  label: translate('Select'),
+  value: null
+}
+
+const accessibilitySelectorItems = (hasChapters: boolean, hasComments: boolean, hasTranscript: boolean) => {
+  const items = [
+    accessibilityNowPlayingInfo,
+    {
+      label: translate('Episode Summary'),
+      value: _episodeSummaryKey
+    }
+  ]
+
+  if (hasChapters) {
+    items.push({
+      label: translate('Chapters'),
+      value: _chaptersKey
+    })
+  }
+
+  items.push({
+    label: translate('Clips'),
+    value: _clipsKey
+  })
+
+  if (hasComments) {
+    items.push({
+      label: translate('Comments'),
+      value: _commentsKey
+    })
+  }
+
+  if (hasTranscript) {
+    items.push({
+      label: translate('Transcript'),
+      value: _transcriptKey
+    })
+  }
+
+  return items
+}
+
+const mediaPlayerCarouselComponents = (
+  handlePressClipInfo: any,
+  screenWidth: number,
+  navigation: any,
+  hasChapters: boolean,
+  hasComments: boolean,
+  hasTranscript: boolean,
+  screenReaderEnabled: boolean,
+  accessibilityItemSelectedValue?: string | null
+) => {
+  return (
+    <>
+      {screenReaderEnabled ? (
+        <>
+          {(accessibilityItemSelectedValue === _nowPlayingInfoKey || !accessibilityItemSelectedValue) && (
+            <MediaPlayerCarouselViewer
+              handlePressClipInfo={handlePressClipInfo}
+              navigation={navigation}
+              width={screenWidth}
+            />
+          )}
+          {accessibilityItemSelectedValue === _episodeSummaryKey && (
+            <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
+          )}
+          {accessibilityItemSelectedValue === _chaptersKey && (
+            <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />
+          )}
+          {accessibilityItemSelectedValue === _clipsKey && (
+            <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
+          )}
+          {accessibilityItemSelectedValue === _commentsKey && (
+            <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />
+          )}
+          {accessibilityItemSelectedValue === _transcriptKey && <MediaPlayerCarouselTranscripts width={screenWidth} />}
+        </>
+      ) : (
+        <>
+          <MediaPlayerCarouselViewer
+            handlePressClipInfo={handlePressClipInfo}
+            navigation={navigation}
+            width={screenWidth}
+          />
+          <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
+          {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
+          <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
+          {hasComments && <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />}
+          {hasTranscript && <MediaPlayerCarouselTranscripts width={screenWidth} />}
+        </>
+      )}
+    </>
+  )
+}
+
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1
+  accessibilitySelectWrapper: {
+    justifyContent: 'center',
+    marginVertical: 8
   },
   boostButtonsContainer: {
     flexDirection: 'row'
@@ -257,5 +412,8 @@ const styles = StyleSheet.create({
   },
   boostButtonSubText: {
     fontSize: PV.Fonts.sizes.xs
+  },
+  wrapper: {
+    flex: 1
   }
 })

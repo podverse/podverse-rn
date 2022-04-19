@@ -1,10 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import NetInfo, { NetInfoState, NetInfoSubscription } from '@react-native-community/netinfo'
+import NetInfo, { NetInfoSubscription } from '@react-native-community/netinfo'
 import React, { Component } from 'react'
 import { Image, LogBox, Platform, StatusBar, View } from 'react-native'
 import Config from 'react-native-config'
 import { getFontScale } from 'react-native-device-info'
 import 'react-native-gesture-handler'
+import Orientation from 'react-native-orientation-locker'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
@@ -16,13 +17,12 @@ import { determineFontScaleMode } from './src/resources/Fonts'
 import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
 import { downloadCategoriesList } from './src/services/category'
-import { gaInitialize } from './src/services/googleAnalytics'
 import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
+import { hasValidDownloadingConnection } from './src/lib/network'
 
-LogBox.ignoreLogs(['Warning: componentWillUpdate'])
-LogBox.ignoreAllLogs(true)
+LogBox.ignoreLogs(['EventEmitter.removeListener', "Require cycle"])
 
 type Props = any
 
@@ -40,6 +40,9 @@ class App extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
+
+    Orientation.lockToPortrait()
+
     this.state = {
       appReady: false,
       minVersionMismatch: false
@@ -49,7 +52,7 @@ class App extends Component<Props, State> {
   }
 
   async componentDidMount() {
-    TrackPlayer.registerPlaybackService(() => require('./src/services/playerEvents'))
+    TrackPlayer.registerPlaybackService(() => require('./src/services/playerAudioEvents'))
     StatusBar.setBarStyle('light-content')
     Platform.OS === 'android' && StatusBar.setBackgroundColor(PV.Colors.ink, true)
     const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
@@ -60,38 +63,30 @@ class App extends Component<Props, State> {
       globalTheme = lightTheme
     }
 
-    await this.checkAppVersion()
     await this.setupGlobalState(globalTheme)
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
-    await gaInitialize()
   }
 
   componentWillUnmount() {
     this.unsubscribeNetListener && this.unsubscribeNetListener()
   }
 
-  handleNetworkChange = (state: NetInfoState) => {
+  handleNetworkChange = () => {
     (async () => {
       // isInternetReachable will be false
-      if (!state.isInternetReachable) {
-        return
-      }
-  
+
+      await this.checkAppVersion()
+      this.setState({ appReady: true })
       // Don't continue handleNetworkChange when internet is first reachable on initial app launch
       if (ignoreHandleNetworkChange) {
         ignoreHandleNetworkChange = false
         return
       }
   
-      if (state.type === 'wifi') {
+      if (await hasValidDownloadingConnection()) {
         refreshDownloads()
-      } else if (state.type === 'cellular') {
-        const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
-        if (downloadingWifiOnly) {
-          pauseDownloadingEpisodesAll()
-        } else {
-          refreshDownloads()
-        }
+      } else {
+        pauseDownloadingEpisodesAll()
       }
     })()
   }
@@ -105,9 +100,6 @@ class App extends Component<Props, State> {
         globalTheme: theme,
         fontScaleMode,
         fontScale
-      },
-      () => {
-        this.setState({ appReady: true })
       }
     )
   }

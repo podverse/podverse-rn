@@ -1,39 +1,78 @@
 import React from 'react'
-import { Text } from 'react-native'
+import { AccessibilityRole, Text } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
+import { ImportantForAccessibility } from '../lib/accessibilityHelpers'
 import { PV } from '../resources'
 
 type Props = {
+  accessible?: boolean
+  accessibilityHint?: string
+  accessibilityLabel?: string
+  accessibilityRole?: AccessibilityRole
   allowFontScaling?: boolean
-  children?: any
+  children?: string
   fontSizeLargerScale?: number
   fontSizeLargestScale?: number
+  importantForAccessibility?: ImportantForAccessibility
+  isNowPlaying?: boolean
   isSecondary?: any
   numberOfLines?: number
   onPress?: any
+  selectable?: boolean
   style?: any
   testID: string
 }
 
 export const PVText = (props: Props) => {
-  const { fontSizeLargerScale, fontSizeLargestScale, isSecondary, testID } = props
+  const { 
+    accessible,
+    accessibilityHint,
+    accessibilityLabel,
+    accessibilityRole,
+    allowFontScaling,
+    children,    
+    fontSizeLargerScale,
+    fontSizeLargestScale,
+    importantForAccessibility,
+    isNowPlaying,
+    isSecondary,
+    numberOfLines,
+    onPress,
+    selectable,
+    style,
+    testID } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const [censorNSFWText] = useGlobal('censorNSFWText')
+  const globalThemeText = isSecondary
+    ? globalTheme.textSecondary
+    : isNowPlaying
+    ? globalTheme.textNowPlaying
+    : globalTheme.text
 
-  const globalThemeText = isSecondary ? globalTheme.textSecondary : globalTheme.text
-
-  const textStyle = [globalThemeText, props.style]
+  const textStyle = [globalThemeText, style]
   if (fontScaleMode === PV.Fonts.fontScale.larger && fontSizeLargerScale) {
     textStyle.push({ fontSize: fontSizeLargerScale })
   } else if (fontScaleMode === PV.Fonts.fontScale.largest && fontSizeLargestScale) {
     textStyle.push({ fontSize: fontSizeLargestScale })
   }
 
-  return (
-    <Text {...props} style={textStyle} {...(testID ? testProps(testID) : {})}>
-      {typeof props.children === 'string' ? props.children?.sanitize(censorNSFWText) : props.children}
-    </Text>
+  const isValidTextNode = typeof children === 'string' || typeof children === 'number'
+
+  return (isValidTextNode ?
+    <Text
+      accessible={accessible}
+      accessibilityHint={accessibilityHint}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityRole={accessibilityRole}
+      allowFontScaling={allowFontScaling}
+      importantForAccessibility={importantForAccessibility}
+      numberOfLines={numberOfLines}
+      onPress={onPress}
+      selectable={selectable}
+      style={textStyle}
+      {...(testID ? { testID: testID.prependTestId() } : {})}>
+      {children.toString().sanitize(censorNSFWText)}
+    </Text> : null
   )
 }

@@ -2,7 +2,8 @@ import { NowPlayingItem } from 'podverse-shared'
 import { translate } from '../lib/i18n'
 import { sendVerificationEmail } from '../services/auth'
 import { logoutUser } from '../state/actions/auth'
-import { loadItemAndPlayTrack } from '../state/actions/player'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
+import { PV } from '.'
 
 const _expiredMessage = translate('To renew your membership please visit the Membership page')
 const _logoutButtonText = translate('Log Out')
@@ -14,20 +15,26 @@ const _sendVerificationEmailMessage = translate(
 const _cancelText = translate('Cancel')
 
 export const Alerts = {
-  ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM: (item: NowPlayingItem) => {
+  ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM: (item: NowPlayingItem, callback: any) => {
     const title = item.clipId ? item.clipTitle : item.episodeTitle
     const type = item.clipId ? translate('Clip') : translate('Episode')
 
     return {
-      message: `${translate('Do you want to resume ')}${item.podcastTitle} - ${title}?`,
+      message: `${translate('Do you want to resume ')} ${item?.podcastTitle} - ${title}?`,
       title: `${translate('Recent ')}${type}`,
       buttons: [
-        { text: translate('No') },
+        {
+          text: translate('No'),
+          onPress: () => { callback?.() }
+        },
         {
           text: translate('Yes'),
-          onPress: () => {
+          onPress: async () => {
             const shouldPlay = false
-            loadItemAndPlayTrack(item, shouldPlay)
+            const forceUpdateOrderDate = false
+            const setCurrentItemNextInQueue = false
+            await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+            callback?.()
           }
         }
       ]
@@ -36,6 +43,13 @@ export const Alerts = {
   BUTTONS: {
     OK: [{ text: translate('OK') }]
   },
+  GO_TO_LOGIN_BUTTONS: (navigation: any) => [
+    { text: translate('OK') },
+    {
+      text: translate('Go to Login'),
+      onPress: () => navigation.navigate(PV.RouteNames.AuthScreen)
+    }
+  ],
   EMAIL_NOT_VERIFIED: (email: string) => ({
     message: _sendVerificationEmailMessage,
     title: translate('Verify Your Email'),
@@ -56,6 +70,10 @@ export const Alerts = {
     message: translate('Invalid username or password'),
     title: translate('Login Error')
   },
+  LOGIN_TO_MARK_EPISODES_AS_PLAYED: {
+    message: translate('Please login to mark episodes as played'),
+    title: translate('Login Needed')
+  },
   NETWORK_ERROR: {
     message: (str?: string) =>
       !str
@@ -73,7 +91,7 @@ export const Alerts = {
     buttons: [{ text: _logoutButtonText, onPress: logoutUser }]
   },
   PREMIUM_MEMBERSHIP_REQUIRED: {
-    message: translate('Sign up for a premium account to use this feature'),
+    message: translate('Sign up for a premium membership to use this feature'),
     title: translate('Premium Membership Required')
   },
   PURCHASE_CANCELLED: {
@@ -94,11 +112,10 @@ export const Alerts = {
   },
   RESET_PASSWORD_SUCCESS: {
     message:
-      // tslint:disable-next-line
+      // eslint-disable-next-line max-len
       `${translate(
         'Please check your inbox If this address exists in our system you should receive a reset password email shortly'
-      )}
-       ${translate('The email may go to your Spam folder')}`,
+      )} ${translate('The email may go to your Spam folder')}`,
     title: translate('Reset Password Sent')
   },
   SIGN_UP_ERROR: {

@@ -1,14 +1,15 @@
 import { StyleSheet, View } from 'react-native'
 import React, { Fragment } from 'reactn'
 import { translate } from '../lib/i18n'
-import { readableClipTime, safelyUnwrapNestedVariable } from '../lib/utility'
+import { prefixClipLabel, readableClipTime, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
-import { PVTrackPlayer, restartNowPlayingItemClip } from '../services/player'
+import { playerGetPosition, playerRestartNowPlayingItemClip } from '../services/player'
 import { button, core } from '../styles'
 import { ActivityIndicator, Divider, Icon, TableSectionSelectors, Text, TextLink } from './'
 
 type Props = {
   createdAt: string
+  episodeTitle?: string
   endTime?: number
   isLoading?: boolean
   isOfficialChapter?: boolean
@@ -21,6 +22,8 @@ type Props = {
   startTime: number
   title?: string
 }
+
+const testIDPrefix = 'clip_info_view'
 
 export class ClipInfoView extends React.PureComponent<Props> {
   _navToProfileScreen = () => {
@@ -38,7 +41,7 @@ export class ClipInfoView extends React.PureComponent<Props> {
 
   _handleEditPress = async () => {
     const { isPublic, navigation } = this.props
-    const initialProgressValue = await PVTrackPlayer.getTrackPosition()
+    const initialProgressValue = await playerGetPosition()
     const isLoggedIn = safelyUnwrapNestedVariable(() => this.global.session.isLoggedIn, false)
     const globalTheme = safelyUnwrapNestedVariable(() => this.global.globalTheme, {})
 
@@ -54,6 +57,7 @@ export class ClipInfoView extends React.PureComponent<Props> {
   render() {
     const {
       endTime,
+      episodeTitle,
       isLoading,
       isOfficialChapter,
       isOfficialSoundBite,
@@ -67,28 +71,29 @@ export class ClipInfoView extends React.PureComponent<Props> {
 
     let { title } = this.props
     if (!title) {
-      title = isOfficialChapter ? translate('Untitled Chapter') : translate('Untitled Clip')
+      title = isOfficialChapter ? translate('Untitled Chapter') : prefixClipLabel(episodeTitle)
     }
     const sectionHeaderTitle = isOfficialChapter ? translate('Chapter Info') : translate('Clip Info')
 
     return (
-      <View style={styles.wrapper}>
-        {isLoading && <ActivityIndicator />}
+      <View accessible={false} style={styles.wrapper}>
+        {isLoading && <ActivityIndicator testID={testIDPrefix} />}
         {!isLoading && (
           <Fragment>
-            <TableSectionSelectors disableFilter selectedFilterLabel={sectionHeaderTitle} />
+            <TableSectionSelectors accessible={false} disableFilter selectedFilterLabel={sectionHeaderTitle} />
             <View style={core.row}>
-              <View style={styles.topTextWrapper}>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title}>
+              <View accessible={false} style={styles.topTextWrapper}>
+                <Text accessible={false} fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title}>
                   {title}
                 </Text>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.time}>
+                <Text accessible={false} fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.time}>
                   {readableClipTime(startTime, endTime)}
                 </Text>
               </View>
               {userId && userId === ownerId && (
-                <View style={styles.topEditButtonWrapper}>
+                <View accessible={false} style={styles.topEditButtonWrapper}>
                   <Icon
+                    accessible={false}
                     name='pencil-alt'
                     onPress={() => this._handleEditPress()}
                     size={26}
@@ -99,18 +104,19 @@ export class ClipInfoView extends React.PureComponent<Props> {
             </View>
             {!isOfficialChapter && !isOfficialSoundBite && (
               <View style={core.row}>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.ownerName}>
-                  By:{' '}
+                <Text accessible={false} fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.ownerName}>
+                  {`${translate('By')} `}
                 </Text>
                 {ownerIsPublic ? (
                   <TextLink
+                    accessible={false}
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     onPress={this._navToProfileScreen}
-                    style={styles.ownerName}>
-                    {ownerName || translate('anonymous')}
-                  </TextLink>
+                    style={styles.ownerName}
+                    text={ownerName || translate('anonymous')}
+                  />
                 ) : (
-                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.ownerName}>
+                  <Text accessible={false} fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.ownerName}>
                     {translate('anonymous')}
                   </Text>
                 )}
@@ -118,11 +124,12 @@ export class ClipInfoView extends React.PureComponent<Props> {
             )}
             {!isOfficialChapter && (
               <TextLink
+                accessible={false}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                onPress={restartNowPlayingItemClip}
-                style={styles.replayClip}>
-                {translate('Replay Clip')}
-              </TextLink>
+                onPress={playerRestartNowPlayingItemClip}
+                style={styles.replayClip}
+                text={translate('Replay Clip')}
+              />
             )}
             <Divider style={styles.divider} />
           </Fragment>
@@ -160,8 +167,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    marginTop: 12
+    fontWeight: PV.Fonts.weights.bold
   },
   topEditButtonWrapper: {
     flex: 0,
@@ -169,7 +175,8 @@ const styles = StyleSheet.create({
     marginTop: 12
   },
   topTextWrapper: {
-    flex: 1
+    flex: 1,
+    marginVertical: 8
   },
   wrapper: {
     flex: 1,

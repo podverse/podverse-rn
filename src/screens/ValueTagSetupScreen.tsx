@@ -2,11 +2,10 @@ import { Alert, Keyboard, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { SwitchWithText, Text, TextInput, TextRow, View } from '../components'
 import { translate } from '../lib/i18n'
-import { numberWithCommas, testProps } from '../lib/utility'
+import { numberWithCommas } from '../lib/utility'
 import { PV } from '../resources'
-import { getWalletInfo } from '../services/lnpay'
 import { trackPageView } from '../services/tracking'
-import { getLNWallet, removeLNPayWallet, toggleLNPayFeature, updateWalletInfo } from '../state/actions/lnpay'
+import { removeLNPayWallet, toggleLNPayFeature, updateWalletInfo } from '../state/actions/lnpay'
 import {
   MINIMUM_BOOST_PAYMENT,
   MINIMUM_STREAMING_PAYMENT,
@@ -31,7 +30,7 @@ const testIDPrefix = 'value_tag_setup_screen'
 export class ValueTagSetupScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    
+
     this.state = {
       localBoostAmount: '0',
       localStreamingAmount: '0',
@@ -62,7 +61,7 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
       this.props.navigation.navigate(PV.RouteNames.LNPaySignupScreen)
     } else {
       await removeLNPayWallet()
-      toggleLNPayFeature(false)
+      await toggleLNPayFeature(false)
       Alert.alert(translate('LNPay Wallet Removed'), translate('All LNPay data have been deleted from this device'))
     }
   }
@@ -77,13 +76,13 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
     const walletSatsBalanceText = numberWithCommas(walletSatsBalance) || 0
 
     return (
-      <View style={styles.content} {...testProps(`${testIDPrefix}_view`)}>
+      <View style={styles.content} testID={`${testIDPrefix}_view`}>
         <View style={styles.itemWrapper}>
           <SwitchWithText
             onValueChange={this._showLNPaySetup}
             subText={lnpayEnabled ? '' : translate('Enable Lightning Pay switch description')}
             testID={`${testIDPrefix}_lnpay_mode`}
-            text={translate(`Enable LNPay`)}
+            text={translate('Enable LNPay')}
             value={lnpayEnabled}
             wrapperStyle={styles.switchWithTextWrapper}
           />
@@ -93,10 +92,14 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
                 <Text style={core.headerText}>{translate('LNPay Wallet')}</Text>
                 <TextRow
                   label={`${translate('Balance')}: `}
-                  text={`${walletSatsBalanceText} ${translate('satoshis')}`} />
+                  testID={`${testIDPrefix}_balance`}
+                  text={`${walletSatsBalanceText} ${translate('satoshis')}`}
+                />
                 <TextRow
                   label={`${translate('Name')}: `}
-                  text={`${walletUserLabel ? walletUserLabel : '----'}`} />
+                  testID={`${testIDPrefix}_name`}
+                  text={`${walletUserLabel ? walletUserLabel : '----'}`}
+                />
               </View>
               <View style={styles.sectionWrapper}>
                 <Text style={core.headerText}>{translate('LNPay Global Settings')}</Text>
@@ -127,9 +130,7 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
                   keyboardType='numeric'
                   onBlur={() => {
                     const { localStreamingAmount } = this.state
-                    if (
-                      Number(localStreamingAmount)
-                      && Number(localStreamingAmount) > MINIMUM_STREAMING_PAYMENT) {
+                    if (Number(localStreamingAmount) && Number(localStreamingAmount) > MINIMUM_STREAMING_PAYMENT) {
                       updateGlobalStreamingAmount(Number(localStreamingAmount))
                     } else {
                       updateGlobalStreamingAmount(MINIMUM_STREAMING_PAYMENT)
@@ -157,8 +158,8 @@ const styles = StyleSheet.create({
   content: {
     alignItems: 'center',
     flex: 1,
-    paddingTop:20,
-    paddingHorizontal:15
+    paddingTop: 20,
+    paddingHorizontal: 15
   },
   itemWrapper: {
     marginBottom: 0,

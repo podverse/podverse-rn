@@ -19,24 +19,44 @@ const webPaths = {
 
 export const URLs = {
   api: async () => {
-    const isEnabled = await AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN_ENABLED)
-    const baseUrlOverride = await AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN)
+    const [isEnabled, baseUrlOverride] = await Promise.all([
+      AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN_ENABLED),
+      AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN)
+    ])
+
     return {
       baseUrl: (isEnabled && baseUrlOverride) || apiDefaultBaseUrl
     }
   },
   apiDefaultBaseUrl,
-  requestPodcast: Config.URL_EXTERNAL_REQUEST_PODCAST || '',
   social: {
     facebook: Config.URL_SOCIAL_FACEBOOK || '',
     github: Config.URL_SOCIAL_GITHUB || '',
     linkedin: Config.URL_SOCIAL_LINKEDIN || '',
     reddit: Config.URL_SOCIAL_REDDIT || '',
-    twitter: Config.URL_SOCIAL_TWITTER || ''
+    twitter: Config.URL_SOCIAL_TWITTER || '',
+    podcastIndex: Config.URL_PODCAST_INDEX || '',
+    discord: Config.URL_SOCIAL_DISCORD || '',
+    mastodonAccount: Config.URL_SOCIAL_MASTODON_ACCOUNT || ''
+  },
+  xmpp: {
+    chatRooms: {
+      general: Config.URL_XMPP_CHAT_ROOM_GENERAL,
+      dev: Config.URL_XMPP_CHAT_ROOM_DEV,
+      translations: Config.URL_XMPP_CHAT_ROOM_TRANSLATIONS
+    },
+    libraries: {
+      prosody: 'https://prosody.im/',
+      snikket: 'https://snikket.org/',
+      converse: 'https://conversejs.org/'
+    },
+    webClientUrl: Config.URL_XMPP_WEB_CLIENT
   },
   web: async () => {
-    const isEnabled = await AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED)
-    const baseUrlOverride = await AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN)
+    const [isEnabled, baseUrlOverride] = await Promise.all([
+      AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED),
+      AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN)
+    ])
     const base = isEnabled && baseUrlOverride ? baseUrlOverride : webDefaultBaseUrl
     return {
       baseUrl: base,

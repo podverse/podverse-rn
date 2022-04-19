@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { convertHoursMinutesSecondsToSeconds } from '../lib/utility'
 import { PV } from '../resources'
-import { PVTrackPlayer } from './player'
+import { playerHandlePauseWithUpdate } from './player'
 
 let sleepTimerInterval = null as any
 let timeRemaining = 0
@@ -17,7 +18,7 @@ export const getSleepTimerTimeRemaining = () => {
 
 export const handleSleepTimerReachedEnd = async () => {
   stopSleepTimer()
-  PVTrackPlayer.pause()
+  playerHandlePauseWithUpdate()
   const defaultTimeRemaining = await getSleepTimerDefaultTimeRemaining()
   timeRemaining = defaultTimeRemaining
 }
@@ -35,10 +36,7 @@ export const setSleepTimerDefaultTimeRemaining = async (seconds: number) => {
 }
 
 export const setSleepTimerTimeRemaining = (hours: number, minutes: number, seconds: number) => {
-  let totalSeconds = hours * 3600
-  totalSeconds += minutes * 60
-  totalSeconds += seconds
-  timeRemaining = totalSeconds
+  timeRemaining = convertHoursMinutesSecondsToSeconds(hours, minutes, seconds)
   return timeRemaining
 }
 
@@ -54,7 +52,7 @@ export const startSleepTimer = async () => {
     (async () => {
       const seconds = getSleepTimerTimeRemaining()
       timeRemaining = seconds - 1
-      
+
       if (timeRemaining <= 0) {
         await handleSleepTimerReachedEnd()
       }

@@ -1,11 +1,13 @@
 import React from 'react'
-import { StyleSheet, Switch, View } from 'react-native'
+import { Pressable, StyleSheet, Switch, View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, TextInput } from './'
 
 type Props = {
+  accessible?: boolean
+  accessibilityHint?: string
+  accessibilityLabel?: string
   inputAutoCorrect?: boolean
   inputEditable?: boolean
   inputEyebrowTitle?: string
@@ -15,8 +17,18 @@ type Props = {
   inputPlaceholder?: string
   inputShow?: boolean
   inputText?: string
+  input2AutoCorrect?: boolean
+  input2Editable?: boolean
+  input2EyebrowTitle?: string
+  input2HandleBlur?: any
+  input2HandleSubmit?: any
+  input2HandleTextChange?: any
+  input2Placeholder?: string
+  input2Show?: boolean
+  input2Text?: string
   onValueChange: any
   subText?: string
+  subTextAccessible?: boolean
   testID: string
   text: string
   value: boolean
@@ -25,6 +37,9 @@ type Props = {
 
 export const SwitchWithText = (props: Props) => {
   const {
+    accessible = true,
+    accessibilityHint,
+    accessibilityLabel,
     inputAutoCorrect,
     inputEditable,
     inputEyebrowTitle,
@@ -34,8 +49,18 @@ export const SwitchWithText = (props: Props) => {
     inputPlaceholder,
     inputShow,
     inputText,
+    input2AutoCorrect,
+    input2Editable,
+    input2EyebrowTitle,
+    input2HandleBlur,
+    input2HandleSubmit,
+    input2HandleTextChange,
+    input2Placeholder,
+    input2Show,
+    input2Text,
     onValueChange,
     subText,
+    subTextAccessible = false,
     testID,
     text,
     value,
@@ -45,15 +70,32 @@ export const SwitchWithText = (props: Props) => {
 
   return (
     <View style={wrapperStyle}>
-      <View style={styles.switchWrapper}>
-        <Switch onValueChange={onValueChange} value={value} {...(testID ? testProps(`${testID}_switch`) : {})} />
-        <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          style={styles.text}
-          {...(testID ? testProps(`${testID}_text`) : {})}>
-          {text}
-        </Text>
-      </View>
+      <Pressable
+        accessible={accessible}
+        accessibilityRole='switch'
+        importantForAccessibility='no'
+        onPress={onValueChange}>
+        <View accessible={false} style={styles.switchWrapper}>
+          <Switch
+            accessible={false}
+            accessibilityHint={accessibilityHint}
+            accessibilityLabel={accessibilityLabel}
+            importantForAccessibility='yes'
+            onValueChange={onValueChange}
+            value={value}
+            {...(testID ? { testID: `${testID}_switch`.prependTestId() } : {})}
+          />
+          <Text
+            accessible={false}
+            accessibilityLabel=''
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            importantForAccessibility='no'
+            style={styles.text}
+            {...(testID ? { testID: `${testID}_text` } : {})}>
+            {text}
+          </Text>
+        </View>
+      </Pressable>
       {inputShow && (
         <TextInput
           autoCapitalize='none'
@@ -68,17 +110,40 @@ export const SwitchWithText = (props: Props) => {
           placeholder={inputPlaceholder}
           returnKeyType='done'
           style={[globalTheme.textInput, styles.textInput]}
-          {...(testID ? testProps(`${testID}_text_input`) : {})}
+          {...(testID ? { testID: `${testID}_text_input` } : {})}
           underlineColorAndroid='transparent'
           value={inputText}
           wrapperStyle={styles.textInputWrapper}
         />
       )}
+      {input2Show && (
+        <TextInput
+          autoCapitalize='none'
+          autoCorrect={input2AutoCorrect}
+          editable={!!input2Editable}
+          eyebrowTitle={input2EyebrowTitle}
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          numberOfLines={1}
+          onBlur={input2HandleBlur}
+          onChangeText={input2HandleTextChange}
+          onSubmitEditing={input2HandleSubmit}
+          placeholder={input2Placeholder}
+          returnKeyType='done'
+          secureTextEntry
+          style={[globalTheme.textInput, styles.textInput]}
+          {...(testID ? { testID: `${testID}_text_input_2` } : {})}
+          underlineColorAndroid='transparent'
+          value={input2Text}
+          wrapperStyle={styles.textInputWrapper}
+        />
+      )}
       {!!subText && (
         <Text
+          accessible={subTextAccessible}
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          importantForAccessibility='no'
           style={[globalTheme.textSecondary, styles.subText]}
-          {...(testID ? testProps(`${testID}_sub_text`) : {})}>
+          {...(testID ? { testID: `${testID}_sub_text` } : {})}>
           {subText}
         </Text>
       )}

@@ -1,10 +1,10 @@
-import { TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { testProps } from '../lib/utility'
 import { navHeader } from '../styles'
-import { Text } from './'
+import { PressableWithOpacity, Text } from './'
 
 type Props = {
+  accessibilityHint?: string
+  accessibilityLabel?: string
   color?: string
   disabled?: boolean
   handlePress: any
@@ -14,7 +14,7 @@ type Props = {
 }
 
 export const NavHeaderButtonText = (props: Props) => {
-  const { color, disabled, handlePress, testID } = props
+  const { accessibilityHint, accessibilityLabel, color, disabled, handlePress, testID, text } = props
 
   const buttonTextStyle = [navHeader.buttonText]
 
@@ -23,13 +23,16 @@ export const NavHeaderButtonText = (props: Props) => {
   }
 
   return (
-    <TouchableOpacity
+    <PressableWithOpacity
+      accessibilityHint={accessibilityHint}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityRole='button'
       disabled={disabled}
       onPress={handlePress}
-      {...testProps(`${testID}_nav_header_button_text`)}>
+      testID={`${testID}_nav_header_button_text`.prependTestId()}>
       <Text allowFontScaling={false} style={buttonTextStyle} testID={`${testID}_text`}>
-        {props.text}
+        {text}
       </Text>
-    </TouchableOpacity>
+    </PressableWithOpacity>
   )
 }

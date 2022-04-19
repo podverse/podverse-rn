@@ -1,10 +1,11 @@
-import { StyleSheet, View as RNView } from 'react-native'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import AsyncStorage from '@react-native-community/async-storage'
+import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
+// import { hasValidNetworkConnection } from '../lib/network'
 import { FlatList, Icon, NavHeaderButtonText, Text, View } from '../components'
 import { generateSections } from '../lib/filters'
 import { translate } from '../lib/i18n'
-import { safeKeyExtractor, testProps } from '../lib/utility'
+import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import { getDefaultCategory } from '../services/category'
 import { trackPageView } from '../services/tracking'
@@ -20,14 +21,30 @@ type State = {
   selectedCategorySubItemKey?: string
   selectedFilterItemKey?: string
   selectedFromItemKey?: string
+  selectedMediaTypeItemKey?: string
   selectedSortItemKey?: string
   screenName: string
+  isOffline: boolean
+}
+
+type Item = {
+  label?: string
+  value?: string
+  parentId?: string
+  id?: string
+}
+
+type Section = {
+  title?: string
+  data?: Item[]
+  value?: string
+  accessibilityHint?: string
+  accessibilityRole?: string
 }
 
 const testIDPrefix = 'filter_screen'
 
 export class FilterScreen extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
 
@@ -41,7 +58,9 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey: '',
       selectedFilterItemKey: '',
       selectedFromItemKey: '',
-      selectedSortItemKey: ''
+      selectedMediaTypeItemKey: '',
+      selectedSortItemKey: '',
+      isOffline: false
     }
   }
 
@@ -52,12 +71,18 @@ export class FilterScreen extends React.Component<Props, State> {
       title: filterScreenTitle || '',
       headerLeft: () => null,
       headerRight: () => (
-        <NavHeaderButtonText handlePress={navigation.dismiss} testID={testIDPrefix} text={translate('Done')} />
+        <NavHeaderButtonText
+          accessibilityHint={translate('ARIA HINT - dismiss this screen')}
+          accessibilityLabel={translate('Done')}
+          handlePress={navigation.dismiss}
+          testID={testIDPrefix}
+          text={translate('Done')}
+        />
       )
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     trackPageView('/filter', 'Filter Screen')
     const { navigation } = this.props
     const { flatCategoryItems } = this.state
@@ -67,6 +92,7 @@ export class FilterScreen extends React.Component<Props, State> {
     const selectedCategorySubItemKey = navigation.getParam('selectedCategorySubItemKey')
     const selectedFilterItemKey = navigation.getParam('selectedFilterItemKey')
     const selectedFromItemKey = navigation.getParam('selectedFromItemKey')
+    const selectedMediaTypeItemKey = navigation.getParam('selectedMediaTypeItemKey')
     const selectedSortItemKey = navigation.getParam('selectedSortItemKey')
 
     const { newSelectedSortItemKey, sections } = generateSections({
@@ -77,8 +103,22 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFromItemKey,
+      selectedMediaTypeItemKey,
       selectedSortItemKey
     })
+
+    /*
+      TODO: disabling automatic offline detection within the FilterScreen
+      since it is preventing the app from being usable for
+      some iOS users. It seems this bug is affecting data plan users,
+      not WiFi users.
+
+      BUT we'll continue handling offline mode when it is manually
+      selected by the user in Settings.
+    */
+    // const isOffline = await hasValidNetworkConnection()
+    
+    const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
 
     this.setState({
       screenName,
@@ -87,11 +127,14 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFromItemKey,
-      selectedSortItemKey: newSelectedSortItemKey
+      selectedMediaTypeItemKey,
+      selectedSortItemKey: newSelectedSortItemKey,
+      // isOffline: !isOffline
+      isOffline: offlineModeEnabled
     })
   }
 
-  getNewLocalState = async (section: any, item: any) => {
+  getNewLocalState = async (section: Section, item: Item) => {
     const {
       flatCategoryItems,
       screenName,
@@ -99,17 +142,27 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFromItemKey,
+      selectedMediaTypeItemKey,
       selectedSortItemKey
     } = this.state
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
     const options = { addByRSSPodcastFeedUrl, flatCategoryItems, screenName } as any
 
-    if (section.value === PV.Filters._sectionFromKey) {
+    if (section.value === PV.Filters._sectionMediaTypeKey) {
+      options.selectedMediaTypeItemKey = item.value
+      options.selectedFromItemKey = selectedFromItemKey
+      options.selectedFilterItemKey = selectedFilterItemKey
+      options.selectedSortItemKey = selectedSortItemKey
+      options.selectedCategoryItemKey = selectedCategoryItemKey
+      options.selectedCategorySubItemKey = selectedCategorySubItemKey
+    } else if (section.value === PV.Filters._sectionFromKey) {
       options.selectedFromItemKey = item.value
       options.selectedFilterItemKey = selectedFilterItemKey
+      options.selectedMediaTypeItemKey = selectedMediaTypeItemKey
       options.selectedSortItemKey = selectedSortItemKey
     } else if (section.value === PV.Filters._sectionFilterKey) {
       options.selectedFilterItemKey = item.value
+      options.selectedMediaTypeItemKey = selectedMediaTypeItemKey
       options.selectedSortItemKey = selectedSortItemKey
       if (item.value === PV.Filters._categoryKey) {
         const defaultCategory = await getDefaultCategory()
@@ -123,6 +176,7 @@ export class FilterScreen extends React.Component<Props, State> {
         options.selectedCategoryItemKey = item?.value || item?.id
       }
       options.selectedFilterItemKey = selectedFilterItemKey
+      options.selectedMediaTypeItemKey = selectedMediaTypeItemKey
       options.selectedSortItemKey = selectedSortItemKey
     } else if (section.value === PV.Filters._sectionSortKey) {
       options.selectedSortItemKey = item?.value
@@ -130,6 +184,7 @@ export class FilterScreen extends React.Component<Props, State> {
       options.selectedCategoryItemKey = selectedCategoryItemKey
       options.selectedCategorySubItemKey = selectedCategorySubItemKey
       options.selectedFromItemKey = selectedFromItemKey
+      options.selectedMediaTypeItemKey = selectedMediaTypeItemKey
     }
 
     const {
@@ -137,6 +192,7 @@ export class FilterScreen extends React.Component<Props, State> {
       newSelectedCategorySubItemKey,
       newSelectedFilterItemKey,
       newSelectedFromItemKey,
+      newSelectedMediaTypeItemKey,
       newSelectedSortItemKey,
       sections
     } = generateSections(options)
@@ -146,16 +202,19 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey: newSelectedCategorySubItemKey,
       selectedFilterItemKey: newSelectedFilterItemKey,
       selectedFromItemKey: newSelectedFromItemKey,
+      selectedMediaTypeItemKey: newSelectedMediaTypeItemKey,
       selectedSortItemKey: newSelectedSortItemKey,
       sections
     }
   }
 
-  getSelectHandler = async (section: any, item: any) => {
+  getSelectHandler = async (section: Section, item: Item) => {
     const { navigation } = this.props
     let handleSelect: any
     let categoryValueOverride = ''
-    if (section.value === PV.Filters._sectionFromKey) {
+    if (section.value === PV.Filters._sectionMediaTypeKey) {
+      handleSelect = navigation.getParam('handleSelectMediaTypeItem')
+    } else if (section.value === PV.Filters._sectionFromKey) {
       handleSelect = navigation.getParam('handleSelectFromItem')
     } else if (section.value === PV.Filters._sectionFilterKey) {
       if (item.value === PV.Filters._categoryKey) {
@@ -183,6 +242,7 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFromItemKey,
+      selectedMediaTypeItemKey,
       selectedSortItemKey
     } = this.state
 
@@ -209,15 +269,27 @@ export class FilterScreen extends React.Component<Props, State> {
         isActive = true
       }
     } else {
-      isActive = [selectedFilterItemKey, selectedFromItemKey, selectedSortItemKey].includes(value)
+      isActive = [selectedFilterItemKey, selectedFromItemKey, selectedMediaTypeItemKey, selectedSortItemKey].includes(
+        value
+      )
     }
 
     const isSubCategory = item.parentId
     const itemTextStyle = isSubCategory ? [styles.itemSubText] : [styles.itemText]
 
+    const accessibilityHint = `${isActive ? translate('ARIA HINT - Currently selected filter') : ''}`
+
     return (
-      <TouchableWithoutFeedback
+      <Pressable
+        accessibilityHint={accessibilityHint}
+        accessibilityLabel={item.labelShort || item.label || item.title}
+        importantForAccessibility='yes'
         onPress={async () => {
+          if (this.state.isOffline) {
+            // We don't want filters to be selectable when offline
+            return
+          }
+
           const { categoryValueOverride, handleSelect } = await this.getSelectHandler(section, item)
           const newState = (await this.getNewLocalState(section, item)) as any
 
@@ -225,15 +297,21 @@ export class FilterScreen extends React.Component<Props, State> {
             handleSelect(categoryValueOverride || value)
           })
         }}
-        {...testProps(`${testIDPrefix}_${value}`)}>
+        testID={`${testIDPrefix}_${value}`.prependTestId()}>
         <View style={styles.itemWrapper}>
           <Text
+            importantForAccessibility='no-hide-descendants'
             style={[itemTextStyle, isActive ? { fontWeight: PV.Fonts.weights.extraBold, color: PV.Colors.white } : {}]}>
             {item.labelShort || item.label || item.title}
           </Text>
-          {isActive && <Icon style={styles.itemIcon} name='check' size={24} />}
+          {isActive && (
+            <Icon name='check' size={24} style={styles.itemIcon} testID={`${testIDPrefix}_${value}_check`} />
+          )}
+          {!isActive && this.state.isOffline && item.key !== PV.Filters._downloadedKey && (
+            <Icon name='times' size={24} style={styles.unavailableIcon} testID={`${testIDPrefix}_${value}_times`} />
+          )}
         </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
     )
   }
 
@@ -247,10 +325,17 @@ export class FilterScreen extends React.Component<Props, State> {
           disableNoResultsMessage
           keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.value || item?.id)}
           renderSectionHeader={({ section }) => (
-              <View style={styles.sectionItemWrapper}>
-                <Text style={styles.sectionItemText}>{section.title}</Text>
-              </View>
-            )}
+            <View style={styles.sectionItemWrapper}>
+              <Text
+                accessible
+                accessibilityHint={section.accessibilityHint}
+                accessibilityLabel={section.title}
+                accessibilityRole={section.accessibilityRole}
+                style={styles.sectionItemText}>
+                {section.title}
+              </Text>
+            </View>
+          )}
           renderItem={this.renderItem}
           sections={sections}
           testID={testIDPrefix}
@@ -268,6 +353,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginRight: 36,
     color: PV.Colors.brandBlueLight
+  },
+  unavailableIcon: {
+    marginTop: 4,
+    marginRight: 36,
+    color: PV.Colors.grayDark
   },
   itemSubText: {
     fontSize: PV.Fonts.sizes.xxxl,

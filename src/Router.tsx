@@ -1,19 +1,19 @@
-import { Image, Platform, View } from 'react-native'
+import { Image, View } from 'react-native'
 import Config from 'react-native-config'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator, NavigationStackOptions, NavigationStackProp } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { Component } from 'react'
-import { DownloadsActiveBadge, ErrorBoundary, NavSearchIcon, PVTabBar, TabBarLabel } from './components'
+import { DownloadsActiveBadge, ErrorBoundary, PVTabBar, TabBarLabel } from './components'
 import { PV } from './resources'
 import {
   AboutScreen,
+  AddPodcastByRSSAuthScreen,
   AddPodcastByRSSScreen,
   AuthScreen,
   ClipsScreen,
-  ValueTagConsentScreen,
-  ValueTagPreviewScreen,
-  ValueTagSetupScreen,
+  ContactScreen,
+  ContactXMPPChatScreen,
   DownloadsScreen,
   EditPlaylistScreen,
   EditProfileScreen,
@@ -25,6 +25,7 @@ import {
   FilterScreen,
   FundingScreen,
   HistoryScreen,
+  LNPaySignupScreen,
   MakeClipScreen,
   MembershipScreen,
   MoreScreen,
@@ -41,19 +42,31 @@ import {
   ProfilesScreen,
   PurchasingScreen,
   QueueScreen,
-  ScanQRCodeScreen,
+  ResetPasswordScreen,
+  // ScanQRCodeScreen,
   SearchScreen,
   SettingsScreen,
+  SettingsScreenAccount,
+  SettingsScreenAdvanced,
+  SettingsScreenVisualDesign,
+  SettingsScreenDownloads,
+  SettingsScreenHistory,
+  SettingsScreenPlayer,
+  SettingsScreenQueue,
+  SettingsScreenTracking,
   SleepTimerScreen,
+  StartPodcastFromTimeScreen,
+  SupportScreen,
   TermsOfServiceScreen,
-  LNPaySignupScreen,
+  TrackingConsentScreen,
+  ValueTagConsentScreen,
+  ValueTagPreviewScreen,
+  ValueTagSetupScreen,
   WebPageScreen
 } from './screens'
 import { darkTheme } from './styles'
-
-const tabTestProps = (id: string) => {
-  return { tabBarTestID: id, tabBarAccessibilityLabel: id }
-}
+import { PodcastInfoScreen } from './screens/PodcastInfoScreen'
+import { translate } from './lib/i18n'
 
 const defaultNavigationOptions = ({ navigation }) => {
   return {
@@ -62,17 +75,18 @@ const defaultNavigationOptions = ({ navigation }) => {
     headerTintColor: darkTheme.text.color,
     headerTitleStyle: {
       fontWeight: 'bold'
-    },
-    headerRight: () => <NavSearchIcon navigation={navigation} />,
-    // Prevent white screen flash on navigation on Android
-    ...(Platform.OS === 'android' ? { animationEnabled: false } : {}),
-    ...(Platform.OS === 'android' ? { backgroundColor: 'transparent' } : {})
+    }
+  //   headerRight: () => <NavSearchIcon navigation={navigation} />,
+  //   // Prevent white screen flash on navigation on Android
+  //   ...(Platform.OS === 'android' ? { animationEnabled: false } : {}),
+  //   ...(Platform.OS === 'android' ? { backgroundColor: 'transparent' } : {})
   } as NavigationStackOptions
 }
 
 const AuthNavigator = createStackNavigator(
   {
-    [PV.RouteNames.AuthScreen]: AuthScreen
+    [PV.RouteNames.AuthScreen]: AuthScreen,
+    [PV.RouteNames.ResetPasswordScreen]: ResetPasswordScreen
   },
   {
     defaultNavigationOptions
@@ -89,6 +103,9 @@ const PodcastsNavigator = createStackNavigator(
       screen: PodcastScreen,
       path: PV.DeepLinks.Podcast.path
     },
+    [PV.RouteNames.PodcastInfoScreen]: {
+      screen: PodcastInfoScreen
+    },
     [PV.RouteNames.EpisodeScreen]: {
       screen: EpisodeScreen,
       path: PV.DeepLinks.Episode.path
@@ -101,11 +118,12 @@ const PodcastsNavigator = createStackNavigator(
     defaultNavigationOptions,
     initialRouteName: PV.RouteNames.PodcastsScreen,
     navigationOptions: {
+      tabBarAccessibilityLabel: translate('Podcasts'),
       tabBarIcon: ({ tintColor }: { tintColor: any }) => (
         <Image source={PV.Tabs.Podcasts.icon} style={{ tintColor }} resizeMode={'contain'} />
       ),
       tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Podcasts.title} />,
-      ...tabTestProps('tab_podcasts_screen')
+      tabBarTestID: 'tab_podcasts_screen'.prependTestId()
     }
   }
 )
@@ -124,9 +142,10 @@ const EpisodesNavigator = createStackNavigator(
       tabBarIcon: ({ tintColor }: { tintColor: any }) => (
         <Image source={PV.Tabs.Episodes.icon} style={{ tintColor }} resizeMode={'contain'} />
       ),
+      tabBarAccessibilityLabel: translate('Episodes'),
       tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Episodes.title} />,
-      ...tabTestProps('tab_episodes_screen')
-    }
+      tabBarTestID: 'tab_episodes_screen'.prependTestId()
+    },
   }
 )
 
@@ -137,10 +156,11 @@ const ClipsNavigator = createStackNavigator(
   {
     defaultNavigationOptions,
     navigationOptions: {
+      tabBarAccessibilityLabel: translate('Clips'),
       tabBarIcon: ({ tintColor }: { tintColor: any }) =>
         <Image source={PV.Tabs.Clips.icon} style={{ tintColor }} resizeMode={'contain'} />,
       tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Clips.title} />,
-      ...tabTestProps('tab_clips_screen')
+      tabBarTestID: 'tab_clips_screen'.prependTestId()
     }
   }
 )
@@ -167,7 +187,18 @@ const MoreNavigator = createStackNavigator(
   {
     [PV.RouteNames.MoreScreen]: MoreScreen,
     [PV.RouteNames.SettingsScreen]: SettingsScreen,
+    [PV.RouteNames.SettingsScreenAccount]: SettingsScreenAccount,
+    [PV.RouteNames.SettingsScreenAdvanced]: SettingsScreenAdvanced,
+    [PV.RouteNames.SettingsScreenVisualDesign]: SettingsScreenVisualDesign,
+    [PV.RouteNames.SettingsScreenDownloads]: SettingsScreenDownloads,
+    [PV.RouteNames.SettingsScreenHistory]: SettingsScreenHistory,
+    [PV.RouteNames.SettingsScreenPlayer]: SettingsScreenPlayer,
+    [PV.RouteNames.SettingsScreenQueue]: SettingsScreenQueue,
+    [PV.RouteNames.SettingsScreenTracking]: SettingsScreenTracking,
     [PV.RouteNames.MembershipScreen]: MembershipScreen,
+    [PV.RouteNames.ContactScreen]: ContactScreen,
+    [PV.RouteNames.ContactXMPPChatScreen]: ContactXMPPChatScreen,
+    [PV.RouteNames.SupportScreen]: SupportScreen,
     [PV.RouteNames.AboutScreen]: AboutScreen,
     [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen,
     [PV.RouteNames.LNPaySignupScreen]: LNPaySignupScreen,
@@ -178,6 +209,7 @@ const MoreNavigator = createStackNavigator(
   {
     defaultNavigationOptions,
     navigationOptions: {
+      tabBarAccessibilityLabel: translate('More'),
       tabBarIcon: ({ tintColor }: { tintColor: any }) => {
         return (
           <View>
@@ -185,8 +217,8 @@ const MoreNavigator = createStackNavigator(
           </View>
         )
       },
-      tabBarLabel: (props) => <TabBarLabel {...props} title='More' />,
-      ...tabTestProps('tab_more_screen')
+      tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.More.title} />,
+      tabBarTestID: 'tab_more_screen'.prependTestId()
     }
   }
 )
@@ -221,17 +253,18 @@ const MyLibraryNavigator = createStackNavigator(
     initialRouteName: PV.RouteNames.MyLibraryScreen,
     defaultNavigationOptions,
     navigationOptions: {
+      tabBarAccessibilityLabel: translate('My Library'),
       // eslint-disable-next-line react/prop-types
       tabBarIcon: ({ tintColor }: { tintColor: any }) => {
         return (
           <View>
-            <Image source={PV.Tabs.Queue.icon} style={{ tintColor }} resizeMode={'contain'} />
+            <Image source={PV.Tabs.MyLibrary.icon} style={{ tintColor }} resizeMode={'contain'} />
             <DownloadsActiveBadge />
           </View>
         )
       },
-      tabBarLabel: (props) => <TabBarLabel {...props} title='My Library' />,
-      ...tabTestProps('tab_my_library_screen')
+      tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.MyLibrary.title} />,
+      tabBarTestID: 'tab_my_library_screen'.prependTestId()
     }
   }
 )
@@ -249,8 +282,13 @@ const OnboardingNavigator = createStackNavigator(
 )
 
 const allTabs = {
-  Podcasts: { screen: PodcastsNavigator, path: '' },
+  Podcasts: {
+    screen: PodcastsNavigator,
+    path: ''
+  },
   Episodes: EpisodesNavigator,
+  'MyLibrary': { screen: MyLibraryNavigator, path: '' },
+  // Remove this after the 'My Library' string is no longer used in NAV_STACK_TABS .env vars
   'My Library': { screen: MyLibraryNavigator, path: '' },
   Clips: ClipsNavigator,
   More: { screen: MoreNavigator, path: PV.DeepLinks.Search.path }
@@ -273,7 +311,7 @@ const PlayerNavigator = createStackNavigator(
       screen: PlayerScreen,
       path: PV.DeepLinks.Clip.path
     },
-    [PV.RouteNames.MakeClipScreen]: { screen: MakeClipScreen, navigationOptions: { gesturesEnabled: false } },
+    [PV.RouteNames.MakeClipScreen]: { screen: MakeClipScreen, navigationOptions: { gestureEnabled: false } },
     [PV.RouteNames.QueueScreen]: QueueScreen,
     [PV.RouteNames.PlayerFAQScreen]: FAQScreen,
     [PV.RouteNames.PlayerMyProfileScreen]: ProfileScreen,
@@ -296,6 +334,15 @@ const PlaylistsAddToNavigator = createStackNavigator(
 const SleepTimerNavigator = createStackNavigator(
   {
     [PV.RouteNames.SleepTimerScreen]: SleepTimerScreen
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
+const StartPodcastFromTimeNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.StartPodcastFromTimeScreen]: StartPodcastFromTimeScreen
   },
   {
     defaultNavigationOptions
@@ -341,16 +388,34 @@ const AddPodcastByRSSURLNavigator = createStackNavigator(
   }
 )
 
-const ScanQRCodeScreenNavigator = createStackNavigator(
+const AddPodcastByRSSAuthNavigator = createStackNavigator(
   {
-    [PV.RouteNames.ScanQRCodeScreen]: {
-      screen: ScanQRCodeScreen
-    }
+    [PV.RouteNames.AddPodcastByRSSAuthScreen]: AddPodcastByRSSAuthScreen
   },
   {
     defaultNavigationOptions
   }
 )
+
+const TrackingConsentNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.TrackingConsentScreen]: TrackingConsentScreen
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
+// const ScanQRCodeScreenNavigator = createStackNavigator(
+//   {
+//     [PV.RouteNames.ScanQRCodeScreen]: {
+//       screen: ScanQRCodeScreen
+//     }
+//   },
+//   {
+//     defaultNavigationOptions
+//   }
+// )
 
 const FundingScreenNavigator = createStackNavigator(
   {
@@ -386,16 +451,19 @@ const MainApp = createStackNavigator(
     SearchNavigator,
     FilterNavigator,
     SleepTimerNavigator,
+    StartPodcastFromTimeNavigator,
     WebPageNavigator,
     EmailVerificationNavigator,
     PurchasingNavigator,
-    ScanQRCodeScreenNavigator,
+    // ScanQRCodeScreenNavigator,
     FundingScreenNavigator,
     [PV.RouteNames.AddPodcastByRSSScreen]: {
       screen: AddPodcastByRSSURLNavigator,
       path: ''
     },
-    ValueTagOnboardingNavigator
+    AddPodcastByRSSAuthNavigator,
+    ValueTagOnboardingNavigator,
+    TrackingConsentNavigator
   },
   {
     mode: 'modal',
@@ -434,4 +502,4 @@ class AppNavigator extends Component<Props, State> {
 const App = createAppContainer(AppNavigator)
 const prefix = PV.DeepLinks.prefix
 
-export default () => <App uriPrefix={prefix} />
+export default () => <App uriPrefix={prefix} theme="dark"/>

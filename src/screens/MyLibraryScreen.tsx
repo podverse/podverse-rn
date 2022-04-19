@@ -3,7 +3,6 @@ import { Badge } from 'react-native-elements'
 import React from 'reactn'
 import { Divider, TableCell, Text, View } from '../components'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { core, table } from '../styles'
@@ -19,14 +18,13 @@ type State = {
 const testIDPrefix = 'my_library_screen'
 
 export class MyLibraryScreen extends React.Component<Props, State> {
-
   state = {
     options: []
   }
 
   static navigationOptions = () => ({
-      title: translate('My Library')
-    })
+    title: translate('My Library')
+  })
 
   componentDidMount() {
     trackPageView('/myLibrary', 'My Library Screen')
@@ -79,32 +77,48 @@ export class MyLibraryScreen extends React.Component<Props, State> {
     const featureOptions = this._myLibraryOptions(isLoggedIn)
 
     return (
-      <View style={core.backgroundView} {...testProps(`${testIDPrefix}_view`)}>
+      <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
-          renderItem={({ item }) => (
-              <TableCell 
+          renderItem={({ item }) => {
+            const accessibilityLabel =
+              item.key === _downloadsKey && downloadsActiveCount > 0
+                ? `${item.title} - ${downloadsActiveCount} ${
+                    downloadsActiveCount === 1 ? translate('Download in progress') : translate('Downloads in progress')
+                  }`
+                : item.key === _downloadsKey
+                ? `${item.title} - ${translate('No downloads in progress')}`
+                : item.title
+
+            return (
+              <TableCell
+                accessibilityLabel={accessibilityLabel}
                 testIDPrefix={`${testIDPrefix}_${item.key}`}
-                testIDSuffix='' 
-                onPress={() => this._onPress(item)}
-              >
+                testIDSuffix=''
+                onPress={() => this._onPress(item)}>
                 {item.key === _downloadsKey ? (
                   <RNView style={core.row}>
                     <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={table.cellText}>
-                    {item.title}
+                      {item.title}
                     </Text>
-                    {item.key === _downloadsKey && downloadsActiveCount > 0 &&
+                    {item.key === _downloadsKey &&
+                      downloadsActiveCount > 0 &&
                       fontScaleMode !== PV.Fonts.fontScale.larger &&
                       fontScaleMode !== PV.Fonts.fontScale.largest && (
                         <Badge
-                          badgeStyle={{ width:25, height:25, backgroundColor: PV.Colors.redLighter, borderRadius:12.5 }}
+                          badgeStyle={{
+                            width: 25,
+                            height: 25,
+                            backgroundColor: PV.Colors.redLighter,
+                            borderRadius: 12.5
+                          }}
                           containerStyle={{
                             position: 'absolute',
                             right: -32,
                             top: 0
                           }}
                           status='error'
-                          textStyle={{fontSize:PV.Fonts.largeSizes.xxl, fontWeight:PV.Fonts.weights.bold}}
+                          textStyle={{ fontSize: PV.Fonts.largeSizes.xxl, fontWeight: PV.Fonts.weights.bold }}
                           value={downloadsActiveCount}
                         />
                       )}
@@ -117,7 +131,8 @@ export class MyLibraryScreen extends React.Component<Props, State> {
                   </Text>
                 )}
               </TableCell>
-          )}
+            )
+          }}
           sections={[{ title: '', data: featureOptions }]}
         />
       </View>
@@ -125,7 +140,7 @@ export class MyLibraryScreen extends React.Component<Props, State> {
   }
 }
 
-const _downloadsKey = 'Downloads'
+const _downloadsKey = 'ActiveDownloads'
 const _queueKey = 'Queue'
 const _historyKey = 'History'
 const _myClipsKey = 'MyClips'
@@ -135,7 +150,7 @@ const _profilesKey = 'Profiles'
 
 const allMyLibraryFeatures = [
   {
-    title: translate('Downloads'),
+    title: translate('Active Downloads'),
     key: _downloadsKey,
     routeName: PV.RouteNames.DownloadsScreen
   },

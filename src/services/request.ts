@@ -10,10 +10,11 @@ type PVRequest = {
   headers?: any
   method?: string
   opts?: any
+  timeout?: any
 }
 
 export const request = async (req: PVRequest, customUrl?: string) => {
-  const { endpoint = '', query = {}, headers = {}, body, method = 'GET', opts = {} } = req
+  const { endpoint = '', query = {}, headers = {}, body, method = 'GET', opts = {}, timeout = 30000 } = req
 
   const queryString = Object.keys(query)
     .map((key) => {
@@ -35,7 +36,7 @@ export const request = async (req: PVRequest, customUrl?: string) => {
     ...(body ? { data: body } : {}),
     method,
     ...opts,
-    timeout: 30000
+    timeout
   }
 
   try {

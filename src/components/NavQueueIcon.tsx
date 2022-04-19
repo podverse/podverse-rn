@@ -1,4 +1,5 @@
 import React from 'react'
+import { translate } from '../lib/i18n'
 import { GlobalTheme } from '../../src/resources/Interfaces'
 import { darkTheme } from '../../src/styles'
 import { PV } from '../resources'
@@ -31,7 +32,12 @@ export const NavQueueIcon = (props: Props) => {
   }
 
   return (
-    <NavItemWrapper handlePress={handlePress} testID='nav_queue_icon'>
+    <NavItemWrapper
+      accessibilityHint={translate('ARIA HINT - go to your queue')}
+      accessibilityLabel={translate('Queue')}
+      accessibilityRole='button'
+      handlePress={handlePress}
+      testID='nav_queue_icon'>
       <NavItemIcon name='list' color={color} />
       {/* <Image
         source={PV.Images.QUEUE}

@@ -1,12 +1,11 @@
-import { Linking, StyleSheet, Alert, Keyboard } from 'react-native'
+import { Linking, StyleSheet, Alert, Keyboard, EmitterSubscription } from 'react-native'
 import React from 'reactn'
 import { createWallet, getWallet } from '../services/lnpay'
-import { Button, Divider,  Text, TextInput, View, ScrollView } from '../components'
+import { Button, Divider, Text, TextInput, View, ScrollView } from '../components'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
-import { LNWallet, saveLNPayWallet, toggleLNPayFeature } from '../state/actions/lnpay'
+import { LNWallet, saveLNPayWallet, toggleLNPayFeature, updateWalletInfo } from '../state/actions/lnpay'
 
 type Props = any
 
@@ -21,6 +20,8 @@ type State = {
 
 export class LNPaySignupScreen extends React.Component<Props, State> {
   scrollViewRef: typeof ScrollView | null = null
+  keyboardDidShow: EmitterSubscription
+  keyboardDidHide: EmitterSubscription
 
   constructor() {
     super()
@@ -40,21 +41,17 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
 
   componentDidMount() {
     trackPageView('/lnpaysignup', 'LNPay Signup')
-    Keyboard.addListener("keyboardDidShow", () => {
-      this.setState({isKeyboardShowing: true})
+    this.keyboardDidShow = Keyboard.addListener('keyboardDidShow', () => {
+      this.setState({ isKeyboardShowing: true })
     })
-    Keyboard.addListener("keyboardDidHide", () => {
-      this.setState({isKeyboardShowing: false})
+    this.keyboardDidHide = Keyboard.addListener('keyboardDidHide', () => {
+      this.setState({ isKeyboardShowing: false })
     })
   }
 
   componentWillUnmount() {
-    Keyboard.removeListener("keyboardDidShow", () => {
-      this.setState({isKeyboardShowing: true})
-    })
-    Keyboard.removeListener("keyboardDidHide", () => {
-      this.setState({isKeyboardShowing: false})
-    })
+    this.keyboardDidHide.remove()
+    this.keyboardDidShow.remove()
   }
 
   _attemptCreateWallet = async () => {
@@ -86,6 +83,7 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
           })
 
           await toggleLNPayFeature(true)
+          await updateWalletInfo()
           this.props.navigation.goBack()
         } else {
           throw new Error(
@@ -99,7 +97,6 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
     this.setState({ isAddingWallet: false })
   }
 
-
   render() {
     const { isAddingWallet } = this.state
 
@@ -109,42 +106,56 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
       translate('LNPayDescriptionText3')
     ]
 
-    const extraPadding = this.state.isKeyboardShowing ? {paddingBottom: 180} : {}
+    const extraPadding = this.state.isKeyboardShowing ? { paddingBottom: 180 } : {}
     return (
-      <View style={styles.content} {...testProps('lnpay_signup_screen_view')}>
-          <ScrollView 
-            contentContainerStyle={[styles.scrollViewContent, extraPadding]} 
-            scrollViewRef={(ref) => this.scrollViewRef = ref}
-          >
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-              {instructions[0]}
-              <Text
-                onPress={() => Linking.openURL(PV.URLs.lnpay.DeveloperDashboardUrl)}
-                style={this.global.globalTheme.link}>
-                {PV.URLs.lnpay.LoginUrl}
-              </Text>
+      <View style={styles.content} testID='lnpay_signup_screen_view'>
+        <ScrollView
+          contentContainerStyle={[styles.scrollViewContent, extraPadding]}
+          scrollViewRef={(ref) => (this.scrollViewRef = ref)}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
+            {instructions[0]}
+            <Text
+              onPress={() => Linking.openURL(PV.URLs.lnpay.DeveloperDashboardUrl)}
+              style={this.global.globalTheme.link}>
+              {PV.URLs.lnpay.LoginUrl}
             </Text>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-              {'\n'}
-              {instructions[1]}
-              <Text
-                onPress={() => Linking.openURL(PV.URLs.lnpay.DeveloperDashboardUrl)}
-                style={this.global.globalTheme.link}>
-                {PV.URLs.lnpay.DeveloperDashboardUrl}
-              </Text>
+          </Text>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
+            {'\n'}
+            {instructions[1]}
+            <Text
+              onPress={() => Linking.openURL(PV.URLs.lnpay.DeveloperDashboardUrl)}
+              style={this.global.globalTheme.link}>
+              {PV.URLs.lnpay.DeveloperDashboardUrl}
             </Text>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-              {'\n'}
-              {instructions[2]}
-            </Text>
-            <Divider style={styles.divider} />
+          </Text>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
+            {'\n'}
+            {instructions[2]}
+          </Text>
+          <Divider style={styles.divider} />
+          <TextInput
+            testID='ln_public_api_button'
+            value={this.state.apiKey}
+            onChangeText={(newText: string) => this.setState({ apiKey: newText.trim() })}
+            wrapperStyle={{ marginTop: 0 }}
+            placeholder={translate('Public API Key')}
+            eyebrowTitle={translate('Public API Key')}
+            autoCorrect={false}
+            onFocus={() => {
+              setTimeout(() => {
+                this.scrollViewRef && this.scrollViewRef.scrollToEnd({ animated: true })
+              }, 600)
+            }}
+          />
+          {!this.state.walletId && (
             <TextInput
-              testID='ln_public_api_button'
-              value={this.state.apiKey}
-              onChangeText={(newText: string) => this.setState({ apiKey: newText.trim() })}
-              wrapperStyle={{ marginTop: 0 }}
-              placeholder={translate('Public API Key')}
-              eyebrowTitle={translate('Public API Key')}
+              testID='create_wallet_name_input'
+              value={this.state.walletName}
+              onChangeText={(newText: string) => this.setState({ walletName: newText })}
+              wrapperStyle={{ marginTop: 10 }}
+              placeholder={translate('Wallet Name (Optional)')}
+              eyebrowTitle={translate('Wallet Name (Optional)')}
               autoCorrect={false}
               onFocus={() => {
                 setTimeout(() => {
@@ -152,61 +163,46 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
                 }, 600)
               }}
             />
-            {!this.state.walletId && (
-              <TextInput
-                testID='create_wallet_name_input'
-                value={this.state.walletName}
-                onChangeText={(newText: string) => this.setState({ walletName: newText })}
-                wrapperStyle={{ marginTop: 10 }}
-                placeholder={translate('Wallet Name (Optional)')}
-                eyebrowTitle={translate('Wallet Name (Optional)')}
-                autoCorrect={false}
-                onFocus={() => {
-                  setTimeout(() => {
-                    this.scrollViewRef && this.scrollViewRef.scrollToEnd({ animated: true })
-                  }, 600)
-                }}
-              />
-            )}
-            <Divider style={styles.divider} />
+          )}
+          <Divider style={styles.divider} />
+          <TextInput
+            testID='import_wallet_id_input'
+            value={this.state.walletId}
+            onChangeText={(newText: string) => this.setState({ walletId: newText.trim() })}
+            wrapperStyle={{ marginTop: 0 }}
+            placeholder={translate('Wallet ID (For An Existing Wallet)')}
+            eyebrowTitle={'Wallet Id'}
+            autoCorrect={false}
+            onFocus={() => {
+              setTimeout(() => {
+                this.scrollViewRef && this.scrollViewRef.scrollToEnd({ animated: true })
+              }, 600)
+            }}
+          />
+          {!!this.state.walletId && (
             <TextInput
-              testID='import_wallet_id_input'
-              value={this.state.walletId}
-              onChangeText={(newText: string) => this.setState({ walletId: newText.trim() })}
-              wrapperStyle={{ marginTop: 0 }}
-              placeholder={translate('Wallet ID (For An Existing Wallet)')}
-              eyebrowTitle={'Wallet Id'}
-              autoCorrect={false}
+              testID='import_wallet_key_input'
+              value={this.state.walletKey}
+              onChangeText={(newText: string) => this.setState({ walletKey: newText.trim() })}
+              wrapperStyle={{ marginTop: 10 }}
+              placeholder={translate('Wallet Admin Key')}
+              eyebrowTitle={translate('Wallet Admin Key')}
               onFocus={() => {
                 setTimeout(() => {
                   this.scrollViewRef && this.scrollViewRef.scrollToEnd({ animated: true })
                 }, 600)
               }}
             />
-            {!!this.state.walletId && (
-              <TextInput
-                testID='import_wallet_key_input'
-                value={this.state.walletKey}
-                onChangeText={(newText: string) => this.setState({ walletKey: newText.trim() })}
-                wrapperStyle={{ marginTop: 10 }}
-                placeholder={translate('Wallet Admin Key')}
-                eyebrowTitle={translate('Wallet Admin Key')}
-                onFocus={() => {
-                  setTimeout(() => {
-                    this.scrollViewRef && this.scrollViewRef.scrollToEnd({ animated: true })
-                  }, 600)
-                }}
-              />
-            )}
-            <Button
-              disabled={!this.state.apiKey || (!!this.state.walletId && !this.state.walletKey)}
-              isLoading={isAddingWallet}
-              onPress={this._attemptCreateWallet}
-              testID='create_wallet_button'
-              text={translate('Add Wallet')}
-              wrapperStyles={{ marginBottom: 20 }}
-            />
-          </ScrollView>
+          )}
+          <Button
+            disabled={!this.state.apiKey || (!!this.state.walletId && !this.state.walletKey)}
+            isLoading={isAddingWallet}
+            onPress={this._attemptCreateWallet}
+            testID='create_wallet_button'
+            text={translate('Add Wallet')}
+            wrapperStyles={{ marginBottom: 52 }}
+          />
+        </ScrollView>
       </View>
     )
   }

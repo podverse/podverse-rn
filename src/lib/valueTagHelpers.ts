@@ -4,8 +4,8 @@ import Config from 'react-native-config'
 import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { BannerInfoError } from '../resources/Interfaces'
+import { playerGetRate, playerGetPosition } from '../services/player'
 import { sendLNPayValueTransaction } from '../services/lnpay'
-import { PVTrackPlayer } from '../services/player'
 import { createSatoshiStreamStats } from './satoshiStream'
 
 /*
@@ -20,7 +20,7 @@ export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueT
 
   const { destinations, model } = podcastIndexValueTag
   let valueModel = {}
-  const valueRecipients = [] as ValueRecipient[]
+  const recipients = [] as ValueRecipient[]
 
   if (Array.isArray(destinations) && model) {
     const { method, suggested, type } = model
@@ -40,26 +40,26 @@ export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueT
         split: parseFloat(destination.split),
         type: destination.type
       } as ValueRecipient
-      valueRecipients.push(valueRecipient)
+      recipients.push(valueRecipient)
     }
   }
 
-  return [{ ...valueModel, valueRecipients }] as ValueTag[]
+  return [{ ...valueModel, recipients }] as ValueTag[]
 }
 
-const calculateNormalizedSplits = (valueRecipients: ValueRecipient[]) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+const calculateNormalizedSplits = (recipients: ValueRecipient[]) => {
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return []
 
   let normalizedValueRecipients: ValueRecipientNormalized[] = []
 
-  const totalSplit = valueRecipients.reduce((total, valueRecipient) => {
-    return total + parseFloat(valueRecipient.split)
+  const totalSplit = recipients.reduce((total, recipient) => {
+    return total + parseFloat(recipient.split)
   }, 0)
 
-  normalizedValueRecipients = valueRecipients.map((valueRecipient) => {
+  normalizedValueRecipients = recipients.map((recipient) => {
     return {
-      ...valueRecipient,
-      normalizedSplit: (parseFloat(valueRecipient.split) / totalSplit) * 100,
+      ...recipient,
+      normalizedSplit: (parseFloat(recipient.split) / totalSplit) * 100,
       amount: 0 // temporarily set the amount to 0
     }
   })
@@ -78,11 +78,10 @@ const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipien
     normalizedValueRecipient?.type
   )
 
-export const normalizeValueRecipients = (
-  valueRecipients: ValueRecipient[], total: number, roundDownValues: boolean) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+export const normalizeValueRecipients = (recipients: ValueRecipient[], total: number, roundDownValues: boolean) => {
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return []
 
-  const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(valueRecipients)
+  const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(recipients)
   const feeRecipient = normalizedValueRecipients.find((valueRecipient) => valueRecipient.fee === true)
   let feeAmount = 0
   if (feeRecipient) {
@@ -116,7 +115,7 @@ export const convertValueTagIntoValueTransactions = async (
   amount: number,
   roundDownValues: boolean
 ) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return []
 
   const { method, type } = valueTag
 
@@ -132,12 +131,9 @@ export const convertValueTagIntoValueTransactions = async (
   }
 
   const valueTransactions: ValueTransaction[] = []
-  const valueRecipients = valueTag.valueRecipients
-  const normalizedValueRecipients = normalizeValueRecipients(
-    valueRecipients,
-    amount,
-    roundDownValues
-  )
+  const recipients = valueTag.recipients
+
+  const normalizedValueRecipients = normalizeValueRecipients(recipients, amount, roundDownValues)
 
   for (const normalizedValueRecipient of normalizedValueRecipients) {
     const valueTransaction = await convertValueTagIntoValueTransaction(
@@ -164,9 +160,11 @@ const convertValueTagIntoValueTransaction = async (
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
 
   const timestamp = Date.now()
-  const speed = await PVTrackPlayer.getRate()
-  const currentPlaybackPosition = await PVTrackPlayer.getPosition()
-  const pubkey = 'podverse-dev-test-pubkey'
+  const [speed, currentPlaybackPosition] = await Promise.all([
+    playerGetRate(),
+    playerGetPosition()
+  ])
+  const pubkey = 'podverse-pubkey'
 
   const satoshiStreamStats = createSatoshiStreamStats(
     nowPlayingItem,
@@ -174,7 +172,10 @@ const convertValueTagIntoValueTransaction = async (
     action,
     speed.toString(),
     pubkey,
-    normalizedValueRecipient.amount.toString()
+    normalizedValueRecipient.amount.toString(),
+    normalizedValueRecipient.name || '',
+    normalizedValueRecipient.customKey || '',
+    normalizedValueRecipient.customValue || ''
   )
 
   return {
@@ -191,14 +192,18 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
 
   const errors: BannerInfoError[] = []
 
-  const valueTags = podcastValueFinal || nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
+  const valueTags =
+    podcastValueFinal ||
+    (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue) ||
+    (nowPlayingItem?.podcastValue?.length && nowPlayingItem?.podcastValue)
+
   // TODO: right now we are assuming the first item will be the lightning network
   // this will need to be updated to support additional valueTags
   const valueTag = valueTags[0]
   if (!valueTag) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
-  const { valueRecipients } = valueTag
-  if (!Array.isArray(valueRecipients)) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
+  const { recipients } = valueTag
+  if (!Array.isArray(recipients)) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
   const action = 'boost'
   const { session } = getGlobal()
@@ -300,7 +305,7 @@ export const clearValueTransactionQueue = async () => {
   minimum number of transactions.
 */
 export const bundleValueTransactionQueue = async () => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return []
 
   try {
     const transactionQueue = await getValueTransactionQueue()
@@ -373,20 +378,20 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
 
   try {
-    const transactionQueue = await getValueTransactionQueue()
-
     // TODO: right now we are assuming the first item will be the lightning network
     // this will need to be updated to support additional valueTags
     const valueTag = valueTags[0]
-
     const roundDownStreamingTransactions = false
-    const valueTransactions = await convertValueTagIntoValueTransactions(
-      valueTag,
-      nowPlayingItem,
-      'streaming',
-      amount,
-      roundDownStreamingTransactions
-    )
+    const [transactionQueue, valueTransactions] = await Promise.all([
+      getValueTransactionQueue(),
+      convertValueTagIntoValueTransactions(
+        valueTag,
+        nowPlayingItem,
+        'streaming',
+        amount,
+        roundDownStreamingTransactions
+      )
+    ])
 
     for (const transaction of valueTransactions) {
       transactionQueue.push(transaction)

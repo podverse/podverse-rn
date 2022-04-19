@@ -2,13 +2,17 @@ import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
+import AsyncStorage from '@react-native-community/async-storage'
+import { PV } from '../resources'
+import { getSecureUrl } from '../services/tools'
+import { getPodcastCredentialsHeader } from '../services/parser'
+import { getPodcastFeedUrlAuthority } from '../services/podcast'
 import * as DownloadState from '../state/actions/downloads'
 import { addDownloadedPodcastEpisode, getDownloadedPodcasts } from './downloadedPodcast'
 import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode } from './downloadingEpisode'
 import { hasValidDownloadingConnection } from './network'
 import {
   convertBytesToHumanReadableString,
-  convertUrlToSecureHTTPS,
   getAppUserAgent,
   getExtensionFromUrl,
   safelyUnwrapNestedVariable
@@ -43,8 +47,12 @@ export const cancelDownloadTask = (episodeId: string) => {
 
 export const deleteDownloadedEpisode = async (episode: any) => {
   const ext = getExtensionFromUrl(episode.mediaUrl)
-  const downloader = await BackgroundDownloader()
-  const path = `${downloader.directories.documents}/${episode.id}${ext}`
+  const [downloader, customLocation] = await Promise.all([
+    BackgroundDownloader(),
+    AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  ])
+  const folderPath = customLocation ? customLocation : downloader.directories.documents
+  const path = `${folderPath}/${episode.id}${ext}`
 
   try {
     await RNFS.unlink(path)
@@ -57,18 +65,32 @@ export const deleteDownloadedEpisode = async (episode: any) => {
 const addDLTask = (episode: any, podcast: any) =>
   DownloadState.addDownloadTask({
     addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
+    episodeChaptersUrl: episode.chaptersUrl,
+    episodeCredentialsRequired: episode.credentialsRequired,
     episodeDescription: episode.description,
     episodeDuration: episode.duration,
+    episodeFunding: episode.funding,
     episodeId: episode.id,
     episodeImageUrl: episode.imageUrl,
+    episodeLinkUrl: episode.linkUrl,
     episodeMediaUrl: episode.mediaUrl,
     episodePubDate: episode.pubDate,
     episodeTitle: episode.title,
+    episodeTranscript: episode.transcript,
+    episodeValue: episode.value,
+    podcastCredentialsRequired: podcast.credentialsRequired,
+    podcastFunding: podcast.funding,
+    podcastHasVideo: podcast.hasVideo,
+    podcastHideDynamicAdsWarning: podcast.hideDynamicAdsWarning,
     podcastId: podcast.id,
     podcastImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
     podcastIsExplicit: podcast.isExplicit,
+    podcastLinkUrl: podcast.linkUrl,
+    podcastMedium: podcast.medium,
+    podcastShrunkImageUrl: podcast.shrunkImageUrl,
     podcastSortableTitle: podcast.sortableTitle,
-    podcastTitle: podcast.title
+    podcastTitle: podcast.title,
+    podcastValue: podcast.value
   })
 
 // NOTE: I was unable to get BackgroundDownloader to successfully resume tasks that were
@@ -127,17 +149,42 @@ export const downloadEpisode = async (
     minTime: 2000
   })
 
-  const downloader = await BackgroundDownloader()
-  const destination = `${downloader.directories.documents}/${episode.id}${ext}`
-  const secureEpisodeMediaUrl = convertUrlToSecureHTTPS(episode.mediaUrl)
+  let finalFeedUrl = podcast.addByRSSPodcastFeedUrl
+  if (podcast.credentialsRequired && !podcast.addByRSSPodcastFeedUrl && podcast.id) {
+    finalFeedUrl = await getPodcastFeedUrlAuthority(podcast.id)
+  }
+
+  const [downloader, customLocation] = await Promise.all([
+    BackgroundDownloader(),
+    AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  ])
+  const folderPath = customLocation ? customLocation : downloader.directories.documents
+
+  const destination = `${folderPath}/${episode.id}${ext}`
+  const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
+
+  let downloadUrl = episode.mediaUrl
+  if (downloadUrl.startsWith('http://')) {
+    try {
+      const secureUrlInfo = await getSecureUrl(episode.mediaUrl)
+      if (secureUrlInfo?.secureUrl) {
+        downloadUrl = secureUrlInfo.secureUrl
+      }
+    } catch (err) {
+      console.log('Secure url not found for http mediaUrl. Info: ', err)
+    }
+  }
 
   // Wait for t.stop() to complete
   setTimeout(() => {
     const task = downloader
       .download({
         id: episode.id,
-        url: secureEpisodeMediaUrl,
-        destination
+        url: downloadUrl,
+        destination,
+        headers: {
+          ...(Authorization ? { Authorization } : {})
+        }
       })
       .begin(() => {
         if (!restart) {
@@ -184,8 +231,10 @@ export const downloadEpisode = async (
 }
 
 export const initDownloads = async () => {
-  const episodes = await getDownloadingEpisodes()
-  const downloader = await BackgroundDownloader()
+  const [episodes, downloader] = await Promise.all([
+    getDownloadingEpisodes(),
+    BackgroundDownloader()
+  ])
   existingDownloadTasks = await downloader.checkForExistingDownloads()
 
   let timeout = 0
@@ -300,4 +349,35 @@ export const pauseDownloadTask = (downloadTaskState: DownloadState.DownloadTaskS
   const { episodeId } = downloadTaskState
   const task = downloadTasks.find((task) => task.id === episodeId)
   if (task) task.pause()
+}
+
+export const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
+  let isDownloadedFile = true
+  try {
+    const filePath = await getDownloadedFilePath(id, episodeMediaUrl)
+    await RNFS.stat(filePath)
+  } catch (innerErr) {
+    isDownloadedFile = false
+  }
+  return isDownloadedFile
+}
+
+export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string) => {
+  const ext = getExtensionFromUrl(episodeMediaUrl)
+  const [downloader, customLocation] = await Promise.all([
+    BackgroundDownloader(),
+    AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+  ])
+  const folderPath = customLocation ? customLocation : downloader.directories.documents
+
+  /* If downloaded episode is for an addByRSSPodcast, then the episodeMediaUrl
+     will be the id, so remove the URL params from the URL, and don't append
+     an extension to the file path.
+  */
+  if (id && id.indexOf('http') > -1) {
+    const idWithoutUrlParams = id.split('?')[0]
+    return `${folderPath}/${idWithoutUrlParams}`
+  } else {
+    return `${folderPath}/${id}${ext}`
+  }
 }

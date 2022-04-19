@@ -1,12 +1,14 @@
 import debounce from 'lodash/debounce'
 import { Alert, StyleSheet, View } from 'react-native'
 import React from 'reactn'
+import { clearTempMediaRef } from '../state/actions/mediaRef'
 import { refreshDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
-import { updatePlaybackState, updatePlayerState } from '../state/actions/player'
+import { playerUpdatePlaybackState, playerUpdatePlayerState } from '../state/actions/player'
 import { getQueueItems } from '../state/actions/queue'
+import { getHistoryItems, updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 
 type Props = any
 
@@ -19,18 +21,20 @@ export class PlayerEvents extends React.PureComponent<Props> {
 
   componentDidMount() {
     PVEventEmitter.on(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI, this._playerCannotStreamWithoutWifi)
+    PVEventEmitter.on(PV.Events.PLAYER_HISTORY_INDEX_SHOULD_UPDATE, this._historyItemsShouldUpdate)
+    PVEventEmitter.on(PV.Events.PLAYER_PLAYBACK_ERROR, this._handlePlayerPlaybackError)
     PVEventEmitter.on(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED, this._refreshNowPlayingItem)
     PVEventEmitter.on(PV.Events.PLAYER_STATE_CHANGED, this._playerStateUpdated)
     PVEventEmitter.on(PV.Events.PLAYER_TRACK_CHANGED, this._refreshNowPlayingItem)
-    PVEventEmitter.on(PV.Events.PLAYER_PLAYBACK_ERROR, this._handlePlayerPlaybackError)
   }
 
   componentWillUnmount() {
     PVEventEmitter.removeListener(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
+    PVEventEmitter.removeListener(PV.Events.PLAYER_HISTORY_INDEX_SHOULD_UPDATE)
+    PVEventEmitter.removeListener(PV.Events.PLAYER_PLAYBACK_ERROR)
     PVEventEmitter.removeListener(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
     PVEventEmitter.removeListener(PV.Events.PLAYER_STATE_CHANGED)
     PVEventEmitter.removeListener(PV.Events.PLAYER_TRACK_CHANGED)
-    PVEventEmitter.removeListener(PV.Events.PLAYER_PLAYBACK_ERROR)
   }
 
   _playerCannotStreamWithoutWifi = () => {
@@ -42,24 +46,32 @@ export class PlayerEvents extends React.PureComponent<Props> {
   }
 
   _handlePlayerPlaybackError = () => {
-    updatePlaybackState(PV.Player.errorState)
+    playerUpdatePlaybackState(PV.Player.errorState)
   }
 
   _playerStateUpdated = () => {
-    updatePlaybackState()
+    playerUpdatePlaybackState()
   }
 
   _refreshNowPlayingItem = () => {
     (async () => {
+      clearTempMediaRef()
       refreshDownloadedPodcasts()
 
       const nowPlayingItem = await getNowPlayingItemLocally()
       if (nowPlayingItem) {
-        await updatePlayerState(nowPlayingItem)
+        playerUpdatePlayerState(nowPlayingItem)
       }
-   
-      await updatePlaybackState()
-      await getQueueItems()
+
+      await playerUpdatePlaybackState()
+      getQueueItems()
+    })()
+  }
+
+  _historyItemsShouldUpdate = () => {
+    (async () => {
+      await updateHistoryItemsIndex()
+      PVEventEmitter.emit(PV.Events.PLAYER_HISTORY_INDEX_DID_UPDATE)
     })()
   }
 

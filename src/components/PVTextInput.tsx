@@ -1,12 +1,13 @@
 import React from 'react'
-import { Platform, TextInput } from 'react-native'
+import { Platform, Pressable, TextInput } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { Text, View } from '.'
 
 type Props = {
+  accessibilityHint?: string
+  accessibilityLabel?: string
   alwaysShowEyebrow?: boolean
   autoCapitalize?: any
   autoCompleteType?: any
@@ -22,6 +23,7 @@ type Props = {
   onFocus?: any
   onChange?: any
   onChangeText?: any
+  onPress?: any
   onSubmitEditing?: any
   placeholder?: string
   placeholderTextColor?: string
@@ -36,6 +38,8 @@ type Props = {
 
 export const PVTextInput = (props: Props) => {
   const {
+    accessibilityHint,
+    accessibilityLabel,
     alwaysShowEyebrow,
     autoCapitalize,
     autoCompleteType,
@@ -49,6 +53,7 @@ export const PVTextInput = (props: Props) => {
     onFocus,
     onChange,
     onChangeText,
+    onPress,
     onSubmitEditing,
     placeholder,
     placeholderTextColor,
@@ -80,26 +85,34 @@ export const PVTextInput = (props: Props) => {
 
   const hasText = !!value && value.length
 
-  return (
+  const inputComponent = (
     <View style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
       {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
-        <Text style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]} testID={`${testID}_text_input_eyebrow`}>
+        <Text
+          accessible={false}
+          importantForAccessibility='no'
+          style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]}
+          testID={`${testID}_text_input_eyebrow`}>
           {eyebrowTitle || placeholder}
         </Text>
       )}
       <TextInput
+        accessible
+        accessibilityLabel={accessibilityLabel}
         autoCapitalize={autoCapitalize}
         autoCompleteType={autoCompleteType}
         autoCorrect={autoCorrect}
         blurOnSubmit={returnKeyType === 'done'}
         editable={!!editable}
         keyboardType={keyboardType}
+        importantForAccessibility={!onPress ? 'yes' : 'no'}
         multiline={numberOfLines > 1}
         numberOfLines={hasText ? numberOfLines : 1}
         onBlur={onBlur}
         onFocus={onFocus}
         onChange={onChange}
         onChangeText={onChangeText}
+        onPressIn={onPress}
         onSubmitEditing={onSubmitEditing}
         placeholder={placeholder}
         placeholderTextColor={placeholderTextColor || globalTheme.placeholderText.color}
@@ -108,9 +121,22 @@ export const PVTextInput = (props: Props) => {
         secureTextEntry={secureTextEntry}
         style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
         underlineColorAndroid={underlineColorAndroid}
-        {...(testID ? testProps(`${testID}_text_input`) : {})}
+        {...(testID ? { testID: `${testID}_text_input`.prependTestId() } : {})}
         value={value}
       />
     </View>
+  )
+
+  return !!onPress ? (
+    <Pressable
+      accessible={!!onPress}
+      accessibilityHint={accessibilityHint}
+      accessibilityLabel={accessibilityLabel}
+      importantForAccessibility={!!onPress ? 'yes' : 'no'}
+      onPress={onPress}>
+      {inputComponent}
+    </Pressable>
+  ) : (
+    inputComponent
   )
 }

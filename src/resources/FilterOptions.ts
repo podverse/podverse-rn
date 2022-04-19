@@ -3,9 +3,12 @@ import { translate } from '../lib/i18n'
 import { Filters } from './Filters'
 
 const {
+  _mediaTypeAllContent,
+  _mediaTypeVideoOnly,
   _subscribedKey,
   _downloadedKey,
   _allPodcastsKey,
+  _customFeedsKey,
   _categoryKey,
   _alphabeticalKey,
   _mostRecentKey,
@@ -30,6 +33,17 @@ const {
 } = Filters
 
 const _top = [_topPastDay, _topPastWeek, _topPastMonth, _topPastYear, _topAllTime]
+
+const mediaTypeItems = [
+  {
+    label: translate('All'),
+    value: _mediaTypeAllContent
+  },
+  {
+    label: translate('Video Only'),
+    value: _mediaTypeVideoOnly
+  }
+]
 
 const sortAlphabeticalItem = {
   label: translate('A-Z'),
@@ -57,6 +71,10 @@ const allFilterTypeItems = [
   {
     label: translate('Category'),
     value: _categoryKey
+  },
+  {
+    label: translate('Custom Feeds'),
+    value: _customFeedsKey
   },
   {
     label: translate('My Clips'),
@@ -110,23 +128,23 @@ const allSortItems = [
     value: _oldestKey
   },
   {
-    label: translate('top - day'),
+    label: translate('top – day'),
     value: _topPastDay
   },
   {
-    label: translate('top - week'),
+    label: translate('top – week'),
     value: _topPastWeek
   },
   {
-    label: translate('top - month'),
+    label: translate('top – month'),
     value: _topPastMonth
   },
   {
-    label: translate('top - year'),
+    label: translate('top – year'),
     value: _topPastYear
   },
   {
-    label: translate('top - all time'),
+    label: translate('top – all time'),
     value: _topAllTime
   },
   {
@@ -161,12 +179,13 @@ const fromItems = allFromListItems.filter((item: any) => {
 })
 
 export const FilterOptions = {
+  mediaTypeItems,
   fromItems,
   typeItems,
   sortItems,
   screenFilters: {
     ClipsScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
+      type: [_subscribedKey, _allPodcastsKey, _categoryKey],
       sort: [_mostRecentKey, ..._top]
     },
     EpisodeMediaRefScreen: {
@@ -180,7 +199,7 @@ export const FilterOptions = {
     },
     PlayerScreen: {
       clipsFrom: [_fromThisEpisodeKey, _fromThisPodcastKey],
-      clipsFromEpisodeSort: [_chronologicalKey, _mostRecentKey, ..._top],
+      clipsFromEpisodeSort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey],
       clipsFromPodcastSort: [_mostRecentKey, ..._top]
     },
     PodcastScreen: {
@@ -190,14 +209,15 @@ export const FilterOptions = {
       addByPodcastRSSFeedURLSort: [_mostRecentKey]
     },
     PodcastsScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
-      sort: [..._top]
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _customFeedsKey],
+      sort: [..._top],
+      subscribedSort: [_alphabeticalKey]
     },
     ProfileScreen: {
       type: [_podcastsKey, _clipsKey, _playlistsKey],
-      sortClips: [_mostRecentKey, ..._top],
+      sortClips: [_mostRecentKey, ..._top, _randomKey],
       sortPlaylists: [_alphabeticalKey],
-      sortPodcasts: [_alphabeticalKey, _mostRecentKey, ..._top]
+      sortPodcasts: [_alphabeticalKey, _mostRecentKey, ..._top, _randomKey]
     }
   },
   items: {

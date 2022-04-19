@@ -1,4 +1,4 @@
-import { Dimensions, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
+import { Dimensions, ScrollView, StyleSheet } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { translate } from '../lib/i18n'
@@ -49,10 +49,24 @@ export class Login extends React.Component<Props, State> {
     })
   }
 
+  emailBlur = () => {
+    const { email } = this.state
+    if (email) {
+      this.setState({ email: email.trim() })
+    }
+  }
+
   passwordChanged = (password: string) => {
     this.setState({ password }, () => {
       this.checkIfSubmitIsDisabled()
     })
+  }
+
+  passwordBlur = () => {
+    const { password } = this.state
+    if (password) {
+      this.setState({ password: password.trim() })
+    }
   }
 
   render() {
@@ -62,10 +76,12 @@ export class Login extends React.Component<Props, State> {
     return (
       <ScrollView contentContainerStyle={styles.scrollViewContent} style={styles.scrollView}>
         <TextInput
+          accessibilityHint={translate('ARIA HINT - Type your premium membership email address')}
           autoCapitalize='none'
           autoCompleteType='email'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           keyboardType='email-address'
+          onBlur={this.emailBlur}
           onChangeText={this.emailChanged}
           onSubmitEditing={() => {
             this.secondTextInput.focus()
@@ -77,14 +93,16 @@ export class Login extends React.Component<Props, State> {
           wrapperStyle={core.textInputWrapper}
         />
         <TextInput
+          accessibilityHint={translate('ARIA HINT - Type your password')}
           autoCapitalize='none'
           autoCompleteType='password'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          onChangeText={this.passwordChanged}
-          placeholder={translate('Password')}
           inputRef={(input) => {
             this.secondTextInput = input
           }}
+          onBlur={this.passwordBlur}
+          onChangeText={this.passwordChanged}
+          placeholder={translate('Password')}
           returnKeyType='done'
           secureTextEntry
           testID={`${testIDPrefix}_password`}
@@ -92,18 +110,20 @@ export class Login extends React.Component<Props, State> {
           underlineColorAndroid='transparent'
           wrapperStyle={core.textInputWrapper}
         />
-        <TouchableOpacity activeOpacity={1}>
-          <Button
-            disabled={submitIsDisabled}
-            isLoading={isLoading}
-            isPrimary={!submitIsDisabled}
-            onPress={this.login}
-            testID={`${testIDPrefix}_submit`}
-            text={translate('Login')}
-            wrapperStyles={styles.signInButton}
-          />
-          {bottomButtons}
-        </TouchableOpacity>
+        <Button
+          accessibilityHint={
+            submitIsDisabled ? translate('ARIA HINT - Type a valid email and password to enable the login button') : ''
+          }
+          accessibilityLabel={translate('Login')}
+          disabled={submitIsDisabled}
+          isLoading={isLoading}
+          isPrimary={!submitIsDisabled}
+          onPress={this.login}
+          testID={`${testIDPrefix}_submit`}
+          text={translate('Login')}
+          wrapperStyles={styles.signInButton}
+        />
+        {bottomButtons}
       </ScrollView>
     )
   }
@@ -113,7 +133,7 @@ const deviceWidth = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
   signInButton: {
-    marginBottom: 16
+    marginTop: 8
   },
   signInButtonText: {},
   scrollView: {

@@ -46,7 +46,11 @@ export const getDefaultSortForFilter = (options: any) => {
       }
       break
     case PV.RouteNames.PodcastsScreen:
-      if (selectedFilterItemKey === PV.Filters._downloadedKey || selectedFilterItemKey === PV.Filters._subscribedKey) {
+      if (
+        selectedFilterItemKey === PV.Filters._downloadedKey ||
+        selectedFilterItemKey === PV.Filters._subscribedKey ||
+        selectedFilterItemKey === PV.Filters._customFeedsKey
+      ) {
         newSelectedSortItemKey = PV.Filters._alphabeticalKey
       } else {
         newSelectedSortItemKey = !PV.FilterOptions.screenFilters.PodcastsScreen.sort.includes(newSelectedSortItemKey)
@@ -78,6 +82,10 @@ export const getDefaultSortForFilter = (options: any) => {
   return newSelectedSortItemKey
 }
 
+const filterAccessibilityHint = 'ARIA HINT - Select a primary filter from the list below'
+const categoryAccessibilityHint = 'ARIA HINT - Select a category from the list below'
+const sortingFilterAccessibilityHint = 'ARIA HINT - Select a sorting filter from the list below'
+
 export const generateSections = (options: any) => {
   let sortItems: any[] = PV.FilterOptions.sortItems
   const {
@@ -87,9 +95,11 @@ export const generateSections = (options: any) => {
     selectedCategoryItemKey,
     selectedCategorySubItemKey,
     selectedFilterItemKey,
-    selectedFromItemKey
+    selectedFromItemKey,
+    selectedMediaTypeItemKey
   } = options
 
+  const mediaTypeItems = PV.FilterOptions.mediaTypeItems
   let filterItems: any[] = []
   let fromItems: any[] = []
   let sections: any[] = []
@@ -98,6 +108,7 @@ export const generateSections = (options: any) => {
   const newSelectedFilterItemKey = selectedFilterItemKey
   const newSelectedSortItemKey = getDefaultSortForFilter(options)
   const newSelectedFromItemKey = selectedFromItemKey
+  const newSelectedMediaTypeItemKey = selectedMediaTypeItemKey
 
   /* If the key does not match any filter type, assume it is a category id. */
   const includeCategories =
@@ -127,13 +138,43 @@ export const generateSections = (options: any) => {
 
       sections = includeCategories
         ? [
-            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-            { title: translate('Category'), data: flatCategoryItems, value: PV.Filters._sectionCategoryKey },
-            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+            {
+              title: translate('Filter'),
+              data: filterItems,
+              value: PV.Filters._sectionFilterKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Category'),
+              data: flatCategoryItems,
+              value: PV.Filters._sectionCategoryKey,
+              accessibilityHint: translate(categoryAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Sort'),
+              data: sortItems,
+              value: PV.Filters._sectionSortKey,
+              accessibilityHint: translate(sortingFilterAccessibilityHint),
+              accessibilityRole: 'header'
+            }
           ]
         : [
-            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+            {
+              title: translate('Filter'),
+              data: filterItems,
+              value: PV.Filters._sectionFilterKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Sort'),
+              data: sortItems,
+              value: PV.Filters._sectionSortKey,
+              accessibilityHint: translate(sortingFilterAccessibilityHint),
+              accessibilityRole: 'header'
+            }
           ]
 
       break
@@ -178,13 +219,57 @@ export const generateSections = (options: any) => {
 
       sections = includeCategories
         ? [
-            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-            { title: translate('Category'), data: flatCategoryItems, value: PV.Filters._sectionCategoryKey },
-            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+            {
+              title: translate('Media Type'),
+              data: mediaTypeItems,
+              value: PV.Filters._sectionMediaTypeKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Filter'),
+              data: filterItems,
+              value: PV.Filters._sectionFilterKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Category'),
+              data: flatCategoryItems,
+              value: PV.Filters._sectionCategoryKey,
+              accessibilityHint: translate(categoryAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Sort'),
+              data: sortItems,
+              value: PV.Filters._sectionSortKey,
+              accessibilityHint: translate(sortingFilterAccessibilityHint),
+              accessibilityRole: 'header'
+            }
           ]
         : [
-            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+            {
+              title: translate('Media Type'),
+              data: mediaTypeItems,
+              value: PV.Filters._sectionMediaTypeKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Filter'),
+              data: filterItems,
+              value: PV.Filters._sectionFilterKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Sort'),
+              data: sortItems,
+              value: PV.Filters._sectionSortKey,
+              accessibilityHint: translate(sortingFilterAccessibilityHint),
+              accessibilityRole: 'header'
+            }
           ]
 
       break
@@ -235,13 +320,29 @@ export const generateSections = (options: any) => {
       }
 
       sections = [
-        { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-        { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+        {
+          title: translate('Filter'),
+          data: filterItems,
+          value: PV.Filters._sectionFilterKey,
+          accessibilityHint: translate(filterAccessibilityHint),
+          accessibilityRole: 'header'
+        },
+        {
+          title: translate('Sort'),
+          data: sortItems,
+          value: PV.Filters._sectionSortKey,
+          accessibilityHint: translate(sortingFilterAccessibilityHint),
+          accessibilityRole: 'header'
+        }
       ]
 
       break
     case PV.RouteNames.PodcastsScreen:
-      if (selectedFilterItemKey === PV.Filters._downloadedKey || selectedFilterItemKey === PV.Filters._subscribedKey) {
+      if (
+        selectedFilterItemKey === PV.Filters._downloadedKey ||
+        selectedFilterItemKey === PV.Filters._subscribedKey ||
+        selectedFilterItemKey === PV.Filters._customFeedsKey
+      ) {
         newSelectedCategoryItemKey = ''
         newSelectedCategorySubItemKey = ''
         sortItems = sortItems.filter((item) => item.value === PV.Filters._alphabeticalKey)
@@ -259,13 +360,57 @@ export const generateSections = (options: any) => {
 
       sections = includeCategories
         ? [
-            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-            { title: translate('Category'), data: flatCategoryItems, value: PV.Filters._sectionCategoryKey },
-            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+            {
+              title: translate('Media Type'),
+              data: mediaTypeItems,
+              value: PV.Filters._sectionMediaTypeKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Filter'),
+              data: filterItems,
+              value: PV.Filters._sectionFilterKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Category'),
+              data: flatCategoryItems,
+              value: PV.Filters._sectionCategoryKey,
+              accessibilityHint: translate(categoryAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Sort'),
+              data: sortItems,
+              value: PV.Filters._sectionSortKey,
+              accessibilityHint: translate(sortingFilterAccessibilityHint),
+              accessibilityRole: 'header'
+            }
           ]
         : [
-            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+            {
+              title: translate('Media Type'),
+              data: mediaTypeItems,
+              value: PV.Filters._sectionMediaTypeKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Filter'),
+              data: filterItems,
+              value: PV.Filters._sectionFilterKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Sort'),
+              data: sortItems,
+              value: PV.Filters._sectionSortKey,
+              accessibilityHint: translate(sortingFilterAccessibilityHint),
+              accessibilityRole: 'header'
+            }
           ]
 
       break
@@ -294,8 +439,20 @@ export const generateSections = (options: any) => {
       }
 
       sections = [
-        { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-        { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+        {
+          title: translate('Filter'),
+          data: filterItems,
+          value: PV.Filters._sectionFilterKey,
+          accessibilityHint: translate(filterAccessibilityHint),
+          accessibilityRole: 'header'
+        },
+        {
+          title: translate('Sort'),
+          data: sortItems,
+          value: PV.Filters._sectionSortKey,
+          accessibilityHint: translate(sortingFilterAccessibilityHint),
+          accessibilityRole: 'header'
+        }
       ]
 
       break
@@ -309,6 +466,7 @@ export const generateSections = (options: any) => {
     newSelectedCategorySubItemKey,
     newSelectedFilterItemKey,
     newSelectedFromItemKey,
+    newSelectedMediaTypeItemKey,
     newSelectedSortItemKey,
     sections
   }

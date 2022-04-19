@@ -1,16 +1,8 @@
 import { Alert, StyleSheet } from 'react-native'
 import React from 'reactn'
-import {
-  ActivityIndicator,
-  Divider,
-  DropdownButtonSelect,
-  NavHeaderButtonText,
-  TextInput,
-  View
-} from '../components'
+import { ActivityIndicator, Divider, DropdownButtonSelect, NavHeaderButtonText, TextInput, View } from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { getAuthUserInfo } from '../state/actions/auth'
@@ -29,7 +21,6 @@ type State = {
 const testIDPrefix = 'edit_profile_screen'
 
 export class EditProfileScreen extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
     const user = props.navigation.getParam('user')
@@ -42,15 +33,17 @@ export class EditProfileScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = ({ navigation }) => ({
-      title: translate('Edit Profile'),
-      headerRight: () => (
-        <NavHeaderButtonText
-          handlePress={navigation.getParam('updateUser')}
-          testID={testIDPrefix}
-          text={translate('Save')}
-        />
-      )
-    })
+    title: translate('Edit My Profile'),
+    headerRight: () => (
+      <NavHeaderButtonText
+        accessibilityHint={translate('ARIA HINT - save these changes to your profile')}
+        accessibilityLabel={translate('Save')}
+        handlePress={navigation.getParam('updateUser')}
+        testID={testIDPrefix}
+        text={translate('Save')}
+      />
+    )
+  })
 
   async componentDidMount() {
     this.props.navigation.setParams({ updateUser: this._updateUser })
@@ -61,7 +54,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
     }
     this.setState({ isLoading: false })
 
-    trackPageView('/edit-profile', 'Edit Profile Screen')
+    trackPageView('/edit-profile', 'Edit My Profile Screen')
   }
 
   _updateUser = async () => {
@@ -129,10 +122,11 @@ export class EditProfileScreen extends React.Component<Props, State> {
     }
 
     return (
-      <View style={styles.view} {...testProps('edit_profile_screen_view')}>
+      <View style={styles.view} testID='edit_profile_screen_view'>
         {!isLoading ? (
-          <View>
+          <>
             <TextInput
+              accessibilityHint={translate('ARIA HINT - This is your profile name edit')}
               autoCapitalize='none'
               autoCompleteType='off'
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -145,6 +139,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
               value={name}
             />
             <DropdownButtonSelect
+              accessibilityHint={selectedIsPublicOption.label}
               helpText={helpText}
               items={isPublicOptions}
               label={selectedIsPublicOption.label}
@@ -153,9 +148,9 @@ export class EditProfileScreen extends React.Component<Props, State> {
               value={selectedIsPublicKey}
               wrapperStyle={styles.dropdownButtonSelectWrapper}
             />
-          </View>
+          </>
         ) : (
-          <ActivityIndicator fillSpace />
+          <ActivityIndicator fillSpace testID={testIDPrefix} />
         )}
       </View>
     )

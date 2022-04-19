@@ -1,49 +1,105 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { Pressable, StyleSheet, View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
+import { convertSecToHHMMSS } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, TextInput } from './'
 
 type Props = {
-  handleChangeText: any
+  accessibilityHint?: string
+  accessibilityLabel?: string
+  editable?: boolean
+  handleChangeText?: any
+  handleOnBlur?: any
   handleSubmitEditing?: any
+  isHHMMSS?: boolean
   isSmallText?: boolean
   selectedNumber?: number | string | null
   subText?: string
   testID: string
   text: string
+  textInputOnPress?: any
+  textInputStyle?: any
+  wrapperOnPress?: any
 }
 
 export const NumberSelectorWithText = (props: Props) => {
-  const { handleChangeText, handleSubmitEditing, isSmallText, selectedNumber = 0, subText, testID, text } = props
+  const {
+    accessibilityHint,
+    accessibilityLabel,
+    editable,
+    handleChangeText,
+    handleOnBlur,
+    handleSubmitEditing,
+    isHHMMSS,
+    isSmallText,
+    selectedNumber = 0,
+    subText,
+    testID,
+    text,
+    textInputOnPress,
+    textInputStyle = {},
+    wrapperOnPress
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
-  const strNum = Number.isInteger(selectedNumber) ? selectedNumber.toString() : selectedNumber
+
+  let strNum = ''
+  const parsedNumber = typeof selectedNumber === 'string' ? parseInt(selectedNumber, 10) : selectedNumber
+  if (parsedNumber || parsedNumber === 0) {
+    strNum = isHHMMSS ? convertSecToHHMMSS(parsedNumber) : parsedNumber.toString()
+  }
+
+  const textInput = (
+    <View
+      accessibilityHint={!!wrapperOnPress ? '' : accessibilityHint}
+      accessibilityLabel={!!wrapperOnPress ? '' : accessibilityLabel}
+      style={styles.innerWrapper}>
+      <TextInput
+        accessibilityLabel={accessibilityLabel}
+        autoCompleteType='off'
+        editable={editable}
+        fontSizeLargestScale={PV.Fonts.largeSizes.md}
+        keyboardType='numeric'
+        onBlur={handleOnBlur}
+        onChangeText={handleChangeText}
+        onPress={textInputOnPress}
+        onSubmitEditing={handleSubmitEditing}
+        placeholderTextColor={globalTheme.placeholderText.color}
+        returnKeyType='done'
+        style={[styles.textInput, textInputStyle]}
+        testID={testID}
+        value={strNum}
+        wrapperStyle={{ marginBottom: 0 }}
+      />
+      <Text
+        accessible={false}
+        importantForAccessibility='no'
+        fontSizeLargestScale={PV.Fonts.largeSizes.md}
+        style={isSmallText ? styles.mediumText : styles.text}>
+        {text}
+      </Text>
+    </View>
+  )
+
   return (
     <View style={styles.outerWrapper}>
-      <View style={styles.innerWrapper}>
-        <TextInput
-          autoCompleteType='off'
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          keyboardType='numeric'
-          onChangeText={handleChangeText}
-          onSubmitEditing={handleSubmitEditing}
-          placeholderTextColor={globalTheme.placeholderText.color}
-          returnKeyType='done'
-          style={styles.textInput}
-          testID={testID}
-          value={strNum}
-          wrapperStyle={{ marginBottom: 0 }}
-        />
-        <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={isSmallText ? styles.smallText : styles.text}>
-          {text}
-        </Text>
-      </View>
+      {!!wrapperOnPress ? (
+        <Pressable
+          accessibilityHint={accessibilityHint}
+          accessibilityLabel={accessibilityLabel}
+          onPress={wrapperOnPress}>
+          {textInput}
+        </Pressable>
+      ) : (
+        textInput
+      )}
       {subText && (
         <Text
+          accessible={false}
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          importantForAccessibility='no'
           style={[globalTheme.textSecondary, styles.subText]}
-          {...(testID ? testProps(`${testID}_sub_text`) : {})}>
+          {...(testID ? { testID: `${testID}_sub_text` } : {})}>
           {subText}
         </Text>
       )}

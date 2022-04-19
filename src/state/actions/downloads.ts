@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import type { PodcastMedium } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { getEpisodes } from '../../services/episode'
 import {
@@ -21,7 +22,7 @@ import {
   getAutoDownloadSettings as getAutoDownloadSettingsService,
   updateAutoDownloadSettings as updateAutoDownloadSettingsService
 } from '../../services/autoDownloads'
-import { parseAddByRSSPodcast } from '../../services/parser'
+import { getPodcastCredentials, parseAddByRSSPodcast } from '../../services/parser'
 import { clearNowPlayingItem } from './player'
 
 // The DownloadTaskState should have the same episode and podcast properties as a NowPlayingItem,
@@ -31,19 +32,33 @@ export type DownloadTaskState = {
   bytesTotal?: string
   bytesWritten?: string
   completed?: boolean
+  episodeChaptersUrl?: string
+  episodeCredentialsRequired?: boolean
   episodeDescription?: string
   episodeDuration?: number
+  episodeFunding?: any
   episodeId: string
   episodeImageUrl?: string
+  episodeLinkUrl?: string
   episodeMediaUrl: string
   episodePubDate?: string
   episodeTitle?: string
+  episodeTranscript?: any
+  episodeValue?: any
   percent?: number
+  podcastCredentialsRequired?: boolean
+  podcastFunding?: any
+  podcastHasVideo: boolean
+  podcastHideDynamicAdsWarning?: boolean
   podcastId?: string
   podcastImageUrl?: string
   podcastIsExplicit?: boolean
+  podcastLinkUrl?: string
+  podcastMedium: PodcastMedium
+  podcastShrunkImageUrl?: string
   podcastSortableTitle?: boolean
   podcastTitle?: string
+  podcastValue?: any
   status?: DownloadStatus
 }
 
@@ -108,13 +123,23 @@ export const getDownloadStatusText = (status?: string) => {
 }
 
 export const initDownloads = async () => {
-  const { downloadsActive, downloadsArray } = await initDownloadsService()
-  const downloadedEpisodeIds = await getDownloadedEpisodeIdsService()
-  const downloadedPodcastEpisodeCounts = await getDownloadedPodcastEpisodeCountsService()
-  const downloadedPodcasts = await getDownloadedPodcastsService()
-  const autoDownloadSettings = await getAutoDownloadSettingsService()
-  const downloadedEpisodeLimitCount = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT)
-  const downloadedEpisodeLimitDefault = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
+  const [
+    { downloadsActive, downloadsArray },
+    downloadedEpisodeIds,
+    downloadedPodcastEpisodeCounts,
+    downloadedPodcasts,
+    autoDownloadSettings,
+    downloadedEpisodeLimitCount,
+    downloadedEpisodeLimitDefault
+  ] = await Promise.all([
+    initDownloadsService(),
+    getDownloadedEpisodeIdsService(),
+    getDownloadedPodcastEpisodeCountsService(),
+    getDownloadedPodcastsService(),
+    getAutoDownloadSettingsService(),
+    AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT),
+    AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
+  ])
 
   // TODO: There is a race condition preventing this state from being set properly on app launch :(
   // I don't know where the problem is coming from...
@@ -171,7 +196,8 @@ export const updateAutoDownloadSettingsAddByRSS = (addByRSSPodcastFeedUrl: strin
       const newAutoDownloadSettings = await updateAutoDownloadSettingsService(addByRSSPodcastFeedUrl)
       setGlobal({ autoDownloadSettings: newAutoDownloadSettings }, async () => {
         if(autoDownloadOn) {
-          const podcast = await parseAddByRSSPodcast(addByRSSPodcastFeedUrl)
+          const credentials = await getPodcastCredentials(addByRSSPodcastFeedUrl)
+          const podcast = await parseAddByRSSPodcast(addByRSSPodcastFeedUrl, credentials)
           if(podcast && podcast.episodes && podcast.episodes[0]) {
             downloadEpisode(podcast.episodes[0], podcast)
           }
@@ -182,9 +208,11 @@ export const updateAutoDownloadSettingsAddByRSS = (addByRSSPodcastFeedUrl: strin
 }
 
 export const updateDownloadedPodcasts = async (cb?: any) => {
-  const downloadedEpisodeIds = await getDownloadedEpisodeIdsService()
-  const downloadedPodcastEpisodeCounts = await getDownloadedPodcastEpisodeCountsService()
-  const downloadedPodcasts = await getDownloadedPodcastsService()
+  const [downloadedEpisodeIds, downloadedPodcastEpisodeCounts, downloadedPodcasts] = await Promise.all([
+    getDownloadedEpisodeIdsService(),
+    getDownloadedPodcastEpisodeCountsService(),
+    getDownloadedPodcastsService()
+  ])
 
   setGlobal(
     {
@@ -346,10 +374,6 @@ export const removeDownloadedPodcast = async (podcastId: string) => {
 }
 
 export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
-  const { clearedNowPlayingItem } = await removeDownloadedPodcastEpisodeService(episodeId)
+  await removeDownloadedPodcastEpisodeService(episodeId)
   await updateDownloadedPodcasts()
-
-  if (clearedNowPlayingItem) {
-    clearNowPlayingItem()
-  }
 }

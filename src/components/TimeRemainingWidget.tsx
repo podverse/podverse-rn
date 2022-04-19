@@ -1,21 +1,33 @@
 import { convertToNowPlayingItem } from 'podverse-shared'
 import React, { useState } from 'react'
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
-import { convertSecToHhoursMMinutes, testProps, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
+import { checkIfNowPlayingItem, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
-import { PVTrackPlayer, setPlaybackPosition } from '../services/player'
-import { loadItemAndPlayTrack, togglePlay } from '../state/actions/player'
-import { Icon, MoreButton, Text, View } from './'
+import PVEventEmitter from '../services/eventEmitter'
+import {
+  playerHandlePlayWithUpdate,
+  playerCheckIfStateIsPlaying,
+  playerHandleSeekTo,
+  playerGetState
+} from '../services/player'
+import { setNowPlayingItem } from '../services/userNowPlayingItem'
+import { playerLoadNowPlayingItem, playerTogglePlay, playerUpdatePlayerState } from '../state/actions/player'
+import { Icon, MoreButton, PressableWithOpacity, Text, View } from './'
 
 type Props = {
   clipTime?: string
+  episodeCompleted?: boolean
+  episodeDownloading?: boolean
   handleMorePress?: any
+  isChapter?: boolean
   item: any
-  loadTimeStampOnPlay?: boolean
+  itemType: 'episode' | 'clip' | 'chapter'
+  loadChapterOnPlay?: boolean
   mediaFileDuration?: number | undefined
   style?: any
   testID: string
+  timeLabel?: string
   transparent?: boolean
   userPlaybackPosition?: number | undefined
 }
@@ -63,79 +75,124 @@ const MiniProgressBar = (props: BarProps) => {
   )
 }
 
-const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
-  return item && nowPlayingItem && (nowPlayingItem.clipId === item.id || nowPlayingItem.episodeId === item.id)
-}
-
 export const TimeRemainingWidget = (props: Props) => {
-  const { clipTime, handleMorePress, item,
-    loadTimeStampOnPlay, mediaFileDuration, style, testID, transparent, userPlaybackPosition } = props
+  const {
+    episodeCompleted,
+    episodeDownloading,
+    handleMorePress,
+    item,
+    itemType,
+    loadChapterOnPlay,
+    mediaFileDuration,
+    style,
+    testID,
+    timeLabel,
+    transparent,
+    userPlaybackPosition
+  } = props
   const { episode = {}, podcast = {} } = item
-  const playingItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
+  const convertedItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
   const [player] = useGlobal('player')
   const { nowPlayingItem, playbackState } = player
 
   const hasStartedItem = !!mediaFileDuration
-  const totalTime = mediaFileDuration || playingItem.episodeDuration || 0
+  const totalTime = mediaFileDuration || convertedItem.episodeDuration || 0
   const playedTime = userPlaybackPosition || 0
 
-  let timeLabel = ''
-  if (totalTime) {
-    timeLabel = convertSecToHhoursMMinutes(totalTime)
-    if (hasStartedItem) {
-      timeLabel = convertSecToHhoursMMinutes(totalTime - playedTime) + ' left'
+  const handleChapterLoad = async () => {
+    await playerHandleSeekTo(item.startTime)
+    const playbackState = await playerGetState()
+    const isPlaying = playerCheckIfStateIsPlaying(playbackState)
+    if (!isPlaying) {
+      playerHandlePlayWithUpdate()
     }
   }
 
-  if (clipTime) {
-    timeLabel = clipTime
-  }
-
-  const handleChapterLoad = async () => {
-    await setPlaybackPosition(item.startTime)
-    const currentState = await PVTrackPlayer.getState()
-    const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
-    if (!isPlaying) PVTrackPlayer.play()
+  const handleClipFromSameEpisodeLoaded = () => {
+    playerUpdatePlayerState(convertedItem, async () => {
+      if (convertedItem.clipStartTime || convertedItem.clipStartTime === 0) {
+        await playerHandleSeekTo(convertedItem.clipStartTime)
+        const playbackState = await playerGetState()
+        const isPlaying = playerCheckIfStateIsPlaying(playbackState)
+        if (!isPlaying) {
+          await playerHandlePlayWithUpdate()
+        }
+        setNowPlayingItem(convertedItem, convertedItem.clipStartTime)
+        PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)
+      }
+    })
   }
 
   const playItem = async () => {
     const isNowPlayingItem = checkIfNowPlayingItem(item, nowPlayingItem)
-    if (loadTimeStampOnPlay) {
+    if (loadChapterOnPlay) {
       await handleChapterLoad()
+    } else if (
+      nowPlayingItem &&
+      !isNowPlayingItem &&
+      convertedItem.clipId &&
+      convertedItem.episodeId === nowPlayingItem.episodeId
+    ) {
+      handleClipFromSameEpisodeLoaded()
+    } else if (isNowPlayingItem) {
+      playerTogglePlay()
     } else {
-      if (isNowPlayingItem) {
-        togglePlay()
-      } else {
-        loadItemAndPlayTrack(playingItem, true)
-      }
+      const forceUpdateOrderDate = false
+      const shouldPlay = true
+      const setCurrentItemNextInQueue = true
+      playerLoadNowPlayingItem(convertedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
     }
     requestAppStoreReviewForEpisodePlayed()
   }
 
   const isInvalidDuration = totalTime <= 0
-  const isPlaying = playbackState === PVTrackPlayer.STATE_PLAYING
+  const isPlaying = playerCheckIfStateIsPlaying(playbackState)
   const isNowPlayingItem = isPlaying && checkIfNowPlayingItem(item, nowPlayingItem)
 
   const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]
 
   return (
-    <View style={[styles.container, style]} transparent={transparent}>
-      <TouchableOpacity
+    <View accessbile={false} style={[styles.container, style]} transparent={transparent}>
+      <PressableWithOpacity
+        accessible={false}
+        importantForAccessibility='no-hide-descendants'
         onPress={playItem}
         style={iconStyle}
-        {...testProps(`${testID}_time_remaining_widget_toggle_play`)}>
+        testID={`${testID}_time_remaining_widget_toggle_play`.prependTestId()}>
         {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
-      </TouchableOpacity>
-      {hasStartedItem && !isInvalidDuration && (
+      </PressableWithOpacity>
+      {hasStartedItem && !isInvalidDuration && playedTime > 0 && (
         <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
       )}
-      <Text
-        fontSizeLargerScale={PV.Fonts.largeSizes.md}
-        fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-        style={styles.text}>
-        {timeLabel}
-      </Text>
-      {!!handleMorePress && <MoreButton handleMorePress={handleMorePress} testID={testID} />}
+      <View
+        accessible={false}
+        importantForAccessibility='no-hide-descendants'
+        style={{ flexDirection: 'row', flex: 1, alignItems: 'center', height: '100%' }}>
+        {!!timeLabel && (
+          <Text
+            accessible={false}
+            fontSizeLargerScale={PV.Fonts.largeSizes.md}
+            fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+            importantForAccessibility='no-hide-descendants'
+            style={styles.text}>
+            {timeLabel}
+          </Text>
+        )}
+        {!!episodeCompleted && (
+          <View style={styles.icon}>
+            <Icon name={'check'} size={22} style={styles.iconCompleted} />
+          </View>
+        )}
+      </View>
+      {!!handleMorePress && (
+        <MoreButton
+          accessible={false}
+          handleMorePress={handleMorePress}
+          isLoading={episodeDownloading}
+          itemType={itemType}
+          testID={testID}
+        />
+      )}
     </View>
   )
 }
@@ -146,10 +203,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-evenly'
   },
-  text: {
-    flex: 1,
-    color: PV.Colors.skyLight,
-    fontSize: PV.Fonts.sizes.sm
+  icon: {
+    marginLeft: 8
+  },
+  iconCompleted: {
+    color: PV.Colors.green
   },
   playButton: {
     borderColor: PV.Colors.skyLight,
@@ -161,5 +219,10 @@ const styles = StyleSheet.create({
     width: 40,
     marginRight: 10,
     backgroundColor: PV.Colors.brandBlueDark + '44'
+  },
+  text: {
+    color: PV.Colors.skyLight,
+    fontSize: PV.Fonts.sizes.sm,
+    marginRight: 8
   }
 })

@@ -3,7 +3,7 @@ import React from 'reactn'
 import { ActionSheet, Divider, DownloadTableCell, FlatList, SwipeRowBack, View } from '../components'
 import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
 import { translate } from '../lib/i18n'
-import { safeKeyExtractor, testProps } from '../lib/utility'
+import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import {
@@ -34,8 +34,8 @@ export class DownloadsScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = () => ({
-      title: translate('Downloads')
-    })
+    title: translate('Downloads')
+  })
 
   componentDidMount() {
     trackPageView('/downloads', 'Downloads Screen')
@@ -57,7 +57,8 @@ export class DownloadsScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleCancelPress = () => new Promise((resolve) => {
+  _handleCancelPress = () =>
+    new Promise((resolve) => {
       this.setState(
         {
           selectedItem: null,
@@ -68,19 +69,19 @@ export class DownloadsScreen extends React.Component<Props, State> {
     })
 
   _renderItem = ({ item, index }) => (
-      <DownloadTableCell
-        bytesTotal={item.bytesTotal}
-        bytesWritten={item.bytesWritten}
-        completed={item.completed}
-        {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
-        onPress={() => this._handleItemPress(item)}
-        percent={item.percent}
-        podcastImageUrl={item.podcastImageUrl}
-        {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
-        status={item.status}
-        testID={`${testIDPrefix}_download_item_${index}`}
-      />
-    )
+    <DownloadTableCell
+      bytesTotal={item.bytesTotal}
+      bytesWritten={item.bytesWritten}
+      completed={item.completed}
+      {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
+      onPress={() => this._handleItemPress(item)}
+      percent={item.percent}
+      podcastImageUrl={item.podcastImageUrl}
+      {...(item?.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
+      status={item.status}
+      testID={`${testIDPrefix}_download_item_${index}`}
+    />
+  )
 
   _renderHiddenItem = ({ item, index }, rowMap) => (
     <SwipeRowBack
@@ -103,13 +104,16 @@ export class DownloadsScreen extends React.Component<Props, State> {
     const { selectedItem, showActionSheet } = this.state
 
     return (
-      <View style={styles.view} {...testProps('downloads_screen_view')}>
+      <View style={styles.view} testID='downloads_screen_view'>
         <FlatList
           data={downloadsArray}
           dataTotalCount={downloadsArray.length}
           disableLeftSwipe={false}
           extraData={downloadsArray}
-          keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.episodeId)}
+          keyExtractor={(item: any) => {
+            const ignoreIndex = -1
+            return safeKeyExtractor(testIDPrefix, ignoreIndex, item?.episodeId)
+          }}
           ItemSeparatorComponent={this._ItemSeparatorComponent}
           noResultsMessage={translate('No downloads in progress')}
           renderHiddenItem={this._renderHiddenItem}
@@ -119,7 +123,12 @@ export class DownloadsScreen extends React.Component<Props, State> {
           <ActionSheet
             handleCancelPress={this._handleCancelPress}
             items={() =>
-              PV.ActionSheet.media.moreButtons(selectedItem, navigation, { handleDismiss: this._handleCancelPress })
+              PV.ActionSheet.media.moreButtons(
+                selectedItem,
+                navigation,
+                { handleDismiss: this._handleCancelPress },
+                'episode'
+              )
             }
             showModal={showActionSheet}
             testID={testIDPrefix}

@@ -1,12 +1,31 @@
 import React from 'react'
-import { TouchableOpacity, View } from 'react-native'
+import { View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { Icon, Text } from '.'
+import { Icon, PressableWithOpacity, Text } from '.'
 
-export const DropdownButton = (props: any) => {
-  const { disableFilter, onPress, sortLabel, testID } = props
+type DropdownButtonProps = {
+  accessible?: boolean
+  accessibilityHint?: string
+  accessibilityLabel?: boolean
+  disableFilter?: boolean
+  importantForAccessibility?: 'auto' | 'yes' | 'no' | 'no-hide-descendants' | undefined
+  sortLabel?: string
+  testID?: string
+  transparent?: any
+  onPress?: () => unknown
+}
+
+export const DropdownButton = (props: DropdownButtonProps) => {
+  const {
+    accessible = true,
+    accessibilityHint,
+    disableFilter,
+    importantForAccessibility,
+    onPress,
+    sortLabel,
+    testID
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
   const dropdownStyle = disableFilter ? { opacity: 0.0 } : {}
 
@@ -17,21 +36,36 @@ export const DropdownButton = (props: any) => {
   }
 
   return (
-    <TouchableOpacity
+    <PressableWithOpacity
+      accessible={accessible}
+      accessibilityHint={accessibilityHint}
+      accessibilityLabel={sortLabel}
+      accessibilityRole='button'
+      importantForAccessibility={importantForAccessibility}
       activeOpacity={0.7}
       disabled={disableFilter}
       onPress={onPress}
-      {...testProps(`${testID}_dropdown_button`)}>
-      <View style={[styles.dropdownButton, dropdownStyle, extraStyles]}>
+      testID={`${testID}_dropdown_button`.prependTestId()}>
+      <View
+        accessible={false}
+        importantForAccessibility='no-hide-descendants'
+        style={[styles.dropdownButton, dropdownStyle, extraStyles]}>
         <Text
+          accessible={false}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
-          style={[styles.dropdownButtonText, globalTheme.dropdownButtonText]}>
+          style={[styles.dropdownButtonText, globalTheme.dropdownButtonText]}
+          testID={`${testID}_dropdown_button_text`}>
           {sortLabel}
         </Text>
-        <Icon name='angle-down' size={14} style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]} />
+        <Icon
+          accessible={false}
+          name='angle-down'
+          size={14}
+          style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]}
+        />
       </View>
-    </TouchableOpacity>
+    </PressableWithOpacity>
   )
 }
 

@@ -1,47 +1,59 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { convertToNowPlayingItem } from 'podverse-shared'
-import { View as RNView } from 'react-native'
+import { convertToNowPlayingItem, Episode } from 'podverse-shared'
+import { Platform, StyleSheet, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
 import {
   ActionSheet,
-  ActivityIndicator,
   Button,
   ClipTableCell,
   Divider,
   EpisodeTableCell,
   FlatList,
-  NavSearchIcon,
   NavShareIcon,
   NumberSelectorWithText,
   PodcastTableHeader,
+  ScrollView,
   SearchBar,
-  SwipeRowBack,
   SwitchWithText,
   TableSectionSelectors,
   Text,
   View
 } from '../components'
 import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
-import { getDownloadedEpisodes, removeDownloadedPodcast } from '../lib/downloadedPodcast'
+import { removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { safeKeyExtractor, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
+import {
+  checkIfContainsStringMatch,
+  getAuthorityFeedUrlFromArray,
+  getUsernameAndPasswordFromCredentials,
+  safeKeyExtractor,
+  safelyUnwrapNestedVariable
+} from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
+import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRefs } from '../services/mediaRef'
-import { getAddByRSSPodcastLocally } from '../services/parser'
+import {
+  getPodcastCredentials,
+  getAddByRSSPodcastLocally,
+  removePodcastCredentials,
+  savePodcastCredentials
+} from '../services/parser'
 import { getPodcast } from '../services/podcast'
-import { trackPageView } from '../services/tracking'
+import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import * as DownloadState from '../state/actions/downloads'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
+import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
 
 type Props = {
   navigation?: any
@@ -52,11 +64,12 @@ type State = {
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
-  isLoading: boolean
+  hasInternetConnection: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
   isSubscribing: boolean
   limitDownloadedEpisodes: boolean
+  password: string
   podcast?: any
   podcastId?: string
   queryPage: number
@@ -69,6 +82,9 @@ type State = {
   showDeleteDownloadedEpisodesDialog?: boolean
   showNoInternetConnectionMessage?: boolean
   showSettings: boolean
+  showUsernameAndPassword: boolean
+  startPodcastFromTime?: number
+  username: string
   viewType: string | null
 }
 
@@ -76,8 +92,9 @@ type RenderItemArg = { item: any; index: number }
 
 const testIDPrefix = 'podcast_screen'
 
-export class PodcastScreen extends React.Component<Props, State> {
+export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   shouldLoad: boolean
+  listRef = null
 
   constructor(props: Props) {
     super(props)
@@ -85,10 +102,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     this.shouldLoad = true
 
     const podcast = this.props.navigation.getParam('podcast')
-    const podcastId =
-      (podcast?.id) ||
-      (podcast?.addByRSSPodcastFeedUrl) ||
-      this.props.navigation.getParam('podcastId')
+    const podcastId = podcast?.id || podcast?.addByRSSPodcastFeedUrl || this.props.navigation.getParam('podcastId')
     const viewType = this.props.navigation.getParam('viewType') || PV.Filters._episodesKey
 
     if (podcast?.id || podcast?.addByRSSPodcastFeedUrl) {
@@ -104,11 +118,12 @@ export class PodcastScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
-      isLoading: viewType !== PV.Filters._downloadedKey || !podcast,
+      hasInternetConnection: false,
       isLoadingMore: false,
       isRefreshing: false,
       isSubscribing: false,
       limitDownloadedEpisodes: false,
+      password: '',
       podcast,
       podcastId,
       queryPage: 1,
@@ -118,13 +133,15 @@ export class PodcastScreen extends React.Component<Props, State> {
       selectedSortLabel: translate('recent'),
       showActionSheet: false,
       showSettings: false,
+      showUsernameAndPassword: false,
+      username: '',
       viewType
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
-static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({ navigation }) => {
     const podcastId = navigation.getParam('podcastId')
     const podcastTitle = navigation.getParam('podcastTitle')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
@@ -141,16 +158,22 @@ static navigationOptions = ({ navigation }) => {
               urlPath={PV.URLs.webPaths.podcast}
             />
           )}
-          <NavSearchIcon navigation={navigation} />
+          {/* <NavSearchIcon navigation={navigation} /> */}
         </RNView>
       )
     } as NavigationStackOptions
   }
 
   async componentDidMount() {
+    super.componentDidMount()
+    
+    const { navigation } = this.props
     const { podcastId } = this.state
-    let podcast = this.props.navigation.getParam('podcast')
+    let podcast = navigation.getParam('podcast')
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    PVEventEmitter.on(PV.Events.PODCAST_START_PODCAST_FROM_TIME_SET, this.refreshStartPodcastFromTime)
+
     const hasInternetConnection = await hasValidNetworkConnection()
 
     // If passed the addByRSSPodcastFeedUrl in the navigation,
@@ -161,6 +184,8 @@ static navigationOptions = ({ navigation }) => {
       podcast = await getPodcast(podcastId)
     }
 
+    this.refreshStartPodcastFromTime()
+
     this.setState(
       {
         ...(!hasInternetConnection
@@ -168,15 +193,18 @@ static navigationOptions = ({ navigation }) => {
               viewType: PV.Filters._downloadedKey
             }
           : { viewType: this.state.viewType }),
-        podcast
+        podcast,
+        hasInternetConnection: !!hasInternetConnection
       },
       () => {
         this._initializePageData()
 
-        const titleToEncode = podcast
-          ? podcast.title
-          : translate('no info available')
-        trackPageView('/podcast/' + podcastId, translate('PodcastsScreen - '), titleToEncode)
+        const titleToEncode = podcast ? podcast.title : translate('no info available')
+        trackPageView(
+          '/podcast/' + getTrackingIdText(podcastId, !!addByRSSPodcastFeedUrl),
+          'Podcast Screen - ',
+          titleToEncode
+        )
       }
     )
   }
@@ -192,7 +220,7 @@ static navigationOptions = ({ navigation }) => {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
-        isLoading: true,
+        isLoadingMore: true,
         limitDownloadedEpisodes: downloadedEpisodeLimit && downloadedEpisodeLimit > 0,
         podcastId,
         queryPage: 1
@@ -201,7 +229,7 @@ static navigationOptions = ({ navigation }) => {
         (async () => {
           let newState = {}
           let newPodcast: any
-  
+
           try {
             if (podcast && podcast.addByRSSPodcastFeedUrl) {
               newPodcast = podcast
@@ -215,25 +243,51 @@ static navigationOptions = ({ navigation }) => {
                 newState = await this._queryData(PV.Filters._clipsKey)
               }
             }
-  
+
             newPodcast.description = newPodcast.description || translate('No summary available')
-  
-            this.setState({
-              ...newState,
-              isLoading: false,
-              podcast: newPodcast
-            })
+
+            this.setState(
+              {
+                ...newState,
+                isLoadingMore: false,
+                podcast: newPodcast
+              },
+              () => {
+                this._updateCredentialsState()
+                // Adding a no time setTimeout for the listref to have populated
+                // in the next event loop otherwise, there will be no ref to call scroll to yet
+                if (Platform.OS === 'ios') {
+                  setTimeout(() => {
+                    this.listRef?.scrollToOffset({
+                      animated: false,
+                      offset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset.y
+                    })
+                  })
+                }
+              }
+            )
           } catch (error) {
             console.log('_initializePageData', error)
-            this.setState({
-              ...newState,
-              isLoading: false,
-              ...(newPodcast ? { podcast: newPodcast } : { podcast })
-            })
+            this.setState(
+              {
+                ...newState,
+                isLoadingMore: false,
+                ...(newPodcast ? { podcast: newPodcast } : { podcast })
+              },
+              () => {
+                this._updateCredentialsState()
+              }
+            )
           }
         })()
       }
     )
+  }
+
+  refreshStartPodcastFromTime = async () => {
+    const { podcastId } = this.state
+    const startPodcastFromTime = await getStartPodcastFromTime(podcastId)
+    this.setState({ startPodcastFromTime })
   }
 
   handleSelectFilterItem = async (selectedKey: string) => {
@@ -246,7 +300,7 @@ static navigationOptions = ({ navigation }) => {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
-        isLoading: true,
+        isLoadingMore: true,
         queryPage: 1,
         searchBarText: '',
         selectedFilterLabel,
@@ -271,7 +325,7 @@ static navigationOptions = ({ navigation }) => {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
-        isLoading: true,
+        isLoadingMore: true,
         queryPage: 1,
         querySort: selectedKey,
         selectedSortLabel
@@ -296,7 +350,6 @@ static navigationOptions = ({ navigation }) => {
     ) {
       if (distanceFromEnd > -1) {
         this.shouldLoad = false
-
         this.setState(
           {
             isLoadingMore: true
@@ -305,7 +358,7 @@ static navigationOptions = ({ navigation }) => {
             (async () => {
               const newState = await this._queryData(viewType, {
                 queryPage: queryPage + 1,
-                searchAllFieldsText: this.state.searchBarText
+                searchTitle: this.state.searchBarText
               })
               this.setState(newState)
             })()
@@ -331,25 +384,35 @@ static navigationOptions = ({ navigation }) => {
   }
 
   _ListHeaderComponent = () => {
-    const { searchBarText } = this.state
+    const { searchBarText, viewType, flatListDataTotalCount } = this.state
+    const placeholder = viewType === PV.Filters._clipsKey ? translate('Search clips') : translate('Search episodes')
+
+    const shouldShowSearchBar = searchBarText || (flatListDataTotalCount && flatListDataTotalCount > 3)
 
     return (
       <View style={styles.ListHeaderComponent}>
-        <SearchBar
-          inputContainerStyle={core.searchBar}
-          onChangeText={this._handleSearchBarTextChange}
-          onClear={this._handleSearchBarClear}
-          value={searchBarText}
-        />
+        {shouldShowSearchBar && (
+          <SearchBar
+            handleClear={this._handleSearchBarClear}
+            hideIcon
+            icon='filter'
+            noContainerPadding
+            onChangeText={this._handleSearchBarTextChange}
+            placeholder={placeholder}
+            testID={`${testIDPrefix}_filter_bar`}
+            value={searchBarText}
+          />
+        )}
       </View>
     )
   }
 
   _ItemSeparatorComponent = () => <Divider style={{ marginHorizontal: 10 }} />
 
-  _handleCancelPress = () => new Promise((resolve) => {
-    this.setState({ showActionSheet: false }, resolve)
-  })
+  _handleCancelPress = () =>
+    new Promise((resolve) => {
+      this.setState({ showActionSheet: false }, resolve)
+    })
 
   _handleMorePress = (selectedItem: any) => {
     this.setState({
@@ -366,6 +429,7 @@ static navigationOptions = ({ navigation }) => {
   }
 
   _renderItem = ({ item, index }: RenderItemArg) => {
+    const { navigation } = this.props
     const { podcast, viewType } = this.state
 
     if (viewType === PV.Filters._clipsKey) {
@@ -373,11 +437,12 @@ static navigationOptions = ({ navigation }) => {
         item?.episode?.id && (
           <ClipTableCell
             handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
+            hideImage
+            item={item}
+            navigation={navigation}
             showEpisodeInfo
             showPodcastInfo={false}
             testID={`${testIDPrefix}_clip_item_${index}`}
-            item={item}
-            hideImage
           />
         )
       )
@@ -394,23 +459,27 @@ static navigationOptions = ({ navigation }) => {
         testId = `${testIDPrefix}_episode_item_${index}`
       }
 
-      const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
+      const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item?.id)
 
       return (
         <EpisodeTableCell
-          item={episode}
+          handleDeletePress={() => this._handleDeleteEpisode(item)}
           handleDownloadPress={() => this._handleDownloadPressed(item)}
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast, userPlaybackPosition))
           }
           handleNavigationPress={() => {
+            const { hasInternetConnection } = this.state
             this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
               episode,
-              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
+              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
+              hasInternetConnection
             })
           }}
           hideImage
+          item={episode}
           mediaFileDuration={mediaFileDuration}
+          navigation={navigation}
           testID={testId}
           userPlaybackPosition={userPlaybackPosition}
         />
@@ -418,28 +487,11 @@ static navigationOptions = ({ navigation }) => {
     }
   }
 
-  _renderHiddenItem = ({ item, index }: RenderItemArg) => (
-    <SwipeRowBack
-      onPress={() => this._handleHiddenItemPress(item.id)}
-      testID={`${testIDPrefix}_clip_item_${index}`}
-      text={translate('Delete')}
-    />
-  )
-
-  _handleHiddenItemPress = (selectedId: string) => {
-    const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
-    this.setState(
-      {
-        flatListData: filteredEpisodes
-      },
-      () => {
-        (async () => {
-          await DownloadState.removeDownloadedPodcastEpisode(selectedId)
-          const finalDownloadedEpisodes = await getDownloadedEpisodes()
-          this.setState({ flatListData: finalDownloadedEpisodes })
-        })()
-      }
-    )
+  _handleDeleteEpisode = async (item: any) => {
+    const selectedId = item?.episodeId || item?.id
+    if (selectedId) {
+      await DownloadState.removeDownloadedPodcastEpisode(selectedId)
+    }
   }
 
   _handleToggleDeleteDownloadedEpisodesDialog = () => {
@@ -466,11 +518,10 @@ static navigationOptions = ({ navigation }) => {
 
     this.setState(
       {
-        isLoadingMore: true,
         searchBarText: text
       },
       () => {
-        this._handleSearchBarTextQuery(viewType, { searchAllFieldsText: text })
+        this._handleSearchBarTextQuery(viewType, { searchTitle: text })
       }
     )
   }
@@ -480,21 +531,56 @@ static navigationOptions = ({ navigation }) => {
       {
         flatListData: [],
         flatListDataTotalCount: null,
+        isLoadingMore: true,
         queryPage: 1
       },
       () => {
         (async () => {
-          const state = await this._queryData(viewType, {
-            searchAllFieldsText: queryOptions.searchAllFieldsText
-          })
-          this.setState(state)
+          const { podcast } = this.state
+          const { addByRSSPodcastFeedUrl } = podcast
+          if (addByRSSPodcastFeedUrl) {
+            this._handleSearchAddByRSSEpisodes(queryOptions.searchTitle)
+          } else {
+            const state = await this._queryData(viewType, {
+              searchTitle: queryOptions.searchTitle
+            })
+            this.setState(state)
+          }
         })()
       }
     )
   }
 
+  _handleSearchAddByRSSEpisodes = (searchTitle: string) => {
+    const { podcast } = this.state
+    const episodes = podcast?.episodes || []
+    const filteredResult = []
+    for (const episode of episodes) {
+      if (episode.title && checkIfContainsStringMatch(searchTitle, episode.title)) {
+        filteredResult.push(episode)
+      }
+    }
+
+    this.setState({
+      endOfResultsReached: true,
+      flatListData: filteredResult,
+      flatListDataTotalCount: filteredResult.length,
+      isLoadingMore: false
+    })
+  }
+
   _handleSearchBarClear = () => {
-    this.setState({ searchBarText: '' })
+    this.setState(
+      {
+        endOfResultsReached: false,
+        flatListData: [],
+        flatListDataTotalCount: null,
+        isLoadingMore: true
+      },
+      () => {
+        this._handleSearchBarTextChange('')
+      }
+    )
   }
 
   _toggleSubscribeToPodcast = async () => {
@@ -517,9 +603,9 @@ static navigationOptions = ({ navigation }) => {
           } catch (error) {
             this.setState({ isSubscribing: false })
           }
-  
+
           const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
-  
+
           this.setState({
             downloadedEpisodeLimit,
             limitDownloadedEpisodes: downloadedEpisodeLimit && downloadedEpisodeLimit > 0
@@ -532,11 +618,11 @@ static navigationOptions = ({ navigation }) => {
   _handleToggleAutoDownload = (autoDownloadOn: boolean) => {
     const { podcast, podcastId } = this.state
     const id = podcast?.id || podcastId
-    const { addByRSSPodcastFeedUrl } = podcast 
-    
-    if(addByRSSPodcastFeedUrl) { 
-      DownloadState.updateAutoDownloadSettingsAddByRSS(addByRSSPodcastFeedUrl, autoDownloadOn) 
-    } else if (id) { 
+    const { addByRSSPodcastFeedUrl } = podcast
+
+    if (addByRSSPodcastFeedUrl) {
+      DownloadState.updateAutoDownloadSettingsAddByRSS(addByRSSPodcastFeedUrl, autoDownloadOn)
+    } else if (id) {
       DownloadState.updateAutoDownloadSettings(id, autoDownloadOn)
     }
   }
@@ -564,7 +650,104 @@ static navigationOptions = ({ navigation }) => {
     const { podcast } = this.state
     this.setState({ downloadedEpisodeLimit: value })
     const int = parseInt(value, 10)
-    if (int) setDownloadedEpisodeLimit(podcast.id, int)
+    if (int && podcast?.id) setDownloadedEpisodeLimit(podcast.id, int)
+  }
+
+  _handleNavigateToStartPodcastFromTimeScreen = () => {
+    const { navigation } = this.props
+    const { podcast, startPodcastFromTime } = this.state
+    navigation.navigate(PV.RouteNames.StartPodcastFromTimeScreen, {
+      podcast,
+      startPodcastFromTime
+    })
+  }
+
+  _handleToggleUsernameAndPassword = async () => {
+    const { showUsernameAndPassword } = this.state
+    const newState = !showUsernameAndPassword
+
+    if (!newState) {
+      await this._handleClearPodcastCredentials()
+
+      this.setState({
+        password: '',
+        showUsernameAndPassword: newState,
+        username: ''
+      })
+    } else {
+      const { password = '', username = '' } = await this._getCredentials()
+      this.setState({
+        password,
+        showUsernameAndPassword: newState,
+        username
+      })
+    }
+  }
+
+  _updateCredentialsState = () => {
+    (async () => {
+      const { username, password } = await this._getCredentials()
+      this.setState({
+        username,
+        password,
+        showUsernameAndPassword: !!username && !!password
+      })
+    })()
+  }
+
+  _getFinalFeedUrl = () => {
+    const { podcast } = this.state
+    const feedUrlObjects = podcast.feedUrls
+    return this.props.navigation.getParam('addByRSSPodcastFeedUrl') || getAuthorityFeedUrlFromArray(feedUrlObjects)
+  }
+
+  _getCredentials = async () => {
+    const finalFeedUrl = this._getFinalFeedUrl()
+    const credentials = await getPodcastCredentials(finalFeedUrl)
+    return getUsernameAndPasswordFromCredentials(credentials)
+  }
+
+  _handleClearPodcastCredentials = async () => {
+    const finalFeedUrl = this._getFinalFeedUrl()
+    if (finalFeedUrl) {
+      await removePodcastCredentials(finalFeedUrl)
+    }
+  }
+
+  _handleSavePodcastCredentials = () => {
+    const { password, showUsernameAndPassword, username } = this.state
+    const finalFeedUrl = this._getFinalFeedUrl()
+
+    if (finalFeedUrl) {
+      this.setState({ isLoadingMore: true }, () => {
+        (async () => {
+          try {
+            if (showUsernameAndPassword && username && password) {
+              const credentials = `${username}:${password}`
+              await savePodcastCredentials(finalFeedUrl, credentials)
+            } else {
+              await removePodcastCredentials(finalFeedUrl)
+            }
+            this.setState({
+              isLoadingMore: false,
+              showSettings: false
+            })
+          } catch (error) {
+            console.log('_handleSavePodcastByRSSURL', error)
+            this.setState({
+              isLoadingMore: false,
+              showSettings: false
+            })
+          }
+        })()
+      })
+    }
+  }
+
+  _handleNavigateToPodcastInfoScreen = () => {
+    const { navigation } = this.props
+    const { podcast } = this.state
+    navigation.navigate(PV.RouteNames.PodcastInfoScreen, { podcast })
   }
 
   render() {
@@ -572,14 +755,15 @@ static navigationOptions = ({ navigation }) => {
 
     const {
       downloadedEpisodeLimit,
-      isLoading,
       isLoadingMore,
       isRefreshing,
       isSubscribing,
       limitDownloadedEpisodes,
+      password,
       podcast,
       podcastId,
       querySort,
+      searchBarText,
       selectedFilterLabel,
       selectedSortLabel,
       selectedItem,
@@ -587,6 +771,9 @@ static navigationOptions = ({ navigation }) => {
       showDeleteDownloadedEpisodesDialog,
       showNoInternetConnectionMessage,
       showSettings,
+      showUsernameAndPassword,
+      startPodcastFromTime,
+      username,
       viewType
     } = this.state
     const { offlineModeEnabled } = this.global
@@ -604,15 +791,24 @@ static navigationOptions = ({ navigation }) => {
     let { flatListData, flatListDataTotalCount } = this.state
     const { autoDownloadSettings } = this.global
     const autoDownloadOn =
-      (podcast && autoDownloadSettings[podcast.id]) || (podcastId && autoDownloadSettings[podcastId])
+      (podcast && podcast.id && autoDownloadSettings[podcast.id]) || (podcastId && autoDownloadSettings[podcastId])
 
     if (viewType === PV.Filters._downloadedKey) {
       const { downloadedPodcasts } = this.global
-      const downloadedPodcast = downloadedPodcasts.find(
-        (x: any) => (podcast && x.id === podcast.id) || x.id === podcastId
-      )
-      flatListData = (downloadedPodcast && downloadedPodcast.episodes) || []
-      flatListDataTotalCount = flatListData.length
+      if (Array.isArray(downloadedPodcasts)) {
+        const downloadedPodcast = downloadedPodcasts.find(
+          (x: any) => (podcast && (x.id && x.id === podcast.id)) || (x.id  && x.id === podcastId)
+        )
+        let episodes = downloadedPodcast.episodes || []
+        if (searchBarText) {
+          episodes = episodes.filter(
+            (episode: Episode) => episode?.title && checkIfContainsStringMatch(searchBarText, episode.title)
+          )
+        }
+  
+        flatListData = episodes
+        flatListDataTotalCount = flatListData.length
+      }
     }
 
     const noResultsMessage =
@@ -621,14 +817,16 @@ static navigationOptions = ({ navigation }) => {
       (viewType === PV.Filters._clipsKey && translate('No clips found'))
 
     return (
-      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
+      <View style={styles.headerView} testID={`${testIDPrefix}_view`}>
         <PodcastTableHeader
           autoDownloadOn={autoDownloadOn}
+          description={podcast && podcast.description}
+          handleNavigateToPodcastInfoScreen={this._handleNavigateToPodcastInfoScreen}
           handleToggleAutoDownload={this._handleToggleAutoDownload}
           handleToggleSettings={this._handleToggleSettings}
           handleToggleSubscribe={this._toggleSubscribeToPodcast}
-          isLoading={isLoading && !podcast}
-          isNotFound={!isLoading && !podcast}
+          isLoading={isLoadingMore && !podcast}
+          isNotFound={!isLoadingMore && !podcast}
           isSubscribed={isSubscribed}
           isSubscribing={isSubscribing}
           podcastImageUrl={podcast && (podcast.shrunkImageUrl || podcast.imageUrl)}
@@ -652,9 +850,19 @@ static navigationOptions = ({ navigation }) => {
             testID={testIDPrefix}
           />
         ) : (
-          <View style={styles.settingsView}>
-            <Text style={styles.settingsTitle}>{translate('Settings')}</Text>
+          <ScrollView style={styles.settingsView}>
+            <Text accessibilityRole='header' style={styles.settingsTitle}>
+              {translate('Settings')}
+            </Text>
             <SwitchWithText
+              accessibilityHint={
+                limitDownloadedEpisodes
+                  ? translate('ARIA HINT - disable the downloaded episode limit for this podcast')
+                  : translate('ARIA HINT - limit the number of episodes from this podcast to save on your device')
+              }
+              accessibilityLabel={
+                limitDownloadedEpisodes ? translate('Download limit on') : translate('Download limit off')
+              }
               onValueChange={this._handleToggleLimitDownloads}
               testID={`${testIDPrefix}_toggle_download_limit`}
               text={translate('Download limit')}
@@ -662,30 +870,97 @@ static navigationOptions = ({ navigation }) => {
               wrapperStyle={styles.toggleLimitDownloadsSwitchWrapper}
             />
             {limitDownloadedEpisodes && (
+              <View style={styles.itemWrapper}>
+                <NumberSelectorWithText
+                  accessibilityHint={`${translate(
+                    'ARIA HINT - set the maximum number of downloaded episodes to save from this podcast on your device'
+                  )},${translate(
+                    // eslint-disable-next-line max-len
+                    'Limit the number of downloaded episodes from this podcast on your device. Once the download limit is exceeded the oldest episode will be automatically deleted.'
+                  )}`}
+                  accessibilityLabel={`${translate('Download limit max')} ${
+                    !!downloadedEpisodeLimit ? downloadedEpisodeLimit : ''
+                  }`}
+                  handleChangeText={this._handleChangeDownloadLimitText}
+                  selectedNumber={downloadedEpisodeLimit}
+                  subText={translate(
+                    // eslint-disable-next-line max-len
+                    'Limit the number of downloaded episodes from this podcast on your device. Once the download limit is exceeded the oldest episode will be automatically deleted.'
+                  )}
+                  testID={`${testIDPrefix}_downloaded_episode_limit_count`}
+                  text={translate('Download limit max')}
+                />
+              </View>
+            )}
+            <View style={styles.itemWrapper}>
               <NumberSelectorWithText
-                handleChangeText={this._handleChangeDownloadLimitText}
-                selectedNumber={downloadedEpisodeLimit}
-                subText={translate(
-                  // eslint-disable-next-line max-len
-                  'Limit the number of downloaded episodes from this podcast on your device. Once the download limit is exceeded the oldest episode will be automatically deleted.'
+                accessibilityHint={translate(
+                  'ARIA HINT - set the time you want this episode to always start playing from'
                 )}
-                testID={`${testIDPrefix}_downloaded_episode_limit_count`}
-                text={translate('Download limit max')}
+                accessibilityLabel={translate('Preset podcast start time')}
+                editable={false}
+                isHHMMSS
+                selectedNumber={startPodcastFromTime}
+                subText={translate('Episodes from this podcast will start playback from this time')}
+                testID={`${testIDPrefix}_start_podcast_from_time`}
+                text={translate('Preset podcast start time')}
+                textInputOnPress={this._handleNavigateToStartPodcastFromTimeScreen}
+                textInputStyle={{ width: 76 }}
+                wrapperOnPress={this._handleNavigateToStartPodcastFromTimeScreen}
               />
+            </View>
+            {(addByRSSPodcastFeedUrl || podcast?.credentialsRequired) && (
+              <View style={styles.switchWrapper}>
+                <SwitchWithText
+                  accessibilityHint={translate('ARIA HINT - type a username and password for this feed')}
+                  accessibilityLabel={translate('Include username and password')}
+                  inputAutoCorrect={false}
+                  inputEditable
+                  inputEyebrowTitle={translate('Username')}
+                  inputHandleTextChange={(text?: string) => this.setState({ username: text || '' })}
+                  inputPlaceholder={translate('Username')}
+                  inputShow={!!showUsernameAndPassword}
+                  inputText={username}
+                  input2AutoCorrect={false}
+                  input2Editable
+                  input2EyebrowTitle={translate('Password')}
+                  input2HandleTextChange={(text?: string) => this.setState({ password: text || '' })}
+                  input2Placeholder={translate('Password')}
+                  input2Show={!!showUsernameAndPassword}
+                  input2Text={password}
+                  onValueChange={this._handleToggleUsernameAndPassword}
+                  subText={!!showUsernameAndPassword ? translate('If this is a password protected feed') : ''}
+                  subTextAccessible
+                  text={translate('Include username and password')}
+                  testID={`${testIDPrefix}_include_username_and_password`}
+                  value={!!showUsernameAndPassword}
+                />
+                {!!showUsernameAndPassword && (
+                  <Button
+                    accessibilityLabel={translate('Save Password')}
+                    isSuccess
+                    onPress={this._handleSavePodcastCredentials}
+                    wrapperStyles={styles.settingsSavePasswordButton}
+                    testID={`${testIDPrefix}_save_password`}
+                    text={translate('Save Password')}
+                  />
+                )}
+              </View>
             )}
             <Divider style={styles.divider} />
             <Button
+              accessibilityHint={translate('ARIA HINT - delete all the episodes you have downloaded for this podcast')}
+              accessibilityLabel={translate('Delete Downloaded Episodes')}
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
               wrapperStyles={styles.settingsDeletebutton}
               testID={`${testIDPrefix}_delete_downloaded_episodes`}
               text={translate('Delete Downloaded Episodes')}
             />
-          </View>
+          </ScrollView>
         )}
         {!showSettings && (
           <View style={styles.view}>
-            {isLoading && <ActivityIndicator fillSpace />}
-            {!isLoading && flatListData && podcast && (
+            {flatListData && podcast && (
               <FlatList
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
@@ -695,24 +970,27 @@ static navigationOptions = ({ navigation }) => {
                 isRefreshing={isRefreshing}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
                 keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
-                ListHeaderComponent={
-                  viewType === PV.Filters._episodesKey || viewType === PV.Filters._clipsKey
-                    ? this._ListHeaderComponent
-                    : null
-                }
+                ListHeaderComponent={this._ListHeaderComponent}
                 noResultsMessage={noResultsMessage}
                 onEndReached={this._onEndReached}
-                renderHiddenItem={this._renderHiddenItem}
                 renderItem={this._renderItem}
+                listRef={(ref) => (this.listRef = ref)}
                 showNoInternetConnectionMessage={offlineModeEnabled || showNoInternetConnectionMessage}
               />
             )}
             <ActionSheet
               handleCancelPress={this._handleCancelPress}
               items={() =>
-                PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
-                  handleDismiss: this._handleCancelPress
-                })
+                PV.ActionSheet.media.moreButtons(
+                  selectedItem,
+                  navigation,
+                  {
+                    handleDismiss: this._handleCancelPress,
+                    handleDownload: this._handleDownloadPressed,
+                    includeGoToEpisodeInCurrentStack: true
+                  },
+                  viewType === PV.Filters._clipsKey ? 'clip' : 'episode'
+                )
               }
               showModal={showActionSheet}
               testID={testIDPrefix}
@@ -727,12 +1005,12 @@ static navigationOptions = ({ navigation }) => {
           <Dialog.Button
             label={translate('No')}
             onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
-            {...testProps('dialog_delete_downloaded_episodes_no')}
+            testID={'dialog_delete_downloaded_episodes_no'.prependTestId()}
           />
           <Dialog.Button
             label={translate('Yes')}
             onPress={this._handleDeleteDownloadedEpisodes}
-            {...testProps('dialog_delete_downloaded_episodes_yes')}
+            testID={'dialog_delete_downloaded_episodes_yes'.prependTestId()}
           />
         </Dialog.Container>
       </View>
@@ -740,37 +1018,32 @@ static navigationOptions = ({ navigation }) => {
   }
 
   _queryEpisodes = async (sort: string | null, page = 1) => {
-    const { podcastId, searchBarText: searchAllFieldsText } = this.state
+    const { podcastId, searchBarText: searchTitle } = this.state
     const results = await getEpisodes({
       sort,
       page,
       podcastId,
-      ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+      ...(searchTitle ? { searchTitle } : {})
     })
 
     return results
   }
 
   _queryClips = async (sort: string | null, page = 1) => {
-    const { podcastId, searchBarText: searchAllFieldsText } = this.state
+    const { podcastId, searchBarText: searchTitle } = this.state
     const results = await getMediaRefs({
       sort,
       page,
       podcastId,
       includeEpisode: true,
-      ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-      allowUntitled: true
+      ...(searchTitle ? { searchTitle } : {})
     })
     return results
   }
 
-  _queryData = async (
-    filterKey: string | null,
-    queryOptions: { queryPage?: number; searchAllFieldsText?: string } = {}
-  ) => {
+  _queryData = async (filterKey: string | null, queryOptions: { queryPage?: number; searchTitle?: string } = {}) => {
     const { flatListData, podcast, querySort, viewType } = this.state
     const newState = {
-      isLoading: false,
       isLoadingMore: false,
       isRefreshing: false,
       showNoInternetConnectionMessage: false
@@ -822,38 +1095,45 @@ static navigationOptions = ({ navigation }) => {
       console.log('PodcastScreen queryData error:', error)
     }
     this.shouldLoad = true
-    
+
     return newState
   }
 
   cleanFlatListData = (flatListData: any[], viewTypeKey: string | null) => {
     if (viewTypeKey === PV.Filters._episodesKey) {
-      return flatListData.filter((item: any) => !!item?.id)
+      return flatListData?.filter((item: any) => !!item?.id) || []
     } else if (viewTypeKey === PV.Filters._clipsKey) {
-      return flatListData.filter((item: any) => !!item?.episode?.id)
+      return flatListData?.filter((item: any) => !!item?.episode?.id) || []
     } else {
       return flatListData
     }
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   aboutView: {
     margin: 8
   },
   aboutViewText: {
     fontSize: PV.Fonts.sizes.lg
   },
-  settingsDeletebutton: {
-    margin: 8,
-    borderRadius: 8
-  },
   divider: {
     marginBottom: 24,
     marginTop: 12
   },
+  itemWrapper: {
+    marginTop: 32
+  },
+  settingsDeletebutton: {
+    margin: 8,
+    borderRadius: 8
+  },
   settingsHelpText: {
     fontSize: PV.Fonts.sizes.md
+  },
+  settingsSavePasswordButton: {
+    marginHorizontal: 8,
+    marginTop: 24
   },
   settingsTitle: {
     fontSize: PV.Fonts.sizes.xxl,
@@ -869,10 +1149,20 @@ const styles = {
     marginBottom: 8,
     marginTop: 8
   },
-  toggleLimitDownloadsSwitchWrapper: {
-    marginBottom: 16
+  switchWrapper: {
+    marginBottom: 12,
+    marginTop: 28
+  },
+  toggleLimitDownloadsSwitchWrapper: {},
+  ListHeaderComponent: {
+    paddingTop: 15
   },
   view: {
+    flex: 1,
+    borderTopColor: PV.Colors.grayLight,
+    borderTopWidth: StyleSheet.hairlineWidth
+  },
+  headerView: {
     flex: 1
   }
-}
+})

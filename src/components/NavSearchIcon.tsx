@@ -1,5 +1,6 @@
 import React from 'react'
 import Config from 'react-native-config'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { NavItemIcon, NavItemWrapper } from '.'
 
@@ -17,7 +18,12 @@ export const NavSearchIcon = (props: Props) => {
   }
 
   return (
-    <NavItemWrapper handlePress={handlePress} testID='nav_search_icon'>
+    <NavItemWrapper
+      accessibilityHint={translate('ARIA HINT - go to the search screen')}
+      accessibilityLabel={translate('Search')}
+      accessibilityRole='button'
+      handlePress={handlePress}
+      testID='nav_search_icon'>
       <NavItemIcon name='search' />
     </NavItemWrapper>
   )

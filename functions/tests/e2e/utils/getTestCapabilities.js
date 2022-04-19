@@ -1,6 +1,8 @@
+const { isAndroid, isFDroid, isIOS } = require('./misc')
+
 const getTestCapabilities = (customCapabilities) => {
 
-  const capabilities = process.env.DEVICE_TYPE === 'Android' || process.env.DEVICE_TYPE === 'F-Droid' ?
+  const capabilities = isAndroid || isFDroid ?
     {
       'device': 'Google Pixel 3',
       'os_version': '9.0'
@@ -11,9 +13,6 @@ const getTestCapabilities = (customCapabilities) => {
     }
   
   let bsApp = ''
-  const isAndroid = process.env.DEVICE_TYPE === 'Android'
-  const isFDroid = process.env.DEVICE_TYPE === 'F-Droid'
-  const isIOS = process.env.DEVICE_TYPE === 'iOS'
   
   if (isAndroid) {
     console.log('Testing Android')
@@ -36,7 +35,7 @@ const getTestCapabilities = (customCapabilities) => {
     'build': `${process.env.DEVICE_TYPE}`,
     'name': `${process.env.DEVICE_TYPE}`,
     'app': bsApp,
-    'browserstack.appium_version': '1.17.0'
+    'browserstack.appium_version': '1.21.0'
   });
 
   Object.assign(capabilities, customCapabilities)

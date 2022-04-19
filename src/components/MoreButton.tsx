@@ -1,40 +1,47 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { ActivityIndicator } from '.'
+import { ActivityIndicator, PressableWithOpacity } from '.'
 
 type Props = {
+  accessible: boolean
   handleMorePress: any
   isLoading?: boolean
+  itemType: 'episode' | 'clip' | 'chapter'
   testID: string
 }
 
 export const MoreButton = (props: Props) => {
-  const { handleMorePress, isLoading, testID } = props
+  const { accessible = true, handleMorePress, isLoading, itemType, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
-    <TouchableOpacity
+    <PressableWithOpacity
+      accessible={accessible}
+      accessibilityHint={`${translate('ARIA HINT - show more options for this')} ${translate(itemType)}`}
+      accessibilityLabel={translate('More')}
+      accessibilityRole='button'
       hitSlop={{
         bottom: 10,
         left: 10,
         right: 10,
         top: 10
       }}
+      importantForAccessibility={accessible ? 'yes' : 'no-hide-descendants'}
       onPress={handleMorePress}
-      {...testProps(`${testID}_more_button`)}>
+      testID={`${testID}_more_button`.prependTestId()}>
       {!isLoading ? (
         <View style={[styles.imageWrapper]}>
           <Image resizeMode='contain' source={PV.Images.MORE} style={[styles.image, globalTheme.buttonImage]} />
         </View>
       ) : (
         <View style={[styles.activityWrapper]}>
-          <ActivityIndicator onPress={handleMorePress} styles={[styles.activityIndicator]} />
+          <ActivityIndicator onPress={handleMorePress} styles={[styles.activityIndicator]} testID={testID} />
         </View>
       )}
-    </TouchableOpacity>
+    </PressableWithOpacity>
   )
 }
 

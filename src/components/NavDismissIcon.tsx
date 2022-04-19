@@ -1,4 +1,5 @@
 import React from 'react'
+import { translate } from '../../src/lib/i18n'
 import { GlobalTheme } from '../../src/resources/Interfaces'
 import { darkTheme } from '../../src/styles'
 import { NavItemIcon, NavItemWrapper } from '.'
@@ -17,7 +18,12 @@ export const NavDismissIcon = (props: Props) => {
     color = props.globalTheme?.text?.color
   }
   return (
-    <NavItemWrapper handlePress={handlePress} testID={`${testID}_nav_dismiss_icon`}>
+    <NavItemWrapper
+      accessibilityHint={translate('ARIA HINT - dismiss this screen')}
+      accessibilityLabel={translate('Back')}
+      accessibilityRole='button'
+      handlePress={handlePress}
+      testID={`${testID}_nav_dismiss_icon`}>
       <NavItemIcon name='chevron-down' color={color} />
     </NavItemWrapper>
   )

@@ -11,7 +11,7 @@ import {
 } from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { combineAndSortPlaylistItems, testProps } from '../lib/utility'
+import { combineAndSortPlaylistItems } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { addOrRemovePlaylistItem, getPlaylist, updatePlaylist } from '../state/actions/playlist'
@@ -33,7 +33,6 @@ type State = {
 const testIDPrefix = 'edit_playlist_screen'
 
 export class EditPlaylistScreen extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
     const playlist = props.navigation.getParam('playlist')
@@ -52,13 +51,18 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const isEditing = !!navigation.getParam('isEditing')
     const handlePress = navigation.getParam(isEditing ? '_stopEditing' : '_startEditing')
-    const text = isEditing ? translate('Done') : translate('Edit')
+    const text = isEditing ? translate('Done') : translate('Remove')
+    const accessibilityHint = isEditing
+      ? translate('ARIA HINT - tap to stop removing items from this playlist')
+      : translate('ARIA HINT - tap to start removing items from this playlist')
 
     return {
       title: translate('Edit Playlist'),
       headerRight: () => (
         <RNView style={styles.headerButtonWrapper}>
           <NavHeaderButtonText
+            accessibilityHint={accessibilityHint}
+            accessibilityLabel={text}
             handlePress={handlePress}
             style={styles.navHeaderTextButton}
             testID={testIDPrefix}
@@ -114,7 +118,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
         (async () => {
           const { newTitle, playlist } = this.state
           const itemsOrder = await this._resortItemsAndGetOrder()
-          
+
           try {
             await updatePlaylist({
               id: playlist.id,
@@ -136,7 +140,8 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     )
   }
 
-  _resortItemsAndGetOrder = () => new Promise((resolve) => {
+  _resortItemsAndGetOrder = () =>
+    new Promise((resolve) => {
       const { sortableListData } = this.state
       const itemsOrder = [] as any
       const newSortableListData = []
@@ -152,8 +157,9 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
 
   _ItemSeparatorComponent = () => <Divider />
 
-  _renderRow = ({ item = {} as NowPlayingItem, index, drag, isActive }) => {
+  _renderRow = ({ item, index, drag, isActive }) => {
     const { isEditing } = this.state
+    item = item || {}
 
     if (item.startTime) {
       return (
@@ -166,6 +172,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
           {...(item.episode.title ? { episodeTitle: item.episode.title } : {})}
           handleRemovePress={() => this._handleRemovePlaylistItemPress(item)}
           isActive={isActive}
+          isPlaylistScreen
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           {...(item.episode.podcast.title ? { podcastTitle: item.episode.podcast.title } : {})}
           showMoveButton={!isEditing}
@@ -201,8 +208,9 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
           const mediaRefId = item.startTime || item.startTime === 0 ? item.id : null
           await addOrRemovePlaylistItem(playlist.id, episodeId, mediaRefId)
           await getPlaylist(playlist.id)
-          const newSortableListData =
-            sortableListData.filter((x) => (mediaRefId && x.id !== mediaRefId) || (episodeId && x.id !== episodeId))
+          const newSortableListData = sortableListData.filter(
+            (x) => (mediaRefId && x.id !== mediaRefId) || (episodeId && x.id !== episodeId)
+          )
           this.setState({ isRemoving: false, sortableListData: newSortableListData })
         } catch (error) {
           this.setState({ isRemoving: false })
@@ -225,9 +233,10 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     const { isEditing, isLoading, isRemoving, isUpdating, newTitle, sortableListData } = this.state
 
     return (
-      <View style={styles.view} {...testProps('edit_playlist_screen_view')}>
+      <View style={styles.view} testID='edit_playlist_screen_view'>
         <View style={styles.topWrapper}>
           <TextInput
+            accessibilityHint={translate('ARIA HINT - edit this playlist title')}
             autoCapitalize='none'
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             onBlur={this._updatePlaylist}
@@ -244,9 +253,13 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
         <Divider />
         {(isUpdating || (!isLoading && sortableListData && sortableListData.length > 0)) && (
           <SortableList
-            data={sortableListData} isEditing={isEditing} onDragEnd={this._onDragEnd} renderItem={this._renderRow} />
+            data={sortableListData}
+            isEditing={isEditing}
+            onDragEnd={this._onDragEnd}
+            renderItem={this._renderRow}
+          />
         )}
-        {(isLoading || isRemoving || isUpdating) && <ActivityIndicator isOverlay />}
+        {(isLoading || isRemoving || isUpdating) && <ActivityIndicator isOverlay testID={testIDPrefix} />}
       </View>
     )
   }

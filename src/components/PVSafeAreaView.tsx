@@ -1,7 +1,6 @@
 import React from 'react'
 import { SafeAreaView, StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
 
 type Props = {
   children: any
@@ -22,7 +21,7 @@ export const PVSafeAreaView = (props: Props) => {
   return (
     <SafeAreaView
       style={[styles.safeAreaView, globalTheme.view, props.style, extraStyles]}
-      {...(testID ? testProps(testID) : {})}>
+      {...(testID ? { testID: testID.prependTestId() } : {})}>
       {props.children}
     </SafeAreaView>
   )

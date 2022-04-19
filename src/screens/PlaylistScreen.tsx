@@ -9,7 +9,6 @@ import {
   Divider,
   EpisodeTableCell,
   FlatList,
-  NavSearchIcon,
   NavShareIcon,
   PlaylistTableHeader,
   View
@@ -18,12 +17,13 @@ import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { navigateToEpisodeScreenWithItem } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { safeKeyExtractor, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { core } from '../styles'
+import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
 
 type Props = {
   navigation?: any
@@ -43,8 +43,7 @@ type State = {
 
 const testIDPrefix = 'playlist_screen'
 
-export class PlaylistScreen extends React.Component<Props, State> {
-
+export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
   constructor(props: Props) {
     super(props)
     const subscribedPlaylistIds = safelyUnwrapNestedVariable(
@@ -93,13 +92,15 @@ export class PlaylistScreen extends React.Component<Props, State> {
             urlId={playlistId}
             urlPath={PV.URLs.webPaths.playlist}
           />
-          <NavSearchIcon navigation={navigation} />
+          {/* <NavSearchIcon navigation={navigation} /> */}
         </RNView>
       )
     } as NavigationStackOptions
   }
 
   componentDidMount() {
+    super.componentDidMount()
+
     const { playlistId } = this.state
     this._initializePageData()
     trackPageView('/playlist/' + playlistId, 'Playlist Screen')
@@ -142,10 +143,11 @@ export class PlaylistScreen extends React.Component<Props, State> {
       return item.episode && item.episode.podcast ? (
         <ClipTableCell
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
+          item={item}
+          navigation={navigation}
           showEpisodeInfo
           showPodcastInfo
           testID={`${testIDPrefix}_clip_item_${index}`}
-          item={item}
         />
       ) : (
         <></>
@@ -155,12 +157,14 @@ export class PlaylistScreen extends React.Component<Props, State> {
 
       return (
         <EpisodeTableCell
+          handleDownloadPress={() => this._handleDownloadPressed(item)}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null, userPlaybackPosition))}
           handleNavigationPress={() =>
             navigateToEpisodeScreenWithItem(navigation, convertToNowPlayingItem(item, null, null, userPlaybackPosition))
           }
           item={item}
           mediaFileDuration={mediaFileDuration}
+          navigation={navigation}
           showPodcastInfo
           testID={`${testIDPrefix}_episode_item_${index}`}
           userPlaybackPosition={userPlaybackPosition}
@@ -195,9 +199,10 @@ export class PlaylistScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleCancelPress = () => new Promise((resolve) => {
-    this.setState({ showActionSheet: false }, resolve)
-  })
+  _handleCancelPress = () =>
+    new Promise((resolve) => {
+      this.setState({ showActionSheet: false }, resolve)
+    })
 
   _handleMorePress = (selectedItem: any) => {
     this.setState({
@@ -206,9 +211,9 @@ export class PlaylistScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleDownloadPressed = () => {
-    if (this.state.selectedItem) {
-      const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
+  _handleDownloadPressed = (selectedItem: any) => {
+    const episode = selectedItem || convertNowPlayingItemToEpisode(this.state.selectedItem)
+    if (episode) {
       downloadEpisode(episode, episode.podcast)
     }
   }
@@ -231,9 +236,9 @@ export class PlaylistScreen extends React.Component<Props, State> {
     const isLoggedInUserPlaylist = playlist?.owner?.id === session.userInfo.id
     const ownerName = playlist?.owner?.name || translate('anonymous')
     const playlistTitle = playlist?.title || translate('Untitled Playlist')
-    
+
     return (
-      <View style={styles.view} {...testProps('playlist_screen_view')}>
+      <View style={styles.view} testID={`${testIDPrefix}_view`}>
         <PlaylistTableHeader
           createdBy={ownerName}
           handleEditPress={isLoggedInUserPlaylist ? this._handleEditPress : null}
@@ -248,7 +253,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           testID={testIDPrefix}
           title={playlistTitle}
         />
-        {isLoading && <ActivityIndicator fillSpace />}
+        {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && flatListData && (
           <FlatList
             data={flatListData}
@@ -265,12 +270,17 @@ export class PlaylistScreen extends React.Component<Props, State> {
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={() =>
-            PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
-              handleDismiss: this._handleCancelPress,
-              handleDownload: this._handleDownloadPressed,
-              includeGoToPodcast: true,
-              includeGoToEpisode: true
-            })
+            PV.ActionSheet.media.moreButtons(
+              selectedItem,
+              navigation,
+              {
+                handleDismiss: this._handleCancelPress,
+                handleDownload: this._handleDownloadPressed,
+                includeGoToPodcast: true,
+                includeGoToEpisodeInEpisodesStack: true
+              },
+              !!selectedItem?.startTime ? 'clip' : 'episode'
+            )
           }
           showModal={showActionSheet}
           testID={testIDPrefix}

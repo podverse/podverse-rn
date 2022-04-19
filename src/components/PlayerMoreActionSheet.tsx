@@ -5,7 +5,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
@@ -29,6 +29,18 @@ let volumeListener = null as any
 
 const testIDPrefix = 'player_more_action_sheet'
 
+/**
+ * As seen on Android device
+ */
+type VolumeData = {
+  notification?: number | undefined
+  ring?: number | undefined
+  music?: number | undefined
+  call?: number | undefined
+  alarm?: number | undefined
+  system?: number | undefined
+  value?: number | undefined
+}
 export class PlayerMoreActionSheet extends React.Component<Props, State> {
   constructor() {
     super()
@@ -40,7 +52,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     const volume = await SystemSetting.getVolume()
     this.setState({ volume })
 
-    volumeListener = SystemSetting.addVolumeListener((data: any) => {
+    volumeListener = SystemSetting.addVolumeListener((data: VolumeData) => {
       const volume = data.value
       this.setState({ volume })
     })
@@ -61,6 +73,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection(translate('subscribe to podcast'))
     if (wasAlerted) return
     const { nowPlayingItem } = this.global.player
+
     try {
       if (nowPlayingItem) {
         if (nowPlayingItem.addByRSSPodcastFeedUrl) {
@@ -93,7 +106,11 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
 
   _headerActionSheetButtons = () => {
     const { globalTheme, player, session } = this.global
-    const { nowPlayingItem } = player
+
+    // nowPlayingItem will be undefined when loading from a deep link
+    let { nowPlayingItem } = player
+    nowPlayingItem = nowPlayingItem || {}
+
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => session.userInfo.subscribedPodcastIds, [])
     const isSubscribed = checkIfSubscribedToPodcast(
       subscribedPodcastIds,
@@ -139,10 +156,12 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
       <ActionSheet showModal={showModal} testID={testID} handleCancelPress={handleDismiss}>
         {items}
         <View
+          accessible={false}
+          importantForAccessibility='no-hide-descendants'
           key='volume'
           style={[actionSheetStyles.button, actionSheetStyles.buttonBottom, globalTheme.actionSheetButton]}>
           <View style={styles.volumeSliderWrapper}>
-            <Icon name='volume-down' size={28} style={styles.volumeSliderIcon} />
+            <Icon accessible={false} name='volume-down' size={28} style={styles.volumeSliderIcon} />
             <Slider
               minimumValue={0}
               maximumValue={1}
@@ -153,14 +172,14 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
               thumbTintColor={PV.Colors.brandColor}
               value={volume}
             />
-            <Icon name='volume-up' size={28} />
+            <Icon accessible={false} name='volume-up' size={28} />
           </View>
         </View>
         <TouchableHighlight
           key='cancel'
           onPress={handleDismiss}
           style={[actionSheetStyles.buttonCancel, globalTheme.actionSheetButtonCancel]}
-          {...testProps(`${testIDPrefix}_cancel`)}
+          testID={`${testIDPrefix}_cancel`.prependTestId()}
           underlayColor={safelyUnwrapNestedVariable(
             () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
             ''

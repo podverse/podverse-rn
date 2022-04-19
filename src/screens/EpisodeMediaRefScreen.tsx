@@ -42,7 +42,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
     const existingData = props.navigation.getParam('initialData') || []
 
     this.shouldLoad = true
-    
+
     this.state = {
       endOfResultsReached: false,
       flatListData: existingData,
@@ -54,15 +54,15 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
       querySort: PV.Filters._chronologicalKey,
       selectedFilterLabel: translate('From this episode'),
       selectedItem: null,
-      selectedSortLabel: translate('top - week'),
+      selectedSortLabel: translate('top – week'),
       showActionSheet: false,
       viewType
     }
   }
 
   static navigationOptions = ({ navigation }) => ({
-      title: navigation.getParam('title') || ''
-    })
+    title: navigation.getParam('title') || ''
+  })
 
   componentDidMount() {
     trackPageView('/episode/mediaRefs', 'EpisodeMediaRef Screen')
@@ -92,31 +92,28 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
         const results = await getMediaRefs({
           sort: querySort,
           page: queryOptions.queryPage,
-          episodeId: episode.id,
-          allowUntitled: true
+          episodeId: episode.id
         })
 
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
       } else {
         // assume a sort was selected
         const results = await getMediaRefs({
           sort: filterKey,
           page: 1,
-          episodeId: episode.id,
-          allowUntitled: true
+          episodeId: episode.id
         })
 
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
       }
 
       newState.queryPage = queryOptions.queryPage || 1
 
       this.shouldLoad = true
-
     } catch (error) {
       this.shouldLoad = true
     }
@@ -204,11 +201,13 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleCancelPress = () => new Promise((resolve) => {
-    this.setState({ showActionSheet: false }, resolve)
-  })
+  _handleCancelPress = () =>
+    new Promise((resolve) => {
+      this.setState({ showActionSheet: false }, resolve)
+    })
 
   _renderItem = ({ item }) => {
+    const { navigation } = this.props
     const { viewType } = this.state
     const episode = this.props.navigation.getParam('episode') || {}
     item.episode = episode
@@ -216,17 +215,18 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
     return (
       <ClipTableCell
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
-        showChapterInfo={viewType === PV.Filters._chaptersKey}
+        item={item}
+        isChapter={viewType === PV.Filters._chaptersKey}
+        navigation={navigation}
         showEpisodeInfo={false}
         showPodcastInfo={false}
-        item={item}
       />
     )
   }
 
   render() {
     const { navigation } = this.props
-    const { flatListData, flatListDataTotalCount, isLoadingMore, selectedItem, showActionSheet } = this.state
+    const { flatListData, flatListDataTotalCount, isLoadingMore, selectedItem, showActionSheet, viewType } = this.state
 
     return (
       <View style={styles.view}>
@@ -247,9 +247,14 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
           items={() => {
             if (!selectedItem) return []
 
-            return PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
-              handleDismiss: this._handleCancelPress
-            })
+            return PV.ActionSheet.media.moreButtons(
+              selectedItem,
+              navigation,
+              {
+                handleDismiss: this._handleCancelPress
+              },
+              viewType === PV.Filters._chaptersKey ? 'chapter' : 'clip'
+            )
           }}
           showModal={showActionSheet}
           testID={testIDPrefix}

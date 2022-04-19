@@ -1,13 +1,13 @@
 import React from 'react'
-import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native'
-import { useGlobal } from 'reactn'
+import { StyleSheet } from 'react-native'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { ActivityIndicator, PressableWithOpacity, Text, View } from './'
 
 type Props = {
   handleToggleSubscribe: any
+  isPlaylist?: boolean
+  isProfile?: boolean
   isSubscribed?: boolean
   isSubscribing?: boolean
   testID: string
@@ -16,13 +16,15 @@ type Props = {
 
 export const SubscribeButton = (props: Props) => {
   const { handleToggleSubscribe, isSubscribed, isSubscribing, testID } = props
-  const [globalTheme] = useGlobal('globalTheme')
 
   const buttonTitle = isSubscribed ? translate('Unsubscribe') : translate('Subscribe')
-  const testId = isSubscribed ? `${testID}_is_subscribed` : `${testID}_is_not_subscribed`
+  const buttonTextTestId = isSubscribed ? `${testID}_is_subscribed` : `${testID}_is_not_subscribed`
+
+  const accessibilityLabel = isSubscribed ? translate('Unsubscribe') : translate('Subscribe')
 
   return (
-    <TouchableOpacity
+    <PressableWithOpacity
+      accessibilityLabel={accessibilityLabel}
       hitSlop={{
         bottom: 4,
         left: 8,
@@ -31,24 +33,24 @@ export const SubscribeButton = (props: Props) => {
       }}
       onPress={handleToggleSubscribe}
       style={[styles.buttonView, props.style]}
-      {...(testID ? testProps(`${testID}_subscribe_button`) : {})}>
+      {...(testID ? { testID: `${testID}_subscribe_button`.prependTestId() } : {})}>
       <View>
         {isSubscribing && (
           <View style={styles.activityIndicator}>
-            <ActivityIndicator animating color={globalTheme.activityIndicator.color} size='small' />
+            <ActivityIndicator size='small' testID={testID} />
           </View>
         )}
         {!isSubscribing && (
           <Text
             fontSizeLargerScale={PV.Fonts.largeSizes.md}
             fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-            testID={testId}
+            testID={buttonTextTestId}
             style={styles.buttonText}>
             {buttonTitle.toUpperCase()}
           </Text>
         )}
       </View>
-    </TouchableOpacity>
+    </PressableWithOpacity>
   )
 }
 

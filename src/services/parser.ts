@@ -2,10 +2,10 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { encode as btoa } from 'base-64'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { downloadEpisode } from '../lib/downloader'
-import { convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
+import { checkIfContainsStringMatch, convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
-import { getAutoDownloadSettings } from './autoDownloads'
+import { getAutoDownloadSettings, getAutoDownloadsLastRefreshDate } from './autoDownloads'
 import { combineWithAddByRSSPodcasts } from './podcast'
 import { request } from './request'
 const podcastFeedParser = require('@podverse/podcast-feed-parser')
@@ -25,7 +25,11 @@ export const hasAddByRSSEpisodesLocally = async () => {
   return results.length > 0
 }
 
-export const combineEpisodesWithAddByRSSEpisodesLocally = async (results: any[]) => {
+export const combineEpisodesWithAddByRSSEpisodesLocally = async (
+  results: any[],
+  searchTitle?: string,
+  hasVideo?: boolean
+) => {
   let mostRecentDate = ''
   let oldestDate = ''
 
@@ -48,10 +52,20 @@ export const combineEpisodesWithAddByRSSEpisodesLocally = async (results: any[])
   mostRecentDate = mostRecentDate ? mostRecentDate : new Date().toString()
   oldestDate = oldestDate ? oldestDate : new Date(0).toString()
 
-  const addByRSSEpisodes =
+  let addByRSSEpisodes =
     results.length > 0
       ? await getAddByRSSEpisodesLocallyByDateRange(new Date(mostRecentDate), new Date(oldestDate))
       : await getAddByRSSEpisodesLocally()
+
+  if (searchTitle) {
+    addByRSSEpisodes = addByRSSEpisodes.filter(
+      (episode) => episode.title && checkIfContainsStringMatch(searchTitle, episode.title)
+    )
+  }
+
+  if (hasVideo) {
+    addByRSSEpisodes = addByRSSEpisodes.filter((episode) => episode.hasVideo)
+  }
 
   const sortedResults = [...results[0], ...addByRSSEpisodes].sort((a: any, b: any) => {
     const dateA = new Date(a.pubDate) as any
@@ -143,13 +157,15 @@ export const setAddByRSSPodcastFeedUrlsLocally = async (addByRSSPodcastFeedUrls:
   }
 }
 
-export const parseAllAddByRSSPodcasts = async (lastParsedPubDate: string) => {
-  const urls = await getAddByRSSPodcastFeedUrlsLocally()
+export const parseAllAddByRSSPodcasts = async () => {
+
+  const [urls, autoDownloadPodcastSettings, allAddByRSSPodcastCredentials] = await Promise.all([
+    getAddByRSSPodcastFeedUrlsLocally(),
+    getAutoDownloadSettings(),
+    getAllPodcastCredentials()
+  ])
   const parsedPodcasts = []
   const finalParsedPodcasts = []
-  const autoDownloadPodcastSettings = await getAutoDownloadSettings()
-
-  const allAddByRSSPodcastCredentials = await getAllAddByRSSPodcastCredentials()
 
   for (const url of urls) {
     try {
@@ -174,12 +190,14 @@ export const parseAllAddByRSSPodcasts = async (lastParsedPubDate: string) => {
       finalParsedPodcasts.push(parsedPodcast)
     }
 
-    if(autoDownloadPodcastSettings[parsedPodcast.addByRSSPodcastFeedUrl] 
-      && parsedPodcast.episodes 
-      && parsedPodcast.episodes.length) 
-    {
-      for(const episode of parsedPodcast.episodes) {
-        if(new Date(episode.pubDate).valueOf() > new Date(lastParsedPubDate).valueOf()) {
+    if (
+      autoDownloadPodcastSettings[parsedPodcast.addByRSSPodcastFeedUrl] &&
+      parsedPodcast.episodes &&
+      parsedPodcast.episodes.length
+    ) {
+      const lastParsedPubDate = await getAutoDownloadsLastRefreshDate()
+      for (const episode of parsedPodcast.episodes) {
+        if (new Date(episode.pubDate).valueOf() > new Date(lastParsedPubDate).valueOf()) {
           const restart = false
           const waitToAddTask = true
           downloadEpisode(episode, parsedPodcast, restart, waitToAddTask)
@@ -193,7 +211,21 @@ export const parseAllAddByRSSPodcasts = async (lastParsedPubDate: string) => {
   return finalParsedPodcasts
 }
 
-const getAllAddByRSSPodcastCredentials = async () => {
+export const getPodcastCredentialsHeader = async (addByRSSPodcastFeedUrl?: string) => {
+  const credentials = await getPodcastCredentials(addByRSSPodcastFeedUrl)
+  return credentials ? `Basic ${btoa(credentials)}` : ''
+}
+
+export const getPodcastCredentials = async (addByRSSPodcastFeedUrl?: string) => {
+  let credentials = ''
+  if (addByRSSPodcastFeedUrl) {
+    const allAddByRSSPodcastCredentials = await getAllPodcastCredentials()
+    credentials = allAddByRSSPodcastCredentials[addByRSSPodcastFeedUrl] || ''
+  }
+  return credentials
+}
+
+const getAllPodcastCredentials = async () => {
   let allCredentials = {}
 
   try {
@@ -209,8 +241,8 @@ const getAllAddByRSSPodcastCredentials = async () => {
 }
 
 // credentials are a string in format <username>:<password>
-const saveAddByRSSPodcastCredentials = async (feedUrl: string, credentials: string) => {
-  const allAddByRSSPodcastCredentials = await getAllAddByRSSPodcastCredentials()
+export const savePodcastCredentials = async (feedUrl: string, credentials?: string) => {
+  const allAddByRSSPodcastCredentials = await getAllPodcastCredentials()
   allAddByRSSPodcastCredentials[feedUrl] = credentials
 
   await RNSecureKeyStore.set(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, JSON.stringify(allAddByRSSPodcastCredentials), {
@@ -218,8 +250,8 @@ const saveAddByRSSPodcastCredentials = async (feedUrl: string, credentials: stri
   })
 }
 
-const removeAddByRSSPodcastCredentials = async (feedUrl: string) => {
-  const allAddByRSSPodcastCredentials = await getAllAddByRSSPodcastCredentials()
+export const removePodcastCredentials = async (feedUrl: string) => {
+  const allAddByRSSPodcastCredentials = await getAllPodcastCredentials()
   allAddByRSSPodcastCredentials[feedUrl] = ''
 
   await RNSecureKeyStore.set(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, JSON.stringify(allAddByRSSPodcastCredentials), {
@@ -242,7 +274,9 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
   })
 
   if (credentials) {
-    await saveAddByRSSPodcastCredentials(feedUrl, credentials)
+    await savePodcastCredentials(feedUrl, credentials)
+  } else {
+    await removePodcastCredentials(feedUrl)
   }
 
   const { episodes: parsedEpisodes, meta } = result
@@ -279,6 +313,11 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
   podcast.value = meta.value
 
   const episodes = [] as any[]
+
+  /* If a feed has more video episodes than audio episodes, mark it as a hasVideo podcast. */
+  let videoCount = 0
+  let audioCount = 0
+
   if (parsedEpisodes && Array.isArray(parsedEpisodes)) {
     parsedEpisodes.sort((a, b) => (new Date(b.pubDate) as any) - (new Date(a.pubDate) as any))
 
@@ -324,6 +363,13 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
       episode.soundbite = parsedEpisode.soundbite
       episode.title = parsedEpisode.title && parsedEpisode.title.trim()
       episode.value = parsedEpisode.value
+
+      if (parsedEpisode.mediaType && parsedEpisode.mediaType.indexOf('video') >= 0) {
+        videoCount++
+      } else {
+        audioCount++
+      }
+
       episodes.push(episode)
     }
   }
@@ -331,6 +377,8 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
   episodes.sort((a, b) => (new Date(b.pubDate) as any) - (new Date(a.pubDate) as any))
 
   podcast.episodes = episodes
+  podcast.hasVideo = videoCount > audioCount
+
   await addAddByRSSPodcastFeedUrlLocally(feedUrl)
   await addParsedAddByRSSPodcastLocally(podcast)
 
@@ -397,7 +445,7 @@ export const removeAddByRSSPodcast = async (feedUrl: string) => {
   let podcasts = await getAddByRSSPodcastsLocally()
   podcasts = podcasts.filter((x: any) => x.addByRSSPodcastFeedUrl !== feedUrl)
   await setAddByRSSPodcastsLocally(podcasts)
-  await removeAddByRSSPodcastCredentials(feedUrl)
+  await removePodcastCredentials(feedUrl)
   let addByRSSPodcastFeedUrls = await getAddByRSSPodcastFeedUrlsLocally()
   addByRSSPodcastFeedUrls = addByRSSPodcastFeedUrls.filter((x: string) => x !== feedUrl)
   await setAddByRSSPodcastFeedUrlsLocally(addByRSSPodcastFeedUrls)

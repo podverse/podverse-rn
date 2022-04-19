@@ -3,6 +3,7 @@ import { Alerts } from './Alerts'
 import { AlertStatuses } from './AlertStatuses'
 import { Colors } from './Colors'
 import { DeepLinks } from './DeepLinks'
+import { Dimensions } from './Dimensions'
 import { Emails } from './Emails'
 import { Errors } from './Errors'
 import { Events } from './Events'
@@ -10,7 +11,7 @@ import { FilterOptions } from './FilterOptions'
 import { Filters } from './Filters'
 import { FlatList } from './FlatList'
 import { Fonts } from './Fonts'
-import { Google } from './Google'
+import { Haptic } from './Haptic'
 import { HTML } from './HTML'
 import { Icons } from './Icons'
 import { Images } from './Images'
@@ -34,6 +35,7 @@ export const PV = {
   AlertStatuses,
   Colors,
   DeepLinks,
+  Dimensions,
   Emails,
   Errors,
   Events,
@@ -41,7 +43,7 @@ export const PV = {
   FilterOptions,
   FlatList,
   Fonts,
-  Google,
+  Haptic,
   HTML,
   Icons,
   Images,

@@ -51,8 +51,9 @@ export interface GlobalTheme {
   textInput?: any
   textInputIcon?: any
   textInputEyeBrow?: any
-  textInputPreLabel?: any
   textInputWrapper?: any
+  textSecondary?: boolean
+  textNowPlaying?: boolean
   view?: any
 }
 
@@ -62,7 +63,7 @@ export interface UserInfo {
   freeTrialExpiration?: string
   historyItems?: []
   historyItemsCount: number
-  historyItemsIndex: any
+  historyItemsIndex: Record<string, any> | null
   historyQueryPage: number
   id?: string
   membershipExpiration?: string | null
@@ -92,30 +93,40 @@ export interface InitialState {
   customWebDomain?: string
   customWebDomainEnabled?: boolean
   errorReportingEnabled: boolean
+  listenTrackingEnabled: boolean
   urlsAPI?: any
   urlsWeb?: any
   offlineModeEnabled?: any
+  jumpBackwardsTime: string
+  jumpForwardsTime: string
+  addCurrentItemNextInQueue: boolean
   overlayAlert: {
     shouldShowAlert: boolean
   }
-  parsedTranscript: TranscriptRow[]
-  parser: {
-    addByRSSPodcastAuthModal: {
-      feedUrl: string
-    }
-  }
+  parsedTranscript: TranscriptRow[] | null
+  currentChapter: any
+  currentChapters: any
+  currentChaptersStartTimePositions: any
   player: {
     backupDuration?: number
-    currentChapter: any
-    currentChapters: any
     hasErrored: boolean
-    isPlaying: boolean
     nowPlayingItem: any
+    episode: any | null
     playbackRate: number
     showMakeClip: boolean
     showMiniPlayer: boolean
     shouldContinuouslyPlay: boolean
-    sleepTimer: any
+    playbackState: any
+    sleepTimer: {
+      defaultTimeRemaining: number
+      isActive: boolean
+      timeRemaining: number
+    }
+    videoInfo: {
+      videoDuration: number
+      videoIsLoaded: boolean
+      videoPosition: number
+    }
   }
   playlists: {
     myPlaylists: []
@@ -149,12 +160,14 @@ export interface InitialState {
     isLoading: boolean
     isLoadingMore: boolean
     isQuerying: boolean
+    mediaRefIdToDelete?: string
     queryFrom: string | null
     queryPage: number
     querySort: string | null
     selectedFromLabel?: string | null
     selectedItem?: any
     selectedSortLabel?: string | null
+    showDeleteConfirmDialog: boolean
     showFullClipInfo: boolean
     showHeaderActionSheet: boolean
     showMoreActionSheet: boolean
@@ -189,6 +202,13 @@ export interface InitialState {
   subscribedPodcastsTotalCount: number
   userAgent?: string
   bannerInfo: BannerInfo
+  tempMediaRefInfo: {
+    startTime?: number
+    endTime?: number | null
+    clipTitle?: string
+  }
+  screenReaderEnabled: boolean
+  hidePlaybackSpeedButton: boolean
 }
 
 export interface BannerInfoError {
@@ -210,10 +230,20 @@ export interface IActionSheet {
   }
 }
 
+export interface TempMediaRef {
+  startTime: number | undefined
+  endTime: number | null
+  clipTitle: string | undefined
+}
+
 export interface IFilters {
+  _mediaTypeKey: string
+  _mediaTypeAllContent: string
+  _mediaTypeVideoOnly: string
   _subscribedKey: string
   _downloadedKey: string
   _allPodcastsKey: string
+  _customFeedsKey: string
   _categoryKey: string
   _alphabeticalKey: string
   _mostRecentKey: string
@@ -241,6 +271,7 @@ export interface IFilters {
   _sectionMyPlaylistsKey: string
   _sectionSortKey: string
   _sectionSubscribedPlaylistsKey: string
+  _sectionMediaTypeKey: string
 }
 
 interface IFontLargeSizes {

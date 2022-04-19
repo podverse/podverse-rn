@@ -1,5 +1,6 @@
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
-import { StyleSheet } from 'react-native'
+import { Alert, StyleSheet } from 'react-native'
+import Dialog from 'react-native-dialog'
 import React, { setGlobal } from 'reactn'
 import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFromLabel, getSelectedSortLabel } from '../lib/filters'
@@ -8,9 +9,9 @@ import { hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
-import { getMediaRefs } from '../services/mediaRef'
-import { loadItemAndPlayTrack } from '../state/actions/player'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from './'
+import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, ScrollView, TableSectionSelectors } from './'
 
 type Props = {
   navigation?: any
@@ -24,10 +25,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
 
   constructor(props) {
     super(props)
-
     this.shouldLoad = true
-
-    this.state = {}
   }
 
   componentDidMount() {
@@ -143,7 +141,9 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
 
   _handleNavigationPress = (selectedItem: any) => {
     const shouldPlay = true
-    loadItemAndPlayTrack(selectedItem, shouldPlay)
+    const forceUpdateOrderDate = false
+    const setCurrentItemNextInQueue = false
+    playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   _handleMorePress = (selectedItem: any) => {
@@ -156,17 +156,18 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     })
   }
 
-  _handleMoreCancelPress = () => new Promise((resolve) => {
-    setGlobal(
-      {
-        screenPlayer: {
-          ...this.global.screenPlayer,
-          showMoreActionSheet: false
-        }
-      },
-      resolve
-    )
-  })
+  _handleMoreCancelPress = () =>
+    new Promise((resolve) => {
+      setGlobal(
+        {
+          screenPlayer: {
+            ...this.global.screenPlayer,
+            showMoreActionSheet: false
+          }
+        },
+        resolve
+      )
+    })
 
   _handleDownloadPressed = () => {
     const { selectedItem } = this.global.screenPlayer
@@ -176,7 +177,72 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     }
   }
 
+  _handleDeleteClip = (selectedId) => {
+    setGlobal({
+      screenPlayer: {
+        ...this.global.screenPlayer,
+        mediaRefIdToDelete: selectedId,
+        showDeleteConfirmDialog: true
+      }
+    })
+  }
+
+  _deleteMediaRef = () => {
+    const { screenPlayer } = this.global
+    const { mediaRefIdToDelete } = screenPlayer
+    let { flatListData, flatListDataTotalCount } = screenPlayer
+
+    if (mediaRefIdToDelete) {
+      setGlobal(
+        {
+          screenPlayer: {
+            isLoading: true,
+            showDeleteConfirmDialog: false
+          }
+        },
+        () => {
+          (async () => {
+            try {
+              await deleteMediaRef(mediaRefIdToDelete)
+              flatListData = flatListData.filter((x: any) => x && x.id !== mediaRefIdToDelete)
+              flatListDataTotalCount = flatListData.length
+            } catch (error) {
+              if (error.response) {
+                Alert.alert(
+                  PV.Alerts.SOMETHING_WENT_WRONG.title,
+                  PV.Alerts.SOMETHING_WENT_WRONG.message,
+                  PV.Alerts.BUTTONS.OK
+                )
+              }
+            }
+
+            setGlobal({
+              screenPlayer: {
+                ...this.global.screenPlayer,
+                flatListData,
+                flatListDataTotalCount,
+                isLoading: false,
+                mediaRefIdToDelete: ''
+              }
+            })
+          })()
+        }
+      )
+    }
+  }
+
+  _cancelDeleteMediaRef = () => {
+    setGlobal({
+      screenPlayer: {
+        ...this.global.screenPlayer,
+        mediaRefIdToDelete: '',
+        showDeleteConfirmDialog: false
+      }
+    })
+  }
+
   _renderItem = ({ item, index }) => {
+    const { navigation } = this.props
     const { player, screenPlayer } = this.global
     const { episode } = player
     const podcast = episode?.podcast || {}
@@ -195,6 +261,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
         item={item}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
         hideImage
+        navigation={navigation}
         showEpisodeInfo={queryFrom !== PV.Filters._fromThisEpisodeKey}
         showPodcastInfo={false}
         testID={`${testID}_item_${index}`}
@@ -220,7 +287,8 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
       querySort,
       selectedFromLabel = translate('Episode Clips'),
       selectedItem,
-      selectedSortLabel = translate('top - week'),
+      selectedSortLabel = translate('top – week'),
+      showDeleteConfirmDialog,
       showMoreActionSheet,
       showNoInternetConnectionMessage
     } = screenPlayer
@@ -229,7 +297,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     const testID = getTestID()
 
     return (
-      <View style={[styles.wrapper, { width }]} transparent>
+      <ScrollView fillSpace style={[styles.wrapper, { width }]} transparent>
         <TableSectionSelectors
           filterScreenTitle={translate('Clips')}
           handleSelectFromItem={this._selectQueryFrom}
@@ -237,6 +305,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
           includePadding
           navigation={navigation}
           screenName='PlayerScreen'
+          selectedFilterAccessibilityHint={translate('ARIA HINT - This is a list of clips created from this episode')}
           selectedFilterLabel={selectedFromLabel}
           selectedFromItemKey={queryFrom}
           selectedSortItemKey={querySort}
@@ -244,7 +313,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
           testID={testID}
           transparentDropdownButton
         />
-        {isLoading || (isQuerying && <ActivityIndicator fillSpace />)}
+        {isLoading || (isQuerying && <ActivityIndicator fillSpace testID={getTestID()} />)}
         {!isLoading && !isQuerying && flatListData && (
           <FlatList
             data={flatListData}
@@ -264,15 +333,35 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
         <ActionSheet
           handleCancelPress={this._handleMoreCancelPress}
           items={() =>
-            PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
-              handleDismiss: this._handleMoreCancelPress,
-              handleDownload: this._handleDownloadPressed
-            })
+            PV.ActionSheet.media.moreButtons(
+              selectedItem,
+              navigation,
+              {
+                handleDismiss: this._handleMoreCancelPress,
+                handleDownload: this._handleDownloadPressed,
+                handleDeleteClip: this._handleDeleteClip
+              },
+              'clip'
+            )
           }
           showModal={showMoreActionSheet}
           testID={`${testID}_more`}
         />
-      </View>
+        <Dialog.Container visible={showDeleteConfirmDialog}>
+          <Dialog.Title>{translate('Delete Clip')}</Dialog.Title>
+          <Dialog.Description>{translate('Are you sure')}</Dialog.Description>
+          <Dialog.Button
+            label={translate('Cancel')}
+            onPress={this._cancelDeleteMediaRef}
+            testID={`${getTestID()}_delete_clip_cancel`.prependTestId()}
+          />
+          <Dialog.Button
+            label={translate('Delete')}
+            onPress={this._deleteMediaRef}
+            testID={`${getTestID}_delete_clip_delete`.prependTestId()}
+          />
+        </Dialog.Container>
+      </ScrollView>
     )
   }
 
@@ -302,8 +391,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
         ...(queryFrom === PV.Filters._fromThisPodcastKey && nowPlayingItem
           ? { podcastId: nowPlayingItem.podcastId }
           : {}),
-        includeEpisode: queryFrom === PV.Filters._fromThisPodcastKey,
-        allowUntitled: true
+        includeEpisode: queryFrom === PV.Filters._fromThisPodcastKey
       })
 
       return results
@@ -333,7 +421,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     try {
       const results = await this._queryClips()
       newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      newState.endOfResultsReached = results[0].length < 20
       newState.flatListDataTotalCount = results[1]
       newState.querySort = this._validSort()
       this.shouldLoad = true

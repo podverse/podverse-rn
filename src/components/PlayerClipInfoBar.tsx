@@ -1,8 +1,7 @@
 import { NowPlayingItem } from 'podverse-shared'
-import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
+import { Pressable, StyleSheet, View } from 'react-native'
 import React from 'reactn'
-import { translate } from '../lib/i18n'
-import { readableClipTime, testProps } from '../lib/utility'
+import { prefixClipLabel, readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { Text } from './'
 
@@ -13,18 +12,20 @@ type Props = {
 
 export class PlayerClipInfoBar extends React.PureComponent<Props> {
   render() {
-    const { handleOnPress, nowPlayingItem } = this.props
+    const { handleOnPress } = this.props
+    let { nowPlayingItem } = this.props
+    nowPlayingItem = nowPlayingItem || {}
     const { clipEndTime, clipStartTime } = nowPlayingItem
     const { globalTheme } = this.global
 
     return (
-      <TouchableWithoutFeedback onPress={handleOnPress} {...testProps('player_clip_info_bar')}>
+      <Pressable onPress={handleOnPress} testID={'player_clip_info_bar'.prependTestId()}>
         <View style={[styles.wrapper, globalTheme.player]}>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
             style={[styles.title, globalTheme.playerText]}>
-            {nowPlayingItem.clipTitle || translate('Untitled Clip')}
+            {nowPlayingItem?.clipTitle || prefixClipLabel(nowPlayingItem?.episodeTitle)}
           </Text>
           {!!clipStartTime && (
             <Text
@@ -36,7 +37,7 @@ export class PlayerClipInfoBar extends React.PureComponent<Props> {
             </Text>
           )}
         </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
     )
   }
 }
