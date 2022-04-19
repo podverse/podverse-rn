@@ -17,13 +17,14 @@ import {
   resumeDownloadTask
 } from '../../lib/downloader'
 import { removeDownloadingEpisode as removeDownloadingEpisodeService } from '../../lib/downloadingEpisode'
+import { translate } from '../../lib/i18n'
 import { PV } from '../../resources'
 import {
   getAutoDownloadSettings as getAutoDownloadSettingsService,
   updateAutoDownloadSettings as updateAutoDownloadSettingsService
 } from '../../services/autoDownloads'
 import { getPodcastCredentials, parseAddByRSSPodcast } from '../../services/parser'
-import { clearNowPlayingItem } from './player'
+import { clearNowPlayingItem } from '../../services/userNowPlayingItem'
 
 // The DownloadTaskState should have the same episode and podcast properties as a NowPlayingItem,
 // or playing the download directly from the DownloadsScreen will not work.
@@ -42,6 +43,7 @@ export type DownloadTaskState = {
   episodeLinkUrl?: string
   episodeMediaUrl: string
   episodePubDate?: string
+  episodeSubtitle?: string
   episodeTitle?: string
   episodeTranscript?: any
   episodeValue?: any
@@ -90,6 +92,7 @@ export const convertDownloadTaskStateToEpisode = (downloadTaskState: any) => {
     episodeImageUrl,
     episodeMediaUrl,
     episodePubDate,
+    episodeSubtitle,
     episodeTitle
   } = downloadTaskState
 
@@ -100,23 +103,24 @@ export const convertDownloadTaskStateToEpisode = (downloadTaskState: any) => {
     imageUrl: episodeImageUrl,
     mediaUrl: episodeMediaUrl,
     pubDate: episodePubDate,
+    subtitle: episodeSubtitle,
     title: episodeTitle
   }
 }
 
 export const getDownloadStatusText = (status?: string) => {
   if (status === DownloadStatus.DOWNLOADING) {
-    return 'Downloading'
+    return translate('Downloading')
   } else if (status === DownloadStatus.PAUSED) {
-    return 'Paused'
+    return translate('Paused')
   } else if (status === DownloadStatus.STOPPED) {
-    return 'Cancelled'
+    return translate('Cancelled')
   } else if (status === DownloadStatus.PENDING) {
-    return 'Pending'
+    return translate('Pending')
   } else if (status === DownloadStatus.FINISHED) {
-    return 'Finished'
+    return translate('Finished')
   } else if (status === DownloadStatus.ERROR) {
-    return 'Error'
+    return translate('Error')
   } else {
     return ''
   }

@@ -21,7 +21,6 @@ import {
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import {
-  overrideImageUrlWithChapterImageUrl,
   prefixClipLabel,
   replaceLinebreaksWithBrTags,
   safelyUnwrapNestedVariable
@@ -34,7 +33,7 @@ import { trackPageView } from '../services/tracking'
 import { loadChaptersForEpisode } from '../state/actions/playerChapters'
 import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { getHistoryItems } from '../state/actions/userHistoryItem'
-import { core } from '../styles'
+import { core, navHeader } from '../styles'
 
 type Props = {
   navigation?: any
@@ -75,7 +74,12 @@ export class PlayerScreen extends React.Component<Props> {
     return {
       title: '',
       headerStyle: {
-        backgroundColor: globalTheme.view.backgroundColor
+        backgroundColor: globalTheme.view.backgroundColor,
+        borderBottomColor: navHeader.modalBorder.borderBottomColor,
+        borderBottomWidth: 1,
+        shadowColor: 'transparent',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0
       },
       headerLeft: () => (
         <NavDismissIcon globalTheme={globalTheme} handlePress={navigation.dismiss} testID={testIDPrefix} />

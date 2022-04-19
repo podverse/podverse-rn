@@ -96,19 +96,19 @@ export const Alerts = {
   },
   PURCHASE_CANCELLED: {
     message: translate('Purchase has been cancelled If you are seeing this in error please contact support'),
-    title: translate('Purchase Cancelled')
+    title: translate('Cancelled')
   },
   PURCHASE_PENDING: {
     message: translate('Purchase is still pending'),
-    title: translate('Purchase Pending')
+    title: translate('Pending')
   },
   PURCHASE_SUCCESS: {
     message: translate('Your purchase was successful You may close this window'),
-    title: translate('Purchase Success')
+    title: translate('Purchased')
   },
   PURCHASE_SOMETHING_WENT_WRONG: {
     message: translate('Please retry processing or contact support'),
-    title: translate('Purchase Incomplete')
+    title: translate('Incomplete')
   },
   RESET_PASSWORD_SUCCESS: {
     message:

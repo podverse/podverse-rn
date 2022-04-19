@@ -89,6 +89,10 @@ export const audioHandleTrackEnded = (x: any) => {
 module.exports = async () => {
   PVAudioPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
 
+  PVAudioPlayer.addEventListener('playback-metadata-received', (x) => {
+    console.log('playback-metadata-received', x)
+  })
+
   PVAudioPlayer.addEventListener('playback-track-changed', (x: any) => {
     (async () => {
       console.log('playback-track-changed', x)
