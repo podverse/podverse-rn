@@ -84,7 +84,7 @@ export class MyLibraryScreen extends React.Component<Props, State> {
             const accessibilityLabel =
               item.key === _downloadsKey && downloadsActiveCount > 0
                 ? `${item.title} - ${downloadsActiveCount} ${
-                    downloadsActiveCount === 1 ? translate('Download in progress') : translate('Downloads in progress')
+                    downloadsActiveCount === 1 ? translate('Download in progress') : translate('Downloading')
                   }`
                 : item.key === _downloadsKey
                 ? `${item.title} - ${translate('No downloads in progress')}`

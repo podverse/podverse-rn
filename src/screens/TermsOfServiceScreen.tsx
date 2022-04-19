@@ -40,7 +40,7 @@ export class TermsOfServiceScreen extends React.Component<Props> {
             <Text
               onPress={() => this.showLeavingAppAlert('https://www.gnu.org/licenses/agpl-3.0.en.html')}
               style={styles.copyLeftText}>
-              copyleft
+              {translate('copyleft')}
             </Text>
             <Text
               accessible={false}
