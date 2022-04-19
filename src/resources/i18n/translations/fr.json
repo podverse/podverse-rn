@@ -40,7 +40,7 @@
     "ARIA HINT - This is the membership status of your currently logged-in account": "Disponibilité de l'abonnement à Podverse Premium pour le compte connecté",
     "ARIA HINT - This is the now playing chapter info": "Informations sur le chapitre en cours de lecture",
     "ARIA HINT - This is the now playing chapter": " — le chapitre en cours de lecture",
-    "ARIA HINT - This is the now playing clip": " — l'extrait en cours de lecture",
+    "ARIA HINT - This is the now playing clip": "L'extrait en cours de lecture",
     "ARIA HINT - This is the now playing episode": " — l'épisode en cours de lecture",
     "ARIA HINT - This is the now playing info selector": "Appuyez pour modifier les informations « Lecture en cours » affichées ci-dessous. Les contrôles du lecteur sont disponibles en dessous.",
     "ARIA HINT - This is the profile name": "Nom du profil",
@@ -656,5 +656,16 @@
     "brandName chat is powered by": "La discussion en temps réel de Podverse est propulsée par ces bibliothèques libres",
     "Screen-reader accessibility": "Accessibilité des lecteurs d'écran",
     "Sleep timer": "Minuteur de veille",
-    "Support open source software": "Soutenez les logiciels libres"
+    "Support open source software": "Soutenez les logiciels libres",
+    "Subscribe to listener profiles": "Suivre des profils d'abonnés",
+    "Pending": "En attente",
+    "Cancelled": "Annulé",
+    "Error": "Erreur",
+    "Finished": "Terminé",
+    "Incomplete": "Incomplet",
+    "Purchased": "Acheté",
+    "Finished episode": "Épisode terminé",
+    "Paused": "Mis en pause",
+    "Podcasting 2.0 cross-app comments": "Commentaires partagés Podcasting 2.0",
+    "Sync your subscriptions, queue, and history across all your devices": "Synchroniser vos abonnements, file d'attente et historique entre vos appareils"
 }
