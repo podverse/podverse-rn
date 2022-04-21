@@ -487,7 +487,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 numberOfLines={3}
                 placeholder={translate('Clip title')}
                 returnKeyType='done'
-                style={globalTheme.textInput}
+                style={[globalTheme.textInput]}
                 underlineColorAndroid='transparent'
                 testID={`${testIDPrefix}_title`}
                 value={title}
@@ -856,6 +856,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     minHeight: 40
   },
+  clipTitleTextInputWrapper: {
+    marginTop: 16
+  },
   divider: {
     marginBottom: 8,
     marginTop: 10
@@ -927,7 +930,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   textInputTitleWrapper: {
-    marginBottom: 0
+    marginBottom: 0,
+    marginTop: 16
   },
   view: {
     flex: 1
