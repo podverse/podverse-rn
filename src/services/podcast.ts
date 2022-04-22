@@ -73,7 +73,8 @@ export const findPodcastsByFeedUrls = async (feedUrls: string[]) => {
   return response && response.data
 }
 
-export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], videoOnlyMode?: boolean) => {
+export const getSubscribedPodcasts = async (subscribedPodcastIds: string[],
+  videoOnlyMode?: boolean, preventParseCustomRSSFeeds?: boolean) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
 
   const query = {
@@ -96,10 +97,12 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], vide
   if (isConnected) {
     try {
       const data = await getPodcasts(query)
-      const subscribedPodcasts = data[0] || []
+      let subscribedPodcasts = data[0] || []
       await setSubscribedPodcasts(subscribedPodcasts)
-      const combinedPodcasts = await combineWithAddByRSSPodcasts()
-      return [combinedPodcasts, combinedPodcasts.length]
+      if (!preventParseCustomRSSFeeds) {
+        subscribedPodcasts = await combineWithAddByRSSPodcasts()
+      }
+      return [subscribedPodcasts, subscribedPodcasts.length]
     } catch (error) {
       console.log(error)
       const combinedPodcasts = await combineWithAddByRSSPodcasts()

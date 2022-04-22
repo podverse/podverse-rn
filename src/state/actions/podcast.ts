@@ -36,10 +36,10 @@ export const combineWithAddByRSSPodcasts = async (searchTitle?: string, hasVideo
   })
 }
 
-export const getSubscribedPodcasts = async (hasVideo?: boolean) => {
+export const getSubscribedPodcasts = async (hasVideo?: boolean, preventParseCustomRSSFeeds?: boolean) => {
   const globalState = getGlobal() 
   const subscribedPodcastIds = globalState.session.userInfo.subscribedPodcastIds || []
-  const data = await getSubscribedPodcastsService(subscribedPodcastIds, hasVideo)
+  const data = await getSubscribedPodcastsService(subscribedPodcastIds, hasVideo, preventParseCustomRSSFeeds)
   const subscribedPodcasts = data[0] || []
   const subscribedPodcastsTotalCount = data[1] || 0
 

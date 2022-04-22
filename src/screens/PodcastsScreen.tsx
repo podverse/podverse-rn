@@ -234,12 +234,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
       this._handleNavigateToAddPodcastByRSSAuthScreen
     )
     PVEventEmitter.removeListener(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
-    PVEventEmitter.removeListener(PV.Events.APP_MODE_CHANGED, this._onRefresh)
+    PVEventEmitter.removeListener(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
     this._unsubscribe?.()
   }
 
   _handleAppModeChanged = () => {
-    this._onRefresh()
+    const { queryFrom } = this.state
+
+    if (queryFrom === PV.Filters._episodesKey) {
+      this.handleSelectFilterItem(PV.Filters._allPodcastsKey)
+    } else {
+      this._onRefresh()
+    }
+
     this.props.navigation.setParams({
       _screenTitle: getScreenTitle()
     })
@@ -494,11 +501,27 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
   }
 
+  // NOTE: there is a race-condition possibility if you reparse RSS feeds whenever
+  // the Subscribed filter is selected from the FilterScreen. This is happening
+  // because the subscribed handler first gets subscriptions from server,
+  // then parses the custom RSS feeds, then combines the parsed results
+  // with the subscribedPodcasts on globalState. To prevent this,
+  // use handleSelectFilterItemWithoutParse on the FilterScreen.
+  handleSelectFilterItemWithoutParse = async (selectedKey: string) => {
+    const preventIsLoading = false
+    const preventAutoDownloading = true
+    const keepSearchTitle = false
+    const preventParseCustomRSSFeeds = true
+    await this.handleSelectFilterItem(selectedKey, preventIsLoading, preventAutoDownloading,
+      keepSearchTitle, preventParseCustomRSSFeeds)
+  }
+
   handleSelectFilterItem = async (
     selectedKey: string,
     preventIsLoading?: boolean,
     preventAutoDownloading?: boolean,
-    keepSearchTitle?: boolean
+    keepSearchTitle?: boolean,
+    preventParseCustomRSSFeeds?: boolean
   ) => {
     if (!selectedKey) {
       return
@@ -535,7 +558,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         (async () => {
           const nextState = null
           const options = {}
-          const newState = await this._queryData(selectedKey, this.state, nextState, options, preventAutoDownloading)
+          const newState = await this._queryData(selectedKey, this.state, nextState, 
+            options, preventAutoDownloading, preventParseCustomRSSFeeds)
           this.setState(newState)
         })()
       }
@@ -646,6 +670,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           if (queryFrom === PV.Filters._customFeedsKey) {
             await parseAllAddByRSSPodcasts()
           }
+
           const newState = await this._queryData(queryFrom, this.state, {
             queryPage: 1
           })
@@ -890,7 +915,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             filterScreenTitle={getScreenTitle()}
             handleSelectCategoryItem={(x: any) => this._selectCategory(x)}
             handleSelectCategorySubItem={(x: any) => this._selectCategory(x, true)}
-            handleSelectFilterItem={this.handleSelectFilterItem}
+            handleSelectFilterItem={this.handleSelectFilterItemWithoutParse}
             handleSelectSortItem={this.handleSelectSortItem}
             includePadding
             navigation={navigation}
@@ -955,15 +980,17 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _querySubscribedPodcasts = async (preventAutoDownloading?: boolean) => {
+  _querySubscribedPodcasts = async (preventAutoDownloading?: boolean, preventParseCustomRSSFeeds?: boolean) => {
     const { searchBarText } = this.state
     const { appMode } = this.global
     const hasVideo = appMode === PV.AppMode.videos
     await getSubscribedPodcasts(hasVideo)
 
-    if (!searchBarText) await parseAllAddByRSSPodcasts()
-
-    await combineWithAddByRSSPodcasts(searchBarText, hasVideo)
+    if (!preventParseCustomRSSFeeds) {
+      if (!searchBarText) await parseAllAddByRSSPodcasts()
+  
+      await combineWithAddByRSSPodcasts(searchBarText, hasVideo)
+    }
 
     if (!preventAutoDownloading) {
       await handleAutoDownloadEpisodes()
@@ -1005,7 +1032,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     prevState: State,
     nextState?: any,
     queryOptions: { isCategorySub?: boolean } = {},
-    preventAutoDownloading?: boolean
+    preventAutoDownloading?: boolean,
+    preventParseCustomRSSFeeds?: boolean
   ) => {
     let newState = {
       isLoadingMore: false,
@@ -1038,8 +1066,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
         filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
       if (isSubscribedSelected) {
-        await getAuthUserInfo() // get the latest subscribedPodcastIds first
-        await this._querySubscribedPodcasts(preventAutoDownloading)
+        if (!preventParseCustomRSSFeeds) {
+          await getAuthUserInfo() // get the latest subscribedPodcastIds first
+        }
+        await this._querySubscribedPodcasts(preventAutoDownloading, preventParseCustomRSSFeeds)
       } else if (isCustomFeedsSelected) {
         const podcasts = await this._queryCustomFeeds()
         newState.flatListData = [...podcasts]
