@@ -293,7 +293,7 @@ export class SearchScreen extends React.Component<Props, State> {
       isLoadingMore: false
     }
 
-    const wasAlerted = await alertIfNoNetworkConnection(translate('search podcasts'))
+    const wasAlerted = await alertIfNoNetworkConnection(translate('Search podcasts'))
     if (wasAlerted) {
       this.shouldLoad = true
       return newState
