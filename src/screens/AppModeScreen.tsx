@@ -6,7 +6,7 @@ import { Icon, ScrollView, TableCell, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import PVEventEmitter from '../services/eventEmitter'
 import { PV } from '../resources'
-import { AppModeI } from '../resources/AppMode'
+import { AppModes } from '../resources/AppMode'
 import { trackPageView } from '../services/tracking'
 import { table } from '../styles'
 
@@ -35,7 +35,7 @@ export class AppModeScreen extends React.Component<Props, State> {
     trackPageView('/app-mode', 'App Mode Screen')
   }
 
-  _handleAppModeOnPress = (selectedKey: AppModeI) => {
+  _handleAppModeOnPress = (selectedKey: AppModes) => {
     this.setGlobal({
       appMode: selectedKey
     }, () => {
