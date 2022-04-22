@@ -129,7 +129,7 @@ export const generateSections = (options: any) => {
         sortItems = sortItems.filter((item) => PV.FilterOptions.screenFilters.ClipsScreen.sort.includes(item.value))
       }
 
-      filterItems = PV.FilterOptions.typeItems.filter((item) =>
+      filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
         PV.FilterOptions.screenFilters.ClipsScreen.type.includes(item.value)
       )
 
@@ -210,7 +210,7 @@ export const generateSections = (options: any) => {
         )
       }
 
-      filterItems = PV.FilterOptions.typeItems.filter((item) =>
+      filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
         PV.FilterOptions.screenFilters.EpisodesScreen.type.includes(item.value)
       )
 
@@ -279,24 +279,24 @@ export const generateSections = (options: any) => {
       break
     case PV.RouteNames.PodcastScreen:
       if (addByRSSPodcastFeedUrl) {
-        filterItems = PV.FilterOptions.typeItems.filter((item) =>
+        filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
           PV.FilterOptions.screenFilters.PodcastScreen.addByPodcastRSSFeedURLType.includes(item.value)
         )
         sortItems = sortItems.filter((item) =>
           PV.FilterOptions.screenFilters.PodcastScreen.addByPodcastRSSFeedURLSort.includes(item.value)
         )
       } else if (selectedFilterItemKey === PV.Filters._downloadedKey) {
-        filterItems = PV.FilterOptions.typeItems.filter((item) =>
+        filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
           PV.FilterOptions.screenFilters.PodcastScreen.type.includes(item.value)
         )
         sortItems = sortItems.filter((item) => item.value === PV.Filters._mostRecentKey)
       } else if (selectedFilterItemKey === PV.Filters._episodesKey) {
-        filterItems = PV.FilterOptions.typeItems.filter((item) =>
+        filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
           PV.FilterOptions.screenFilters.PodcastScreen.type.includes(item.value)
         )
         sortItems = sortItems.filter((item) => PV.FilterOptions.screenFilters.PodcastScreen.sort.includes(item.value))
       } else if (selectedFilterItemKey === PV.Filters._clipsKey) {
-        filterItems = PV.FilterOptions.typeItems.filter((item) =>
+        filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
           PV.FilterOptions.screenFilters.PodcastScreen.type.includes(item.value)
         )
         sortItems = sortItems.filter((item) => PV.FilterOptions.screenFilters.PodcastScreen.sort.includes(item.value))
@@ -337,7 +337,7 @@ export const generateSections = (options: any) => {
         sortItems = sortItems.filter((item) => PV.FilterOptions.screenFilters.PodcastsScreen.sort.includes(item.value))
       }
 
-      filterItems = PV.FilterOptions.typeItems.filter((item) =>
+      filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
         PV.FilterOptions.screenFilters.PodcastsScreen.type.includes(item.value)
       )
 
@@ -385,21 +385,21 @@ export const generateSections = (options: any) => {
       break
     case PV.RouteNames.ProfileScreen:
       if (selectedFilterItemKey === PV.Filters._podcastsKey) {
-        filterItems = PV.FilterOptions.typeItems.filter((item) =>
+        filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
           PV.FilterOptions.screenFilters.ProfileScreen.type.includes(item.value)
         )
         sortItems = sortItems.filter((item) =>
           PV.FilterOptions.screenFilters.ProfileScreen.sortPodcasts.includes(item.value)
         )
       } else if (selectedFilterItemKey === PV.Filters._clipsKey) {
-        filterItems = PV.FilterOptions.typeItems.filter((item) =>
+        filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
           PV.FilterOptions.screenFilters.ProfileScreen.type.includes(item.value)
         )
         sortItems = sortItems.filter((item) =>
           PV.FilterOptions.screenFilters.ProfileScreen.sortClips.includes(item.value)
         )
       } else if (selectedFilterItemKey === PV.Filters._playlistsKey) {
-        filterItems = PV.FilterOptions.typeItems.filter((item) =>
+        filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
           PV.FilterOptions.screenFilters.ProfileScreen.type.includes(item.value)
         )
         sortItems = sortItems.filter((item) =>
@@ -459,7 +459,7 @@ export const getSelectedFilterLabel = async (
 ) => {
   let selectedFilterItem
   if (!selectedCategoryItemKey && !selectedCategorySubItemKey) {
-    selectedFilterItem = PV.FilterOptions.typeItems.find((item) => {
+    selectedFilterItem = PV.FilterOptions.getTypeItems().find((item) => {
       return item.value === selectedFilterItemKey
     })
   } else if (selectedCategorySubItemKey) {
