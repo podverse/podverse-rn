@@ -38,7 +38,8 @@ export class AppModeScreen extends React.Component<Props, State> {
   _handleAppModeOnPress = (selectedKey: AppModes) => {
     this.setGlobal({
       appMode: selectedKey
-    }, () => {
+    }, async () => {
+      await AsyncStorage.setItem(PV.Keys.APP_MODE, selectedKey)
       PVEventEmitter.emit(PV.Events.APP_MODE_CHANGED)
     })
   }
