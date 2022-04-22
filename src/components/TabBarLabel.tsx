@@ -2,17 +2,17 @@ import React from 'reactn'
 import { Text } from 'react-native'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
+import type { AppModes } from '../resources/AppMode'
 import { tabbar } from '../styles'
 
 type TabKey = 'Podcasts' | 'Episodes' | 'Clips' | 'My Library' | 'More'
-type AppMode = 'podcasts' | 'videos'
 
 type Props = {
   focused?: boolean
   tabKey: TabKey
 }
 
-const getTabTitle = (tabKey: TabKey, appMode: AppMode) => {
+const getTabTitle = (tabKey: TabKey, appMode: AppModes) => {
   let title = ''
   if (tabKey === 'Podcasts') {
     title = translate('Podcasts')
