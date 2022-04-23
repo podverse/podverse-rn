@@ -179,6 +179,7 @@ export class MoreScreen extends React.Component<Props, State> {
       membershipStatus ? membershipStatus : ''
     }`
 
+    
     return (
       <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <SectionList
@@ -189,9 +190,17 @@ export class MoreScreen extends React.Component<Props, State> {
             if (appMode === PV.AppMode.videos) {
               appModeSelectedText = translate('Videos')
             }
+            const modeLabel = `${translate('Mode')}: ${appModeSelectedText}`
+
+            const accessibilityLabel = item.key === _membershipKey
+              ? membershipAccessibilityLabel
+              : item.key === _appModeKey
+                ? modeLabel
+                : item.title
+
             return (
               <TableCell
-                accessibilityLabel={item.key === _membershipKey ? membershipAccessibilityLabel : item.title}
+                accessibilityLabel={accessibilityLabel}
                 onPress={() => this._onPress(item)}
                 testIDPrefix={`${testIDPrefix}_${item.key}`}
                 testIDSuffix=''>
@@ -199,9 +208,10 @@ export class MoreScreen extends React.Component<Props, State> {
                   {
                     item.key === _appModeKey && (
                       <Text
+                        accessibilityLabel={modeLabel}
                         fontSizeLargestScale={PV.Fonts.largeSizes.md}
                         style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                        {`${translate('Mode')}: ${appModeSelectedText}`}
+                        {modeLabel}
                       </Text>
                     )
                   }
