@@ -44,7 +44,7 @@ import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUs
 import { initDownloads, removeDownloadedPodcast, updateDownloadedPodcasts } from '../state/actions/downloads'
 import { updateWalletInfo } from '../state/actions/lnpay'
 import {
-  initializePlaybackSpeed,
+  initializePlayerSettings,
   initializePlayer,
   initPlayerState,
   playerLoadNowPlayingItem,
@@ -441,7 +441,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       this._handleInitialDefaultQuery,
       initDownloads(),
       initializePlayer(),
-      initializePlaybackSpeed()
+      initializePlayerSettings()
     ])
 
     initializeValueProcessor()

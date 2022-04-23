@@ -45,6 +45,7 @@ declare module 'reactn/default' {
         videoIsLoaded: boolean
         videoPosition: number
       }
+      hidePlaybackSpeedButton: boolean
     }
     playlists: {
       myPlaylists: []
@@ -131,6 +132,5 @@ declare module 'reactn/default' {
     bannerInfo: BannerInfo
     tempMediaRefInfo: TempMediaRef
     screenReaderEnabled: boolean
-    hidePlaybackSpeedButton: boolean
   }
 }

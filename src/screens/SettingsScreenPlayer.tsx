@@ -74,9 +74,15 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
   }
 
   _toggleHidePlaybackSpeedButton = () => {
-    const { hidePlaybackSpeedButton } = this.global
+    const { player } = this.global
+    const { hidePlaybackSpeedButton } = player
     const newHidePlaybackSpeedButton = !hidePlaybackSpeedButton
-    this.setGlobal({ hidePlaybackSpeedButton: newHidePlaybackSpeedButton }, () => {
+    
+    this.setGlobal({
+      player: {
+        ...player,
+        hidePlaybackSpeedButton: newHidePlaybackSpeedButton
+      }}, () => {
       (async () => {
         newHidePlaybackSpeedButton
           ? await AsyncStorage.setItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON, 'TRUE')
@@ -87,7 +93,8 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
 
   render() {
     const { maximumSpeedOptionSelected } = this.state
-    const { globalTheme, hidePlaybackSpeedButton, jumpBackwardsTime, jumpForwardsTime } = this.global
+    const { globalTheme, jumpBackwardsTime, jumpForwardsTime, player } = this.global
+    const { hidePlaybackSpeedButton } = player
     const isDarkMode = globalTheme === darkTheme
 
     return (
