@@ -201,7 +201,7 @@ export class MoreScreen extends React.Component<Props, State> {
                       <Text
                         fontSizeLargestScale={PV.Fonts.largeSizes.md}
                         style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                        {`${translate('App Mode')}: ${appModeSelectedText}`}
+                        {`${translate('Mode')}: ${appModeSelectedText}`}
                       </Text>
                     )
                   }
@@ -279,7 +279,7 @@ const allMoreFeatures = [
     routeName: PV.RouteNames.AddPodcastByRSSScreen
   },
   {
-    title: translate('App Mode'),
+    title: translate('Mode'),
     key: _appModeKey,
     routeName: PV.RouteNames.AppModeScreen
   },
