@@ -339,8 +339,15 @@ export const playerSetNowPlayingItem = async (item: NowPlayingItem | null, playb
   }
 }
 
-export const initializePlaybackSpeed = async () => {
-  const playbackSpeedString = await AsyncStorage.getItem(PV.Keys.PLAYER_PLAYBACK_SPEED)
+export const initializePlayerSettings = async () => {
+  const [
+    playbackSpeedString,
+    hidePlaybackSpeedButton,
+  ] = await Promise.all([
+    AsyncStorage.getItem(PV.Keys.PLAYER_PLAYBACK_SPEED),
+    AsyncStorage.getItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON),
+  ])
+
   let playbackSpeed = 1
   if (playbackSpeedString) {
     playbackSpeed = JSON.parse(playbackSpeedString)
@@ -350,7 +357,8 @@ export const initializePlaybackSpeed = async () => {
   setGlobal({
     player: {
       ...globalState.player,
-      playbackRate: playbackSpeed
+      playbackRate: playbackSpeed,
+      hidePlaybackSpeedButton: !!hidePlaybackSpeedButton
     }
   })
 }

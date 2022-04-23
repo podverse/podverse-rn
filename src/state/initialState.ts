@@ -50,7 +50,8 @@ const initialTheme: InitialState = {
       videoDuration: 0,
       videoIsLoaded: false,
       videoPosition: 0
-    }
+    },
+    hidePlaybackSpeedButton: false
   },
   playlists: {
     myPlaylists: [],

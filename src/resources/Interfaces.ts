@@ -127,6 +127,7 @@ export interface InitialState {
       videoIsLoaded: boolean
       videoPosition: number
     }
+    hidePlaybackSpeedButton: boolean
   }
   playlists: {
     myPlaylists: []
