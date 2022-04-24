@@ -326,6 +326,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
         disableTimer
         disableVolume
         disableFullscreen={isFullscreen || disableFullscreen || isMiniPlayer}
+        ignoreSilentSwitch='ignore'
         onBack={this._disableFullscreen}
         onEnd={() => {
           videoResetHistoryItem()

@@ -7,7 +7,8 @@ const initialTheme: InitialState = {
   fontScale: 1,
   fontScaleMode: null,
   autoDownloadSettings: {},
-  downloadsArray: [],
+  downloadsArrayInProgress: [],
+  downloadsArrayFinished: [],
   downloadsActive: {},
   downloadedEpisodeIds: {},
   downloadedEpisodeLimitCount: 5,
@@ -140,6 +141,7 @@ const initialTheme: InitialState = {
   urlsAPI: null,
   urlsWeb: null,
   userAgent: '',
+  appMode: 'podcasts',
   bannerInfo: {
     show: false,
     description: ''

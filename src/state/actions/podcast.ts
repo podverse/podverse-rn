@@ -15,7 +15,10 @@ import {
 } from '../../services/podcast'
 import { updateDownloadedPodcasts } from './downloads'
 
-export const combineWithAddByRSSPodcasts = async (searchTitle?: string, hasVideo?: boolean) => {
+export const combineWithAddByRSSPodcasts = async (searchTitle?: string) => {
+  const { appMode } = getGlobal()
+  const videoOnlyMode = appMode === PV.AppMode.videos
+
   const combinedPodcasts = await combineWithAddByRSSPodcastsService()
   let finalPodcasts = []
 
@@ -26,7 +29,7 @@ export const combineWithAddByRSSPodcasts = async (searchTitle?: string, hasVideo
     finalPodcasts = combinedPodcasts
   }
 
-  if (hasVideo) {
+  if (videoOnlyMode) {
     finalPodcasts = finalPodcasts.filter((podcast) => podcast.hasVideo)
   }
 
@@ -36,10 +39,10 @@ export const combineWithAddByRSSPodcasts = async (searchTitle?: string, hasVideo
   })
 }
 
-export const getSubscribedPodcasts = async (hasVideo?: boolean) => {
+export const getSubscribedPodcasts = async () => {
   const globalState = getGlobal() 
   const subscribedPodcastIds = globalState.session.userInfo.subscribedPodcastIds || []
-  const data = await getSubscribedPodcastsService(subscribedPodcastIds, hasVideo)
+  const data = await getSubscribedPodcastsService(subscribedPodcastIds)
   const subscribedPodcasts = data[0] || []
   const subscribedPodcastsTotalCount = data[1] || 0
 
