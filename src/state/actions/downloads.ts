@@ -290,7 +290,7 @@ export const pauseDownloadingEpisode = (downloadTask: DownloadTaskState) => {
 }
 
 export const removeDownloadingEpisode = async (episodeId: string) => {
-  const { downloadsActive, downloadsArrayInProgress } = getGlobal()
+  const { downloadsActive, downloadsArrayInProgress, downloadsArrayFinished } = getGlobal()
   await removeDownloadingEpisodeService(episodeId)
 
   const newDownloadsArray = downloadsArrayInProgress.filter((task: DownloadTaskState) => {
@@ -302,9 +302,19 @@ export const removeDownloadingEpisode = async (episodeId: string) => {
     }
   })
 
+  const newDownloadsArrayFinished = downloadsArrayFinished.filter((task: DownloadTaskState) => {
+    if (task.episodeId !== episodeId) {
+      return true
+    } else {
+      downloadsActive[episodeId] = false
+      return false
+    }
+  })
+
   setGlobal({
     downloadsActive,
-    downloadsArrayInProgress: newDownloadsArray
+    downloadsArrayInProgress: newDownloadsArray,
+    downloadsArrayFinished: newDownloadsArrayFinished
   })
 }
 
@@ -334,12 +344,17 @@ export const updateDownloadProgress = (
 }
 
 export const updateDownloadComplete = (downloadTaskId: string) => {
-  const { downloadsActive, downloadsArrayInProgress } = getGlobal()
+  const { downloadsActive, downloadsArrayFinished, downloadsArrayInProgress } = getGlobal()
+
+  let newDownloadsArrayInProgress = []
+  const newDownloadsArrayFinished = downloadsArrayFinished
 
   for (const task of downloadsArrayInProgress) {
     if (task.episodeId === downloadTaskId) {
       task.completed = true
       task.status = DownloadStatus.FINISHED
+      newDownloadsArrayFinished.push(task)
+      newDownloadsArrayInProgress = downloadsArrayInProgress.filter((task) => task.episodeId !== downloadTaskId)
       downloadsActive[downloadTaskId] = false
       break
     }
@@ -347,7 +362,8 @@ export const updateDownloadComplete = (downloadTaskId: string) => {
 
   setGlobal({
     downloadsActive,
-    downloadsArrayInProgress
+    downloadsArrayInProgress: newDownloadsArrayInProgress,
+    downloadsArrayFinished: newDownloadsArrayFinished
   })
 }
 

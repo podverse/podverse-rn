@@ -82,6 +82,7 @@ export interface InitialState {
   autoDownloadSettings: any
   downloadsActive: any
   downloadsArrayInProgress: any[]
+  downloadsArrayFinished: any[]
   downloadedEpisodeIds: any
   downloadedPodcastEpisodeCounts: any
   downloadedEpisodeLimitCount: number

@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActionSheet, Divider, DownloadTableCell, FlatList, SwipeRowBack, View } from '../components'
+import { ActionSheet, Divider, DownloadTableCell, FlatList, SwipeRowBack,
+  TableSectionSelectors, View } from '../components'
 import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { safeKeyExtractor } from '../lib/utility'
@@ -12,6 +13,7 @@ import {
   removeDownloadingEpisode,
   resumeDownloadingEpisode
 } from '../state/actions/downloads'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
@@ -100,24 +102,32 @@ export class DownloadsScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { downloadsArrayInProgress } = this.global
+    const { downloadsArrayFinished, downloadsArrayInProgress, globalTheme } = this.global
     const { selectedItem, showActionSheet } = this.state
 
     return (
       <View style={styles.view} testID='downloads_screen_view'>
         <FlatList
-          data={downloadsArrayInProgress}
-          dataTotalCount={downloadsArrayInProgress.length}
           disableLeftSwipe={false}
-          extraData={downloadsArrayInProgress}
           keyExtractor={(item: any) => {
             const ignoreIndex = -1
             return safeKeyExtractor(testIDPrefix, ignoreIndex, item?.episodeId)
           }}
           ItemSeparatorComponent={this._ItemSeparatorComponent}
-          noResultsMessage={translate('No downloads in progress')}
           renderHiddenItem={this._renderHiddenItem}
           renderItem={this._renderItem}
+          renderSectionHeader={({ section }) => (
+            <TableSectionSelectors
+              disableFilter
+              includePadding
+              selectedFilterLabel={section.title}
+              textStyle={[globalTheme.headerText, core.sectionHeaderText]}
+            />
+          )}
+          sections={[
+            { title: translate('In progress'), data: downloadsArrayInProgress },
+            { title: translate('Finished'), data: downloadsArrayFinished },
+          ]}
         />
         {selectedItem && (
           <ActionSheet
