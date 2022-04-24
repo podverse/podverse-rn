@@ -100,16 +100,16 @@ export class DownloadsScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { downloadsArray } = this.global
+    const { downloadsArrayInProgress } = this.global
     const { selectedItem, showActionSheet } = this.state
 
     return (
       <View style={styles.view} testID='downloads_screen_view'>
         <FlatList
-          data={downloadsArray}
-          dataTotalCount={downloadsArray.length}
+          data={downloadsArrayInProgress}
+          dataTotalCount={downloadsArrayInProgress.length}
           disableLeftSwipe={false}
-          extraData={downloadsArray}
+          extraData={downloadsArrayInProgress}
           keyExtractor={(item: any) => {
             const ignoreIndex = -1
             return safeKeyExtractor(testIDPrefix, ignoreIndex, item?.episodeId)

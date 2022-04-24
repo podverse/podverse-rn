@@ -7,7 +7,7 @@ const initialTheme: InitialState = {
   fontScale: 1,
   fontScaleMode: null,
   autoDownloadSettings: {},
-  downloadsArray: [],
+  downloadsArrayInProgress: [],
   downloadsActive: {},
   downloadedEpisodeIds: {},
   downloadedEpisodeLimitCount: 5,

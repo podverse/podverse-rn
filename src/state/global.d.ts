@@ -10,7 +10,7 @@ declare module 'reactn/default' {
     fontScaleMode: string | null
     autoDownloadSettings: any
     downloadsActive: any
-    downloadsArray: any[]
+    downloadsArrayInProgress: any[]
     downloadedEpisodeIds: any
     downloadedPodcastEpisodeCounts: any
     downloadedEpisodeLimitCount: number
