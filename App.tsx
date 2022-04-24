@@ -93,13 +93,15 @@ class App extends Component<Props, State> {
 
   setupGlobalState = async (theme: GlobalTheme) => {
     const fontScale = await getFontScale()
+    const appMode = await AsyncStorage.getItem(PV.Keys.APP_MODE)
     const fontScaleMode = determineFontScaleMode(fontScale)
 
     setGlobal(
       {
         globalTheme: theme,
         fontScaleMode,
-        fontScale
+        fontScale,
+        appMode: appMode || PV.AppMode.podcasts
       }
     )
   }

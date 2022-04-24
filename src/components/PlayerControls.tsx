@@ -118,14 +118,13 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       currentChapters,
       currentChaptersStartTimePositions,
       globalTheme,
-      hidePlaybackSpeedButton,
       jumpBackwardsTime,
       jumpForwardsTime,
       player,
       screenPlayer,
       session
     } = this.global
-    const { backupDuration, playbackRate, playbackState } = player
+    const { backupDuration, hidePlaybackSpeedButton, playbackRate, playbackState } = player
     const { userInfo } = session
     const { queueItems } = userInfo
     const { isLoading } = screenPlayer

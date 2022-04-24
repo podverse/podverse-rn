@@ -1,6 +1,7 @@
 import { ActionSheet } from './ActionSheet'
 import { Alerts } from './Alerts'
 import { AlertStatuses } from './AlertStatuses'
+import { AppMode } from './AppMode'
 import { Colors } from './Colors'
 import { DeepLinks } from './DeepLinks'
 import { Dimensions } from './Dimensions'
@@ -33,6 +34,7 @@ export const PV = {
   ActionSheet,
   Alerts,
   AlertStatuses,
+  AppMode,
   Colors,
   DeepLinks,
   Dimensions,

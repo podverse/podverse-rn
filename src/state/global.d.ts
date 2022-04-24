@@ -1,5 +1,6 @@
 import { TranscriptRow } from 'podverse-shared'
 import 'reactn'
+import { AppModes } from '../resources/AppMode'
 import { BannerInfo, GlobalTheme, UserInfo, TempMediaRef } from '../resources/Interfaces'
 
 declare module 'reactn/default' {
@@ -9,7 +10,8 @@ declare module 'reactn/default' {
     fontScaleMode: string | null
     autoDownloadSettings: any
     downloadsActive: any
-    downloadsArray: any[]
+    downloadsArrayInProgress: any[]
+    downloadsArrayFinished: any[]
     downloadedEpisodeIds: any
     downloadedPodcastEpisodeCounts: any
     downloadedEpisodeLimitCount: number
@@ -45,6 +47,7 @@ declare module 'reactn/default' {
         videoIsLoaded: boolean
         videoPosition: number
       }
+      hidePlaybackSpeedButton: boolean
     }
     playlists: {
       myPlaylists: []
@@ -128,9 +131,9 @@ declare module 'reactn/default' {
     urlsAPI?: any
     urlsWeb?: any
     userAgent?: string
+    appMode: AppModes
     bannerInfo: BannerInfo
     tempMediaRefInfo: TempMediaRef
     screenReaderEnabled: boolean
-    hidePlaybackSpeedButton: boolean
   }
 }

@@ -89,14 +89,13 @@ export const assignCategoryQueryToState = (
   newState: any,
   queryOptions: any,
   selectedCategory: any,
-  selectedCategorySub: any,
-  isMediaTypeSelected?: boolean
+  selectedCategorySub: any
 ) => {
   const newFilterKey = getCategoryKey(filterKey, selectedCategory, selectedCategorySub)
   const { isCategorySub } = queryOptions
   let categories
 
-  if (filterKey === PV.Filters._categoryKey || isMediaTypeSelected) {
+  if (filterKey === PV.Filters._categoryKey) {
     categories = selectedCategorySub ? selectedCategorySub : selectedCategory
     newState.selectedCategory = selectedCategory
     newState.selectedCategorySub = selectedCategorySub

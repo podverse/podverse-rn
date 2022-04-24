@@ -1,10 +1,10 @@
+import { getGlobal } from 'reactn'
 import Config from 'react-native-config'
 import { translate } from '../lib/i18n'
 import { Filters } from './Filters'
+import { PV } from './PV'
 
 const {
-  _mediaTypeAllContent,
-  _mediaTypeVideoOnly,
   _subscribedKey,
   _downloadedKey,
   _allPodcastsKey,
@@ -34,17 +34,6 @@ const {
 
 const _top = [_topPastDay, _topPastWeek, _topPastMonth, _topPastYear, _topAllTime]
 
-const mediaTypeItems = [
-  {
-    label: translate('All'),
-    value: _mediaTypeAllContent
-  },
-  {
-    label: translate('Video Only'),
-    value: _mediaTypeVideoOnly
-  }
-]
-
 const sortAlphabeticalItem = {
   label: translate('A-Z'),
   value: _alphabeticalKey
@@ -55,64 +44,75 @@ const sortChronologicalItem = {
   value: _chronologicalKey
 }
 
-const allFilterTypeItems = [
-  {
-    label: translate('Subscribed'),
-    value: _subscribedKey
-  },
-  {
-    label: translate('Downloaded'),
-    value: _downloadedKey
-  },
-  {
-    label: translate('All Podcasts'),
-    value: _allPodcastsKey
-  },
-  {
-    label: translate('Category'),
-    value: _categoryKey
-  },
-  {
-    label: translate('Custom Feeds'),
-    value: _customFeedsKey
-  },
-  {
-    label: translate('My Clips'),
-    value: _myClipsKey
-  },
-  {
-    label: translate('All Episodes'),
-    value: _allEpisodesKey
-  },
-  {
-    label: translate('Podcasts'),
-    value: _podcastsKey
-  },
-  {
-    label: translate('Episodes'),
-    value: _episodesKey
-  },
-  {
-    label: translate('Chapters'),
-    value: _chaptersKey
-  },
-  {
-    label: translate('Clips'),
-    value: _clipsKey
-  },
-  {
-    label: translate('Playlists'),
-    value: _playlistsKey
-  },
-  {
-    label: translate('My Playlists'),
-    value: _myPlaylistsKey
+const allFilterTypeItems = () => {
+  const { appMode } = getGlobal()
+  let allPodcastsLabel = translate('All Podcasts')
+  let episodesLabel = translate('Episodes')
+
+  if (appMode === PV.AppMode.videos) {
+    allPodcastsLabel = translate('All Channels')
+    episodesLabel = translate('Videos')
   }
-]
+  
+  return [
+    {
+      label: translate('Subscribed'),
+      value: _subscribedKey
+    },
+    {
+      label: translate('Downloaded'),
+      value: _downloadedKey
+    },
+    {
+      label: allPodcastsLabel,
+      value: _allPodcastsKey
+    },
+    {
+      label: translate('Category'),
+      value: _categoryKey
+    },
+    {
+      label: translate('Custom Feeds'),
+      value: _customFeedsKey
+    },
+    {
+      label: translate('My Clips'),
+      value: _myClipsKey
+    },
+    {
+      label: translate('All Episodes'),
+      value: _allEpisodesKey
+    },
+    {
+      label: translate('Podcasts'),
+      value: _podcastsKey
+    },
+    {
+      label: episodesLabel,
+      value: _episodesKey
+    },
+    {
+      label: translate('Chapters'),
+      value: _chaptersKey
+    },
+    {
+      label: translate('Clips'),
+      value: _clipsKey
+    },
+    {
+      label: translate('Playlists'),
+      value: _playlistsKey
+    },
+    {
+      label: translate('My Playlists'),
+      value: _myPlaylistsKey
+    }
+  ]
+}
 
 const filterTypeItemsList = Config.FILTER_TYPE_ITEMS ? Config.FILTER_TYPE_ITEMS.split(',') : []
 
-const typeItems = allFilterTypeItems.filter((item: any) => {
+const getTypeItems = () => allFilterTypeItems().filter((item: any) => {
   return filterTypeItemsList.find((value: string) => item.value === value)
 })
 
@@ -179,9 +179,8 @@ const fromItems = allFromListItems.filter((item: any) => {
 })
 
 export const FilterOptions = {
-  mediaTypeItems,
   fromItems,
-  typeItems,
+  getTypeItems,
   sortItems,
   screenFilters: {
     ClipsScreen: {

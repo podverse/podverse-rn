@@ -179,39 +179,66 @@ export class MoreScreen extends React.Component<Props, State> {
       membershipStatus ? membershipStatus : ''
     }`
 
+    
     return (
       <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => {
+            const { appMode } = this.global
+            let appModeSelectedText = translate('Podcasts')
+            if (appMode === PV.AppMode.videos) {
+              appModeSelectedText = translate('Videos')
+            }
+            const modeLabel = `${translate('Mode')}: ${appModeSelectedText}`
+
+            const accessibilityLabel = item.key === _membershipKey
+              ? membershipAccessibilityLabel
+              : item.key === _appModeKey
+                ? modeLabel
+                : item.title
+
             return (
               <TableCell
-                accessibilityLabel={item.key === _membershipKey ? membershipAccessibilityLabel : item.title}
+                accessibilityLabel={accessibilityLabel}
                 onPress={() => this._onPress(item)}
                 testIDPrefix={`${testIDPrefix}_${item.key}`}
                 testIDSuffix=''>
-                {item.key === _membershipKey ? (
-                  <>
-                    {!isLoggedIn && (
+                <>
+                  {
+                    item.key === _appModeKey && (
                       <Text
+                        accessibilityLabel={modeLabel}
                         fontSizeLargestScale={PV.Fonts.largeSizes.md}
                         style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                        {`${translate('Membership')}`}
+                        {modeLabel}
                       </Text>
-                    )}
-                    {isLoggedIn && (
-                      <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[table.cellText, membershipTextStyle]}>
-                        {membershipStatus}
-                      </Text>
-                    )}
-                  </>
-                ) : (
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                    {item.title}
-                  </Text>
-                )}
+                    )
+                  }
+                  {item.key === _membershipKey && (
+                    <>
+                      {!isLoggedIn && (
+                        <Text
+                          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                          style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+                          {`${translate('Membership')}`}
+                        </Text>
+                      )}
+                      {isLoggedIn && (
+                        <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[table.cellText, membershipTextStyle]}>
+                          {membershipStatus}
+                        </Text>
+                      )}
+                    </>
+                  )}
+                  {item.key !== _appModeKey && item.key !== _membershipKey && (
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                      style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+                      {item.title}
+                    </Text>
+                  )}
+                </>
               </TableCell>
             )
           }}
@@ -237,6 +264,7 @@ export class MoreScreen extends React.Component<Props, State> {
 
 const _aboutKey = 'About'
 const _addPodcastByRSSKey = 'AddPodcastByRSS'
+const _appModeKey = 'AppMode'
 const _bitcoinWalletKey = 'BitcoinWallet'
 const _contactKey = 'Contact'
 const _loginKey = 'Login'
@@ -259,6 +287,11 @@ const allMoreFeatures = [
     title: translate('Add Custom RSS Feed'),
     key: _addPodcastByRSSKey,
     routeName: PV.RouteNames.AddPodcastByRSSScreen
+  },
+  {
+    title: translate('Mode'),
+    key: _appModeKey,
+    routeName: PV.RouteNames.AppModeScreen
   },
   {
     title: translate('Bitcoin Wallet'),

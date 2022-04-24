@@ -312,7 +312,7 @@ export const initDownloads = async () => {
   }
 
   return {
-    downloadsArray: downloadTaskStates,
+    downloadsArrayInProgress: downloadTaskStates,
     downloadsActive
   }
 }
