@@ -4,7 +4,7 @@ import { convertToNowPlayingItem, Episode } from 'podverse-shared'
 import { Platform, StyleSheet, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
-import React from 'reactn'
+import React, { getGlobal } from 'reactn'
 import {
   ActionSheet,
   Button,
@@ -92,6 +92,43 @@ type RenderItemArg = { item: any; index: number }
 
 const testIDPrefix = 'podcast_screen'
 
+const getScreenTitle = () => {
+  const { appMode } = getGlobal()
+  let screenTitle = translate('Podcast')
+
+  if (appMode === PV.AppMode.videos) {
+    screenTitle = translate('Channel')
+  }
+
+  return screenTitle
+}
+
+const getSearchPlaceholder = (viewType: string) => {
+  const { appMode } = getGlobal()
+  let searchPlaceholder = translate('Search episodes')
+
+  if (viewType === PV.Filters._clipsKey) {
+    searchPlaceholder = translate('Search clips')
+  } else {
+    if (appMode === PV.AppMode.videos) {
+      searchPlaceholder = translate('Search videos')
+    }
+  }
+
+  return searchPlaceholder
+}
+
+const getDefaultSelectedFilterLabel = () => {
+  const { appMode } = getGlobal()
+  let defaultSelectedFilterLabel = translate('Episodes')
+
+  if (appMode === PV.AppMode.videos) {
+    defaultSelectedFilterLabel = translate('Videos')
+  }
+
+  return defaultSelectedFilterLabel
+}
+
 export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   shouldLoad: boolean
   listRef = null
@@ -113,6 +150,8 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       })
     }
 
+
+
     this.state = {
       downloadedEpisodeLimit: null,
       endOfResultsReached: false,
@@ -129,7 +168,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       queryPage: 1,
       querySort: PV.Filters._mostRecentKey,
       searchBarText: '',
-      selectedFilterLabel: translate('Episodes'),
+      selectedFilterLabel: getDefaultSelectedFilterLabel(),
       selectedSortLabel: translate('recent'),
       showActionSheet: false,
       showSettings: false,
@@ -147,7 +186,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
     return {
-      title: translate('Podcast'),
+      title: getScreenTitle(),
       headerRight: () => (
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
@@ -385,7 +424,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _ListHeaderComponent = () => {
     const { searchBarText, viewType, flatListDataTotalCount } = this.state
-    const placeholder = viewType === PV.Filters._clipsKey ? translate('Search clips') : translate('Search episodes')
+    const placeholder = getSearchPlaceholder(viewType)
 
     const shouldShowSearchBar = searchBarText || (flatListDataTotalCount && flatListDataTotalCount > 3)
 
@@ -837,7 +876,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
         {!showSettings ? (
           <TableSectionSelectors
             addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
-            filterScreenTitle={viewType === PV.Filters._clipsKey ? translate('Clips') : translate('Episodes')}
+            filterScreenTitle={getScreenTitle()}
             handleSelectFilterItem={this.handleSelectFilterItem}
             handleSelectSortItem={this.handleSelectSortItem}
             includePadding

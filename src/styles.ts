@@ -717,6 +717,9 @@ export const navHeader = StyleSheet.create({
         android: PV.Navigation.header.height.android,
         ios: PV.Navigation.header.height.ios
       }) || 0
+  },
+  modalBorder: {
+    borderBottomColor: PV.Colors.grayDarker
   }
 })
 

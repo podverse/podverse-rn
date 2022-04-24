@@ -17,13 +17,14 @@ import {
   resumeDownloadTask
 } from '../../lib/downloader'
 import { removeDownloadingEpisode as removeDownloadingEpisodeService } from '../../lib/downloadingEpisode'
+import { translate } from '../../lib/i18n'
 import { PV } from '../../resources'
 import {
   getAutoDownloadSettings as getAutoDownloadSettingsService,
   updateAutoDownloadSettings as updateAutoDownloadSettingsService
 } from '../../services/autoDownloads'
 import { getPodcastCredentials, parseAddByRSSPodcast } from '../../services/parser'
-import { clearNowPlayingItem } from './player'
+import { clearNowPlayingItem } from '../../services/userNowPlayingItem'
 
 // The DownloadTaskState should have the same episode and podcast properties as a NowPlayingItem,
 // or playing the download directly from the DownloadsScreen will not work.
@@ -42,6 +43,7 @@ export type DownloadTaskState = {
   episodeLinkUrl?: string
   episodeMediaUrl: string
   episodePubDate?: string
+  episodeSubtitle?: string
   episodeTitle?: string
   episodeTranscript?: any
   episodeValue?: any
@@ -90,6 +92,7 @@ export const convertDownloadTaskStateToEpisode = (downloadTaskState: any) => {
     episodeImageUrl,
     episodeMediaUrl,
     episodePubDate,
+    episodeSubtitle,
     episodeTitle
   } = downloadTaskState
 
@@ -100,23 +103,24 @@ export const convertDownloadTaskStateToEpisode = (downloadTaskState: any) => {
     imageUrl: episodeImageUrl,
     mediaUrl: episodeMediaUrl,
     pubDate: episodePubDate,
+    subtitle: episodeSubtitle,
     title: episodeTitle
   }
 }
 
 export const getDownloadStatusText = (status?: string) => {
   if (status === DownloadStatus.DOWNLOADING) {
-    return 'Downloading'
+    return translate('Downloading')
   } else if (status === DownloadStatus.PAUSED) {
-    return 'Paused'
+    return translate('Paused')
   } else if (status === DownloadStatus.STOPPED) {
-    return 'Cancelled'
+    return translate('Cancelled')
   } else if (status === DownloadStatus.PENDING) {
-    return 'Pending'
+    return translate('Pending')
   } else if (status === DownloadStatus.FINISHED) {
-    return 'Finished'
+    return translate('Finished')
   } else if (status === DownloadStatus.ERROR) {
-    return 'Error'
+    return translate('Error')
   } else {
     return ''
   }
@@ -124,7 +128,7 @@ export const getDownloadStatusText = (status?: string) => {
 
 export const initDownloads = async () => {
   const [
-    { downloadsActive, downloadsArray },
+    { downloadsActive, downloadsArrayInProgress },
     downloadedEpisodeIds,
     downloadedPodcastEpisodeCounts,
     downloadedPodcasts,
@@ -147,7 +151,7 @@ export const initDownloads = async () => {
     setGlobal({
       autoDownloadSettings,
       downloadsActive,
-      downloadsArray,
+      downloadsArrayInProgress,
       downloadedEpisodeIds,
       downloadedEpisodeLimitCount,
       downloadedEpisodeLimitDefault,
@@ -227,25 +231,25 @@ export const updateDownloadedPodcasts = async (cb?: any) => {
 }
 
 export const addDownloadTask = (downloadTask: DownloadTaskState) => {
-  const { downloadsActive, downloadsArray } = getGlobal()
+  const { downloadsActive, downloadsArrayInProgress } = getGlobal()
 
-  if (!downloadsArray.some((x: any) => x.episodeId === downloadTask.episodeId)) {
+  if (!downloadsArrayInProgress.some((x: any) => x.episodeId === downloadTask.episodeId)) {
     downloadTask.status = DownloadStatus.PENDING
     downloadsActive[downloadTask.episodeId] = true
 
     setGlobal({
       downloadsActive,
-      downloadsArray: [...downloadsArray, downloadTask]
+      downloadsArrayInProgress: [...downloadsArrayInProgress, downloadTask]
     })
   }
 }
 
 export const resumeDownloadingEpisode = (downloadTask: DownloadTaskState) => {
-  const { downloadsActive, downloadsArray } = getGlobal()
+  const { downloadsActive, downloadsArrayInProgress } = getGlobal()
   const { episodeId } = downloadTask
   resumeDownloadTask(downloadTask)
 
-  for (const task of downloadsArray) {
+  for (const task of downloadsArrayInProgress) {
     if (task.episodeId === episodeId) {
       task.status = DownloadStatus.DOWNLOADING
       downloadsActive[episodeId] = true
@@ -255,23 +259,23 @@ export const resumeDownloadingEpisode = (downloadTask: DownloadTaskState) => {
 
   setGlobal({
     downloadsActive,
-    downloadsArray
+    downloadsArrayInProgress
   })
 }
 
 export const pauseDownloadingEpisodesAll = () => {
-  const { downloadsArray } = getGlobal()
-  for (const task of downloadsArray) {
+  const { downloadsArrayInProgress } = getGlobal()
+  for (const task of downloadsArrayInProgress) {
     pauseDownloadingEpisode(task)
   }
 }
 
 export const pauseDownloadingEpisode = (downloadTask: DownloadTaskState) => {
-  const { downloadsActive, downloadsArray } = getGlobal()
+  const { downloadsActive, downloadsArrayInProgress } = getGlobal()
   const { episodeId } = downloadTask
   pauseDownloadTask(downloadTask)
 
-  for (const task of downloadsArray) {
+  for (const task of downloadsArrayInProgress) {
     if (task.episodeId === episodeId) {
       task.status = DownloadStatus.PAUSED
       downloadsActive[episodeId] = true
@@ -281,15 +285,24 @@ export const pauseDownloadingEpisode = (downloadTask: DownloadTaskState) => {
 
   setGlobal({
     downloadsActive,
-    downloadsArray
+    downloadsArrayInProgress
   })
 }
 
 export const removeDownloadingEpisode = async (episodeId: string) => {
-  const { downloadsActive, downloadsArray } = getGlobal()
+  const { downloadsActive, downloadsArrayInProgress, downloadsArrayFinished } = getGlobal()
   await removeDownloadingEpisodeService(episodeId)
 
-  const newDownloadsArray = downloadsArray.filter((task: DownloadTaskState) => {
+  const newDownloadsArray = downloadsArrayInProgress.filter((task: DownloadTaskState) => {
+    if (task.episodeId !== episodeId) {
+      return true
+    } else {
+      downloadsActive[episodeId] = false
+      return false
+    }
+  })
+
+  const newDownloadsArrayFinished = downloadsArrayFinished.filter((task: DownloadTaskState) => {
     if (task.episodeId !== episodeId) {
       return true
     } else {
@@ -300,7 +313,8 @@ export const removeDownloadingEpisode = async (episodeId: string) => {
 
   setGlobal({
     downloadsActive,
-    downloadsArray: newDownloadsArray
+    downloadsArrayInProgress: newDownloadsArray,
+    downloadsArrayFinished: newDownloadsArrayFinished
   })
 }
 
@@ -310,9 +324,9 @@ export const updateDownloadProgress = (
   bytesWritten: string,
   bytesTotal: string
 ) => {
-  const { downloadsActive, downloadsArray } = getGlobal()
+  const { downloadsActive, downloadsArrayInProgress } = getGlobal()
 
-  for (const task of downloadsArray) {
+  for (const task of downloadsArrayInProgress) {
     if (task.episodeId === downloadTaskId) {
       task.percent = percent
       task.bytesWritten = bytesWritten
@@ -325,17 +339,22 @@ export const updateDownloadProgress = (
   }
 
   setGlobal({
-    downloadsArray
+    downloadsArrayInProgress
   })
 }
 
 export const updateDownloadComplete = (downloadTaskId: string) => {
-  const { downloadsActive, downloadsArray } = getGlobal()
+  const { downloadsActive, downloadsArrayFinished, downloadsArrayInProgress } = getGlobal()
 
-  for (const task of downloadsArray) {
+  let newDownloadsArrayInProgress = []
+  const newDownloadsArrayFinished = downloadsArrayFinished
+
+  for (const task of downloadsArrayInProgress) {
     if (task.episodeId === downloadTaskId) {
       task.completed = true
       task.status = DownloadStatus.FINISHED
+      newDownloadsArrayFinished.push(task)
+      newDownloadsArrayInProgress = downloadsArrayInProgress.filter((task) => task.episodeId !== downloadTaskId)
       downloadsActive[downloadTaskId] = false
       break
     }
@@ -343,14 +362,15 @@ export const updateDownloadComplete = (downloadTaskId: string) => {
 
   setGlobal({
     downloadsActive,
-    downloadsArray
+    downloadsArrayInProgress: newDownloadsArrayInProgress,
+    downloadsArrayFinished: newDownloadsArrayFinished
   })
 }
 
 export const updateDownloadError = (downloadTaskId: string) => {
-  const { downloadsActive, downloadsArray } = getGlobal()
+  const { downloadsActive, downloadsArrayInProgress } = getGlobal()
 
-  for (const task of downloadsArray) {
+  for (const task of downloadsArrayInProgress) {
     if (task.episodeId === downloadTaskId) {
       task.status = DownloadStatus.ERROR
       downloadsActive[downloadTaskId] = false
@@ -360,7 +380,7 @@ export const updateDownloadError = (downloadTaskId: string) => {
 
   setGlobal({
     downloadsActive,
-    downloadsArray
+    downloadsArrayInProgress
   })
 }
 

@@ -763,3 +763,17 @@ export const checkIfContainsStringMatch = (matchStr: string, currentStr: string)
   const regex = new RegExp(`${lowercaseString}|${lowercaseString}.|.${lowercaseString}.|.${lowercaseString}`)
   return regex.test(currentStr.toLowerCase())
 }
+
+export const generateEpisodeAccessibilityText = (
+  episodeCompleted: boolean,
+  timeLabel: string
+) => {
+  let timeLabelText = episodeCompleted ? translate('Finished episode') : ''
+  if (timeLabel) {
+    timeLabelText = `${timeLabelText ? `${timeLabelText}, ${timeLabel}` : ''} ${timeLabel}`
+  } else {
+    timeLabelText = `${timeLabelText ?
+      `${timeLabelText}, ${translate('Unplayed episode')}` : ''} ${translate('Unplayed episode')}`
+  }
+  return timeLabelText
+}

@@ -10,6 +10,7 @@ import {
   AboutScreen,
   AddPodcastByRSSAuthScreen,
   AddPodcastByRSSScreen,
+  AppModeScreen,
   AuthScreen,
   ClipsScreen,
   ContactScreen,
@@ -118,11 +119,11 @@ const PodcastsNavigator = createStackNavigator(
     defaultNavigationOptions,
     initialRouteName: PV.RouteNames.PodcastsScreen,
     navigationOptions: {
-      tabBarAccessibilityLabel: translate('Podcasts'),
+      // tabBarAccessibilityLabel: translate('Episodes'),
       tabBarIcon: ({ tintColor }: { tintColor: any }) => (
         <Image source={PV.Tabs.Podcasts.icon} style={{ tintColor }} resizeMode={'contain'} />
       ),
-      tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Podcasts.title} />,
+      tabBarLabel: (props) => <TabBarLabel {...props} tabKey='Podcasts' />,
       tabBarTestID: 'tab_podcasts_screen'.prependTestId()
     }
   }
@@ -142,8 +143,8 @@ const EpisodesNavigator = createStackNavigator(
       tabBarIcon: ({ tintColor }: { tintColor: any }) => (
         <Image source={PV.Tabs.Episodes.icon} style={{ tintColor }} resizeMode={'contain'} />
       ),
-      tabBarAccessibilityLabel: translate('Episodes'),
-      tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Episodes.title} />,
+      // tabBarAccessibilityLabel: translate('Episodes'),
+      tabBarLabel: (props) => <TabBarLabel {...props} tabKey='Episodes' />,
       tabBarTestID: 'tab_episodes_screen'.prependTestId()
     },
   }
@@ -156,10 +157,10 @@ const ClipsNavigator = createStackNavigator(
   {
     defaultNavigationOptions,
     navigationOptions: {
-      tabBarAccessibilityLabel: translate('Clips'),
+      // tabBarAccessibilityLabel: translate('Clips'),
       tabBarIcon: ({ tintColor }: { tintColor: any }) =>
         <Image source={PV.Tabs.Clips.icon} style={{ tintColor }} resizeMode={'contain'} />,
-      tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Clips.title} />,
+      tabBarLabel: (props) => <TabBarLabel {...props} tabKey='Clips' />,
       tabBarTestID: 'tab_clips_screen'.prependTestId()
     }
   }
@@ -196,6 +197,7 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.SettingsScreenQueue]: SettingsScreenQueue,
     [PV.RouteNames.SettingsScreenTracking]: SettingsScreenTracking,
     [PV.RouteNames.MembershipScreen]: MembershipScreen,
+    [PV.RouteNames.AppModeScreen]: AppModeScreen,
     [PV.RouteNames.ContactScreen]: ContactScreen,
     [PV.RouteNames.ContactXMPPChatScreen]: ContactXMPPChatScreen,
     [PV.RouteNames.SupportScreen]: SupportScreen,
@@ -209,7 +211,7 @@ const MoreNavigator = createStackNavigator(
   {
     defaultNavigationOptions,
     navigationOptions: {
-      tabBarAccessibilityLabel: translate('More'),
+      // tabBarAccessibilityLabel: translate('More'),
       tabBarIcon: ({ tintColor }: { tintColor: any }) => {
         return (
           <View>
@@ -217,7 +219,7 @@ const MoreNavigator = createStackNavigator(
           </View>
         )
       },
-      tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.More.title} />,
+      tabBarLabel: (props) => <TabBarLabel {...props} tabKey='More' />,
       tabBarTestID: 'tab_more_screen'.prependTestId()
     }
   }
@@ -263,7 +265,7 @@ const MyLibraryNavigator = createStackNavigator(
           </View>
         )
       },
-      tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.MyLibrary.title} />,
+      tabBarLabel: (props) => <TabBarLabel {...props} tabKey='My Library' />,
       tabBarTestID: 'tab_my_library_screen'.prependTestId()
     }
   }

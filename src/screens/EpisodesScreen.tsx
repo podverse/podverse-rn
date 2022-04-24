@@ -2,7 +2,8 @@ import debounce from 'lodash/debounce'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet } from 'react-native'
 import Config from 'react-native-config'
-import React from 'reactn'
+import { NavigationStackOptions } from 'react-navigation-stack'
+import React, { getGlobal } from 'reactn'
 import {
   ActionSheet,
   ActivityIndicator,
@@ -41,7 +42,6 @@ type State = {
   isLoadingMore: boolean
   isRefreshing: boolean
   queryFrom: string
-  queryMediaType: string | null
   queryPage: number
   querySort: string | null
   searchBarText: string
@@ -54,11 +54,29 @@ type State = {
   showNoInternetConnectionMessage?: boolean
   tempQueryEnabled: boolean
   tempQueryFrom: string
-  tempQueryMediaType: string | null
   tempQuerySort: string | null
 }
 
 const testIDPrefix = 'episodes_screen'
+
+const getScreenTitle = () => {
+  const { appMode } = getGlobal()
+  let screenTitle = translate('Episodes')
+  if (appMode === PV.AppMode.videos) {
+    screenTitle = translate('Videos')
+  }
+
+  return screenTitle
+}
+
+const getSearchPlaceholder = () => {
+  const { appMode } = getGlobal()
+  let searchPlaceholder = translate('Search episodes')
+  if (appMode === PV.AppMode.videos) {
+    searchPlaceholder = translate('Search videos')
+  }
+  return searchPlaceholder
+}
 
 export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
   shouldLoad: boolean
@@ -80,7 +98,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       isLoadingMore: true,
       isRefreshing: false,
       queryFrom: hasSubscribedPodcasts ? PV.Filters._subscribedKey : Config.DEFAULT_QUERY_EPISODES_SCREEN,
-      queryMediaType: PV.Filters._mediaTypeAllContent,
       queryPage: 1,
       querySort: hasSubscribedPodcasts ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek,
       searchBarText: '',
@@ -91,21 +108,29 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       showActionSheet: false,
       tempQueryEnabled: false,
       tempQueryFrom: hasSubscribedPodcasts ? PV.Filters._subscribedKey : Config.DEFAULT_QUERY_EPISODES_SCREEN,
-      tempQueryMediaType: PV.Filters._mediaTypeAllContent,
       tempQuerySort: hasSubscribedPodcasts ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
-  static navigationOptions = () => ({
-    title: translate('Episodes')
-  })
+  static navigationOptions = ({ navigation }) => {
+    const _screenTitle = navigation.getParam('_screenTitle')
+
+    return {
+      title: _screenTitle
+    } as NavigationStackOptions
+  }
 
   async componentDidMount() {
     super.componentDidMount()
 
+    this.props.navigation.setParams({
+      _screenTitle: getScreenTitle()
+    })
+
     PVEventEmitter.on(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
+    PVEventEmitter.on(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
 
     const { queryFrom } = this.state
     const hasInternetConnection = await hasValidNetworkConnection()
@@ -121,6 +146,14 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
   componentWillUnmount() {
     super.componentWillUnmount()
     PVEventEmitter.removeListener(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
+    PVEventEmitter.removeListener(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
+  }
+
+  _handleAppModeChanged = () => {
+    this._onRefresh()
+    this.props.navigation.setParams({
+      _screenTitle: getScreenTitle()
+    })
   }
 
   _setDownloadedDataIfOffline = async () => {
@@ -133,29 +166,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
   _handleToggleSubscribeEvent = () => {
     const { queryFrom } = this.state
     if (queryFrom) this.handleSelectFilterItem(queryFrom)
-  }
-
-  handleSelectMediaTypeItem = (selectedKey: string) => {
-    if (!selectedKey) {
-      return
-    }
-
-    this.setState(
-      {
-        endOfResultsReached: false,
-        flatListData: [],
-        flatListDataTotalCount: null,
-        isLoadingMore: true,
-        queryMediaType: selectedKey,
-        queryPage: 1
-      },
-      () => {
-        (async () => {
-          const newState = await this._queryData(selectedKey, this.state)
-          this.setState(newState)
-        })()
-      }
-    )
   }
 
   handleSelectFilterItem = async (selectedKey: string, keepSearchTitle?: boolean) => {
@@ -311,7 +321,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
           icon='filter'
           noContainerPadding
           onChangeText={this._handleSearchBarTextChange}
-          placeholder={translate('Search episodes')}
+          placeholder={getSearchPlaceholder()}
           testID={`${testIDPrefix}_filter_bar`}
           value={searchBarText}
         />
@@ -407,7 +417,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   _handleSearchBarTextQuery = () => {
-    const { queryFrom, queryMediaType, querySort, searchBarText, tempQueryEnabled } = this.state
+    const { queryFrom, querySort, searchBarText, tempQueryEnabled } = this.state
     if (!searchBarText) {
       this._handleRestoreSavedQuery()
     } else {
@@ -415,7 +425,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
         ? {
             tempQueryEnabled: true,
             tempQueryFrom: queryFrom,
-            tempQueryMediaType: queryMediaType,
             tempQuerySort: querySort
           }
         : {}
@@ -428,11 +437,10 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   _handleRestoreSavedQuery = () => {
-    const { tempQueryFrom, tempQueryMediaType, tempQuerySort } = this.state
+    const { tempQueryFrom, tempQuerySort } = this.state
     this.setState(
       {
         queryFrom: tempQueryFrom,
-        queryMediaType: tempQueryMediaType,
         querySort: tempQuerySort,
         tempQueryEnabled: false
       },
@@ -468,7 +476,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       isLoadingMore,
       isRefreshing,
       queryFrom,
-      queryMediaType,
       querySort,
       searchBarText,
       selectedCategory,
@@ -491,21 +498,15 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
 
     const showOfflineMessage = offlineModeEnabled && queryFrom !== PV.Filters._downloadedKey
 
-    const defaultNoSubscribedPodcastsMessage =
-      Config.DEFAULT_ACTION_NO_SUBSCRIBED_PODCASTS === PV.Keys.DEFAULT_ACTION_BUTTON_SCAN_QR_CODE
-        ? translate('Scan QR Code')
-        : ''
-
     const isCategoryScreen = queryFrom === PV.Filters._categoryKey
 
     return (
       <View style={styles.view} testID='episodes_screen_view'>
         <TableSectionSelectors
-          filterScreenTitle={translate('Episodes')}
+          filterScreenTitle={getScreenTitle()}
           handleSelectCategoryItem={(x: any) => this._selectCategory(x)}
           handleSelectCategorySubItem={(x: any) => this._selectCategory(x, true)}
           handleSelectFilterItem={this.handleSelectFilterItem}
-          handleSelectMediaTypeItem={this.handleSelectMediaTypeItem}
           handleSelectSortItem={this.handleSelectSortItem}
           includePadding
           navigation={navigation}
@@ -514,7 +515,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
           selectedCategorySubItemKey={selectedCategorySub}
           selectedFilterItemKey={queryFrom}
           selectedFilterLabel={selectedFilterLabel}
-          selectedMediaTypeItemKey={queryMediaType}
           selectedSortItemKey={querySort}
           selectedSortLabel={selectedSortLabel}
           testID={testIDPrefix}
@@ -589,7 +589,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     let { flatListData } = this.state
     const {
       queryFrom,
-      queryMediaType,
       querySort,
       searchBarText: searchTitle,
       selectedCategory,
@@ -600,15 +599,14 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
       const { queryPage } = queryOptions
 
-      const hasVideo = queryMediaType === PV.Filters._mediaTypeVideoOnly
-      const isMediaTypeSelected = PV.FilterOptions.mediaTypeItems.some((option) => option.value === filterKey)
+      const { appMode } = this.global
+      const hasVideo = appMode === PV.AppMode.videos
       const isSubscribedSelected =
-        filterKey === PV.Filters._subscribedKey || (isMediaTypeSelected && queryFrom === PV.Filters._subscribedKey)
+        filterKey === PV.Filters._subscribedKey || queryFrom === PV.Filters._subscribedKey
       const isDownloadedSelected =
-        filterKey === PV.Filters._downloadedKey || (isMediaTypeSelected && queryFrom === PV.Filters._downloadedKey)
+        filterKey === PV.Filters._downloadedKey || queryFrom === PV.Filters._downloadedKey
       const isAllPodcastsSelected =
-        filterKey === PV.Filters._allPodcastsKey || (isMediaTypeSelected && queryFrom === PV.Filters._allPodcastsKey)
-      newState.queryMediaType = isMediaTypeSelected ? filterKey : queryMediaType
+        filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
@@ -623,7 +621,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
             ...(searchTitle ? { searchTitle } : {}),
             subscribedOnly: true,
             includePodcast: true,
-            ...(newState.queryMediaType === PV.Filters._mediaTypeVideoOnly ? { hasVideo: true } : {})
+            ...(hasVideo ? { hasVideo: true } : {})
           })
         }
 
@@ -654,7 +652,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
           ...(searchTitle ? { searchTitle } : {}),
           subscribedOnly: queryFrom === PV.Filters._subscribedKey,
           includePodcast: true,
-          ...(newState.queryMediaType === PV.Filters._mediaTypeVideoOnly ? { hasVideo: true } : {})
+          ...(hasVideo ? { hasVideo: true } : {})
         })
 
         const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally()
@@ -672,8 +670,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
           newState,
           queryOptions,
           selectedCategory,
-          selectedCategorySub,
-          isMediaTypeSelected
+          selectedCategorySub
         )
 
         const categories = assignedCategoryData.categories
@@ -697,7 +694,10 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   _queryAllEpisodes = async (sort: string | null, page = 1) => {
-    const { queryMediaType, searchBarText: searchTitle } = this.state
+    const { searchBarText: searchTitle } = this.state
+    const { appMode } = this.global
+    const hasVideo = appMode === PV.AppMode.videos
+
     const cleanedSort =
       sort === PV.Filters._mostRecentKey || sort === PV.Filters._randomKey ? PV.Filters._topPastWeek : sort
 
@@ -706,14 +706,16 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       page,
       ...(searchTitle ? { searchTitle } : {}),
       includePodcast: true,
-      ...(queryMediaType === PV.Filters._mediaTypeVideoOnly ? { hasVideo: true } : {})
+      ...(hasVideo ? { hasVideo: true } : {})
     })
 
     return results
   }
 
   _queryEpisodesByCategory = async (categoryId?: string | null, sort?: string | null, page = 1) => {
-    const { queryMediaType } = this.state
+    const { appMode } = this.global
+    const hasVideo = appMode === PV.AppMode.videos
+
     const cleanedSort =
       sort === PV.Filters._mostRecentKey || sort === PV.Filters._randomKey ? PV.Filters._topPastWeek : sort
 
@@ -722,7 +724,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       sort: cleanedSort,
       page,
       includePodcast: true,
-      ...(queryMediaType === PV.Filters._mediaTypeVideoOnly ? { hasVideo: true } : {})
+      ...(hasVideo ? { hasVideo: true } : {})
     })
     return results
   }
