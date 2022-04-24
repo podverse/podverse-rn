@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { getGlobal } from 'reactn'
 import { setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedPodcast, removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { hasValidNetworkConnection } from '../lib/network'
@@ -73,9 +74,11 @@ export const findPodcastsByFeedUrls = async (feedUrls: string[]) => {
   return response && response.data
 }
 
-export const getSubscribedPodcasts = async (subscribedPodcastIds: string[],
-  videoOnlyMode?: boolean, preventParseCustomRSSFeeds?: boolean) => {
+export const getSubscribedPodcasts = async (subscribedPodcastIds: string[]) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
+
+  const { appMode } = getGlobal()
+  const videoOnlyMode = appMode === PV.AppMode.videos
 
   const query = {
     podcastIds: subscribedPodcastIds,
@@ -115,6 +118,9 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[],
 }
 
 export const combineWithAddByRSSPodcasts = async () => {
+  const { appMode } = getGlobal()
+  const videoOnlyMode = appMode === PV.AppMode.videos
+
   const [subscribedPodcastsResults, addByRSSPodcastsResults] = await Promise.all([
     getSubscribedPodcastsLocally(),
     getAddByRSSPodcastsLocally()
@@ -122,8 +128,14 @@ export const combineWithAddByRSSPodcasts = async () => {
 
   const subscribedPodcasts =
     subscribedPodcastsResults[0] && Array.isArray(subscribedPodcastsResults[0]) ? subscribedPodcastsResults[0] : []
-  const addByRSSPodcasts = Array.isArray(addByRSSPodcastsResults) ? addByRSSPodcastsResults : []
+  let addByRSSPodcasts = Array.isArray(addByRSSPodcastsResults) ? addByRSSPodcastsResults : []
+  
+  if (videoOnlyMode) {
+    addByRSSPodcasts = addByRSSPodcasts.filter((podcast: any) => podcast.hasVideo)
+  }
+
   const combinedPodcasts = [...subscribedPodcasts, ...addByRSSPodcasts]
+
   return sortPodcastArrayAlphabetically(combinedPodcasts)
 }
 
