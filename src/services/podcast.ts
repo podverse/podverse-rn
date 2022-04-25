@@ -102,9 +102,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[]) => {
       const data = await getPodcasts(query)
       let subscribedPodcasts = data[0] || []
       await setSubscribedPodcasts(subscribedPodcasts)
-      if (!preventParseCustomRSSFeeds) {
-        subscribedPodcasts = await combineWithAddByRSSPodcasts()
-      }
+      subscribedPodcasts = await combineWithAddByRSSPodcasts()
       return [subscribedPodcasts, subscribedPodcasts.length]
     } catch (error) {
       console.log(error)
