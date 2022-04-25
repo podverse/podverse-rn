@@ -665,5 +665,15 @@
     "Finished episode": "Épisode terminé",
     "Paused": "Mis en pause",
     "Podcasting 2.0 cross-app comments": "Commentaires partagés Podcasting 2.0",
-    "Sync your subscriptions, queue, and history across all your devices": "Synchroniser vos abonnements, file d'attente et historique entre vos appareils"
+    "Sync your subscriptions, queue, and history across all your devices": "Synchroniser vos abonnements, file d'attente et historique entre vos appareils",
+    "All Channels": "Tous les canaux",
+    "App Mode": "Mode de l'application",
+    "Channel": "Canal",
+    "Channels": "Canaux",
+    "In progress": "En cours",
+    "Mode": "Mode",
+    "Search channels": "Rechercher des canaux",
+    "Video": "Vidéo",
+    "Videos": "Vidéos",
+    "Search videos": "Rechercher des vidéos"
 }
