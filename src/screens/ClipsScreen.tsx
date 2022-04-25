@@ -191,6 +191,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         ...((isSubCategory ? { selectedCategorySub: selectedKey } : { selectedCategory: selectedKey }) as any),
         flatListData: [],
         flatListDataTotalCount: null,
+        queryFrom: PV.Filters._categoryKey,
         queryPage: 1,
         selectedFilterLabel
       },
