@@ -2,6 +2,12 @@ import Config from 'react-native-config'
 
 export const DeepLinks = {
   prefix: Config.DEEP_LINK_PREFIX,
+  About: {
+    path: 'about'
+  },
+  Account: {
+    resetPassword: 'reset-password'
+  },
   AddByRSSPodcastFeedUrl: {
     path: 'podcast-by-feed-url/add*',
     pathPrefix: 'podcast-by-feed-url'
@@ -10,9 +16,15 @@ export const DeepLinks = {
     path: 'clip/:mediaRefId',
     pathPrefix: 'clip'
   },
+  Contact: {
+    path: 'contact'
+  },
   Episode: {
     path: 'episode/:episodeId',
     pathPrefix: 'episode'
+  },
+  Membership: {
+    path: 'membership'
   },
   Playlist: {
     path: 'playlist/:playlistId',
@@ -38,7 +50,13 @@ export const DeepLinks = {
   Search: {
     path: 'search'
   },
-  Account: {
-    resetPassword: 'reset-password'
+  Support: {
+    path: 'support'
+  },
+  Terms: {
+    path: 'terms'
+  },
+  XMPP: {
+    path: 'xmpp'
   }
 }

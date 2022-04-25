@@ -433,6 +433,24 @@ export class PodcastsScreen extends React.Component<Props, State> {
           navigate(PV.RouteNames.ResetPasswordScreen, {
             resetToken: urlParams.token
           })
+        } else if (path === PV.DeepLinks.About.path) {
+          await navigate(PV.RouteNames.MoreScreen)
+          await navigate(PV.RouteNames.AboutScreen)
+        } else if (path === PV.DeepLinks.Contact.path) {
+          await navigate(PV.RouteNames.MoreScreen)
+          await navigate(PV.RouteNames.ContactScreen)
+        } else if (path === PV.DeepLinks.Membership.path) {
+          await navigate(PV.RouteNames.MoreScreen)
+          await navigate(PV.RouteNames.MembershipScreen)
+        } else if (path === PV.DeepLinks.Support.path) {
+          await navigate(PV.RouteNames.MoreScreen)
+          await navigate(PV.RouteNames.SupportScreen)
+        } else if (path === PV.DeepLinks.Terms.path) {
+          await navigate(PV.RouteNames.MoreScreen)
+          await navigate(PV.RouteNames.TermsOfServiceScreen)
+        } else if (path === PV.DeepLinks.XMPP.path) {
+          await navigate(PV.RouteNames.MoreScreen)
+          await navigate(PV.RouteNames.ContactXMPPChatScreen)
         } else {
           await navigate(PV.RouteNames.PodcastsScreen)
         }

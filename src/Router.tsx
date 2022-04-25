@@ -196,13 +196,31 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.SettingsScreenPlayer]: SettingsScreenPlayer,
     [PV.RouteNames.SettingsScreenQueue]: SettingsScreenQueue,
     [PV.RouteNames.SettingsScreenTracking]: SettingsScreenTracking,
-    [PV.RouteNames.MembershipScreen]: MembershipScreen,
+    [PV.RouteNames.MembershipScreen]: {
+      screen: MembershipScreen,
+      path: PV.DeepLinks.Membership.path
+    },
     [PV.RouteNames.AppModeScreen]: AppModeScreen,
-    [PV.RouteNames.ContactScreen]: ContactScreen,
-    [PV.RouteNames.ContactXMPPChatScreen]: ContactXMPPChatScreen,
-    [PV.RouteNames.SupportScreen]: SupportScreen,
-    [PV.RouteNames.AboutScreen]: AboutScreen,
-    [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen,
+    [PV.RouteNames.ContactScreen]: {
+      screen: ContactScreen,
+      path: PV.DeepLinks.Contact.path
+    },
+    [PV.RouteNames.ContactXMPPChatScreen]: {
+      screen: ContactXMPPChatScreen,
+      path: PV.DeepLinks.XMPP.path
+    },
+    [PV.RouteNames.SupportScreen]: {
+      screen: SupportScreen,
+      path: PV.DeepLinks.Support.path
+    },
+    [PV.RouteNames.AboutScreen]: {
+      screen: AboutScreen,
+      path: PV.DeepLinks.About.path
+    },
+    [PV.RouteNames.TermsOfServiceScreen]: {
+      screen: TermsOfServiceScreen,
+      path: PV.DeepLinks.Terms.path
+    },
     [PV.RouteNames.LNPaySignupScreen]: LNPaySignupScreen,
     [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
     [PV.RouteNames.FAQScreen]: FAQScreen,
@@ -210,6 +228,7 @@ const MoreNavigator = createStackNavigator(
   },
   {
     defaultNavigationOptions,
+    initialRouteName: PV.RouteNames.MoreScreen,
     navigationOptions: {
       // tabBarAccessibilityLabel: translate('More'),
       tabBarIcon: ({ tintColor }: { tintColor: any }) => {
