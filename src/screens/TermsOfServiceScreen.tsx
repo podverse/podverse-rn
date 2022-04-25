@@ -8,6 +8,32 @@ import { trackPageView } from '../services/tracking'
 
 type Props = any
 
+const termsOfServiceText =
+`${translate('TermsOfServiceScreenText1')}
+  
+${translate('TermsOfServiceScreenText2')}
+
+${translate('TermsOfServiceScreenText3')}
+
+${translate('TermsOfServiceScreenText4')}
+
+${translate('TermsOfServiceScreenText5')}
+
+${translate('TermsOfServiceScreenText6')}
+
+${translate('TermsOfServicesScreenText7')}`
+
+const popularityAnalyticsText =
+`${translate('TermsOfServiceScreenMatomoTrackingText1')}
+
+${translate('TermsOfServiceScreenMatomoTrackingText2')}
+
+${translate('TermsOfServiceScreenMatomoTrackingText3')}
+
+${translate('TermsOfServiceScreenMatomoTrackingText4')}
+
+${translate('TermsOfServiceScreenMatomoTrackingText5')}`
+
 export class TermsOfServiceScreen extends React.Component<Props> {
   static navigationOptions = () => ({
     title: translate('Terms of Service')
@@ -52,32 +78,12 @@ export class TermsOfServiceScreen extends React.Component<Props> {
           <Divider style={styles.divider} />
           <TableSectionSelectors disableFilter selectedFilterLabel={translate('Terms of Service')} />
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-            {translate('TermsOfServiceScreenText1')}
-            {'\n\n'}
-            {translate('TermsOfServiceScreenText2')}
-            {'\n\n'}
-            {translate('TermsOfServiceScreenText3')}
-            {'\n\n'}
-            {translate('TermsOfServiceScreenText4')}
-            {'\n\n'}
-            {translate('TermsOfServiceScreenText5')}
-            {'\n\n'}
-            {translate('TermsOfServiceScreenText6')}
-            {'\n\n'}
-            {translate('TermsOfServicesScreenText7')}
+            {termsOfServiceText}
           </Text>
           <Divider style={styles.divider} />
           <TableSectionSelectors disableFilter selectedFilterLabel={translate('Popularity Analytics')} />
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-            {translate('TermsOfServiceScreenMatomoTrackingText1')}
-            {'\n\n'}
-            {translate('TermsOfServiceScreenMatomoTrackingText2')}
-            {'\n\n'}
-            {translate('TermsOfServiceScreenMatomoTrackingText3')}
-            {'\n\n'}
-            {translate('TermsOfServiceScreenMatomoTrackingText4')}
-            {'\n\n'}
-            {translate('TermsOfServiceScreenMatomoTrackingText5')}
+            {popularityAnalyticsText}
           </Text>
           <Divider style={styles.divider} />
           <TableSectionSelectors disableFilter selectedFilterLabel={translate('Third Party Libraries')} />
