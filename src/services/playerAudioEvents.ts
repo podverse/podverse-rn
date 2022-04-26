@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Platform } from 'react-native'
+import { State } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
@@ -27,7 +28,9 @@ import {
   audioGetState,
   audioHandlePause,
   audioCheckIfIsPlaying,
-  audioGetLoadedTrackIdByIndex
+  audioGetLoadedTrackIdByIndex,
+  audioGetCurrentLoadedTrackId,
+  audioGetTrackDuration
 } from './playerAudio'
 import { syncNowPlayingItemWithTrack } from './playerBackgroundTimer'
 import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
@@ -53,6 +56,26 @@ export const audioResetHistoryItem = async (x: any) => {
         const completed = true
         await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate, skipSetNowPlaying, completed)
       }
+    }
+  }
+}
+
+const syncDurationWithMetaData = async () => {
+  /*
+    We need to set the duration to the native player after it is available
+    in order for the lock screen / notification to render a progress bar on Android.
+    Not sure if it makes a difference for iOS.
+  */
+  const trackIndex = await PVAudioPlayer.getCurrentTrack()
+  if (trackIndex >= 1 || trackIndex === 0) {
+    const currentTrackMetaData = await PVAudioPlayer.getTrack(trackIndex)
+    const metadataDuration = currentTrackMetaData?.duration
+    if (!metadataDuration) {
+      const newDuration = await audioGetTrackDuration()
+      await PVAudioPlayer.updateMetadataForTrack(trackIndex, {
+        ...currentTrackMetaData,
+        duration: newDuration
+      })
     }
   }
 }
@@ -145,6 +168,9 @@ module.exports = async () => {
             if (audioCheckIfIsPlaying(x.state)) {
               await playerSetRateWithLatestPlaybackSpeed()
             }
+            if (x.state === State.Ready) {
+              syncDurationWithMetaData()
+            }
           } else if (Platform.OS === 'android') {
             /*
               state key for android
@@ -157,10 +183,13 @@ module.exports = async () => {
               buffering 6
               ???       8
             */
+            const ready = 2
             const playing = 3
             if (x.state === playing) {
               const rate = await getPlaybackSpeed()
               PVAudioPlayer.setRate(rate)
+            } else if (x.state === ready) {
+              syncDurationWithMetaData()
             }
           }
         }
