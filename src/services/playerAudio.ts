@@ -24,45 +24,45 @@ declare module 'react-native-track-player' {
 
 export const PVAudioPlayer = TrackPlayer
 
-const checkServiceRunning = async (defaultReturn: any = '') => {
-  try {
-    const serviceRunning = await PVAudioPlayer.isServiceRunning()
-    if (!serviceRunning) {
-      throw new Error('PVAudioPlayer Service not running')
-    }
-  } catch (err) {
-    console.log(err.message)
-    return defaultReturn
-  }
+// const checkServiceRunning = async (defaultReturn: any = '') => {
+//   try {
+//     const serviceRunning = await PVAudioPlayer.isServiceRunning()
+//     if (!serviceRunning) {
+//       throw new Error('PVAudioPlayer Service not running')
+//     }
+//   } catch (err) {
+//     console.log(err.message)
+//     return defaultReturn
+//   }
 
-  return true
-}
+//   return true
+// }
 
 PVAudioPlayer.getTrackPosition = async () => {
-  const serviceRunningResult = await checkServiceRunning(0)
+  // const serviceRunningResult = await checkServiceRunning(0)
 
-  if (serviceRunningResult !== true) {
-    return serviceRunningResult
-  }
+  // if (serviceRunningResult !== true) {
+  //   return serviceRunningResult
+  // }
 
   return PVAudioPlayer.getPosition()
 }
 
 PVAudioPlayer.getCurrentLoadedTrack = async () => {
-  const serviceRunningResult = await checkServiceRunning()
+  // const serviceRunningResult = await checkServiceRunning()
 
-  if (serviceRunningResult !== true) {
-    return serviceRunningResult
-  }
+  // if (serviceRunningResult !== true) {
+  //   return serviceRunningResult
+  // }
 
   return PVAudioPlayer.getCurrentTrack()
 }
 
 PVAudioPlayer.getTrackDuration = async () => {
-  const serviceRunningResult = await checkServiceRunning(0)
-  if (serviceRunningResult !== true) {
-    return serviceRunningResult
-  }
+  // const serviceRunningResult = await checkServiceRunning(0)
+  // if (serviceRunningResult !== true) {
+  //   return serviceRunningResult
+  // }
 
   return PVAudioPlayer.getDuration()
 }
