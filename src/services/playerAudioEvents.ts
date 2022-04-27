@@ -12,6 +12,7 @@ import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
   getPlaybackSpeed,
+  getRemoteSkipButtonsTimeJumpOverride,
   playerHandleResumeAfterClipHasEnded,
   playerSetRateWithLatestPlaybackSpeed
 } from './player'
@@ -26,7 +27,6 @@ import {
   audioGetState,
   audioCheckIfIsPlaying,
   audioGetLoadedTrackIdByIndex,
-  audioGetCurrentLoadedTrackId,
   audioGetTrackDuration
 } from './playerAudio'
 import { syncNowPlayingItemWithTrack } from './playerBackgroundTimer'
@@ -228,12 +228,24 @@ module.exports = async () => {
     audioHandlePauseWithUpdate()
   })
 
-  PVAudioPlayer.addEventListener('remote-previous', () => {
-    playerPlayPreviousChapterOrReturnToBeginningOfTrack()
+  PVAudioPlayer.addEventListener('remote-previous', async () => {
+    const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
+    if(remoteSkipButtonsAreTimeJumps) {
+      const { jumpBackwardsTime } = getGlobal()
+      audioJumpBackward(jumpBackwardsTime)
+    } else {
+      playerPlayPreviousChapterOrReturnToBeginningOfTrack()
+    }
   })
 
-  PVAudioPlayer.addEventListener('remote-next', () => {
-    playerPlayNextChapterOrQueueItem()
+  PVAudioPlayer.addEventListener('remote-next', async () => {
+    const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
+    if(remoteSkipButtonsAreTimeJumps) {
+      const { jumpForwardsTime } = getGlobal()
+      audioJumpForward(jumpForwardsTime)
+    } else {
+      playerPlayNextChapterOrQueueItem()
+    }
   })
 
   /*

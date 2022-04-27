@@ -6,6 +6,7 @@ import RNPickerSelect from 'react-native-picker-select'
 import { Icon, NumberSelectorWithText, ScrollView, SwitchWithText, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
+import { setRemoteSkipButtonsTimeJumpOverride } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import { handleFinishSettingPlayerTime, setPlayerJumpBackwards, setPlayerJumpForwards } from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent } from '../styles'
@@ -91,10 +92,24 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
     })
   }
 
+  _toggleSkipButtonsTimeJumpOverride = async () => {
+    const { player } = this.global
+    const { remoteSkipButtonsAreTimeJumps } = player
+    const newRemoteSkipButtonsAreTimeJumps = !remoteSkipButtonsAreTimeJumps
+    this.setGlobal({
+      player: {
+        ...player,
+        remoteSkipButtonsAreTimeJumps: newRemoteSkipButtonsAreTimeJumps
+      }
+    }, () => {
+      setRemoteSkipButtonsTimeJumpOverride(newRemoteSkipButtonsAreTimeJumps)
+    })
+  }
+
   render() {
     const { maximumSpeedOptionSelected } = this.state
     const { globalTheme, jumpBackwardsTime, jumpForwardsTime, player } = this.global
-    const { hidePlaybackSpeedButton } = player
+    const { hidePlaybackSpeedButton, remoteSkipButtonsAreTimeJumps } = player
     const isDarkMode = globalTheme === darkTheme
 
     return (
@@ -171,6 +186,15 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
             testID={`${testIDPrefix}_hide_playback_speed_button`}
             text={translate('Hide playback speed button')}
             value={hidePlaybackSpeedButton}
+          />
+        </View>
+        <View style={core.itemWrapper}>
+          <SwitchWithText
+            accessibilityLabel={translate('Skip track buttons are time jumps on lockscreen and bluetooth devices')}
+            onValueChange={this._toggleSkipButtonsTimeJumpOverride}
+            testID={`${testIDPrefix}_skip_track_time_jump_override`}
+            text={translate('Skip track buttons are time jumps on lockscreen and bluetooth devices')}
+            value={remoteSkipButtonsAreTimeJumps}
           />
         </View>
       </ScrollView>
