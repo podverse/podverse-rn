@@ -7,7 +7,6 @@ import {
   playerPlayNextChapterOrQueueItem,
   playerPlayPreviousChapterOrReturnToBeginningOfTrack
 } from '../state/actions/player'
-import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
@@ -23,9 +22,7 @@ import {
   audioHandlePauseWithUpdate,
   audioHandlePlayWithUpdate,
   audioHandleSeekToWithUpdate,
-  audioHandleStop,
   audioGetState,
-  audioHandlePause,
   audioCheckIfIsPlaying,
   audioGetLoadedTrackIdByIndex
 } from './playerAudio'
