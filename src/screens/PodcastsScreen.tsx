@@ -630,6 +630,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         ...((isCategorySub ? { selectedCategorySub: selectedKey } : { selectedCategory: selectedKey }) as any),
         flatListData: [],
         flatListDataTotalCount: null,
+        queryFrom: PV.Filters._categoryKey,
         queryPage: 1,
         querySort: sort,
         selectedFilterLabel,

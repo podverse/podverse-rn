@@ -48,6 +48,7 @@ declare module 'reactn/default' {
         videoPosition: number
       }
       hidePlaybackSpeedButton: boolean
+      remoteSkipButtonsAreTimeJumps: boolean
     }
     playlists: {
       myPlaylists: []

@@ -18,7 +18,8 @@ import {
   playerSetPlaybackSpeed as playerSetPlaybackSpeedService,
   playerTogglePlay as playerTogglePlayService,
   playerGetState,
-  playerGetDuration
+  playerGetDuration,
+  getRemoteSkipButtonsTimeJumpOverride
 } from '../../services/player'
 import { getPodcastFromPodcastIndexById } from '../../services/podcastIndex'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
@@ -343,9 +344,11 @@ export const initializePlayerSettings = async () => {
   const [
     playbackSpeedString,
     hidePlaybackSpeedButton,
+    remoteSkipButtonsAreTimeJumps
   ] = await Promise.all([
     AsyncStorage.getItem(PV.Keys.PLAYER_PLAYBACK_SPEED),
     AsyncStorage.getItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON),
+    getRemoteSkipButtonsTimeJumpOverride()
   ])
 
   let playbackSpeed = 1
@@ -358,7 +361,8 @@ export const initializePlayerSettings = async () => {
     player: {
       ...globalState.player,
       playbackRate: playbackSpeed,
-      hidePlaybackSpeedButton: !!hidePlaybackSpeedButton
+      hidePlaybackSpeedButton: !!hidePlaybackSpeedButton,
+      remoteSkipButtonsAreTimeJumps: !!remoteSkipButtonsAreTimeJumps
     }
   })
 }
