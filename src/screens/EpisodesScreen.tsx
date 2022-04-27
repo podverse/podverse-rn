@@ -255,6 +255,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
         ...((isCategorySub ? { selectedCategorySub: selectedKey } : { selectedCategory: selectedKey }) as any),
         flatListData: [],
         flatListDataTotalCount: null,
+        queryFrom: PV.Filters._categoryKey,
         queryPage: 1,
         selectedFilterLabel,
         selectedSortLabel

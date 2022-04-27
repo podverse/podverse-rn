@@ -1,5 +1,5 @@
 export const Dimensions = {
   smallScreen: {
-    height: 400
+    height: 360
   }
 }
