@@ -225,6 +225,12 @@ const comparisonData = [
     accessibilityLabel: translate('Download episodes')
   },
   {
+    text: translate('Add custom RSS feeds'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('Add custom RSS feeds')
+  },
+  {
     text: translate('Video playback'),
     column1: true,
     column2: true,
