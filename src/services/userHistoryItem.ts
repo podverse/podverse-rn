@@ -164,6 +164,11 @@ const addOrUpdateHistoryItemOnServer = async (
   const bearerToken = await getBearerToken()
   const { clipId, episodeId } = nowPlayingItem
 
+  // Infinity happens in the case of live streams.
+  const duration = mediaFileDuration && mediaFileDuration !== Infinity
+    ? Math.floor(mediaFileDuration)
+    : 0
+
   await request({
     endpoint: '/user-history-item',
     method: 'PATCH',
@@ -175,7 +180,7 @@ const addOrUpdateHistoryItemOnServer = async (
       episodeId: clipId ? null : episodeId,
       mediaRefId: clipId,
       forceUpdateOrderDate: forceUpdateOrderDate === false ? false : true,
-      ...(mediaFileDuration || mediaFileDuration === 0 ? { mediaFileDuration: Math.floor(mediaFileDuration) } : {}),
+      ...(duration ? { mediaFileDuration: duration } : {}),
       userPlaybackPosition: playbackPosition,
       ...(completed === true || completed === false ? { completed } : {})
     },
