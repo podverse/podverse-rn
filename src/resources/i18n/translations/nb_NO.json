@@ -678,5 +678,7 @@
     "All Channels": "Alle kanaler",
     "Channels": "Kanaler",
     "Mode": "Modus",
-    "Search channels": "Søk etter kanaler"
+    "Search channels": "Søk etter kanaler",
+    "Add custom RSS feeds": "Legg til egendefinerte RSS-informasjonsstrømmer",
+    "Skip track buttons are time jumps on lockscreen and bluetooth devices": "Knappen for å hoppe forover forskyver tiden frem på låseskjerm og Blåtannsenheter"
 }
