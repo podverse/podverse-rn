@@ -1,13 +1,11 @@
+import { Purchase } from 'react-native-iap'
 import { setGlobal } from 'reactn'
 import { iosHandlePurchaseStatusCheck as iosHandlePurchaseStatusCheckService } from '../../services/purchase.ios'
 import { getAuthUserInfo } from './auth'
 import { handleStatusSuccessful, purchaseLoading, showPurchaseSomethingWentWrongError } from './purchaseShared'
 
-export const iosHandlePurchaseLoading = (
-  productId: string,
-  transactionId: string,
-  transactionReceipt: string
-) => {
+export const iosHandlePurchaseLoading = (purchase: Purchase) => {
+  const { productId, transactionId, transactionReceipt } = purchase
   const loadingState = purchaseLoading()
   loadingState.purchase.transactionId = transactionId
   loadingState.purchase.productId = productId
@@ -15,14 +13,10 @@ export const iosHandlePurchaseLoading = (
   setGlobal(loadingState)
 }
 
-export const iosHandlePurchaseStatusCheck = async (
-  productId: string,
-  transactionId: string,
-  transactionReceipt: string
-) => {
+export const iosHandlePurchaseStatusCheck = async (purchase: Purchase) => {
   try {
-    iosHandlePurchaseLoading(productId, transactionId, transactionReceipt)
-    await iosHandlePurchaseStatusCheckService(transactionReceipt)
+    iosHandlePurchaseLoading(purchase)
+    await iosHandlePurchaseStatusCheckService(purchase)
     await iosHandleStatusSuccessful()
   } catch (error) {
     console.log('iosHandlePurchaseStatusCheck error', error)
