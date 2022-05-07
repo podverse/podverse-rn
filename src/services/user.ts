@@ -204,3 +204,22 @@ export const clearSpecialUserInfoForPodcast = async (podcastId: string) => {
     await AsyncStorage.setItem('SPECIAL_USER_INFO', specialInfoString)
   }
 }
+
+export const updateUserLiveSubscriptions = async (data: {fcmToken: string, podcastId: string, subscribe: boolean}) => {
+  const bearerToken = await getBearerToken()
+
+  const endpoint = data.subscribe ? "/subscribe" : "/unsubscribe"
+
+  const response = await request({
+    endpoint: '/fcm/podcast' + endpoint,
+    method: 'POST',
+    headers: {
+      ...(bearerToken ? { Authorization: bearerToken } : {}),
+      'Content-Type': 'application/json'
+    },
+    body: {fcmToken:data.fcmToken, podcastId: data.podcastId},
+    ...(bearerToken ? { opts: { credentials: 'include' } } : {})
+  })
+
+  return response && response.data
+}

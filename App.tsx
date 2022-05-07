@@ -1,15 +1,14 @@
+import 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo, { NetInfoSubscription } from '@react-native-community/netinfo'
 import React, { Component } from 'react'
 import { Image, LogBox, Platform, StatusBar, View } from 'react-native'
 import Config from 'react-native-config'
 import { getFontScale } from 'react-native-device-info'
-import 'react-native-gesture-handler'
 import Orientation from 'react-native-orientation-locker'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
-import messaging from '@react-native-firebase/messaging';
 import { isOnMinimumAllowedVersion } from './src/services/versioning'
 import { UpdateRequiredOverlay, OverlayAlert, BoostDropdownBanner } from './src/components'
 import { refreshDownloads } from './src/lib/downloader'
@@ -43,27 +42,13 @@ class App extends Component<Props, State> {
     super(props)
 
     Orientation.lockToPortrait()
-    
-    this.requestUserPermission()
+
     this.state = {
       appReady: false,
       minVersionMismatch: false
     }
     this.unsubscribeNetListener = null
     downloadCategoriesList()
-  }
-
-  async requestUserPermission() {
-    const authStatus = await messaging().requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-  
-    if (enabled) {
-      const token = await messaging().getToken()
-      console.log('FCM token:', token);
-      // TODO: Save FCM token on user object on server
-    }
   }
 
   async componentDidMount() {

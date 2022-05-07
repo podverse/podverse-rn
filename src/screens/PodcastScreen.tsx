@@ -13,6 +13,7 @@ import {
   EpisodeTableCell,
   FlatList,
   NavShareIcon,
+  NavNotificationsIcon,
   NumberSelectorWithText,
   PodcastTableHeader,
   ScrollView,
@@ -146,11 +147,11 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       this.props.navigation.setParams({
         podcastId,
         podcastTitle: podcast.title,
-        addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
+        addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
+        notificationsEnabled: false,
+        hasLiveItems: podcast?.hasLiveItem || false
       })
     }
-
-
 
     this.state = {
       downloadedEpisodeLimit: null,
@@ -184,11 +185,22 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     const podcastId = navigation.getParam('podcastId')
     const podcastTitle = navigation.getParam('podcastTitle')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
+    const { session } = getGlobal()
+    
+    const liveNotificationsEnabled = (session?.userInfo?.liveItemSubscriptions || []).includes(podcastId)
+    const hasLiveItems = navigation.getParam('hasLiveItems')
 
     return {
       title: getScreenTitle(),
       headerRight: () => (
         <RNView style={core.row}>
+          {hasLiveItems && (
+            <NavNotificationsIcon
+              podcastId={podcastId}
+              isEnabled={liveNotificationsEnabled}
+              onNotificationSelectionChanged={navigation.setParams}
+            />
+          )}
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon
               endingText={translate('shared using brandName')}
