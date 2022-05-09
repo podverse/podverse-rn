@@ -722,6 +722,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     <PodcastTableCell
       id={item?.id}
       lastEpisodePubDate={item.lastEpisodePubDate}
+      latestLiveItemStatus={item.latestLiveItemStatus}
       onPress={() =>
         this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
           podcast: item,

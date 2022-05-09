@@ -27,6 +27,8 @@ export interface GlobalTheme {
   headerText?: any
   inputContainerText?: any
   link?: any
+  liveStatusBadge?: any
+  liveStatusBadgeText?: any
   makeClipPlayerControlsWrapper?: any
   membershipTextExpired?: any
   membershipTextExpiring?: any
