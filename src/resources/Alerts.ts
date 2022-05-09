@@ -124,5 +124,9 @@ export const Alerts = {
   SOMETHING_WENT_WRONG: {
     message: translate('Please check your internet connection and try again later'),
     title: _networkErrorTitle
+  },
+  ENABLE_NOTIFICATIONS_SETTINGS: {
+    message: translate('Enable notifications in settings message'),
+    title: translate('Enable Notifications')
   }
 }

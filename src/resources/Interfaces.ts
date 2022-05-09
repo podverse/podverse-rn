@@ -68,6 +68,7 @@ export interface UserInfo {
   id?: string
   membershipExpiration?: string | null
   name?: string
+  notifications?: any[]
   playlists?: []
   queueItems?: []
   subscribedPlaylistIds?: []

@@ -29,6 +29,7 @@ export const Keys = {
   DOWNLOADING_WIFI_ONLY: 'DOWNLOADING_WIFI_ONLY',
   edit_clip: 'edit_clip',
   ERROR_REPORTING_ENABLED: 'ERROR_REPORTING_ENABLED',
+  FCM_TOKEN_LAST_USED: 'FCM_TOKEN_LAST_USED',
   go_to_episode: 'go_to_episode',
   go_to_podcast: 'go_to_podcast',
   HAS_TRIED_DOWNLOADING_WITHOUT_WIFI: 'HAS_TRIED_DOWNLOADING_WITHOUT_WIFI',

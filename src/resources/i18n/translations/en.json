@@ -271,6 +271,8 @@
   "Email": "E-mail",
   "Enable Lightning Pay switch description": "Turn on this experimental feature to add a Bitcoin wallet to support podcasts through streaming Sats and boost.",
   "Enable LNPay": "Turn on LNPay",
+  "Enable Notifications": "Enable Notifications",
+  "Enable notifications in settings message": "Go to your device's settings screen to enable notifications.",
   "End of results": "No more results",
   "End time": "End time",
   "End time cannot be equal to 0": "End time cannot be \"0\".",
