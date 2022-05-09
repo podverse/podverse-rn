@@ -143,14 +143,18 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     const podcast = this.props.navigation.getParam('podcast')
     const podcastId = podcast?.id || podcast?.addByRSSPodcastFeedUrl || this.props.navigation.getParam('podcastId')
     const viewType = this.props.navigation.getParam('viewType') || PV.Filters._episodesKey
-    const notifications = this.global.session?.userInfo?.notifications || []
-    const notificationsEnabled = checkIfNotificationsEnabledForPodcastId(podcastId, notifications)
+    const notificationsEnabled = checkIfNotificationsEnabledForPodcastId(podcastId)
 
     if (podcast?.id || podcast?.addByRSSPodcastFeedUrl) {
       this.props.navigation.setParams({
         podcastId,
         podcastTitle: podcast.title,
         addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
+        notificationsEnabled
+      })
+    } else if (podcastId) {
+      this.props.navigation.setParams({
+        podcastId,
         notificationsEnabled
       })
     }

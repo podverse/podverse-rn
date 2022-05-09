@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import messaging from '@react-native-firebase/messaging'
 import debounce from 'lodash/debounce'
 import { Alert, AppState, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
 import Config from 'react-native-config'
@@ -161,6 +162,32 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
 
     iapInitConnection()
+
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      const podcastId = remoteMessage?.data?.podcastId
+
+      if (remoteMessage && podcastId) {
+        navigation.navigate(PV.RouteNames.PodcastScreen, { podcastId })
+      }
+    })
+
+    messaging().getInitialNotification().then(remoteMessage => {
+      const podcastId = remoteMessage?.data?.podcastId
+      const podcastTitle = remoteMessage?.data?.podcastTitle
+      const episodeTitle = remoteMessage?.data?.episodeTitle
+      const notifcationType = remoteMessage?.data?.notificationType
+      const isLiveNotification = notifcationType === 'live'
+      const timeSent = remoteMessage?.data?.timeSent
+      const currentDateTime = new Date()
+      const currentDateTime30MinutesEarlier = new Date(currentDateTime)
+      currentDateTime30MinutesEarlier.setMinutes(currentDateTime.getMinutes() - 30)
+      const wasRecentlySent = timeSent && new Date(timeSent) > currentDateTime30MinutesEarlier
+      
+      if (remoteMessage && podcastId && isLiveNotification && wasRecentlySent) {
+        const GO_TO_LIVE_PODCAST = PV.Alerts.GO_TO_LIVE_PODCAST(navigation, podcastId, podcastTitle, episodeTitle)
+        Alert.alert(GO_TO_LIVE_PODCAST.title, GO_TO_LIVE_PODCAST.message, GO_TO_LIVE_PODCAST.buttons)
+      }
+    })
 
     Linking.getInitialURL().then((initialUrl) => {
       // settimeout here gives a chance to the rest of
