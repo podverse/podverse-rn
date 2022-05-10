@@ -13,6 +13,7 @@ import {
   EpisodeTableCell,
   FlatList,
   NavShareIcon,
+  NavNotificationsIcon,
   NumberSelectorWithText,
   PodcastTableHeader,
   ScrollView,
@@ -50,6 +51,7 @@ import { getPodcast } from '../services/podcast'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import * as DownloadState from '../state/actions/downloads'
+import { checkIfNotificationsEnabledForPodcastId } from '../state/actions/notifications'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
@@ -141,16 +143,17 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     const podcast = this.props.navigation.getParam('podcast')
     const podcastId = podcast?.id || podcast?.addByRSSPodcastFeedUrl || this.props.navigation.getParam('podcastId')
     const viewType = this.props.navigation.getParam('viewType') || PV.Filters._episodesKey
+    const notifications = this.global.session?.userInfo?.notifications || []
+    const notificationsEnabled = checkIfNotificationsEnabledForPodcastId(podcastId, notifications)
 
     if (podcast?.id || podcast?.addByRSSPodcastFeedUrl) {
       this.props.navigation.setParams({
         podcastId,
         podcastTitle: podcast.title,
-        addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
+        addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
+        notificationsEnabled
       })
     }
-
-
 
     this.state = {
       downloadedEpisodeLimit: null,
@@ -183,12 +186,25 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const podcastId = navigation.getParam('podcastId')
     const podcastTitle = navigation.getParam('podcastTitle')
+    const notificationsEnabled = navigation.getParam('notificationsEnabled')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
-
+    const { session } = getGlobal()
+    
     return {
       title: getScreenTitle(),
       headerRight: () => (
         <RNView style={core.row}>
+          {
+            session.isLoggedIn && (
+              <NavNotificationsIcon
+                podcastId={podcastId}
+                isEnabled={notificationsEnabled}
+                onNotificationSelectionChanged={
+                  () => navigation.setParams({ notificationsEnabled: !notificationsEnabled })
+                }
+              />
+            )
+          }
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon
               endingText={translate('shared using brandName')}
