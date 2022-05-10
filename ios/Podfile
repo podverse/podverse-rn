@@ -43,7 +43,5 @@ target 'podverse' do
 end
 
 target 'ImageNotification' do
-    use_frameworks!
-
-    pod 'Firebase/Messaging', '~> 8.10.0'
+  pod 'Firebase/Messaging', '~> 8.10.0'
 end
