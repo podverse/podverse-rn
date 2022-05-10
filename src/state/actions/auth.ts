@@ -3,7 +3,6 @@ import { Alert } from 'react-native'
 import Config from 'react-native-config'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { getGlobal, setGlobal } from 'reactn'
-import { fcmTokenGetLocally } from 'src/services/fcmDevices'
 import { safelyUnwrapNestedVariable, shouldShowMembershipAlert } from '../../lib/utility'
 import { PV } from '../../resources'
 import {
@@ -12,6 +11,7 @@ import {
   login,
   signUp
 } from '../../services/auth'
+import { fcmTokenGetLocally } from '../../services/fcmDevices'
 import { getWalletInfo } from '../../services/lnpay'
 import { parseAllAddByRSSPodcasts, setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
 import { setAllQueueItemsLocally } from '../../services/queue'
