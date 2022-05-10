@@ -60,6 +60,13 @@ export const Alerts = {
     title: translate('Free Trial Expired'),
     buttons: [{ text: _logoutButtonText, onPress: logoutUser }]
   },
+  GO_TO_LIVE_PODCAST: (navigation: any, podcastId: string, podcastTitle?: string, episodeTitle?: string) => ({
+    title: translate('Go to live podcast'),
+    message: `${podcastTitle} – ${episodeTitle}`,
+    buttons: [{ text: _cancelText }, { text: translate('Yes'), onPress: () => {
+      navigation.navigate(PV.RouteNames.PodcastScreen, { podcastId })
+    }}]
+  }),
   LEAVING_APP: {
     title: translate('Leaving App'),
     message: translate(
@@ -69,6 +76,10 @@ export const Alerts = {
   LOGIN_INVALID: {
     message: translate('Invalid username or password'),
     title: translate('Login Error')
+  },
+  LOGIN_TO_ENABLE_PODCAST_NOTIFICATIONS: {
+    message: translate('Login to enable podcast notifications'),
+    title: translate('Login Needed')
   },
   LOGIN_TO_MARK_EPISODES_AS_PLAYED: {
     message: translate('Please login to mark episodes as played'),

@@ -7,7 +7,7 @@ const fcmTokenSaveLocally = async (fcmToken: string) => {
   await AsyncStorage.setItem(PV.Keys.FCM_TOKEN_LAST_USED, fcmToken)
 }
 
-const fcmTokenGetLocally = () => {
+export const fcmTokenGetLocally = () => {
   return AsyncStorage.getItem(PV.Keys.FCM_TOKEN_LAST_USED)
 }
 

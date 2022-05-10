@@ -31,26 +31,35 @@ export class NavNotificationsIcon extends React.Component<Props, State> {
 
   onEnableNotifications = async () => {
     const { onNotificationSelectionChanged, podcastId } = this.props
-    this.setState({ isLoading: true })
-    try {
-      const authStatus = await messaging().requestPermission()
-      const enabled =
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL
-      if (enabled) {
-        const fcmToken = await messaging().getToken()
-        await saveOrUpdateFCMDevice(fcmToken)
-        await notificationSubscribe(podcastId)
-        // update the session.userInfo.notifications state by calling getAuthUserInfo
-        await getAuthUserInfo()
-        onNotificationSelectionChanged({ isEnabled: true })
-      } else {
-        this.requestPermissionsInSettings()
+    const { session } = this.global
+
+    if (!session?.isLoggedIn) {
+      Alert.alert(
+        PV.Alerts.LOGIN_TO_ENABLE_PODCAST_NOTIFICATIONS.title,
+        PV.Alerts.LOGIN_TO_ENABLE_PODCAST_NOTIFICATIONS.message
+      )
+    } else {
+      this.setState({ isLoading: true })
+      try {
+        const authStatus = await messaging().requestPermission()
+        const enabled =
+          authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+          authStatus === messaging.AuthorizationStatus.PROVISIONAL
+        if (enabled) {
+          const fcmToken = await messaging().getToken()
+          await saveOrUpdateFCMDevice(fcmToken)
+          await notificationSubscribe(podcastId)
+          // update the session.userInfo.notifications state by calling getAuthUserInfo
+          await getAuthUserInfo()
+          onNotificationSelectionChanged({ isEnabled: true })
+        } else {
+          this.requestPermissionsInSettings()
+        }
+      } catch (err) {
+        console.log("onEnableNotifications error: ", err)
       }
-    } catch (err) {
-      console.log("onEnableNotifications error: ", err)
+      this.setState({ isLoading: false })
     }
-    this.setState({ isLoading: false })
   }
   
   onDisableNotifications = async () => {

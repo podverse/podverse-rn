@@ -11,6 +11,7 @@ import {
   login,
   signUp
 } from '../../services/auth'
+import { fcmTokenGetLocally } from '../../services/fcmDevices'
 import { getWalletInfo } from '../../services/lnpay'
 import { parseAllAddByRSSPodcasts, setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
 import { setAllQueueItemsLocally } from '../../services/queue'
@@ -184,6 +185,9 @@ export const loginUser = async (credentials: Credentials) => {
     const userInfo = await login(credentials.email, credentials.password)
     const globalState = getGlobal()
     const { valueTagSettings } = globalState.session
+
+    const localFCMSaved = await fcmTokenGetLocally()
+    userInfo.notificationsEnabled = !!localFCMSaved
 
     setGlobal({
       session: {

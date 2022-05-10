@@ -3,6 +3,7 @@ import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { Credentials } from '../state/actions/auth'
+import { fcmTokenGetLocally } from './fcmDevices'
 import { getQueueItems } from './queue'
 import { request } from './request'
 import { getHistoryItems, getHistoryItemsIndex, getHistoryItemsIndexLocally } from './userHistoryItem'
@@ -52,6 +53,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
   let historyItems = []
   let historyItemsIndex = {}
   let isLoggedIn = false
+  let notificationsEnabled = false
 
   try {
     const addByRSSPodcastFeedUrlsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS)
@@ -116,6 +118,9 @@ export const getAuthenticatedUserInfoLocally = async () => {
 
   historyItemsIndex = await getHistoryItemsIndexLocally()
 
+  const localFCMSaved = await fcmTokenGetLocally()
+  notificationsEnabled = !!localFCMSaved
+
   const bearerToken = await getBearerToken()
   isLoggedIn = !!bearerToken
 
@@ -127,7 +132,8 @@ export const getAuthenticatedUserInfoLocally = async () => {
       subscribedUserIds,
       queueItems,
       historyItems,
-      historyItemsIndex
+      historyItemsIndex,
+      notificationsEnabled
     },
     isLoggedIn
   ]
@@ -163,6 +169,9 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
   data.historyItemsIndex = historyItemsIndex
   data.historyQueryPage = page
   data.queueItems = queueItems
+
+  const localFCMSaved = await fcmTokenGetLocally()
+  data.notificationsEnabled = !!localFCMSaved
 
   if (Array.isArray(addByRSSPodcastFeedUrls)) {
     await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS, JSON.stringify(addByRSSPodcastFeedUrls))

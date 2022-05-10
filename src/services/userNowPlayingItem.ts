@@ -87,10 +87,11 @@ export const setNowPlayingItemOnServer = async (item: NowPlayingItem | null, pla
   await setNowPlayingItemLocally(item, playbackPosition)
 
   const bearerToken = await getBearerToken()
-  const { clipId, episodeId } = item
+  const { clipId, episodeId, liveItem } = item
   const body = {
     ...(clipId ? { clipId } : { clipId: null }),
     ...(!clipId ? { episodeId } : { episodeId: null }),
+    ...(liveItem ? { liveItem } : {}),
     userPlaybackPosition: playbackPosition
   }
 

@@ -1,9 +1,10 @@
+import { LiveItemStatus } from 'podverse-shared'
 import { Dimensions, Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { FastImage, IndicatorDownload, Text, View } from './'
+import { FastImage, IndicatorDownload, LiveStatusBadge, Text, View } from './'
 
 type Props = {
   autoDownloadSettings?: any
@@ -12,6 +13,7 @@ type Props = {
   hasZebraStripe?: boolean
   id: string
   lastEpisodePubDate?: string
+  latestLiveItemStatus?: LiveItemStatus
   onPress?: any
   podcastImageUrl?: string
   podcastTitle?: string
@@ -25,6 +27,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
     const {
       id,
       lastEpisodePubDate,
+      latestLiveItemStatus,
       onPress,
       podcastImageUrl,
       podcastTitle = translate('Untitled Podcast'),
@@ -99,6 +102,11 @@ export class PodcastTableCell extends React.PureComponent<Props> {
               </RNView>
             )}
           </RNView>
+          {
+            latestLiveItemStatus === 'live' && (
+              <LiveStatusBadge testID={testID} />
+            )
+          }
         </View>
       </Pressable>
     )
@@ -124,6 +132,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   textWrapper: {
+    flex: 1,
     justifyContent: 'center',
     maxWidth:
       Dimensions.get('screen').width -

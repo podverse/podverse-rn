@@ -17,7 +17,6 @@ type Props = {
   item?: any
   mediaFileDuration?: number
   navigation: any
-  pubDate?: any
   showPodcastInfo?: boolean
   testID: string
   transparent?: boolean
@@ -40,7 +39,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       userPlaybackPosition
     } = this.props
 
-    const { duration, id, mediaUrl, pubDate = '', podcast = {} } = item
+    const { duration, id, liveItem, mediaUrl, pubDate = '', podcast = {} } = item
     let { description = '', subtitle = '', title = '' } = item
 
     const podcastTitle = podcast.title || translate('Untitled Podcast')
@@ -48,6 +47,11 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     summaryText = removeHTMLFromString(summaryText)
     summaryText = decodeHTMLString(summaryText)
     summaryText = summaryText?.trim() || ''
+
+    let finalPubDate = pubDate
+    if (liveItem?.start) {
+      finalPubDate = liveItem.start
+    }
 
     const { downloadedEpisodeIds, downloadsActive, fontScaleMode, screenReaderEnabled, session } = this.global
     const { userInfo } = session
@@ -71,7 +75,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const podcastTitleText = podcastTitle.trim()
     const episodeTitleText = title.trim()
-    const pubDateText = readableDate(pubDate)
+    const pubDateText = readableDate(finalPubDate)
     const timeLabel = getTimeLabelText(mediaFileDuration, duration, userPlaybackPosition)
     const timeLabelText = generateEpisodeAccessibilityText(episodeCompleted, timeLabel)
 
@@ -154,13 +158,17 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           ) : (
             innerTopView
           )}
-          <DownloadOrDeleteButton
-            isDownloaded={isDownloaded}
-            isDownloading={isDownloading}
-            onPressDelete={() => handleDeletePress(item)}
-            onPressDownload={() => handleDownloadPress(item)}
-            testID={testID}
-          />
+          {
+            !liveItem && (
+              <DownloadOrDeleteButton
+                isDownloaded={isDownloaded}
+                isDownloading={isDownloading}
+                onPressDelete={() => handleDeletePress(item)}
+                onPressDownload={() => handleDownloadPress(item)}
+                testID={testID}
+              />
+            )
+          }
         </RNView>
         {handleNavigationPress && !screenReaderEnabled ? (
           <Pressable
