@@ -130,7 +130,7 @@ const mediaMoreButtons = (
       }
     })
 
-    if (handleDownload) {
+    if (!item.liveItem && handleDownload) {
       buttons.push({
         accessibilityHint: downloadingAccessibilityHint,
         accessibilityLabel: downloadingText,
@@ -153,7 +153,7 @@ const mediaMoreButtons = (
     }
   }
 
-  if (!item.addByRSSPodcastFeedUrl) {
+  if (!item.liveItem && !item.addByRSSPodcastFeedUrl) {
     buttons.push(
       {
         accessibilityHint:
@@ -268,7 +268,7 @@ const mediaMoreButtons = (
     })
   }
 
-  if (itemType === 'episode') {
+  if (!item.liveItem && itemType === 'episode') {
     const completed = historyItemsIndex.episodes[item.episodeId]?.completed
     const label = completed ? translate('Mark as Unplayed') : translate('Mark as Played')
     buttons.push({

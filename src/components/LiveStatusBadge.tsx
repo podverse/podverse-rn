@@ -40,10 +40,13 @@ const styles = StyleSheet.create({
     flex: 0,
     justifyContent: 'center',
     height: PV.Table.sectionHeader.height - 6,
+    marginLeft: 4,
+    marginTop: 3,
     paddingHorizontal: 16
   },
   text: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.lg
+    fontSize: PV.Fonts.sizes.lg,
+    marginBottom: 3
   }
 })

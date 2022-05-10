@@ -77,6 +77,10 @@ export const Alerts = {
     message: translate('Invalid username or password'),
     title: translate('Login Error')
   },
+  LOGIN_TO_ENABLE_PODCAST_NOTIFICATIONS: {
+    message: translate('Login to enable podcast notifications'),
+    title: translate('Login Needed')
+  },
   LOGIN_TO_MARK_EPISODES_AS_PLAYED: {
     message: translate('Please login to mark episodes as played'),
     title: translate('Login Needed')

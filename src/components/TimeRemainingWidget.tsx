@@ -14,6 +14,7 @@ import {
 import { setNowPlayingItem } from '../services/userNowPlayingItem'
 import { playerLoadNowPlayingItem, playerTogglePlay, playerUpdatePlayerState } from '../state/actions/player'
 import { Icon, MoreButton, PressableWithOpacity, Text, View } from './'
+import { LiveStatusBadge } from './LiveStatusBadge'
 
 type Props = {
   clipTime?: string
@@ -90,7 +91,7 @@ export const TimeRemainingWidget = (props: Props) => {
     transparent,
     userPlaybackPosition
   } = props
-  const { episode = {}, podcast = {} } = item
+  const { episode = {}, liveItem, podcast = {} } = item
   const convertedItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
   const [player] = useGlobal('player')
   const { nowPlayingItem, playbackState } = player
@@ -161,29 +162,41 @@ export const TimeRemainingWidget = (props: Props) => {
         testID={`${testID}_time_remaining_widget_toggle_play`.prependTestId()}>
         {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
       </PressableWithOpacity>
-      {hasStartedItem && !isInvalidDuration && playedTime > 0 && (
+      {
+        liveItem?.status === 'live' && (
+          <>
+            <LiveStatusBadge testID={testID} />
+            <View style={styles.spacer} />
+          </>
+        )
+      }
+      {!liveItem && hasStartedItem && !isInvalidDuration && playedTime > 0 && (
         <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
       )}
-      <View
-        accessible={false}
-        importantForAccessibility='no-hide-descendants'
-        style={{ flexDirection: 'row', flex: 1, alignItems: 'center', height: '100%' }}>
-        {!!timeLabel && (
-          <Text
+      {
+        !liveItem && (
+          <View
             accessible={false}
-            fontSizeLargerScale={PV.Fonts.largeSizes.md}
-            fontSizeLargestScale={PV.Fonts.largeSizes.sm}
             importantForAccessibility='no-hide-descendants'
-            style={styles.text}>
-            {timeLabel}
-          </Text>
-        )}
-        {!!episodeCompleted && (
-          <View style={styles.icon}>
-            <Icon name={'check'} size={22} style={styles.iconCompleted} />
+            style={{ flexDirection: 'row', flex: 1, alignItems: 'center', height: '100%' }}>
+            {!!timeLabel && (
+              <Text
+                accessible={false}
+                fontSizeLargerScale={PV.Fonts.largeSizes.md}
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                importantForAccessibility='no-hide-descendants'
+                style={styles.text}>
+                {timeLabel}
+              </Text>
+            )}
+            {!!episodeCompleted && (
+              <View style={styles.icon}>
+                <Icon name={'check'} size={22} style={styles.iconCompleted} />
+              </View>
+            )}
           </View>
-        )}
-      </View>
+        )
+      }
       {!!handleMorePress && (
         <MoreButton
           accessible={false}
@@ -219,6 +232,9 @@ const styles = StyleSheet.create({
     width: 40,
     marginRight: 10,
     backgroundColor: PV.Colors.brandBlueDark + '44'
+  },
+  spacer: {
+    flex: 1
   },
   text: {
     color: PV.Colors.skyLight,
