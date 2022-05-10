@@ -119,6 +119,7 @@ const initialTheme: InitialState = {
       membershipExpiration: '',
       name: '',
       notifications: [],
+      notificationsEnabled: false,
       playlists: [],
       queueItems: [],
       subscribedPlaylistIds: [],

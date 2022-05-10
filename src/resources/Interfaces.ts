@@ -71,6 +71,7 @@ export interface UserInfo {
   membershipExpiration?: string | null
   name?: string
   notifications?: any[]
+  notificationsEnabled: boolean
   playlists?: []
   queueItems?: []
   subscribedPlaylistIds?: []

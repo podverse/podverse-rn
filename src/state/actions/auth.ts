@@ -3,6 +3,7 @@ import { Alert } from 'react-native'
 import Config from 'react-native-config'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { getGlobal, setGlobal } from 'reactn'
+import { fcmTokenGetLocally } from 'src/services/fcmDevices'
 import { safelyUnwrapNestedVariable, shouldShowMembershipAlert } from '../../lib/utility'
 import { PV } from '../../resources'
 import {
@@ -184,6 +185,9 @@ export const loginUser = async (credentials: Credentials) => {
     const userInfo = await login(credentials.email, credentials.password)
     const globalState = getGlobal()
     const { valueTagSettings } = globalState.session
+
+    const localFCMSaved = await fcmTokenGetLocally()
+    userInfo.notificationsEnabled = !!localFCMSaved
 
     setGlobal({
       session: {
