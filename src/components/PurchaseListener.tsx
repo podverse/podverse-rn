@@ -31,14 +31,14 @@ export class PurchaseListener extends React.Component<Props> {
             // Don't use await on navigate here, or it can lead to race condition issues between
             // different screens' render methods.
             navigation.navigate(PV.RouteNames.PurchasingScreen)
-            await androidHandleStatusCheck(productId, transactionId, purchaseToken)
+            await androidHandleStatusCheck(purchase)
           }
         } else if (Platform.OS === 'ios') {
           if (productId && transactionId && transactionReceipt) {
             // Don't use await on navigate here, or it can lead to race condition issues between
             // different screens' render methods.
             navigation.navigate(PV.RouteNames.PurchasingScreen)
-            await iosHandlePurchaseStatusCheck(productId, transactionId, transactionReceipt)
+            await iosHandlePurchaseStatusCheck(purchase)
           }
         }
       })()

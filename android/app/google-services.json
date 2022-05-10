@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "860242501247",
+    "project_id": "podverse-app",
+    "storage_bucket": "podverse-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:860242501247:android:dcd26a64a23f42fe89a94a",
+        "android_client_info": {
+          "package_name": "com.podverse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "860242501247-lk617uii7anshdtvibndeh4ofl5v92ir.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCze1w-KHrbFF147zSAr1m0to91zs1vW70"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "860242501247-lk617uii7anshdtvibndeh4ofl5v92ir.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "860242501247-ei0j4lcooh0g4r1t8pqr865k2a3taq9h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.podverse.fm"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

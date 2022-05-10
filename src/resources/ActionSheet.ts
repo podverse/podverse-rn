@@ -130,7 +130,7 @@ const mediaMoreButtons = (
       }
     })
 
-    if (handleDownload) {
+    if (!item.liveItem && handleDownload) {
       buttons.push({
         accessibilityHint: downloadingAccessibilityHint,
         accessibilityLabel: downloadingText,
@@ -153,7 +153,7 @@ const mediaMoreButtons = (
     }
   }
 
-  if (!item.addByRSSPodcastFeedUrl) {
+  if (!item.liveItem && !item.addByRSSPodcastFeedUrl) {
     buttons.push(
       {
         accessibilityHint:
@@ -206,53 +206,53 @@ const mediaMoreButtons = (
         }
       })
     }
+  }
 
-    if (!Config.DISABLE_SHARE) {
-      const accessibilityHint =
-        itemType === 'podcast'
-          ? translate('ARIA HINT - share this podcast')
-          : itemType === 'episode'
-          ? translate('ARIA HINT - share this episode')
-          : itemType === 'clip'
-          ? translate('ARIA HINT - share this clip')
-          : itemType === 'chapter'
-          ? translate('ARIA HINT - share this chapter')
-          : itemType === 'playlist'
-          ? translate('ARIA HINT - share this playlist')
-          : itemType === 'profile'
-          ? translate('ARIA HINT - share this profile')
-          : translate('ARIA HINT - share this item')
-      buttons.push({
-        accessibilityHint,
-        accessibilityLabel: translate('Share'),
-        key: PV.Keys.share,
-        text: translate('Share'),
-        onPress: async () => {
-          try {
-            const urlsWeb = safelyUnwrapNestedVariable(() => globalState.urlsWeb, {})
-            let url = ''
-            let title = ''
+  if (!Config.DISABLE_SHARE) {
+    const accessibilityHint =
+      itemType === 'podcast'
+        ? translate('ARIA HINT - share this podcast')
+        : itemType === 'episode'
+        ? translate('ARIA HINT - share this episode')
+        : itemType === 'clip'
+        ? translate('ARIA HINT - share this clip')
+        : itemType === 'chapter'
+        ? translate('ARIA HINT - share this chapter')
+        : itemType === 'playlist'
+        ? translate('ARIA HINT - share this playlist')
+        : itemType === 'profile'
+        ? translate('ARIA HINT - share this profile')
+        : translate('ARIA HINT - share this item')
+    buttons.push({
+      accessibilityHint,
+      accessibilityLabel: translate('Share'),
+      key: PV.Keys.share,
+      text: translate('Share'),
+      onPress: async () => {
+        try {
+          const urlsWeb = safelyUnwrapNestedVariable(() => globalState.urlsWeb, {})
+          let url = ''
+          let title = ''
 
-            if (item.clipId) {
-              url = urlsWeb.clip + item.clipId
-              title = item.clipTitle ? item.clipTitle : prefixClipLabel(item.episodeTitle)
-              title += ` – ${item?.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
-            } else if (item.episodeId) {
-              url = urlsWeb.episode + item.episodeId
-              title += `${item?.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`
-            }
-            await Share.open({
-              title,
-              subject: title,
-              url
-            })
-          } catch (error) {
-            console.log(error)
+          if (item.clipId) {
+            url = urlsWeb.clip + item.clipId
+            title = item.clipTitle ? item.clipTitle : prefixClipLabel(item.episodeTitle)
+            title += ` – ${item?.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
+          } else if (item.episodeId) {
+            url = urlsWeb.episode + item.episodeId
+            title += `${item?.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`
           }
-          await handleDismiss()
+          await Share.open({
+            title,
+            subject: title,
+            url
+          })
+        } catch (error) {
+          console.log(error)
         }
-      })
-    }
+        await handleDismiss()
+      }
+    })
   }
 
   if (isDownloaded) {
@@ -268,7 +268,7 @@ const mediaMoreButtons = (
     })
   }
 
-  if (itemType === 'episode') {
+  if (!item.liveItem && itemType === 'episode') {
     const completed = historyItemsIndex.episodes[item.episodeId]?.completed
     const label = completed ? translate('Mark as Unplayed') : translate('Mark as Played')
     buttons.push({

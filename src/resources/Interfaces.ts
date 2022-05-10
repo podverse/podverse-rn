@@ -27,6 +27,8 @@ export interface GlobalTheme {
   headerText?: any
   inputContainerText?: any
   link?: any
+  liveStatusBadge?: any
+  liveStatusBadgeText?: any
   makeClipPlayerControlsWrapper?: any
   membershipTextExpired?: any
   membershipTextExpiring?: any
@@ -68,6 +70,8 @@ export interface UserInfo {
   id?: string
   membershipExpiration?: string | null
   name?: string
+  notifications?: any[]
+  notificationsEnabled: boolean
   playlists?: []
   queueItems?: []
   subscribedPlaylistIds?: []
@@ -163,6 +167,7 @@ export interface InitialState {
     isLoading: boolean
     isLoadingMore: boolean
     isQuerying: boolean
+    liveStreamWasPaused: boolean
     mediaRefIdToDelete?: string
     queryFrom: string | null
     queryPage: number

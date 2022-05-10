@@ -6,6 +6,7 @@ import { getGlobal } from 'reactn'
 import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../lib/downloader'
 import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
+import { setLiveStreamWasPausedState } from '../state/actions/player'
 import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
@@ -245,6 +246,7 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
     episodeId,
     episodeMediaUrl = '',
     episodeTitle = 'Untitled Episode',
+    liveItem,
     podcastCredentialsRequired,
     podcastId,
     podcastImageUrl,
@@ -292,6 +294,7 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
         ...(imageUrl ? { artwork: imageUrl } : {}),
         userAgent: getAppUserAgent(),
         pitchAlgorithm: PitchAlgorithm.Voice,
+        isLiveStream: Platform.OS === 'ios' && liveItem ? true : false,
         headers: {
           ...(Authorization ? { Authorization } : {})
         }
@@ -374,6 +377,7 @@ export const audioHandlePause = () => {
 export const audioHandlePauseWithUpdate = () => {
   audioHandlePause()
   playerUpdateUserPlaybackPosition()
+  setLiveStreamWasPausedState(true)
 }
 
 export const audioHandleSeekTo = async (position: number) => {
