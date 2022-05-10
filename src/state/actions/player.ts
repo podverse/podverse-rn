@@ -237,13 +237,34 @@ export const playerLoadNowPlayingItem = async (
     {
       screenPlayer: {
         ...globalState.screenPlayer,
-        isLoading: false
+        isLoading: false,
+        liveStreamWasPaused: false
       }
     },
     () => {
       handleEnrichingPlayerState(item)
     }
   )
+}
+
+export const goToCurrentLiveTime = () => {
+  const { player } = getGlobal()
+  let { nowPlayingItem } = player
+  nowPlayingItem = nowPlayingItem || {}
+  const shouldPlay = true
+  const forceUpdateOrderDate = true
+  const setCurrentItemNextInQueue = false
+  playerLoadNowPlayingItem(nowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+}
+
+export const setLiveStreamWasPausedState = (bool: boolean) => {
+  const globalState = getGlobal()
+  setGlobal({
+    screenPlayer: {
+      ...globalState.screenPlayer,
+      liveStreamWasPaused: bool
+    }
+  })
 }
 
 export const handleEnrichingPlayerState = (item: NowPlayingItem) => {

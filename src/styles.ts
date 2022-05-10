@@ -121,6 +121,13 @@ export const darkTheme = StyleSheet.create({
   link: {
     color: PV.Colors.blueLighter
   },
+  liveStatusBadge: {
+    backgroundColor: PV.Colors.velvet,
+    borderColor: PV.Colors.red,
+  },
+  liveStatusBadgeText: {
+    color: PV.Colors.white
+  },
   makeClipPlayerControlsWrapper: {
     backgroundColor: PV.Colors.grayDarker
   },
@@ -367,6 +374,14 @@ export const lightTheme = StyleSheet.create({
   },
   link: {
     color: PV.Colors.blueDarker
+  },
+  liveStatusBadge: {
+    backgroundColor: PV.Colors.velvet,
+    borderColor: PV.Colors.red,
+    color: PV.Colors.black
+  },
+  liveStatusBadgeText: {
+    color: PV.Colors.black
   },
   makeClipPlayerControlsWrapper: {
     backgroundColor: PV.Colors.grayLighter

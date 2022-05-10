@@ -1,7 +1,9 @@
+import { Purchase } from 'react-native-iap'
 import { updateGooglePlayPurchaseStatus } from './googlePlayPurchase'
 
-export const androidHandleStatusCheck = async (productId: string, purchaseToken: string) => {
+export const androidHandleStatusCheck = async (purchase: Purchase) => {
   try {
+    const { productId, purchaseToken } = purchase
     return await updateGooglePlayPurchaseStatus({
       productId,
       purchaseToken

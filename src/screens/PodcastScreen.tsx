@@ -13,6 +13,7 @@ import {
   EpisodeTableCell,
   FlatList,
   NavShareIcon,
+  NavNotificationsIcon,
   NumberSelectorWithText,
   PodcastTableHeader,
   ScrollView,
@@ -37,8 +38,8 @@ import {
   safelyUnwrapNestedVariable
 } from '../lib/utility'
 import { PV } from '../resources'
-import { getEpisodes } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
+import { getEpisodesAndLiveItems } from '../services/liveItem'
 import { getMediaRefs } from '../services/mediaRef'
 import {
   getPodcastCredentials,
@@ -50,6 +51,7 @@ import { getPodcast } from '../services/podcast'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import * as DownloadState from '../state/actions/downloads'
+import { checkIfNotificationsEnabledForPodcastId } from '../state/actions/notifications'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
@@ -141,16 +143,21 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     const podcast = this.props.navigation.getParam('podcast')
     const podcastId = podcast?.id || podcast?.addByRSSPodcastFeedUrl || this.props.navigation.getParam('podcastId')
     const viewType = this.props.navigation.getParam('viewType') || PV.Filters._episodesKey
+    const notificationsEnabled = checkIfNotificationsEnabledForPodcastId(podcastId)
 
     if (podcast?.id || podcast?.addByRSSPodcastFeedUrl) {
       this.props.navigation.setParams({
         podcastId,
         podcastTitle: podcast.title,
-        addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
+        addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
+        notificationsEnabled
+      })
+    } else if (podcastId) {
+      this.props.navigation.setParams({
+        podcastId,
+        notificationsEnabled
       })
     }
-
-
 
     this.state = {
       downloadedEpisodeLimit: null,
@@ -183,12 +190,20 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const podcastId = navigation.getParam('podcastId')
     const podcastTitle = navigation.getParam('podcastTitle')
+    const notificationsEnabled = navigation.getParam('notificationsEnabled')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
-
+    
     return {
       title: getScreenTitle(),
       headerRight: () => (
         <RNView style={core.row}>
+          <NavNotificationsIcon
+            podcastId={podcastId}
+            isEnabled={notificationsEnabled}
+            onNotificationSelectionChanged={
+              () => navigation.setParams({ notificationsEnabled: !notificationsEnabled })
+            }
+          />
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon
               endingText={translate('shared using brandName')}
@@ -1057,15 +1072,16 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   _queryEpisodes = async (sort: string | null, page = 1) => {
-    const { podcastId, searchBarText: searchTitle } = this.state
-    const results = await getEpisodes({
+    const { podcast, podcastId, searchBarText: searchTitle } = this.state
+    const results = await getEpisodesAndLiveItems({
       sort,
       page,
       podcastId,
       ...(searchTitle ? { searchTitle } : {})
-    })
+    }, podcast)
 
-    return results
+    const { combinedEpisodes } = results
+    return combinedEpisodes
   }
 
   _queryClips = async (sort: string | null, page = 1) => {

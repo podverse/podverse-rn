@@ -46,7 +46,11 @@ export const EpisodeTableHeader = (props: Props) => {
 
   const duration = episode?.duration || 0
 
-  const pubDate = episode?.pubDate
+  let finalPubDate = episode?.pubDate
+  if (episode?.liveItem) {
+    finalPubDate = episode.liveItem.start
+  }
+
   const isDownloaded = episodeDownloaded
 
   const id = episode?.id
@@ -63,7 +67,7 @@ export const EpisodeTableHeader = (props: Props) => {
   let podcastTitleText = episode?.podcast?.title?.trim()
   if (!podcastTitleText) podcastTitleText = translate('Untitled Podcast')
 
-  const pubDateText = readableDate(pubDate)
+  const pubDateText = readableDate(finalPubDate)
   const timeLabel = getTimeLabelText(mediaFileDuration, duration, userPlaybackPosition, episodeCompleted)
   const timeLabelText = generateEpisodeAccessibilityText(episodeCompleted, timeLabel)
 

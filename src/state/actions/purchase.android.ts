@@ -1,4 +1,4 @@
-import { finishTransaction } from 'react-native-iap'
+import { finishTransaction, Purchase } from 'react-native-iap'
 import { setGlobal } from 'reactn'
 import { androidHandleStatusCheck as androidHandleStatusCheckService } from '../../services/purchase.android'
 import { getAuthUserInfo } from './auth'
@@ -10,7 +10,8 @@ import {
   showPurchaseSomethingWentWrongError
 } from './purchaseShared'
 
-export const androidHandlePurchaseLoading = (productId: string, transactionId: string, purchaseToken: string) => {
+export const androidHandlePurchaseLoading = (purchase: Purchase) => {
+  const { productId, purchaseToken, transactionId } = purchase
   const loadingState = purchaseLoading()
   loadingState.purchase.transactionId = transactionId
   loadingState.purchase.productId = productId
@@ -18,16 +19,16 @@ export const androidHandlePurchaseLoading = (productId: string, transactionId: s
   setGlobal(loadingState)
 }
 
-export const androidHandleStatusCheck = async (productId: string, transactionId: string, purchaseToken: string) => {
+export const androidHandleStatusCheck = async (purchase: Purchase) => {
   try {
-    androidHandlePurchaseLoading(productId, transactionId, purchaseToken)
-    const response = await androidHandleStatusCheckService(productId, purchaseToken)
+    androidHandlePurchaseLoading(purchase)
+    const response = await androidHandleStatusCheckService(purchase)
 
     if (response) {
       const { code } = response
       if (code === 0) {
         const isConsumable = true
-        await finishTransaction({ transactionId } as any, isConsumable)
+        await finishTransaction(purchase, isConsumable)
         await handleStatusSuccessful()
       } else if (code === 1) {
         handleStatusCancel()

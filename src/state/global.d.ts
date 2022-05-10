@@ -82,6 +82,7 @@ declare module 'reactn/default' {
       isLoading: boolean
       isLoadingMore: boolean
       isQuerying: boolean
+      liveStreamWasPaused: boolean
       mediaRefIdToDelete?: string
       queryFrom: string | null
       queryPage: number

@@ -62,7 +62,7 @@ export class PlayerScreen extends React.Component<Props> {
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
 
-    const { episodeFunding, episodeValue, podcastFunding, podcastValue } = nowPlayingItem
+    const { episodeFunding, episodeValue, liveItem, podcastFunding, podcastValue } = nowPlayingItem
 
     const showFundingIcon =
       podcastFunding?.length > 0 ||
@@ -92,17 +92,23 @@ export class PlayerScreen extends React.Component<Props> {
           )}
           {!addByRSSPodcastFeedUrl && (
             <RNView style={core.row}>
-              <NavMakeClipIcon
-                getInitialProgressValue={_getInitialProgressValue}
-                globalTheme={globalTheme}
-                navigation={navigation}
-              />
-              <NavAddToPlaylistIcon
-                getEpisodeId={_getEpisodeId}
-                getMediaRefId={_getMediaRefId}
-                globalTheme={globalTheme}
-                navigation={navigation}
-              />
+              {
+                !liveItem && (
+                  <>
+                    <NavMakeClipIcon
+                      getInitialProgressValue={_getInitialProgressValue}
+                      globalTheme={globalTheme}
+                      navigation={navigation}
+                    />
+                    <NavAddToPlaylistIcon
+                      getEpisodeId={_getEpisodeId}
+                      getMediaRefId={_getMediaRefId}
+                      globalTheme={globalTheme}
+                      navigation={navigation}
+                    />
+                  </>                  
+                )
+              }
               <NavShareIcon globalTheme={globalTheme} handlePress={_showShareActionSheet} />
             </RNView>
           )}

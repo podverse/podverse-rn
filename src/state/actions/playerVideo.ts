@@ -37,7 +37,8 @@ export const videoInitializePlayer = async (item: NowPlayingItem) => {
   setGlobal({
     screenPlayer: {
       ...globalState.screenPlayer,
-      isLoading: false
+      isLoading: false,
+      liveStreamWasPaused: false
     }
   })
 }

@@ -1,4 +1,5 @@
 import { Alert, Platform, StyleSheet } from 'react-native'
+import { Purchase } from 'react-native-iap'
 import React from 'reactn'
 import { ActivityIndicator, Button, ComparisonTable, Text, TextLink, View } from '../components'
 import { translate } from '../lib/i18n'
@@ -59,14 +60,13 @@ export class MembershipScreen extends React.Component<Props, State> {
           // then do not buy a new product, and instead navigate to the PurchasingScreen
           // and attempt to check and update the status of the cached purchase.
           if (error.code === 'E_ALREADY_OWNED') {
+            const { purchase } = this.global
             if (Platform.OS === 'android') {
               this.props.navigation.navigate(PV.RouteNames.PurchasingScreen)
-              const { productId, purchaseToken, transactionId } = this.global.purchase
-              await androidHandleStatusCheck(productId, transactionId, purchaseToken)
+              await androidHandleStatusCheck(purchase)
             } else if (Platform.OS === 'ios') {
               this.props.navigation.navigate(PV.RouteNames.PurchasingScreen)
-              const { productId, transactionId, transactionReceipt } = this.global.purchase
-              await iosHandlePurchaseStatusCheck(productId, transactionId, transactionReceipt)
+              await iosHandlePurchaseStatusCheck(purchase)
             }
           } else if (error.code === 'E_USER_CANCELLED') {
             // do nothing
@@ -223,6 +223,12 @@ const comparisonData = [
     column1: true,
     column2: true,
     accessibilityLabel: translate('Download episodes')
+  },
+  {
+    text: translate('Add custom RSS feeds'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('Add custom RSS feeds')
   },
   {
     text: translate('Video playback'),
