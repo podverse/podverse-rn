@@ -23,6 +23,7 @@ type Props = {
   clipStartTime?: number | null
   currentChaptersStartTimePositions?: number[]
   globalTheme: any
+  isLiveItem?: boolean
   isLoading?: boolean
   isMakeClipScreen?: boolean
   value: number
@@ -100,6 +101,7 @@ export function PlayerProgressBar(props: Props) {
     clipEndTime,
     clipStartTime,
     currentChaptersStartTimePositions,
+    isLiveItem,
     isLoading,
     isMakeClipScreen
   } = props
@@ -148,9 +150,15 @@ export function PlayerProgressBar(props: Props) {
     }
   }
 
+  let durationText = parentScopeDuration > 0 ? convertSecToHHMMSS(parentScopeDuration) : '--:--'
+  if (isLiveItem) {
+    durationText = translate('Live')
+  }
+
   return (
     <View style={sliderStyles.wrapper}>
       <Slider
+        disabled={isLiveItem}
         minimumValue={0}
         maximumValue={isLoading ? 0 : 1}
         minimumTrackTintColor={PV.Colors.skyDark}
@@ -188,7 +196,7 @@ export function PlayerProgressBar(props: Props) {
         }}
         thumbStyle={sliderStyles.thumbStyle}
         thumbTintColor={PV.Colors.white}
-        value={newProgressValue}
+        value={isLiveItem ? 0 : newProgressValue}
       />
       {!isLoading ? (
         <View style={sliderStyles.timeRow}>
@@ -206,7 +214,7 @@ export function PlayerProgressBar(props: Props) {
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={sliderStyles.time}>
-            {parentScopeDuration > 0 ? convertSecToHHMMSS(parentScopeDuration) : '--:--'}
+            {durationText}
           </Text>
         </View>
       ) : (

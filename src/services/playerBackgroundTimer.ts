@@ -18,7 +18,6 @@ import {
   playerGetState,
   playerHandlePauseWithUpdate,
   playerSetPositionWhenDurationIsAvailable,
-  playerUpdateUserPlaybackPosition,
   setClipHasEnded
 } from './player'
 import { getNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './userNowPlayingItem'
@@ -40,20 +39,22 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
     PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)
   }
 
-  if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
-    debouncedSetPlaybackPosition(currentNowPlayingItem.clipStartTime || 0)
-  } else if (
-    !currentNowPlayingItem.clipId &&
-    currentNowPlayingItem.userPlaybackPosition &&
-    currentNowPlayingItem.userPlaybackPosition >= 5
-  ) {
-    debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
-  } else {
-    const { podcastId } = currentNowPlayingItem
-    const startPodcastFromTime = await getStartPodcastFromTime(podcastId)
-
-    if (!currentNowPlayingItem.clipId && startPodcastFromTime) {
-      debouncedSetPlaybackPosition(startPodcastFromTime, trackId)
+  if (!currentNowPlayingItem.liveItem) {
+    if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
+      debouncedSetPlaybackPosition(currentNowPlayingItem.clipStartTime || 0)
+    } else if (
+      !currentNowPlayingItem.clipId &&
+      currentNowPlayingItem.userPlaybackPosition &&
+      currentNowPlayingItem.userPlaybackPosition >= 5
+    ) {
+      debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
+    } else {
+      const { podcastId } = currentNowPlayingItem
+      const startPodcastFromTime = await getStartPodcastFromTime(podcastId)
+  
+      if (!currentNowPlayingItem.clipId && startPodcastFromTime) {
+        debouncedSetPlaybackPosition(startPodcastFromTime, trackId)
+      }
     }
   }
 

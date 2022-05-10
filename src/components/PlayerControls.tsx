@@ -12,6 +12,7 @@ import {
   playerHandleSeekTo
 } from '../services/player'
 import {
+  playerLoadNowPlayingItem,
   playerPlayNextChapterOrQueueItem,
   playerPlayPreviousChapterOrReturnToBeginningOfTrack,
   playerSetPlaybackSpeed,
@@ -21,7 +22,7 @@ import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
-import { ActivityIndicator, Icon, PlayerProgressBar, PressableWithOpacity, Text, View as PVView } from './'
+import { ActivityIndicator, Icon, PlayerLiveButton, PlayerProgressBar, PressableWithOpacity, Text, View as PVView } from './'
 
 type Props = {
   navigation: any
@@ -147,6 +148,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     // nowPlayingItem will be undefined when loading from a deep link
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
+    const { liveItem } = nowPlayingItem
 
     let playButtonIcon = <Icon name='play' size={20} testID={`${testIDPrefix}_play_button`} />
     let playButtonAdjust = { paddingLeft: 2 } as any
@@ -205,13 +207,14 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             clipStartTime={clipStartTime}
             currentChaptersStartTimePositions={currentChaptersStartTimePositions}
             globalTheme={globalTheme}
+            isLiveItem={!!liveItem}
             isLoading={isLoading}
             value={progressValue}
           />
         </View>
         <View style={styles.playerControlsMiddleRow}>
           <View style={styles.playerControlsMiddleRowTop}>
-            {!isVideo && (
+            {!isVideo && !liveItem && (
               <PressableWithOpacity
                 accessibilityLabel={previousButtonAccessibilityLabel}
                 accessibilityRole='button'
@@ -221,16 +224,20 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
               </PressableWithOpacity>
             )}
-            <PressableWithOpacity
-              accessibilityLabel={jumpBackAccessibilityLabel}
-              accessibilityRole='button'
-              onPress={this._playerJumpBackward}
-              style={playerStyles.icon}>
-              {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS, `${testIDPrefix}_jump_backward`)}
-              <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
-                <Text style={styles.skipTimeText}>{jumpBackwardsTime}</Text>
-              </View>
-            </PressableWithOpacity>
+            {
+              !liveItem && (
+                <PressableWithOpacity
+                  accessibilityLabel={jumpBackAccessibilityLabel}
+                  accessibilityRole='button'
+                  onPress={this._playerJumpBackward}
+                  style={playerStyles.icon}>
+                  {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS, `${testIDPrefix}_jump_backward`)}
+                  <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
+                    <Text style={styles.skipTimeText}>{jumpBackwardsTime}</Text>
+                  </View>
+                </PressableWithOpacity>
+              )
+            }
             <PressableWithOpacity
               accessibilityHint={playButtonAccessibilityHint}
               accessibilityLabel={playButtonAccessibilityLabel}
@@ -239,17 +246,21 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 {playButtonIcon}
               </View>
             </PressableWithOpacity>
-            <PressableWithOpacity
-              accessibilityLabel={jumpForwardAccessibilityLabel}
-              accessibilityRole='button'
-              onPress={this._playerJumpForward}
-              style={playerStyles.icon}>
-              {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, `${testIDPrefix}_step_forward`)}
-              <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
-                <Text style={styles.skipTimeText}>{jumpForwardsTime}</Text>
-              </View>
-            </PressableWithOpacity>
-            {!isVideo && (
+            {
+              !liveItem && (
+                <PressableWithOpacity
+                  accessibilityLabel={jumpForwardAccessibilityLabel}
+                  accessibilityRole='button'
+                  onPress={this._playerJumpForward}
+                  style={playerStyles.icon}>
+                  {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, `${testIDPrefix}_step_forward`)}
+                  <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
+                    <Text style={styles.skipTimeText}>{jumpForwardsTime}</Text>
+                  </View>
+                </PressableWithOpacity>
+              )
+            }
+            {!isVideo && !liveItem && (
               <PressableWithOpacity
                 accessibilityLabel={nextButtonAccessibilityLabel}
                 accessibilityRole='button'
@@ -274,7 +285,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             </View>
           </PressableWithOpacity>
           {
-            !hidePlaybackSpeedButton && (
+            !liveItem && !hidePlaybackSpeedButton && (
               <PressableWithOpacity
                 accessibilityHint={translate('ARIA HINT - current playback speed')}
                 accessibilityLabel={`${playbackRate}X`}
@@ -288,6 +299,11 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                   {`${playbackRate}X`}
                 </Text>
               </PressableWithOpacity>
+            )
+          }
+          {
+            !!liveItem && (
+              <PlayerLiveButton />
             )
           }
           <PressableWithOpacity

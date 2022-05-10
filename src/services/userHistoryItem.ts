@@ -162,7 +162,7 @@ const addOrUpdateHistoryItemOnServer = async (
   }
 
   const bearerToken = await getBearerToken()
-  const { clipId, episodeId } = nowPlayingItem
+  const { clipId, episodeId, liveItem } = nowPlayingItem
 
   // Infinity happens in the case of live streams.
   const duration = mediaFileDuration && mediaFileDuration !== Infinity
@@ -179,6 +179,7 @@ const addOrUpdateHistoryItemOnServer = async (
     body: {
       episodeId: clipId ? null : episodeId,
       mediaRefId: clipId,
+      ...(liveItem ? { liveItem } : {}),
       forceUpdateOrderDate: forceUpdateOrderDate === false ? false : true,
       ...(duration ? { mediaFileDuration: duration } : {}),
       userPlaybackPosition: playbackPosition,

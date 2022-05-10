@@ -166,6 +166,7 @@ export interface InitialState {
     isLoading: boolean
     isLoadingMore: boolean
     isQuerying: boolean
+    liveStreamWasPaused: boolean
     mediaRefIdToDelete?: string
     queryFrom: string | null
     queryPage: number

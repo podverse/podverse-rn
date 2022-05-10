@@ -87,6 +87,7 @@ const initialTheme: InitialState = {
     isLoading: false,
     isLoadingMore: false,
     isQuerying: false,
+    liveStreamWasPaused: false,
     mediaRefIdToDelete: '',
     queryFrom: PV.Filters._fromThisEpisodeKey,
     queryPage: 1,
