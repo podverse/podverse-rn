@@ -677,5 +677,10 @@
     "Videos": "Vidéos",
     "Search videos": "Rechercher des vidéos",
     "Skip track buttons are time jumps on lockscreen and bluetooth devices": "Les boutons de saut de piste permettent de passer du temps sur l'écran de verrouillage et les appareils Bluetooth",
-    "Add custom RSS feeds": "Ajouter des flux RSS personnalisés"
+    "Add custom RSS feeds": "Ajouter des flux RSS personnalisés",
+    "Enable Notifications": "Activer les notifications",
+    "Enable notifications in settings message": "Rendez-vous dans les paramètres de votre appareil pour activer les notifications.",
+    "Go to live podcast": "Aller au podcast en direct ?",
+    "Live": "En direct",
+    "Login to enable podcast notifications": "Connectez-vous pour activer les notifications de podcast"
 }
