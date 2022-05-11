@@ -197,13 +197,17 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       title: getScreenTitle(),
       headerRight: () => (
         <RNView style={core.row}>
-          <NavNotificationsIcon
-            podcastId={podcastId}
-            isEnabled={notificationsEnabled}
-            onNotificationSelectionChanged={
-              () => navigation.setParams({ notificationsEnabled: !notificationsEnabled })
-            }
-          />
+          {
+            !addByRSSPodcastFeedUrl && (
+              <NavNotificationsIcon
+                podcastId={podcastId}
+                isEnabled={notificationsEnabled}
+                onNotificationSelectionChanged={
+                  () => navigation.setParams({ notificationsEnabled: !notificationsEnabled })
+                }
+              />
+            )
+          }
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon
               endingText={translate('shared using brandName')}
