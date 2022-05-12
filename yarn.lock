@@ -8475,10 +8475,10 @@ react-native-dots-pagination@^0.2.0:
     doctoc "^1.4.0"
     prop-types "^15.7.2"
 
-react-native-draggable-flatlist@2.6.2:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/react-native-draggable-flatlist/-/react-native-draggable-flatlist-2.6.2.tgz#d1445fd52e75bc4f4ebbd832a8bc4525cebb8302"
-  integrity sha512-0IBS1lgw137FDaDLccUidHXYu/6PbnIO1R0IXYVfxtNOvhFLfJyGOY526vmO72Sf/ch9yayED4+DaQWGBOqNyw==
+react-native-draggable-flatlist@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-draggable-flatlist/-/react-native-draggable-flatlist-3.1.1.tgz#b27009035153ed8d897217392447fb3c98316aea"
+  integrity sha512-hvzfMgG+HPIYCpoYy+R+FaoylRc4HbcP+gvghG0ISGwsU8HETcM8WmUEAaDTr7EeKmnG1BbV43MMExMjIQXRmA==
 
 react-native-elements@3.4.2:
   version "3.4.2"

@@ -278,7 +278,7 @@ export const filterItemFromHistoryItemsIndex = (historyItemsIndex: any, item: an
   if (historyItemsIndex && historyItemsIndex.mediaRefs && historyItemsIndex.episodes > 0 && item) {
     if (item.clipId && historyItemsIndex.mediaRefs) {
       delete historyItemsIndex.mediaRefs[item.clipId]
-    } else {
+    } else if (historyItemsIndex.episodes) {
       delete historyItemsIndex.episodes[item.episodeId]
     }
   }
@@ -311,7 +311,7 @@ export const generateHistoryItemsIndex = (historyItems: any[]) => {
 
 export const getHistoryItemEpisodeFromIndexLocally = async (episodeId: string) => {
   const historyItemsIndex = await getHistoryItemsIndexLocally()
-  return historyItemsIndex.episodes[episodeId]
+  return historyItemsIndex.episodes && historyItemsIndex.episodes[episodeId]
 }
 
 export const combineLocalHistoryItemsWithServerMetaHistoryItems =

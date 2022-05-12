@@ -23,7 +23,7 @@ export class PVSortableList extends React.Component<Props> {
         }}
         onDragEnd={onDragEnd}
         renderItem={renderItem}
-        style={styles.list}
+        containerStyle={styles.list}
       />
     )
   }
