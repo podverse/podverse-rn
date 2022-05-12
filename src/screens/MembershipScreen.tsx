@@ -225,10 +225,10 @@ const comparisonData = [
     accessibilityLabel: translate('Download episodes')
   },
   {
-    text: translate('Add custom RSS feeds'),
+    text: translate('Audio livestreams'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('Add custom RSS feeds')
+    accessibilityLabel: translate('Audio livestreams')
   },
   {
     text: translate('Video playback'),
@@ -237,10 +237,22 @@ const comparisonData = [
     accessibilityLabel: translate('Video playback')
   },
   {
+    text: translate('Add custom RSS feeds'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('Add custom RSS feeds')
+  },
+  {
     text: translate('Sleep timer'),
     column1: true,
     column2: true,
     accessibilityLabel: translate('Sleep timer')
+  },
+  {
+    text: translate('Screen-reader accessibility'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('Screen-reader accessibility')
   },
   {
     text: translate('Podcasting 2.0 chapters'),
@@ -267,16 +279,16 @@ const comparisonData = [
     accessibilityLabel: translate('OPML import and export')
   },
   {
-    text: translate('Screen-reader accessibility'),
-    column1: true,
-    column2: true,
-    accessibilityLabel: translate('Screen-reader accessibility')
-  },
-  {
     text: translate('Sync your subscriptions, queue, and history across all your devices'),
     column1: false,
     column2: true,
     accessibilityLabel: translate('Sync your subscriptions, queue, and history across all your devices')
+  },
+  {
+    text: translate('New episodes and livestream notifications'),
+    column1: false,
+    column2: true,
+    accessibilityLabel: translate('New episodes and livestream notifications')
   },
   {
     text: translate('Create and share podcast clips'),
