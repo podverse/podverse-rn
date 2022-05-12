@@ -510,8 +510,7 @@ const styles = StyleSheet.create({
   },
   queueCellDivider: {},
   view: {
-    flex: 1,
-    justifyContent: 'center'
+    flex: 1
   },
   sectionHeaderText: {
     color: PV.Colors.skyDark,
