@@ -31,11 +31,6 @@ export class ContactXMPPChatScreen extends React.Component<Props> {
     return (
       <ScrollView contentContainerStyle={styles.scrollViewContent} testID={`${testIDPrefix}_view`}>
         <Text style={styles.headerText}>{translate('ContactXMPPText1')}</Text>
-        <Text style={styles.text}>{translate('ContactXMPPText2')}</Text>
-        <TextLink
-          onPress={() => this._handleWebClientLinkPress(PV.URLs.xmpp.webClientUrl)}
-          style={styles.linkText}
-          text={PV.URLs.xmpp.webClientUrl} />
         <Text style={styles.text}>{translate('ContactXMPPChatRooms')}</Text>
         <Text selectable style={styles.url}>{PV.URLs.xmpp.chatRooms.general}</Text>
         <Text selectable style={styles.url}>{PV.URLs.xmpp.chatRooms.dev}</Text>
