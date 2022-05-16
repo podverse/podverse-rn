@@ -163,29 +163,34 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     iapInitConnection()
 
-    messaging().onNotificationOpenedApp(remoteMessage => {
+    messaging().onNotificationOpenedApp(async remoteMessage => {
       const podcastId = remoteMessage?.data?.podcastId
 
       if (remoteMessage && podcastId) {
+        await this._goBackWithDelay()
         navigation.navigate(PV.RouteNames.PodcastScreen, { podcastId })
       }
     })
 
-    messaging().getInitialNotification().then(remoteMessage => {
+    messaging().getInitialNotification().then(async remoteMessage => {
       const podcastId = remoteMessage?.data?.podcastId
       const podcastTitle = remoteMessage?.data?.podcastTitle
       const episodeTitle = remoteMessage?.data?.episodeTitle
-      const notifcationType = remoteMessage?.data?.notificationType
-      const isLiveNotification = notifcationType === 'live'
+      const notificationType = remoteMessage?.data?.notificationType
+      const isLiveNotification = notificationType === 'live'
       const timeSent = remoteMessage?.data?.timeSent
       const currentDateTime = new Date()
       const currentDateTime30MinutesEarlier = new Date(currentDateTime)
       currentDateTime30MinutesEarlier.setMinutes(currentDateTime.getMinutes() - 30)
       const wasRecentlySent = timeSent && new Date(timeSent) > currentDateTime30MinutesEarlier
-      
+
       if (remoteMessage && podcastId && isLiveNotification && wasRecentlySent) {
-        const GO_TO_LIVE_PODCAST = PV.Alerts.GO_TO_LIVE_PODCAST(navigation, podcastId, podcastTitle, episodeTitle)
+        const GO_TO_LIVE_PODCAST = PV.Alerts.GO_TO_LIVE_PODCAST(
+          navigation, podcastId, podcastTitle, episodeTitle, this._goBackWithDelay)
         Alert.alert(GO_TO_LIVE_PODCAST.title, GO_TO_LIVE_PODCAST.message, GO_TO_LIVE_PODCAST.buttons)
+      } else if (remoteMessage && podcastId) {
+        await this._goBackWithDelay()
+        navigation.navigate(PV.RouteNames.PodcastScreen, { podcastId })
       }
     })
 
@@ -351,10 +356,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
   }
 
+  // Go back to the root screen to make sure componentDidMount is called.
   // On some Android devices, the .goBack method appears to not work reliably
   // unless there is some delay between screen changes. Wrapping each .goBack method
   // in a delay to make this happen.
-  // Go back to the root screen to make sure componentDidMount is called.
   _goBackWithDelay = async () => {
     const { navigation } = this.props
     return new Promise((resolve) => {

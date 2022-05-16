@@ -60,10 +60,12 @@ export const Alerts = {
     title: translate('Free Trial Expired'),
     buttons: [{ text: _logoutButtonText, onPress: logoutUser }]
   },
-  GO_TO_LIVE_PODCAST: (navigation: any, podcastId: string, podcastTitle?: string, episodeTitle?: string) => ({
+  GO_TO_LIVE_PODCAST: (navigation: any, podcastId: string, podcastTitle?: string, episodeTitle?: string,
+    _goBackWithDelay?: any) => ({
     title: translate('Go to live podcast'),
     message: `${podcastTitle} – ${episodeTitle}`,
-    buttons: [{ text: _cancelText }, { text: translate('Yes'), onPress: () => {
+    buttons: [{ text: _cancelText }, { text: translate('Yes'), onPress: async () => {
+      await _goBackWithDelay()
       navigation.navigate(PV.RouteNames.PodcastScreen, { podcastId })
     }}]
   }),
