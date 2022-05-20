@@ -671,7 +671,7 @@
     "2 hours": "2 Stunden",
     "Add custom RSS feeds": "Fügen Sie benutzerdefinierte RSS-Feeds hinzu",
     "All": "Alle",
-    "_translatorsFieldExample": "Jane Doe<https://jane.doe.homepage>, Joe Bloggs, Juan Perez<https://some.socialmedia/juan>",
+    "_translatorsFieldExample": "",
     "1 hour 30 minutes": "1 Stunde 30 Minuten",
     "How To": "So wird es gemacht",
     "Download limit max": "Maximum an Downloads",
@@ -679,5 +679,5 @@
     "hour": "Stunde",
     "minute": "Minute",
     "second": "Sekunde",
-    "_translatorsField": "Übersetzer*in"
+    "_translatorsField": "Übersetzer"
 }
