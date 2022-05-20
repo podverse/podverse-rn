@@ -684,5 +684,6 @@
     "Login to enable podcast notifications": "Connectez-vous pour activer les notifications de podcast",
     "ARIA HINT - go to current livestream time": "Revenir au direct",
     "Audio livestreams": "Diffusions audio en direct",
-    "New episodes and livestream notifications": "Notifications des nouveaux épisodes et des diffusions en direct"
+    "New episodes and livestream notifications": "Notifications des nouveaux épisodes et des diffusions en direct",
+    "_translatorsField": "Nathan Bonnemains <https://github.com/NathanBnm>"
 }
