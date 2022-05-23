@@ -932,7 +932,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       showDataSettingsConfirmDialog,
       showNoInternetConnectionMessage
     } = this.state
-    const { offlineModeEnabled, session, subscribedPodcasts = [], subscribedPodcastsTotalCount = 0 } = this.global
+    const { session, subscribedPodcasts = [], subscribedPodcastsTotalCount = 0 } = this.global
     const { subscribedPodcastIds } = session?.userInfo
 
     let flatListData = []
@@ -947,12 +947,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     const noSubscribedPodcasts =
       queryFrom === PV.Filters._subscribedKey && (!subscribedPodcastIds || subscribedPodcastIds.length === 0)
-
-    const showOfflineMessage =
-      offlineModeEnabled &&
-      queryFrom !== PV.Filters._downloadedKey &&
-      queryFrom !== PV.Filters._subscribedKey &&
-      queryFrom !== PV.Filters._customFeedsKey
 
     const isCategoryScreen = queryFrom === PV.Filters._categoryKey
 
@@ -1005,7 +999,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               onRefresh={this._onRefresh}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderPodcastItem}
-              showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
+              showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               testID={testIDPrefix}
             />
           )}
