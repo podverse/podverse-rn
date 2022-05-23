@@ -213,7 +213,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   render() {
     const { navigation, width } = this.props
     const { autoScrollOn } = this.state
-    const { currentChapters, offlineModeEnabled, screenPlayer, screenReaderEnabled } = this.global
+    const { currentChapters, screenPlayer, screenReaderEnabled } = this.global
     const {
       isLoading,
       isLoadingMore,
@@ -225,7 +225,6 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
 
     const noResultsMessage = translate('No chapters found')
     const noResultsSubMessage = translate('Chapters are created by the podcaster')
-    const showOfflineMessage = offlineModeEnabled
     const testID = getTestID()
 
     return (
@@ -260,7 +259,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
             noResultsSubMessage={noResultsSubMessage}
             onScrollBeginDrag={this.disableAutoscroll}
             renderItem={this._renderItem}
-            showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
+            showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             transparent
           />
         )}

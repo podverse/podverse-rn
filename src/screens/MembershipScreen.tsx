@@ -1,5 +1,5 @@
+/* eslint-disable max-len */
 import { Alert, Platform, StyleSheet } from 'react-native'
-import { Purchase } from 'react-native-iap'
 import React from 'reactn'
 import { ActivityIndicator, Button, ComparisonTable, Text, TextLink, View } from '../components'
 import { translate } from '../lib/i18n'
@@ -203,6 +203,7 @@ export class MembershipScreen extends React.Component<Props, State> {
               data={comparisonData}
               mainTitle={translate('Features')}
               mainTitleAccessibilityHint={translate('ARIA HINT - Membership features header')}
+              navigation={this.props.navigation}
             />
           </View>
         )}
@@ -222,19 +223,25 @@ const comparisonData = [
     text: translate('Download episodes'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('Download episodes')
+    accessibilityLabel: translate('Download episodes'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/3bdcef88-cb8d-429a-a126-3a6fd65784c9/1a3807fa-7198-4b71-8572-6b9eda207c21-1080-fragmented.mp4'
   },
   {
     text: translate('Audio livestreams'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('Audio livestreams')
+    accessibilityLabel: translate('Audio livestreams'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/bbf6eb1c-46a0-407d-b1ef-682590885882/a4daf0f9-8e10-49ce-814b-43ecebbe10ac-360-fragmented.mp4'
   },
   {
     text: translate('Video playback'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('Video playback')
+    accessibilityLabel: translate('Video playback'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/5dcdf4b0-c154-44ca-9ee4-4ee39af63671/2bf76407-a1fe-479d-ba46-59127d9b81e8-1080-fragmented.mp4'
   },
   {
     text: translate('Add custom RSS feeds'),
@@ -246,7 +253,9 @@ const comparisonData = [
     text: translate('Sleep timer'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('Sleep timer')
+    accessibilityLabel: translate('Sleep timer'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/9bd98b86-7e9a-4c70-b52d-b6e2f5909749/2d65af45-760e-436a-9ac2-22c356ff33ec-1080-fragmented.mp4'
   },
   {
     text: translate('Screen-reader accessibility'),

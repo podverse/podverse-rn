@@ -497,8 +497,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       !searchBarText &&
       (!flatListData || flatListData.length === 0)
 
-    const showOfflineMessage = offlineModeEnabled && queryFrom !== PV.Filters._downloadedKey
-
     const isCategoryScreen = queryFrom === PV.Filters._categoryKey
 
     return (
@@ -542,7 +540,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
             onEndReached={this._onEndReached}
             onRefresh={this._onRefresh}
             renderItem={this._renderEpisodeItem}
-            showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
+            showNoInternetConnectionMessage={showNoInternetConnectionMessage}
           />
         )}
         <ActionSheet

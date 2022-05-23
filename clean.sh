@@ -29,6 +29,10 @@ rm -rf ~/Library/Developer/Xcode/DerivedData 2>/dev/null
 
 rm -rf ./ios/build 2>/dev/null
 
+rm -rf ./ios/Pods 2>/dev/null
+
+rm -rf ./ios/Podfile.lock 2>/dev/null
+
 echo "Clearing node modules..."
 
 rm -rf node_modules/ && yarn cache clean && yarn install && npx pod-install && yarn postinstall && code . && clear

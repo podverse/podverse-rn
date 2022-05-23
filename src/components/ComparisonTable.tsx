@@ -1,13 +1,14 @@
 import { FlatList, StyleSheet } from 'react-native'
 import React, { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { Divider, Icon, Text, View } from './'
+import { Divider, Icon, Text, View, PVVideoLink } from './'
 
 type TableLineItem = {
   /**
    * text: The row heading
    */
   text: string
+  videoUrl?: string 
   column1: boolean
   column2: boolean
   accessibilityLabel: string
@@ -19,10 +20,11 @@ type ComparisonTableProps = {
   data: TableLineItem[] | []
   mainTitle: string
   mainTitleAccessibilityHint: string
+  navigation: any
 }
 
 export const ComparisonTable = (props: ComparisonTableProps) => {
-  const { column1Title, column2Title, data, mainTitle, mainTitleAccessibilityHint } = props
+  const { column1Title, column2Title, data, mainTitle, mainTitleAccessibilityHint, navigation } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
@@ -61,9 +63,9 @@ export const ComparisonTable = (props: ComparisonTableProps) => {
             <Divider />
             <View accessible accessibilityLabel={item.accessibilityLabel} key={item.text} style={styles.tableRow}>
               <View accessible={false} style={styles.columnTextWrapper}>
-                <Text accessible={false} fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.columnText}>
-                  {item.text}
-                </Text>
+                <View accessible={false} style={styles.columnText}>
+                  <PVVideoLink title={item.text} navigation={navigation} url={item.videoUrl} testID=''/>
+                </View>
               </View>
               <View accessible={false} style={styles.columnIcon}>
                 {item.column1 && (
