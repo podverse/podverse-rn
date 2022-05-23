@@ -64,7 +64,7 @@ export const playerUpdatePlayerState = (item: NowPlayingItem, callback?: any) =>
   const { videoDuration } = globalState.player.videoInfo
 
   const episode = convertNowPlayingItemToEpisode(item)
-  episode.description = episode.description || 'No show notes available'
+  episode.description = episode.description
   const mediaRef = convertNowPlayingItemToMediaRef(item)
 
   // For video only, don't let the duration in state be overwritten

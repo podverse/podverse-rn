@@ -452,8 +452,6 @@ export class ClipsScreen extends React.Component<Props, State> {
       (!subscribedPodcastIds || subscribedPodcastIds.length === 0) &&
       !searchBarText
 
-    const showOfflineMessage = offlineModeEnabled
-
     return (
       <View style={styles.view} testID={`${testIDPrefix}_view`}>
         <TableSectionSelectors
@@ -492,7 +490,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             onEndReached={this._onEndReached}
             onRefresh={this._onRefresh}
             renderItem={this._renderClipItem}
-            showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
+            showNoInternetConnectionMessage={showNoInternetConnectionMessage}
           />
         )}
         <ActionSheet

@@ -276,7 +276,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
 
   render() {
     const { navigation, width } = this.props
-    const { offlineModeEnabled, screenPlayer } = this.global
+    const { screenPlayer } = this.global
     const {
       flatListData,
       flatListDataTotalCount,
@@ -326,7 +326,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
             noResultsMessage={noResultsMessage}
             onEndReached={this._onEndReached}
             renderItem={this._renderItem}
-            showNoInternetConnectionMessage={offlineModeEnabled || showNoInternetConnectionMessage}
+            showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             transparent
           />
         )}

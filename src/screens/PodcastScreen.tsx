@@ -857,7 +857,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
         const downloadedPodcast = downloadedPodcasts.find(
           (x: any) => (podcast && (x.id && x.id === podcast.id)) || (x.id  && x.id === podcastId)
         )
-        let episodes = downloadedPodcast.episodes || []
+        let episodes = downloadedPodcast?.episodes || []
         if (searchBarText) {
           episodes = episodes.filter(
             (episode: Episode) => episode?.title && checkIfContainsStringMatch(searchBarText, episode.title)
@@ -1033,7 +1033,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
                 onEndReached={this._onEndReached}
                 renderItem={this._renderItem}
                 listRef={(ref) => (this.listRef = ref)}
-                showNoInternetConnectionMessage={offlineModeEnabled || showNoInternetConnectionMessage}
+                showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               />
             )}
             <ActionSheet
