@@ -1,5 +1,5 @@
+/* eslint-disable max-len */
 import { Alert, Platform, StyleSheet } from 'react-native'
-import { Purchase } from 'react-native-iap'
 import React from 'reactn'
 import { ActivityIndicator, Button, ComparisonTable, Text, TextLink, View } from '../components'
 import { translate } from '../lib/i18n'
@@ -203,6 +203,7 @@ export class MembershipScreen extends React.Component<Props, State> {
               data={comparisonData}
               mainTitle={translate('Features')}
               mainTitleAccessibilityHint={translate('ARIA HINT - Membership features header')}
+              navigation={this.props.navigation}
             />
           </View>
         )}
@@ -234,7 +235,8 @@ const comparisonData = [
     text: translate('Video playback'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('Video playback')
+    accessibilityLabel: translate('Video playback'),
+    videoUrl: "https://peertube.podverse.fm/static/streaming-playlists/hls/5dcdf4b0-c154-44ca-9ee4-4ee39af63671/2bf76407-a1fe-479d-ba46-59127d9b81e8-1080-fragmented.mp4"
   },
   {
     text: translate('Add custom RSS feeds'),

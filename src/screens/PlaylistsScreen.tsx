@@ -190,8 +190,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
   render() {
     const { isLoading, isLoadingMore, sections, showNoInternetConnectionMessage } = this.state
-    const { globalTheme, offlineModeEnabled } = this.global
-    const showOfflineMessage = offlineModeEnabled
+    const { globalTheme } = this.global
 
     return (
       <View style={styles.view} testID={`${testIDPrefix}_view`}>
@@ -216,7 +215,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
                 />
               )}
               sections={sections}
-              showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
+              showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             />
           )}
           {!isLoading && !this.global.session.isLoggedIn && (

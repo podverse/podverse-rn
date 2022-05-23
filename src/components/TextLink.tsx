@@ -49,7 +49,7 @@ export const TextLink = (props: Props) => {
       disabled={disabled}
       onPress={onPress}
       testID={testID ? testID.prependTestId() : ''}>
-      <Text numberOfLines={numberOfLines} style={[style, globalTheme.link, textInputStyle]}>
+      <Text numberOfLines={numberOfLines} style={[globalTheme.link, textInputStyle, style]}>
         {text}
       </Text>
     </PressableWithOpacity>
