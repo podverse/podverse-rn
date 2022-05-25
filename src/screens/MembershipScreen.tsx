@@ -217,7 +217,9 @@ const comparisonData = [
     text: translate('Subscribe to podcasts'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('Subscribe to podcasts')
+    accessibilityLabel: translate('Subscribe to podcasts'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/0e58425b-c6b4-4c4e-8490-ffd771edd3bb/b4a552b3-ed5c-4205-87f1-675410519ab2-1080-fragmented.mp4'
   },
   {
     text: translate('Download episodes'),
@@ -279,7 +281,9 @@ const comparisonData = [
     text: translate('Podcasting 2.0 transcripts'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('Podcasting 2.0 transcripts')
+    accessibilityLabel: translate('Podcasting 2.0 transcripts'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/e02afb1e-5426-4377-88bf-86ebbb9edd9c/24090cbd-ff14-4c6f-9d40-a2847cf2f9f8-1080-fragmented.mp4'
   },
   {
     text: translate('OPML import and export'),
@@ -288,16 +292,28 @@ const comparisonData = [
     accessibilityLabel: translate('OPML import and export')
   },
   {
+    text: translate('Send Bitcoin donations and boostagrams'),
+    column1: true,
+    column2: true,
+    accessibilityLabel: translate('Send Bitcoin donations and boostagrams'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/a1dbaedf-560c-40df-93c5-79a3a3be8f81/0c0192ee-530a-46cf-a799-71d77ff72972-990-fragmented.mp4'
+  },
+  {
     text: translate('Sync your subscriptions, queue, and history across all your devices'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('Sync your subscriptions, queue, and history across all your devices')
+    accessibilityLabel: translate('Sync your subscriptions, queue, and history across all your devices'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/b5a0ca7e-76c0-4b5e-9aa8-31f14505dcee/16e1a414-fdbc-499e-9ecc-8a95d73b9e78-1080-fragmented.mp4'
   },
   {
     text: translate('New episodes and livestream notifications'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('New episodes and livestream notifications')
+    accessibilityLabel: translate('New episodes and livestream notifications'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/bbf6eb1c-46a0-407d-b1ef-682590885882/a4daf0f9-8e10-49ce-814b-43ecebbe10ac-360-fragmented.mp4'
   },
   {
     text: translate('Create and share podcast clips'),
