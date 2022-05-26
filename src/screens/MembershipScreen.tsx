@@ -319,7 +319,9 @@ const comparisonData = [
     text: translate('Create and share podcast clips'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('ARIA HINT - Membership - Create and share clips')
+    accessibilityLabel: translate('ARIA HINT - Membership - Create and share clips'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/4f26b27a-aab7-456c-98d4-a10b46a500e0/4a43118d-8721-4ae0-b33c-40887d8477b0-1080-fragmented.mp4'
   },
   {
     text: translate('Create and share playlists'),
