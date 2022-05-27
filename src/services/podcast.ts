@@ -12,8 +12,8 @@ import { request } from './request'
 
 /*
   The forceRequest is intended to handle situations when tapping a notification
-  navigates the user too quickly to the PodcastScreen, before the valid network connection
-  has been properly detected.
+  navigates the user too quickly to the PodcastScreen, before the network connection
+  has finished being detected.
 */
 export const getPodcast = async (id: string, forceRequest?: boolean) => {
   const isConnected = await hasValidNetworkConnection()
