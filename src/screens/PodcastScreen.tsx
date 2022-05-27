@@ -269,8 +269,9 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   async _initializePageData() {
+    const { navigation } = this.props
     const { podcast, viewType } = this.state
-    const podcastId = this.props.navigation.getParam('podcastId') || this.state.podcastId
+    const podcastId = navigation.getParam('podcastId') || this.state.podcastId
     const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
 
     this.setState(
