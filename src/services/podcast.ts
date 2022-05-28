@@ -10,9 +10,14 @@ import { handleAutoDownloadEpisodesAddByRSSPodcasts, removeAutoDownloadSetting }
 import { getAddByRSSPodcastsLocally, removeAddByRSSPodcast } from './parser'
 import { request } from './request'
 
-export const getPodcast = async (id: string) => {
+/*
+  The forceRequest is intended to handle situations when tapping a notification
+  navigates the user too quickly to the PodcastScreen, before the network connection
+  has finished being detected.
+*/
+export const getPodcast = async (id: string, forceRequest?: boolean) => {
   const isConnected = await hasValidNetworkConnection()
-  if (isConnected) {
+  if (forceRequest || isConnected) {
     const response = await request({
       endpoint: `/podcast/${id}`
     })
