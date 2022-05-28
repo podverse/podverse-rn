@@ -168,7 +168,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
       if (remoteMessage && podcastId) {
         await this._goBackWithDelay()
-        navigation.navigate(PV.RouteNames.PodcastScreen, { podcastId })
+        setTimeout(() => {
+          navigation.navigate(PV.RouteNames.PodcastScreen, {
+            podcastId,
+            forceRequest: true
+          })
+        }, 1555)
       }
     })
 
@@ -190,7 +195,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
         Alert.alert(GO_TO_LIVE_PODCAST.title, GO_TO_LIVE_PODCAST.message, GO_TO_LIVE_PODCAST.buttons)
       } else if (remoteMessage && podcastId) {
         await this._goBackWithDelay()
-        navigation.navigate(PV.RouteNames.PodcastScreen, { podcastId })
+        setTimeout(() => {
+          navigation.navigate(PV.RouteNames.PodcastScreen, {
+            podcastId,
+            forceRequest: true
+          })
+        }, 1555)
       }
     })
 

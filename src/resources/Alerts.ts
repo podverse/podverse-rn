@@ -66,7 +66,12 @@ export const Alerts = {
     message: `${podcastTitle} – ${episodeTitle}`,
     buttons: [{ text: _cancelText }, { text: translate('Yes'), onPress: async () => {
       await _goBackWithDelay()
-      navigation.navigate(PV.RouteNames.PodcastScreen, { podcastId })
+      setTimeout(() => {
+        navigation.navigate(PV.RouteNames.PodcastScreen, {
+          podcastId,
+          forceRequest: true
+        })
+      }, 1555)
     }}]
   }),
   LEAVING_APP: {
