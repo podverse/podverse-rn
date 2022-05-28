@@ -686,5 +686,7 @@
     "ARIA HINT - go to current livestream time": "Gå til nåværende direktestrømmingstid",
     "Live": "Direkte",
     "Login to enable podcast notifications": "Logg inn for å skru på merknader for nettradioopptak",
-    "Audio livestreams": "Lyd-direktestrømmer"
+    "Audio livestreams": "Lyd-direktestrømmer",
+    "Feature Demo": "Funksjonsdemo",
+    "Send Bitcoin donations and boostagrams": "Send bitcoin-donasjoner og boostagrammer (kun på nettsiden)"
 }
