@@ -283,7 +283,7 @@ const comparisonData = [
     column2: true,
     accessibilityLabel: translate('Podcasting 2.0 transcripts'),
     videoUrl:
-      'https://peertube.podverse.fm/static/streaming-playlists/hls/e02afb1e-5426-4377-88bf-86ebbb9edd9c/24090cbd-ff14-4c6f-9d40-a2847cf2f9f8-1080-fragmented.mp4'
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/67764a9d-12e0-4c25-9ae8-746efe484fa2/91b7fc2c-5c9f-48ff-a786-7fb5515931ba-1080-fragmented.mp4'
   },
   {
     text: translate('OPML import and export'),
@@ -319,7 +319,9 @@ const comparisonData = [
     text: translate('Create and share podcast clips'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('ARIA HINT - Membership - Create and share clips')
+    accessibilityLabel: translate('ARIA HINT - Membership - Create and share clips'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/4f26b27a-aab7-456c-98d4-a10b46a500e0/4a43118d-8721-4ae0-b33c-40887d8477b0-1080-fragmented.mp4'
   },
   {
     text: translate('Create and share playlists'),
