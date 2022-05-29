@@ -38,7 +38,7 @@ export const getEpisodesAndLiveItems = async (query: any, podcast: Podcast) => {
   let combinedEpisodesData = episodesData
   let scheduledLiveItems: LiveItem[] = []
 
-  if (podcast?.hasLiveItem && query.page === 1) {
+  if (query.page === 1) {
     const { currentlyLive, scheduled } = await getPublicLiveItemsByPodcastId(podcast.id)
     combinedEpisodesData = [...currentlyLive, ...episodesData]
     scheduledLiveItems = [...currentlyLive, ...scheduled]
