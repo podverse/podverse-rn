@@ -165,7 +165,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       flatListData: [],
       flatListDataTotalCount: null,
       hasInternetConnection: false,
-      isLoadingMore: false,
+      isLoadingMore: true,
       isRefreshing: false,
       isSubscribing: false,
       limitDownloadedEpisodes: false,
