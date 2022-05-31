@@ -1134,7 +1134,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       } else if (isAllPodcastsSelected) {
         newState.showNoInternetConnectionMessage = !hasInternetConnection
         const results = await this._queryAllPodcasts(querySort, newState.queryPage)
-        newState.flatListData = [...flatListData, ...results[0]]
+        newState.flatListData = newState.queryPage > 1 ? [...flatListData, ...results[0]] : [...results[0]]
         newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
       } else if (
