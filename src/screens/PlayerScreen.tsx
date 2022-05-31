@@ -68,8 +68,8 @@ export class PlayerScreen extends React.Component<Props> {
       podcastFunding?.length > 0 ||
       episodeFunding?.length > 0 ||
       (Config.ENABLE_VALUE_TAG_TRANSACTIONS && podcastValueFinal?.length > 0) ||
-      episodeValue?.length > 0 ||
-      podcastValue?.length > 0
+      (Config.ENABLE_VALUE_TAG_TRANSACTIONS && episodeValue?.length > 0) ||
+      (Config.ENABLE_VALUE_TAG_TRANSACTIONS && podcastValue?.length > 0)
 
     return {
       title: '',

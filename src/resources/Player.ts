@@ -5,6 +5,7 @@ import { PV } from './PV'
 const _speedOneHalfKey = 0.5
 const _speedThreeQuartersKey = 0.75
 const _speedNormalKey = 1.0
+const _speedOneAndAEighth = 1.12
 const _speedOneAndAQuarterKey = 1.25
 const _speedOneAndAHalfKey = 1.5
 const _speedDoubleKey = 2
@@ -20,6 +21,7 @@ const speeds = async () => {
     _speedOneHalfKey,
     _speedThreeQuartersKey,
     _speedNormalKey,
+    _speedOneAndAEighth,
     _speedOneAndAQuarterKey,
     _speedOneAndAHalfKey,
     _speedDoubleKey
