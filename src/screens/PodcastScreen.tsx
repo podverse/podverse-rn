@@ -1080,13 +1080,13 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   _queryEpisodes = async (sort: string | null, page = 1) => {
-    const { podcast, podcastId, searchBarText: searchTitle } = this.state
+    const { podcastId, searchBarText: searchTitle } = this.state
     const results = await getEpisodesAndLiveItems({
       sort,
       page,
       podcastId,
       ...(searchTitle ? { searchTitle } : {})
-    }, podcast)
+    }, podcastId)
 
     const { combinedEpisodes } = results
     return combinedEpisodes
