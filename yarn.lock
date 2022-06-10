@@ -8160,10 +8160,10 @@ plist@^3.0.2, plist@^3.0.5:
     base64-js "^1.5.1"
     xmlbuilder "^9.0.7"
 
-podverse-shared@^4.4.0:
-  version "4.4.7"
-  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.4.7.tgz#5bdb2ecf597bc360a2622fcf75937e0e771f2f7b"
-  integrity sha512-8pu+Hh5YmiVRyT896+BRoEXfs4T5KB0KcESmzgOn8DOb3ooD14UJFUx/eSgAUr2Fb1NQsSuUzVmXxR3gjAdW0g==
+podverse-shared@^4.5.5:
+  version "4.5.5"
+  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.5.5.tgz#ce69159d4a8f7c2ff0c81c1cd4c27efa751a39da"
+  integrity sha512-gXLYQk5zvhKKfFzjHpacIyA6UC/W6S1UyMBinaO4Ao/UQqcS25uMIj2LBxnXpD3t7N9vTXpyqcBA+mnl4Sw0XQ==
   dependencies:
     html-entities "^2.3.2"
     striptags "^3.2.0"

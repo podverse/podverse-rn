@@ -23,7 +23,7 @@ const parseTranscriptFile = (data: any, transcriptType: TranscriptType) => {
 
   if (transcriptType === 'application/json') {
     parsedTranscript = parseJSONFile(data)
-  } else if (transcriptType === 'application/srt') {
+  } else if (transcriptType === 'application/srt' || transcriptType === 'text/srt') {
     parsedTranscript = parseSRTFile(data)
   } else if (transcriptType === 'text/html') {
     // parseHTMLFile isn't working for at least this RSS feed https://feeds.buzzsprout.com/1.rss
@@ -69,7 +69,7 @@ const convertJSONSRTItemToTranscriptRow = (item: any, line: number) => {
 }
 
 const parseSRTFile = (data: string) => {
-  const pattern = /(\d{1,})\n([0-9\x3a\x2c]{12})\s\x2d\x2d\x3e\s([0-9\x3a\x2c]{12})\n((.+?)\x3a\s)?(.*)\n(.*)\n\n/gim
+  const pattern = /(\d{1,})\n([0-9\x3a\x2c]{12})\s\x2d\x2d\x3e\s([0-9\x3a\x2c]{12})\n((.+?)\x3a\s)?(.*)\n(.*)\n/gim
   let matches
 
   const result = [] as TranscriptRow[]
