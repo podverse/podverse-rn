@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import {
+  checkIfVideoFileOrVideoLiveType,
   convertNowPlayingItemClipToNowPlayingItemEpisode,
   convertNowPlayingItemToEpisode,
   convertNowPlayingItemToMediaRef,
@@ -33,14 +34,14 @@ import { audioInitializePlayerQueue, audioPlayNextFromQueue } from './playerAudi
 import { clearChapterPlaybackInfo, getChapterNext, getChapterPrevious, loadChapterPlaybackInfo,
   loadChaptersForNowPlayingItem, 
   setChapterOnGlobalState} from './playerChapters'
-import { checkIfVideoFileType, videoInitializePlayer, videoStateClearVideoInfo,
+import { videoInitializePlayer, videoStateClearVideoInfo,
   videoStateSetVideoInfo } from './playerVideo'
 
 export const initializePlayer = async () => {
   const item = await getNowPlayingItemLocally()
-  if (checkIfVideoFileType(item)) {
+  if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
     videoInitializePlayer(item)
-  } else if (!checkIfVideoFileType(item)) {
+  } else if (!checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
     audioInitializePlayerQueue(item)
   }
 
@@ -69,7 +70,7 @@ export const playerUpdatePlayerState = (item: NowPlayingItem, callback?: any) =>
 
   // For video only, don't let the duration in state be overwritten
   // by asynchronous state updates to the nowPlayingItem.
-  if (checkIfVideoFileType(item) && videoDuration) {
+  if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType) && videoDuration) {
     item.episodeDuration = videoDuration
   }
 
@@ -216,7 +217,7 @@ export const playerLoadNowPlayingItem = async (
       }
     }
 
-    if (!checkIfVideoFileType(item)) {
+    if (!checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
       playerUpdatePlayerState(item)
     }
 

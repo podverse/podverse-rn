@@ -1,3 +1,4 @@
+import { checkIfVideoFileOrVideoLiveType } from 'podverse-shared'
 import { Pressable, StyleSheet, View } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
@@ -5,7 +6,6 @@ import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { playerCheckIfStateIsBuffering, playerCheckIfStateIsPlaying } from '../services/player'
 import { playerTogglePlay } from '../state/actions/player'
-import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { ActivityIndicator, FastImage, Icon, PVVideo, Text, TextTicker } from './'
 
@@ -128,12 +128,12 @@ export class MiniPlayer extends React.PureComponent<Props> {
               style={{ flex: 1 }}
               testID={testIDPrefix.prependTestId()}>
               <View style={[styles.player, globalTheme.player]}>
-                {!!checkIfVideoFileType(nowPlayingItem) && (
+                {!!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
                   <View style={styles.image}>
                     <PVVideo isMiniPlayer navigation={navigation} />
                   </View>
                 )}
-                {!checkIfVideoFileType(nowPlayingItem) && (
+                {!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
                   <FastImage
                     isSmall
                     resizeMode='contain'

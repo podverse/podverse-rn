@@ -1,4 +1,4 @@
-import { convertNowPlayingItemToMediaRef } from 'podverse-shared'
+import { checkIfVideoFileOrVideoLiveType, convertNowPlayingItemToMediaRef } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import { Config } from 'react-native-config'
 import Share from 'react-native-share'
@@ -31,7 +31,6 @@ import PVEventEmitter from '../services/eventEmitter'
 import { playerGetPosition, playerUpdateUserPlaybackPosition } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import { loadChaptersForEpisode } from '../state/actions/playerChapters'
-import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { getHistoryItems } from '../state/actions/userHistoryItem'
 import { core, navHeader } from '../styles'
 
@@ -112,7 +111,7 @@ export class PlayerScreen extends React.Component<Props> {
               <NavShareIcon globalTheme={globalTheme} handlePress={_showShareActionSheet} />
             </RNView>
           )}
-          {!checkIfVideoFileType(nowPlayingItem) && (
+          {!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
             <NavQueueIcon globalTheme={globalTheme} isTransparent navigation={navigation} showBackButton />
           )}
         </RNView>
