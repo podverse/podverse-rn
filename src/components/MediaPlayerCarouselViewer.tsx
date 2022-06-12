@@ -1,9 +1,9 @@
+import { checkIfVideoFileOrVideoLiveType } from 'podverse-shared'
 import { Alert, Dimensions, Linking, Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { prefixClipLabel, readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
-import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { ActivityIndicator, FastImage, PressableWithOpacity, PVVideo, ScrollView, Text, TextTicker } from './'
 
 type Props = {
@@ -15,7 +15,6 @@ type Props = {
 const testIDPrefix = 'media_player_carousel_viewer'
 
 const screenHeight = Dimensions.get('screen').width
-
 export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
   constructor(props) {
     super(props)
@@ -131,8 +130,8 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
           )}
         </RNView>
         <RNView style={imageWrapperStyle}>
-          {checkIfVideoFileType(nowPlayingItem) && <PVVideo navigation={navigation} />}
-          {!checkIfVideoFileType(nowPlayingItem) && (
+          {checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && <PVVideo navigation={navigation} />}
+          {!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
             <PressableWithOpacity
               accessible={false}
               activeOpacity={1}

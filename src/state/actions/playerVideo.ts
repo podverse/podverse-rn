@@ -1,6 +1,6 @@
 // import AsyncStorage from '@react-native-community/async-storage'
 import AsyncStorage from '@react-native-community/async-storage'
-import { NowPlayingItem } from 'podverse-shared'
+import { checkIfVideoFileOrVideoLiveType, NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../../lib/downloader'
 import { PV } from '../../resources'
@@ -16,7 +16,7 @@ import { playerUpdatePlaybackState, playerUpdatePlayerState, showMiniPlayer } fr
 import { updateHistoryItemsIndex } from './userHistoryItem'
 
 export const videoInitializePlayer = async (item: NowPlayingItem) => {
-  if (item && checkIfVideoFileType(item)) {
+  if (item && checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
     /* Use the item from history to make sure we have the same
         userPlaybackPosition that was last saved from other devices. */
     if (!item.clipId && item.episodeId) {
@@ -41,10 +41,6 @@ export const videoInitializePlayer = async (item: NowPlayingItem) => {
       liveStreamWasPaused: false
     }
   })
-}
-
-export const checkIfVideoFileType = (nowPlayingItem?: NowPlayingItem) => {
-  return nowPlayingItem?.episodeMediaType && nowPlayingItem.episodeMediaType.indexOf('video') >= 0
 }
 
 export const videoGetState = () => {
@@ -86,7 +82,7 @@ export const videoGetCurrentLoadedTrackId = () => {
   const { player } = getGlobal()
   try {
     const { nowPlayingItem } = player
-    if (checkIfVideoFileType(nowPlayingItem)) {
+    if (checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType)) {
       currentTrackId = nowPlayingItem.clipId || nowPlayingItem.episodeId
     }
   } catch (error) {
@@ -106,7 +102,7 @@ export const videoGetTrackPosition = () => {
 }
 
 export const videoStateSetVideoInfo = (item: NowPlayingItem) => {
-  if (checkIfVideoFileType(item)) {
+  if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
     return {
       videoDuration: item.episodeDuration,
       videoPosition: item.userPlaybackPosition,
