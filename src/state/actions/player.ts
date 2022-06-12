@@ -252,10 +252,14 @@ export const goToCurrentLiveTime = () => {
   const { player } = getGlobal()
   let { nowPlayingItem } = player
   nowPlayingItem = nowPlayingItem || {}
-  const shouldPlay = true
-  const forceUpdateOrderDate = true
-  const setCurrentItemNextInQueue = false
-  playerLoadNowPlayingItem(nowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+  if (checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType)) {
+    PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_LIVE_GO_TO_CURRENT_TIME)
+  } else {
+    const shouldPlay = true
+    const forceUpdateOrderDate = true
+    const setCurrentItemNextInQueue = false
+    playerLoadNowPlayingItem(nowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+  }
 }
 
 export const setLiveStreamWasPausedState = (bool: boolean) => {

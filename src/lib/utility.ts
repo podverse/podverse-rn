@@ -777,3 +777,8 @@ export const generateEpisodeAccessibilityText = (
   }
   return timeLabelText
 }
+
+export const addParameterToURL = (uri: string, param: string) => {
+    uri += (uri.split('?')[1] ? '&' : '?') + param
+    return uri
+}
