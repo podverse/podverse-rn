@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from 'podverse-shared'
+import { checkIfVideoFileOrVideoLiveType,
+  convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
 import { PV } from '../resources'
 import {
-  checkIfVideoFileType,
   videoCheckIfStateIsBuffering,
   videoCheckIfStateIsPlaying,
   videoGetCurrentLoadedTrackId,
@@ -219,14 +219,14 @@ export const playerLoadNowPlayingItem = async (
       return
     }
 
-    if (!checkIfVideoFileType(item)) {
+    if (!checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
       audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
     }
 
     const skipSetNowPlaying = true
     await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
 
-    if (checkIfVideoFileType(item)) {
+    if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
       await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, previousNowPlayingItem)
     } else {
       await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)

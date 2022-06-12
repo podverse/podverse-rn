@@ -1,4 +1,5 @@
 import debounce from 'lodash/debounce'
+import { checkIfVideoFileOrVideoLiveType } from 'podverse-shared'
 import { StyleSheet, View, Image, ImageSourcePropType } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
@@ -19,7 +20,6 @@ import {
   playerTogglePlay
 } from '../state/actions/player'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
-import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
 import { ActivityIndicator, Icon, PlayerLiveButton, PlayerProgressBar, PressableWithOpacity, Text, View as PVView } from './'
@@ -196,7 +196,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         ? translate('Go to next chapter')
         : translate('Skip to next item in your queue')
 
-    const isVideo = checkIfVideoFileType(nowPlayingItem)
+    const isVideo = checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType)
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
