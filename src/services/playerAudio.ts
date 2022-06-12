@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { NowPlayingItem } from 'podverse-shared'
+import { checkIfVideoFileOrVideoLiveType, NowPlayingItem } from 'podverse-shared'
 import TrackPlayer, { Capability, PitchAlgorithm, State, Track } from 'react-native-track-player'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
@@ -7,7 +7,6 @@ import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../lib/downloade
 import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
 import { setLiveStreamWasPausedState } from '../state/actions/player'
-import { checkIfVideoFileType } from '../state/actions/playerVideo'
 import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import { getPodcastCredentialsHeader } from './parser'
@@ -450,7 +449,7 @@ export const audioAddNowPlayingItemNextInQueue = (
     addCurrentItemNextInQueue &&
     itemToSetNextInQueue &&
     item.episodeId !== itemToSetNextInQueue.episodeId &&
-    !checkIfVideoFileType(item)
+    !checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)
   ) {
     addQueueItemNext(itemToSetNextInQueue)
   }
@@ -461,7 +460,7 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
     const queueItems = await getQueueItems()
     let filteredItems = [] as any
 
-    if (item && !checkIfVideoFileType(item)) {
+    if (item && !checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
       /* Use the item from history to make sure we have the same
          userPlaybackPosition that was last saved from other devices. */
       if (!item.clipId && item.episodeId) {
