@@ -1,24 +1,27 @@
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { prefixClipLabel, readableClipTime, readableDate } from '../lib/utility'
+import { generateEpisodeAccessibilityText, getTimeLabelText, prefixClipLabel, readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button, images } from '../styles'
 import { FastImage, Icon, Text, View } from '.'
+import { TimeRemainingWidget } from './TimeRemainingWidget'
 
 type Props = {
   clipEndTime?: number
   clipStartTime?: number
   clipTitle?: string
   drag?: any
-  episodePubDate?: string
+  episodeDuration?: number
+  episodeId?: string
+  episodePubDate?: Date
   episodeTitle?: string
   handleRemovePress?: any
   hideBottomRow?: boolean
   hideDivider?: boolean
   isActive?: boolean
-  isNowPlayingItem?: boolean
   isPlaylistScreen?: boolean
+  mediaFileDuration?: number
   onPress?: any
   podcastImageUrl?: string
   podcastTitle?: string
@@ -26,6 +29,7 @@ type Props = {
   showRemoveButton?: boolean
   testID: string
   transparent?: boolean
+  userPlaybackPosition?: number
 }
 
 export class QueueTableCell extends React.PureComponent<Props> {
@@ -34,20 +38,23 @@ export class QueueTableCell extends React.PureComponent<Props> {
       clipEndTime,
       clipStartTime,
       drag,
-      episodePubDate = '',
+      episodeDuration,
+      episodeId,
+      episodePubDate,
       episodeTitle = translate('Untitled Episode'),
       handleRemovePress,
       hideBottomRow,
       hideDivider,
       isActive,
-      isNowPlayingItem,
+      mediaFileDuration,
       onPress,
       podcastImageUrl,
       podcastTitle = translate('Untitled Podcast'),
       showMoveButton,
       showRemoveButton,
       testID,
-      transparent
+      transparent,
+      userPlaybackPosition
     } = this.props
 
     const clipTitle = this.props.clipTitle || prefixClipLabel(episodeTitle)
@@ -61,11 +68,37 @@ export class QueueTableCell extends React.PureComponent<Props> {
     const podcastTitleText = podcastTitle.trim()
     const episodeTitleText = episodeTitle.trim()
     const pubDateText = readableDate(episodePubDate)
+
+    // Episode progress bar related logic
+    const { session } = this.global
+    const { userInfo } = session
+    const { historyItemsIndex } = userInfo
+
+    const episodeCompleted =
+      historyItemsIndex &&
+      historyItemsIndex.episodes &&
+      episodeId &&
+      historyItemsIndex.episodes[episodeId] &&
+      historyItemsIndex.episodes[episodeId].completed
+
+    const timeLabel = getTimeLabelText(mediaFileDuration, episodeDuration, userPlaybackPosition)
+    const timeLabelText = generateEpisodeAccessibilityText(episodeCompleted, timeLabel)
+
+    // TODO: QueueTableCell is poorly written...we should probably pass in a whole NowPlayingItem
+    // as a parameter, and then extract the values in the table cell, instead of passing in
+    // all the fields as parameters individually.
+    const episode = {
+      duration: episodeDuration,
+      id: episodeId,
+      pubDate: episodePubDate,
+      title: episodeTitle
+    }
+
     // eslint-disable-next-line max-len
     const accessibilityLabel = `${!!podcastTitle ? `${podcastTitleText}, ` : ''} ${
       !!episodeTitle ? `${episodeTitleText}, ` : ''
     } ${!!episodePubDate ? `${pubDateText}` : ''} ${
-      !isClip ? `, ${translate('Full Episode')}` : `, ${clipTitle.trim()}`
+      !isClip ? `, ${timeLabelText}` : `, ${clipTitle.trim()}`
     }`
 
     return (
@@ -73,11 +106,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
         <RNView style={styles.wrapperTop}>
           <Pressable
             accessibilityHint={
-              isNowPlayingItem
-                ? translate('ARIA HINT - This is the now playing episode')
-                : !isClip
-                ? translate('ARIA HINT - tap to play this episode')
-                : translate('ARIA HINT - tap play this clip')
+              isClip ? translate('ARIA HINT - tap to play this episode') : translate('ARIA HINT - tap play this clip')
             }
             accessibilityLabel={accessibilityLabel}
             accessibilityRole='none'
@@ -135,24 +164,42 @@ export class QueueTableCell extends React.PureComponent<Props> {
         </RNView>
         {!hideBottomRow && (
           <RNView style={styles.wrapperBottom}>
-            <Text
-              accessible={false}
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-              importantForAccessibility='no'
-              numberOfLines={1}
-              style={styles.clipTitle}
-              testID={`${testID}_bottom_text`}>
-              {!isClip ? translate('Full Episode') : clipTitle.trim()}
-            </Text>
-            {!!clipStartTime && (
-              <Text
-                accessible={false}
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                importantForAccessibility='no'
-                style={styles.clipTime}
-                testID={`${testID}_clip_time`}>
-                {readableClipTime(clipStartTime, clipEndTime)}
-              </Text>
+            {isClip && (
+              <>
+                <Text
+                  accessible={false}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  importantForAccessibility='no'
+                  numberOfLines={1}
+                  style={styles.clipTitle}
+                  testID={`${testID}_bottom_text`}>
+                  {clipTitle.trim()}
+                </Text>
+                {!!clipStartTime && (
+                  <Text
+                    accessible={false}
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                    importantForAccessibility='no'
+                    style={styles.clipTime}
+                    testID={`${testID}_clip_time`}>
+                    {readableClipTime(clipStartTime, clipEndTime)}
+                  </Text>
+                )}
+              </>
+            )}
+            {!isClip && (
+              <TimeRemainingWidget
+                episodeCompleted={episodeCompleted}
+                forceShowProgressBar
+                hidePlayButton
+                item={episode}
+                itemType='episode'
+                mediaFileDuration={mediaFileDuration}
+                progressFullWidth
+                testID={testID}
+                timeLabel={timeLabel}
+                userPlaybackPosition={userPlaybackPosition}
+              />
             )}
           </RNView>
         )}
@@ -216,6 +263,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8
   },
   wrapperBottom: {
+    flex: 1,
     flexDirection: 'row',
     marginTop: 8
   },

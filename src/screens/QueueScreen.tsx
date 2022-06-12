@@ -1,18 +1,16 @@
-import { NowPlayingItem } from 'podverse-shared'
+import { convertNowPlayingItemToEpisode, NowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
-import { getHistoryItemsIndex } from '../services/userHistoryItem'
+import { getHistoryItemIndexInfoForEpisode, getHistoryItemsIndex } from '../services/userHistoryItem'
 import {
   ActivityIndicator,
-  Divider,
   FlatList,
   HeaderTitleSelector,
   MessageWithAction,
   NavHeaderButtonText,
   QueueTableCell,
   SortableList,
-  TableSectionSelectors,
   View
 } from '../components'
 import { translate } from '../lib/i18n'
@@ -274,6 +272,8 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _renderQueueItemRow = ({ item = {} as NowPlayingItem, index, drag, isActive }) => {
     const { isEditing } = this.state
+    const { episodeDuration, episodeId } = item
+    const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(episodeId)
 
     return (
       <QueueTableCell
@@ -281,16 +281,20 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
         clipStartTime={item.clipStartTime}
         {...(item.clipTitle ? { clipTitle: item.clipTitle } : {})}
         drag={drag}
+        episodeDuration={episodeDuration}
+        episodeId={episodeId}
         {...(item.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
         {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
         handleRemovePress={() => this._handleRemoveQueueItemPress(item)}
         isActive={isActive}
+        mediaFileDuration={mediaFileDuration}
         onPress={() => this._onPressRow(index)}
         podcastImageUrl={item.podcastImageUrl}
         {...(item?.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
         showMoveButton={!isEditing}
         showRemoveButton={isEditing}
         testID={`${testIDPrefix}_queue_item_${index}`}
+        userPlaybackPosition={userPlaybackPosition}
       />
     )
   }
@@ -359,50 +363,13 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
       })
     }
   }
-
   render() {
-    const { player, session } = this.global
+    const { session } = this.global
     const { historyItems, historyItemsCount, queueItems } = session.userInfo
-    const { nowPlayingItem } = player
     const { isEditing, isLoading, isLoadingMore, isRemoving, viewType } = this.state
+
     const view = (
       <View style={styles.view} testID={`${testIDPrefix}_view`}>
-        {!isLoading && viewType === _queueKey && ((queueItems && queueItems.length > 0) || nowPlayingItem) && (
-          <View>
-            {!!nowPlayingItem && (
-              <View>
-                <View style={styles.headerNowPlayingItemWrapper}>
-                  <TableSectionSelectors
-                    disableFilter
-                    hideDropdown
-                    includePadding
-                    selectedFilterLabel={translate('Now Playing')}
-                    textStyle={styles.sectionHeaderText}
-                  />
-                  <QueueTableCell
-                    clipEndTime={nowPlayingItem?.clipEndTime}
-                    clipStartTime={nowPlayingItem?.clipStartTime}
-                    {...(nowPlayingItem?.clipTitle ? { clipTitle: nowPlayingItem.clipTitle } : {})}
-                    {...(nowPlayingItem?.episodePubDate ? { episodePubDate: nowPlayingItem.episodePubDate } : {})}
-                    {...(nowPlayingItem?.episodeTitle ? { episodeTitle: nowPlayingItem.episodeTitle } : {})}
-                    hideDivider
-                    isNowPlayingItem
-                    podcastImageUrl={nowPlayingItem?.podcastImageUrl}
-                    {...(nowPlayingItem?.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
-                    testID={`${testIDPrefix}_now_playing_header`}
-                  />
-                </View>
-                <Divider style={styles.headerNowPlayingItemDivider} />
-              </View>
-            )}
-            <TableSectionSelectors
-              disableFilter
-              includePadding
-              selectedFilterLabel={translate('Next Up')}
-              textStyle={styles.sectionHeaderText}
-            />
-          </View>
-        )}
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length > 0 && (
           <SortableList
             data={queueItems}

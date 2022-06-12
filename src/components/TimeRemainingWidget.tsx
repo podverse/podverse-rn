@@ -13,19 +13,21 @@ import {
 } from '../services/player'
 import { setNowPlayingItem } from '../services/userNowPlayingItem'
 import { playerLoadNowPlayingItem, playerTogglePlay, playerUpdatePlayerState } from '../state/actions/player'
-import { Icon, MoreButton, PressableWithOpacity, Text, View } from './'
-import { LiveStatusBadge } from './LiveStatusBadge'
+import { Icon, LiveStatusBadge, MoreButton, PressableWithOpacity, Text, View } from './'
 
 type Props = {
   clipTime?: string
   episodeCompleted?: boolean
   episodeDownloading?: boolean
+  forceShowProgressBar?: boolean
   handleMorePress?: any
+  hidePlayButton?: boolean
   isChapter?: boolean
   item: any
   itemType: 'episode' | 'clip' | 'chapter'
   loadChapterOnPlay?: boolean
   mediaFileDuration?: number | undefined
+  progressFullWidth?: boolean
   style?: any
   testID: string
   timeLabel?: string
@@ -34,6 +36,7 @@ type Props = {
 }
 
 type BarProps = {
+  fullWidth?: boolean
   item: any
   playedTime: number
   totalTime: number
@@ -41,10 +44,10 @@ type BarProps = {
 
 const MiniProgressBar = (props: BarProps) => {
   const [fillerWidth, setFillerWidth] = useState(0)
-  const { item, playedTime, totalTime } = props
+  const { fullWidth, item, playedTime, totalTime } = props
   const percentage = playedTime ? (playedTime / totalTime) * 100 : 0
 
-  const barWidth = '30%'
+  const barWidth = fullWidth ? '45%' : '30%'
   const bar = {
     marginRight: 10,
     height: 3,
@@ -80,11 +83,14 @@ export const TimeRemainingWidget = (props: Props) => {
   const {
     episodeCompleted,
     episodeDownloading,
+    forceShowProgressBar,
     handleMorePress,
+    hidePlayButton,
     item,
     itemType,
     loadChapterOnPlay,
     mediaFileDuration,
+    progressFullWidth,
     style,
     testID,
     timeLabel,
@@ -154,49 +160,47 @@ export const TimeRemainingWidget = (props: Props) => {
 
   return (
     <View accessbile={false} style={[styles.container, style]} transparent={transparent}>
-      <PressableWithOpacity
-        accessible={false}
-        importantForAccessibility='no-hide-descendants'
-        onPress={playItem}
-        style={iconStyle}
-        testID={`${testID}_time_remaining_widget_toggle_play`.prependTestId()}>
-        {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
-      </PressableWithOpacity>
-      {
-        liveItem?.status === 'live' && (
-          <>
-            <LiveStatusBadge testID={testID} />
-            <View style={styles.spacer} />
-          </>
-        )
-      }
-      {!liveItem && hasStartedItem && !isInvalidDuration && playedTime > 0 && (
-        <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
+      {!hidePlayButton && (
+        <PressableWithOpacity
+          accessible={false}
+          importantForAccessibility='no-hide-descendants'
+          onPress={playItem}
+          style={iconStyle}
+          testID={`${testID}_time_remaining_widget_toggle_play`.prependTestId()}>
+          {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
+        </PressableWithOpacity>
       )}
-      {
-        !liveItem && (
-          <View
-            accessible={false}
-            importantForAccessibility='no-hide-descendants'
-            style={{ flexDirection: 'row', flex: 1, alignItems: 'center', height: '100%' }}>
-            {!!timeLabel && (
-              <Text
-                accessible={false}
-                fontSizeLargerScale={PV.Fonts.largeSizes.md}
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                importantForAccessibility='no-hide-descendants'
-                style={styles.text}>
-                {timeLabel}
-              </Text>
-            )}
-            {!!episodeCompleted && (
-              <View style={styles.icon}>
-                <Icon name={'check'} size={22} style={styles.iconCompleted} />
-              </View>
-            )}
-          </View>
-        )
-      }
+      {liveItem?.status === 'live' && (
+        <>
+          <LiveStatusBadge testID={testID} />
+          <View style={styles.spacer} />
+        </>
+      )}
+      {(forceShowProgressBar || (!liveItem && hasStartedItem && !isInvalidDuration && playedTime > 0)) && (
+        <MiniProgressBar fullWidth={progressFullWidth} item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
+      )}
+      {!liveItem && (
+        <View
+          accessible={false}
+          importantForAccessibility='no-hide-descendants'
+          style={{ flexDirection: 'row', flex: 1, alignItems: 'center', height: '100%' }}>
+          {!!timeLabel && (
+            <Text
+              accessible={false}
+              fontSizeLargerScale={PV.Fonts.largeSizes.md}
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              importantForAccessibility='no-hide-descendants'
+              style={styles.text}>
+              {timeLabel}
+            </Text>
+          )}
+          {!!episodeCompleted && (
+            <View style={styles.icon}>
+              <Icon name={'check'} size={22} style={styles.iconCompleted} />
+            </View>
+          )}
+        </View>
+      )}
       {!!handleMorePress && (
         <MoreButton
           accessible={false}
@@ -212,6 +216,7 @@ export const TimeRemainingWidget = (props: Props) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly'
