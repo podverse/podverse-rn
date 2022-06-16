@@ -122,7 +122,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     } as NavigationStackOptions
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     super.componentDidMount()
 
     this.props.navigation.setParams({
@@ -133,20 +133,22 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     PVEventEmitter.on(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
 
     const { queryFrom } = this.state
-    const hasInternetConnection = await hasValidNetworkConnection()
-    const from = hasInternetConnection ? queryFrom : PV.Filters._downloadedKey
+    // const hasInternetConnection = await hasValidNetworkConnection()
+    // const from = hasInternetConnection ? queryFrom : PV.Filters._downloadedKey
+    const from = queryFrom
     this.handleSelectFilterItem(from)
 
     trackPageView('/episodes', 'Episodes Screen')
-    this._unsubscribe = this.props.navigation.addListener('willFocus', () => {
-      this._setDownloadedDataIfOffline()
-    })
+    // this._unsubscribe = this.props.navigation.addListener('willFocus', () => {
+    //   this._setDownloadedDataIfOffline()
+    // })
   }
 
   componentWillUnmount() {
     super.componentWillUnmount()
     PVEventEmitter.removeListener(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
     PVEventEmitter.removeListener(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
+    // this._unsubscribe?.()
   }
 
   _handleAppModeChanged = () => {
@@ -156,12 +158,12 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     })
   }
 
-  _setDownloadedDataIfOffline = async () => {
-    const isConnected = await hasValidNetworkConnection()
-    if (!isConnected) {
-      this.handleSelectFilterItem(PV.Filters._downloadedKey)
-    }
-  }
+  // _setDownloadedDataIfOffline = async () => {
+  //   const isConnected = await hasValidNetworkConnection()
+  //   if (!isConnected) {
+  //     this.handleSelectFilterItem(PV.Filters._downloadedKey)
+  //   }
+  // }
 
   _handleToggleSubscribeEvent = () => {
     const { queryFrom } = this.state
