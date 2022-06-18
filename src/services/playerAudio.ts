@@ -68,7 +68,7 @@ PVAudioPlayer.getTrackDuration = async () => {
 }
 
 PVAudioPlayer.setupPlayer({
-  waitForBuffer: false,
+  waitForBuffer: true,
   maxCacheSize: 1000000 // 1 GB from KB, this affects Android only I think.
 }).then(() => {
   audioUpdateTrackPlayerCapabilities()

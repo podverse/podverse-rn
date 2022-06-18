@@ -125,7 +125,7 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedFromItemKey,
       selectedSortItemKey: newSelectedSortItemKey,
       // isOffline: !isOffline
-      isOffline: offlineModeEnabled
+      isOffline: !!offlineModeEnabled
     })
   }
 

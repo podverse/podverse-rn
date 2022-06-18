@@ -241,9 +241,11 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
     }
   }
 
-  _renderHistoryItem = ({ item, index }) => {
+  _renderHistoryItem = ({ item = {} as NowPlayingItem, index }) => {
     const { isEditing } = this.state
     item = item || {}
+    const { episodeDuration, episodeId } = item
+    const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(episodeId)
 
     return (
       <View>
@@ -251,11 +253,14 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
           clipEndTime={item.clipEndTime}
           clipStartTime={item.clipStartTime}
           {...(item.clipTitle ? { clipTitle: item.clipTitle } : {})}
+          episodeDuration={episodeDuration}
           {...(item.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
           {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
           handleRemovePress={() => {
             this._handleRemoveHistoryItemPress(item)
           }}
+          liveItem={item.liveItem}
+          mediaFileDuration={mediaFileDuration}
           onPress={() => {
             if (!isEditing) {
               this._handlePlayItem(item)
@@ -265,6 +270,7 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
           {...(item?.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
           showRemoveButton={isEditing}
           testID={`${testIDPrefix}_history_item_${index}`}
+          userPlaybackPosition={userPlaybackPosition}
         />
       </View>
     )
@@ -272,6 +278,7 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _renderQueueItemRow = ({ item = {} as NowPlayingItem, index, drag, isActive }) => {
     const { isEditing } = this.state
+    item = item || {}
     const { episodeDuration, episodeId } = item
     const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(episodeId)
 
@@ -287,6 +294,7 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
         {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
         handleRemovePress={() => this._handleRemoveQueueItemPress(item)}
         isActive={isActive}
+        liveItem={item.liveItem}
         mediaFileDuration={mediaFileDuration}
         onPress={() => this._onPressRow(index)}
         podcastImageUrl={item.podcastImageUrl}
