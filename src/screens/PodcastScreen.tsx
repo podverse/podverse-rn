@@ -447,8 +447,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   _ListHeaderComponent = () => {
     const { searchBarText, viewType, flatListDataTotalCount } = this.state
     const placeholder = getSearchPlaceholder(viewType)
-
-    const shouldShowSearchBar = searchBarText || (flatListDataTotalCount && flatListDataTotalCount > 3)
+    const shouldShowSearchBar = !!(searchBarText || (flatListDataTotalCount && flatListDataTotalCount > 3))
 
     return (
       <View style={styles.ListHeaderComponent}>
