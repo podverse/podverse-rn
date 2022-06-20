@@ -1,3 +1,4 @@
+import { LiveItem } from 'podverse-shared'
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
@@ -21,6 +22,7 @@ type Props = {
   hideDivider?: boolean
   isActive?: boolean
   isPlaylistScreen?: boolean
+  liveItem?: LiveItem
   mediaFileDuration?: number
   onPress?: any
   podcastImageUrl?: string
@@ -46,6 +48,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
       hideBottomRow,
       hideDivider,
       isActive,
+      liveItem,
       mediaFileDuration,
       onPress,
       podcastImageUrl,
@@ -67,7 +70,8 @@ export class QueueTableCell extends React.PureComponent<Props> {
 
     const podcastTitleText = podcastTitle.trim()
     const episodeTitleText = episodeTitle.trim()
-    const pubDateText = readableDate(episodePubDate)
+    const finalPubDate = liveItem?.start ? liveItem.start : episodePubDate
+    const pubDateText = readableDate(finalPubDate)
 
     // Episode progress bar related logic
     const { session } = this.global
@@ -87,17 +91,18 @@ export class QueueTableCell extends React.PureComponent<Props> {
     // TODO: QueueTableCell is poorly written...we should probably pass in a whole NowPlayingItem
     // as a parameter, and then extract the values in the table cell, instead of passing in
     // all the fields as parameters individually.
+
     const episode = {
-      duration: episodeDuration,
+      duration: liveItem ? 0 : episodeDuration,
       id: episodeId,
-      pubDate: episodePubDate,
+      pubDate: finalPubDate,
       title: episodeTitle
     }
 
     // eslint-disable-next-line max-len
     const accessibilityLabel = `${!!podcastTitle ? `${podcastTitleText}, ` : ''} ${
       !!episodeTitle ? `${episodeTitleText}, ` : ''
-    } ${!!episodePubDate ? `${pubDateText}` : ''} ${
+    } ${!!finalPubDate ? `${pubDateText}` : ''} ${
       !isClip ? `, ${timeLabelText}` : `, ${clipTitle.trim()}`
     }`
 
@@ -135,7 +140,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                     {episodeTitleText}
                   </Text>
                 )}
-                {!!episodePubDate && (
+                {!!finalPubDate && (
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     isSecondary

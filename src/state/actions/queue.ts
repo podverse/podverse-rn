@@ -7,7 +7,8 @@ import {
   getQueueItems as getQueueItemsService,
   getQueueItemsLocally,
   removeQueueItem as removeQueueItemService,
-  setAllQueueItems as setAllQueueItemsService
+  setAllQueueItems as setAllQueueItemsService,
+  updateAutoQueueSettings as updateAutoQueueSettingsService
 } from '../../services/queue'
 
 export const addQueueItemLast = async (queueItem: NowPlayingItem) => {

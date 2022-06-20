@@ -43,3 +43,17 @@ export const retrieveLatestChaptersForEpisodeId = async (id: string) => {
 
   return response && response.data
 }
+
+export const getEpisodesSincePubDate = async (sincePubDate: string, podcastIds: any[]) => {
+  if (podcastIds && podcastIds.length > 0) {
+    const response = await getEpisodes({
+      podcastId: podcastIds,
+      sincePubDate,
+      includePodcast: true
+    })
+
+    return response[0]
+  } else {
+    return []
+  }
+}
