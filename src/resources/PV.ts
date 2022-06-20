@@ -20,6 +20,7 @@ import { Keys } from './Keys'
 import { MembershipStatus } from './MembershipStatus'
 import { Navigation } from './Navigation'
 import { Player } from './Player'
+import { Queue } from './Queue'
 import { ResponseErrorCodes } from './ResponseErrorCodes'
 import { ResponseStatusCodes } from './ResponseStatusCodes'
 import { RouteNames } from './RouteNames'
@@ -53,6 +54,7 @@ export const PV = {
   MembershipStatus,
   Navigation,
   Player,
+  Queue,
   ResponseErrorCodes,
   ResponseStatusCodes,
   RouteNames,

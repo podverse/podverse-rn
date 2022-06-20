@@ -1,4 +1,5 @@
 import { TranscriptRow, ValueTransaction } from 'podverse-shared'
+import { AutoQueueSettingsPosition } from '../services/queue'
 import type { AppModes } from './AppMode'
 export interface GlobalTheme {
   actionSheetButton?: any
@@ -84,6 +85,8 @@ export interface InitialState {
   fontScale: number
   fontScaleMode: string | null
   autoDownloadSettings: any
+  autoQueueSettings: any
+  autoQueueSettingsPosition: AutoQueueSettingsPosition
   downloadsActive: any
   downloadsArrayInProgress: any[]
   downloadsArrayFinished: any[]

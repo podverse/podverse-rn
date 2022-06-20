@@ -31,7 +31,8 @@ import {
   setCategoryQueryProperty
 } from '../lib/utility'
 import { PV } from '../resources'
-import { handleAutoDownloadEpisodes } from '../services/autoDownloads'
+import { getAutoDownloadsLastRefreshDate, handleAutoDownloadEpisodes } from '../services/autoDownloads'
+import { handleAutoQueueEpisodes } from '../services/autoQueue'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
@@ -43,6 +44,7 @@ import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudio'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
 import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
+import { initAutoQueue } from '../state/actions/autoQueue'
 import { initDownloads, removeDownloadedPodcast, updateDownloadedPodcasts } from '../state/actions/downloads'
 import { updateWalletInfo } from '../state/actions/lnpay'
 import {
@@ -259,9 +261,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
       Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
     }
 
-    this._unsubscribe = navigation.addListener('willFocus', () => {
-      this._setDownloadedDataIfOffline()
-    })
+    // this._unsubscribe = navigation.addListener('willFocus', () => {
+    //   this._setDownloadedDataIfOffline()
+    // })
   }
 
   componentWillUnmount() {
@@ -276,7 +278,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
     PVEventEmitter.removeListener(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
     PVEventEmitter.removeListener(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
-    this._unsubscribe?.()
+    // this._unsubscribe?.()
   }
 
   _handleAppModeChanged = () => {
@@ -293,14 +295,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
-  _setDownloadedDataIfOffline = async () => {
-    const isConnected = await hasValidNetworkConnection()
-    if (!isConnected) {
-      const preventIsLoading = false
-      const preventAutoDownloading = true
-      this.handleSelectFilterItem(PV.Filters._downloadedKey, preventIsLoading, preventAutoDownloading)
-    }
-  }
+  // _setDownloadedDataIfOffline = async () => {
+  //   const isConnected = await hasValidNetworkConnection()
+  //   if (!isConnected) {
+  //     const preventIsLoading = false
+  //     const preventAutoDownloading = true
+  //     this.handleSelectFilterItem(PV.Filters._downloadedKey, preventIsLoading, preventAutoDownloading)
+  //   }
+  // }
 
   _handleTrackingTermsAcknowledged = async () => {
     /* Get tracking terms from AsyncStorage only here so that getTrackingConsentAcknowledged does not
@@ -537,25 +539,26 @@ export class PodcastsScreen extends React.Component<Props, State> {
     await Promise.all([
       this._handleInitialDefaultQuery,
       initDownloads(),
+      initAutoQueue(),
       initializePlayer(),
       initializePlayerSettings()
     ])
 
     initializeValueProcessor()
 
-    this._setDownloadedDataIfOffline()
+    // this._setDownloadedDataIfOffline()
     trackPageView('/podcasts', 'Podcasts Screen')
   }
 
-  _handleInitialDefaultQuery = async () => {
-    const isConnected = await hasValidNetworkConnection()
+  _handleInitialDefaultQuery = () => {
+    // const isConnected = await hasValidNetworkConnection()
     const preventIsLoading = true
     const preventAutoDownloading = false
-    if (isConnected) {
+    // if (isConnected) {
       this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
-    } else {
-      this._setDownloadedDataIfOffline()
-    }
+    // } else {
+      // this._setDownloadedDataIfOffline()
+    // }
   }
 
   // NOTE: there is a race-condition possibility if you reparse RSS feeds whenever
@@ -1044,7 +1047,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
 
     if (!preventAutoDownloading) {
-      await handleAutoDownloadEpisodes()
+      try {
+        const dateISOString = await getAutoDownloadsLastRefreshDate()
+        await handleAutoDownloadEpisodes(dateISOString)
+        await handleAutoQueueEpisodes(dateISOString)
+      } catch (error) {
+        console.log('_querySubscribedPodcasts auto download error:', error)
+      }
+      await AsyncStorage.setItem(PV.Keys.AUTODOWNLOADS_LAST_REFRESHED, new Date().toISOString())
     }
   }
 

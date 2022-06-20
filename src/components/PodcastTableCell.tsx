@@ -7,7 +7,6 @@ import { PV } from '../resources'
 import { FastImage, IndicatorDownload, LiveStatusBadge, Text, View } from './'
 
 type Props = {
-  autoDownloadSettings?: any
   downloadCount?: number
   downloadedPodcastEpisodeCounts?: any
   hasZebraStripe?: boolean
