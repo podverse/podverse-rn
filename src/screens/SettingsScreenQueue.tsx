@@ -50,7 +50,7 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
   }
 
   _setAutoQueuePosition = (value: string) => {
-    const autoQueuePositionOptions = PV.Queue.autoQueuePositionOptions()
+    const autoQueuePositionOptions = PV.Queue.autoQueuePositionOptions
     const autoQueuePositionOptionSelected =
       autoQueuePositionOptions.find((x: any) => x.value === value) || placeholderItem
 
@@ -64,7 +64,7 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
     const { addCurrentItemNextInQueue, autoQueueSettingsPosition, globalTheme } = this.global
     const isDarkMode = globalTheme === darkTheme
 
-    const autoQueueOptionSelected = PV.Queue.autoQueuePositionOptions().find((option: any) => {
+    const autoQueueOptionSelected = PV.Queue.autoQueuePositionOptions.find((option: any) => {
       return option.value === autoQueueSettingsPosition
     })
 
@@ -88,7 +88,7 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
             <View style={core.itemWrapperReducedHeight}>
               <RNPickerSelect
                 fixAndroidTouchableBug
-                items={PV.Queue.autoQueuePositionOptions()}
+                items={PV.Queue.autoQueuePositionOptions}
                 onValueChange={this._setAutoQueuePosition}
                 placeholder={placeholderItem}
                 style={hidePickerIconOnAndroidTransparent(isDarkMode)}
