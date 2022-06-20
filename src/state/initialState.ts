@@ -7,6 +7,8 @@ const initialTheme: InitialState = {
   fontScale: 1,
   fontScaleMode: null,
   autoDownloadSettings: {},
+  autoQueueSettings: {},
+  autoQueueSettingsPosition: 'last',
   downloadsArrayInProgress: [],
   downloadsArrayFinished: [],
   downloadsActive: {},

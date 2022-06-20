@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
-import { getEpisodes } from './episode'
+import { getEpisodes, getEpisodesSincePubDate } from './episode'
 import { parseAllAddByRSSPodcasts } from './parser'
 
 export const getAutoDownloadsLastRefreshDate = async () => {
@@ -18,21 +18,21 @@ export const handleAutoDownloadEpisodesAddByRSSPodcasts = async () => {
   }
 }
 
-export const handleAutoDownloadEpisodes = async () => {
+export const handleAutoDownloadEpisodes = async (dateISOString: string) => {
   await handleAutoDownloadEpisodesAddByRSSPodcasts()
 
   const autoDownloadSettingsString = await AsyncStorage.getItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS)
   const autoDownloadSettings = autoDownloadSettingsString ? JSON.parse(autoDownloadSettingsString) : {}
-  const podcastIds = Object.keys(autoDownloadSettings).filter((key: string) => autoDownloadSettings[key] === true)
+  const autoDownloadPodcastIds =
+    Object.keys(autoDownloadSettings).filter((key: string) => autoDownloadSettings[key] === true)
 
-  const dateISOString = await getAutoDownloadsLastRefreshDate()
-  const autoDownloadEpisodes = await getAutoDownloadEpisodes(dateISOString, podcastIds)
+  const autoDownloadEpisodes = await getEpisodesSincePubDate(dateISOString, autoDownloadPodcastIds)
 
   // Wait for app to initialize. Without this setTimeout, then when getSubscribedPodcasts is called in
   // PodcastsScreen _initializeScreenData, then downloadEpisode will not successfully update global state
   setTimeout(() => {
     (async () => {
-      for (const episode of autoDownloadEpisodes[0]) {
+      for (const episode of autoDownloadEpisodes) {
         const podcast = {
           id: episode?.podcast?.id,
           imageUrl: episode?.podcast?.shrunkImageUrl || episode?.podcast?.imageUrl,
@@ -44,20 +44,6 @@ export const handleAutoDownloadEpisodes = async () => {
       }
     })()
   }, 3000)
-
-  await AsyncStorage.setItem(PV.Keys.AUTODOWNLOADS_LAST_REFRESHED, new Date().toISOString())
-}
-
-export const getAutoDownloadEpisodes = async (sincePubDate: string, podcastIds: any[]) => {
-  if (podcastIds && podcastIds.length > 0) {
-    return getEpisodes({
-      podcastId: podcastIds,
-      sincePubDate,
-      includePodcast: true
-    })
-  } else {
-    return [[], null]
-  }
 }
 
 export const getAutoDownloadSettings = async () => {

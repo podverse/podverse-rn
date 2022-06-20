@@ -91,7 +91,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
     // TODO: QueueTableCell is poorly written...we should probably pass in a whole NowPlayingItem
     // as a parameter, and then extract the values in the table cell, instead of passing in
     // all the fields as parameters individually.
-    console.log('asdf', liveItem)
+
     const episode = {
       duration: liveItem ? 0 : episodeDuration,
       id: episodeId,

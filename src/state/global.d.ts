@@ -2,6 +2,7 @@ import { TranscriptRow } from 'podverse-shared'
 import 'reactn'
 import { AppModes } from '../resources/AppMode'
 import { BannerInfo, GlobalTheme, UserInfo, TempMediaRef } from '../resources/Interfaces'
+import { AutoQueueSettingsPosition } from '../services/queue'
 
 declare module 'reactn/default' {
   export interface State {
@@ -9,6 +10,8 @@ declare module 'reactn/default' {
     fontScale: number
     fontScaleMode: string | null
     autoDownloadSettings: any
+    autoQueueSettings: any
+    autoQueueSettingsPosition: AutoQueueSettingsPosition
     downloadsActive: any
     downloadsArrayInProgress: any[]
     downloadsArrayFinished: any[]
