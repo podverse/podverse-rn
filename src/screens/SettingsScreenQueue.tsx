@@ -1,13 +1,15 @@
 /* eslint-disable max-len */
 import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet } from 'react-native'
+import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { ActivityIndicator, ScrollView, SwitchWithText, View } from '../components'
+import { ActivityIndicator, Icon, ScrollView, SwitchWithText, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
+import { updateAutoQueueSettingsPosition } from '../state/actions/autoQueue'
 import { setAddCurrentItemNextInQueue } from '../state/actions/settings'
-import { core } from '../styles'
+import { core, darkTheme, hidePickerIconOnAndroidTransparent } from '../styles'
 
 type Props = {
   navigation: any
@@ -47,9 +49,24 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
     await setAddCurrentItemNextInQueue(newValue)
   }
 
+  _setAutoQueuePosition = (value: string) => {
+    const autoQueuePositionOptions = PV.Queue.autoQueuePositionOptions()
+    const autoQueuePositionOptionSelected =
+      autoQueuePositionOptions.find((x: any) => x.value === value) || placeholderItem
+
+    if (autoQueuePositionOptionSelected?.value) {
+      updateAutoQueueSettingsPosition(autoQueuePositionOptionSelected.value)
+    }
+  }
+
   render() {
     const { isLoading } = this.state
-    const { addCurrentItemNextInQueue } = this.global
+    const { addCurrentItemNextInQueue, autoQueueSettingsPosition, globalTheme } = this.global
+    const isDarkMode = globalTheme === darkTheme
+
+    const autoQueueOptionSelected = PV.Queue.autoQueuePositionOptions().find((option: any) => {
+      return option.value === autoQueueSettingsPosition
+    })
 
     return (
       <ScrollView
@@ -68,6 +85,57 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
                 value={!!addCurrentItemNextInQueue}
               />
             </View>
+            <View style={core.itemWrapperReducedHeight}>
+              <RNPickerSelect
+                fixAndroidTouchableBug
+                items={PV.Queue.autoQueuePositionOptions()}
+                onValueChange={this._setAutoQueuePosition}
+                placeholder={placeholderItem}
+                style={hidePickerIconOnAndroidTransparent(isDarkMode)}
+                useNativeAndroidPickerStyle={false}
+                value={autoQueueSettingsPosition}>
+                <View
+                  accessible
+                  accessibilityHint={`${translate('ARIA HINT - auto queue new episodes position')}`}
+                  accessibilityLabel={`${translate('Auto queue new episodes position')} ${
+                    autoQueueOptionSelected?.label
+                  }`}
+                  importantForAccessibility='yes'
+                  style={core.selectorWrapper}>
+                  <View
+                    accessible={false}
+                    importantForAccessibility='no-hide-descendants'
+                    style={[core.selectorWrapperLeft, { minWidth: null }]}>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                      style={[core.pickerSelect, globalTheme.text]}>
+                      {autoQueueOptionSelected?.label}
+                    </Text>
+                    <Icon name='angle-down' size={14} style={[core.pickerSelectIcon, globalTheme.text]} />
+                  </View>
+                  <View
+                    accessible={false}
+                    importantForAccessibility='no-hide-descendants'
+                    style={core.selectorWrapperRight}>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                      style={[core.pickerSelect, globalTheme.text]}>
+                      {translate('Auto queue new episodes position')}
+                    </Text>
+                  </View>
+                </View>
+              </RNPickerSelect>
+              <View>
+                <Text
+                  accessible={false}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  importantForAccessibility='no'
+                  style={[globalTheme.textSecondary, styles.subText]}
+                  testID={`${testIDPrefix}_auto_queue_position_sub_text`}>
+                  {translate('Auto queue position helper text')}
+                </Text>
+              </View>
+            </View>
           </>
         )}
       </ScrollView>
@@ -79,9 +147,18 @@ const styles = StyleSheet.create({
   scrollViewContentContainer: {
     paddingBottom: 48
   },
+  subText: {
+    marginTop: 16,
+    fontSize: PV.Fonts.sizes.lg
+  },
   wrapper: {
     flex: 1,
     paddingTop: 24,
     paddingHorizontal: 12
   }
 })
+
+const placeholderItem = {
+  label: translate('Select'),
+  value: null
+}

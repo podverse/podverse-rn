@@ -38,6 +38,7 @@ import {
   safelyUnwrapNestedVariable
 } from '../lib/utility'
 import { PV } from '../resources'
+import { updateAutoQueueSettings } from '../state/actions/autoQueue'
 import PVEventEmitter from '../services/eventEmitter'
 import { getEpisodesAndLiveItems } from '../services/liveItem'
 import { getMediaRefs } from '../services/mediaRef'
@@ -691,6 +692,15 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     this.setState({ showSettings: !this.state.showSettings })
   }
 
+  _handleToggleAutoAddToQueue = (autoAddToQueueOn: boolean) => {
+    const { podcast, podcastId } = this.state
+    const id = podcast?.id || podcastId
+
+    if (id) {
+      updateAutoQueueSettings(id, autoAddToQueueOn)
+    }
+  }
+
   _handleToggleLimitDownloads = async () => {
     const { podcastId } = this.state
     if (podcastId) {
@@ -849,9 +859,11 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     }
 
     let { flatListData, flatListDataTotalCount } = this.state
-    const { autoDownloadSettings } = this.global
+    const { autoDownloadSettings, autoQueueSettings } = this.global
     const autoDownloadOn =
       (podcast && podcast.id && autoDownloadSettings[podcast.id]) || (podcastId && autoDownloadSettings[podcastId])
+    const autoQueueOn =
+      (podcast && podcast.id && autoQueueSettings[podcast.id]) || (podcastId && autoQueueSettings[podcastId])
 
     if (viewType === PV.Filters._downloadedKey) {
       const { downloadedPodcasts } = this.global
@@ -914,6 +926,16 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
             <Text accessibilityRole='header' style={styles.settingsTitle}>
               {translate('Settings')}
             </Text>
+            {!podcast?.addByRSSPodcastFeedUrl && (
+              <SwitchWithText
+                accessibilityLabel={translate('Automatically add new episodes to queue')}
+                onValueChange={() => this._handleToggleAutoAddToQueue(autoQueueOn)}
+                testID={`${testIDPrefix}_auto_add_to_queue`}
+                text={translate('Automatically add new episodes to queue')}
+                value={autoQueueOn}
+                wrapperStyle={styles.toggleAutoQueueSwitchWrapper}
+              />
+            )}
             <SwitchWithText
               accessibilityHint={
                 limitDownloadedEpisodes
@@ -1215,7 +1237,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     marginTop: 28
   },
-  toggleLimitDownloadsSwitchWrapper: {},
+  toggleLimitDownloadsSwitchWrapper: {
+    marginTop: 4
+  },
+  toggleAutoQueueSwitchWrapper: {
+    marginBottom: 24,
+    marginTop: 4
+  },
   ListHeaderComponent: {
     paddingTop: 15
   },
