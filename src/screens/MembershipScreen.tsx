@@ -227,7 +227,7 @@ const comparisonData = [
     column2: true,
     accessibilityLabel: translate('Download episodes'),
     videoUrl:
-      'https://peertube.podverse.fm/static/streaming-playlists/hls/3bdcef88-cb8d-429a-a126-3a6fd65784c9/1a3807fa-7198-4b71-8572-6b9eda207c21-1080-fragmented.mp4'
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/04138079-cc99-41ae-8080-8a5ed34be417/d4760840-77d3-4ad7-b71c-3ab5856696a1-360-fragmented.mp4'
   },
   {
     text: translate('Audio livestreams'),
