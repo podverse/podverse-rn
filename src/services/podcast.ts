@@ -5,6 +5,7 @@ import { getDownloadedPodcast, removeDownloadedPodcast } from '../lib/downloaded
 import { hasValidNetworkConnection } from '../lib/network'
 import { getAuthorityFeedUrlFromArray, requestAppStoreReviewForSubscribedPodcast } from '../lib/utility'
 import { PV } from '../resources'
+import { updateAutoQueueSettings } from '../state/actions/autoQueue'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { handleAutoDownloadEpisodesAddByRSSPodcasts, removeAutoDownloadSetting } from './autoDownloads'
 import { getAddByRSSPodcastsLocally, removeAddByRSSPodcast } from './parser'
@@ -224,6 +225,8 @@ export const toggleSubscribeToPodcast = async (id: string, skipRequestReview = f
   if (isUnsubscribing) {
     await removeDownloadedPodcast(id)
     await setDownloadedEpisodeLimit(id)
+    const autoQueueOn = false
+    updateAutoQueueSettings(id, autoQueueOn)
   } else if (!skipRequestReview) {
     requestAppStoreReviewForSubscribedPodcast()
   }

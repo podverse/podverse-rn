@@ -19,10 +19,9 @@ export const getAutoQueueSettings = async () => {
   }
 }
 
-export const updateAutoQueueSettings = async (podcastId: string) => {
+export const updateAutoQueueSettings = async (podcastId: string, autoQueueOn: boolean) => {
   const settings = await getAutoQueueSettings()
-  const currentSetting = settings[podcastId]
-  settings[podcastId] = !currentSetting
+  settings[podcastId] = autoQueueOn
   await AsyncStorage.setItem(PV.Keys.AUTO_QUEUE_SETTINGS, JSON.stringify(settings))
   return settings
 }
