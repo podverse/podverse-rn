@@ -266,16 +266,6 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
     headers: { Authorization: bearerToken }
   })
 
-  let podcastIds = []
-  const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
-  if (itemsString) {
-    podcastIds = JSON.parse(itemsString)
-    podcastIds = addOrRemovePodcastIdFromArray(podcastIds, id)
-  }
-  if (Array.isArray(podcastIds)) {
-    await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(podcastIds))
-  }
-
   return response && response.data
 }
 

@@ -5,6 +5,7 @@ import RNSecureKeyStore from 'react-native-secure-key-store'
 import { getGlobal, setGlobal } from 'reactn'
 import { safelyUnwrapNestedVariable, shouldShowMembershipAlert } from '../../lib/utility'
 import { PV } from '../../resources'
+import { UserInfo } from '../../resources/Interfaces'
 import {
   getAuthenticatedUserInfo,
   getAuthenticatedUserInfoLocally as getAuthenticatedUserInfoLocallyService,
@@ -13,13 +14,16 @@ import {
 } from '../../services/auth'
 import { fcmTokenGetLocally } from '../../services/fcmDevices'
 import { getWalletInfo } from '../../services/lnpay'
-import { parseAllAddByRSSPodcasts, setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
+import { getPodcastCredentials, parseAllAddByRSSPodcasts,
+  setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
+import { toggleSubscribeToPodcast } from '../../services/podcast'
 import { setAllQueueItemsLocally } from '../../services/queue'
 import { setAllHistoryItemsLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemLocally,
   getNowPlayingItemOnServer, 
   setNowPlayingItemLocally} from '../../services/userNowPlayingItem'
 import { getLNWallet } from './lnpay'
+import { addAddByRSSPodcast, addAddByRSSPodcastWithCredentials } from './parser'
 import { combineWithAddByRSSPodcasts, getSubscribedPodcasts } from './podcast'
 import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './valueTag'
 
@@ -126,39 +130,43 @@ export const getAuthenticatedUserInfoLocally = async () => {
 }
 
 export const askToSyncWithNowPlayingItem = async (callback?: any) => {
-  const [localNowPlayingItem, serverNowPlayingItem] = await Promise.all([
-    getNowPlayingItemLocally(),
-    getNowPlayingItemOnServer()
-  ])
+  try {
+    const [localNowPlayingItem, serverNowPlayingItem] = await Promise.all([
+      getNowPlayingItemLocally(),
+      getNowPlayingItemOnServer()
+    ])
 
-  if (serverNowPlayingItem) {
-    if (
-      (!localNowPlayingItem ||
-      (localNowPlayingItem.clipId && localNowPlayingItem.clipId !== serverNowPlayingItem.clipId) ||
-      (!localNowPlayingItem.clipId && localNowPlayingItem.episodeId !== serverNowPlayingItem.episodeId))
-    ) {
-      const askToSyncWithLastHistoryItem = PV.Alerts.ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM(
-        serverNowPlayingItem,
-        callback
-      )
-      Alert.alert(
-        askToSyncWithLastHistoryItem.title,
-        askToSyncWithLastHistoryItem.message,
-        askToSyncWithLastHistoryItem.buttons
-      )
+    if (serverNowPlayingItem) {
+      if (
+        (!localNowPlayingItem ||
+        (localNowPlayingItem.clipId && localNowPlayingItem.clipId !== serverNowPlayingItem.clipId) ||
+        (!localNowPlayingItem.clipId && localNowPlayingItem.episodeId !== serverNowPlayingItem.episodeId))
+      ) {
+        const askToSyncWithLastHistoryItem = PV.Alerts.ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM(
+          serverNowPlayingItem,
+          callback
+        )
+        Alert.alert(
+          askToSyncWithLastHistoryItem.title,
+          askToSyncWithLastHistoryItem.message,
+          askToSyncWithLastHistoryItem.buttons
+        )
 
-      return
-    } else if (
-      !localNowPlayingItem.clipId
-      && localNowPlayingItem.episodeId === serverNowPlayingItem.episodeId
-    ) {
-      // If the server and local nowPlayingItem's are the same episode,
-      // then resume from the server item's userPlaybackPosition
-      // instead of the localNowPlayingItem's
-      await setNowPlayingItemLocally(serverNowPlayingItem, serverNowPlayingItem.userPlaybackPosition || 0)
+        return
+      } else if (
+        !localNowPlayingItem.clipId
+        && localNowPlayingItem.episodeId === serverNowPlayingItem.episodeId
+      ) {
+        // If the server and local nowPlayingItem's are the same episode,
+        // then resume from the server item's userPlaybackPosition
+        // instead of the localNowPlayingItem's
+        await setNowPlayingItemLocally(serverNowPlayingItem, serverNowPlayingItem.userPlaybackPosition || 0)
+      }
     }
+    callback?.()
+  } catch (error) {
+    console.log('askToSyncWithNowPlayingItem error', error)
   }
-  callback?.()
 }
 
 // If a new player item should be loaded, the local history/queue must be up-to-date
@@ -182,34 +190,87 @@ const syncItemsWithLocalStorage = async (userInfo: any) => {
 
 export const loginUser = async (credentials: Credentials) => {
   try {
-    const userInfo = await login(credentials.email, credentials.password)
     const globalState = getGlobal()
+    const localUserInfo = globalState.session.userInfo
+    const serverUserInfo = await login(credentials.email, credentials.password)
     const { valueTagSettings } = globalState.session
 
     const localFCMSaved = await fcmTokenGetLocally()
-    userInfo.notificationsEnabled = !!localFCMSaved
+    serverUserInfo.notificationsEnabled = !!localFCMSaved
 
-    setGlobal({
-      session: {
-        userInfo,
-        isLoggedIn: true,
-        valueTagSettings
+    setGlobal(
+      {
+        session: {
+          userInfo: serverUserInfo,
+          isLoggedIn: true,
+          valueTagSettings
+        }
+      },
+      () => {
+        try {
+          const callback = async (newUserInfo: UserInfo) => {
+            await syncItemsWithLocalStorage(newUserInfo)
+            await getSubscribedPodcasts()
+            await askToSyncWithNowPlayingItem()
+            await parseAllAddByRSSPodcasts()
+            await combineWithAddByRSSPodcasts()
+          }
+          askToSyncLocalPodcastsWithServer(localUserInfo, serverUserInfo, callback)
+        } catch (error) {
+          console.log('loginUser setGlobal callback error:', error)
+        }
       }
-    }, async () => {
-      try {
-        await syncItemsWithLocalStorage(userInfo)
-        await getSubscribedPodcasts()
-        await askToSyncWithNowPlayingItem()
-        await parseAllAddByRSSPodcasts()
-        await combineWithAddByRSSPodcasts()
-      } catch (error) {
-        console.log('loginUser setGlobal callback error:', error)
-      }
-    })
-
-    return userInfo
+    )
   } catch (error) {
     throw error
+  }
+}
+
+const askToSyncLocalPodcastsWithServer = (
+  localUserInfo: UserInfo, serverUserInfo: UserInfo, callback: any) => {
+  const localSubscribedPodcastIds = localUserInfo?.subscribedPodcastIds || []
+  const localAddByRSSPodcastFeedUrls = localUserInfo?.addByRSSPodcastFeedUrls || []
+  const serverSubscribedPodcastIds = serverUserInfo?.subscribedPodcastIds || []
+  const serverAddByRSSPodcastFeedUrls = serverUserInfo?.addByRSSPodcastFeedUrls || []
+
+  const unsavedSubscribedPodcastIds = localSubscribedPodcastIds?.filter(
+    (localId: string) =>
+      !serverSubscribedPodcastIds?.some((serverId: string) => serverId === localId)
+  )
+  const unsavedAddByRSSPodcastFeedUrls = localAddByRSSPodcastFeedUrls?.filter(
+    (localFeedUrl: string) =>
+      !serverAddByRSSPodcastFeedUrls?.some((serverFeedUrl: string) => serverFeedUrl === localFeedUrl)
+  )
+  
+  const handleSync = async () => {
+    for (const unsavedSubscribedPodcastId of unsavedSubscribedPodcastIds) {
+      await toggleSubscribeToPodcast(unsavedSubscribedPodcastId)
+    }
+
+    for (const unsavedAddByRSSPodcastFeedUrl of unsavedAddByRSSPodcastFeedUrls) {
+      const feedCredentials = await getPodcastCredentials(unsavedAddByRSSPodcastFeedUrl)
+      if (feedCredentials) {
+        await addAddByRSSPodcastWithCredentials(unsavedAddByRSSPodcastFeedUrl, feedCredentials)
+      } else {
+        await addAddByRSSPodcast(unsavedAddByRSSPodcastFeedUrl)
+      }
+    }
+
+    const newUserInfo = await getAuthUserInfo()
+
+    await callback(newUserInfo)
+  }
+
+  const hasUnsavedPodcasts = unsavedSubscribedPodcastIds.length > 0
+    || unsavedAddByRSSPodcastFeedUrls.length > 0
+  if (hasUnsavedPodcasts) {
+    Alert.alert(
+      PV.Alerts.ASK_TO_SYNC_LOCAL_PODCASTS_WITH_SERVER(handleSync, callback).title,
+      PV.Alerts.ASK_TO_SYNC_LOCAL_PODCASTS_WITH_SERVER(handleSync, callback).message,
+      PV.Alerts.ASK_TO_SYNC_LOCAL_PODCASTS_WITH_SERVER(handleSync, callback).buttons
+    )
+  } else {
+    callback()
   }
 }
 
