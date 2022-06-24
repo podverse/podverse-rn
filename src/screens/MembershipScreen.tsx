@@ -227,7 +227,7 @@ const comparisonData = [
     column2: true,
     accessibilityLabel: translate('Download episodes'),
     videoUrl:
-      'https://peertube.podverse.fm/static/streaming-playlists/hls/3bdcef88-cb8d-429a-a126-3a6fd65784c9/1a3807fa-7198-4b71-8572-6b9eda207c21-1080-fragmented.mp4'
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/04138079-cc99-41ae-8080-8a5ed34be417/d4760840-77d3-4ad7-b71c-3ab5856696a1-360-fragmented.mp4'
   },
   {
     text: translate('Audio livestreams'),
@@ -249,7 +249,9 @@ const comparisonData = [
     text: translate('Add custom RSS feeds'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('Add custom RSS feeds')
+    accessibilityLabel: translate('Add custom RSS feeds'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/8c6541ac-9523-42a9-9f6b-b8e1629720ee/8aa0df27-e695-4e17-8a19-6907892a05b6-360-fragmented.mp4'
   },
   {
     text: translate('Sleep timer'),
@@ -275,7 +277,9 @@ const comparisonData = [
     text: translate('Podcasting 2.0 cross-app comments'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('Podcasting 2.0 cross-app comments')
+    accessibilityLabel: translate('Podcasting 2.0 cross-app comments'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/e214c3a9-9c2e-4d70-9f88-c3820a7189df/83febd73-b612-4e92-bfb8-e55a438d1f44-360-fragmented.mp4'
   },
   {
     text: translate('Podcasting 2.0 transcripts'),
@@ -327,13 +331,17 @@ const comparisonData = [
     text: translate('Create and share playlists'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('Create and share playlists')
+    accessibilityLabel: translate('Create and share playlists'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/2a1d5f03-7415-4462-9758-738f7c93f68c/be7c693f-aab8-4da8-ac56-3672d636fef5-360-fragmented.mp4'
   },
   {
     text: translate('Mark episodes as played'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('Mark episodes as played')
+    accessibilityLabel: translate('Mark episodes as played'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/ba616db8-9b46-436a-994f-383ff66576a2/9d0d8a84-5ae9-4fe1-b04b-c12a2a9a3350-360-fragmented.mp4'
   },
   {
     text: translate('Subscribe to listener profiles'),
