@@ -5,6 +5,7 @@ import { getDownloadedPodcast, removeDownloadedPodcast } from '../lib/downloaded
 import { hasValidNetworkConnection } from '../lib/network'
 import { getAuthorityFeedUrlFromArray, requestAppStoreReviewForSubscribedPodcast } from '../lib/utility'
 import { PV } from '../resources'
+import { updateAutoQueueSettings } from '../state/actions/autoQueue'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { handleAutoDownloadEpisodesAddByRSSPodcasts, removeAutoDownloadSetting } from './autoDownloads'
 import { getAddByRSSPodcastsLocally, removeAddByRSSPodcast } from './parser'
@@ -224,6 +225,8 @@ export const toggleSubscribeToPodcast = async (id: string, skipRequestReview = f
   if (isUnsubscribing) {
     await removeDownloadedPodcast(id)
     await setDownloadedEpisodeLimit(id)
+    const autoQueueOn = false
+    updateAutoQueueSettings(id, autoQueueOn)
   } else if (!skipRequestReview) {
     requestAppStoreReviewForSubscribedPodcast()
   }
@@ -262,16 +265,6 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
     endpoint: `/podcast/toggle-subscribe/${id}`,
     headers: { Authorization: bearerToken }
   })
-
-  let podcastIds = []
-  const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
-  if (itemsString) {
-    podcastIds = JSON.parse(itemsString)
-    podcastIds = addOrRemovePodcastIdFromArray(podcastIds, id)
-  }
-  if (Array.isArray(podcastIds)) {
-    await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(podcastIds))
-  }
 
   return response && response.data
 }

@@ -31,7 +31,7 @@ export const updateAutoQueueSettings = (podcastId: string, autoQueueOn: boolean)
       autoQueueSettings
     },
     async () => {
-      const newAutoQueueSettings = await updateAutoQueueSettingsService(podcastId)
+      const newAutoQueueSettings = await updateAutoQueueSettingsService(podcastId, autoQueueOn)
       setGlobal({ autoQueueSettings: newAutoQueueSettings })
     }
   )
