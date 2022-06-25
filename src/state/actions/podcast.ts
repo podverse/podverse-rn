@@ -92,7 +92,7 @@ export const toggleSubscribeToPodcast = async (id: string) => {
 }
 
 export const removeAddByRSSPodcast = async (feedUrl: string) => {
-  await removeAddByRSSPodcastService(feedUrl)  
+  await removeAddByRSSPodcastService(feedUrl)
   await combineWithAddByRSSPodcasts()
   PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
 }
