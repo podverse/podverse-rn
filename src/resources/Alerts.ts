@@ -15,6 +15,22 @@ const _sendVerificationEmailMessage = translate(
 const _cancelText = translate('Cancel')
 
 export const Alerts = {
+  ASK_TO_SYNC_LOCAL_PODCASTS_WITH_SERVER: (handleSync: any, callback: any) => {
+    return {
+      message: `${translate('Ask to sync local podcasts with server')}`,
+      title: `${translate('Sync podcasts')}`,
+      buttons: [
+        {
+          text: translate('No remove them'),
+          onPress: callback
+        },
+        {
+          text: translate('Yes save them'),
+          onPress: handleSync
+        }
+      ]
+    }
+  },
   ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM: (item: NowPlayingItem, callback: any) => {
     const title = item.clipId ? item.clipTitle : item.episodeTitle
     const type = item.clipId ? translate('Clip') : translate('Episode')
