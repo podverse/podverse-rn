@@ -228,18 +228,16 @@ export const loginUser = async (credentials: Credentials) => {
 
 const askToSyncLocalPodcastsWithServer = (
   localUserInfo: UserInfo, serverUserInfo: UserInfo, callback: any) => {
-  const localSubscribedPodcastIds = localUserInfo?.subscribedPodcastIds || []
-  const localAddByRSSPodcastFeedUrls = localUserInfo?.addByRSSPodcastFeedUrls || []
-  const serverSubscribedPodcastIds = serverUserInfo?.subscribedPodcastIds || []
-  const serverAddByRSSPodcastFeedUrls = serverUserInfo?.addByRSSPodcastFeedUrls || []
+  const localSubscribedPodcastIds: string[] = localUserInfo?.subscribedPodcastIds || []
+  const localAddByRSSPodcastFeedUrls: string[] = localUserInfo?.addByRSSPodcastFeedUrls || []
+  const serverSubscribedPodcastIds: string[] = serverUserInfo?.subscribedPodcastIds || []
+  const serverAddByRSSPodcastFeedUrls: string[] = serverUserInfo?.addByRSSPodcastFeedUrls || []
 
   const unsavedSubscribedPodcastIds = localSubscribedPodcastIds?.filter(
-    (localId: string) =>
-      !serverSubscribedPodcastIds?.some((serverId: string) => serverId === localId)
+    (localId: string) => !serverSubscribedPodcastIds?.includes(localId)
   )
   const unsavedAddByRSSPodcastFeedUrls = localAddByRSSPodcastFeedUrls?.filter(
-    (localFeedUrl: string) =>
-      !serverAddByRSSPodcastFeedUrls?.some((serverFeedUrl: string) => serverFeedUrl === localFeedUrl)
+    (localFeedUrl: string) => !serverAddByRSSPodcastFeedUrls?.includes(localFeedUrl)
   )
   
   const handleSync = async () => {
