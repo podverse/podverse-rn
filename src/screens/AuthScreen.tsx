@@ -62,7 +62,7 @@ export class AuthScreen extends React.Component<Props, State> {
     this.setState({ isLoadingLogin: true }, () => {
       (async () => {
         try {
-          await loginUser(credentials, navigation)
+          await loginUser(credentials)
           if (navigation.getParam('isOnboarding', false)) {
             navigation.navigate(PV.RouteNames.MainApp)
           } else {

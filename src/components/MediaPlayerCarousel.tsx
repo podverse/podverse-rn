@@ -50,7 +50,7 @@ const _commentsKey = '_commentsKey'
 const _transcriptKey = '_transcriptKey'
 
 const accessibilityNowPlayingInfo = {
-  label: translate('Now Playing Info'),
+  label: translate('Episode Summary'),
   value: _nowPlayingInfoKey
 }
 

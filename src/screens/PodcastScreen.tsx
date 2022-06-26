@@ -697,7 +697,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     const id = podcast?.id || podcastId
 
     if (id) {
-      updateAutoQueueSettings(id, autoAddToQueueOn)
+      updateAutoQueueSettings(id, !autoAddToQueueOn)
     }
   }
 

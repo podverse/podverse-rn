@@ -19,10 +19,9 @@ export const getAutoQueueSettings = async () => {
   }
 }
 
-export const updateAutoQueueSettings = async (podcastId: string) => {
+export const updateAutoQueueSettings = async (podcastId: string, autoQueueOn: boolean) => {
   const settings = await getAutoQueueSettings()
-  const currentSetting = settings[podcastId]
-  settings[podcastId] = !currentSetting
+  settings[podcastId] = autoQueueOn
   await AsyncStorage.setItem(PV.Keys.AUTO_QUEUE_SETTINGS, JSON.stringify(settings))
   return settings
 }
@@ -55,9 +54,12 @@ export const handleAutoQueueEpisodes = async (dateISOString: string) => {
   const autoQueuePodcastIds = Object.keys(autoQueueSettings).filter((key: string) => autoQueueSettings[key] === true)
 
   const autoQueueEpisodes = await getEpisodesSincePubDate(dateISOString, autoQueuePodcastIds)
+  
+  // Make sure we accidentally don't send an unlimited number of requests to our server.
+  const limitedAutoQueueEpisodes = autoQueueEpisodes.slice(0, 50)
 
   const unsortedNowPlayingItems: NowPlayingItem[] = []
-  for (const episode of autoQueueEpisodes) {
+  for (const episode of limitedAutoQueueEpisodes) {
     unsortedNowPlayingItems.push(convertToNowPlayingItem(episode))
   }
 
