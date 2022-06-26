@@ -687,5 +687,14 @@
     "Login to enable podcast notifications": "Logg inn for å skru på merknader for nettradioopptak",
     "Audio livestreams": "Lyd-direktestrømmer",
     "Feature Demo": "Funksjonsdemo",
-    "Send Bitcoin donations and boostagrams": "Send bitcoin-donasjoner og boostagrammer (kun på nettsiden)"
+    "Send Bitcoin donations and boostagrams": "Send bitcoin-donasjoner og boostagrammer (kun på nettsiden)",
+    "Last": "Sist",
+    "Yes save them": "Ja, lagre dem",
+    "Ask to sync local podcasts with server": "Vil du lagre abonnerer på nettradioopptak som kun er å finne på enheten til din Podverse premium?",
+    "No remove them": "Nei, fjern dem",
+    "Sync podcasts": "Synkroniser nettradioopptak",
+    "Automatically add new episodes to queue": "Legg til nye episoder til i køen automatisk",
+    "Auto queue new episodes position": "Posisjon for automatisk kølegging av nye episoder",
+    "ARIA HINT - auto queue new episodes position": "Hvorvidt nye episoder skal legges til på begynnelsen eller slutten av køen når automatisk kølegging er påskrudd for et nettradioopptak.",
+    "Auto queue position helper text": "Hvor nye episoder skal legges til i køen når automatisk kølegging er påskrudd for et nettradioopptak."
 }
