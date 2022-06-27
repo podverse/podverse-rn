@@ -23,6 +23,7 @@ const initialTheme: InitialState = {
   customWebDomain: '',
   customWebDomainEnabled: false,
   errorReportingEnabled: false,
+  hideCompleted: false,
   listenTrackingEnabled: false,
   offlineModeEnabled: false,
   jumpBackwardsTime: PV.Player.jumpBackSeconds.toString(),

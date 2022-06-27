@@ -46,9 +46,8 @@ console.log(process.env.DEVICE_TYPE)
     await driver.back()
   }
 
-  await elementByIdAndClickAndTest('settings_screen_visual_design_table_cell_wrapper', 'settings_screen_visual_view','Visual Design')
-  // await elementByIdToggle('settings_screen_visual_dark_mode_switch','Visual Design: Dark Mode toggle')
-  await elementByIdToggle('settings_screen_visual_censor_nsfw_text_switch','Visual Design: NSFW toggle')
+  await elementByIdAndClickAndTest('settings_screen_other_table_cell_wrapper', 'settings_screen_other_view','Other')
+  await elementByIdToggle('settings_screen_other_censor_nsfw_text_switch','Other: NSFW toggle')
   await driver.back()
 
   await driver.back()
