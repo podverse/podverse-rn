@@ -19,6 +19,7 @@ export const initializeSettings = async () => {
     customWebDomain,
     customWebDomainEnabled,
     errorReportingEnabled,
+    hideCompleted,
     listenTrackingEnabled,
     urlsAPI,
     urlsWeb,
@@ -33,6 +34,7 @@ export const initializeSettings = async () => {
     AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN),
     AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED),
     AsyncStorage.getItem(PV.Keys.ERROR_REPORTING_ENABLED),
+    AsyncStorage.getItem(PV.Keys.HIDE_COMPLETED),
     checkIfTrackingIsEnabled(),
     PV.URLs.api(),
     PV.URLs.web(),
@@ -56,6 +58,7 @@ export const initializeSettings = async () => {
     customWebDomain: customWebDomain ? customWebDomain : PV.URLs.webDefaultBaseUrl,
     customWebDomainEnabled: customWebDomainEnabled === 'TRUE',
     errorReportingEnabled,
+    hideCompleted,
     listenTrackingEnabled,
     offlineModeEnabled,
     jumpBackwardsTime: jumpBackwardsTime || PV.Player.jumpBackSeconds,
@@ -74,6 +77,14 @@ export const setCensorNSFWText = (value: boolean) => {
     value
       ? await AsyncStorage.setItem(PV.Keys.CENSOR_NSFW_TEXT, 'TRUE')
       : await AsyncStorage.removeItem(PV.Keys.CENSOR_NSFW_TEXT)
+  })
+}
+
+export const setHideCompleted = (value: boolean) => {
+  setGlobal({ hideCompleted: value }, async () => {
+    value
+      ? await AsyncStorage.setItem(PV.Keys.HIDE_COMPLETED, 'TRUE')
+      : await AsyncStorage.removeItem(PV.Keys.HIDE_COMPLETED)
   })
 }
 
