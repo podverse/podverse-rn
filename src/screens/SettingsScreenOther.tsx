@@ -7,31 +7,36 @@ import { ScrollView, SwitchWithText, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
-import { setCensorNSFWText } from '../state/actions/settings'
+import { setCensorNSFWText, setHideCompleted } from '../state/actions/settings'
 import { core, darkTheme, lightTheme } from '../styles'
 
 type Props = {
   navigation: any
 }
 
-const testIDPrefix = 'settings_screen_visual'
+const testIDPrefix = 'settings_screen_other'
 
-export class SettingsScreenVisualDesign extends React.Component<Props> {
+export class SettingsScreenOther extends React.Component<Props> {
   constructor(props: Props) {
     super(props)
   }
 
   static navigationOptions = () => ({
-    title: translate('Visual Design')
+    title: translate('Other')
   })
 
   componentDidMount() {
-    trackPageView('/settings-visual-design', 'Settings Screen Visual Design')
+    trackPageView('/settings-others', 'Settings Screen Other')
   }
 
   _handleToggleNSFWText = async () => {
     const censorNSFWText = await AsyncStorage.getItem(PV.Keys.CENSOR_NSFW_TEXT)
     setCensorNSFWText(!censorNSFWText)
+  }
+
+  _handleToggleHideCompletedByDefault = async () => {
+    const hideCompleted = await AsyncStorage.getItem(PV.Keys.HIDE_COMPLETED)
+    setHideCompleted(!hideCompleted)
   }
 
   _toggleTheme = async () => {
@@ -45,7 +50,7 @@ export class SettingsScreenVisualDesign extends React.Component<Props> {
   }
 
   render() {
-    const { censorNSFWText, globalTheme } = this.global
+    const { censorNSFWText, globalTheme, hideCompleted } = this.global
 
     return (
       <ScrollView
@@ -72,6 +77,15 @@ export class SettingsScreenVisualDesign extends React.Component<Props> {
             testID={`${testIDPrefix}_censor_nsfw_text`}
             text={translate('Censor NSFW text')}
             value={!!censorNSFWText}
+          />
+        </View>
+        <View style={core.itemWrapper}>
+          <SwitchWithText
+            accessibilityLabel={translate('Hide completed episodes by default')}
+            onValueChange={this._handleToggleHideCompletedByDefault}
+            testID={`${testIDPrefix}_hide_completed`}
+            text={translate('Hide completed episodes by default')}
+            value={!!hideCompleted}
           />
         </View>
       </ScrollView>
