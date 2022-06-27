@@ -120,11 +120,13 @@ export const removeHistoryItem = async (item: NowPlayingItem) => {
 
 export const getHistoryItemIndexInfoForEpisode = (episodeId: string) => {
   const globalState = getGlobal()
-  const mediaFileDuration = globalState.session?.userInfo?.historyItemsIndex?.episodes[episodeId]?.mediaFileDuration
-  const userPlaybackPosition =
-    globalState.session?.userInfo?.historyItemsIndex?.episodes[episodeId]?.userPlaybackPosition
+  const episode = globalState.session?.userInfo?.historyItemsIndex?.episodes[episodeId]
+  const completed = episode?.completed
+  const mediaFileDuration = episode?.mediaFileDuration
+  const userPlaybackPosition = episode?.userPlaybackPosition
 
   return {
+    completed,
     mediaFileDuration,
     userPlaybackPosition
   }

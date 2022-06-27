@@ -148,15 +148,15 @@ export class SettingsScreen extends React.Component<Props, State> {
             </Text>
           </TableCell>
           <TableCell
-            accessibilityLabel={translate('Visual Design')}
+            accessibilityLabel={translate('Other')}
             includeDivider
-            onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenVisualDesign)}
-            testIDPrefix={`${testIDPrefix}_visual_design`}
+            onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenOther)}
+            testIDPrefix={`${testIDPrefix}_other`}
             testIDSuffix=''>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-              {translate('Visual Design')}
+              {translate('Other')}
             </Text>
           </TableCell>
           {!Config.DISABLE_CUSTOM_DOMAINS && (

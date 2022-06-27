@@ -101,6 +101,7 @@ export interface InitialState {
   customWebDomain?: string
   customWebDomainEnabled?: boolean
   errorReportingEnabled: boolean
+  hideCompleted: boolean
   listenTrackingEnabled: boolean
   urlsAPI?: any
   urlsWeb?: any
@@ -267,6 +268,7 @@ export interface IFilters {
   _allEpisodesKey: string
   _podcastsKey: string
   _episodesKey: string
+  _showCompletedKey: string
   _clipsKey: string
   _chaptersKey: string
   _playlistsKey: string
