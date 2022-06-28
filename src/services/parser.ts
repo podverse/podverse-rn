@@ -260,131 +260,136 @@ export const removePodcastCredentials = async (feedUrl: string) => {
 }
 
 export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string) => {
-  const userAgent = getAppUserAgent()
+  try {
+    const userAgent = getAppUserAgent()
+    const Authorization = credentials ? `Basic ${btoa(credentials)}` : ''
 
-  const Authorization = credentials ? `Basic ${btoa(credentials)}` : ''
+    const result = await podcastFeedParser.getPodcastFromURL({
+      url: feedUrl,
+      headers: {
+        'User-Agent': userAgent,
+        ...(Authorization ? { Authorization } : {})
+      },
+      timeout: 20000
+    })
 
-  const result = await podcastFeedParser.getPodcastFromURL({
-    url: feedUrl,
-    headers: {
-      'User-Agent': userAgent,
-      ...(Authorization ? { Authorization } : {})
-    },
-    timeout: 20000
-  })
-
-  if (credentials) {
-    await savePodcastCredentials(feedUrl, credentials)
-  } else {
-    await removePodcastCredentials(feedUrl)
-  }
-
-  const { episodes: parsedEpisodes, meta } = result
-
-  const title = meta.title && meta.title.trim()
-  if (!title) {
-    throw new Error('parseAddByRSSPodcast: Title not defined')
-  }
-  const podcast = {} as any
-
-  // A unique podcast.id is needed for specialUserInfoForPodcast
-  podcast.id = uuidv4()
-
-  podcast.addByRSSPodcastFeedUrl = feedUrl
-  // The podcast.id must be set to the addByRSSPodcastFeedUrl for
-  // addDownloadedPodcastEpisode to work properly.
-  podcast.id = feedUrl
-
-  podcast.description = meta.description && meta.description.trim()
-
-  const feedLastUpdated = new Date(meta.lastBuildDate || meta.pubDate)
-  podcast.feedLastUpdated = isValidDate(feedLastUpdated) ? feedLastUpdated : new Date()
-
-  podcast.funding = meta.funding
-  podcast.guid = meta.guid
-  podcast.imageUrl = meta.imageURL
-  podcast.isExplicit = meta.explicit
-  podcast.language = meta.language
-
-  podcast.linkUrl = meta.link
-  podcast.sortableTitle = convertToSortableTitle(title)
-  podcast.subtitle = meta.subtitle && meta.subtitle.trim()
-  podcast.title = title
-  podcast.type = meta.type
-  podcast.value = meta.value
-
-  const episodes = [] as any[]
-
-  /* If a feed has more video episodes than audio episodes, mark it as a hasVideo podcast. */
-  let videoCount = 0
-  let audioCount = 0
-
-  if (parsedEpisodes && Array.isArray(parsedEpisodes)) {
-    parsedEpisodes.sort((a, b) => (new Date(b.pubDate) as any) - (new Date(a.pubDate) as any))
-
-    if (parsedEpisodes[0]) {
-      const lastEpisodePubDate = new Date(parsedEpisodes[0].pubDate)
-      podcast.lastEpisodePubDate = isValidDate(lastEpisodePubDate) && lastEpisodePubDate
-      podcast.lastEpisodePubDate = podcast.lastEpisodePubDate || parsedEpisodes[0].published || new Date()
-      podcast.lastEpisodeTitle = parsedEpisodes[0].title && parsedEpisodes[0].title.trim()
+    if (credentials) {
+      await savePodcastCredentials(feedUrl, credentials)
+    } else {
+      await removePodcastCredentials(feedUrl)
     }
 
-    for (const parsedEpisode of parsedEpisodes) {
-      const episode = {} as any
-      const enclosure = parsedEpisode.enclosure
-      if (!enclosure || !enclosure.url) continue
+    const { episodes: parsedEpisodes, meta } = result
 
-      episode.addedByRSS = true
+    const title = meta.title && meta.title.trim()
+    if (!title) {
+      throw new Error('parseAddByRSSPodcast: Title not defined')
+    }
+    const podcast = {} as any
 
-      // The episode.mediaUrl is used as the unique id by the downloads service,
-      // and as the unique key by the FlatList component.
-      episode.id = enclosure.url
-      episode.mediaUrl = enclosure.url
+    // A unique podcast.id is needed for specialUserInfoForPodcast
+    podcast.id = uuidv4()
 
-      // TODO: add chapters support for podcasts added by RSS feed
-      // if (parsedEpisode.chapters) {
-      //   episode.chaptersUrl = parsedEpisode.chapters.url
-      //   episode.chaptersType = parsedEpisode.chapters.type
-      // }
+    podcast.addByRSSPodcastFeedUrl = feedUrl
+    // The podcast.id must be set to the addByRSSPodcastFeedUrl for
+    // addDownloadedPodcastEpisode to work properly.
+    podcast.id = feedUrl
 
-      episode.description = parsedEpisode.description && parsedEpisode.description.trim()
-      episode.duration = parsedEpisode.duration ? parseInt(parsedEpisode.duration, 10) : 0
-      episode.episodeType = parsedEpisode.type
-      episode.funding = parsedEpisode.funding
-      episode.guid = parsedEpisode.guid
-      episode.imageUrl = parsedEpisode.image
-      episode.isExplicit = parsedEpisode.explicit
-      episode.isPublic = true
-      episode.linkUrl = parsedEpisode.link
-      episode.mediaType = enclosure.type
+    podcast.description = meta.description && meta.description.trim()
 
-      const pubDate = new Date(parsedEpisode.pubDate)
-      episode.pubDate = isValidDate(pubDate) ? pubDate : new Date()
+    const feedLastUpdated = new Date(meta.lastBuildDate || meta.pubDate)
+    podcast.feedLastUpdated = isValidDate(feedLastUpdated) ? feedLastUpdated : new Date()
 
-      episode.soundbite = parsedEpisode.soundbite
-      episode.subtitle = parsedEpisode.subtitle && parsedEpisode.subtitle.trim()
-      episode.title = parsedEpisode.title && parsedEpisode.title.trim()
-      episode.value = parsedEpisode.value
+    podcast.funding = meta.funding
+    podcast.guid = meta.guid
+    podcast.imageUrl = meta.imageURL
+    podcast.isExplicit = meta.explicit
+    podcast.language = meta.language
 
-      if (parsedEpisode.mediaType && parsedEpisode.mediaType.indexOf('video') >= 0) {
-        videoCount++
-      } else {
-        audioCount++
+    podcast.linkUrl = meta.link
+    podcast.sortableTitle = convertToSortableTitle(title)
+    podcast.subtitle = meta.subtitle && meta.subtitle.trim()
+    podcast.title = title
+    podcast.type = meta.type
+    podcast.value = meta.value
+
+    const episodes = [] as any[]
+
+    /* If a feed has more video episodes than audio episodes, mark it as a hasVideo podcast. */
+    let videoCount = 0
+    let audioCount = 0
+
+    if (parsedEpisodes && Array.isArray(parsedEpisodes)) {
+      parsedEpisodes.sort((a, b) => (new Date(b.pubDate) as any) - (new Date(a.pubDate) as any))
+
+      if (parsedEpisodes[0]) {
+        const lastEpisodePubDate = new Date(parsedEpisodes[0].pubDate)
+        podcast.lastEpisodePubDate = isValidDate(lastEpisodePubDate) && lastEpisodePubDate
+        podcast.lastEpisodePubDate = podcast.lastEpisodePubDate || parsedEpisodes[0].published || new Date()
+        podcast.lastEpisodeTitle = parsedEpisodes[0].title && parsedEpisodes[0].title.trim()
       }
 
-      episodes.push(episode)
+      for (const parsedEpisode of parsedEpisodes) {
+        const episode = {} as any
+        const enclosure = parsedEpisode.enclosure
+        if (!enclosure || !enclosure.url) continue
+
+        episode.addedByRSS = true
+
+        // The episode.mediaUrl is used as the unique id by the downloads service,
+        // and as the unique key by the FlatList component.
+        episode.id = enclosure.url
+        episode.mediaUrl = enclosure.url
+
+        // TODO: add chapters support for podcasts added by RSS feed
+        // if (parsedEpisode.chapters) {
+        //   episode.chaptersUrl = parsedEpisode.chapters.url
+        //   episode.chaptersType = parsedEpisode.chapters.type
+        // }
+
+        episode.description = parsedEpisode.description && parsedEpisode.description.trim()
+        episode.duration = parsedEpisode.duration ? parseInt(parsedEpisode.duration, 10) : 0
+        episode.episodeType = parsedEpisode.type
+        episode.funding = parsedEpisode.funding
+        episode.guid = parsedEpisode.guid
+        episode.imageUrl = parsedEpisode.image
+        episode.isExplicit = parsedEpisode.explicit
+        episode.isPublic = true
+        episode.linkUrl = parsedEpisode.link
+        episode.mediaType = enclosure.type
+
+        const pubDate = new Date(parsedEpisode.pubDate)
+        episode.pubDate = isValidDate(pubDate) ? pubDate : new Date()
+
+        episode.soundbite = parsedEpisode.soundbite
+        episode.subtitle = parsedEpisode.subtitle && parsedEpisode.subtitle.trim()
+        episode.title = parsedEpisode.title && parsedEpisode.title.trim()
+        episode.value = parsedEpisode.value
+
+        if (parsedEpisode.mediaType && parsedEpisode.mediaType.indexOf('video') >= 0) {
+          videoCount++
+        } else {
+          audioCount++
+        }
+
+        episodes.push(episode)
+      }
     }
+
+    episodes.sort((a, b) => (new Date(b.pubDate) as any) - (new Date(a.pubDate) as any))
+
+    podcast.episodes = episodes
+    podcast.hasVideo = videoCount > audioCount
+
+    await addAddByRSSPodcastFeedUrlLocally(feedUrl)
+    await addParsedAddByRSSPodcastLocally(podcast)
+
+    return podcast
+  } catch (error) {
+    console.log('parseAddByRSSPodcast error:', error)
+    const previouslySavedPodcast = await getAddByRSSPodcastLocally(feedUrl)
+    return previouslySavedPodcast
   }
-
-  episodes.sort((a, b) => (new Date(b.pubDate) as any) - (new Date(a.pubDate) as any))
-
-  podcast.episodes = episodes
-  podcast.hasVideo = videoCount > audioCount
-
-  await addAddByRSSPodcastFeedUrlLocally(feedUrl)
-  await addParsedAddByRSSPodcastLocally(podcast)
-
-  return podcast
 }
 
 const addParsedAddByRSSPodcastLocally = async (parsedPodcast: any) => {
