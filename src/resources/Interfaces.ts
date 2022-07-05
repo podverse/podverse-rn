@@ -1,6 +1,6 @@
 import { TranscriptRow, ValueTransaction } from 'podverse-shared'
 import { AutoQueueSettingsPosition } from '../services/queue'
-import type { AppModes } from './AppMode'
+import { AppModes } from './AppMode'
 export interface GlobalTheme {
   actionSheetButton?: any
   actionSheetButtonCancel?: any

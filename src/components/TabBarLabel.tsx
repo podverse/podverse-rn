@@ -2,7 +2,7 @@ import React from 'reactn'
 import { Text } from 'react-native'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import type { AppModes } from '../resources/AppMode'
+import { AppModes } from '../resources/AppMode'
 import { tabbar } from '../styles'
 
 type TabKey = 'Podcasts' | 'Episodes' | 'Clips' | 'My Library' | 'More'
@@ -52,4 +52,3 @@ export class TabBarLabel extends React.Component<Props> {
     )
   }
 }
-

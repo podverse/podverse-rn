@@ -23,8 +23,9 @@ export const handleAutoDownloadEpisodes = async (dateISOString: string) => {
 
   const autoDownloadSettingsString = await AsyncStorage.getItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS)
   const autoDownloadSettings = autoDownloadSettingsString ? JSON.parse(autoDownloadSettingsString) : {}
-  const autoDownloadPodcastIds =
-    Object.keys(autoDownloadSettings).filter((key: string) => autoDownloadSettings[key] === true)
+  const autoDownloadPodcastIds = Object.keys(autoDownloadSettings).filter(
+    (key: string) => autoDownloadSettings[key] === true
+  )
 
   const autoDownloadEpisodes = await getEpisodesSincePubDate(dateISOString, autoDownloadPodcastIds)
 

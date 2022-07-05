@@ -8,8 +8,7 @@ import { trackPageView } from '../services/tracking'
 
 type Props = any
 
-const termsOfServiceText =
-`${translate('TermsOfServiceScreenText1')}
+const termsOfServiceText = `${translate('TermsOfServiceScreenText1')}
   
 ${translate('TermsOfServiceScreenText2')}
 
@@ -23,8 +22,7 @@ ${translate('TermsOfServiceScreenText6')}
 
 ${translate('TermsOfServicesScreenText7')}`
 
-const popularityAnalyticsText =
-`${translate('TermsOfServiceScreenMatomoTrackingText1')}
+const popularityAnalyticsText = `${translate('TermsOfServiceScreenMatomoTrackingText1')}
 
 ${translate('TermsOfServiceScreenMatomoTrackingText2')}
 

@@ -160,10 +160,7 @@ const convertValueTagIntoValueTransaction = async (
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
 
   const timestamp = Date.now()
-  const [speed, currentPlaybackPosition] = await Promise.all([
-    playerGetRate(),
-    playerGetPosition()
-  ])
+  const [speed, currentPlaybackPosition] = await Promise.all([playerGetRate(), playerGetPosition()])
   const pubkey = 'podverse-pubkey'
 
   const satoshiStreamStats = createSatoshiStreamStats(

@@ -24,13 +24,13 @@ type Props = {
 }
 
 export const PVText = (props: Props) => {
-  const { 
+  const {
     accessible,
     accessibilityHint,
     accessibilityLabel,
     accessibilityRole,
     allowFontScaling,
-    children,    
+    children,
     fontSizeLargerScale,
     fontSizeLargestScale,
     importantForAccessibility,
@@ -40,7 +40,8 @@ export const PVText = (props: Props) => {
     onPress,
     selectable,
     style,
-    testID } = props
+    testID
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const [censorNSFWText] = useGlobal('censorNSFWText')
@@ -59,7 +60,7 @@ export const PVText = (props: Props) => {
 
   const isValidTextNode = typeof children === 'string' || typeof children === 'number'
 
-  return (isValidTextNode ?
+  return isValidTextNode ? (
     <Text
       accessible={accessible}
       accessibilityHint={accessibilityHint}
@@ -73,6 +74,6 @@ export const PVText = (props: Props) => {
       style={textStyle}
       {...(testID ? { testID: testID.prependTestId() } : {})}>
       {children.toString().sanitize(censorNSFWText)}
-    </Text> : null
-  )
+    </Text>
+  ) : null
 }

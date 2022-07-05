@@ -24,18 +24,12 @@ export const checkIfLoggedIn = async () => {
 }
 
 export const checkIfShouldUseServerData = async () => {
-  const [isLoggedIn, isConnected] = await Promise.all([
-    checkIfLoggedIn(),
-    hasValidNetworkConnection()
-  ]) 
+  const [isLoggedIn, isConnected] = await Promise.all([checkIfLoggedIn(), hasValidNetworkConnection()])
   return isLoggedIn && isConnected
 }
 
 export const getAuthenticatedUserInfo = async () => {
-  const [bearerToken, isConnected] = await Promise.all([
-    getBearerToken(),
-    hasValidNetworkConnection()
-  ])
+  const [bearerToken, isConnected] = await Promise.all([getBearerToken(), hasValidNetworkConnection()])
 
   if (isConnected && bearerToken) {
     return getAuthenticatedUserInfoFromServer(bearerToken)
@@ -153,10 +147,7 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
   const { addByRSSPodcastFeedUrls, subscribedPodcastIds = [] } = data
   const page = 1
 
-  const [
-    { userHistoryItems, userHistoryItemsCount },
-    queueItems
-  ] = await Promise.all([
+  const [{ userHistoryItems, userHistoryItemsCount }, queueItems] = await Promise.all([
     getHistoryItems(page),
     getQueueItems()
   ])

@@ -54,7 +54,7 @@ export const handleAutoQueueEpisodes = async (dateISOString: string) => {
   const autoQueuePodcastIds = Object.keys(autoQueueSettings).filter((key: string) => autoQueueSettings[key] === true)
 
   const autoQueueEpisodes = await getEpisodesSincePubDate(dateISOString, autoQueuePodcastIds)
-  
+
   // Make sure we accidentally don't send an unlimited number of requests to our server.
   const limitedAutoQueueEpisodes = autoQueueEpisodes.slice(0, 50)
 
@@ -65,7 +65,7 @@ export const handleAutoQueueEpisodes = async (dateISOString: string) => {
 
   const autoQueueSettingsPosition = await getAutoQueueSettingsPosition()
   let orderedNowPlayingItems: NowPlayingItem[] = []
-  
+
   if (autoQueueSettingsPosition === 'next') {
     orderedNowPlayingItems = unsortedNowPlayingItems.sort((a, b) => {
       return new Date(b.episodePubDate) - new Date(a.episodePubDate)

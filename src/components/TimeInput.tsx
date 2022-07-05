@@ -79,11 +79,7 @@ export const TimeInput = (props: Props) => {
           style={{ flex: 1 }}
           testID={`${testID}_time_input_preview_button`.prependTestId()}>
           <View style={styles.previewIconWrapper}>
-            <Icon
-              color={globalTheme.dropdownButtonText.color}
-              name='play'
-              size={20}
-              style={styles.previewIcon} />
+            <Icon color={globalTheme.dropdownButtonText.color} name='play' size={20} style={styles.previewIcon} />
           </View>
         </PressableWithOpacity>
       )}
