@@ -71,7 +71,7 @@ export class ContactScreen extends React.Component<Props> {
     } else if (item.key === _generalKey) {
       Linking.openURL(createEmailLinkUrl(PV.Emails.GENERAL_CONTACT))
     } else if (item.key === _joinOurXMPPServerKey) {
-      navigation.navigate(PV.RouteNames.ContactXMPPChatScreen)      
+      navigation.navigate(PV.RouteNames.ContactXMPPChatScreen)
     } else if (item.key === _joinOurDiscordKey) {
       Linking.openURL(Config.URL_SOCIAL_DISCORD)
     }

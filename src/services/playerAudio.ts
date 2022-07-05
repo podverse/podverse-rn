@@ -257,7 +257,7 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
 
   const id = clipId || episodeId
   let finalFeedUrl = addByRSSPodcastFeedUrl
-
+  const isAddByRSSPodcast = !!addByRSSPodcastFeedUrl
   /*
     If credentials are required but it is a podcast stored in our database,
     then get the authority feedUrl for the podcast before proceeding.
@@ -268,8 +268,8 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
 
   if (episodeId) {
     const [isDownloadedFile, filePath] = await Promise.all([
-      checkIfFileIsDownloaded(episodeId, episodeMediaUrl),
-      getDownloadedFilePath(episodeId, episodeMediaUrl)
+      checkIfFileIsDownloaded(episodeId, episodeMediaUrl, isAddByRSSPodcast),
+      getDownloadedFilePath(episodeId, episodeMediaUrl, isAddByRSSPodcast)
     ])
 
     if (isDownloadedFile) {

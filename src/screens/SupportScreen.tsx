@@ -84,9 +84,8 @@ export class SupportScreen extends React.Component<Props> {
           <Text style={styles.listText}>- Creating Memes</Text>
           <Text style={styles.listText}>- Other ideas?</Text>
           <Text style={styles.text}>
-            If you are interested in contributing to Podverse,
-            please join our official XMPP chat server, Discord server,
-            or send us an email!
+            If you are interested in contributing to Podverse, please join our official XMPP chat server, Discord
+            server, or send us an email!
           </Text>
           <TextLink
             fontSizeLargestScale={PV.Fonts.largeSizes.md}

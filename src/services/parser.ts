@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { encode as btoa } from 'base-64'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { downloadEpisode } from '../lib/downloader'
+import { base64Encode } from '../lib/hash'
 import { checkIfContainsStringMatch, convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
@@ -9,7 +10,6 @@ import { getAutoDownloadSettings, getAutoDownloadsLastRefreshDate } from './auto
 import { combineWithAddByRSSPodcasts } from './podcast'
 import { request } from './request'
 const podcastFeedParser = require('@podverse/podcast-feed-parser')
-const uuidv4 = require('uuid/v4')
 
 /*
 addByRSSPodcasts: [addByRSSPodcast]
@@ -158,7 +158,6 @@ export const setAddByRSSPodcastFeedUrlsLocally = async (addByRSSPodcastFeedUrls:
 }
 
 export const parseAllAddByRSSPodcasts = async () => {
-
   const [urls, autoDownloadPodcastSettings, allAddByRSSPodcastCredentials] = await Promise.all([
     getAddByRSSPodcastFeedUrlsLocally(),
     getAutoDownloadSettings(),
@@ -287,9 +286,6 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
     }
     const podcast = {} as any
 
-    // A unique podcast.id is needed for specialUserInfoForPodcast
-    podcast.id = uuidv4()
-
     podcast.addByRSSPodcastFeedUrl = feedUrl
     // The podcast.id must be set to the addByRSSPodcastFeedUrl for
     // addDownloadedPodcastEpisode to work properly.
@@ -338,7 +334,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
 
         // The episode.mediaUrl is used as the unique id by the downloads service,
         // and as the unique key by the FlatList component.
-        episode.id = enclosure.url
+        episode.id = base64Encode(enclosure.url)
         episode.mediaUrl = enclosure.url
 
         // TODO: add chapters support for podcasts added by RSS feed

@@ -67,10 +67,7 @@ export const saveOrResetCurrentlyPlayingItemInHistory = async (
   nowPlayingItem: NowPlayingItem,
   skipSetNowPlaying: boolean
 ) => {
-  const [lastPosition, duration] = await Promise.all([
-    playerGetPosition(),
-    playerGetDuration()
-  ])
+  const [lastPosition, duration] = await Promise.all([playerGetPosition(), playerGetDuration()])
 
   const forceUpdateOrderDate = false
 
@@ -167,9 +164,7 @@ const addOrUpdateHistoryItemOnServer = async (
   const { clipId, episodeId, liveItem } = nowPlayingItem
 
   // Infinity happens in the case of live streams.
-  const duration = mediaFileDuration && mediaFileDuration !== Infinity
-    ? Math.floor(mediaFileDuration)
-    : 0
+  const duration = mediaFileDuration && mediaFileDuration !== Infinity ? Math.floor(mediaFileDuration) : 0
 
   await request({
     endpoint: '/user-history-item',
@@ -316,8 +311,7 @@ export const getHistoryItemEpisodeFromIndexLocally = async (episodeId: string) =
   return historyItemsIndex.episodes && historyItemsIndex.episodes[episodeId]
 }
 
-export const combineLocalHistoryItemsWithServerMetaHistoryItems =
-  async (serverMetaHistoryItems: any) => {
+export const combineLocalHistoryItemsWithServerMetaHistoryItems = async (serverMetaHistoryItems: any) => {
   const results = await getHistoryItemsLocally()
   const { userHistoryItems: localUserHistoryItems } = results
   const combinedHistoryItems = Object.assign(localUserHistoryItems, serverMetaHistoryItems)

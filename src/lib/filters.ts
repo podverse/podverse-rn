@@ -291,8 +291,8 @@ export const generateSections = (options: any) => {
         )
         sortItems = sortItems.filter((item) => item.value === PV.Filters._mostRecentKey)
       } else if (
-        selectedFilterItemKey === PV.Filters._episodesKey
-        || selectedFilterItemKey === PV.Filters._showCompletedKey
+        selectedFilterItemKey === PV.Filters._episodesKey ||
+        selectedFilterItemKey === PV.Filters._showCompletedKey
       ) {
         filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
           PV.FilterOptions.screenFilters.PodcastScreen.type.includes(item.value)

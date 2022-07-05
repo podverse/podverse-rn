@@ -165,7 +165,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     iapInitConnection()
 
-    messaging().onNotificationOpenedApp(async remoteMessage => {
+    messaging().onNotificationOpenedApp(async (remoteMessage) => {
       const podcastId = remoteMessage?.data?.podcastId
 
       if (remoteMessage && podcastId) {
@@ -179,32 +179,39 @@ export class PodcastsScreen extends React.Component<Props, State> {
       }
     })
 
-    messaging().getInitialNotification().then(async remoteMessage => {
-      const podcastId = remoteMessage?.data?.podcastId
-      const podcastTitle = remoteMessage?.data?.podcastTitle
-      const episodeTitle = remoteMessage?.data?.episodeTitle
-      const notificationType = remoteMessage?.data?.notificationType
-      const isLiveNotification = notificationType === 'live'
-      const timeSent = remoteMessage?.data?.timeSent
-      const currentDateTime = new Date()
-      const currentDateTime30MinutesEarlier = new Date(currentDateTime)
-      currentDateTime30MinutesEarlier.setMinutes(currentDateTime.getMinutes() - 30)
-      const wasRecentlySent = timeSent && new Date(timeSent) > currentDateTime30MinutesEarlier
+    messaging()
+      .getInitialNotification()
+      .then(async (remoteMessage) => {
+        const podcastId = remoteMessage?.data?.podcastId
+        const podcastTitle = remoteMessage?.data?.podcastTitle
+        const episodeTitle = remoteMessage?.data?.episodeTitle
+        const notificationType = remoteMessage?.data?.notificationType
+        const isLiveNotification = notificationType === 'live'
+        const timeSent = remoteMessage?.data?.timeSent
+        const currentDateTime = new Date()
+        const currentDateTime30MinutesEarlier = new Date(currentDateTime)
+        currentDateTime30MinutesEarlier.setMinutes(currentDateTime.getMinutes() - 30)
+        const wasRecentlySent = timeSent && new Date(timeSent) > currentDateTime30MinutesEarlier
 
-      if (remoteMessage && podcastId && isLiveNotification && wasRecentlySent) {
-        const GO_TO_LIVE_PODCAST = PV.Alerts.GO_TO_LIVE_PODCAST(
-          navigation, podcastId, podcastTitle, episodeTitle, this._goBackWithDelay)
-        Alert.alert(GO_TO_LIVE_PODCAST.title, GO_TO_LIVE_PODCAST.message, GO_TO_LIVE_PODCAST.buttons)
-      } else if (remoteMessage && podcastId) {
-        await this._goBackWithDelay()
-        setTimeout(() => {
-          navigation.navigate(PV.RouteNames.PodcastScreen, {
+        if (remoteMessage && podcastId && isLiveNotification && wasRecentlySent) {
+          const GO_TO_LIVE_PODCAST = PV.Alerts.GO_TO_LIVE_PODCAST(
+            navigation,
             podcastId,
-            forceRequest: true
-          })
-        }, 1555)
-      }
-    })
+            podcastTitle,
+            episodeTitle,
+            this._goBackWithDelay
+          )
+          Alert.alert(GO_TO_LIVE_PODCAST.title, GO_TO_LIVE_PODCAST.message, GO_TO_LIVE_PODCAST.buttons)
+        } else if (remoteMessage && podcastId) {
+          await this._goBackWithDelay()
+          setTimeout(() => {
+            navigation.navigate(PV.RouteNames.PodcastScreen, {
+              podcastId,
+              forceRequest: true
+            })
+          }, 1555)
+        }
+      })
 
     Linking.getInitialURL().then((initialUrl) => {
       // settimeout here gives a chance to the rest of
@@ -235,7 +242,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
       if (!appHasLaunched) {
-
         await Promise.all([
           AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true'),
           AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE'),
@@ -243,7 +249,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5'),
           AsyncStorage.setItem(PV.Keys.APP_MODE, PV.AppMode.podcasts)
         ])
-        
+
         if (!Config.DISABLE_CRASH_LOGS) {
           await AsyncStorage.setItem(PV.Keys.ERROR_REPORTING_ENABLED, 'TRUE')
         }
@@ -512,7 +518,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // before getting the latest from server and parsing the addByPodcastFeedUrls in getAuthUserInfo.
     await getAuthenticatedUserInfoLocally()
     await combineWithAddByRSSPodcasts(searchBarText)
-  
+
     this._handleInitialDefaultQuery()
 
     // Set the appUserAgent one time on initialization, then retrieve from a constant
@@ -555,9 +561,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const preventIsLoading = true
     const preventAutoDownloading = false
     // if (isConnected) {
-      this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
+    this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
     // } else {
-      // this._setDownloadedDataIfOffline()
+    // this._setDownloadedDataIfOffline()
     // }
   }
 
@@ -572,8 +578,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const preventAutoDownloading = true
     const keepSearchTitle = false
     const preventParseCustomRSSFeeds = true
-    await this.handleSelectFilterItem(selectedKey, preventIsLoading, preventAutoDownloading,
-      keepSearchTitle, preventParseCustomRSSFeeds)
+    await this.handleSelectFilterItem(
+      selectedKey,
+      preventIsLoading,
+      preventAutoDownloading,
+      keepSearchTitle,
+      preventParseCustomRSSFeeds
+    )
   }
 
   handleSelectFilterItem = async (
@@ -618,8 +629,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
         (async () => {
           const nextState = null
           const options = {}
-          const newState = await this._queryData(selectedKey, this.state, nextState, 
-            options, preventAutoDownloading, preventParseCustomRSSFeeds)
+          const newState = await this._queryData(
+            selectedKey,
+            this.state,
+            nextState,
+            options,
+            preventAutoDownloading,
+            preventParseCustomRSSFeeds
+          )
           this.setState(newState)
         })()
       }
@@ -1042,7 +1059,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     if (!preventParseCustomRSSFeeds) {
       if (!searchBarText) await parseAllAddByRSSPodcasts()
-  
+
       await combineWithAddByRSSPodcasts(searchBarText)
     }
 
@@ -1117,14 +1134,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const hasVideo = appMode === PV.AppMode.videos
 
       const hasInternetConnection = await hasValidNetworkConnection()
-      const isSubscribedSelected =
-        filterKey === PV.Filters._subscribedKey || queryFrom === PV.Filters._subscribedKey
-      const isCustomFeedsSelected =
-        filterKey === PV.Filters._customFeedsKey || queryFrom === PV.Filters._customFeedsKey
-      const isDownloadedSelected =
-        filterKey === PV.Filters._downloadedKey || queryFrom === PV.Filters._downloadedKey
-      const isAllPodcastsSelected =
-        filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
+      const isSubscribedSelected = filterKey === PV.Filters._subscribedKey || queryFrom === PV.Filters._subscribedKey
+      const isCustomFeedsSelected = filterKey === PV.Filters._customFeedsKey || queryFrom === PV.Filters._customFeedsKey
+      const isDownloadedSelected = filterKey === PV.Filters._downloadedKey || queryFrom === PV.Filters._downloadedKey
+      const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
       if (isSubscribedSelected) {
         if (!preventParseCustomRSSFeeds) {

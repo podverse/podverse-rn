@@ -387,10 +387,7 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
           />
         )}
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length < 1 && (
-          <MessageWithAction
-            message={translate('Your queue is empty')}
-            testID={testIDPrefix}
-          />
+          <MessageWithAction message={translate('Your queue is empty')} testID={testIDPrefix} />
         )}
         {!isLoading && viewType === _historyKey && historyItems && (
           <FlatList

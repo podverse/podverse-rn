@@ -21,7 +21,6 @@ type State = {
 }
 
 export class NavNotificationsIcon extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -56,26 +55,26 @@ export class NavNotificationsIcon extends React.Component<Props, State> {
           this.requestPermissionsInSettings()
         }
       } catch (err) {
-        console.log("onEnableNotifications error: ", err)
+        console.log('onEnableNotifications error: ', err)
       }
       this.setState({ isLoading: false })
     }
   }
-  
+
   onDisableNotifications = async () => {
     const { onNotificationSelectionChanged, podcastId } = this.props
     this.setState({ isLoading: true })
     try {
       await notificationUnsubscribe(podcastId)
-        // update the session.userInfo.notifications state by calling getAuthUserInfo
+      // update the session.userInfo.notifications state by calling getAuthUserInfo
       await getAuthUserInfo()
       onNotificationSelectionChanged({ isEnabled: false })
     } catch (err) {
-      console.log("onDisableNotifications error: ", err)
+      console.log('onDisableNotifications error: ', err)
     }
     this.setState({ isLoading: false })
   }
-  
+
   requestPermissionsInSettings = () => {
     Alert.alert(PV.Alerts.ENABLE_NOTIFICATIONS_SETTINGS.title, PV.Alerts.ENABLE_NOTIFICATIONS_SETTINGS.message, [
       { text: translate('Cancel') },
@@ -88,12 +87,12 @@ export class NavNotificationsIcon extends React.Component<Props, State> {
     const { isEnabled } = this.props
     const { isLoading } = this.state
     const { globalTheme } = this.global
-    
+
     let color = darkTheme.text.color
     if (globalTheme) {
       color = isEnabled ? PV.Colors.yellow : globalTheme?.text?.color
     }
-  
+
     return (
       <NavItemWrapper
         accessibilityHint={translate('ARIA HINT - Enable podcast notifications')}
@@ -101,18 +100,9 @@ export class NavNotificationsIcon extends React.Component<Props, State> {
         accessibilityRole='button'
         handlePress={isEnabled ? this.onDisableNotifications : this.onEnableNotifications}
         testID='nav_notifications_icon'>
-        {
-          isLoading && (
-            <ActivityIndicator size={28} testID='nav_notification_loading' />
-          )
-        }
-        {
-          !isLoading && (
-            <NavItemIcon name={isEnabled ? 'bell' : 'bell-slash'} solid color={color} />
-          )
-        }
+        {isLoading && <ActivityIndicator size={28} testID='nav_notification_loading' />}
+        {!isLoading && <NavItemIcon name={isEnabled ? 'bell' : 'bell-slash'} solid color={color} />}
       </NavItemWrapper>
     )
   }
-
 }

@@ -588,13 +588,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     }
 
     let { flatListData } = this.state
-    const {
-      queryFrom,
-      querySort,
-      searchBarText: searchTitle,
-      selectedCategory,
-      selectedCategorySub
-    } = this.state
+    const { queryFrom, querySort, searchBarText: searchTitle, selectedCategory, selectedCategorySub } = this.state
 
     try {
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
@@ -602,12 +596,9 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
 
       const { appMode } = this.global
       const hasVideo = appMode === PV.AppMode.videos
-      const isSubscribedSelected =
-        filterKey === PV.Filters._subscribedKey || queryFrom === PV.Filters._subscribedKey
-      const isDownloadedSelected =
-        filterKey === PV.Filters._downloadedKey || queryFrom === PV.Filters._downloadedKey
-      const isAllPodcastsSelected =
-        filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
+      const isSubscribedSelected = filterKey === PV.Filters._subscribedKey || queryFrom === PV.Filters._subscribedKey
+      const isDownloadedSelected = filterKey === PV.Filters._downloadedKey || queryFrom === PV.Filters._downloadedKey
+      const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 

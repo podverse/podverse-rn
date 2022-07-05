@@ -20,11 +20,7 @@ import {
 } from '../components'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import {
-  prefixClipLabel,
-  replaceLinebreaksWithBrTags,
-  safelyUnwrapNestedVariable
-} from '../lib/utility'
+import { prefixClipLabel, replaceLinebreaksWithBrTags, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
@@ -91,23 +87,21 @@ export class PlayerScreen extends React.Component<Props> {
           )}
           {!addByRSSPodcastFeedUrl && (
             <RNView style={core.row}>
-              {
-                !liveItem && (
-                  <>
-                    <NavMakeClipIcon
-                      getInitialProgressValue={_getInitialProgressValue}
-                      globalTheme={globalTheme}
-                      navigation={navigation}
-                    />
-                    <NavAddToPlaylistIcon
-                      getEpisodeId={_getEpisodeId}
-                      getMediaRefId={_getMediaRefId}
-                      globalTheme={globalTheme}
-                      navigation={navigation}
-                    />
-                  </>                  
-                )
-              }
+              {!liveItem && (
+                <>
+                  <NavMakeClipIcon
+                    getInitialProgressValue={_getInitialProgressValue}
+                    globalTheme={globalTheme}
+                    navigation={navigation}
+                  />
+                  <NavAddToPlaylistIcon
+                    getEpisodeId={_getEpisodeId}
+                    getMediaRefId={_getMediaRefId}
+                    globalTheme={globalTheme}
+                    navigation={navigation}
+                  />
+                </>
+              )}
               <NavShareIcon globalTheme={globalTheme} handlePress={_showShareActionSheet} />
             </RNView>
           )}

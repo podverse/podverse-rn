@@ -51,7 +51,7 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
     } else {
       const { podcastId } = currentNowPlayingItem
       const startPodcastFromTime = await getStartPodcastFromTime(podcastId)
-  
+
       if (!currentNowPlayingItem.clipId && startPodcastFromTime) {
         debouncedSetPlaybackPosition(startPodcastFromTime, trackId)
       }
@@ -69,7 +69,7 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   // adjusts the timestamp to the correct position.
   const currentPosition = await playerGetPosition()
   addOrUpdateHistoryItem(
-    currentNowPlayingItem, 
+    currentNowPlayingItem,
     currentNowPlayingItem.userPlaybackPosition || currentPosition,
     currentNowPlayingItem.episodeDuration
   )

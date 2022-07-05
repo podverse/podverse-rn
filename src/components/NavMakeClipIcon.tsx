@@ -20,10 +20,7 @@ export const NavMakeClipIcon = (props: Props) => {
   const { getInitialProgressValue, navigation } = props
 
   const handlePress = async () => {
-    const [initialProgressValue, isPublic] = await Promise.all([
-      getInitialProgressValue(),
-      getMakeClipIsPublic()
-    ])
+    const [initialProgressValue, isPublic] = await Promise.all([getInitialProgressValue(), getMakeClipIsPublic()])
 
     const { globalTheme, session } = getGlobal()
     const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
