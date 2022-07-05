@@ -179,7 +179,6 @@ export class MoreScreen extends React.Component<Props, State> {
       membershipStatus ? membershipStatus : ''
     }`
 
-    
     return (
       <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <SectionList
@@ -192,9 +191,10 @@ export class MoreScreen extends React.Component<Props, State> {
             }
             const modeLabel = `${translate('Mode')}: ${appModeSelectedText}`
 
-            const accessibilityLabel = item.key === _membershipKey
-              ? membershipAccessibilityLabel
-              : item.key === _appModeKey
+            const accessibilityLabel =
+              item.key === _membershipKey
+                ? membershipAccessibilityLabel
+                : item.key === _appModeKey
                 ? modeLabel
                 : item.title
 
@@ -205,16 +205,14 @@ export class MoreScreen extends React.Component<Props, State> {
                 testIDPrefix={`${testIDPrefix}_${item.key}`}
                 testIDSuffix=''>
                 <>
-                  {
-                    item.key === _appModeKey && (
-                      <Text
-                        accessibilityLabel={modeLabel}
-                        fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                        style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                        {modeLabel}
-                      </Text>
-                    )
-                  }
+                  {item.key === _appModeKey && (
+                    <Text
+                      accessibilityLabel={modeLabel}
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                      style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+                      {modeLabel}
+                    </Text>
+                  )}
                   {item.key === _membershipKey && (
                     <>
                       {!isLoggedIn && (
@@ -225,7 +223,9 @@ export class MoreScreen extends React.Component<Props, State> {
                         </Text>
                       )}
                       {isLoggedIn && (
-                        <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[table.cellText, membershipTextStyle]}>
+                        <Text
+                          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                          style={[table.cellText, membershipTextStyle]}>
                           {membershipStatus}
                         </Text>
                       )}

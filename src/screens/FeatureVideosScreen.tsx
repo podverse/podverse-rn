@@ -2,7 +2,7 @@ import { SafeAreaView, StyleSheet } from 'react-native'
 import Video from 'react-native-video'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import {  NavHeaderButtonText } from '../components'
+import { NavHeaderButtonText } from '../components'
 import { trackPageView } from '../services/tracking'
 
 type Props = any
@@ -14,20 +14,19 @@ type State = {
 const testIDPrefix = 'feature_videos_screen'
 
 export class FeatureVideosScreen extends React.Component<Props, State> {
-
-  static navigationOptions = ({navigation}) => {
-      return {
-        title: translate('Feature Demo'),
-        headerLeft: () => null,
-        headerRight: () => (
-            <NavHeaderButtonText
-              accessibilityLabel={translate('Close')}
-              handlePress={navigation.dismiss}
-              testID={testIDPrefix}
-              text={translate('Close')}
-            />
-          )
-      }
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: translate('Feature Demo'),
+      headerLeft: () => null,
+      headerRight: () => (
+        <NavHeaderButtonText
+          accessibilityLabel={translate('Close')}
+          handlePress={navigation.dismiss}
+          testID={testIDPrefix}
+          text={translate('Close')}
+        />
+      )
+    }
   }
 
   videoRef: Video
@@ -38,13 +37,15 @@ export class FeatureVideosScreen extends React.Component<Props, State> {
   render() {
     return (
       <SafeAreaView style={styles.view}>
-            <Video 
-                source={{uri: this.props.navigation.getParam("url")}} 
-                ref={(ref: Video) => (this.videoRef = ref)} 
-                style={styles.videoPlayer}
-                controls
-                onEnd={() => {setTimeout(() =>this.props.navigation.dismiss(), 1000)}}
-            />
+        <Video
+          source={{ uri: this.props.navigation.getParam('url') }}
+          ref={(ref: Video) => (this.videoRef = ref)}
+          style={styles.videoPlayer}
+          controls
+          onEnd={() => {
+            setTimeout(() => this.props.navigation.dismiss(), 1000)
+          }}
+        />
       </SafeAreaView>
     )
   }
@@ -53,12 +54,12 @@ export class FeatureVideosScreen extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   view: {
     flex: 1,
-    justifyContent:"center",
-    alignItems:"center",
-    backgroundColor: "000000ff"
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '000000ff'
   },
   videoPlayer: {
-      width:"100%",
-      height:"100%",
+    width: '100%',
+    height: '100%'
   }
 })

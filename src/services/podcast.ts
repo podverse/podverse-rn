@@ -133,7 +133,7 @@ export const combineWithAddByRSSPodcasts = async () => {
   const subscribedPodcasts =
     subscribedPodcastsResults[0] && Array.isArray(subscribedPodcastsResults[0]) ? subscribedPodcastsResults[0] : []
   let addByRSSPodcasts = Array.isArray(addByRSSPodcastsResults) ? addByRSSPodcastsResults : []
-  
+
   if (videoOnlyMode) {
     addByRSSPodcasts = addByRSSPodcasts.filter((podcast: any) => podcast.hasVideo)
   }

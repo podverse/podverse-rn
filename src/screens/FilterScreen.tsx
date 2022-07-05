@@ -113,7 +113,7 @@ export class FilterScreen extends React.Component<Props, State> {
       selected by the user in Settings.
     */
     // const isOffline = await hasValidNetworkConnection()
-    
+
     const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
 
     this.setState({
@@ -247,9 +247,7 @@ export class FilterScreen extends React.Component<Props, State> {
         isActive = true
       }
     } else {
-      isActive = [selectedFilterItemKey, selectedFromItemKey, selectedSortItemKey].includes(
-        value
-      )
+      isActive = [selectedFilterItemKey, selectedFromItemKey, selectedSortItemKey].includes(value)
     }
 
     const isSubCategory = item.parentId

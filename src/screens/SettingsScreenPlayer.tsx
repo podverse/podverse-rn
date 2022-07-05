@@ -37,9 +37,7 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
   })
 
   async componentDidMount() {
-    const [maximumSpeed] = await Promise.all([
-      AsyncStorage.getItem(PV.Keys.PLAYER_MAXIMUM_SPEED)
-    ])
+    const [maximumSpeed] = await Promise.all([AsyncStorage.getItem(PV.Keys.PLAYER_MAXIMUM_SPEED)])
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
     const maximumSpeedOptionSelected = maximumSpeedSelectOptions.find((x: any) => x.value === Number(maximumSpeed))
 
@@ -78,32 +76,39 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
     const { player } = this.global
     const { hidePlaybackSpeedButton } = player
     const newHidePlaybackSpeedButton = !hidePlaybackSpeedButton
-    
-    this.setGlobal({
-      player: {
-        ...player,
-        hidePlaybackSpeedButton: newHidePlaybackSpeedButton
-      }}, () => {
-      (async () => {
-        newHidePlaybackSpeedButton
-          ? await AsyncStorage.setItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON, 'TRUE')
-          : await AsyncStorage.removeItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON)
-      })()
-    })
+
+    this.setGlobal(
+      {
+        player: {
+          ...player,
+          hidePlaybackSpeedButton: newHidePlaybackSpeedButton
+        }
+      },
+      () => {
+        (async () => {
+          newHidePlaybackSpeedButton
+            ? await AsyncStorage.setItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON, 'TRUE')
+            : await AsyncStorage.removeItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON)
+        })()
+      }
+    )
   }
 
   _toggleSkipButtonsTimeJumpOverride = async () => {
     const { player } = this.global
     const { remoteSkipButtonsAreTimeJumps } = player
     const newRemoteSkipButtonsAreTimeJumps = !remoteSkipButtonsAreTimeJumps
-    this.setGlobal({
-      player: {
-        ...player,
-        remoteSkipButtonsAreTimeJumps: newRemoteSkipButtonsAreTimeJumps
+    this.setGlobal(
+      {
+        player: {
+          ...player,
+          remoteSkipButtonsAreTimeJumps: newRemoteSkipButtonsAreTimeJumps
+        }
+      },
+      () => {
+        setRemoteSkipButtonsTimeJumpOverride(newRemoteSkipButtonsAreTimeJumps)
       }
-    }, () => {
-      setRemoteSkipButtonsTimeJumpOverride(newRemoteSkipButtonsAreTimeJumps)
-    })
+    )
   }
 
   render() {

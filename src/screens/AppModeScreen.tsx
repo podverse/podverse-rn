@@ -36,12 +36,15 @@ export class AppModeScreen extends React.Component<Props, State> {
   }
 
   _handleAppModeOnPress = (selectedKey: AppModes) => {
-    this.setGlobal({
-      appMode: selectedKey
-    }, async () => {
-      await AsyncStorage.setItem(PV.Keys.APP_MODE, selectedKey)
-      PVEventEmitter.emit(PV.Events.APP_MODE_CHANGED)
-    })
+    this.setGlobal(
+      {
+        appMode: selectedKey
+      },
+      async () => {
+        await AsyncStorage.setItem(PV.Keys.APP_MODE, selectedKey)
+        PVEventEmitter.emit(PV.Events.APP_MODE_CHANGED)
+      }
+    )
   }
 
   render() {
@@ -64,11 +67,9 @@ export class AppModeScreen extends React.Component<Props, State> {
               style={[table.cellText, globalTheme.tableCellTextPrimary]}>
               {translate('Podcasts')}
             </Text>
-            {
-              appMode === PV.AppMode.podcasts && (
-                <Icon name='check' size={24} style={styles.itemIcon} testID={`${testIDPrefix}_podcasts_check`} />
-              )
-            }
+            {appMode === PV.AppMode.podcasts && (
+              <Icon name='check' size={24} style={styles.itemIcon} testID={`${testIDPrefix}_podcasts_check`} />
+            )}
           </TableCell>
           <TableCell
             accessibilityLabel={translate('Videos')}
@@ -81,11 +82,9 @@ export class AppModeScreen extends React.Component<Props, State> {
               style={[table.cellText, globalTheme.tableCellTextPrimary]}>
               {translate('Videos')}
             </Text>
-            {
-              appMode === PV.AppMode.videos && (
-                <Icon name='check' size={24} style={styles.itemIcon} testID={`${testIDPrefix}_podcasts_check`} />
-              )
-            }
+            {appMode === PV.AppMode.videos && (
+              <Icon name='check' size={24} style={styles.itemIcon} testID={`${testIDPrefix}_podcasts_check`} />
+            )}
           </TableCell>
         </View>
       </ScrollView>
