@@ -91,4 +91,4 @@ export { TimeRemainingWidget } from './TimeRemainingWidget'
 export { UpdateRequiredOverlay } from './UpdateRequiredOverlay'
 export { ErrorBoundary } from './ErrorBoundary'
 export { NavNotificationsIcon } from './NavNotificationsIcon'
-export {PVVideoLink} from "./PVVideoLink"
+export { PVVideoLink } from './PVVideoLink'

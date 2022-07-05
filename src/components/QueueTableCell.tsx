@@ -2,11 +2,17 @@ import { LiveItem } from 'podverse-shared'
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { generateEpisodeAccessibilityText, getTimeLabelText, prefixClipLabel, readableClipTime, readableDate } from '../lib/utility'
+import {
+  generateEpisodeAccessibilityText,
+  getTimeLabelText,
+  prefixClipLabel,
+  readableClipTime,
+  readableDate
+} from '../lib/utility'
 import { PV } from '../resources'
 import { button, images } from '../styles'
-import { FastImage, Icon, Text, View } from '.'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
+import { FastImage, Icon, Text, View } from '.'
 
 type Props = {
   clipEndTime?: number
@@ -102,9 +108,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
     // eslint-disable-next-line max-len
     const accessibilityLabel = `${!!podcastTitle ? `${podcastTitleText}, ` : ''} ${
       !!episodeTitle ? `${episodeTitleText}, ` : ''
-    } ${!!finalPubDate ? `${pubDateText}` : ''} ${
-      !isClip ? `, ${timeLabelText}` : `, ${clipTitle.trim()}`
-    }`
+    } ${!!finalPubDate ? `${pubDateText}` : ''} ${!isClip ? `, ${timeLabelText}` : `, ${clipTitle.trim()}`}`
 
     return (
       <View style={viewStyle} transparent={transparent} testID={testID}>

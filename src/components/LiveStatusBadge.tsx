@@ -28,7 +28,6 @@ export const LiveStatusBadge = (props: Props) => {
       </Text>
     </View>
   )
-
 }
 
 const styles = StyleSheet.create({

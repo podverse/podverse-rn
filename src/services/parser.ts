@@ -158,7 +158,6 @@ export const setAddByRSSPodcastFeedUrlsLocally = async (addByRSSPodcastFeedUrls:
 }
 
 export const parseAllAddByRSSPodcasts = async () => {
-
   const [urls, autoDownloadPodcastSettings, allAddByRSSPodcastCredentials] = await Promise.all([
     getAddByRSSPodcastFeedUrlsLocally(),
     getAutoDownloadSettings(),

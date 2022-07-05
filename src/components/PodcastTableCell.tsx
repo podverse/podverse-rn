@@ -101,11 +101,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
               </RNView>
             )}
           </RNView>
-          {
-            latestLiveItemStatus === 'live' && (
-              <LiveStatusBadge testID={testID} />
-            )
-          }
+          {latestLiveItemStatus === 'live' && <LiveStatusBadge testID={testID} />}
         </View>
       </Pressable>
     )

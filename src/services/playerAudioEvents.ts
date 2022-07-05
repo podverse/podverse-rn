@@ -144,17 +144,11 @@ module.exports = async () => {
 
       PVEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
-      const [clipHasEnded, nowPlayingItem] = await Promise.all([
-        getClipHasEnded(),
-        getNowPlayingItemLocally()
-      ])
+      const [clipHasEnded, nowPlayingItem] = await Promise.all([getClipHasEnded(), getNowPlayingItemLocally()])
 
       if (nowPlayingItem) {
         const { clipEndTime } = nowPlayingItem
-        const [currentPosition, currentState] = await Promise.all([
-          audioGetTrackPosition(),
-          audioGetState()
-        ])
+        const [currentPosition, currentState] = await Promise.all([audioGetTrackPosition(), audioGetState()])
 
         const isPlaying = audioCheckIfIsPlaying(currentState)
 
@@ -235,7 +229,7 @@ module.exports = async () => {
 
   PVAudioPlayer.addEventListener('remote-previous', async () => {
     const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
-    if(remoteSkipButtonsAreTimeJumps) {
+    if (remoteSkipButtonsAreTimeJumps) {
       const { jumpBackwardsTime } = getGlobal()
       audioJumpBackward(jumpBackwardsTime)
     } else {
@@ -245,7 +239,7 @@ module.exports = async () => {
 
   PVAudioPlayer.addEventListener('remote-next', async () => {
     const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
-    if(remoteSkipButtonsAreTimeJumps) {
+    if (remoteSkipButtonsAreTimeJumps) {
       const { jumpForwardsTime } = getGlobal()
       audioJumpForward(jumpForwardsTime)
     } else {

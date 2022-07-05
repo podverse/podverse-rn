@@ -118,7 +118,7 @@ const convertParsedSRTItemToTranscriptRow = (item: any) => {
 }
 
 const parseHTMLFile = (data: string) => {
-  data = data && data.trim() || ''
+  data = (data && data.trim()) || ''
   // eslint-disable-next-line max-len
   const pattern = /\x3ccite\x3e(.+?)\x3a\x3c\x2fcite\x3e\n\s{1,}?\x3ctime\x3e([0-9\x3a\x2c]{1,12})\x3c\x2ftime\x3e\n\s{1,}?\x3cp\x3e(.+?)\x3c\x2fp\x3e/gim
   let matches

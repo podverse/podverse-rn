@@ -177,7 +177,12 @@ export const TimeRemainingWidget = (props: Props) => {
         </>
       )}
       {(forceShowProgressBar || (!liveItem && hasStartedItem && !isInvalidDuration && playedTime > 0)) && (
-        <MiniProgressBar fullWidth={progressFullWidth} item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
+        <MiniProgressBar
+          fullWidth={progressFullWidth}
+          item={isNowPlayingItem}
+          playedTime={playedTime || 0}
+          totalTime={totalTime}
+        />
       )}
       {!liveItem && (
         <View

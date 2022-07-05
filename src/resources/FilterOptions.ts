@@ -54,7 +54,7 @@ const allFilterTypeItems = () => {
     allPodcastsLabel = translate('All Channels')
     episodesLabel = translate('Videos')
   }
-  
+
   return [
     {
       label: translate('Subscribed'),
@@ -117,13 +117,14 @@ const allFilterTypeItems = () => {
 
 const filterTypeItemsList = Config.FILTER_TYPE_ITEMS ? Config.FILTER_TYPE_ITEMS.split(',') : []
 
-const getTypeItems = () => allFilterTypeItems().filter((item: any) => {
-  const { hideCompleted } = getGlobal()
-  return filterTypeItemsList.find((value: string) => {
-    if (!hideCompleted && item.value === _showCompletedKey) return false
-    return item.value === value
+const getTypeItems = () =>
+  allFilterTypeItems().filter((item: any) => {
+    const { hideCompleted } = getGlobal()
+    return filterTypeItemsList.find((value: string) => {
+      if (!hideCompleted && item.value === _showCompletedKey) return false
+      return item.value === value
+    })
   })
-})
 
 const allSortItems = [
   sortChronologicalItem,
@@ -188,48 +189,48 @@ const fromItems = allFromListItems.filter((item: any) => {
 })
 
 export const FilterOptions = {
-         fromItems,
-         getTypeItems,
-         sortItems,
-         screenFilters: {
-           ClipsScreen: {
-             type: [_subscribedKey, _allPodcastsKey, _categoryKey],
-             sort: [_mostRecentKey, ..._top]
-           },
-           EpisodeMediaRefScreen: {
-             from: [_fromThisEpisodeKey],
-             sort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey]
-           },
-           EpisodesScreen: {
-             type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
-             sort: [_mostRecentKey, ..._top],
-             sortLimitQueries: [..._top]
-           },
-           PlayerScreen: {
-             clipsFrom: [_fromThisEpisodeKey, _fromThisPodcastKey],
-             clipsFromEpisodeSort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey],
-             clipsFromPodcastSort: [_mostRecentKey, ..._top]
-           },
-           PodcastScreen: {
-             type: [_downloadedKey, _episodesKey, _showCompletedKey, _clipsKey],
-             sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
-             addByPodcastRSSFeedURLType: [_downloadedKey, _episodesKey],
-             addByPodcastRSSFeedURLSort: [_mostRecentKey]
-           },
-           PodcastsScreen: {
-             type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _customFeedsKey],
-             sort: [..._top],
-             subscribedSort: [_alphabeticalKey]
-           },
-           ProfileScreen: {
-             type: [_podcastsKey, _clipsKey, _playlistsKey],
-             sortClips: [_mostRecentKey, ..._top, _randomKey],
-             sortPlaylists: [_alphabeticalKey],
-             sortPodcasts: [_alphabeticalKey, _mostRecentKey, ..._top, _randomKey]
-           }
-         },
-         items: {
-           sortAlphabeticalItem,
-           sortChronologicalItem
-         }
-       }
+  fromItems,
+  getTypeItems,
+  sortItems,
+  screenFilters: {
+    ClipsScreen: {
+      type: [_subscribedKey, _allPodcastsKey, _categoryKey],
+      sort: [_mostRecentKey, ..._top]
+    },
+    EpisodeMediaRefScreen: {
+      from: [_fromThisEpisodeKey],
+      sort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey]
+    },
+    EpisodesScreen: {
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
+      sort: [_mostRecentKey, ..._top],
+      sortLimitQueries: [..._top]
+    },
+    PlayerScreen: {
+      clipsFrom: [_fromThisEpisodeKey, _fromThisPodcastKey],
+      clipsFromEpisodeSort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey],
+      clipsFromPodcastSort: [_mostRecentKey, ..._top]
+    },
+    PodcastScreen: {
+      type: [_downloadedKey, _episodesKey, _showCompletedKey, _clipsKey],
+      sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
+      addByPodcastRSSFeedURLType: [_downloadedKey, _episodesKey],
+      addByPodcastRSSFeedURLSort: [_mostRecentKey]
+    },
+    PodcastsScreen: {
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _customFeedsKey],
+      sort: [..._top],
+      subscribedSort: [_alphabeticalKey]
+    },
+    ProfileScreen: {
+      type: [_podcastsKey, _clipsKey, _playlistsKey],
+      sortClips: [_mostRecentKey, ..._top, _randomKey],
+      sortPlaylists: [_alphabeticalKey],
+      sortPodcasts: [_alphabeticalKey, _mostRecentKey, ..._top, _randomKey]
+    }
+  },
+  items: {
+    sortAlphabeticalItem,
+    sortChronologicalItem
+  }
+}

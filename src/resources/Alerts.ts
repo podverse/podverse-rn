@@ -41,7 +41,9 @@ export const Alerts = {
       buttons: [
         {
           text: translate('No'),
-          onPress: () => { callback?.() }
+          onPress: () => {
+            callback?.()
+          }
         },
         {
           text: translate('Yes'),
@@ -76,19 +78,30 @@ export const Alerts = {
     title: translate('Free Trial Expired'),
     buttons: [{ text: _logoutButtonText, onPress: logoutUser }]
   },
-  GO_TO_LIVE_PODCAST: (navigation: any, podcastId: string, podcastTitle?: string, episodeTitle?: string,
-    _goBackWithDelay?: any) => ({
+  GO_TO_LIVE_PODCAST: (
+    navigation: any,
+    podcastId: string,
+    podcastTitle?: string,
+    episodeTitle?: string,
+    _goBackWithDelay?: any
+  ) => ({
     title: translate('Go to live podcast'),
     message: `${podcastTitle} – ${episodeTitle}`,
-    buttons: [{ text: _cancelText }, { text: translate('Yes'), onPress: async () => {
-      await _goBackWithDelay()
-      setTimeout(() => {
-        navigation.navigate(PV.RouteNames.PodcastScreen, {
-          podcastId,
-          forceRequest: true
-        })
-      }, 1555)
-    }}]
+    buttons: [
+      { text: _cancelText },
+      {
+        text: translate('Yes'),
+        onPress: async () => {
+          await _goBackWithDelay()
+          setTimeout(() => {
+            navigation.navigate(PV.RouteNames.PodcastScreen, {
+              podcastId,
+              forceRequest: true
+            })
+          }, 1555)
+        }
+      }
+    ]
   }),
   LEAVING_APP: {
     title: translate('Leaving App'),

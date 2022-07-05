@@ -233,10 +233,7 @@ export const downloadEpisode = async (
 }
 
 export const initDownloads = async () => {
-  const [episodes, downloader] = await Promise.all([
-    getDownloadingEpisodes(),
-    BackgroundDownloader()
-  ])
+  const [episodes, downloader] = await Promise.all([getDownloadingEpisodes(), BackgroundDownloader()])
   existingDownloadTasks = await downloader.checkForExistingDownloads()
 
   let timeout = 0

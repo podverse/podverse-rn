@@ -22,7 +22,15 @@ import {
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
-import { ActivityIndicator, Icon, PlayerLiveButton, PlayerProgressBar, PressableWithOpacity, Text, View as PVView } from './'
+import {
+  ActivityIndicator,
+  Icon,
+  PlayerLiveButton,
+  PlayerProgressBar,
+  PressableWithOpacity,
+  Text,
+  View as PVView
+} from './'
 
 type Props = {
   navigation: any
@@ -224,20 +232,18 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
               </PressableWithOpacity>
             )}
-            {
-              !liveItem && (
-                <PressableWithOpacity
-                  accessibilityLabel={jumpBackAccessibilityLabel}
-                  accessibilityRole='button'
-                  onPress={this._playerJumpBackward}
-                  style={playerStyles.icon}>
-                  {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS, `${testIDPrefix}_jump_backward`)}
-                  <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
-                    <Text style={styles.skipTimeText}>{jumpBackwardsTime}</Text>
-                  </View>
-                </PressableWithOpacity>
-              )
-            }
+            {!liveItem && (
+              <PressableWithOpacity
+                accessibilityLabel={jumpBackAccessibilityLabel}
+                accessibilityRole='button'
+                onPress={this._playerJumpBackward}
+                style={playerStyles.icon}>
+                {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS, `${testIDPrefix}_jump_backward`)}
+                <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
+                  <Text style={styles.skipTimeText}>{jumpBackwardsTime}</Text>
+                </View>
+              </PressableWithOpacity>
+            )}
             <PressableWithOpacity
               accessibilityHint={playButtonAccessibilityHint}
               accessibilityLabel={playButtonAccessibilityLabel}
@@ -246,20 +252,18 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 {playButtonIcon}
               </View>
             </PressableWithOpacity>
-            {
-              !liveItem && (
-                <PressableWithOpacity
-                  accessibilityLabel={jumpForwardAccessibilityLabel}
-                  accessibilityRole='button'
-                  onPress={this._playerJumpForward}
-                  style={playerStyles.icon}>
-                  {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, `${testIDPrefix}_step_forward`)}
-                  <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
-                    <Text style={styles.skipTimeText}>{jumpForwardsTime}</Text>
-                  </View>
-                </PressableWithOpacity>
-              )
-            }
+            {!liveItem && (
+              <PressableWithOpacity
+                accessibilityLabel={jumpForwardAccessibilityLabel}
+                accessibilityRole='button'
+                onPress={this._playerJumpForward}
+                style={playerStyles.icon}>
+                {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, `${testIDPrefix}_step_forward`)}
+                <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
+                  <Text style={styles.skipTimeText}>{jumpForwardsTime}</Text>
+                </View>
+              </PressableWithOpacity>
+            )}
             {!isVideo && !liveItem && (
               <PressableWithOpacity
                 accessibilityLabel={nextButtonAccessibilityLabel}
@@ -284,28 +288,22 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               <Icon name='moon' size={20} solid testID={`${testIDPrefix}_sleep_timer`} />
             </View>
           </PressableWithOpacity>
-          {
-            !liveItem && !hidePlaybackSpeedButton && (
-              <PressableWithOpacity
-                accessibilityHint={translate('ARIA HINT - current playback speed')}
-                accessibilityLabel={`${playbackRate}X`}
-                accessibilityRole='button'
-                hitSlop={hitSlop}
-                onPress={this._adjustSpeed}>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  style={[styles.playerControlsBottomButton, styles.playerControlsBottomRowText]}
-                  testID={`${testIDPrefix}_playback_rate`}>
-                  {`${playbackRate}X`}
-                </Text>
-              </PressableWithOpacity>
-            )
-          }
-          {
-            !!liveItem && (
-              <PlayerLiveButton />
-            )
-          }
+          {!liveItem && !hidePlaybackSpeedButton && (
+            <PressableWithOpacity
+              accessibilityHint={translate('ARIA HINT - current playback speed')}
+              accessibilityLabel={`${playbackRate}X`}
+              accessibilityRole='button'
+              hitSlop={hitSlop}
+              onPress={this._adjustSpeed}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={[styles.playerControlsBottomButton, styles.playerControlsBottomRowText]}
+                testID={`${testIDPrefix}_playback_rate`}>
+                {`${playbackRate}X`}
+              </Text>
+            </PressableWithOpacity>
+          )}
+          {!!liveItem && <PlayerLiveButton />}
           <PressableWithOpacity
             accessibilityHint={translate('ARIA HINT - show more player screen options')}
             accessibilityLabel={translate('More player options')}

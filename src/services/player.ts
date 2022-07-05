@@ -1,6 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { checkIfVideoFileOrVideoLiveType,
-  convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from 'podverse-shared'
+import {
+  checkIfVideoFileOrVideoLiveType,
+  convertNowPlayingItemClipToNowPlayingItemEpisode,
+  NowPlayingItem
+} from 'podverse-shared'
 import { Platform } from 'react-native'
 import { PV } from '../resources'
 import {
@@ -247,10 +250,7 @@ export const playerSetPositionWhenDurationIsAvailable = async (
   return new Promise((resolve) => {
     const interval = setInterval(() => {
       (async () => {
-        const [duration, currentTrackId] = await Promise.all([
-          playerGetDuration(),
-          playerGetCurrentLoadedTrackId()
-        ])
+        const [duration, currentTrackId] = await Promise.all([playerGetDuration(), playerGetCurrentLoadedTrackId()])
 
         setTimeout(() => {
           if (interval) clearInterval(interval)
@@ -503,8 +503,7 @@ export const setRemoteSkipButtonsTimeJumpOverride = async (bool: boolean) => {
 
 export const getRemoteSkipButtonsTimeJumpOverride = async () => {
   try {
-    const remoteSkipButtonsTimeJumpOverride =
-      await AsyncStorage.getItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP)
+    const remoteSkipButtonsTimeJumpOverride = await AsyncStorage.getItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP)
     return remoteSkipButtonsTimeJumpOverride
   } catch (error) {
     return false

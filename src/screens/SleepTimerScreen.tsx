@@ -80,24 +80,21 @@ export class SleepTimerScreen extends React.Component<Props> {
     return (
       <SafeAreaView testID='sleep_timer_screen_view'>
         <ScrollView style={styles.view}>
-          {
-            !screenReaderEnabled && (
-              <TimePicker
-                currentTime={timeRemaining}
-                handleUpdateSleepTimer={this._updateSleepTimer}
-                isActive={isActive} />
-            )
-          }
-          {
-            screenReaderEnabled && (
-              <Text
-                accessibilityLabel={convertSecToHHMMSSAccessibilityLabel(timeRemaining)}
-                style={styles.screenReaderTimeRemaining}
-                testID={`${testIDPrefix}_screen_reader_time_remaining`}>
-                {convertSecToHHMMSS(timeRemaining)}
-              </Text>
-            )
-          }
+          {!screenReaderEnabled && (
+            <TimePicker
+              currentTime={timeRemaining}
+              handleUpdateSleepTimer={this._updateSleepTimer}
+              isActive={isActive}
+            />
+          )}
+          {screenReaderEnabled && (
+            <Text
+              accessibilityLabel={convertSecToHHMMSSAccessibilityLabel(timeRemaining)}
+              style={styles.screenReaderTimeRemaining}
+              testID={`${testIDPrefix}_screen_reader_time_remaining`}>
+              {convertSecToHHMMSS(timeRemaining)}
+            </Text>
+          )}
           <Button
             accessibilityLabel={isActive ? translate('Stop Timer') : translate('Start Timer')}
             isSuccess={!isActive}
@@ -107,54 +104,52 @@ export class SleepTimerScreen extends React.Component<Props> {
             text={isActive ? translate('Stop Timer') : translate('Start Timer')}
             wrapperStyles={styles.button}
           />
-          {
-            screenReaderEnabled && (
-              <>
-                <Button
-                  accessibilityLabel={translate('15 minutes')}
-                  onPress={() => this._setSleepTimerTimeScreenReader(0, 15)}
-                  testID={`${testIDPrefix}_set_time_15_minutes`}
-                  text={translate('15 minutes')}
-                  wrapperStyles={styles.screenReaderTimeButton}
-                />
-                <Button
-                  accessibilityLabel={translate('30 minutes')}
-                  onPress={() => this._setSleepTimerTimeScreenReader(0, 30)}
-                  testID={`${testIDPrefix}_set_time_30_minutes`}
-                  text={translate('30 minutes')}
-                  wrapperStyles={styles.screenReaderTimeButton}
-                />
-                <Button
-                  accessibilityLabel={translate('45 minutes')}
-                  onPress={() => this._setSleepTimerTimeScreenReader(0, 45)}
-                  testID={`${testIDPrefix}_set_time_45_minutes`}
-                  text={translate('45 minutes')}
-                  wrapperStyles={styles.screenReaderTimeButton}
-                />
-                <Button
-                  accessibilityLabel={translate('1 hour')}
-                  onPress={() => this._setSleepTimerTimeScreenReader(1, 0)}
-                  testID={`${testIDPrefix}_set_time_1_hour`}
-                  text={translate('1 hour')}
-                  wrapperStyles={styles.screenReaderTimeButton}
-                />
-                <Button
-                  accessibilityLabel={translate('1 hour 30 minutes')}
-                  onPress={() => this._setSleepTimerTimeScreenReader(1, 30)}
-                  testID={`${testIDPrefix}_set_time_1_hour_30_minutes`}
-                  text={translate('1 hour 30 minutes')}
-                  wrapperStyles={styles.screenReaderTimeButton}
-                />
-                <Button
-                  accessibilityLabel={translate('2 hours')}
-                  onPress={() => this._setSleepTimerTimeScreenReader(2, 0)}
-                  testID={`${testIDPrefix}_set_time_2_hours`}
-                  text={translate('2 hours')}
-                  wrapperStyles={styles.screenReaderTimeButton}
-                />
-              </>
-            )
-          }
+          {screenReaderEnabled && (
+            <>
+              <Button
+                accessibilityLabel={translate('15 minutes')}
+                onPress={() => this._setSleepTimerTimeScreenReader(0, 15)}
+                testID={`${testIDPrefix}_set_time_15_minutes`}
+                text={translate('15 minutes')}
+                wrapperStyles={styles.screenReaderTimeButton}
+              />
+              <Button
+                accessibilityLabel={translate('30 minutes')}
+                onPress={() => this._setSleepTimerTimeScreenReader(0, 30)}
+                testID={`${testIDPrefix}_set_time_30_minutes`}
+                text={translate('30 minutes')}
+                wrapperStyles={styles.screenReaderTimeButton}
+              />
+              <Button
+                accessibilityLabel={translate('45 minutes')}
+                onPress={() => this._setSleepTimerTimeScreenReader(0, 45)}
+                testID={`${testIDPrefix}_set_time_45_minutes`}
+                text={translate('45 minutes')}
+                wrapperStyles={styles.screenReaderTimeButton}
+              />
+              <Button
+                accessibilityLabel={translate('1 hour')}
+                onPress={() => this._setSleepTimerTimeScreenReader(1, 0)}
+                testID={`${testIDPrefix}_set_time_1_hour`}
+                text={translate('1 hour')}
+                wrapperStyles={styles.screenReaderTimeButton}
+              />
+              <Button
+                accessibilityLabel={translate('1 hour 30 minutes')}
+                onPress={() => this._setSleepTimerTimeScreenReader(1, 30)}
+                testID={`${testIDPrefix}_set_time_1_hour_30_minutes`}
+                text={translate('1 hour 30 minutes')}
+                wrapperStyles={styles.screenReaderTimeButton}
+              />
+              <Button
+                accessibilityLabel={translate('2 hours')}
+                onPress={() => this._setSleepTimerTimeScreenReader(2, 0)}
+                testID={`${testIDPrefix}_set_time_2_hours`}
+                text={translate('2 hours')}
+                wrapperStyles={styles.screenReaderTimeButton}
+              />
+            </>
+          )}
         </ScrollView>
       </SafeAreaView>
     )
