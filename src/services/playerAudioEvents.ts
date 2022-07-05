@@ -14,7 +14,8 @@ import {
   getPlaybackSpeed,
   getRemoteSkipButtonsTimeJumpOverride,
   playerHandleResumeAfterClipHasEnded,
-  playerSetRateWithLatestPlaybackSpeed
+  playerSetRateWithLatestPlaybackSpeed,
+  playerUpdateUserPlaybackPosition
 } from './player'
 import {
   PVAudioPlayer,
@@ -162,6 +163,10 @@ module.exports = async () => {
           await playerHandleResumeAfterClipHasEnded()
         } else {
           if (Platform.OS === 'ios') {
+            if (x.state === State.Paused || x.state === State.Stopped) {
+              playerUpdateUserPlaybackPosition()
+            }
+
             if (audioCheckIfIsPlaying(x.state)) {
               await playerSetRateWithLatestPlaybackSpeed()
             }

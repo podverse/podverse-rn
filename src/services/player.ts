@@ -173,7 +173,7 @@ export const playerGetPosition = async () => {
   } else if (playerType === PV.Player.playerTypes.isVideo) {
     position = await videoGetTrackPosition()
   }
-  return position
+  return Number(position)
 }
 
 export const playerGetDuration = async () => {
@@ -184,7 +184,7 @@ export const playerGetDuration = async () => {
   } else if (playerType === PV.Player.playerTypes.isVideo) {
     duration = await videoGetTrackDuration()
   }
-  return duration
+  return Number(duration)
 }
 
 /*
