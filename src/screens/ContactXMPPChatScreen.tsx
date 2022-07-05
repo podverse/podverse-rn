@@ -32,22 +32,31 @@ export class ContactXMPPChatScreen extends React.Component<Props> {
       <ScrollView contentContainerStyle={styles.scrollViewContent} testID={`${testIDPrefix}_view`}>
         <Text style={styles.headerText}>{translate('ContactXMPPText1')}</Text>
         <Text style={styles.text}>{translate('ContactXMPPChatRooms')}</Text>
-        <Text selectable style={styles.url}>{PV.URLs.xmpp.chatRooms.general}</Text>
-        <Text selectable style={styles.url}>{PV.URLs.xmpp.chatRooms.dev}</Text>
-        <Text selectable style={styles.url}>{PV.URLs.xmpp.chatRooms.translations}</Text>
+        <Text selectable style={styles.url}>
+          {PV.URLs.xmpp.chatRooms.general}
+        </Text>
+        <Text selectable style={styles.url}>
+          {PV.URLs.xmpp.chatRooms.dev}
+        </Text>
+        <Text selectable style={styles.url}>
+          {PV.URLs.xmpp.chatRooms.translations}
+        </Text>
         <Text style={styles.text}>{translate('brandName chat is powered by')}</Text>
-        <TextLink 
+        <TextLink
           onPress={() => this._handleWebClientLinkPress(PV.URLs.xmpp.libraries.prosody)}
           style={styles.linkText}
-          text='Prosody' />
-        <TextLink 
+          text='Prosody'
+        />
+        <TextLink
           onPress={() => this._handleWebClientLinkPress(PV.URLs.xmpp.libraries.snikket)}
           style={styles.linkText}
-          text='Snikket' />
+          text='Snikket'
+        />
         <TextLink
           onPress={() => this._handleWebClientLinkPress(PV.URLs.xmpp.libraries.converse)}
           style={styles.linkText}
-          text='Converse' />
+          text='Converse'
+        />
       </ScrollView>
     )
   }

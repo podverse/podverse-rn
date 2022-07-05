@@ -106,9 +106,7 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
                     accessible={false}
                     importantForAccessibility='no-hide-descendants'
                     style={[core.selectorWrapperLeft, { minWidth: null }]}>
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                      style={[core.pickerSelect, globalTheme.text]}>
+                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[core.pickerSelect, globalTheme.text]}>
                       {autoQueueOptionSelected?.label}
                     </Text>
                     <Icon name='angle-down' size={14} style={[core.pickerSelectIcon, globalTheme.text]} />
@@ -117,9 +115,7 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
                     accessible={false}
                     importantForAccessibility='no-hide-descendants'
                     style={core.selectorWrapperRight}>
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                      style={[core.pickerSelect, globalTheme.text]}>
+                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[core.pickerSelect, globalTheme.text]}>
                       {translate('Auto queue new episodes position')}
                     </Text>
                   </View>

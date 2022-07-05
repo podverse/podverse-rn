@@ -40,7 +40,7 @@ export class AboutScreen extends React.Component<Props> {
       { text: 'Yes', onPress: () => Linking.openURL(url) }
     ])
   }
-  
+
   render() {
     return (
       <View style={styles.content} testID='about_screen_view'>
@@ -64,9 +64,11 @@ export class AboutScreen extends React.Component<Props> {
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 isSecondary={!contributor.link}
                 key={`maintainers_${index}`}
-                {...(contributor.link ? {
-                  onPress: () => this.handleFollowLink(contributor.link)
-                } : {})}
+                {...(contributor.link
+                  ? {
+                      onPress: () => this.handleFollowLink(contributor.link)
+                    }
+                  : {})}
                 style={style}>
                 {contributor.name}
               </Text>
@@ -83,43 +85,45 @@ export class AboutScreen extends React.Component<Props> {
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 key={`contributors_${index}`}
                 isSecondary={!contributor.link}
-                {...(contributor.link ? {
-                  onPress: () => this.handleFollowLink(contributor.link)
-                } : {})}
+                {...(contributor.link
+                  ? {
+                      onPress: () => this.handleFollowLink(contributor.link)
+                    }
+                  : {})}
                 style={style}>
                 {contributor.name}
               </Text>
             )
           })}
           <Divider style={styles.divider} />
-          {
-            translatorsList.length > 0 && (
-              <>
-                <Text
-                  accessibilityRole='header'
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={styles.sectionTitle}>
-                  {translate('Translators')}
-                </Text>
-                {translatorsList.map((translator: Translator, index: number) => {
-                  const style = translator.url ? [styles.text, styles.link] : styles.text
-                  return (
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                      key={`contributors_${index}`}
-                      isSecondary={!translator.url}
-                      {...(translator.url ? {
-                        onPress: () => this.handleFollowLink(translator.url)
-                      } : {})}
-                      style={style}>
-                      {translator.name}
-                    </Text>
-                  )
-                })}
-                <Divider style={styles.divider} />
-              </>
-            )
-          }
+          {translatorsList.length > 0 && (
+            <>
+              <Text
+                accessibilityRole='header'
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={styles.sectionTitle}>
+                {translate('Translators')}
+              </Text>
+              {translatorsList.map((translator: Translator, index: number) => {
+                const style = translator.url ? [styles.text, styles.link] : styles.text
+                return (
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    key={`contributors_${index}`}
+                    isSecondary={!translator.url}
+                    {...(translator.url
+                      ? {
+                          onPress: () => this.handleFollowLink(translator.url)
+                        }
+                      : {})}
+                    style={style}>
+                    {translator.name}
+                  </Text>
+                )
+              })}
+              <Divider style={styles.divider} />
+            </>
+          )}
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={styles.text}>{`Version ${getVersion()} Build ${getBuildNumber()}`}</Text>

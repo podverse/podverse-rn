@@ -1,7 +1,14 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActionSheet, Divider, DownloadTableCell, FlatList, SwipeRowBack,
-  TableSectionSelectors, View } from '../components'
+import {
+  ActionSheet,
+  Divider,
+  DownloadTableCell,
+  FlatList,
+  SwipeRowBack,
+  TableSectionSelectors,
+  View
+} from '../components'
 import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { safeKeyExtractor } from '../lib/utility'
@@ -126,7 +133,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
           )}
           sections={[
             { title: translate('In progress'), data: downloadsArrayInProgress },
-            { title: translate('Finished'), data: downloadsArrayFinished },
+            { title: translate('Finished'), data: downloadsArrayFinished }
           ]}
         />
         {selectedItem && (

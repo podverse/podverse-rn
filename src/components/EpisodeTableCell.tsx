@@ -1,7 +1,13 @@
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { decodeHTMLString, generateEpisodeAccessibilityText, getTimeLabelText, readableDate, removeHTMLFromString } from '../lib/utility'
+import {
+  decodeHTMLString,
+  generateEpisodeAccessibilityText,
+  getTimeLabelText,
+  readableDate,
+  removeHTMLFromString
+} from '../lib/utility'
 import { PV } from '../resources'
 import { images } from '../styles'
 import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'

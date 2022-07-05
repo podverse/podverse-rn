@@ -53,8 +53,7 @@ const styles = {
   indentWrapper: {
     marginLeft: 10
   },
-  innerLinkWrapper: {
-  },
+  innerLinkWrapper: {},
   innerTopWrapper: {
     alignItems: 'center',
     flexDirection: 'row',

@@ -661,11 +661,7 @@ export const parseOpmlFile = (data: any, topLevel = false): string[] => {
       Exports from Podkicker don't include the type="rss" attribute,
       so if an xmlurl or xmlUrl is on item, then assume it is an rss feed url.
     */
-    if (
-      item.$?.type?.toLowerCase() === 'rss'
-      || item.$?.xmlurl
-      || item.$?.xmlUrl
-    ) {
+    if (item.$?.type?.toLowerCase() === 'rss' || item.$?.xmlurl || item.$?.xmlUrl) {
       const url = item.$?.xmlurl || item.$?.xmlUrl
       const decodedUrl = decodeURIComponent(url)
       if (decodedUrl) {
@@ -773,21 +769,19 @@ export const checkIfContainsStringMatch = (matchStr: string, currentStr: string)
   return regex.test(currentStr.toLowerCase())
 }
 
-export const generateEpisodeAccessibilityText = (
-  episodeCompleted: boolean,
-  timeLabel: string
-) => {
+export const generateEpisodeAccessibilityText = (episodeCompleted: boolean, timeLabel: string) => {
   let timeLabelText = episodeCompleted ? translate('Finished episode') : ''
   if (timeLabel) {
     timeLabelText = `${timeLabelText ? `${timeLabelText}, ${timeLabel}` : ''} ${timeLabel}`
   } else {
-    timeLabelText = `${timeLabelText ?
-      `${timeLabelText}, ${translate('Unplayed episode')}` : ''} ${translate('Unplayed episode')}`
+    timeLabelText = `${timeLabelText ? `${timeLabelText}, ${translate('Unplayed episode')}` : ''} ${translate(
+      'Unplayed episode'
+    )}`
   }
   return timeLabelText
 }
 
 export const addParameterToURL = (uri: string, param: string) => {
-    uri += (uri.split('?')[1] ? '&' : '?') + param
-    return uri
+  uri += (uri.split('?')[1] ? '&' : '?') + param
+  return uri
 }

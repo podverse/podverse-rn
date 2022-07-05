@@ -513,8 +513,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 </RNView>
               </RNView>
             )}
-            {!checkIfVideoFileOrVideoLiveType(
-              nowPlayingItem?.episodeMediaType) && <View style={styles.fillerView} transparent />}
+            {!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
+              <View style={styles.fillerView} transparent />
+            )}
             <View style={styles.wrapperBottom} transparent>
               <View style={styles.wrapperBottomInside} transparent>
                 <TimeInput

@@ -17,6 +17,7 @@ import {
   getExtensionFromUrl,
   safelyUnwrapNestedVariable
 } from './utility'
+import { base64Encode } from './hash'
 
 export const BackgroundDownloader = () => {
   const userAgent = getAppUserAgent()
@@ -232,10 +233,7 @@ export const downloadEpisode = async (
 }
 
 export const initDownloads = async () => {
-  const [episodes, downloader] = await Promise.all([
-    getDownloadingEpisodes(),
-    BackgroundDownloader()
-  ])
+  const [episodes, downloader] = await Promise.all([getDownloadingEpisodes(), BackgroundDownloader()])
   existingDownloadTasks = await downloader.checkForExistingDownloads()
 
   let timeout = 0
@@ -352,10 +350,10 @@ export const pauseDownloadTask = (downloadTaskState: DownloadState.DownloadTaskS
   if (task) task.pause()
 }
 
-export const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
+export const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string, isAddByRSSPodcast?: boolean) => {
   let isDownloadedFile = true
   try {
-    const filePath = await getDownloadedFilePath(id, episodeMediaUrl)
+    const filePath = await getDownloadedFilePath(id, episodeMediaUrl, isAddByRSSPodcast)
     await RNFS.stat(filePath)
   } catch (innerErr) {
     isDownloadedFile = false
@@ -363,7 +361,7 @@ export const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: strin
   return isDownloadedFile
 }
 
-export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string) => {
+export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string, isAddByRSSPodcast?: boolean) => {
   const ext = getExtensionFromUrl(episodeMediaUrl)
   const [downloader, customLocation] = await Promise.all([
     BackgroundDownloader(),
@@ -371,13 +369,9 @@ export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string)
   ])
   const folderPath = customLocation ? customLocation : downloader.directories.documents
 
-  /* If downloaded episode is for an addByRSSPodcast, then the episodeMediaUrl
-     will be the id, so remove the URL params from the URL, and don't append
-     an extension to the file path.
-  */
-  if (id && id.indexOf('http') > -1) {
-    const idWithoutUrlParams = id.split('?')[0]
-    return `${folderPath}/${idWithoutUrlParams}`
+  if (isAddByRSSPodcast) {
+    const customRSSItemId = base64Encode(episodeMediaUrl)
+    return `${folderPath}/${customRSSItemId}${ext}`
   } else {
     return `${folderPath}/${id}${ext}`
   }

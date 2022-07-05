@@ -19,15 +19,12 @@ type Props = {
 }
 
 export const PVVideoLink = (props: Props) => {
-  const { 
-    accessible,
-    accessibilityHint,
-    testID, title, url, navigation } = props
-  
-  const textStyle = [styles.text, {...(!url ? {color:PV.Colors.white}: {})}]
+  const { accessible, accessibilityHint, testID, title, url, navigation } = props
+
+  const textStyle = [styles.text, { ...(!url ? { color: PV.Colors.white } : {}) }]
 
   const openVideoScreen = () => {
-    navigation.navigate("FeatureVideosStack", {url})
+    navigation.navigate('FeatureVideosStack', { url })
   }
 
   return (
@@ -38,13 +35,14 @@ export const PVVideoLink = (props: Props) => {
       onPress={openVideoScreen}
       style={textStyle}
       text={title}
-      testID={testID.prependTestId()}/>
+      testID={testID.prependTestId()}
+    />
   )
 }
 
 const styles = StyleSheet.create({
-    text: {
-        fontSize: PV.Fonts.sizes.xl,
-        fontWeight: PV.Fonts.weights.semibold
-    }
+  text: {
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.semibold
+  }
 })
