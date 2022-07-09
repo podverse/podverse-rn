@@ -25,7 +25,8 @@ export const initializeSettings = async () => {
     urlsWeb,
     jumpBackwardsTime,
     jumpForwardsTime,
-    addCurrentItemNextInQueue
+    addCurrentItemNextInQueue,
+    podcastsGridViewEnabled
   ] = await Promise.all([
     AsyncStorage.getItem(PV.Keys.CENSOR_NSFW_TEXT),
     AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED),
@@ -40,7 +41,8 @@ export const initializeSettings = async () => {
     PV.URLs.web(),
     AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_BACKWARDS),
     AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_FORWARDS),
-    AsyncStorage.getItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE)
+    AsyncStorage.getItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE),
+    AsyncStorage.getItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED)
   ])
 
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) {
@@ -61,6 +63,7 @@ export const initializeSettings = async () => {
     hideCompleted,
     listenTrackingEnabled,
     offlineModeEnabled,
+    podcastsGridViewEnabled,
     jumpBackwardsTime: jumpBackwardsTime || PV.Player.jumpBackSeconds,
     jumpForwardsTime: jumpForwardsTime || PV.Player.jumpSeconds,
     urlsAPI,
@@ -180,4 +183,12 @@ export const setAddCurrentItemNextInQueue = async (val: boolean) => {
     await AsyncStorage.removeItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE)
     setGlobal({ addCurrentItemNextInQueue: false })
   }
+}
+
+export const setPodcastsGridView = (value: boolean) => {
+  setGlobal({ podcastsGridViewEnabled: value }, async () => {
+    value
+      ? await AsyncStorage.setItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED, 'TRUE')
+      : await AsyncStorage.removeItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED)
+  })
 }

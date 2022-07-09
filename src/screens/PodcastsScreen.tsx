@@ -11,6 +11,7 @@ import { convertToNowPlayingItem } from 'podverse-shared'
 import {
   Divider,
   FlatList,
+  NavPodcastsViewIcon,
   PlayerEvents,
   PodcastTableCell,
   PurchaseListener,
@@ -152,7 +153,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const _screenTitle = navigation.getParam('_screenTitle')
     return {
-      title: _screenTitle
+      title: _screenTitle,
+      headerRight: () => (
+        <RNView style={core.row}>
+          <NavPodcastsViewIcon />
+        </RNView>
+      )
     } as NavigationStackOptions
   }
 
@@ -784,12 +790,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       id={item?.id}
       lastEpisodePubDate={item.lastEpisodePubDate}
       latestLiveItemStatus={item.latestLiveItemStatus}
-      onPress={() =>
-        this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
-          podcast: item,
-          addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl
-        })
-      }
+      onPress={() => this._onPodcastItemSelected(item)}
       podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
       {...(item.title ? { podcastTitle: item.title } : {})}
       showAutoDownload
@@ -797,6 +798,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
       testID={`${testIDPrefix}_podcast_item_${index}`}
     />
   )
+
+  _onPodcastItemSelected = (item) => {
+    this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
+      podcast: item,
+      addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl
+    })
+  }
 
   _renderHiddenItem = ({ item, index }, rowMap) => {
     const { queryFrom } = this.state
@@ -962,7 +970,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       showDataSettingsConfirmDialog,
       showNoInternetConnectionMessage
     } = this.state
-    const { session, subscribedPodcasts = [], subscribedPodcastsTotalCount = 0 } = this.global
+    const { session, subscribedPodcasts = [], subscribedPodcastsTotalCount = 0, podcastsGridViewEnabled } = this.global
     const { subscribedPodcastIds } = session?.userInfo
 
     let flatListData = []
@@ -1031,6 +1039,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
               renderItem={this._renderPodcastItem}
               showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               testID={testIDPrefix}
+              gridView={podcastsGridViewEnabled}
+              onGridItemSelected={this._onPodcastItemSelected}
             />
           )}
         </RNView>
