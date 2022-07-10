@@ -3,7 +3,7 @@
     "End of results": "Inga mer resultat",
     "End time cannot be equal to 0": "Sluttid kan inte vara \"0\".",
     "ARIA HINT - This is a list of clips created from this episode": "Lista av klipp skapade från detta avsnitt",
-    "_translatorsField": "Luna Jernberg",
+    "_translatorsField": "Luna Jernberg, Jonas Åström",
     "1 hour": "1 timme",
     "2 hours": "2 timmar",
     "3 months free": "3 månader gratis",
@@ -117,5 +117,14 @@
     "copyleft": "copyleft",
     "End time": "Sluttid",
     "Enjoy Podverse Premium": "Njut av Podverse Premium",
-    "Error Reporting Disabled": "Fel rapportering av"
+    "Error Reporting Disabled": "Fel rapportering av",
+    "Active Downloads": "Aktiva Nedladdningar",
+    "Add to Playlist": "Lägg till i Spellista",
+    "All Podcasts": "Alla Podcasts",
+    "Approve": "Godkänn",
+    "Ask to sync local podcasts with server": "Din enhet prenumererar på podcasts som inte har sparats till ditt premiumkonto. Vill du spara dom?",
+    "ARIA HINT - add this chapter last in your queue": "Lägg till detta kapitel till din kö",
+    "18 per year after that": "$18/år därefter",
+    "Are you sure you want to delete all of your downloaded episodes": "Ta bort alla nedladdade avsnitt?",
+    "Are you sure you want to delete all of your downloaded episodes from this podcast": "Radera alla nedladdade avsnitt av denna podcast?"
 }
