@@ -6,6 +6,7 @@ type Props = {
   data?: [any]
   isRefreshing: boolean
   onItemSelected: any
+  ListFooterComponent: any
 }
 
 export class GridView extends React.PureComponent<Props, any> {
