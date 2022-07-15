@@ -17,6 +17,7 @@ export class GridView extends React.PureComponent<Props, any> {
         ItemSeparatorComponent={null}
         testID='grid_view'
         data={this.props.data}
+        onEndReachedThreshold={0.3}
         refreshing={this.props.isRefreshing}
         renderItem={({ item }) => (
           <PressableWithOpacity
