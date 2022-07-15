@@ -3,11 +3,15 @@ import Config from 'react-native-config'
 
 const translationGetters = {
   // lazy requires (metro bundler does not support symlinks)
+  de: () => require('../resources/i18n/translations/de.json'),
+  el: () => require('../resources/i18n/translations/el.json'),
   en: () => require('../resources/i18n/translations/en.json'),
   es: () => require('../resources/i18n/translations/es.json'),
   fr: () => require('../resources/i18n/translations/fr.json'),
   lt: () => require('../resources/i18n/translations/lt.json'),
-  nb: () => require('../resources/i18n/translations/nb_NO.json')
+  nb: () => require('../resources/i18n/translations/nb_NO.json'),
+  pt: () => require('../resources/i18n/translations/pt.json'),
+  ru: () => require('../resources/i18n/translations/ru.json')
 }
 
 class Internationalizer {
