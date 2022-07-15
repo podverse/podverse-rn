@@ -44,7 +44,6 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     const { accessible = false, isSmall, resizeMode = 'contain', source, styles } = this.props
     const { hasError, uuid } = this.state
     const { offlineModeEnabled, userAgent } = this.global
-    const cache = offlineModeEnabled ? 'cacheOnly' : 'immutable'
     const isValid = isValidUrl(source)
     const isSvg = source && source.endsWith('.svg')
 
@@ -67,7 +66,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
         resizeMode={resizeMode}
         source={{
           uri: secureImageUrl,
-          cache,
+          cache: 'immutable',
           headers: {
             ...(userAgent ? { 'User-Agent': userAgent } : {})
           }
