@@ -32,6 +32,7 @@ type Props = {
 
 type State = {
   autoDeleteEpisodeOnEnd?: boolean
+  autoDownloadByDefault?: boolean
   downloadedEpisodeLimitCount: any
   downloadedEpisodeLimitDefault: any
   downloadingWifiOnly?: boolean
@@ -58,12 +59,14 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
   async componentDidMount() {
     const [
       autoDeleteEpisodeOnEnd,
+      autoDownloadByDefault,
       downloadedEpisodeLimitCount,
       downloadedEpisodeLimitDefault,
       downloadingWifiOnly,
       customDownloadLocation
     ] = await Promise.all([
       AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END),
+      AsyncStorage.getItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT),
       AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT),
       AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT),
       AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY),
@@ -72,6 +75,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
 
     this.setState({
       autoDeleteEpisodeOnEnd: !!autoDeleteEpisodeOnEnd,
+      autoDownloadByDefault: !!autoDownloadByDefault,
       downloadedEpisodeLimitCount,
       downloadedEpisodeLimitDefault,
       downloadingWifiOnly: !!downloadingWifiOnly,
@@ -103,6 +107,16 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
         value
           ? await AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE')
           : await AsyncStorage.removeItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+      })()
+    })
+  }
+
+  _toggleAutoDownloadByDefault = (value: boolean) => {
+    this.setState({ autoDownloadByDefault: value }, () => {
+      ;(async () => {
+        value
+          ? await AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT, 'TRUE')
+          : await AsyncStorage.removeItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT)
       })()
     })
   }
@@ -318,6 +332,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
   render() {
     const {
       autoDeleteEpisodeOnEnd,
+      autoDownloadByDefault,
       downloadedEpisodeLimitCount,
       downloadedEpisodeLimitDefault,
       downloadingWifiOnly,
@@ -356,6 +371,15 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
                 />
               </View>
             )}
+            <View style={core.itemWrapper}>
+              <SwitchWithText
+                accessibilityLabel={translate('Auto download by default on subscribe')}
+                onValueChange={this._toggleAutoDownloadByDefault}
+                testID={`${testIDPrefix}_auto_download_by_default`}
+                text={translate('Auto download by default on subscribe')}
+                value={!!autoDownloadByDefault}
+              />
+            </View>
             <View style={core.itemWrapper}>
               <SwitchWithText
                 accessibilityLabel={translate('Delete downloaded episodes after end is reached')}

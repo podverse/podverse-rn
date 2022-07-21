@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { encode as btoa } from 'base-64'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { downloadEpisode } from '../lib/downloader'
-import { base64Encode } from '../lib/hash'
-import { checkIfContainsStringMatch, convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
+import { downloadCustomFileNameId } from '../lib/hash'
+import { checkIfContainsStringMatch, convertToSortableTitle, getAppUserAgent, getExtensionFromUrl, isValidDate } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { getAutoDownloadSettings, getAutoDownloadsLastRefreshDate } from './autoDownloads'
@@ -334,7 +334,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
 
         // The episode.mediaUrl is used as the unique id by the downloads service,
         // and as the unique key by the FlatList component.
-        episode.id = base64Encode(enclosure.url)
+        episode.id = downloadCustomFileNameId(enclosure.url)
         episode.mediaUrl = enclosure.url
 
         // TODO: add chapters support for podcasts added by RSS feed

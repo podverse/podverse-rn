@@ -40,7 +40,6 @@
   "Are you sure you want to delete all of your downloaded episodes": "Delete all your downloaded episodes?",
   "Are you sure you want to delete all of your downloaded episodes from this podcast": "Delete all downloaded episodes from this podcast?",
   "Are you sure you want to delete your account": "Delete your account?",
-
   "Ask to sync local podcasts with server": "Save the local subscriptions to Podverse Premium so they are available on all devices?",
   "Auto queue new episodes position": "Position to auto-enqueue new episodes",
   "ARIA HINT - add a podcast by its RSS feed": "Add a podcast by its RSS feed",
@@ -179,6 +178,7 @@
   "ARIA LABEL - Queue Next": "Enqueue as next",
   "Audio livestreams": "Audio livestreams",
   "Auto": "Auto",
+  "Auto download by default on subscribe": "Auto-download by default on subscribe",
   "Auto Downloading Off": "Auto-downloading off",
   "Auto Downloading On": "Auto-downloading on",
   "Auto queue position helper text": "Only has an impact if auto-queueing is turned on for a podcast.",
