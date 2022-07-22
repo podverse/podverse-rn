@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import he from 'he'
 import moment from 'moment'
 import { NowPlayingItem } from 'podverse-shared'
+import { Platform } from 'react-native'
 import Config from 'react-native-config'
 import { getUserAgent } from 'react-native-device-info'
 import InAppReview from 'react-native-in-app-review'
@@ -784,4 +785,8 @@ export const generateEpisodeAccessibilityText = (episodeCompleted: boolean, time
 export const addParameterToURL = (uri: string, param: string) => {
   uri += (uri.split('?')[1] ? '&' : '?') + param
   return uri
+}
+
+export const getAndroidVersion = () => {
+  return Platform.constants?.Release && parseInt(Platform.constants?.Release, 10)
 }

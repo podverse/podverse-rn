@@ -2,6 +2,8 @@ import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
+import * as ScopedStorage from 'react-native-scoped-storage'
+import { Dirs, FileSystem } from 'react-native-file-access'
 import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
 import { getSecureUrl } from '../services/tools'
@@ -160,11 +162,11 @@ export const downloadEpisode = async (
     BackgroundDownloader(),
     AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
   ])
-  const folderPath = customLocation ? customLocation : downloader.directories.documents
-
-  const destination = `${folderPath}/${episode.id}${ext}`
+  const folderPath = `${RNFS.ExternalStorageDirectoryPath}`
+  const origDestination = `${folderPath}/${episode.id}${ext}`
+  const customLocationDestination = `${customLocation}/${episode.id}${ext}`
   const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
-
+  console.log('origDestinationnnn', origDestination)
   let downloadUrl = episode.mediaUrl
   if (downloadUrl.startsWith('http://')) {
     try {
@@ -183,7 +185,7 @@ export const downloadEpisode = async (
       .download({
         id: episode.id,
         url: downloadUrl,
-        destination,
+        destination: origDestination,
         headers: {
           ...(Authorization ? { Authorization } : {})
         }
@@ -215,6 +217,20 @@ export const downloadEpisode = async (
       })
       .done(async () => {
         await progressLimiter.stop()
+
+        if (customLocation) {
+          console.log('doneeee', origDestination, customLocationDestination)
+
+          const result = await ScopedStorage.stat(`file:/${origDestination}`)
+          console.log('resultttt', result)
+
+          // await ScopedStorage.createFile(customLocation, `${episode.id}${ext}`, 'audio/mpeg')
+          await ScopedStorage.copyFile(`file:/${origDestination}`, customLocationDestination, () => {})
+          // // await FileSystem.cp(origDestination, customLocationDestination)
+          // await FileSystem.mv(origDestination, customLocationDestination)
+          // await FileSystem.unlink(origDestination)
+        }
+
         await addDownloadedPodcastEpisode(episode, podcast)
 
         // Call updateDownloadComplete after updateDownloadedPodcasts
