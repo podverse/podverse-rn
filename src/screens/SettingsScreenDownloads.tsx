@@ -232,6 +232,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
           const androidVersion = getAndroidVersion()
           if (androidVersion >= 10) {
             await this._setExtDownloadFileLocationAndroid10()
+            // await this._askToTransferDownloads()
           } else {
             const grantedWrite = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE, {
               title: translate('Podverse External Storage Permission'),
@@ -287,9 +288,6 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
       console.log('dir', dir)
 
       if (dir?.uri) {
-        // Remove content:/ from beginning of URI
-        // Before: content://com.android.externalstorage.documents/tree/01F6-AC3F%3APodverse/document/01F6-AC3F%3APodverse/xnpMzwCqM.mp3
-        // After: /com.android.externalstorage.documents/tree/01F6-AC3F%3APodverse/document/01F6-AC3F%3APodverse/xnpMzwCqM.mp3
         const parsedDownloadLocation = dir.uri
         await AsyncStorage.setItem(
           PV.Keys.EXT_STORAGE_DLOAD_LOCATION,

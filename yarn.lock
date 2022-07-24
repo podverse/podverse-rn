@@ -8499,7 +8499,7 @@ react-native-fast-image@8.5.11:
   resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-8.5.11.tgz#e3dc969d0e4e8df026646bf18194465aa55cbc2b"
   integrity sha512-cNW4bIJg3nvKaheG8vGMfqCt5LMWX9MS5+wMudgKIHbGO51spRr4sgnlhVgwHLcZ5aeNOVJ8CPRxDIWKRq/0QA==
 
-react-native-file-access@^2.4.3:
+react-native-file-access@2.4.3:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/react-native-file-access/-/react-native-file-access-2.4.3.tgz#83c632ee3e6a403662e7c92f10de0d88539c42ba"
   integrity sha512-9f/z5dUSZgl1js+7jl43vkUrfProNuWo6rNRXV2AXdm1dckokYjeai/Mj6x+XMDyaBtRYztNKNqwZJhe5kHrNA==
@@ -8622,7 +8622,7 @@ react-native-safe-area-view@2.0.0, react-native-safe-area-view@^0.14.9:
   dependencies:
     hoist-non-react-statics "^2.3.1"
 
-react-native-scoped-storage@^1.9.3:
+react-native-scoped-storage@1.9.3:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/react-native-scoped-storage/-/react-native-scoped-storage-1.9.3.tgz#0a76fd73d3ed2e39bb6654f5505cc98ce1b7e076"
   integrity sha512-hGqj+2I6pIziIh1CmWXXlgm59wCQLIikETqbMCaFQRHC3yQGI4HdYN6QvM3rteUuR69PNjso+Qd3TJfQnFhlMA==
