@@ -2,13 +2,23 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import he from 'he'
 import moment from 'moment'
+import 'moment/locale/de'
+import 'moment/locale/el'
+import 'moment/locale/es'
+import 'moment/locale/fr'
+import 'moment/locale/lt'
+import 'moment/locale/nb'
+import 'moment/locale/pt'
+import 'moment/locale/ru'
+import 'moment/locale/sv'
+import 'moment/locale/tr'
 import { NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
 import Config from 'react-native-config'
 import { getUserAgent } from 'react-native-device-info'
 import InAppReview from 'react-native-in-app-review'
 import { PV } from '../resources'
-import { translate } from './i18n'
+import { getLanguageTag, translate } from './i18n'
 
 const cheerio = require('react-native-cheerio')
 
@@ -42,6 +52,7 @@ export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
 }
 
 export const readableDate = (date?: Date, withTime?: boolean) => {
+  moment.locale(getLanguageTag())
   date = date || new Date()
   const format = withTime ? 'MMM Do YYYY, h:mm:ss a' : 'MMM Do YYYY'
   return moment(date).format(format)

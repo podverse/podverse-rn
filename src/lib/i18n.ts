@@ -25,9 +25,7 @@ class Internationalizer {
 
   static initializeTranslator = () => {
     if (!Internationalizer.instance) {
-      const fallback = { languageTag: 'en', isRTL: false }
-      const { languageTag } = RNLocalize.findBestAvailableLanguage(Object.keys(translationGetters)) || fallback
-
+      const languageTag = getLanguageTag()
       Internationalizer.instance = new Internationalizer(translationGetters[languageTag]())
     }
 
@@ -41,6 +39,12 @@ class Internationalizer {
       return Config.IS_DEV ? `[Missing tranlation for key: ${key}]` : translationGetters.en()[key]
     }
   }
+}
+
+export const getLanguageTag = () => {
+  const fallback = { languageTag: 'en', isRTL: false }
+  const { languageTag } = RNLocalize.findBestAvailableLanguage(Object.keys(translationGetters)) || fallback
+  return languageTag
 }
 
 export const convertFilterOptionsToI18N = (rightItems: any) => rightItems.map((x: any) => convertFilterOptionToI18N(x))

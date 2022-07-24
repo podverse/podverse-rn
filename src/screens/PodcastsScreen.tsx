@@ -1035,8 +1035,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
           )}
         </RNView>
         <Dialog.Container accessible visible={showDataSettingsConfirmDialog}>
-          <Dialog.Title>Data Settings</Dialog.Title>
-          <Dialog.Description>Do you want to allow downloading episodes with your data plan?</Dialog.Description>
+          <Dialog.Title>{translate('Data Settings')}</Dialog.Title>
+          <Dialog.Description>
+            {translate('Do you want to allow downloading episodes with your data plan')}
+          </Dialog.Description>
           <Dialog.Button
             label={translate('No Wifi Only')}
             onPress={this._handleDataSettingsWifiOnly}
