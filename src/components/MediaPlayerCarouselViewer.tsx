@@ -1,7 +1,8 @@
-import { checkIfVideoFileOrVideoLiveType } from 'podverse-shared'
+import { checkIfVideoFileOrVideoLiveType, convertNowPlayingItemToEpisode } from 'podverse-shared'
 import { Alert, Dimensions, Linking, Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
+import { navigateBackToRoot, navigateToEpisodeScreenWithItemInCurrentStack, navigateToEpisodeScreenWithItemInPodcastsStack, navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { prefixClipLabel, readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { ActivityIndicator, FastImage, PressableWithOpacity, PVVideo, ScrollView, Text, TextTicker } from './'
@@ -26,6 +27,35 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       { text: translate('Cancel') },
       { text: translate('Yes'), onPress: () => Linking.openURL(url) }
     ])
+  }
+
+  handlePodcastNavigation = () => {
+    const { navigation } = this.props
+    const { player } = this.global
+    const item = player?.nowPlayingItem
+    if (item) {
+      navigateBackToRoot(navigation)
+      navigateToPodcastScreenWithItem(navigation, item)
+    }
+  }
+
+  handleEpisodeNavigation = () => {
+    const { navigation } = this.props
+    const { player } = this.global
+    const item = player?.nowPlayingItem
+    if (item) {
+      this.handlePodcastNavigation()
+      const episode = convertNowPlayingItemToEpisode(item)
+      const includeGoToPodcast = true
+      navigation.navigate({
+        routeName: PV.RouteNames.EpisodeScreen,
+        params: {
+          episodeId: item.episodeId,
+          episode,
+          includeGoToPodcast
+        }
+      })
+    }
   }
 
   render() {
@@ -106,25 +136,31 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             !!nowPlayingItem && (
               <RNView style={styles.episodeTitleWrapper}>
                 {!screenReaderEnabled ? (
-                  <TextTicker
-                    allowFontScaling={false}
-                    bounce
-                    importantForAccessibility='no-hide-descendants'
-                    loop
-                    textLength={nowPlayingItem?.episodeTitle?.length}>
-                    {episodeTitleComponent}
-                  </TextTicker>
+                  <PressableWithOpacity onPress={this.handleEpisodeNavigation}>
+                    <TextTicker
+                      allowFontScaling={false}
+                      bounce
+                      importantForAccessibility='no-hide-descendants'
+                      loop
+                      textLength={nowPlayingItem?.episodeTitle?.length}>
+                      {episodeTitleComponent}
+                    </TextTicker>
+                  </PressableWithOpacity>
                 ) : (
-                  episodeTitleComponent
+                  <PressableWithOpacity onPress={this.handleEpisodeNavigation}>
+                    {episodeTitleComponent}
+                  </PressableWithOpacity>
                 )}
-                <Text
-                  allowFontScaling={false}
-                  isSecondary
-                  numberOfLines={1}
-                  style={styles.podcastTitle}
-                  testID='media_player_carousel_viewer_podcast_title'>
-                  {nowPlayingItem?.podcastTitle}
-                </Text>
+                <PressableWithOpacity onPress={this.handlePodcastNavigation}>
+                  <Text
+                    allowFontScaling={false}
+                    isSecondary
+                    numberOfLines={1}
+                    style={styles.podcastTitle}
+                    testID='media_player_carousel_viewer_podcast_title'>
+                    {nowPlayingItem?.podcastTitle}
+                  </Text>
+                </PressableWithOpacity>
               </RNView>
             )
           )}

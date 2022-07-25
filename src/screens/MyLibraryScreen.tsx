@@ -107,15 +107,13 @@ export class MyLibraryScreen extends React.Component<Props, State> {
                       fontScaleMode !== PV.Fonts.fontScale.largest && (
                         <Badge
                           badgeStyle={{
-                            width: 25,
+                            minWidth: 25,
                             height: 25,
                             backgroundColor: PV.Colors.redLighter,
                             borderRadius: 12.5
                           }}
                           containerStyle={{
-                            position: 'absolute',
-                            right: -32,
-                            top: 0
+                            marginLeft: 8
                           }}
                           status='error'
                           textStyle={{ fontSize: PV.Fonts.largeSizes.xxl, fontWeight: PV.Fonts.weights.bold }}

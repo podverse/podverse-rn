@@ -132,6 +132,10 @@ export const Alerts = {
     message: translate('Connect to Wifi to stream this episode'),
     title: _networkErrorTitle
   },
+  PLAYER_CANNOT_DOWNLOAD_WITHOUT_WIFI: {
+    message: translate('Connect to Wifi to download this episode'),
+    title: _networkErrorTitle
+  },
   PREMIUM_MEMBERSHIP_EXPIRED: {
     message: _expiredMessage,
     title: translate('Premium Membership Expired'),

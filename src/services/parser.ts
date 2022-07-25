@@ -343,7 +343,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
         //   episode.chaptersType = parsedEpisode.chapters.type
         // }
 
-        episode.description = parsedEpisode.description && parsedEpisode.description.trim()
+        episode.description = parsedEpisode?.summary?.trim() || parsedEpisode?.description?.trim()
         episode.duration = parsedEpisode.duration ? parseInt(parsedEpisode.duration, 10) : 0
         episode.episodeType = parsedEpisode.type
         episode.funding = parsedEpisode.funding
