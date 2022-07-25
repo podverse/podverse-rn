@@ -3,7 +3,8 @@ import { Pressable } from 'react-native'
 
 type Props = {
   children: any
-  style: any
+  onPress: any
+  style?: any
 }
 
 export const PressableWithOpacity = (props: Props) => {
