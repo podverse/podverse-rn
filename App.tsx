@@ -82,8 +82,8 @@ class App extends Component<Props, State> {
         ignoreHandleNetworkChange = false
         return
       }
-  
-      if (await hasValidDownloadingConnection()) {
+      const skipCannotDownloadAlert = true
+      if (await hasValidDownloadingConnection(skipCannotDownloadAlert)) {
         refreshDownloads()
       } else {
         pauseDownloadingEpisodesAll()

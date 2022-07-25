@@ -24,6 +24,7 @@ const {
   _allEpisodesKey,
   _podcastsKey,
   _episodesKey,
+  _hideCompletedKey,
   _showCompletedKey,
   _clipsKey,
   _chaptersKey,
@@ -93,6 +94,10 @@ const allFilterTypeItems = () => {
       value: _episodesKey
     },
     {
+      label: translate('Hide Completed'),
+      value: _hideCompletedKey
+    },
+    {
       label: translate('Show Completed'),
       value: _showCompletedKey
     },
@@ -122,6 +127,7 @@ const getTypeItems = () =>
     const { hideCompleted } = getGlobal()
     return filterTypeItemsList.find((value: string) => {
       if (!hideCompleted && item.value === _showCompletedKey) return false
+      if (hideCompleted && item.value === _hideCompletedKey) return false
       return item.value === value
     })
   })
@@ -212,7 +218,7 @@ export const FilterOptions = {
       clipsFromPodcastSort: [_mostRecentKey, ..._top]
     },
     PodcastScreen: {
-      type: [_downloadedKey, _episodesKey, _showCompletedKey, _clipsKey],
+      type: [_downloadedKey, _episodesKey, _hideCompletedKey, _showCompletedKey, _clipsKey],
       sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
       addByPodcastRSSFeedURLType: [_downloadedKey, _episodesKey],
       addByPodcastRSSFeedURLSort: [_mostRecentKey]

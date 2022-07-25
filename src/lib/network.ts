@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo, { NetInfoCellularGeneration, NetInfoState, NetInfoStateType } from '@react-native-community/netinfo'
 import { Alert } from 'react-native'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import { request } from '../services/request'
 
 const supportedGenerations = [
@@ -80,13 +81,16 @@ export const checkFallbackInternetReachability = async () => {
   return isInternetReachable
 }
 
-export const hasValidDownloadingConnection = async () => {
+export const hasValidDownloadingConnection = async (skipCannotDownloadAlert?: boolean) => {
   const [downloadingWifiOnly, state] = await Promise.all([
     AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY),
     NetInfo.fetch()
   ])
 
   if (downloadingWifiOnly && state.type !== NetInfoStateType.wifi) {
+    if (!skipCannotDownloadAlert) {
+      PVEventEmitter.emit(PV.Events.PLAYER_CANNOT_DOWNLOAD_WITHOUT_WIFI)
+    }
     return false
   }
 

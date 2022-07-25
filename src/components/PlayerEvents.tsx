@@ -8,7 +8,7 @@ import PVEventEmitter from '../services/eventEmitter'
 import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { playerUpdatePlaybackState, playerUpdatePlayerState } from '../state/actions/player'
 import { getQueueItems } from '../state/actions/queue'
-import { getHistoryItems, updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
+import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 
 type Props = any
 
@@ -16,11 +16,13 @@ export class PlayerEvents extends React.PureComponent<Props> {
   constructor(props: Props) {
     super(props)
 
-    this._playerCannotStreamWithoutWifi = debounce(this._playerCannotStreamWithoutWifi, 3000) as any
+    this._playerCannotStreamWithoutWifi = debounce(this._playerCannotStreamWithoutWifi, 3000, { leading: true, trailing: false }) as any
+    this._playerCannotDownloadWithoutWifi = debounce(this._playerCannotDownloadWithoutWifi, 3000, { leading: true, trailing: false }) as any
   }
 
   componentDidMount() {
     PVEventEmitter.on(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI, this._playerCannotStreamWithoutWifi)
+    PVEventEmitter.on(PV.Events.PLAYER_CANNOT_DOWNLOAD_WITHOUT_WIFI, this._playerCannotDownloadWithoutWifi)
     PVEventEmitter.on(PV.Events.PLAYER_HISTORY_INDEX_SHOULD_UPDATE, this._historyItemsShouldUpdate)
     PVEventEmitter.on(PV.Events.PLAYER_PLAYBACK_ERROR, this._handlePlayerPlaybackError)
     PVEventEmitter.on(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED, this._refreshNowPlayingItem)
@@ -41,6 +43,14 @@ export class PlayerEvents extends React.PureComponent<Props> {
     Alert.alert(
       PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.title,
       PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.message,
+      PV.Alerts.BUTTONS.OK
+    )
+  }
+
+  _playerCannotDownloadWithoutWifi = () => {
+    Alert.alert(
+      PV.Alerts.PLAYER_CANNOT_DOWNLOAD_WITHOUT_WIFI.title,
+      PV.Alerts.PLAYER_CANNOT_DOWNLOAD_WITHOUT_WIFI.message,
       PV.Alerts.BUTTONS.OK
     )
   }
