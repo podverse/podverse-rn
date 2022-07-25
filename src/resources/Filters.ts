@@ -24,6 +24,7 @@ export const Filters: IFilters = {
   _allEpisodesKey: 'all-episodes',
   _podcastsKey: 'podcasts',
   _episodesKey: 'episodes',
+  _hideCompletedKey: 'hide-completed',
   _showCompletedKey: 'show-completed',
   _clipsKey: 'clips',
   _chaptersKey: 'chapters',
