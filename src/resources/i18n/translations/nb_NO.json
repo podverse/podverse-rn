@@ -695,5 +695,7 @@
     "Automatically add new episodes to queue": "Legg til nye episoder til i køen automatisk",
     "Auto queue new episodes position": "Posisjon for automatisk kølegging av nye episoder",
     "ARIA HINT - auto queue new episodes position": "Hvorvidt nye episoder skal legges til på begynnelsen eller slutten av køen når automatisk kølegging er påskrudd for et nettradioopptak.",
-    "Auto queue position helper text": "Hvor nye episoder skal legges til i køen når automatisk kølegging er påskrudd for et nettradioopptak."
+    "Auto queue position helper text": "Hvor nye episoder skal legges til i køen når automatisk kølegging er påskrudd for et nettradioopptak.",
+    "Show Completed": "Vis fullførte",
+    "Hide completed episodes by default": "Skjul fullførte episoder som forvalg"
 }

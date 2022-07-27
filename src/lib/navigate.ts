@@ -28,7 +28,7 @@ export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
 }
 
 /*
-  Navigate to the EpisodeScreen located within the PodcastsStackNavigator.
+  Navigate to the EpisodeScreen located within the current stack navigator.
  */
 export const navigateToEpisodeScreenWithItemInCurrentStack = (
   navigation: any,
@@ -88,4 +88,12 @@ export const navigateToPodcastScreenWithPodcast = (navigation: any, podcast: any
       }
     })
   )
+}
+
+export const navigateBackToRoot = (navigation: any) => {
+  navigation.goBack(null)
+  navigation.goBack(null)
+  navigation.goBack(null)
+  navigation.goBack(null)
+  navigation.goBack(null)
 }

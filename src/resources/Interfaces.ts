@@ -269,6 +269,7 @@ export interface IFilters {
   _allEpisodesKey: string
   _podcastsKey: string
   _episodesKey: string
+  _hideCompletedKey: string
   _showCompletedKey: string
   _clipsKey: string
   _chaptersKey: string
