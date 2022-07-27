@@ -24,7 +24,11 @@ export class GridView extends React.PureComponent<Props, any> {
               this.props.onItemSelected?.(item)
             }}
             style={styles.cellbutton}>
-            <FastImage styles={styles.imageThumbnail} source={item?.imageUrl} resizeMode="cover"/>
+            <FastImage 
+              styles={styles.imageThumbnail} 
+              source={item?.shrunkImageUrl || item?.imageUrl} 
+              resizeMode="cover"
+            />
           </PressableWithOpacity>
         )}
         numColumns={3}
