@@ -78,15 +78,6 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.7.0):
     - GoogleUtilities/Logger
-  - libwebp (1.2.1):
-    - libwebp/demux (= 1.2.1)
-    - libwebp/mux (= 1.2.1)
-    - libwebp/webp (= 1.2.1)
-  - libwebp/demux (1.2.1):
-    - libwebp/webp
-  - libwebp/mux (1.2.1):
-    - libwebp/demux
-  - libwebp/webp (1.2.1)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -396,10 +387,6 @@ PODS:
     - React-Core
   - RNDeviceInfo (8.1.7):
     - React-Core
-  - RNFastImage (8.5.11):
-    - React-Core
-    - SDWebImage (~> 5.11.1)
-    - SDWebImageWebPCoder (~> 0.8.4)
   - RNFBApp (14.9.1):
     - Firebase/CoreOnly (= 8.10.0)
     - React-Core
@@ -455,12 +442,6 @@ PODS:
     - React
   - RNVectorIcons (8.1.0):
     - React-Core
-  - SDWebImage (5.11.1):
-    - SDWebImage/Core (= 5.11.1)
-  - SDWebImage/Core (5.11.1)
-  - SDWebImageWebPCoder (0.8.4):
-    - libwebp (~> 1.0)
-    - SDWebImage/Core (~> 5.10)
   - SwiftAudioEx (0.14.7)
   - toolbar-android (0.2.1):
     - React
@@ -519,7 +500,6 @@ DEPENDENCIES:
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
-  - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNFS (from `../node_modules/react-native-fs`)
@@ -548,11 +528,8 @@ SPEC REPOS:
     - fmt
     - GoogleDataTransport
     - GoogleUtilities
-    - libwebp
     - nanopb
     - PromisesObjC
-    - SDWebImage
-    - SDWebImageWebPCoder
     - SwiftAudioEx
 
 EXTERNAL SOURCES:
@@ -654,8 +631,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-picker/picker"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
-  RNFastImage:
-    :path: "../node_modules/react-native-fast-image"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBMessaging:
@@ -706,7 +681,6 @@ SPEC CHECKSUMS:
   glog: 5337263514dd6f09803962437687240c5dc39aa4
   GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
-  libwebp: 98a37e597e40bfdb4c911fc98f2c53d0b12d05fc
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72
   RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
@@ -750,7 +724,6 @@ SPEC CHECKSUMS:
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNCPicker: 28e41a58b79cd82cc639391bb99ca1b2489a3ea9
   RNDeviceInfo: ace1442cd0f7d01292a39a3b587666177eaf8cb0
-  RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
   RNFBApp: 854ef84c03014ec30d66f6362ceb0e51985c893a
   RNFBMessaging: 9b6c56d4dbd0115ca433c9b47e1c4b769f62e262
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
@@ -764,8 +737,6 @@ SPEC CHECKSUMS:
   RNShare: 00e7409201e3cab13e0febc41fd4465a83ae8225
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
-  SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
-  SDWebImageWebPCoder: f93010f3f6c031e2f8fb3081ca4ee6966c539815
   SwiftAudioEx: 3a4024e48f3b3e45dac6bf2668d7adbe7b83f50e
   toolbar-android: 2a73856e98b750d7e71ce4644d3f41cc98211719
   Yoga: 2b4a01651f42a32f82e6cef3830a3ba48088237f

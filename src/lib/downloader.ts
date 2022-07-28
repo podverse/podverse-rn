@@ -1,7 +1,7 @@
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import RNBackgroundDownloader from 'react-native-background-downloader'
-import RNFS, { downloadFile } from 'react-native-fs'
+import RNFS from 'react-native-fs'
 import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
 import { getSecureUrl } from '../services/tools'
