@@ -7,5 +7,6 @@ export const Images = {
   JUMP_BACKWARDS: require('./images/skip-icon-left.png'),
   NEXT_TRACK: require('./images/skipforward.png'),
   PREV_TRACK: require('./images/skipbackward.png'),
-  GRID_ICON: require('./images/grid-icon.png')
+  GRID_ICON: require('./images/grid-icon.png'),
+  PLACEHOLDER: require('./images/podverse-icon-placeholder')
 }

@@ -1,11 +1,12 @@
-import { Platform, View } from 'react-native'
+import { Image, Platform, View } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
 import { isValidUrl } from '../lib/utility'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
-import { Icon } from '.'
+import { PV } from '../resources'
 const uuidv4 = require('uuid/v4')
+const PlaceholderImage = PV.Images.PLACEHOLDER.default
 
 type Props = {
   accessible?: boolean
@@ -33,14 +34,13 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     }
   }
 
-  async componentDidMount() {
-    if(this.props.source) {
-      const savedImageResults = await getSavedImageUri(this.props.source)
-      if(savedImageResults.exists) {
-        this.setState({localImageSource: savedImageResults})
-      } else {
-        downloadImageFile(this.props.source)
-      }
+  componentDidMount() {
+    this._loadImage()    
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps?.source !== this.props.source) {
+      this._loadImage()
     }
   }
 
@@ -48,14 +48,26 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     this.setState({ hasError: true })
   }
 
-  componentDidUpdate(prevProps: Props) {
-    if (prevProps?.source !== this.props.source) {
-      this.setState({ hasError: false })
+  _loadImage = async () => {
+    const { source } = this.props
+    if (source) {
+      const savedImageResults = await getSavedImageUri(source)
+      if (savedImageResults.exists) {
+        this.setState({ localImageSource: savedImageResults }, () => {
+          (async () => {
+            await downloadImageFile(source)
+            const latestSavedImageResults = await getSavedImageUri(source)
+            this.setState({ localImageSource: latestSavedImageResults })
+          })
+        })
+      } else {
+        downloadImageFile(source)
+      }
     }
   }
 
   render() {
-    const { accessible = false, isSmall, resizeMode = 'contain', source, styles } = this.props
+    const { accessible = false, resizeMode = 'contain', source, styles } = this.props
     const { hasError, uuid, localImageSource } = this.state
     const { offlineModeEnabled, userAgent } = this.global
     const cache = offlineModeEnabled ? 'cacheOnly' : 'immutable'
@@ -101,14 +113,8 @@ export class PVFastImage extends React.PureComponent<Props, State> {
         {isValid && !hasError ? (
           image
         ) : (
-          <View
-            accessible={accessible}
-            style={{
-              ...styles,
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-            <Icon isSecondary name='podcast' size={isSmall ? 32 : 36} />
+          <View style={styles}>
+            <PlaceholderImage accessible={accessible} width='100%' height='100%' />
           </View>
         )}
       </>

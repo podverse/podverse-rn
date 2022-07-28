@@ -307,14 +307,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
-  // _setDownloadedDataIfOffline = async () => {
-  //   const isConnected = await hasValidNetworkConnection()
-  //   if (!isConnected) {
-  //     const preventIsLoading = false
-  //     const preventAutoDownloading = true
-  //     this.handleSelectFilterItem(PV.Filters._downloadedKey, preventIsLoading, preventAutoDownloading)
-  //   }
-  // }
+  _setDownloadedDataIfOffline = async () => {
+    const isConnected = await hasValidNetworkConnection()
+    if (!isConnected) {
+      const preventIsLoading = false
+      const preventAutoDownloading = true
+      this.handleSelectFilterItem(PV.Filters._downloadedKey, preventIsLoading, preventAutoDownloading)
+    }
+  }
 
   _handleTrackingTermsAcknowledged = async () => {
     /* Get tracking terms from AsyncStorage only here so that getTrackingConsentAcknowledged does not
@@ -558,19 +558,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     initializeValueProcessor()
 
-    // this._setDownloadedDataIfOffline()
+    this._setDownloadedDataIfOffline()
     trackPageView('/podcasts', 'Podcasts Screen')
   }
 
-  _handleInitialDefaultQuery = () => {
-    // const isConnected = await hasValidNetworkConnection()
+  _handleInitialDefaultQuery = async () => {
+    const isConnected = await hasValidNetworkConnection()
     const preventIsLoading = true
     const preventAutoDownloading = false
-    // if (isConnected) {
+    if (isConnected) {
     this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
-    // } else {
-    // this._setDownloadedDataIfOffline()
-    // }
+    } else {
+    this._setDownloadedDataIfOffline()
+    }
   }
 
   // NOTE: there is a race-condition possibility if you reparse RSS feeds whenever

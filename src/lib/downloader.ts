@@ -1,7 +1,7 @@
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import RNBackgroundDownloader from 'react-native-background-downloader'
-import RNFS from 'react-native-fs'
+import RNFS, { downloadFile } from 'react-native-fs'
 import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
 import { getSecureUrl } from '../services/tools'
@@ -18,6 +18,7 @@ import {
   safelyUnwrapNestedVariable
 } from './utility'
 import { downloadCustomFileNameId } from './hash'
+import { downloadImageFile } from './storage'
 
 export const BackgroundDownloader = () => {
   const userAgent = getAppUserAgent()
@@ -176,6 +177,11 @@ export const downloadEpisode = async (
       console.log('Secure url not found for http mediaUrl. Info: ', err)
     }
   }
+
+  // Download and store the image files if available
+  if (podcast?.imageUrl) downloadImageFile(podcast.imageUrl)
+  if (podcast?.shrunkImageUrl) downloadImageFile(podcast.shrunkImageUrl)
+  if (episode?.imageUrl) downloadImageFile(episode.imageUrl)
 
   // Wait for t.stop() to complete
   setTimeout(() => {
