@@ -17,7 +17,7 @@ import {
   getExtensionFromUrl,
   safelyUnwrapNestedVariable
 } from './utility'
-import { base64Encode } from './hash'
+import { downloadCustomFileNameId } from './hash'
 
 export const BackgroundDownloader = () => {
   const userAgent = getAppUserAgent()
@@ -370,7 +370,7 @@ export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string,
   const folderPath = customLocation ? customLocation : downloader.directories.documents
 
   if (isAddByRSSPodcast) {
-    const customRSSItemId = base64Encode(episodeMediaUrl)
+    const customRSSItemId = downloadCustomFileNameId(episodeMediaUrl)
     return `${folderPath}/${customRSSItemId}${ext}`
   } else {
     return `${folderPath}/${id}${ext}`

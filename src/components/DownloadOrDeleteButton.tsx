@@ -29,7 +29,7 @@ export const DownloadOrDeleteButton = (props: Props) => {
         color={PV.Colors.white}
         name='download'
         onPress={onPressDownload}
-        size={25}
+        size={27}
         style={[styles.image, style]}
         testID={`${testID}_download_button_icon`}
       />
@@ -56,7 +56,7 @@ export const DownloadOrDeleteButton = (props: Props) => {
           color={isDarkMode ? iconStyles.darkTertiary.color : iconStyles.lightSecondary.color}
           name='trash-alt'
           onPress={onPressDelete}
-          size={25}
+          size={27}
           style={[styles.image, style]}
           testID={`${testID}_delete_button_icon`}
         />
@@ -67,12 +67,15 @@ export const DownloadOrDeleteButton = (props: Props) => {
   return <View accessible>{component}</View>
 }
 
+const width = 62
+const height = 50
+
 const styles = StyleSheet.create({
   activityIndicator: {
     flex: 0,
-    height: 50,
-    width: 44,
-    lineHeight: 50,
+    height,
+    width,
+    lineHeight: height,
     marginBottom: 0,
     marginLeft: 0,
     marginRight: 0,
@@ -82,20 +85,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 0,
     justifyContent: 'center',
-    width: 44
+    width
   },
   image: {
     flex: 0,
-    height: 50,
-    lineHeight: 50,
+    height,
+    lineHeight: height,
     textAlign: 'center',
-    width: 50
+    width
   },
   imageWrapper: {
     alignItems: 'center',
     flex: 0,
-    height: 50,
+    height,
     justifyContent: 'center',
-    width: 44
+    width
   }
 })

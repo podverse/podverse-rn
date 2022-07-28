@@ -3,6 +3,7 @@ import FastImage from 'react-native-fast-image'
 import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
 import { isValidUrl } from '../lib/utility'
+import { downloadImageFile, getSavedImageUri } from '../lib/storage'
 import { Icon } from '.'
 const uuidv4 = require('uuid/v4')
 
@@ -11,13 +12,14 @@ type Props = {
   cache?: string
   isSmall?: boolean
   resizeMode?: any
-  source?: string
   styles?: any
+  source?: string
 }
 
 type State = {
   hasError: boolean
   uuid: string
+  localImageSource: {exists:boolean, imageUrl:string|null}
 }
 
 export class PVFastImage extends React.PureComponent<Props, State> {
@@ -26,7 +28,19 @@ export class PVFastImage extends React.PureComponent<Props, State> {
 
     this.state = {
       hasError: false,
-      uuid: uuidv4()
+      uuid: uuidv4(),
+      localImageSource: {imageUrl: props.source || null, exists:false}
+    }
+  }
+
+  async componentDidMount() {
+    if(this.props.source) {
+      const savedImageResults = await getSavedImageUri(this.props.source)
+      if(savedImageResults.exists) {
+        this.setState({localImageSource: savedImageResults})
+      } else {
+        downloadImageFile(this.props.source)
+      }
     }
   }
 
@@ -42,20 +56,27 @@ export class PVFastImage extends React.PureComponent<Props, State> {
 
   render() {
     const { accessible = false, isSmall, resizeMode = 'contain', source, styles } = this.props
-    const { hasError, uuid } = this.state
+    const { hasError, uuid, localImageSource } = this.state
     const { offlineModeEnabled, userAgent } = this.global
-    const isValid = isValidUrl(source)
-    const isSvg = source && source.endsWith('.svg')
-
-    /* Insecure images will not load on iOS, so force image URLs to https */
-    let secureImageUrl = source
-    if (Platform.OS === 'ios' && secureImageUrl) {
-      secureImageUrl = secureImageUrl?.replace('http://', 'https://')
+    const cache = offlineModeEnabled ? 'cacheOnly' : 'immutable'
+    let imageSource = source
+    let isValid = false
+    if (localImageSource.exists) {
+      imageSource = "file://" + localImageSource.imageUrl
+      isValid = true
+    } else {
+      isValid = isValidUrl(imageSource)
+      
+      /* Insecure images will not load on iOS, so force image URLs to https */
+      if (Platform.OS === 'ios' && imageSource) {
+        imageSource = imageSource.replace('http://', 'https://')
+      }
     }
+    const isSvg = imageSource && imageSource.endsWith('.svg')
 
     const image = isSvg ? (
       <View style={styles}>
-        <SvgUri accessible={accessible} width='100%' height='100%' uri={source} />
+        <SvgUri accessible={accessible} width='100%' height='100%' uri={imageSource || null} />
       </View>
     ) : (
       <FastImage
@@ -65,8 +86,8 @@ export class PVFastImage extends React.PureComponent<Props, State> {
         onError={this._handleError}
         resizeMode={resizeMode}
         source={{
-          uri: secureImageUrl,
-          cache: 'immutable',
+          uri: imageSource,
+          cache,
           headers: {
             ...(userAgent ? { 'User-Agent': userAgent } : {})
           }
