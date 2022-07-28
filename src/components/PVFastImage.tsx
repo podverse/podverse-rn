@@ -1,11 +1,9 @@
 import { Image, Platform, View } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
 import { isValidUrl } from '../lib/utility'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
 import { PV } from '../resources'
-const uuidv4 = require('uuid/v4')
 const PlaceholderImage = PV.Images.PLACEHOLDER.default
 
 type Props = {
@@ -19,7 +17,6 @@ type Props = {
 
 type State = {
   hasError: boolean
-  uuid: string
   localImageSource: {exists:boolean, imageUrl:string|null}
 }
 
@@ -29,7 +26,6 @@ export class PVFastImage extends React.PureComponent<Props, State> {
 
     this.state = {
       hasError: false,
-      uuid: uuidv4(),
       localImageSource: {imageUrl: props.source || null, exists:false}
     }
   }
@@ -61,16 +57,17 @@ export class PVFastImage extends React.PureComponent<Props, State> {
           })
         })
       } else {
-        downloadImageFile(source)
+        await downloadImageFile(source)
+        const savedImageResults = await getSavedImageUri(source)
+        this.setState({ localImageSource: savedImageResults })
       }
     }
   }
 
   render() {
     const { accessible = false, resizeMode = 'contain', source, styles } = this.props
-    const { hasError, uuid, localImageSource } = this.state
-    const { offlineModeEnabled, userAgent } = this.global
-    const cache = offlineModeEnabled ? 'cacheOnly' : 'immutable'
+    const { hasError, localImageSource } = this.state
+    const { userAgent } = this.global
     let imageSource = source
     let isValid = false
     if (localImageSource.exists) {
@@ -91,16 +88,12 @@ export class PVFastImage extends React.PureComponent<Props, State> {
         <SvgUri accessible={accessible} width='100%' height='100%' uri={imageSource || null} />
       </View>
     ) : (
-      <FastImage
+      <Image
         accessible={accessible}
-        fallback
-        // A unique key is needed, or a stale image or no image may load.
-        key={imageSource + uuid}
         onError={this._handleError}
         resizeMode={resizeMode}
         source={{
           uri: imageSource,
-          cache,
           headers: {
             ...(userAgent ? { 'User-Agent': userAgent } : {})
           }
