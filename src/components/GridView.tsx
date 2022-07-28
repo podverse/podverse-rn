@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('screen').width / 3
   },
   cellbutton: {
-    flex: 1,
+    flex: 0,
     flexDirection: 'column',
     margin: 1
   }
