@@ -94,7 +94,8 @@ export class PVFastImage extends React.PureComponent<Props, State> {
       <FastImage
         accessible={accessible}
         fallback
-        key={uuid}
+        // A unique key is needed, or a stale image or no image may load.
+        key={imageSource + uuid}
         onError={this._handleError}
         resizeMode={resizeMode}
         source={{
