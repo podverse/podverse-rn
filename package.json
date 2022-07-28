@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.5.14",
+  "version": "4.5.15",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -17,7 +17,7 @@
     "dev:ios:device": "react-native run-ios --device",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "eslint --fix 'src/**/*.{ts,tsx}'",
-    "format": "prettier --write src/**/*.ts*",
+    "format": "prettier --write src/**/*.ts* && yarn lint",
     "stage:resetDatabase": "node ./scripts/_resetDatabase.js",
     "test:e2e:android": "export $(cat .env | xargs) && DEVICE_TYPE=android BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./functions/tests/e2e/index.js",
     "test:w:e2e:android": "BROWSERSTACK_TEST_ENV='local' DEVICE_TYPE='android' node ./functions/tests/e2e/index.js",
@@ -78,7 +78,6 @@
     "react-native-dots-pagination": "^0.2.0",
     "react-native-draggable-flatlist": "3.1.1",
     "react-native-elements": "3.4.2",
-    "react-native-fast-image": "8.5.11",
     "react-native-fs": "2.18.0",
     "react-native-gesture-handler": "2.4.2",
     "react-native-haptic-feedback": "1.11.0",
