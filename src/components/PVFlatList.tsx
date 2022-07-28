@@ -4,7 +4,7 @@ import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { ActivityIndicator, MessageWithAction, View } from './'
+import { ActivityIndicator, MessageWithAction, View, GridView } from './'
 
 type Props = {
   contentOffset?: {
@@ -16,6 +16,7 @@ type Props = {
   disableLeftSwipe: boolean
   disableNoResultsMessage?: boolean
   extraData?: any
+  gridView?: boolean
   handleNoResultsBottomAction?: any
   handleNoResultsMiddleAction?: any
   handleNoResultsTopAction?: any
@@ -37,6 +38,7 @@ type Props = {
   noResultsTopActionText?: string
   onEndReached?: any
   onEndReachedThreshold?: number
+  onGridItemSelected?: any
   onRefresh?: any
   onScrollBeginDrag?: any
   renderHiddenItem?: any
@@ -63,6 +65,7 @@ export const PVFlatList = (props: Props) => {
     disableNoResultsMessage,
     extraData,
     getItemLayout,
+    gridView,
     handleNoResultsBottomAction,
     handleNoResultsMiddleAction,
     handleNoResultsTopAction,
@@ -82,6 +85,7 @@ export const PVFlatList = (props: Props) => {
     noResultsTopActionTextAccessibilityHint,
     onEndReached,
     onEndReachedThreshold = 0.9,
+    onGridItemSelected,
     onRefresh,
     onScrollBeginDrag,
     renderHiddenItem,
@@ -113,72 +117,7 @@ export const PVFlatList = (props: Props) => {
 
   return (
     <View style={styles.view} transparent={transparent}>
-      <SwipeListView
-        closeOnRowPress
-        contentOffset={contentOffset}
-        data={shouldShowResults ? data : []}
-        disableLeftSwipe={disableLeftSwipe}
-        disableRightSwipe
-        extraData={extraData}
-        ItemSeparatorComponent={ItemSeparatorComponent}
-        keyExtractor={keyExtractor}
-        onScrollBeginDrag={onScrollBeginDrag}
-        ListFooterComponent={() => {
-          if (isLoadingMore && !isEndOfResults) {
-            return (
-              <View
-                accessible={false}
-                style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}
-                transparent={transparent}>
-                <ActivityIndicator accessible={false} testID={testID} />
-              </View>
-            )
-          } else if (!isLoadingMore && !isEndOfResults) {
-            return <View style={[styles.isLoadingMoreCell]} transparent={transparent} />
-          }
-          // else if (isEndOfResults && !isCompleteData) {
-          //   return (
-          //     <View style={[styles.lastCell, globalTheme.tableCellBorder]} transparent={transparent}>
-          //       <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.lastCellText]}>
-          //         {translate('End of results')}
-          //       </Text>
-          //     </View>
-          //   )
-          // }
-
-          return null
-        }}
-        ListHeaderComponent={ListHeaderComponent}
-        onEndReached={onEndReached}
-        onEndReachedThreshold={onEndReachedThreshold}
-        {...(onRefresh
-          ? {
-              refreshControl: (
-                <RefreshControl
-                  refreshing={isRefreshing}
-                  onRefresh={onRefresh}
-                  tintColor={globalTheme?.activityIndicator?.color}
-                />
-              )
-            }
-          : {})}
-        renderHiddenItem={renderHiddenItem || _renderHiddenItem}
-        renderSectionHeader={renderSectionHeader}
-        renderItem={renderItem}
-        rightOpenValue={-120}
-        sections={sections}
-        stickySectionHeadersEnabled={!!stickySectionHeadersEnabled}
-        style={[
-          globalTheme.flatList,
-          transparent ? { backgroundColor: 'transparent' } : {},
-          !shouldShowResults ? styles.noResultsFlatList : {}
-        ]}
-        useFlatList={!useSectionList}
-        useSectionList={useSectionList}
-        listViewRef={listRef}
-        getItemLayout={getItemLayout}
-      />
-      {shouldShowNoResultsFoundMessage && (
+      {shouldShowNoResultsFoundMessage ? (
         <MessageWithAction
           bottomActionHandler={handleNoResultsBottomAction}
           bottomActionText={noResultsBottomActionText}
@@ -194,7 +133,109 @@ export const PVFlatList = (props: Props) => {
           topActionText={noResultsTopActionText}
           transparent={transparent}
         />
+      )
+      :
+      gridView ? (
+        <GridView
+          {...props}
+          onItemSelected={onGridItemSelected}
+          data={shouldShowResults ? data : []}
+          ListFooterComponent={() => {
+            if (isLoadingMore && !isEndOfResults) {
+              return (
+                <View
+                  accessible={false}
+                  style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}
+                  transparent={transparent}>
+                  <ActivityIndicator accessible={false} testID={testID} />
+                </View>
+              )
+            } else if (!isLoadingMore && !isEndOfResults) {
+              return <View style={[styles.isLoadingMoreCell]} transparent={transparent} />
+            }
+
+            return null
+          }}
+          {...(onRefresh
+            ? {
+                refreshControl: (
+                  <RefreshControl
+                    refreshing={isRefreshing}
+                    onRefresh={onRefresh}
+                    tintColor={globalTheme?.activityIndicator?.color}
+                  />
+                )
+              }
+            : {})}
+        />
+      ) : (
+        <SwipeListView
+          closeOnRowPress
+          contentOffset={contentOffset}
+          data={shouldShowResults ? data : []}
+          disableLeftSwipe={disableLeftSwipe}
+          disableRightSwipe
+          extraData={extraData}
+          ItemSeparatorComponent={ItemSeparatorComponent}
+          keyExtractor={keyExtractor}
+          onScrollBeginDrag={onScrollBeginDrag}
+          ListFooterComponent={() => {
+            if (isLoadingMore && !isEndOfResults) {
+              return (
+                <View
+                  accessible={false}
+                  style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}
+                  transparent={transparent}>
+                  <ActivityIndicator accessible={false} testID={testID} />
+                </View>
+              )
+            } else if (!isLoadingMore && !isEndOfResults) {
+              return <View style={[styles.isLoadingMoreCell]} transparent={transparent} />
+            }
+            // else if (isEndOfResults && !isCompleteData) {
+            //   return (
+            //     <View style={[styles.lastCell, globalTheme.tableCellBorder]} transparent={transparent}>
+            //       <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.lastCellText]}>
+            //         {translate('End of results')}
+            //       </Text>
+            //     </View>
+            //   )
+            // }
+
+            return null
+          }}
+          ListHeaderComponent={ListHeaderComponent}
+          onEndReached={onEndReached}
+          onEndReachedThreshold={onEndReachedThreshold}
+          {...(onRefresh
+            ? {
+                refreshControl: (
+                  <RefreshControl
+                    refreshing={isRefreshing}
+                    onRefresh={onRefresh}
+                    tintColor={globalTheme?.activityIndicator?.color}
+                  />
+                )
+              }
+            : {})}
+          renderHiddenItem={renderHiddenItem || _renderHiddenItem}
+          renderSectionHeader={renderSectionHeader}
+          renderItem={renderItem}
+          rightOpenValue={-120}
+          sections={sections}
+          stickySectionHeadersEnabled={!!stickySectionHeadersEnabled}
+          style={[
+            globalTheme.flatList,
+            transparent ? { backgroundColor: 'transparent' } : {},
+            !shouldShowResults ? styles.noResultsFlatList : {}
+          ]}
+          useFlatList={!useSectionList}
+          useSectionList={useSectionList}
+          listViewRef={listRef}
+          getItemLayout={getItemLayout}
+        />
       )}
+      
       {showNoInternetConnectionMessage && (
         <MessageWithAction message={translate('No internet connection')} testID={testID} />
       )}

@@ -57,6 +57,7 @@ declare module 'reactn/default' {
       myPlaylists: []
       subscribedPlaylists: []
     }
+    podcastsGridViewEnabled: boolean
     podcastValueFinal: any
     profile: {
       flatListData: []
