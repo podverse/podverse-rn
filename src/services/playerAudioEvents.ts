@@ -78,24 +78,24 @@ const syncDurationWithMetaData = async () => {
   }
 }
 
-export const audioHandleQueueEnded = (x: any) => {
-  setTimeout(() => {
-    (async () => {
-      /*
-        The app is calling PVAudioPlayer.reset() on iOS only in playerLoadNowPlayingItem
-        because .reset() is the only way to clear out the current item from the queue,
-        but .reset() results in the playback-queue-ended event in firing.
-        We don't want the playback-queue-ended event handling logic below to happen
-        during playerLoadNowPlayingItem, so to work around this, I am setting temporary
-        AsyncStorage state so we can know when a queue has actually ended or
-        when the event is the result of .reset() called within playerLoadNowPlayingItem.
-      */
-      const preventHandleQueueEnded = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
-      if (!preventHandleQueueEnded) {
+export const audioHandleQueueEnded = async (x: any) => {
+  const preventHandleQueueEnded = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
+  /*
+    The app is calling PVAudioPlayer.reset() on iOS only in playerLoadNowPlayingItem
+    because .reset() is the only way to clear out the current item from the queue,
+    but .reset() results in the playback-queue-ended event in firing.
+    We don't want the playback-queue-ended event handling logic below to happen
+    during playerLoadNowPlayingItem, so to work around this, I am setting temporary
+    AsyncStorage state so we can know when a queue has actually ended or
+    when the event is the result of .reset() called within playerLoadNowPlayingItem.
+  */
+  if (!preventHandleQueueEnded) {
+    setTimeout(() => {
+      (async () => {
         await audioResetHistoryItem(x)
-      }
-    })()
-  }, 0)
+      })()
+    }, 0)
+  }
 }
 
 export const audioHandleTrackEnded = (x: any) => {

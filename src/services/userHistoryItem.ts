@@ -18,7 +18,11 @@ export const addOrUpdateHistoryItem = async (
   completed?: boolean
 ) => {
   if (!skipSetNowPlaying) {
-    await setNowPlayingItem(item, playbackPosition)
+    try {
+      await setNowPlayingItem(item, playbackPosition)
+    } catch (error) {
+      // do nothing
+    }
   }
 
   const useServerData = await checkIfShouldUseServerData()
