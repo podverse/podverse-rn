@@ -3,19 +3,32 @@ import { downloadCustomFileNameId } from './hash'
 import { hasValidNetworkConnection } from "./network"
 import { getExtensionFromUrl } from './utility'
 
+const podverseImagesPath = RNFS.DocumentDirectoryPath + '/podverse_images/'
+
+export const deleteImageCache = async () => {
+  try {
+    const folderExists = await RNFS.exists(podverseImagesPath)
+    if (folderExists) {
+      await RNFS.unlink(podverseImagesPath)
+    }
+  } catch (error) {
+    console.log('deleteImageCache', error)
+  }
+}
+
 export const downloadImageFile = async (uri:string) => {
   try {
     const isConnected = await hasValidNetworkConnection()
     if (!isConnected) return
 
     const ext = getExtensionFromUrl(uri)
-    const folderExists = await RNFS.exists(RNFS.DocumentDirectoryPath + '/podverse_images')
+    const folderExists = await RNFS.exists(podverseImagesPath)
 
     if (!folderExists) {
-      await RNFS.mkdir(RNFS.DocumentDirectoryPath + '/podverse_images')
+      await RNFS.mkdir(podverseImagesPath)
     }
 
-    const destination = RNFS.DocumentDirectoryPath + '/podverse_images/' + downloadCustomFileNameId(uri) + ext
+    const destination = podverseImagesPath + downloadCustomFileNameId(uri) + ext
 
     const downloadOptions: DownloadFileOptions = {
       fromUrl: uri.replace('http://', 'https://'),
@@ -29,14 +42,19 @@ export const downloadImageFile = async (uri:string) => {
 }
 
 export const getSavedImageUri = async (uri:string) => {
-    const ext = getExtensionFromUrl(uri)
+  let fileExists = false
+  const ext = getExtensionFromUrl(uri)
+  const filePath = podverseImagesPath + downloadCustomFileNameId(uri) + ext
 
-    const filePath = RNFS.DocumentDirectoryPath + "/podverse_images/" + downloadCustomFileNameId(uri) + ext
-    const fileExists = await RNFS.exists(filePath)
+  try {
+    fileExists = await RNFS.exists(filePath)
+  } catch (error) {
+    console.log('getSavedImageUri error', error)
+  }
 
-    if(fileExists) {
-        return {exists: true, imageUrl: filePath}
-    } else {
-        return {exists: false, imageUrl:uri}
-    }
+  if(fileExists) {
+    return {exists: true, imageUrl: filePath}
+  } else {
+    return {exists: false, imageUrl:uri}
+  }
 }
