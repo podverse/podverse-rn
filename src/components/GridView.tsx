@@ -1,3 +1,4 @@
+import { Podcast } from 'podverse-shared'
 import React from 'react'
 import { StyleSheet, FlatList, Dimensions } from 'react-native'
 import { FastImage, PressableWithOpacity } from './'
@@ -19,16 +20,17 @@ export class GridView extends React.PureComponent<Props, any> {
         data={this.props.data}
         onEndReachedThreshold={0.3}
         refreshing={this.props.isRefreshing}
-        renderItem={({ item }) => (
+        renderItem={({ item }: { item: Podcast }) => (
           <PressableWithOpacity
             onPress={() => {
               this.props.onItemSelected?.(item)
             }}
             style={styles.cellbutton}>
-            <FastImage 
-              styles={styles.imageThumbnail} 
-              source={item?.shrunkImageUrl || item?.imageUrl} 
+            <FastImage
+              placeholderLabel={item?.title || ''}
               resizeMode="cover"
+              source={item?.shrunkImageUrl || item?.imageUrl || ''} 
+              styles={styles.imageThumbnail} 
             />
           </PressableWithOpacity>
         )}

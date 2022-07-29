@@ -1,15 +1,17 @@
-import { Image, Platform, View } from 'react-native'
+import { Image, Platform, StyleSheet, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
 import { isValidUrl } from '../lib/utility'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
 import { PV } from '../resources'
+import { Text } from '.'
 const PlaceholderImage = PV.Images.PLACEHOLDER.default
 
 type Props = {
   accessible?: boolean
   cache?: string
   isSmall?: boolean
+  placeholderLabel?: string
   resizeMode?: any
   styles?: any
   source?: string
@@ -65,7 +67,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { accessible = false, resizeMode = 'contain', source, styles } = this.props
+    const { accessible = false, placeholderLabel, resizeMode = 'contain', source, styles } = this.props
     const { hasError, localImageSource } = this.state
     const { userAgent } = this.global
     let imageSource = source
@@ -109,9 +111,35 @@ export class PVFastImage extends React.PureComponent<Props, State> {
         ) : (
           <View style={styles}>
             <PlaceholderImage accessible={accessible} width='100%' height='100%' />
+            {
+              !!placeholderLabel && (
+                <View style={defaultStyles.placeholderWrapper}>
+                  <Text style={defaultStyles.placeholderLabel}>{placeholderLabel}</Text>
+                </View>
+              )
+            }
           </View>
         )}
       </>
     )
   }
 }
+
+const defaultStyles = StyleSheet.create({
+  placeholderLabel: {
+    fontSize: PV.Fonts.sizes.lg,
+    fontWeight: PV.Fonts.weights.bold,
+    padding: 2,
+    textAlign: 'center'
+  },
+  placeholderWrapper: {
+    alignItems: 'center',
+    flex: 1,
+    position: 'absolute',
+    justifyContent: 'center',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0
+  }
+})
