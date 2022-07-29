@@ -63,7 +63,7 @@ const initialTheme: InitialState = {
     subscribedPlaylists: []
   },
   podcastValueFinal: null,
-  podcastsGridViewEnabled: false,
+  podcastsGridViewEnabled: true,
   profile: {
     flatListData: [],
     user: null
@@ -159,7 +159,8 @@ const initialTheme: InitialState = {
     endTime: null,
     clipTitle: undefined
   },
-  screenReaderEnabled: false
+  screenReaderEnabled: false,
+  newEpisodesCount: {}
 }
 
 export default initialTheme

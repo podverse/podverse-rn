@@ -48,6 +48,7 @@ import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUs
 import { initAutoQueue } from '../state/actions/autoQueue'
 import { initDownloads, removeDownloadedPodcast, updateDownloadedPodcasts } from '../state/actions/downloads'
 import { updateWalletInfo } from '../state/actions/lnpay'
+import { handleUpdateNewEpisodesCount } from '../state/actions/newEpisodesCount'
 import {
   initializePlayerSettings,
   initializePlayer,
@@ -253,7 +254,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5'),
           AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5'),
-          AsyncStorage.setItem(PV.Keys.APP_MODE, PV.AppMode.podcasts)
+          AsyncStorage.setItem(PV.Keys.APP_MODE, PV.AppMode.podcasts),
+          AsyncStorage.setItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED, 'TRUE')
         ])
 
         if (!Config.DISABLE_CRASH_LOGS) {
@@ -1085,6 +1087,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       }
       await AsyncStorage.setItem(PV.Keys.AUTODOWNLOADS_LAST_REFRESHED, new Date().toISOString())
     }
+
+    await handleUpdateNewEpisodesCount()
   }
 
   _queryCustomFeeds = async () => {

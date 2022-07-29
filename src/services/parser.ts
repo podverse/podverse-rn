@@ -3,8 +3,9 @@ import { encode as btoa } from 'base-64'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { downloadEpisode } from '../lib/downloader'
 import { downloadCustomFileNameId } from '../lib/hash'
-import { checkIfContainsStringMatch, convertToSortableTitle, getAppUserAgent, getExtensionFromUrl, isValidDate } from '../lib/utility'
+import { checkIfContainsStringMatch, convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
 import { PV } from '../resources'
+import { handleUpdateNewEpisodesCountAddByRSS } from '../state/actions/newEpisodesCount'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { getAutoDownloadSettings, getAutoDownloadsLastRefreshDate } from './autoDownloads'
 import { combineWithAddByRSSPodcasts } from './podcast'
@@ -190,18 +191,23 @@ export const parseAllAddByRSSPodcasts = async () => {
     }
 
     if (
-      autoDownloadPodcastSettings[parsedPodcast.addByRSSPodcastFeedUrl] &&
       parsedPodcast.episodes &&
       parsedPodcast.episodes.length
     ) {
       const lastParsedPubDate = await getAutoDownloadsLastRefreshDate()
+      let newEpisodesFoundCount = 0
+
       for (const episode of parsedPodcast.episodes) {
         if (new Date(episode.pubDate).valueOf() > new Date(lastParsedPubDate).valueOf()) {
           const restart = false
           const waitToAddTask = true
-          downloadEpisode(episode, parsedPodcast, restart, waitToAddTask)
+          newEpisodesFoundCount++
+          if (autoDownloadPodcastSettings[parsedPodcast.addByRSSPodcastFeedUrl]) {
+            downloadEpisode(episode, parsedPodcast, restart, waitToAddTask)
+          }
         }
       }
+      await handleUpdateNewEpisodesCountAddByRSS(parsedPodcast.id, newEpisodesFoundCount)
     }
   }
 
