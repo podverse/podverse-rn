@@ -4,25 +4,28 @@ import { hasValidNetworkConnection } from "./network"
 import { getExtensionFromUrl } from './utility'
 
 export const downloadImageFile = async (uri:string) => {
-  const isConnected = await hasValidNetworkConnection()
-  if (!isConnected) return
+  try {
+    const isConnected = await hasValidNetworkConnection()
+    if (!isConnected) return
 
-  const ext = getExtensionFromUrl(uri)
-  const folderExists = await RNFS.exists(RNFS.DocumentDirectoryPath + "/podverse_images")
-  
-  if(!folderExists) {
-      await RNFS.mkdir(RNFS.DocumentDirectoryPath + "/podverse_images")
-  }
+    const ext = getExtensionFromUrl(uri)
+    const folderExists = await RNFS.exists(RNFS.DocumentDirectoryPath + '/podverse_images')
 
-  const destination = RNFS.DocumentDirectoryPath  + "/podverse_images/" 
-                                                  + downloadCustomFileNameId(uri)
-                                                  + ext
-  const downloadOptions:DownloadFileOptions = {
+    if (!folderExists) {
+      await RNFS.mkdir(RNFS.DocumentDirectoryPath + '/podverse_images')
+    }
+
+    const destination = RNFS.DocumentDirectoryPath + '/podverse_images/' + downloadCustomFileNameId(uri) + ext
+
+    const downloadOptions: DownloadFileOptions = {
       fromUrl: uri.replace('http://', 'https://'),
-      toFile: destination,
-  }
+      toFile: destination
+    }
 
-  await RNFS.downloadFile(downloadOptions).promise
+    await RNFS.downloadFile(downloadOptions).promise
+  } catch (error) {
+    console.log('downloadImageFile error:', error)
+  }
 }
 
 export const getSavedImageUri = async (uri:string) => {

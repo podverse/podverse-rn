@@ -178,10 +178,12 @@ export const downloadEpisode = async (
     }
   }
 
-  // Download and store the image files if available
-  if (podcast?.imageUrl) downloadImageFile(podcast.imageUrl)
-  if (podcast?.shrunkImageUrl) downloadImageFile(podcast.shrunkImageUrl)
-  if (episode?.imageUrl) downloadImageFile(episode.imageUrl)
+  (async () => {
+    // Download and store the image files if available
+    if (podcast?.imageUrl) await downloadImageFile(podcast.imageUrl)
+    if (podcast?.shrunkImageUrl) await downloadImageFile(podcast.shrunkImageUrl)
+    if (episode?.imageUrl) await downloadImageFile(episode.imageUrl)
+  })()
 
   // Wait for t.stop() to complete
   setTimeout(() => {

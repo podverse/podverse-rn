@@ -54,7 +54,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
             await downloadImageFile(source)
             const latestSavedImageResults = await getSavedImageUri(source)
             this.setState({ localImageSource: latestSavedImageResults })
-          })
+          })()
         })
       } else {
         await downloadImageFile(source)
