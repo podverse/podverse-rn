@@ -5,9 +5,21 @@ import { getEpisodesSincePubDate } from './episode'
 
 export const getNewEpisodeCountLastRefreshDate = async () => {
   const dateStr = await AsyncStorage.getItem(PV.Keys.NEW_EPISODE_COUNT_LAST_REFRESHED)
+
   const dateISOString = !!dateStr
     ? new Date(dateStr).toISOString()
     : new Date().toISOString()
+
+  return dateISOString
+}
+
+export const getNewEpisodeCountCustomRSSLastRefreshDate = async () => {
+  const dateStr = await AsyncStorage.getItem(PV.Keys.NEW_EPISODE_COUNT_CUSTOM_RSS_LAST_REFRESHED)
+
+  const dateISOString = !!dateStr
+    ? new Date(dateStr).toISOString()
+    : new Date().toISOString()
+
   return dateISOString
 }
 
@@ -51,6 +63,8 @@ export const handleUpdateNewEpisodesCount = async () => {
 
     await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA, JSON.stringify(newEpisodesCounts))
   }
+
+  await AsyncStorage.setItem(PV.Keys.NEW_EPISODE_COUNT_LAST_REFRESHED, new Date().toISOString())
 
   return newEpisodesCounts
 }

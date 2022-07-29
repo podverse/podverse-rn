@@ -1071,6 +1071,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { searchBarText } = this.state
     await getSubscribedPodcasts()
 
+    await handleUpdateNewEpisodesCount()
+
     if (!preventParseCustomRSSFeeds) {
       if (!searchBarText) await parseAllAddByRSSPodcasts()
 
@@ -1087,8 +1089,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       }
       await AsyncStorage.setItem(PV.Keys.AUTODOWNLOADS_LAST_REFRESHED, new Date().toISOString())
     }
-
-    await handleUpdateNewEpisodesCount()
   }
 
   _queryCustomFeeds = async () => {
