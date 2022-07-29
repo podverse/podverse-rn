@@ -4,13 +4,14 @@ import React from 'reactn'
 import { isValidUrl } from '../lib/utility'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
 import { PV } from '../resources'
-import { Text } from '.'
+import { NewContentBadge, Text } from '.'
 const PlaceholderImage = PV.Images.PLACEHOLDER.default
 
 type Props = {
   accessible?: boolean
   cache?: string
   isSmall?: boolean
+  newContentCount?: number
   placeholderLabel?: string
   resizeMode?: any
   styles?: any
@@ -67,7 +68,13 @@ export class PVFastImage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { accessible = false, placeholderLabel, resizeMode = 'contain', source, styles } = this.props
+    const {
+      accessible = false,
+      newContentCount,
+      placeholderLabel,
+      resizeMode = 'contain', source,
+      styles
+    } = this.props
     const { hasError, localImageSource } = this.state
     const { userAgent } = this.global
     let imageSource = source
@@ -90,18 +97,23 @@ export class PVFastImage extends React.PureComponent<Props, State> {
         <SvgUri accessible={accessible} width='100%' height='100%' uri={imageSource || null} />
       </View>
     ) : (
-      <Image
-        accessible={accessible}
-        onError={this._handleError}
-        resizeMode={resizeMode}
-        source={{
-          uri: imageSource,
-          headers: {
-            ...(userAgent ? { 'User-Agent': userAgent } : {})
-          }
-        }}
-        style={styles}
-      />
+      <View style={styles}>
+        <Image
+          accessible={accessible}
+          onError={this._handleError}
+          resizeMode={resizeMode}
+          source={{
+            uri: imageSource,
+            headers: {
+              ...(userAgent ? { 'User-Agent': userAgent } : {})
+            }
+          }}
+          style={{ height: '100%', width: '100%' }}
+        />
+        {!!newContentCount && newContentCount > 0 && (
+          <NewContentBadge count={newContentCount} />
+        )}
+      </View>
     )
 
     return (

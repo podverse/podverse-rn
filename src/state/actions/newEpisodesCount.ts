@@ -9,25 +9,25 @@ import {
 
 export const getNewEpisodesCount = async () => {
   const newEpisodesCount = await getNewEpisodesCountService()
-  setGlobal(newEpisodesCount)
+  setGlobal({ newEpisodesCount })
 }
 
 export const handleUpdateNewEpisodesCountAddByRSS = async (podcastId: string, newEpisodesFoundCount: number) => {
   const newEpisodesCount = await handleUpdateNewEpisodesCountAddByRSSService(podcastId, newEpisodesFoundCount)
-  setGlobal(newEpisodesCount)
+  setGlobal({ newEpisodesCount })
 }
 
 export const handleUpdateNewEpisodesCount = async () => {
   const newEpisodesCount = await handleUpdateNewEpisodesCountService()
-  setGlobal(newEpisodesCount)
+  setGlobal({ newEpisodesCount })
 }
 
 export const clearEpisodesCount = async () => {
   const newEpisodesCount = await clearEpisodesCountService()
-  setGlobal(newEpisodesCount)
+  setGlobal({ newEpisodesCount })
 }
 
 export const clearEpisodesCountForPodcast = async (podcastId: string) => {
   const newEpisodesCount = await clearEpisodesCountForPodcastService(podcastId)
-  setGlobal(newEpisodesCount)
+  setGlobal({ newEpisodesCount })
 }
