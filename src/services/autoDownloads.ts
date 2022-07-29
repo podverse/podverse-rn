@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
-import { getEpisodes, getEpisodesSincePubDate } from './episode'
+import { getEpisodesSincePubDate } from './episode'
 import { parseAllAddByRSSPodcasts } from './parser'
 
 export const getAutoDownloadsLastRefreshDate = async () => {
@@ -37,6 +37,7 @@ export const handleAutoDownloadEpisodes = async (dateISOString: string) => {
         const podcast = {
           id: episode?.podcast?.id,
           imageUrl: episode?.podcast?.shrunkImageUrl || episode?.podcast?.imageUrl,
+          shrunkImageUrl: episode?.podcast?.shrunkImageUrl,
           title: episode?.podcast?.title
         }
         const restart = false

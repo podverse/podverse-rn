@@ -9,6 +9,7 @@ import { translate } from '../lib/i18n'
 import { deleteImageCache } from '../lib/storage'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
+import { toggleHideNewEpisodesBadges } from '../state/actions/newEpisodesCount'
 import { setCensorNSFWText, setHideCompleted } from '../state/actions/settings'
 import { core, darkTheme, lightTheme } from '../styles'
 
@@ -88,7 +89,7 @@ export class SettingsScreenOther extends React.Component<Props, State> {
 
   render() {
     const { isLoading, showDeleteCacheDialog } = this.state
-    const { censorNSFWText, globalTheme, hideCompleted } = this.global
+    const { censorNSFWText, globalTheme, hideCompleted, hideNewEpisodesBadges } = this.global
 
     return (
       <ScrollView
@@ -127,6 +128,15 @@ export class SettingsScreenOther extends React.Component<Props, State> {
                 testID={`${testIDPrefix}_hide_completed`}
                 text={translate('Hide completed episodes by default')}
                 value={!!hideCompleted}
+              />
+            </View>
+            <View style={core.itemWrapper}>
+              <SwitchWithText
+                accessibilityLabel={translate('Hide new episode count badges')}
+                onValueChange={toggleHideNewEpisodesBadges}
+                testID={`${testIDPrefix}_hide_new_episodes_badges`}
+                text={translate('Hide new episode count badges')}
+                value={!!hideNewEpisodesBadges}
               />
             </View>
             <Divider />

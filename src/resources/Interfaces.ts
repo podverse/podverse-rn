@@ -222,6 +222,10 @@ export interface InitialState {
     clipTitle?: string
   }
   screenReaderEnabled: boolean
+  newEpisodesCount: {
+    [key: string]: number
+  }
+  hideNewEpisodesBadges: boolean
 }
 
 export interface BannerInfoError {
