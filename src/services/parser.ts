@@ -3,10 +3,12 @@ import { encode as btoa } from 'base-64'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { downloadEpisode } from '../lib/downloader'
 import { downloadCustomFileNameId } from '../lib/hash'
-import { checkIfContainsStringMatch, convertToSortableTitle, getAppUserAgent, getExtensionFromUrl, isValidDate } from '../lib/utility'
+import { checkIfContainsStringMatch, convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
 import { PV } from '../resources'
+import { handleUpdateNewEpisodesCountAddByRSS } from '../state/actions/newEpisodesCount'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { getAutoDownloadSettings, getAutoDownloadsLastRefreshDate } from './autoDownloads'
+import { getNewEpisodeCountCustomRSSLastRefreshDate } from './newEpisodesCount'
 import { combineWithAddByRSSPodcasts } from './podcast'
 import { request } from './request'
 const podcastFeedParser = require('@podverse/podcast-feed-parser')
@@ -190,22 +192,32 @@ export const parseAllAddByRSSPodcasts = async () => {
     }
 
     if (
-      autoDownloadPodcastSettings[parsedPodcast.addByRSSPodcastFeedUrl] &&
       parsedPodcast.episodes &&
       parsedPodcast.episodes.length
     ) {
-      const lastParsedPubDate = await getAutoDownloadsLastRefreshDate()
+      const lastAutoDownloadsRefreshDate = await getAutoDownloadsLastRefreshDate()
+      const lastNewEpisodesCountRefreshDate = await getNewEpisodeCountCustomRSSLastRefreshDate()
+      let newEpisodesFoundCount = 0
+
       for (const episode of parsedPodcast.episodes) {
-        if (new Date(episode.pubDate).valueOf() > new Date(lastParsedPubDate).valueOf()) {
+        if (new Date(episode.pubDate).valueOf() > new Date(lastNewEpisodesCountRefreshDate).valueOf()) {
+          newEpisodesFoundCount++
+        }
+        if (new Date(episode.pubDate).valueOf() > new Date(lastAutoDownloadsRefreshDate).valueOf()) {
           const restart = false
           const waitToAddTask = true
-          downloadEpisode(episode, parsedPodcast, restart, waitToAddTask)
+          if (autoDownloadPodcastSettings[parsedPodcast.addByRSSPodcastFeedUrl]) {
+            downloadEpisode(episode, parsedPodcast, restart, waitToAddTask)
+          }
         }
       }
+      await handleUpdateNewEpisodesCountAddByRSS(parsedPodcast.id, newEpisodesFoundCount)
     }
   }
 
   await setAddByRSSPodcastsLocally(finalParsedPodcasts)
+
+  await AsyncStorage.setItem(PV.Keys.NEW_EPISODE_COUNT_CUSTOM_RSS_LAST_REFRESHED, new Date().toISOString())
 
   return finalParsedPodcasts
 }

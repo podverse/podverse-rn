@@ -142,5 +142,9 @@ declare module 'reactn/default' {
     bannerInfo: BannerInfo
     tempMediaRefInfo: TempMediaRef
     screenReaderEnabled: boolean
+    newEpisodesCount: {
+      [key: string]: number
+    }
+    hideNewEpisodesBadges: boolean
   }
 }
