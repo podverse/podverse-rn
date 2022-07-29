@@ -34,7 +34,13 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       showDownloadCount,
       testID
     } = this.props
-    const { autoDownloadSettings, downloadedPodcastEpisodeCounts, fontScaleMode, newEpisodesCount } = this.global
+    const {
+      autoDownloadSettings,
+      downloadedPodcastEpisodeCounts,
+      fontScaleMode,
+      hideNewEpisodesBadges,
+      newEpisodesCount
+    } = this.global
 
     let downloadCount = 0
     if (showDownloadCount && downloadedPodcastEpisodeCounts) {
@@ -100,7 +106,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
                   {downloadCountText}
                 </Text>
                 {showAutoDownload && shouldAutoDownload && <IndicatorDownload style={styles.autoDownloadIcon} />}
-                {!!newContentCount && newContentCount > 0 && (
+                {!hideNewEpisodesBadges && !!newContentCount && newContentCount > 0 && (
                   <NewContentBadge count={newContentCount} isPodcastTableCell />
                 )}
               </RNView>

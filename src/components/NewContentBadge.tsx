@@ -1,7 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
 import { Badge } from 'react-native-elements'
-import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 
 type Props = {
@@ -11,6 +10,7 @@ type Props = {
 
 export const NewContentBadge = (props: Props) => {
   const { count, isPodcastTableCell } = props
+
   const hasCount = count > 0
   
   if (!hasCount) return null

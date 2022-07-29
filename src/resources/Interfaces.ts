@@ -225,6 +225,7 @@ export interface InitialState {
   newEpisodesCount: {
     [key: string]: number
   }
+  hideNewEpisodesBadges: boolean
 }
 
 export interface BannerInfoError {

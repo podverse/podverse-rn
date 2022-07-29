@@ -76,7 +76,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
       styles
     } = this.props
     const { hasError, localImageSource } = this.state
-    const { userAgent } = this.global
+    const { hideNewEpisodesBadges, userAgent } = this.global
     let imageSource = source
     let isValid = false
     if (localImageSource.exists) {
@@ -110,7 +110,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
           }}
           style={{ height: '100%', width: '100%' }}
         />
-        {!!newContentCount && newContentCount > 0 && (
+        {!hideNewEpisodesBadges && !!newContentCount && newContentCount > 0 && (
           <NewContentBadge count={newContentCount} />
         )}
       </View>

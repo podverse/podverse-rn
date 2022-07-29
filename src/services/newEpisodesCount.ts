@@ -86,3 +86,14 @@ export const clearEpisodesCountForPodcast = async (podcastId: string) => {
   }
   return newEpisodesCount
 }
+
+export const toggleHideNewEpisodesBadges = async () => {
+  const hideNewEpisodesBadges = await AsyncStorage.getItem(PV.Keys.NEW_EPISODES_BADGES_HIDE)
+  const newValue = !!hideNewEpisodesBadges ? false : 'TRUE'
+  if (newValue) {
+    await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_BADGES_HIDE, newValue)
+  } else {
+    await AsyncStorage.removeItem(PV.Keys.NEW_EPISODES_BADGES_HIDE)
+  }
+  return !!newValue
+}

@@ -145,5 +145,6 @@ declare module 'reactn/default' {
     newEpisodesCount: {
       [key: string]: number
     }
+    hideNewEpisodesBadges: boolean
   }
 }

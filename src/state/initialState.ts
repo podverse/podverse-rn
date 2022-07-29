@@ -160,7 +160,8 @@ const initialTheme: InitialState = {
     clipTitle: undefined
   },
   screenReaderEnabled: false,
-  newEpisodesCount: {}
+  newEpisodesCount: {},
+  hideNewEpisodesBadges: false
 }
 
 export default initialTheme
