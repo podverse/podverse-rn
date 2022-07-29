@@ -4,7 +4,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { FastImage, IndicatorDownload, LiveStatusBadge, Text, View } from './'
+import { FastImage, IndicatorDownload, LiveStatusBadge, NewContentBadge, Text, View } from './'
 
 type Props = {
   downloadCount?: number
@@ -34,7 +34,13 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       showDownloadCount,
       testID
     } = this.props
-    const { autoDownloadSettings, downloadedPodcastEpisodeCounts, fontScaleMode } = this.global
+    const {
+      autoDownloadSettings,
+      downloadedPodcastEpisodeCounts,
+      fontScaleMode,
+      hideNewEpisodesBadges,
+      newEpisodesCount
+    } = this.global
 
     let downloadCount = 0
     if (showDownloadCount && downloadedPodcastEpisodeCounts) {
@@ -45,6 +51,8 @@ export class PodcastTableCell extends React.PureComponent<Props> {
     if (showAutoDownload) {
       shouldAutoDownload = autoDownloadSettings[id]
     }
+
+    const newContentCount = newEpisodesCount[id] || 0
 
     let lastPubDate = ''
     if (lastEpisodePubDate) {
@@ -98,6 +106,9 @@ export class PodcastTableCell extends React.PureComponent<Props> {
                   {downloadCountText}
                 </Text>
                 {showAutoDownload && shouldAutoDownload && <IndicatorDownload style={styles.autoDownloadIcon} />}
+                {!hideNewEpisodesBadges && !!newContentCount && newContentCount > 0 && (
+                  <NewContentBadge count={newContentCount} isPodcastTableCell />
+                )}
               </RNView>
             )}
           </RNView>

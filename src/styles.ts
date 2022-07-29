@@ -586,6 +586,14 @@ export const core = StyleSheet.create({
     marginTop: 0,
     minHeight: 56,
   },
+  buttonWithMarginTop: {
+    borderRadius: 8,
+    justifyContent: 'center',
+    marginHorizontal: 12,
+    marginBottom: 24,
+    marginTop: 24,
+    minHeight: 56,
+  },
   buttonBorder: {
     borderWidth: 1,
     borderRadius: 18,

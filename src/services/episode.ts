@@ -1,3 +1,4 @@
+import { hasValidNetworkConnection } from '../lib/network'
 import { request } from './request'
 
 export const getEpisodes = async (query: any = {}) => {
@@ -45,15 +46,22 @@ export const retrieveLatestChaptersForEpisodeId = async (id: string) => {
 }
 
 export const getEpisodesSincePubDate = async (sincePubDate: string, podcastIds: any[]) => {
-  if (podcastIds && podcastIds.length > 0) {
-    const response = await getEpisodes({
-      podcastId: podcastIds,
-      sincePubDate,
-      includePodcast: true
-    })
+  let result = []
+  const hasInternet = await hasValidNetworkConnection()
 
-    return response[0]
-  } else {
-    return []
+  try {
+    if (hasInternet && podcastIds && podcastIds.length > 0) {
+      const response = await getEpisodes({
+        podcastId: podcastIds,
+        sincePubDate,
+        includePodcast: true
+      })
+
+      result = response[0]
+    }
+  } catch (error) {
+    console.log('getEpisodesSincePubDate', getEpisodesSincePubDate)
   }
+  
+  return result
 }
