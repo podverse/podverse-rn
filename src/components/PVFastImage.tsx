@@ -1,7 +1,7 @@
+import { isValidUrl } from 'podverse-shared'
 import { Image, Platform, StyleSheet, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
-import { isValidUrl } from '../lib/utility'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
 import { PV } from '../resources'
 import { NewContentBadge, Text } from '.'
@@ -20,7 +20,7 @@ type Props = {
 
 type State = {
   hasError: boolean
-  localImageSource: {exists:boolean, imageUrl:string|null}
+  localImageSource: { exists: boolean; imageUrl: string | null }
 }
 
 export class PVFastImage extends React.PureComponent<Props, State> {
@@ -29,12 +29,12 @@ export class PVFastImage extends React.PureComponent<Props, State> {
 
     this.state = {
       hasError: false,
-      localImageSource: {imageUrl: props.source || null, exists:false}
+      localImageSource: { imageUrl: props.source || null, exists: false }
     }
   }
 
   componentDidMount() {
-    this._loadImage()    
+    this._loadImage()
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -68,23 +68,17 @@ export class PVFastImage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const {
-      accessible = false,
-      newContentCount,
-      placeholderLabel,
-      resizeMode = 'contain', source,
-      styles
-    } = this.props
+    const { accessible = false, newContentCount, placeholderLabel, resizeMode = 'contain', source, styles } = this.props
     const { hasError, localImageSource } = this.state
     const { hideNewEpisodesBadges, userAgent } = this.global
     let imageSource = source
     let isValid = false
     if (localImageSource.exists) {
-      imageSource = "file://" + localImageSource.imageUrl
+      imageSource = 'file://' + localImageSource.imageUrl
       isValid = true
     } else {
       isValid = isValidUrl(imageSource)
-      
+
       /* Insecure images will not load on iOS, so force image URLs to https */
       if (Platform.OS === 'ios' && imageSource) {
         imageSource = imageSource.replace('http://', 'https://')
@@ -123,13 +117,11 @@ export class PVFastImage extends React.PureComponent<Props, State> {
         ) : (
           <View style={styles}>
             <PlaceholderImage accessible={accessible} width='100%' height='100%' />
-            {
-              !!placeholderLabel && (
-                <View style={defaultStyles.placeholderWrapper}>
-                  <Text style={defaultStyles.placeholderLabel}>{placeholderLabel}</Text>
-                </View>
-              )
-            }
+            {!!placeholderLabel && (
+              <View style={defaultStyles.placeholderWrapper}>
+                <Text style={defaultStyles.placeholderLabel}>{placeholderLabel}</Text>
+              </View>
+            )}
           </View>
         )}
       </>

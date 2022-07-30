@@ -1,9 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { encode as btoa } from 'base-64'
+import { checkIfContainsStringMatch, isValidDate } from 'podverse-shared'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { downloadEpisode } from '../lib/downloader'
 import { downloadCustomFileNameId } from '../lib/hash'
-import { checkIfContainsStringMatch, convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
+import { convertToSortableTitle, getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
 import { handleUpdateNewEpisodesCountAddByRSS } from '../state/actions/newEpisodesCount'
 import { checkIfLoggedIn, getBearerToken } from './auth'
@@ -191,10 +192,7 @@ export const parseAllAddByRSSPodcasts = async () => {
       finalParsedPodcasts.push(parsedPodcast)
     }
 
-    if (
-      parsedPodcast.episodes &&
-      parsedPodcast.episodes.length
-    ) {
+    if (parsedPodcast.episodes && parsedPodcast.episodes.length) {
       const lastAutoDownloadsRefreshDate = await getAutoDownloadsLastRefreshDate()
       const lastNewEpisodesCountRefreshDate = await getNewEpisodeCountCustomRSSLastRefreshDate()
       let newEpisodesFoundCount = 0

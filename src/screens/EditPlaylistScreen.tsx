@@ -1,3 +1,4 @@
+import { combineAndSortPlaylistItems } from 'podverse-shared'
 import { Alert, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import {
@@ -11,7 +12,6 @@ import {
 } from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { combineAndSortPlaylistItems } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { addOrRemovePlaylistItem, getPlaylist, updatePlaylist } from '../state/actions/playlist'

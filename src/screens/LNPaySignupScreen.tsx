@@ -82,7 +82,7 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
             access_keys: newWallet.access_keys
           })
 
-          await toggleLNPayFeature(true)
+          toggleLNPayFeature(true)
           await updateWalletInfo()
           this.props.navigation.goBack()
         } else {

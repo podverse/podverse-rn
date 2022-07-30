@@ -1,3 +1,4 @@
+import { isOdd } from 'podverse-shared'
 import { Alert, StyleSheet, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
@@ -13,7 +14,6 @@ import {
 } from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { addOrRemovePlaylistItem, createPlaylist } from '../state/actions/playlist'

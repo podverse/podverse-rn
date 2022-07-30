@@ -1,8 +1,8 @@
-import { convertToNowPlayingItem } from 'podverse-shared'
+import { checkIfNowPlayingItem, convertToNowPlayingItem } from 'podverse-shared'
 import React, { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
-import { checkIfNowPlayingItem, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
+import { requestAppStoreReviewForEpisodePlayed } from '../lib/reviews'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import {

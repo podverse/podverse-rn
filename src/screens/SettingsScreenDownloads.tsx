@@ -6,7 +6,15 @@ import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import RNFS from 'react-native-fs'
 
-import { ActivityIndicator, Button, Divider, NumberSelectorWithText, ScrollView, SwitchWithText, View } from '../components'
+import {
+  ActivityIndicator,
+  Button,
+  Divider,
+  NumberSelectorWithText,
+  ScrollView,
+  SwitchWithText,
+  View
+} from '../components'
 import {
   setDownloadedEpisodeLimitGlobalCount,
   setDownloadedEpisodeLimitGlobalDefault,
@@ -113,7 +121,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
 
   _toggleAutoDownloadByDefault = (value: boolean) => {
     this.setState({ autoDownloadByDefault: value }, () => {
-      ;(async () => {
+      (async () => {
         value
           ? await AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT, 'TRUE')
           : await AsyncStorage.removeItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT)

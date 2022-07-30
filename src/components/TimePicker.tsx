@@ -1,9 +1,9 @@
 import { Picker } from '@react-native-picker/picker'
+import { getHHMMSSArray } from 'podverse-shared'
 import React from 'react'
 import { Platform, StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
-import { getHHMMSSArray } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, View } from './'
 

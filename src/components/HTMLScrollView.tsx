@@ -1,12 +1,12 @@
-import { Dimensions, Linking, ScrollView, StyleSheet } from 'react-native'
-import RenderHTML from 'react-native-render-html'
-import React, { useGlobal } from 'reactn'
 import {
   convertHHMMSSToAnchorTags,
   filterHTMLElementsFromString,
-  removeExtraInfoFromEpisodeDescription,
-  removeHTMLAttributesFromString
-} from '../lib/utility'
+  removeExtraInfoFromEpisodeDescription
+} from 'podverse-shared'
+import { Dimensions, Linking, ScrollView, StyleSheet } from 'react-native'
+import RenderHTML from 'react-native-render-html'
+import React, { useGlobal } from 'reactn'
+import { removeHTMLAttributesFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { playerHandleSeekTo } from '../services/player'
 import { TableSectionSelectors } from './TableSectionSelectors'

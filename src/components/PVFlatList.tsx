@@ -133,9 +133,7 @@ export const PVFlatList = (props: Props) => {
           topActionText={noResultsTopActionText}
           transparent={transparent}
         />
-      )
-      :
-      gridView ? (
+      ) : gridView ? (
         <GridView
           {...props}
           onItemSelected={onGridItemSelected}
@@ -235,7 +233,7 @@ export const PVFlatList = (props: Props) => {
           getItemLayout={getItemLayout}
         />
       )}
-      
+
       {showNoInternetConnectionMessage && (
         <MessageWithAction message={translate('No internet connection')} testID={testID} />
       )}
