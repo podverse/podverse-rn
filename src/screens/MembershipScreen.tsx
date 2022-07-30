@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
 import { Alert, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, Button, ComparisonTable, Text, TextLink, View } from '../components'
+import { ActivityIndicator, Button, ComparisonTable, Text, View } from '../components'
 import { translate } from '../lib/i18n'
-import { getMembershipExpiration, getMembershipStatus, readableDate } from '../lib/utility'
+import { getMembershipExpiration, getMembershipStatus } from '../lib/membership'
+import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { buy1YearPremium } from '../services/purchaseShared'
 import { trackPageView } from '../services/tracking'

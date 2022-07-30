@@ -1,13 +1,8 @@
+import { decodeHTMLString, getTimeLabelText, removeHTMLFromString } from 'podverse-shared'
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import {
-  decodeHTMLString,
-  generateEpisodeAccessibilityText,
-  getTimeLabelText,
-  readableDate,
-  removeHTMLFromString
-} from '../lib/utility'
+import { generateEpisodeAccessibilityText, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { images } from '../styles'
 import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
@@ -48,7 +43,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     } = this.props
 
     const { duration, id, liveItem, mediaUrl, pubDate = '', podcast = {} } = item
-    let { description = '', subtitle = '', title = '' } = item
+    const { description = '', subtitle = '' } = item
+    let { title = '' } = item
 
     const podcastTitle = podcast.title || translate('Untitled Podcast')
     let summaryText = subtitle && subtitle !== title ? subtitle : description

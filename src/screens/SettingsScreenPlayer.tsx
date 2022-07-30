@@ -94,7 +94,7 @@ export class SettingsScreenPlayer extends React.Component<Props, State> {
     )
   }
 
-  _toggleSkipButtonsTimeJumpOverride = async () => {
+  _toggleSkipButtonsTimeJumpOverride = () => {
     const { player } = this.global
     const { remoteSkipButtonsAreTimeJumps } = player
     const newRemoteSkipButtonsAreTimeJumps = !remoteSkipButtonsAreTimeJumps

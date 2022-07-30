@@ -11,6 +11,7 @@ import { playerClearNowPlayingItem } from '../state/actions/player'
 import { Button, Text } from './'
 
 type Props = {
+  children: any
   navigation: NavigationStackProp
 }
 

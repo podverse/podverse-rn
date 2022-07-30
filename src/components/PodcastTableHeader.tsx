@@ -1,7 +1,7 @@
+import { removeHTMLFromString } from 'podverse-shared'
 import { Pressable, StyleSheet, Switch, View as RNView } from 'react-native'
 import React, { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
-import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { IndicatorDownload } from './IndicatorDownload'

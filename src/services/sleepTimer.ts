@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { convertHoursMinutesSecondsToSeconds } from '../lib/utility'
+import { convertHoursMinutesSecondsToSeconds } from 'podverse-shared'
 import { PV } from '../resources'
 import { playerHandlePauseWithUpdate } from './player'
 

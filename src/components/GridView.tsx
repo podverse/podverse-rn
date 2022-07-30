@@ -34,9 +34,9 @@ export class GridView extends React.PureComponent<Props, any> {
               <FastImage
                 newContentCount={newContentCount}
                 placeholderLabel={item?.title || ''}
-                resizeMode="cover"
-                source={item?.shrunkImageUrl || item?.imageUrl || ''} 
-                styles={styles.imageThumbnail} 
+                resizeMode='cover'
+                source={item?.shrunkImageUrl || item?.imageUrl || ''}
+                styles={styles.imageThumbnail}
               />
             </PressableWithOpacity>
           )

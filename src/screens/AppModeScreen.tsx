@@ -14,7 +14,9 @@ type Props = {
   navigation: any
 }
 
-type State = {}
+type State = {
+  offlineModeEnabled?: string | null
+}
 
 const testIDPrefix = 'app_mode_screen'
 
