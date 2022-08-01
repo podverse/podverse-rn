@@ -1,7 +1,7 @@
-import RNFS, { DownloadFileOptions } from "react-native-fs"
+import { getExtensionFromUrl } from 'podverse-shared'
+import RNFS, { DownloadFileOptions } from 'react-native-fs'
 import { downloadCustomFileNameId } from './hash'
-import { hasValidNetworkConnection } from "./network"
-import { getExtensionFromUrl } from './utility'
+import { hasValidNetworkConnection } from './network'
 
 const podverseImagesPath = RNFS.DocumentDirectoryPath + '/podverse_images/'
 
@@ -16,7 +16,7 @@ export const deleteImageCache = async () => {
   }
 }
 
-export const downloadImageFile = async (uri:string) => {
+export const downloadImageFile = async (uri: string) => {
   try {
     const isConnected = await hasValidNetworkConnection()
     if (!isConnected) return
@@ -41,7 +41,7 @@ export const downloadImageFile = async (uri:string) => {
   }
 }
 
-export const getSavedImageUri = async (uri:string) => {
+export const getSavedImageUri = async (uri: string) => {
   let fileExists = false
   const ext = getExtensionFromUrl(uri)
   const filePath = podverseImagesPath + downloadCustomFileNameId(uri) + ext
@@ -52,9 +52,9 @@ export const getSavedImageUri = async (uri:string) => {
     console.log('getSavedImageUri error', error)
   }
 
-  if(fileExists) {
-    return {exists: true, imageUrl: filePath}
+  if (fileExists) {
+    return { exists: true, imageUrl: filePath }
   } else {
-    return {exists: false, imageUrl:uri}
+    return { exists: false, imageUrl: uri }
   }
 }

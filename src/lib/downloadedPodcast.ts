@@ -1,11 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { checkIfContainsStringMatch, getExtensionFromUrl } from 'podverse-shared'
 import RNFS from 'react-native-fs'
 import { PV } from '../resources'
 import { sortPodcastArrayAlphabetically } from '../services/podcast'
 import { clearNowPlayingItem, getNowPlayingItem } from '../services/userNowPlayingItem'
 import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
 import { BackgroundDownloader, deleteDownloadedEpisode } from './downloader'
-import { checkIfContainsStringMatch, getExtensionFromUrl } from './utility'
 
 export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) => {
   delete episode.podcast

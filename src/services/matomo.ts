@@ -1,7 +1,8 @@
 import axios from 'axios'
+import { generateQueryParams } from 'podverse-shared'
 import Config from 'react-native-config'
 import { hasValidNetworkConnection } from '../lib/network'
-import { generateQueryParams, getAppUserAgent } from '../lib/utility'
+import { getAppUserAgent } from '../lib/utility'
 
 const collectEndpoint = `${Config.MATOMO_BASE_URL}${Config.MATOMO_ENDPOINT_PATH}`
 

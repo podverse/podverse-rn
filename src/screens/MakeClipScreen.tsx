@@ -30,7 +30,7 @@ import {
 } from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { requestAppStoreReview } from '../lib/utility'
+import { requestAppStoreReview } from '../lib/reviews'
 import { PV } from '../resources'
 import { createMediaRef, updateMediaRef } from '../services/mediaRef'
 import {

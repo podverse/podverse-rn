@@ -16,8 +16,14 @@ export class PlayerEvents extends React.PureComponent<Props> {
   constructor(props: Props) {
     super(props)
 
-    this._playerCannotStreamWithoutWifi = debounce(this._playerCannotStreamWithoutWifi, 3000, { leading: true, trailing: false }) as any
-    this._playerCannotDownloadWithoutWifi = debounce(this._playerCannotDownloadWithoutWifi, 3000, { leading: true, trailing: false }) as any
+    this._playerCannotStreamWithoutWifi = debounce(this._playerCannotStreamWithoutWifi, 3000, {
+      leading: true,
+      trailing: false
+    }) as any
+    this._playerCannotDownloadWithoutWifi = debounce(this._playerCannotDownloadWithoutWifi, 3000, {
+      leading: true,
+      trailing: false
+    }) as any
   }
 
   componentDidMount() {

@@ -7,6 +7,7 @@ import { actionSheetStyles } from '../styles'
 import { ActivityIndicator, PressableWithOpacity } from '.'
 
 type Props = {
+  children: any
   handleCancelPress?: any
   items?: any
   message?: string

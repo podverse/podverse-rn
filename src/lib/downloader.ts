@@ -1,5 +1,6 @@
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
+import { getExtensionFromUrl } from 'podverse-shared'
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
 import AsyncStorage from '@react-native-community/async-storage'
@@ -11,12 +12,7 @@ import * as DownloadState from '../state/actions/downloads'
 import { addDownloadedPodcastEpisode, getDownloadedPodcasts } from './downloadedPodcast'
 import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode } from './downloadingEpisode'
 import { hasValidDownloadingConnection } from './network'
-import {
-  convertBytesToHumanReadableString,
-  getAppUserAgent,
-  getExtensionFromUrl,
-  safelyUnwrapNestedVariable
-} from './utility'
+import { convertBytesToHumanReadableString, getAppUserAgent, safelyUnwrapNestedVariable } from './utility'
 import { downloadCustomFileNameId } from './hash'
 import { downloadImageFile } from './storage'
 

@@ -13,6 +13,7 @@ type Props = {
 export class GridView extends React.PureComponent<Props, any> {
   render() {
     const { newEpisodesCount } = this.global
+    const shouldShowResults = this.props.data && this.props.data.length > 0
 
     return (
       <FlatList
@@ -34,21 +35,26 @@ export class GridView extends React.PureComponent<Props, any> {
               <FastImage
                 newContentCount={newContentCount}
                 placeholderLabel={item?.title || ''}
-                resizeMode="cover"
-                source={item?.shrunkImageUrl || item?.imageUrl || ''} 
-                styles={styles.imageThumbnail} 
+                resizeMode='cover'
+                source={item?.shrunkImageUrl || item?.imageUrl || ''}
+                styles={styles.imageThumbnail}
               />
             </PressableWithOpacity>
           )
         }}
         numColumns={3}
         keyExtractor={(_, index) => index.toString()}
+        style={shouldShowResults ? [] : styles.noResultsView}
       />
     )
   }
 }
 
 const styles = StyleSheet.create({
+  noResultsView: {
+    flexGrow: 0,
+    flexShrink: 0
+  },
   imageThumbnail: {
     justifyContent: 'center',
     alignItems: 'center',

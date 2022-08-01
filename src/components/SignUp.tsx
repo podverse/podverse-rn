@@ -1,14 +1,14 @@
-import { Dimensions, Keyboard, Platform, ScrollView, StyleSheet } from 'react-native'
-import React from 'reactn'
-import isEmail from 'validator/lib/isEmail'
-import { translate } from '../lib/i18n'
 import {
   hasAtLeastXCharacters as hasAtLeastXCharactersLib,
   hasLowercase as hasLowercaseLib,
   hasMatchingStrings,
   hasNumber as hasNumberLib,
   hasUppercase as hasUppercaseLib
-} from '../lib/utility'
+} from 'podverse-shared'
+import { Dimensions, Keyboard, Platform, ScrollView, StyleSheet } from 'react-native'
+import React from 'reactn'
+import isEmail from 'validator/lib/isEmail'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { Button, PasswordValidationInfo, TextInput } from '.'
 

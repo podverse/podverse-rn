@@ -1,4 +1,8 @@
-import { checkIfVideoFileOrVideoLiveType, convertNowPlayingItemToMediaRef } from 'podverse-shared'
+import {
+  checkIfVideoFileOrVideoLiveType,
+  convertNowPlayingItemToMediaRef,
+  replaceLinebreaksWithBrTags
+} from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import { Config } from 'react-native-config'
 import Share from 'react-native-share'
@@ -20,7 +24,7 @@ import {
 } from '../components'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { prefixClipLabel, replaceLinebreaksWithBrTags, safelyUnwrapNestedVariable } from '../lib/utility'
+import { prefixClipLabel, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'

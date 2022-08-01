@@ -1,3 +1,4 @@
+import { createEmailLinkUrl } from 'podverse-shared'
 import { Linking, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
@@ -14,7 +15,6 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
-import { createEmailLinkUrl } from '../lib/utility'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { trackPageView } from '../services/tracking'

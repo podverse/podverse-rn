@@ -2,7 +2,12 @@ import { checkIfVideoFileOrVideoLiveType, convertNowPlayingItemToEpisode } from 
 import { Alert, Dimensions, Linking, Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { navigateBackToRoot, navigateToEpisodeScreenWithItemInCurrentStack, navigateToEpisodeScreenWithItemInPodcastsStack, navigateToPodcastScreenWithItem } from '../lib/navigate'
+import {
+  navigateBackToRoot,
+  navigateToEpisodeScreenWithItemInCurrentStack,
+  navigateToEpisodeScreenWithItemInPodcastsStack,
+  navigateToPodcastScreenWithItem
+} from '../lib/navigate'
 import { prefixClipLabel, readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { ActivityIndicator, FastImage, PressableWithOpacity, PVVideo, ScrollView, Text, TextTicker } from './'

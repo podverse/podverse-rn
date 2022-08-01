@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.5.16",
+  "version": "4.5.17",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -64,7 +64,7 @@
     "lodash": "4.17.21",
     "lodash.memoize": "4.1.2",
     "moment": "^2.29.4",
-    "podverse-shared": "^4.5.15",
+    "podverse-shared": "^4.5.24",
     "react": "17.0.1",
     "react-native": "0.66.1",
     "react-native-background-downloader": "2.3.4",

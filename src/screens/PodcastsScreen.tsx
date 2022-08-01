@@ -1,13 +1,13 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import messaging from '@react-native-firebase/messaging'
 import debounce from 'lodash/debounce'
+import { convertToNowPlayingItem, createEmailLinkUrl } from 'podverse-shared'
 import { Alert, AppState, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
 import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
 import { endConnection as iapEndConnection, initConnection as iapInitConnection } from 'react-native-iap'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
-import { convertToNowPlayingItem } from 'podverse-shared'
 import {
   Divider,
   FlatList,
@@ -24,13 +24,7 @@ import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import {
-  createEmailLinkUrl,
-  getAppUserAgent,
-  safeKeyExtractor,
-  setAppUserAgent,
-  setCategoryQueryProperty
-} from '../lib/utility'
+import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
 import { getAutoDownloadsLastRefreshDate, handleAutoDownloadEpisodes } from '../services/autoDownloads'
 import { handleAutoQueueEpisodes } from '../services/autoQueue'
@@ -569,9 +563,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const preventIsLoading = true
     const preventAutoDownloading = false
     if (isConnected) {
-    this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
+      this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
     } else {
-    this._setDownloadedDataIfOffline()
+      this._setDownloadedDataIfOffline()
     }
   }
 

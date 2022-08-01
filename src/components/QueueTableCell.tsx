@@ -1,14 +1,8 @@
-import { LiveItem } from 'podverse-shared'
+import { getTimeLabelText, LiveItem } from 'podverse-shared'
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import {
-  generateEpisodeAccessibilityText,
-  getTimeLabelText,
-  prefixClipLabel,
-  readableClipTime,
-  readableDate
-} from '../lib/utility'
+import { generateEpisodeAccessibilityText, prefixClipLabel, readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button, images } from '../styles'
 import { TimeRemainingWidget } from './TimeRemainingWidget'

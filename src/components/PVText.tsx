@@ -58,7 +58,7 @@ export const PVText = (props: Props) => {
     textStyle.push({ fontSize: fontSizeLargestScale })
   }
 
-  const isValidTextNode = typeof children === 'string' || typeof children === 'number'
+  const isValidTextNode = typeof children === 'string'
 
   return isValidTextNode ? (
     <Text
