@@ -227,6 +227,7 @@ module.exports = async () => {
     audioHandlePauseWithUpdate()
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   PVAudioPlayer.addEventListener('remote-previous', async () => {
     const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
     if (remoteSkipButtonsAreTimeJumps) {
@@ -237,6 +238,7 @@ module.exports = async () => {
     }
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   PVAudioPlayer.addEventListener('remote-next', async () => {
     const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
     if (remoteSkipButtonsAreTimeJumps) {

@@ -1,6 +1,12 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { convertToNowPlayingItem, Episode } from 'podverse-shared'
+import {
+  checkIfContainsStringMatch,
+  convertToNowPlayingItem,
+  Episode,
+  getAuthorityFeedUrlFromArray,
+  getUsernameAndPasswordFromCredentials
+} from 'podverse-shared'
 import { Platform, StyleSheet, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
@@ -30,13 +36,7 @@ import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
-import {
-  checkIfContainsStringMatch,
-  getAuthorityFeedUrlFromArray,
-  getUsernameAndPasswordFromCredentials,
-  safeKeyExtractor,
-  safelyUnwrapNestedVariable
-} from '../lib/utility'
+import { safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { updateAutoQueueSettings } from '../state/actions/autoQueue'
 import PVEventEmitter from '../services/eventEmitter'
@@ -895,11 +895,10 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
     const noResultsMessage =
       (viewType === PV.Filters._downloadedKey && translate('No episodes found')) ||
-      (
-        (viewType === PV.Filters._episodesKey || 
+      ((viewType === PV.Filters._episodesKey ||
         viewType === PV.Filters._hideCompletedKey ||
-        viewType === PV.Filters._showCompletedKey
-        ) && translate('No episodes found')) ||
+        viewType === PV.Filters._showCompletedKey) &&
+        translate('No episodes found')) ||
       (viewType === PV.Filters._clipsKey && translate('No clips found'))
 
     return (
@@ -1161,15 +1160,19 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     try {
       if (
         (filterKey === PV.Filters._episodesKey ||
-          filterKey === PV.Filters._hideCompletedKey || filterKey === PV.Filters._showCompletedKey) &&
+          filterKey === PV.Filters._hideCompletedKey ||
+          filterKey === PV.Filters._showCompletedKey) &&
         podcast &&
         podcast.addByRSSPodcastFeedUrl
       ) {
         newState.flatListData = podcast.episodes || []
         newState.flatListData = this.cleanFlatListData(newState.flatListData, filterKey)
         newState.flatListDataTotalCount = newState.flatListData.length
-      } else if (filterKey === PV.Filters._episodesKey ||
-        filterKey === PV.Filters._hideCompletedKey || filterKey === PV.Filters._showCompletedKey) {
+      } else if (
+        filterKey === PV.Filters._episodesKey ||
+        filterKey === PV.Filters._hideCompletedKey ||
+        filterKey === PV.Filters._showCompletedKey
+      ) {
         const results = await this._queryEpisodes(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.flatListData = this.cleanFlatListData(newState.flatListData, filterKey)
@@ -1184,8 +1187,11 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       } else if (PV.FilterOptions.screenFilters.PodcastScreen.sort.some((option) => option === filterKey)) {
         let results = []
 
-        if (viewType === PV.Filters._episodesKey ||
-          viewType === PV.Filters._hideCompletedKey || viewType === PV.Filters._showCompletedKey) {
+        if (
+          viewType === PV.Filters._episodesKey ||
+          viewType === PV.Filters._hideCompletedKey ||
+          viewType === PV.Filters._showCompletedKey
+        ) {
           results = await this._queryEpisodes(querySort)
         } else if (viewType === PV.Filters._clipsKey) {
           results = await this._queryClips(querySort)
@@ -1208,8 +1214,11 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   cleanFlatListData = (flatListData: any[], viewTypeKey: string | null) => {
-    if (viewTypeKey === PV.Filters._episodesKey ||
-      viewTypeKey === PV.Filters._hideCompletedKey || viewTypeKey === PV.Filters._showCompletedKey) {
+    if (
+      viewTypeKey === PV.Filters._episodesKey ||
+      viewTypeKey === PV.Filters._hideCompletedKey ||
+      viewTypeKey === PV.Filters._showCompletedKey
+    ) {
       return flatListData?.filter((item: any) => !!item?.id) || []
     } else if (viewTypeKey === PV.Filters._clipsKey) {
       return flatListData?.filter((item: any) => !!item?.episode?.id) || []

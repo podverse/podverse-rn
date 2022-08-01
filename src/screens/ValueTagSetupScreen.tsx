@@ -1,8 +1,8 @@
+import { numberWithCommas } from 'podverse-shared'
 import { Alert, Keyboard, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { SwitchWithText, Text, TextInput, TextRow, View } from '../components'
 import { translate } from '../lib/i18n'
-import { numberWithCommas } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { removeLNPayWallet, toggleLNPayFeature, updateWalletInfo } from '../state/actions/lnpay'
@@ -61,7 +61,7 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
       this.props.navigation.navigate(PV.RouteNames.LNPaySignupScreen)
     } else {
       await removeLNPayWallet()
-      await toggleLNPayFeature(false)
+      toggleLNPayFeature(false)
       Alert.alert(translate('LNPay Wallet Removed'), translate('All LNPay data have been deleted from this device'))
     }
   }

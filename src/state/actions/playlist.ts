@@ -1,5 +1,5 @@
+import { combineAndSortPlaylistItems } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
-import { combineAndSortPlaylistItems } from '../../lib/utility'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import {

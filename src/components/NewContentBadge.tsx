@@ -12,7 +12,7 @@ export const NewContentBadge = (props: Props) => {
   const { count, isPodcastTableCell } = props
 
   const hasCount = count > 0
-  
+
   if (!hasCount) return null
 
   let viewStyle = {
@@ -29,7 +29,7 @@ export const NewContentBadge = (props: Props) => {
       marginRight: 8,
       marginTop: -3
     }
-  } 
+  }
 
   return (
     <View style={viewStyle}>
@@ -46,7 +46,7 @@ export const NewContentBadge = (props: Props) => {
           fontSize: PV.Fonts.sizes.tiny,
           color: PV.Colors.white,
           marginTop: 0,
-          paddingHorizontal: 4,
+          paddingHorizontal: 4
         }}
         status={'error'}
         {...(count ? { value: count.toString() } : {})}

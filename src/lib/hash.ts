@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer'
-import { getExtensionFromUrl } from './utility'
+import { getExtensionFromUrl } from 'podverse-shared'
 
 export const base64Encode = (str: string) => {
   const buffer = Buffer.from(str).toString('base64')

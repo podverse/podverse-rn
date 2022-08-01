@@ -117,25 +117,7 @@ export const PVFlatList = (props: Props) => {
 
   return (
     <View style={styles.view} transparent={transparent}>
-      {shouldShowNoResultsFoundMessage ? (
-        <MessageWithAction
-          bottomActionHandler={handleNoResultsBottomAction}
-          bottomActionText={noResultsBottomActionText}
-          message={noResultsMessage}
-          middleActionHandler={handleNoResultsMiddleAction}
-          middleActionText={noResultsMiddleActionText}
-          bottomActionAccessibilityHint={noResultsBottomActionTextAccessibilityHint}
-          middleActionAccessibilityHint={noResultsMiddleActionTextAccessibilityHint}
-          subMessage={noResultsSubMessage}
-          testID={testID}
-          topActionAccessibilityHint={noResultsTopActionTextAccessibilityHint}
-          topActionHandler={handleNoResultsTopAction}
-          topActionText={noResultsTopActionText}
-          transparent={transparent}
-        />
-      )
-      :
-      gridView ? (
+      {gridView ? (
         <GridView
           {...props}
           onItemSelected={onGridItemSelected}
@@ -235,7 +217,23 @@ export const PVFlatList = (props: Props) => {
           getItemLayout={getItemLayout}
         />
       )}
-      
+      {shouldShowNoResultsFoundMessage && (
+        <MessageWithAction
+          bottomActionHandler={handleNoResultsBottomAction}
+          bottomActionText={noResultsBottomActionText}
+          message={noResultsMessage}
+          middleActionHandler={handleNoResultsMiddleAction}
+          middleActionText={noResultsMiddleActionText}
+          bottomActionAccessibilityHint={noResultsBottomActionTextAccessibilityHint}
+          middleActionAccessibilityHint={noResultsMiddleActionTextAccessibilityHint}
+          subMessage={noResultsSubMessage}
+          testID={testID}
+          topActionAccessibilityHint={noResultsTopActionTextAccessibilityHint}
+          topActionHandler={handleNoResultsTopAction}
+          topActionText={noResultsTopActionText}
+          transparent={transparent}
+        />
+      )}
       {showNoInternetConnectionMessage && (
         <MessageWithAction message={translate('No internet connection')} testID={testID} />
       )}

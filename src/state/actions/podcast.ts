@@ -1,5 +1,6 @@
+import { checkIfContainsStringMatch } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
-import { checkIfContainsStringMatch, safelyUnwrapNestedVariable } from '../../lib/utility'
+import { safelyUnwrapNestedVariable } from '../../lib/utility'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import {
