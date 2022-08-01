@@ -249,7 +249,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5'),
           AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5'),
           AsyncStorage.setItem(PV.Keys.APP_MODE, PV.AppMode.podcasts),
-          AsyncStorage.setItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED, 'TRUE')
+          AsyncStorage.setItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED, 'TRUE'),
+          AsyncStorage.setItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP, 'TRUE')
         ])
 
         if (!Config.DISABLE_CRASH_LOGS) {
