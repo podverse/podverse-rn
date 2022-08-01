@@ -8,7 +8,6 @@ import { PV } from '../resources'
 export const navigateToEpisodeScreenInPodcastsStackNavigatorWithIds = (
   navigation: any, podcastId: string, episodeId: string) => {
   navigateBackToRoot(navigation)
-  navigation.navigate(PV.RouteNames.PodcastsScreen)
   navigation.navigate({
     routeName: PV.RouteNames.PodcastScreen,
     params: {
@@ -113,10 +112,5 @@ export const navigateToPodcastScreenWithPodcast = (navigation: any, podcast: any
 }
 
 export const navigateBackToRoot = (navigation: any) => {
-  navigation.dismiss()
-  navigation.goBack(null)
-  navigation.goBack(null)
-  navigation.goBack(null)
-  navigation.goBack(null)
-  navigation.goBack(null)
+  navigation.navigate(PV.RouteNames.PodcastsScreen)
 }
