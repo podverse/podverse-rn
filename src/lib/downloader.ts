@@ -204,22 +204,13 @@ export const downloadEpisode = async (
       .done(async () => {
         await progressLimiter.stop()
 
-        // NOTE: I'm using work arounds right now with the File Access library,
-        // but only the ScopedStorage library should be needed (or only File Access potentially).
-        // More info https://github.com/ammarahm-ed/react-native-scoped-storage/issues/33
         if (customLocation) {
-          let tempFileUri = ''
           try {
             const tempDownloadFileType = await FileSystem.stat(origDestination)
-            // const tempDownloadFileType = await ScopedStorage.stat(origDestination)
             const newFileType = await ScopedStorage.createFile(customLocation, `${episode.id}${ext}`, 'audio/mpeg')
             if (tempDownloadFileType && newFileType) {
-              tempFileUri = tempDownloadFileType.path
-              // const { uri: tempFileUri } = tempDownloadFileType
               const { uri: newFileUri } = newFileType
-              await ScopedStorage.copyFile(tempFileUri, newFileUri, (msg) => {
-                console.log('ScopedStorage.copyFile msg', msg)
-              })
+              await FileSystem.cp(origDestination, newFileUri)
             }
           } catch (error) {
             console.log('done error', error)
