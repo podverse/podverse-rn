@@ -1,16 +1,17 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import messaging from '@react-native-firebase/messaging'
 import debounce from 'lodash/debounce'
+import { convertToNowPlayingItem, createEmailLinkUrl } from 'podverse-shared'
 import { Alert, AppState, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
 import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
 import { endConnection as iapEndConnection, initConnection as iapInitConnection } from 'react-native-iap'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
-import { convertToNowPlayingItem } from 'podverse-shared'
 import {
   Divider,
   FlatList,
+  NavPodcastsViewIcon,
   PlayerEvents,
   PodcastTableCell,
   PurchaseListener,
@@ -23,13 +24,7 @@ import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import {
-  createEmailLinkUrl,
-  getAppUserAgent,
-  safeKeyExtractor,
-  setAppUserAgent,
-  setCategoryQueryProperty
-} from '../lib/utility'
+import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
 import { getAutoDownloadsLastRefreshDate, handleAutoDownloadEpisodes } from '../services/autoDownloads'
 import { handleAutoQueueEpisodes } from '../services/autoQueue'
@@ -47,6 +42,7 @@ import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUs
 import { initAutoQueue } from '../state/actions/autoQueue'
 import { initDownloads, removeDownloadedPodcast, updateDownloadedPodcasts } from '../state/actions/downloads'
 import { updateWalletInfo } from '../state/actions/lnpay'
+import { handleUpdateNewEpisodesCount } from '../state/actions/newEpisodesCount'
 import {
   initializePlayerSettings,
   initializePlayer,
@@ -152,7 +148,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const _screenTitle = navigation.getParam('_screenTitle')
     return {
-      title: _screenTitle
+      title: _screenTitle,
+      headerRight: () => (
+        <RNView style={core.row}>
+          <NavPodcastsViewIcon />
+        </RNView>
+      )
     } as NavigationStackOptions
   }
 
@@ -247,7 +248,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5'),
           AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5'),
-          AsyncStorage.setItem(PV.Keys.APP_MODE, PV.AppMode.podcasts)
+          AsyncStorage.setItem(PV.Keys.APP_MODE, PV.AppMode.podcasts),
+          AsyncStorage.setItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED, 'TRUE')
         ])
 
         if (!Config.DISABLE_CRASH_LOGS) {
@@ -301,14 +303,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
-  // _setDownloadedDataIfOffline = async () => {
-  //   const isConnected = await hasValidNetworkConnection()
-  //   if (!isConnected) {
-  //     const preventIsLoading = false
-  //     const preventAutoDownloading = true
-  //     this.handleSelectFilterItem(PV.Filters._downloadedKey, preventIsLoading, preventAutoDownloading)
-  //   }
-  // }
+  _setDownloadedDataIfOffline = async () => {
+    const isConnected = await hasValidNetworkConnection()
+    if (!isConnected) {
+      const preventIsLoading = false
+      const preventAutoDownloading = true
+      this.handleSelectFilterItem(PV.Filters._downloadedKey, preventIsLoading, preventAutoDownloading)
+    }
+  }
 
   _handleTrackingTermsAcknowledged = async () => {
     /* Get tracking terms from AsyncStorage only here so that getTrackingConsentAcknowledged does not
@@ -552,19 +554,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     initializeValueProcessor()
 
-    // this._setDownloadedDataIfOffline()
+    this._setDownloadedDataIfOffline()
     trackPageView('/podcasts', 'Podcasts Screen')
   }
 
-  _handleInitialDefaultQuery = () => {
-    // const isConnected = await hasValidNetworkConnection()
+  _handleInitialDefaultQuery = async () => {
+    const isConnected = await hasValidNetworkConnection()
     const preventIsLoading = true
     const preventAutoDownloading = false
-    // if (isConnected) {
-    this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
-    // } else {
-    // this._setDownloadedDataIfOffline()
-    // }
+    if (isConnected) {
+      this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
+    } else {
+      this._setDownloadedDataIfOffline()
+    }
   }
 
   // NOTE: there is a race-condition possibility if you reparse RSS feeds whenever
@@ -784,12 +786,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       id={item?.id}
       lastEpisodePubDate={item.lastEpisodePubDate}
       latestLiveItemStatus={item.latestLiveItemStatus}
-      onPress={() =>
-        this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
-          podcast: item,
-          addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl
-        })
-      }
+      onPress={() => this._onPodcastItemSelected(item)}
       podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
       {...(item.title ? { podcastTitle: item.title } : {})}
       showAutoDownload
@@ -797,6 +794,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
       testID={`${testIDPrefix}_podcast_item_${index}`}
     />
   )
+
+  _onPodcastItemSelected = (item) => {
+    this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
+      podcast: item,
+      addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl
+    })
+  }
 
   _renderHiddenItem = ({ item, index }, rowMap) => {
     const { queryFrom } = this.state
@@ -962,7 +966,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       showDataSettingsConfirmDialog,
       showNoInternetConnectionMessage
     } = this.state
-    const { session, subscribedPodcasts = [], subscribedPodcastsTotalCount = 0 } = this.global
+    const { session, subscribedPodcasts = [], subscribedPodcastsTotalCount = 0, podcastsGridViewEnabled } = this.global
     const { subscribedPodcastIds } = session?.userInfo
 
     let flatListData = []
@@ -1031,6 +1035,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
               renderItem={this._renderPodcastItem}
               showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               testID={testIDPrefix}
+              gridView={podcastsGridViewEnabled}
+              onGridItemSelected={this._onPodcastItemSelected}
             />
           )}
         </RNView>
@@ -1058,6 +1064,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _querySubscribedPodcasts = async (preventAutoDownloading?: boolean, preventParseCustomRSSFeeds?: boolean) => {
     const { searchBarText } = this.state
     await getSubscribedPodcasts()
+
+    await handleUpdateNewEpisodesCount()
 
     if (!preventParseCustomRSSFeeds) {
       if (!searchBarText) await parseAllAddByRSSPodcasts()

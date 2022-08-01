@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
 import { ImportantForAccessibility } from '../lib/accessibilityHelpers'
 import { darkTheme, iconStyles } from '../styles'
+import { PressableWithOpacity } from './PressableWithOpacity'
 
 type Props = {
   accessible?: boolean
@@ -66,7 +67,7 @@ export const PVIcon = (props: Props) => {
   return (
     <RNView importantForAccessibility={importantForAccessibility}>
       {!!onPress ? (
-        <Pressable
+        <PressableWithOpacity
           {...(accessibilityHint ? { accessibilityHint } : {})}
           {...(accessibilityLabel ? { accessibilityLabel } : {})}
           {...(accessibilityRole ? { accessibilityRole } : {})}
@@ -79,7 +80,7 @@ export const PVIcon = (props: Props) => {
           onPress={onPress}
           {...(testID ? { testID: `${testID}_icon_button`.prependTestId() } : {})}>
           <RNView style={wrapperStyle}>{icon}</RNView>
-        </Pressable>
+        </PressableWithOpacity>
       ) : (
         <RNView
           {...(accessible ? { accessible } : {})}

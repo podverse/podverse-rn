@@ -167,7 +167,7 @@ export const audioLoadNowPlayingItem = async (
 
   if (Platform.OS === 'ios') {
     await AsyncStorage.setItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED, 'true')
-    PVAudioPlayer.reset()
+    await PVAudioPlayer.reset()
     const track = (await audioCreateTrack(item)) as Track
     await PVAudioPlayer.add(track)
     await AsyncStorage.removeItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)

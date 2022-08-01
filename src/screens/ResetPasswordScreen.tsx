@@ -1,16 +1,16 @@
-import { Alert, Dimensions, Keyboard, Platform, StyleSheet, EmitterSubscription } from 'react-native'
-import React from 'reactn'
-import { NavigationStackScreenProps } from 'react-navigation-stack'
-import { Button, NavDismissIcon, PasswordValidationInfo, ScrollView, TextInput } from '../components'
-import { translate } from '../lib/i18n'
-import { PV } from '../resources'
 import {
   hasAtLeastXCharacters as hasAtLeastXCharactersLib,
   hasLowercase as hasLowercaseLib,
   hasMatchingStrings,
   hasNumber as hasNumberLib,
   hasUppercase as hasUppercaseLib
-} from '../lib/utility'
+} from 'podverse-shared'
+import { Alert, Dimensions, Keyboard, Platform, StyleSheet, EmitterSubscription } from 'react-native'
+import React from 'reactn'
+import { NavigationStackScreenProps } from 'react-navigation-stack'
+import { Button, NavDismissIcon, PasswordValidationInfo, ScrollView, TextInput } from '../components'
+import { translate } from '../lib/i18n'
+import { PV } from '../resources'
 import { resetPassword } from '../services/auth'
 
 type Props = {
@@ -104,7 +104,7 @@ export class ResetPasswordScreen extends React.Component<Props, State> {
   }
 
   checkIfSubmitIsDisabled = () => {
-    const { hasAtLeastXCharacters, hasLowercase, hasMatching, hasNumber, hasUppercase, hasValidEmail } = this.state
+    const { hasAtLeastXCharacters, hasLowercase, hasMatching, hasNumber, hasUppercase } = this.state
     const submitIsDisabled = !(hasAtLeastXCharacters && hasLowercase && hasMatching && hasNumber && hasUppercase)
     this.setState({ submitIsDisabled })
   }

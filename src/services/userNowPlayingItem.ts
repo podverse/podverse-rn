@@ -1,11 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import {
+  checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
   convertNowPlayingItemClipToNowPlayingItemEpisode,
   convertToNowPlayingItem,
   NowPlayingItem
 } from 'podverse-shared'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
-import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
 import { getQueueItemsLocally } from './queue'

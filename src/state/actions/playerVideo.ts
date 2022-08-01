@@ -224,7 +224,7 @@ export const videoLoadNowPlayingItem = async (
 ) => {
   const { clipId: previousClipId, episodeId: previousEpisodeId } = previousNowPlayingItem || {}
   await AsyncStorage.setItem(PV.Events.PLAYER_VIDEO_IS_LOADING, 'TRUE')
-  PVAudioPlayer.reset()
+  await PVAudioPlayer.reset()
 
   const historyItemsIndex = await getHistoryItemsIndexLocally()
   const { clipId, episodeId } = item

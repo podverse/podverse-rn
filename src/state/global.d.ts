@@ -57,6 +57,7 @@ declare module 'reactn/default' {
       myPlaylists: []
       subscribedPlaylists: []
     }
+    podcastsGridViewEnabled: boolean
     podcastValueFinal: any
     profile: {
       flatListData: []
@@ -141,5 +142,9 @@ declare module 'reactn/default' {
     bannerInfo: BannerInfo
     tempMediaRefInfo: TempMediaRef
     screenReaderEnabled: boolean
+    newEpisodesCount: {
+      [key: string]: number
+    }
+    hideNewEpisodesBadges: boolean
   }
 }

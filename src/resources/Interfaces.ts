@@ -144,6 +144,7 @@ export interface InitialState {
     subscribedPlaylists: []
   }
   podcastValueFinal: any
+  podcastsGridViewEnabled: boolean
   profile: {
     flatListData: []
     user: any
@@ -221,6 +222,10 @@ export interface InitialState {
     clipTitle?: string
   }
   screenReaderEnabled: boolean
+  newEpisodesCount: {
+    [key: string]: number
+  }
+  hideNewEpisodesBadges: boolean
 }
 
 export interface BannerInfoError {
@@ -268,6 +273,7 @@ export interface IFilters {
   _allEpisodesKey: string
   _podcastsKey: string
   _episodesKey: string
+  _hideCompletedKey: string
   _showCompletedKey: string
   _clipsKey: string
   _chaptersKey: string

@@ -32,7 +32,7 @@ export interface LNWalletInfo {
   }
 }
 
-export const toggleLNPayFeature = async (toggle: boolean) => {
+export const toggleLNPayFeature = (toggle: boolean) => {
   const globalState = getGlobal()
   const defaultBoostAmount = DEFAULT_BOOST_PAYMENT
   const defaultStreamingAmount = DEFAULT_STREAMING_PAYMENT

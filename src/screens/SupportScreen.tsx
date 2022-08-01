@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
+import { createEmailLinkUrl } from 'podverse-shared'
 import { Alert, Linking, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import { Divider, ScrollView, Text, TextLink, View } from '../components'
 import { translate } from '../lib/i18n'
-import { createEmailLinkUrl } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { core } from '../styles'

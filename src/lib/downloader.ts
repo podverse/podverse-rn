@@ -1,6 +1,6 @@
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
-import { Episode } from 'podverse-shared'
+import { Episode, getExtensionFromUrl } from 'podverse-shared'
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
 import * as ScopedStorage from 'react-native-scoped-storage'
@@ -14,13 +14,9 @@ import * as DownloadState from '../state/actions/downloads'
 import { addDownloadedPodcastEpisode, getDownloadedPodcasts } from './downloadedPodcast'
 import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode } from './downloadingEpisode'
 import { hasValidDownloadingConnection } from './network'
-import {
-  convertBytesToHumanReadableString,
-  getAppUserAgent,
-  getExtensionFromUrl,
-  safelyUnwrapNestedVariable
-} from './utility'
+import { convertBytesToHumanReadableString, getAppUserAgent, safelyUnwrapNestedVariable } from './utility'
 import { downloadCustomFileNameId } from './hash'
+import { downloadImageFile } from './storage'
 
 export const BackgroundDownloader = () => {
   const userAgent = getAppUserAgent()
@@ -161,6 +157,13 @@ export const downloadEpisode = async (
       console.log('Secure url not found for http mediaUrl. Info: ', err)
     }
   }
+
+  (async () => {
+    // Download and store the image files if available
+    if (podcast?.imageUrl) await downloadImageFile(podcast.imageUrl)
+    if (podcast?.shrunkImageUrl) await downloadImageFile(podcast.shrunkImageUrl)
+    if (episode?.imageUrl) await downloadImageFile(episode.imageUrl)
+  })()
 
   // Wait for t.stop() to complete
   setTimeout(() => {

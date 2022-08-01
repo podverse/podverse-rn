@@ -1,4 +1,4 @@
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem, replaceLinebreaksWithBrTags } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import React, { getGlobal } from 'reactn'
 import {
@@ -15,7 +15,6 @@ import {
 import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { replaceLinebreaksWithBrTags } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'

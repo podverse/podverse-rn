@@ -5163,7 +5163,7 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
-he@1.2.0:
+he@1.2.0, he@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
@@ -8160,11 +8160,12 @@ plist@^3.0.2, plist@^3.0.5:
     base64-js "^1.5.1"
     xmlbuilder "^9.0.7"
 
-podverse-shared@^4.5.15:
-  version "4.5.15"
-  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.5.15.tgz#b315bebf7f2490a399fc8a60888395ea117bcd1e"
-  integrity sha512-hklCStuxKgn84/nM7Na9NqNurLMyHUnjJnzTweKqi7L8KyH3KuBXFlSELHneQbkLU6V1Irr809+kAz884HWcVA==
+podverse-shared@^4.5.24:
+  version "4.5.24"
+  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.5.24.tgz#cc3e1708e8b959d40c2205622a67761c57032968"
+  integrity sha512-ggTI3HW8dgQ7XLPV+V9xSC3vuWp3kuQzJeQiCRtC7gQSf981HD+IggxOJA7/P1ZVfC1kws2mTJNeKDpBUwULgQ==
   dependencies:
+    he "^1.2.0"
     html-entities "^2.3.2"
     striptags "^3.2.0"
     typescript "3.9.7"

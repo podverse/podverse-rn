@@ -1,7 +1,7 @@
+import { convertSecToHHMMSS } from 'podverse-shared'
 import React from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { convertSecToHHMMSS } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, TextInput } from './'
 

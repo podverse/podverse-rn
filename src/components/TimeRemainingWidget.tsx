@@ -1,8 +1,8 @@
-import { convertToNowPlayingItem } from 'podverse-shared'
+import { checkIfNowPlayingItem, convertToNowPlayingItem } from 'podverse-shared'
 import React, { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
-import { checkIfNowPlayingItem, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
+import { requestAppStoreReviewForEpisodePlayed } from '../lib/reviews'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import {
@@ -12,6 +12,7 @@ import {
   playerGetState
 } from '../services/player'
 import { setNowPlayingItem } from '../services/userNowPlayingItem'
+import { clearEpisodesCountForPodcast } from '../state/actions/newEpisodesCount'
 import { playerLoadNowPlayingItem, playerTogglePlay, playerUpdatePlayerState } from '../state/actions/player'
 import { Icon, LiveStatusBadge, MoreButton, PressableWithOpacity, Text, View } from './'
 
@@ -131,6 +132,10 @@ export const TimeRemainingWidget = (props: Props) => {
   }
 
   const playItem = async () => {
+    if (convertedItem?.podcastId || convertedItem?.addByRSSPodcastFeedUrl) {
+      await clearEpisodesCountForPodcast(nowPlayingItem?.podcastId || nowPlayingItem?.addByRSSPodcastFeedUrl)
+    }
+
     const isNowPlayingItem = checkIfNowPlayingItem(item, nowPlayingItem)
     if (loadChapterOnPlay) {
       await handleChapterLoad()
