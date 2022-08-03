@@ -3,7 +3,9 @@ import React from 'reactn'
 import { Divider, TableCell, TableSectionSelectors, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
+import { V4VProviderListItem, _albyKey } from '../resources/V4V'
 import { trackPageView } from '../services/tracking'
+import { getV4VProviderListItems } from '../services/v4v'
 import { core, table } from '../styles'
 
 type Props = {
@@ -34,7 +36,8 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
   _connectedOptions = () => {
     const allowedProvidersList = PV.V4V.ALLOWED_PROVIDERS_LIST
 
-    return providers.filter((item: any) => allowedProvidersList.find((providerKey: any) => item.key === providerKey))
+    return getV4VProviderListItems()
+      .filter((item: any) => allowedProvidersList.find((providerKey: any) => item.key === providerKey))
       // .filter((item = { key: '', title: '' }) => {
       //   return !PV.V4V.V4V_ALLOWED_PROVIDERS_LIST.some((screenKey: any) => item.key === screenKey)
       // })
@@ -43,7 +46,8 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
   _setupOptions = () => {
     const allowedProvidersList = PV.V4V.ALLOWED_PROVIDERS_LIST
 
-    return providers.filter((item: any) => allowedProvidersList.find((providerKey: any) => item.key === providerKey))
+    return getV4VProviderListItems()
+      .filter((item: any) => allowedProvidersList.find((providerKey: any) => item.key === providerKey))
       // .filter((item = { key: '', title: '' }) => {
       //   return !PV.V4V.V4V_ALLOWED_PROVIDERS_LIST.some((screenKey: any) => item.key === screenKey)
       // })
@@ -96,20 +100,3 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
   }
 }
 
-type V4VProviders = 'alby'
-
-type V4VProviderListItem = {
-  title: string
-  key: string
-  routeName: string
-}
-
-const _albyKey = 'alby'
-
-const providers: V4VProviderListItem[] = [
-  {
-    title: 'Alby',
-    key: _albyKey,
-    routeName: PV.RouteNames.V4VProvidersAlbyScreen
-  }
-]

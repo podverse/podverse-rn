@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native'
 import { WebView } from 'react-native-webview'
 import React from 'reactn'
-import { NavDismissIcon, View } from '../components'
+import { View } from '../components'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
+import { _v4v_env_ } from '../services/v4v'
 
 type Props = {
   navigation: any
@@ -14,9 +15,8 @@ export class V4VProvidersAlbyLoginScreen extends React.Component<Props> {
     super(props)
   }
 
-  static navigationOptions = ({ navigation }) => ({
-    title: 'Alby',
-    headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} />
+  static navigationOptions = () => ({
+    title: 'Alby'
   })
 
   componentDidMount() {
@@ -24,7 +24,7 @@ export class V4VProvidersAlbyLoginScreen extends React.Component<Props> {
   }
 
   render() {
-    const uri = PV.V4V.providerInfo.alby.dev.oauthUrl
+    const uri = PV.V4V.providers.alby.api[_v4v_env_].oauthUrl
 
     return (
       <View style={styles.wrapper}>
