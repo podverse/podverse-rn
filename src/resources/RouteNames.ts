@@ -63,8 +63,10 @@ export const RouteNames = {
   TabNavigator: 'TabNavigator',
   TermsOfServiceScreen: 'TermsOfServiceScreen',
   TrackingConsentScreen: 'TrackingConsentScreen',
-  ValueTagConsentScreen: 'ValueTagConsentScreen',
-  ValueTagPreviewScreen: 'ValueTagPreviewScreen',
-  ValueTagSetupScreen: 'ValueTagSetupScreen',
+  V4VConsentScreen: 'V4VConsentScreen',
+  V4VPreviewScreen: 'V4VPreviewScreen',
+  V4VProvidersScreen: 'V4VProvidersScreen',
+  V4VProvidersAlbyScreen: 'V4VProvidersAlbyScreen',
+  V4VProvidersAlbyLoginScreen: 'V4VProvidersAlbyLoginScreen',
   WebPageScreen: 'WebPageScreen'
 }

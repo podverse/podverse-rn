@@ -29,6 +29,7 @@ export const URLs = {
     }
   },
   apiDefaultBaseUrl,
+  appRepo: Config.URL_APP_REPO || '',
   social: {
     facebook: Config.URL_SOCIAL_FACEBOOK || '',
     github: Config.URL_SOCIAL_GITHUB || '',

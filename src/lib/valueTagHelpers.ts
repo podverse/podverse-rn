@@ -283,7 +283,7 @@ export const getValueTransactionQueue = async () => {
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
 
   try {
-    const transactionQueueString = await AsyncStorage.getItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE)
+    const transactionQueueString = await AsyncStorage.getItem(PV.V4V.VALUE_TRANSACTION_QUEUE)
     return transactionQueueString ? JSON.parse(transactionQueueString) : []
   } catch (err) {
     console.log('getStreamingValueTransactionQueue error:', err)
@@ -294,7 +294,7 @@ export const getValueTransactionQueue = async () => {
 export const clearValueTransactionQueue = async () => {
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
 
-  await AsyncStorage.setItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE, JSON.stringify([]))
+  await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify([]))
 }
 
 /*
@@ -394,7 +394,7 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
       transactionQueue.push(transaction)
     }
 
-    await AsyncStorage.setItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
+    await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
   } catch (err) {
     console.log('saveStreamingValueTransactionsToTransactionQueue error:', err)
     await clearValueTransactionQueue()
@@ -405,7 +405,7 @@ const saveTransactionQueue = async (transactionQueue: ValueTransaction[]) => {
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
 
   try {
-    await AsyncStorage.setItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
+    await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
   } catch (error) {
     console.log('saveTransactionQueue error', error)
     await clearValueTransactionQueue()

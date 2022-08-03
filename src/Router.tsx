@@ -23,6 +23,7 @@ import {
   EpisodeScreen,
   EpisodesScreen,
   FAQScreen,
+  FeatureVideosScreen,
   FilterScreen,
   FundingScreen,
   HistoryScreen,
@@ -60,11 +61,12 @@ import {
   SupportScreen,
   TermsOfServiceScreen,
   TrackingConsentScreen,
-  ValueTagConsentScreen,
-  ValueTagPreviewScreen,
-  ValueTagSetupScreen,
-  WebPageScreen,
-  FeatureVideosScreen
+  V4VConsentScreen,
+  V4VPreviewScreen,
+  V4VProvidersScreen,
+  V4VProvidersAlbyScreen,
+  V4VProvidersAlbyLoginScreen,
+  WebPageScreen
 } from './screens'
 import { darkTheme } from './styles'
 import { PodcastInfoScreen } from './screens/PodcastInfoScreen'
@@ -225,7 +227,9 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.LNPaySignupScreen]: LNPaySignupScreen,
     [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
     [PV.RouteNames.FAQScreen]: FAQScreen,
-    [PV.RouteNames.ValueTagSetupScreen]: ValueTagSetupScreen
+    [PV.RouteNames.V4VProvidersScreen]: V4VProvidersScreen,
+    [PV.RouteNames.V4VProvidersAlbyLoginScreen]: V4VProvidersAlbyLoginScreen,
+    [PV.RouteNames.V4VProvidersAlbyScreen]: V4VProvidersAlbyScreen
   },
   {
     defaultNavigationOptions,
@@ -450,13 +454,13 @@ const FundingScreenNavigator = createStackNavigator(
   }
 )
 
-const ValueTagOnboardingNavigator = createStackNavigator(
+const V4VOnboardingNavigator = createStackNavigator(
   {
-    [PV.RouteNames.ValueTagPreviewScreen]: {
-      screen: ValueTagPreviewScreen
+    [PV.RouteNames.V4VPreviewScreen]: {
+      screen: V4VPreviewScreen
     },
-    [PV.RouteNames.ValueTagConsentScreen]: {
-      screen: ValueTagConsentScreen
+    [PV.RouteNames.V4VConsentScreen]: {
+      screen: V4VConsentScreen
     }
   },
   {
@@ -492,7 +496,7 @@ const MainApp = createStackNavigator(
       path: ''
     },
     AddPodcastByRSSAuthNavigator,
-    ValueTagOnboardingNavigator,
+    V4VOnboardingNavigator,
     TrackingConsentNavigator
   },
   {

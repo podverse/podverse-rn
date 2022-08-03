@@ -74,14 +74,14 @@ export class FundingScreen extends React.Component<Props, State> {
       convertValueTagIntoValueTransactions(
         valueTag,
         nowPlayingItem,
-        PV.ValueTag.ACTION_BOOST,
+        PV.V4V.ACTION_BOOST,
         boostAmount,
         roundDownBoostTransactions
       ),
       convertValueTagIntoValueTransactions(
         valueTag,
         nowPlayingItem,
-        PV.ValueTag.ACTION_STREAMING,
+        PV.V4V.ACTION_STREAMING,
         streamingAmount,
         roundDownStreamingTransactions
       )
@@ -144,10 +144,10 @@ export class FundingScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleValueTagSetupPressed = async () => {
+  _handleV4VProvidersPressed = async () => {
     const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS)
     if (consentGivenString && JSON.parse(consentGivenString) === true) {
-      this.props.navigation.navigate(PV.RouteNames.ValueTagSetupScreen)
+      this.props.navigation.navigate(PV.RouteNames.V4VProvidersScreen)
     } else {
       this.props.navigation.navigate(PV.RouteNames.ValueTagPreviewScreen)
     }
@@ -232,9 +232,9 @@ export class FundingScreen extends React.Component<Props, State> {
                 accessibilityHint={translate('ARIA HINT - go to the Bitcoin wallet setup screen')}
                 accessibilityLabel={translate('Setup Bitcoin Wallet')}
                 accessibilityRole='button'
-                style={styles.goToValueTagSetupButton}
-                onPress={this._handleValueTagSetupPressed}>
-                <Text style={styles.goToValueTagSetupButtonText}>{translate('Setup Bitcoin Wallet')}</Text>
+                style={styles.goToV4VProvidersButton}
+                onPress={this._handleV4VProvidersPressed}>
+                <Text style={styles.goToV4VProvidersButtonText}>{translate('Setup Bitcoin Wallet')}</Text>
               </Pressable>
             </View>
           )}
@@ -439,10 +439,10 @@ const styles = StyleSheet.create({
   noLnPayText: {
     fontSize: PV.Fonts.sizes.lg
   },
-  goToValueTagSetupButton: {
+  goToV4VProvidersButton: {
     marginTop: 15
   },
-  goToValueTagSetupButtonText: {
+  goToV4VProvidersButtonText: {
     fontSize: PV.Fonts.sizes.lg,
     color: PV.Colors.blueLighter,
     fontWeight: PV.Fonts.weights.bold
