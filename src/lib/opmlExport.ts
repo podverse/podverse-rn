@@ -33,7 +33,7 @@ const downloadOPMLExport = async (xmlData: string) => {
     await Share.open(options)
     await RNFS.unlink(path)
   } catch (err) {
-    console.log('Error: ', err.message)
+    console.log('Download opml error: ', err.message)
   }
 }
 
