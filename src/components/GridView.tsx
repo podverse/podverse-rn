@@ -13,7 +13,7 @@ type Props = {
 export class GridView extends React.PureComponent<Props, any> {
   render() {
     const { newEpisodesCount } = this.global
-    const shouldShowResults = this.props.data.length
+    const shouldShowResults = this.props.data && this.props.data.length > 0
 
     return (
       <FlatList
@@ -44,7 +44,7 @@ export class GridView extends React.PureComponent<Props, any> {
         }}
         numColumns={3}
         keyExtractor={(_, index) => index.toString()}
-        style={styles.noResultsView}
+        style={shouldShowResults ? [] : styles.noResultsView}
       />
     )
   }

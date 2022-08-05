@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Alert } from 'react-native'
 import Config from 'react-native-config'
-import RNSecureKeyStore from 'react-native-secure-key-store'
+import {resetInternetCredentials} from "react-native-keychain"
 import { getGlobal, setGlobal } from 'reactn'
 import { shouldShowMembershipAlert } from '../../lib/membership'
 import { safelyUnwrapNestedVariable } from '../../lib/utility'
@@ -275,7 +275,7 @@ const askToSyncLocalPodcastsWithServer = (
 
 export const logoutUser = async () => {
   try {
-    await RNSecureKeyStore.remove(PV.Keys.BEARER_TOKEN)
+    await resetInternetCredentials(PV.Keys.BEARER_TOKEN)    
     await getAuthUserInfo()
   } catch (error) {
     console.log(error)

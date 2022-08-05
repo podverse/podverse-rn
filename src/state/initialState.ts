@@ -56,7 +56,7 @@ const initialTheme: InitialState = {
       videoPosition: 0
     },
     hidePlaybackSpeedButton: false,
-    remoteSkipButtonsAreTimeJumps: false
+    remoteSkipButtonsAreTimeJumps: true
   },
   playlists: {
     myPlaylists: [],

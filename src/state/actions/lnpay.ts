@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
+import * as RNKeychain from "react-native-keychain"
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import { getWalletInfo } from '../../services/lnpay'
@@ -65,17 +65,17 @@ export const toggleLNPayFeature = (toggle: boolean) => {
 }
 
 export const saveLNPayWallet = async (wallet: LNWallet) => {
-  await RNSecureKeyStore.set(PV.Keys.LN_WALLET_KEY, JSON.stringify(wallet), {
-    accessible: ACCESSIBLE.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY
+  await RNKeychain.setInternetCredentials(PV.Keys.LN_WALLET_KEY, "", JSON.stringify(wallet), {
+    accessible: RNKeychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
   })
 }
 
 export const getLNWallet = async (): Promise<LNWallet | null> => {
   let wallet = null
   try {
-    const savedWallet = await RNSecureKeyStore.get(PV.Keys.LN_WALLET_KEY)
+    const savedWallet = await RNKeychain.getInternetCredentials(PV.Keys.LN_WALLET_KEY)
     if (savedWallet) {
-      wallet = JSON.parse(savedWallet)
+      wallet = JSON.parse(savedWallet.password)
     }
   } catch (error) {
     if (error.code === 404) {
@@ -88,7 +88,7 @@ export const getLNWallet = async (): Promise<LNWallet | null> => {
 
 export const removeLNPayWallet = async () => {
   try {
-    await RNSecureKeyStore.remove(PV.Keys.LN_WALLET_KEY)
+    await RNKeychain.resetInternetCredentials(PV.Keys.LN_WALLET_KEY)
   } catch (error) {
     console.log("Error removing LNPay: ", error)
   }
