@@ -3,6 +3,27 @@ import { NavigationActions, StackActions } from 'react-navigation'
 import { PV } from '../resources'
 
 /*
+  Navigate to the EpisodeScreen located within the PodcastsStackNavigator.
+ */
+export const navigateToEpisodeScreenInPodcastsStackNavigatorWithIds = (
+  navigation: any, podcastId: string, episodeId: string) => {
+  navigateBackToRoot(navigation)
+  navigation.navigate({
+    routeName: PV.RouteNames.PodcastScreen,
+    params: {
+      podcastId,
+      forceRequest: true
+    }
+  })
+  navigation.navigate({
+    routeName: PV.RouteNames.EpisodeScreen,
+    params: {
+      episodeId
+    }
+  })
+}
+
+/*
   Navigate to the EpisodeScreen located within the EpisodesStackNavigator.
  */
 export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
@@ -91,9 +112,5 @@ export const navigateToPodcastScreenWithPodcast = (navigation: any, podcast: any
 }
 
 export const navigateBackToRoot = (navigation: any) => {
-  navigation.goBack(null)
-  navigation.goBack(null)
-  navigation.goBack(null)
-  navigation.goBack(null)
-  navigation.goBack(null)
+  navigation.navigate(PV.RouteNames.PodcastsScreen)
 }

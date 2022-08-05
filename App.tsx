@@ -21,6 +21,7 @@ import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 import { hasValidDownloadingConnection } from './src/lib/network'
+import { migrateCredentialsIfNeeded } from './src/lib/secutity'
 
 LogBox.ignoreLogs(['EventEmitter.removeListener', "Require cycle"])
 
@@ -64,6 +65,7 @@ class App extends Component<Props, State> {
     }
 
     await this.setupGlobalState(globalTheme)
+    await migrateCredentialsIfNeeded()
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
   }
 

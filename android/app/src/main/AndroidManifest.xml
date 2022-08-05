@@ -33,6 +33,7 @@
             android:name=".MainActivity"
             android:launchMode="singleTask"
             android:label="@string/app_name"
+            android:exported="true"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode|screenLayout|smallestScreenSize"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait">

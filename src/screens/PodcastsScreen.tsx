@@ -23,6 +23,7 @@ import {
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
+import { navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
@@ -170,14 +171,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     messaging().onNotificationOpenedApp(async (remoteMessage) => {
       const podcastId = remoteMessage?.data?.podcastId
+      const episodeId = remoteMessage?.data?.episodeId
 
-      if (remoteMessage && podcastId) {
+      if (remoteMessage && podcastId && episodeId) {
         await this._goBackWithDelay()
         setTimeout(() => {
-          navigation.navigate(PV.RouteNames.PodcastScreen, {
-            podcastId,
-            forceRequest: true
-          })
+          navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(navigation, podcastId, episodeId)
         }, 1555)
       }
     })
@@ -186,6 +185,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       .getInitialNotification()
       .then(async (remoteMessage) => {
         const podcastId = remoteMessage?.data?.podcastId
+        const episodeId = remoteMessage?.data?.episodeId
         const podcastTitle = remoteMessage?.data?.podcastTitle
         const episodeTitle = remoteMessage?.data?.episodeTitle
         const notificationType = remoteMessage?.data?.notificationType
@@ -196,22 +196,20 @@ export class PodcastsScreen extends React.Component<Props, State> {
         currentDateTime30MinutesEarlier.setMinutes(currentDateTime.getMinutes() - 30)
         const wasRecentlySent = timeSent && new Date(timeSent) > currentDateTime30MinutesEarlier
 
-        if (remoteMessage && podcastId && isLiveNotification && wasRecentlySent) {
+        if (remoteMessage && podcastId && episodeId && isLiveNotification && wasRecentlySent) {
           const GO_TO_LIVE_PODCAST = PV.Alerts.GO_TO_LIVE_PODCAST(
             navigation,
             podcastId,
+            episodeId,
             podcastTitle,
             episodeTitle,
             this._goBackWithDelay
           )
           Alert.alert(GO_TO_LIVE_PODCAST.title, GO_TO_LIVE_PODCAST.message, GO_TO_LIVE_PODCAST.buttons)
-        } else if (remoteMessage && podcastId) {
+        } else if (remoteMessage && podcastId && episodeId) {
           await this._goBackWithDelay()
           setTimeout(() => {
-            navigation.navigate(PV.RouteNames.PodcastScreen, {
-              podcastId,
-              forceRequest: true
-            })
+            navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(navigation, podcastId, episodeId)
           }, 1555)
         }
       })

@@ -4,8 +4,6 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import {
   navigateBackToRoot,
-  navigateToEpisodeScreenWithItemInCurrentStack,
-  navigateToEpisodeScreenWithItemInPodcastsStack,
   navigateToPodcastScreenWithItem
 } from '../lib/navigate'
 import { prefixClipLabel, readableClipTime } from '../lib/utility'
