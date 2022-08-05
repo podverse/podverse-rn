@@ -11,13 +11,12 @@ export const v4vAlbyHandleConnect = async (navigation: any, code: string) => {
   navigation.navigate(PV.RouteNames.V4VProvidersAlbyScreen, {
     isLoadingWaitForEvent: true
   })
-  const codeData = await v4vAlbyRequestAccessTokenService(code)
 
+  const codeData = await v4vAlbyRequestAccessTokenService(code)
   console.log('codeData', codeData)
 
   const accountSummary = await v4vAlbyGetAccountSummary()
   console.log('accountSummary', accountSummary)
-
 
   // save providerInfo to connectedProviders async storage and global state
   // write helper for getting and updating connectedProviders in async storage

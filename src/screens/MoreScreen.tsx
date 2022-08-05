@@ -104,7 +104,7 @@ export class MoreScreen extends React.Component<Props, State> {
     if (consentGivenString && JSON.parse(consentGivenString) === true) {
       this.props.navigation.navigate(PV.RouteNames.V4VProvidersScreen)
     } else {
-      this.props.navigation.navigate(PV.RouteNames.ValueTagPreviewScreen)
+      this.props.navigation.navigate(PV.RouteNames.V4VPreviewScreen)
     }
   }
 

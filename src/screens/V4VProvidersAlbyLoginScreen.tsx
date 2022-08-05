@@ -2,19 +2,27 @@ import { StyleSheet } from 'react-native'
 import { WebView } from 'react-native-webview'
 import React from 'reactn'
 import { NavDismissIcon, View } from '../components'
-import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { _v4v_env_ } from '../services/v4v/v4v'
+import { v4vAlbyGenerateOAuthUrl } from '../services/v4v/providers/alby'
 
 type Props = {
   navigation: any
 }
 
+type State = {
+  url: string
+}
+
 const testIDPrefix = 'v4v_providers_alby_login_screen'
 
-export class V4VProvidersAlbyLoginScreen extends React.Component<Props> {
+export class V4VProvidersAlbyLoginScreen extends React.Component<Props, State> {
   constructor(props) {
     super(props)
+
+    this.state = {
+      url: ''
+    }
   }
 
   static navigationOptions = ({ navigation }) => ({
@@ -22,16 +30,19 @@ export class V4VProvidersAlbyLoginScreen extends React.Component<Props> {
     headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />
   })
 
-  componentDidMount() {
+  async componentDidMount() {
+    const oauthUrl = await v4vAlbyGenerateOAuthUrl()
+    this.setState({ url: oauthUrl })
+
     trackPageView('/value-for-value/providers/alby/login', 'Value for Value - Providers - Alby - Login')
   }
 
   render() {
-    const uri = PV.V4V.providers.alby.env[_v4v_env_].oauthUrl
+    const { url } = this.state
 
     return (
       <View style={styles.wrapper}>
-        <WebView source={{ uri }} />
+        <WebView source={{ uri: url }} />
       </View>
     )
   }
