@@ -228,7 +228,6 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
     [PV.RouteNames.FAQScreen]: FAQScreen,
     [PV.RouteNames.V4VProvidersScreen]: V4VProvidersScreen,
-    [PV.RouteNames.V4VProvidersAlbyLoginScreen]: V4VProvidersAlbyLoginScreen,
     [PV.RouteNames.V4VProvidersAlbyScreen]: V4VProvidersAlbyScreen
   },
   {
@@ -304,6 +303,16 @@ const OnboardingNavigator = createStackNavigator(
     initialRouteName: PV.RouteNames.OnboardingScreen,
     mode: 'modal',
     headerMode: 'none'
+  }
+)
+
+const V4VProvidersModals = createStackNavigator(
+  {
+    [PV.RouteNames.V4VProvidersAlbyLoginScreen]: V4VProvidersAlbyLoginScreen
+  },
+  {
+    mode: 'modal',
+    defaultNavigationOptions
   }
 )
 
@@ -497,6 +506,7 @@ const MainApp = createStackNavigator(
     },
     AddPodcastByRSSAuthNavigator,
     V4VOnboardingNavigator,
+    V4VProvidersModals,
     TrackingConsentNavigator
   },
   {

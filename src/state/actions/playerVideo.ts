@@ -62,7 +62,7 @@ export const videoSetRate = (rate = 1.0) => {
       playbackRate: rate
     }
   }, () => {
-    PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED)    
+    PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED)
   })
 }
 

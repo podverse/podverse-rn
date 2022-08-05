@@ -21,13 +21,16 @@ type V4VTypeProvider = {
   routeName: string
   supportedTypes: V4VProvidersSupportedTypes[]
   supportedMethods: V4VProvidersSupportedMethods[]
-  api: {
+  oauthRedirectUri: string
+  env: {
     dev: {
       aboutUrl: string
+      apiPath: string
       oauthUrl: string
     }
     prod: {
       aboutUrl: string
+      apiPath: string
       oauthUrl: string
     }
   }
@@ -53,14 +56,20 @@ export const V4V: V4VType = {
       routeName: RouteNames.V4VProvidersAlbyScreen,
       supportedTypes: ['lightning'],
       supportedMethods: ['keysend'],
-      api: {
+      oauthRedirectUri: Config.V4V_PROVIDERS_ALBY_OAUTH_REDIRECT_URI,
+      env: {
         dev: {
           aboutUrl: 'https://getalby.com/value4value',
-          oauthUrl: 'https://app.regtest.getalby.com/oauth?client_id=test_client&response_type=code&redirect_uri=http://localhost:8080&scope=%3Cscope%3E',
+          apiPath: 'https://api.regtest.getalby.com',
+          // oauthUrl: 'https://app.regtest.getalby.com/oauth?client_id=test_client&response_type=code&redirect_uri=http://localhost:8080&scope=account:read%20transactions:read%20balance:read%20payments:send',
+          oauthUrl:
+            'https://app.regtest.getalby.com/oauth?client_id=test_client&response_type=code&redirect_uri=com.podverse://callback_alby&scope=account:read%20transactions:read%20balance:read%20payments:send'
         },
         prod: {
           aboutUrl: 'https://getalby.com/value4value',
-          oauthUrl: 'https://getalby.com/to-do'
+          apiPath: 'https://api.getalby.com',
+          oauthUrl:
+            `https://getalby.com/oauth?client_id=${Config.V4V_PROVIDERS_ALBY_CLIENT_ID}&response_type=code&redirect_uri=${Config.V4V_PROVIDERS_ALBY_OAUTH_REDIRECT_URI}&scope=account:read%20transactions:read%20balance:read%20payments:send`
         }
       }
     }

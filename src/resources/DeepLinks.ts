@@ -58,5 +58,10 @@ export const DeepLinks = {
   },
   XMPP: {
     path: 'xmpp'
+  },
+  providers: {
+    ALBY: {
+      oauthCallbackPath: 'callback_alby'
+    }
   }
 }

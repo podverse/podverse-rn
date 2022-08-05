@@ -5,7 +5,7 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { V4VProviderListItem, _albyKey } from '../resources/V4V'
 import { trackPageView } from '../services/tracking'
-import { getV4VProviderListItems } from '../services/v4v'
+import { getV4VProviderListItems } from '../services/v4v/v4v'
 import { core, table } from '../styles'
 
 type Props = {
@@ -26,7 +26,7 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = () => ({
-    title: translate('Value for Value')
+    title: 'V4V'
   })
 
   componentDidMount() {

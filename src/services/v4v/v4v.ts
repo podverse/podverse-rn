@@ -1,6 +1,6 @@
 import { Config } from 'react-native-config'
-import { PV } from '../resources'
-import { V4VProviderListItem } from '../resources/V4V'
+import { PV } from '../../resources'
+import { V4VProviderListItem } from '../../resources/V4V'
 
 export const _v4v_env_ = !!Config.IS_DEV ? 'dev' : 'prod'
 
