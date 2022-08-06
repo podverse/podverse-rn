@@ -19,3 +19,12 @@ export const getV4VProviderListItems = () => {
 
   return providerItems
 }
+
+export const v4vGetPluralCurrencyUnit = (unit: 'sat') => {
+  let pluralUnit: 'sat' | 'sats' = unit
+  if (pluralUnit === 'sat') {
+    pluralUnit = 'sats'
+  }
+
+  return pluralUnit
+}

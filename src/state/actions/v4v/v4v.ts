@@ -54,7 +54,36 @@ export const v4vAddOrUpdateConnectedProvider = (
   })
 }
 
-export const v4vGetConnectedProvider = (providers: any, key: string) => {
-  const connectedProvider = providers.connected.find((item: any) => item.key === key)
+export const v4vGetConnectedProvider = (connectedProviders: V4VProviderConnectedState[], key: string) => {
+  const connectedProvider = connectedProviders.find((item: any) => item.key === key)
   return connectedProvider
+}
+
+export const v4vDisconnectProvider = (key: string) => {
+  const globalState = getGlobal()
+
+  const previousEnabled = globalState.session.v4v.providers.enabled
+  const previousConnected = globalState.session.v4v.providers.connected
+  
+  const newEnabled = previousEnabled.filter((enabledKey) => enabledKey !== key)
+  const newConnected = previousConnected.filter(
+    (provider) => provider.key !== key )
+  
+  // TODO: save to local storage
+
+  setGlobal(
+    {
+      session: {
+        ...globalState.session,
+        v4v: {
+          ...globalState.session.v4v,
+          providers: {
+            ...globalState.session.v4v.providers,
+            enabled: newEnabled,
+            connected: newConnected
+          }
+        }
+      }
+    }
+  )
 }

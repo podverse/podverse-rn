@@ -19,6 +19,7 @@ type V4VTypeProvider = {
   title: string
   key: string
   routeName: string
+  loginRouteName: string
   supportedTypes: V4VProvidersSupportedTypes[]
   supportedMethods: V4VProvidersSupportedMethods[]
   oauthRedirectUri: string
@@ -55,6 +56,7 @@ export const V4V: V4VType = {
       title: 'Alby',
       key: _albyKey,
       routeName: RouteNames.V4VProvidersAlbyScreen,
+      loginRouteName: RouteNames.V4VProvidersAlbyLoginScreen,
       supportedTypes: ['lightning'],
       supportedMethods: ['keysend'],
       oauthRedirectUri: Config.V4V_PROVIDERS_ALBY_OAUTH_REDIRECT_URI,

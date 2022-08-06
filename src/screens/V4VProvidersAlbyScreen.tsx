@@ -1,11 +1,23 @@
 import { Alert, Linking, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { Button, SafeAreaView, ScrollView, Text } from '../components'
+import {
+  ActivityIndicator,
+  Divider,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  V4VWalletAbout,
+  V4VWalletConnectButtons,
+  V4VWalletInfo,
+  View
+} from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
+import { _albyKey } from '../resources/V4V'
 import PVEventEmitter from '../services/eventEmitter'
 import { trackPageView } from '../services/tracking'
 import { _v4v_env_ } from '../services/v4v/v4v'
+import { v4vGetConnectedProvider } from '../state/actions/v4v/v4v'
 import {
   v4vAlbyGetAccountInfo
 } from '../state/actions/v4v/providers/alby'
@@ -55,19 +67,16 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
 
   _handleInitialize = async () => {
     const callback = () => this.setState({ isLoading: false, isLoadingWaitForEvent: false })
-    await v4vAlbyGetAccountInfo(callback)
-    
+    try {
+      await v4vAlbyGetAccountInfo(callback)
+    } catch (error) {
+      console.log('_handleInitialize error', error)
+      callback()
+    }
   }
 
   _handleConnectedEvent = () => {
     this._handleInitialize()
-  }
-
-  _handleAboutPress = () => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: translate('Cancel') },
-      { text: translate('Yes'), onPress: () => Linking.openURL(PV.V4V.providers.alby.env[_v4v_env_].aboutUrl) }
-    ])
   }
 
   _handleConnectWalletPress = () => {
@@ -81,42 +90,44 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
   _handleDisconnectWalletPress = () => {
     console.log('disconnect wallet')
   }
+
+  _disconnectWalletCallback = () => {
+    this.setState({ isLoading: false, isLoadingWaitForEvent: false })
+  }
   
   render() {
-    const { fontScaleMode } = this.global
+    const { navigation } = this.props
+    const { isLoading, isLoadingWaitForEvent } = this.state
+    const { session } = this.global
+    const { connected } = session.v4v.providers
+    const provider = v4vGetConnectedProvider(connected, _albyKey)
 
-    const switchOptionTextStyle =
-      PV.Fonts.fontScale.largest === fontScaleMode
-        ? [styles.switchOptionText, { fontSize: PV.Fonts.largeSizes.sm }]
-        : [styles.switchOptionText]
+    const isConnected = !!provider
 
     return (
       <SafeAreaView style={styles.content} testID={`${testIDPrefix}_view`.prependTestId()}>
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollviewContent}>
-          <Button
-            onPress={this._handleConnectWalletPress}
-            testID={`${testIDPrefix}_connect_wallet`}
-            text={translate('Connect Wallet')}
-            wrapperStyles={styles.button}
-          />
-          <Button
-            onPress={this._handleDisconnectWalletPress}
-            testID={`${testIDPrefix}_disconnect_wallet`}
-            text={translate('Disconnect Wallet')}
-            wrapperStyles={styles.button}
-          />
-          <Text
-            accessible
-            accessibilityLabel={translate('About')}
-            accessibilityRole='button'
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            key={`${testIDPrefix}_about_button`}
-            onPress={this._handleAboutPress}
-            style={[switchOptionTextStyle, { width: '100%' }]}
-            testID={`${testIDPrefix}_about_button`}>
-            {translate('About')}
-          </Text>
-        </ScrollView>
+        {!isLoading && !isLoadingWaitForEvent && (
+          <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollviewContent}>
+            <>
+              {provider && (
+                <>
+                  <V4VWalletInfo navigation={navigation} provider={provider} />
+                  <Divider />
+                </>
+              )}
+              <V4VWalletConnectButtons
+                disconnectCallback={this._disconnectWalletCallback}
+                isConnected={isConnected}
+                loginRouteName={PV.RouteNames.V4VProvidersAlbyLoginScreen}
+                navigation={navigation}
+                testID={testIDPrefix}
+                v4vKey={_albyKey}
+              />
+              <V4VWalletAbout testID={testIDPrefix} v4vKey={_albyKey} />
+            </>
+          </ScrollView>
+        )}
+        {(isLoading || isLoadingWaitForEvent) && <ActivityIndicator fillSpace />}
       </SafeAreaView>
     )
   }
@@ -126,14 +137,6 @@ const styles = StyleSheet.create({
   attentionText: {
     fontWeight: PV.Fonts.weights.bold,
     color: PV.Colors.blueLighter
-  },
-  button: {
-    alignItems: 'center',
-    alignSelf: 'center',
-    marginTop: 36,
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    width: '90%'
   },
   content: {
     flex: 1,
