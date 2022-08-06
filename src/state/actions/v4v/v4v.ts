@@ -1,5 +1,7 @@
 import { getGlobal, setGlobal } from 'reactn'
-import { v4vGetProvidersConnected, v4vSetProvidersConnected } from '../../../services/v4v/v4v'
+import { v4vGetProvidersConnected, v4vGetSettings, v4vGetTypeMethodKey,
+  v4vSetProvidersConnected, 
+  v4vSetSettings} from '../../../services/v4v/v4v'
 
 export type V4VProviderConnectedState = {
   key: string
@@ -14,6 +16,115 @@ export type V4VProviderConnectedState = {
   type: 'lightning'
   unit: 'sat'
 }
+
+export type V4VTypeMethod = {
+  boostAmount: number
+  streamingAmount: number
+  appBoostAmount: number
+  appStreamingAmount: number
+}
+
+export type V4VSettings = {
+  typeMethod: {
+    lightningKeysend: V4VTypeMethod
+  }
+}
+
+export const v4vSettingsDefault = {
+  typeMethod: {
+    lightningKeysend: {
+      boostAmount: 1000,
+      streamingAmount: 10,
+      appBoostAmount: 50,
+      appStreamingAmount: 1
+    }
+  }
+}
+
+/* V4VSettings helpers */
+
+export const v4vInitializeSettings = async () => {
+  const globalState = getGlobal()
+  const savedSettings = await v4vGetSettings()
+  await v4vUpdateSettings(globalState, savedSettings)
+}
+
+const v4vUpdateSettings = async (globalState: any, newSettings: V4VSettings) => {
+  await v4vSetSettings(newSettings)
+
+  setGlobal({
+    session: {
+      ...globalState.session,
+      v4v: {
+        ...globalState.session.v4v,
+        settings: newSettings
+      }
+    }
+  })
+}
+
+export const v4vGetTypeMethodSettings = (globalState: any, type: 'lightning', method: 'keysend') => {
+  const typeMethodKey = v4vGetTypeMethodKey(type, method)
+  const typeMethodSettings = globalState.session.v4v.settings.typeMethod[typeMethodKey]
+  return typeMethodSettings
+}
+
+const v4vUpdateTypeMethodSettings = async (
+  globalState: any, type: 'lightning', method: 'keysend', newTypeMethodSettings: V4VTypeMethod) => {
+  const { settings } = globalState.session.v4v
+  const typeMethodKey = v4vGetTypeMethodKey(type, method)
+  const newSettings = {
+    ...settings,
+    typeMethod: {
+      ...settings.typeMethod,
+      [typeMethodKey]: newTypeMethodSettings
+    }
+  }
+
+  await v4vUpdateSettings(globalState, newSettings)
+}
+
+export const v4vUpdateTypeMethodSettingsBoostAmount = async (
+  globalState: any, type: 'lightning', method: 'keysend', newBoostAmount: number) => {
+  const typeMethodSettings = v4vGetTypeMethodSettings(globalState, type, method)
+  const newSettings = {
+    ...typeMethodSettings,
+    boostAmount: newBoostAmount
+  }
+  await v4vUpdateTypeMethodSettings(globalState, type, method, newSettings)
+}
+
+export const v4vUpdateTypeMethodSettingsStreamingAmount = async (
+  globalState: any, type: 'lightning', method: 'keysend', newStreamingAmount: number) => {
+  const typeMethodSettings = v4vGetTypeMethodSettings(globalState, type, method)
+  const newSettings = {
+    ...typeMethodSettings,
+    streamingAmount: newStreamingAmount
+  }
+  await v4vUpdateTypeMethodSettings(globalState, type, method, newSettings)
+}
+
+export const v4vUpdateTypeMethodSettingsAppBoostAmount = async (
+  globalState: any, type: 'lightning', method: 'keysend', newAppBoostAmount: number) => {
+  const typeMethodSettings = v4vGetTypeMethodSettings(globalState, type, method)
+  const newSettings = {
+    ...typeMethodSettings,
+    appBoostAmount: newAppBoostAmount
+  }
+  await v4vUpdateTypeMethodSettings(globalState, type, method, newSettings)
+}
+
+export const v4vUpdateTypeMethodSettingsAppStreamingAmount = async (
+  globalState: any, type: 'lightning', method: 'keysend', newAppStreamingAmount: number) => {
+  const typeMethodSettings = v4vGetTypeMethodSettings(globalState, type, method)
+  const newSettings = {
+    ...typeMethodSettings,
+    appStreamingAmount: newAppStreamingAmount
+  }
+  await v4vUpdateTypeMethodSettings(globalState, type, method, newSettings)
+}
+
+/* Connected Provider helpers */
 
 export const v4vInitializeConnectedProviders = async () => {
   const globalState = getGlobal()

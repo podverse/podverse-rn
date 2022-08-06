@@ -5,12 +5,6 @@ import { processValueTransactionQueue } from '../../lib/valueTagHelpers'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 
-export const DEFAULT_BOOST_PAYMENT = 200
-export const MINIMUM_BOOST_PAYMENT = 100
-
-export const DEFAULT_STREAMING_PAYMENT = 10
-export const MINIMUM_STREAMING_PAYMENT = 1
-
 let valueTransactionProcessorInterval = null
 
 /*

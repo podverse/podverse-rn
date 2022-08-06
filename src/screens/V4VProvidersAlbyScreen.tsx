@@ -9,6 +9,7 @@ import {
   V4VWalletAbout,
   V4VWalletConnectButtons,
   V4VWalletInfo,
+  V4VWalletSettings,
   View
 } from '../components'
 import { translate } from '../lib/i18n'
@@ -112,6 +113,8 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
               {provider && (
                 <>
                   <V4VWalletInfo navigation={navigation} provider={provider} />
+                  <Divider style={styles.dividerWithMargin} />
+                  <V4VWalletSettings navigation={navigation} provider={provider} testID={testIDPrefix} />
                   <Divider />
                 </>
               )}
@@ -142,11 +145,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: PV.Colors.ink
   },
+  dividerWithMargin: {
+    marginBottom: 36
+  },
   scrollView: {
-    flex: 1
+    flex: 1,
   },
   scrollviewContent: {
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
+    paddingBottom: 36
   },
   switchOptionText: {
     color: PV.Colors.skyLight,

@@ -126,12 +126,7 @@ declare module 'reactn/default' {
         streamingEnabled: boolean
       }
       v4v: {
-        settings: {
-          lightningKeysend: {
-            boostAmount: number
-            streamingAmount: number
-          }
-        }
+        settings: V4VSettings
         providers: {
           active: string
           connected: V4VProviderConnectedState[]

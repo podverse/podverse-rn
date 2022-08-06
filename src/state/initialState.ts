@@ -1,5 +1,6 @@
 import { PV } from '../resources'
 import { InitialState } from '../resources/Interfaces'
+import { v4vSettingsDefault } from './actions/v4v/v4v'
 import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './actions/valueTag'
 
 const initialTheme: InitialState = {
@@ -144,12 +145,7 @@ const initialTheme: InitialState = {
       streamingEnabled: false
     },
     v4v: {
-      settings: {
-        lightningKeysend: {
-          boostAmount: 1000,
-          streamingAmount: 10
-        }
-      },
+      settings: v4vSettingsDefault,
       providers: {
         active: '',
         connected: []
