@@ -142,6 +142,19 @@ const initialTheme: InitialState = {
         }
       },
       streamingEnabled: false
+    },
+    v4v: {
+      settings: {
+        lightningKeysend: {
+          boostAmount: 1000,
+          streamingAmount: 10
+        }
+      },
+      providers: {
+        active: '',
+        enabled: [],
+        connected: []
+      }
     }
   },
   subscribedPodcasts: [],

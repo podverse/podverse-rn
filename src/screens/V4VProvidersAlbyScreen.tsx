@@ -6,7 +6,9 @@ import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { trackPageView } from '../services/tracking'
 import { _v4v_env_ } from '../services/v4v/v4v'
-import { v4vAlbyGetAccountSummary } from '../services/v4v/providers/alby'
+import {
+  v4vAlbyGetAccountInfo
+} from '../state/actions/v4v/providers/alby'
 
 type Props = {
   navigation: any
@@ -35,17 +37,14 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
     title: 'Alby'
   })
 
-  async componentDidMount() {
+  componentDidMount() {
+    const { isLoadingWaitForEvent } = this.state
+
     PVEventEmitter.on(PV.Events.V4V_PROVIDERS_ALBY_CONNECTED, this._handleConnectedEvent)
 
-    try {
-      // const res = await v4vAlbyGetAccountSummary()
-      // console.log('V4VProvidersAlbyScreen res', res)
-    } catch (error) {
-      console.log('componentDidMount', error)
+    if (!isLoadingWaitForEvent) {
+      this._handleInitialize()
     }
-
-    this.setState({ isLoading: false })
 
     trackPageView('/value-for-value/providers/alby', 'Value for Value - Providers - Alby')
   }
@@ -54,8 +53,14 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
     PVEventEmitter.removeListener(PV.Events.V4V_PROVIDERS_ALBY_CONNECTED, this._handleConnectedEvent)
   }
 
+  _handleInitialize = async () => {
+    const callback = () => this.setState({ isLoading: false, isLoadingWaitForEvent: false })
+    await v4vAlbyGetAccountInfo(callback)
+    
+  }
+
   _handleConnectedEvent = () => {
-    this.setState({ isLoading: false, isLoadingWaitForEvent: false })
+    this._handleInitialize()
   }
 
   _handleAboutPress = () => {

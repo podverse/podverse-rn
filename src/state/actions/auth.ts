@@ -50,6 +50,7 @@ export const getAuthUserInfo = async () => {
     const lnpayEnabledParsed = lnpayEnabled ? JSON.parse(lnpayEnabled) : false
 
     const globalState = getGlobal()
+
     setGlobal({
       session: {
         userInfo,
@@ -65,7 +66,8 @@ export const getAuthUserInfo = async () => {
               }
             }
           },
-        }
+        },
+        v4v: globalState.session.v4v
       },
       overlayAlert: {
         ...globalState.overlayAlert,
@@ -90,7 +92,8 @@ export const getAuthUserInfo = async () => {
                     walletUserLabel: lnpayWalletInfo?.user_label || null
                   }
                 }
-              }
+              },
+              v4v: globalState.session.v4v
             }
           })
         }
@@ -119,7 +122,9 @@ export const getAuthenticatedUserInfoLocally = async () => {
   setGlobal({
     session: {
       userInfo,
-      isLoggedIn
+      isLoggedIn,
+      valueTagSettings: globalState.session.valueTagSettings,
+      v4v: globalState.session.v4v
     },
     overlayAlert: {
       ...globalState.overlayAlert,
@@ -194,7 +199,7 @@ export const loginUser = async (credentials: Credentials) => {
     const globalState = getGlobal()
     const localUserInfo = globalState.session.userInfo
     const serverUserInfo = await login(credentials.email, credentials.password)
-    const { valueTagSettings } = globalState.session
+    const { valueTagSettings, v4v } = globalState.session
 
     const localFCMSaved = await fcmTokenGetLocally()
     serverUserInfo.notificationsEnabled = !!localFCMSaved
@@ -204,7 +209,8 @@ export const loginUser = async (credentials: Credentials) => {
         session: {
           userInfo: serverUserInfo,
           isLoggedIn: true,
-          valueTagSettings
+          valueTagSettings,
+          v4v
         }
       },
       () => {

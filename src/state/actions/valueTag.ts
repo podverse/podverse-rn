@@ -20,7 +20,7 @@ let valueTransactionProcessorInterval = null
 export const initializeValueProcessor = () => {
   const globalState = getGlobal()
   const { session } = globalState
-  const { valueTagSettings } = session
+  const { valueTagSettings, v4v } = session
   const { lightningNetwork } = valueTagSettings
   const { lnpayEnabled } = lightningNetwork?.lnpay || {}
 

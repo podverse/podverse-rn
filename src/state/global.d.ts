@@ -3,6 +3,7 @@ import 'reactn'
 import { AppModes } from '../resources/AppMode'
 import { BannerInfo, GlobalTheme, UserInfo, TempMediaRef } from '../resources/Interfaces'
 import { AutoQueueSettingsPosition } from '../services/queue'
+import { V4VProviderConnectedState } from '../state/actions/v4v/v4v'
 
 declare module 'reactn/default' {
   export interface State {
@@ -123,6 +124,19 @@ declare module 'reactn/default' {
           }
         }
         streamingEnabled: boolean
+      }
+      v4v: {
+        settings: {
+          lightningKeysend: {
+            boostAmount: number
+            streamingAmount: number
+          }
+        }
+        providers: {
+          active: string
+          enabled: string[]
+          connected: V4VProviderConnectedState[]
+        }
       }
     }
     subscribedPodcasts: []

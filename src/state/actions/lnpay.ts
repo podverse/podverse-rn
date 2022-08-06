@@ -59,7 +59,8 @@ export const toggleLNPayFeature = (toggle: boolean) => {
             }
           }
         }
-      }
+      },
+      v4v: globalState.session.v4v
     }
   })
 }
@@ -113,9 +114,9 @@ export const updateWalletInfo = async () => {
                 walletUserLabel: walletInfo?.user_label
               }
             }
-          }
+          },
+          v4v: globalState.session.v4v
         }
-
       })
     }
   }

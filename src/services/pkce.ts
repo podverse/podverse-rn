@@ -1,48 +1,22 @@
-// Thank you to Putri Karunia and zeterain for this code shared on Stack Overflow!
-// https://stackoverflow.com/questions/63309409/creating-a-code-verifier-and-challenge-for-pkce-auth-on-spotify-api-in-reactjs
+import CryptoES from 'crypto-es'
 
-/* Generate code verifier */
-
-const dec2hex = (dec) => {
-  return ('0' + dec.toString(16)).substr(-2)
+// get a random string
+export const pkceGenerateRandomString = (length: number) => {
+  const salt = CryptoES.lib.WordArray.random(length);
+  return salt.toString();
 }
 
-export const generateCodeVerifier = () => {
-  const array = new Uint32Array(56 / 2)
-  window.crypto.getRandomValues(array)
-  return Array.from(array, dec2hex).join('')
-}
-
-/* ------------- */
-
-/* Generate code challenge from code verifier */
-
-const sha256 = (plain) => {
-  // returns promise ArrayBuffer
-  const encoder = new TextEncoder()
-  const data = encoder.encode(plain)
-  return window.crypto.subtle.digest('SHA-256', data)
-}
-
-const base64urlencode = (a) => {
-  let str = ''
-  const bytes = new Uint8Array(a)
-  const len = bytes.byteLength
-  for (let i = 0; i < len; i++) {
-    str += String.fromCharCode(bytes[i])
-  }
-  return btoa(str)
+// Create a SHA256 of the code verifier and base64URL encode it. (note: this is not just base64 encoded)
+export const pkceGenerateCodeChallenge = (codeVerifier: string) => {
+  const digest = CryptoES.SHA256(codeVerifier);
+  const encodedDigest = digest.toString(CryptoES.enc.Base64)
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
-    .replace(/=+$/, '')
+    .replace(/\=+$/, '');
+  return encodedDigest;
 }
 
-export const generateCodeChallengeFromVerifier = async (v) => {
-  try {
-    const hashed = await sha256(v)
-    const base64encoded = base64urlencode(hashed)
-    return base64encoded
-  } catch (error) {
-    console.log('generateCodeChallengeFromVerifier error:', error)
-  }
-}
+// export const generateCodeChallengeFromVerifier = (verifier: string) => {
+//   const hash = CryptoES.SHA256(verifier)
+//   return hash
+// }

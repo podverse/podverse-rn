@@ -59,6 +59,7 @@
     "bad-words": "3.0.3",
     "base-64": "^1.0.0",
     "bottleneck": "2.19.5",
+    "crypto-es": "^1.2.7",
     "eventemitter3": "4.0.7",
     "he": "1.2.0",
     "linkifyjs": "2.1.9",
