@@ -4,7 +4,6 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { _albyKey } from '../resources/V4V'
 import { _v4v_env_ } from '../services/v4v/v4v'
-import { V4VProviderConnectedState } from '../state/actions/v4v/v4v'
 import { Text } from '.'
 
 type Props = {

@@ -27,6 +27,7 @@ export interface GlobalTheme {
   dropdownButtonText?: any
   flatList?: any
   headerText?: any
+  headerTextSuccess?: any
   inputContainerText?: any
   link?: any
   liveStatusBadge?: any

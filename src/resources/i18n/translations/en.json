@@ -681,6 +681,8 @@
   "value_tag_preview_boost": "Boost: Send a donation immediately",
   "value_tag_preview_stream": "Stream: Send a donation per minute listened",
   "value_tag_preview_title": "Send Bitcoin to your favorite podcasters",
+  "V4V Providers connected explanation": "Value for Value wallet providers currently connected to this app.",
+  "V4V Providers setup explanation": "Value for Value wallet providers you can connect to this app.",
   "Value for Value": "Value for Value (V4V)",
   "Verify Password": "Verify Password",
   "Verify Your Email": "Verify your e-mail address",

@@ -1,23 +1,19 @@
-import { Alert, Linking, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import {
   ActivityIndicator,
   Divider,
   SafeAreaView,
   ScrollView,
-  Text,
   V4VWalletAbout,
   V4VWalletConnectButtons,
   V4VWalletInfo,
-  V4VWalletSettings,
-  View
+  V4VWalletSettings
 } from '../components'
-import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { _albyKey } from '../resources/V4V'
 import PVEventEmitter from '../services/eventEmitter'
 import { trackPageView } from '../services/tracking'
-import { _v4v_env_ } from '../services/v4v/v4v'
 import { v4vGetConnectedProvider } from '../state/actions/v4v/v4v'
 import {
   v4vAlbyGetAccountInfo
@@ -78,18 +74,6 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
 
   _handleConnectedEvent = () => {
     this._handleInitialize()
-  }
-
-  _handleConnectWalletPress = () => {
-    this.props.navigation.navigate(PV.RouteNames.V4VProvidersAlbyLoginScreen)
-    // Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-    //   { text: translate('Cancel') },
-    //   { text: translate('Yes'), onPress: () => Linking.openURL(PV.V4V.providers.alby.env[_v4v_env_].oauthUrl) }
-    // ])
-  }
-
-  _handleDisconnectWalletPress = () => {
-    console.log('disconnect wallet')
   }
 
   _disconnectWalletCallback = () => {

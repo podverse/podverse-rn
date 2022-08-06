@@ -105,3 +105,14 @@ export const v4vGetTypeMethodKey = (type: 'lightning', method: 'keysend') => {
 
   return typeMethodKey
 }
+
+export const v4vDeleteProviderFromStorage = async (providerKey: 'alby') => {
+  
+  // Use require here to prevent circular dependencies issues.
+
+  if (providerKey === 'alby') {
+    const { v4vAlbyRemoveAccessData, v4vAlbyRemoveCodeVerifier } = require('./providers/alby')
+    await v4vAlbyRemoveAccessData()
+    await v4vAlbyRemoveCodeVerifier()
+  }
+}

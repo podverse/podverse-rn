@@ -1,5 +1,5 @@
 import { getGlobal, setGlobal } from 'reactn'
-import { v4vGetProvidersConnected, v4vGetSettings, v4vGetTypeMethodKey,
+import { v4vDeleteProviderFromStorage, v4vGetProvidersConnected, v4vGetSettings, v4vGetTypeMethodKey,
   v4vSetProvidersConnected, 
   v4vSetSettings} from '../../../services/v4v/v4v'
 
@@ -181,8 +181,10 @@ export const v4vAddOrUpdateConnectedProvider = async (
   })
 }
 
-export const v4vDisconnectProvider = async (key: string) => {
+export const v4vDisconnectProvider = async (key: 'alby') => {
   const globalState = getGlobal()
+
+  await v4vDeleteProviderFromStorage(key)
 
   const previousConnected = globalState.session.v4v.providers.connected
   const newConnected = previousConnected.filter((provider) => provider.key !== key )

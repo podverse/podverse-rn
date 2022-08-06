@@ -36,7 +36,7 @@ export const v4vAlbyGetAndRemoveCodeVerifier = async () => {
       codeVerifier = creds.password
     }
 
-    await RNKeychain.resetInternetCredentials(PV.Keys.V4V_PROVIDERS_ALBY_CODE_VERIFIER)
+    await v4vAlbyRemoveCodeVerifier()
   } catch (error) {
     console.log('v4vAlbyGetOrGenerateCodeVerifier error:', error)
   }
@@ -56,6 +56,22 @@ const v4vAlbyGetAccessData = async () => {
   }
 
   return accessData
+}
+
+export const v4vAlbyRemoveAccessData = async () => {
+  try {
+    await RNKeychain.resetInternetCredentials(PV.Keys.V4V_PROVIDERS_ALBY_ACCESS_DATA)
+  } catch (error) {
+    console.log('v4vAlbyRemoveAccessData error:', error)
+  }
+}
+
+export const v4vAlbyRemoveCodeVerifier = async () => {
+  try {
+    await RNKeychain.resetInternetCredentials(PV.Keys.V4V_PROVIDERS_ALBY_CODE_VERIFIER)
+  } catch (error) {
+    console.log('v4vAlbyRemoveCodeVerifier error:', error)
+  }
 }
 
 const v4vAlbyGetAccessToken = async () => {

@@ -6,6 +6,7 @@ import { PV } from '../resources'
 import { V4VProviderListItem, _albyKey } from '../resources/V4V'
 import { trackPageView } from '../services/tracking'
 import { v4vGetProviderListItems } from '../services/v4v/v4v'
+import { V4VProviderConnectedState } from '../state/actions/v4v/v4v'
 import { core, table } from '../styles'
 
 type Props = {
@@ -18,6 +19,9 @@ type State = {
 }
 
 const testIDPrefix = 'v4v_providers_screen'
+
+const _sectionConnectedKey = 'sectionConnected'
+const _sectionSetupKey = 'sectionSetup'
 
 export class V4VProvidersScreen extends React.Component<Props, State> {
   state = {
@@ -34,23 +38,26 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
   }
 
   _connectedOptions = () => {
+    const { connected } = this.global.session.v4v.providers
     const allowedProvidersList = PV.V4V.ALLOWED_PROVIDERS_LIST
 
     return v4vGetProviderListItems()
-      .filter((item: any) => allowedProvidersList.find((providerKey: any) => item.key === providerKey))
-      // .filter((item = { key: '', title: '' }) => {
-      //   return !PV.V4V.V4V_ALLOWED_PROVIDERS_LIST.some((screenKey: any) => item.key === screenKey)
-      // })
+      .filter((item: any) => {
+        const isAllowedProvider = allowedProvidersList.some((providerKey: any) => item.key === providerKey)
+        const isConnectedProvider = connected.some((provider: V4VProviderConnectedState) => item.key === provider.key)
+        return isAllowedProvider && isConnectedProvider
+      })
   }
 
   _setupOptions = () => {
+    const { connected } = this.global.session.v4v.providers
     const allowedProvidersList = PV.V4V.ALLOWED_PROVIDERS_LIST
 
-    return v4vGetProviderListItems()
-      .filter((item: any) => allowedProvidersList.find((providerKey: any) => item.key === providerKey))
-      // .filter((item = { key: '', title: '' }) => {
-      //   return !PV.V4V.V4V_ALLOWED_PROVIDERS_LIST.some((screenKey: any) => item.key === screenKey)
-      // })
+    return v4vGetProviderListItems().filter((item: any) => {
+      const isAllowedProvider = allowedProvidersList.some((providerKey: any) => item.key === providerKey)
+      const isConnectedProvider = connected.some((provider: V4VProviderConnectedState) => item.key === provider.key)
+      return isAllowedProvider && !isConnectedProvider
+    })
   }
 
   _handleV4VProviderOnPress = (item: V4VProviderListItem) => {
@@ -58,10 +65,19 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
       this.props.navigation.navigate(PV.RouteNames.V4VProvidersAlbyScreen)
     }
   }
+
   render() {
     const { globalTheme } = this.global
     const connectedOptions = this._connectedOptions()
     const setupOptions = this._setupOptions()
+
+    const sections = []
+    if (connectedOptions.length > 0) {
+      sections.push({ key: _sectionConnectedKey, title: translate('Connected'), data: connectedOptions })
+    }
+    if (setupOptions.length > 0) {
+      sections.push({ key: _sectionSetupKey, title: translate('Setup'), data: setupOptions })
+    }
 
     return (
       <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
@@ -75,28 +91,41 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
                 testIDSuffix=''>
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+                  style={[table.cellTextLarge, globalTheme.tableCellTextPrimary]}>
                   {item.title}
                 </Text>
               </TableCell>
             )
           }}
-          renderSectionHeader={({ section }) => (
-            <TableSectionSelectors
-              disableFilter
-              includePadding
-              selectedFilterLabel={section.title}
-              textStyle={[globalTheme.headerText, core.sectionHeaderText]}
-            />
-          )}
-          sections={[
-            { title: translate('Connected'), data: connectedOptions },
-            { title: translate('Setup'), data: setupOptions }
-          ]}
+          renderSectionHeader={({ section }) => {
+            const helperText =
+              section.key === _sectionConnectedKey
+                ? translate('V4V Providers connected explanation')
+                : translate('V4V Providers setup explanation')
+
+            const headerTextStyle = section.key === _sectionConnectedKey
+              ? globalTheme.headerTextSuccess
+              : globalTheme.headerText
+            return (
+              <>
+                <TableSectionSelectors
+                  disableFilter
+                  includePadding
+                  selectedFilterLabel={section.title}
+                  textStyle={[headerTextStyle, core.sectionHeaderText]}
+                />
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  style={[table.sectionExplanationText, globalTheme.tableCellTextPrimary]}>
+                  {helperText}
+                </Text>
+              </>
+            )
+          }}
+          sections={sections}
           stickySectionHeadersEnabled={false}
         />
       </View>
     )
   }
 }
-

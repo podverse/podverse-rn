@@ -3,7 +3,6 @@ import { WebView } from 'react-native-webview'
 import React from 'reactn'
 import { NavDismissIcon, View } from '../components'
 import { trackPageView } from '../services/tracking'
-import { _v4v_env_ } from '../services/v4v/v4v'
 import { v4vAlbyGenerateOAuthUrl } from '../services/v4v/providers/alby'
 
 type Props = {
