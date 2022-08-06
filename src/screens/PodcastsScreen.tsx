@@ -64,6 +64,7 @@ import {
 import { updateScreenReaderEnabledState } from '../state/actions/screenReader'
 import { initializeSettings } from '../state/actions/settings'
 import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
+import { v4vInitializeConnectedProviders } from '../state/actions/v4v/v4v'
 import { initializeValueProcessor } from '../state/actions/valueTag'
 import { core } from '../styles'
 
@@ -525,6 +526,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { searchBarText } = this.state
     await initPlayerState(this.global)
     await initializeSettings()
+    await v4vInitializeConnectedProviders()
 
     // Load the AsyncStorage authenticatedUser and subscribed podcasts immediately,
     // before getting the latest from server and parsing the addByPodcastFeedUrls in getAuthUserInfo.

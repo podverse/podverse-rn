@@ -152,7 +152,6 @@ const initialTheme: InitialState = {
       },
       providers: {
         active: '',
-        enabled: [],
         connected: []
       }
     }

@@ -134,7 +134,6 @@ declare module 'reactn/default' {
         }
         providers: {
           active: string
-          enabled: string[]
           connected: V4VProviderConnectedState[]
         }
       }

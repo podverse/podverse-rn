@@ -1,4 +1,5 @@
 import { getGlobal, setGlobal } from 'reactn'
+import { v4vGetProvidersConnected, v4vSetProvidersConnected } from '../../../services/v4v/v4v'
 
 export type V4VProviderConnectedState = {
   key: string
@@ -14,28 +15,9 @@ export type V4VProviderConnectedState = {
   unit: 'sat'
 }
 
-export const v4vAddOrUpdateConnectedProvider = (
-  newProviderState: V4VProviderConnectedState, callback: any) => {
+export const v4vInitializeConnectedProviders = async () => {
   const globalState = getGlobal()
-
-  const previousEnabled = globalState.session.v4v.providers.enabled
-  const previousConnected = globalState.session.v4v.providers.connected
-  
-  const previousEnabledIndex = previousEnabled.findIndex((key) => key === newProviderState.key)
-  const previousConnectedIndex = previousConnected.findIndex((item) => item.key === newProviderState.key)
-  
-  const newEnabled = previousEnabled
-  const newConnected = previousConnected
-
-  if (previousConnectedIndex >= 0) {
-    newEnabled[previousEnabledIndex] = newProviderState.key
-    newConnected[previousConnectedIndex] = newProviderState
-  } else {
-    newEnabled.push(newProviderState.key)
-    newConnected.push(newProviderState)
-  }
-
-  // TODO: save to local storage
+  const savedProviders = await v4vGetProvidersConnected()
 
   setGlobal({
     session: {
@@ -44,7 +26,41 @@ export const v4vAddOrUpdateConnectedProvider = (
         ...globalState.session.v4v,
         providers: {
           ...globalState.session.v4v.providers,
-          enabled: newEnabled,
+          connected: savedProviders
+        }
+      }
+    }
+  })
+}
+
+export const v4vGetConnectedProvider = (connectedProviders: V4VProviderConnectedState[], key: string) => {
+  const connectedProvider = connectedProviders.find((item: any) => item.key === key)
+  return connectedProvider
+}
+
+export const v4vAddOrUpdateConnectedProvider = async (
+  newProviderState: V4VProviderConnectedState, callback: any) => {
+  const globalState = getGlobal()
+
+  const previousConnected = globalState.session.v4v.providers.connected
+  const previousConnectedIndex = previousConnected.findIndex((item) => item.key === newProviderState.key)
+  const newConnected = previousConnected
+
+  if (previousConnectedIndex >= 0) {
+    newConnected[previousConnectedIndex] = newProviderState
+  } else {
+    newConnected.push(newProviderState)
+  }
+
+  await v4vSetProvidersConnected(newConnected)
+
+  setGlobal({
+    session: {
+      ...globalState.session,
+      v4v: {
+        ...globalState.session.v4v,
+        providers: {
+          ...globalState.session.v4v.providers,
           connected: newConnected
         }
       }
@@ -54,22 +70,13 @@ export const v4vAddOrUpdateConnectedProvider = (
   })
 }
 
-export const v4vGetConnectedProvider = (connectedProviders: V4VProviderConnectedState[], key: string) => {
-  const connectedProvider = connectedProviders.find((item: any) => item.key === key)
-  return connectedProvider
-}
-
-export const v4vDisconnectProvider = (key: string) => {
+export const v4vDisconnectProvider = async (key: string) => {
   const globalState = getGlobal()
 
-  const previousEnabled = globalState.session.v4v.providers.enabled
   const previousConnected = globalState.session.v4v.providers.connected
+  const newConnected = previousConnected.filter((provider) => provider.key !== key )
   
-  const newEnabled = previousEnabled.filter((enabledKey) => enabledKey !== key)
-  const newConnected = previousConnected.filter(
-    (provider) => provider.key !== key )
-  
-  // TODO: save to local storage
+  await v4vSetProvidersConnected(newConnected)
 
   setGlobal(
     {
@@ -79,7 +86,6 @@ export const v4vDisconnectProvider = (key: string) => {
           ...globalState.session.v4v,
           providers: {
             ...globalState.session.v4v.providers,
-            enabled: newEnabled,
             connected: newConnected
           }
         }

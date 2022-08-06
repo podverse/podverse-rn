@@ -220,7 +220,6 @@ export interface InitialState {
       }
       providers: {
         active: string
-        enabled: string[]
         connected: V4VProviderConnectedState[]
       }
     }
