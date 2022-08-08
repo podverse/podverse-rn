@@ -198,26 +198,13 @@ export interface InitialState {
   session: {
     isLoggedIn: boolean
     userInfo: UserInfo
-    valueTagSettings: {
-      lightningNetwork: {
-        lnpay: {
-          walletSatsBalance?: number
-          walletUserLabel?: string
-          lnpayEnabled: boolean
-          globalSettings: {
-            boostAmount: number
-            streamingAmount: number
-          }
-        }
-      }
-      streamingEnabled: boolean
-    }
     v4v: {
       settings: V4VSettings
       providers: {
         active: string
         connected: V4VProviderConnectedState[]
       }
+      streamingValueOn: boolean
     }
   }
   subscribedPodcasts: []

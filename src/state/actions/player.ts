@@ -6,10 +6,8 @@ import {
   convertNowPlayingItemToMediaRef,
   NowPlayingItem
 } from 'podverse-shared'
-import Config from 'react-native-config'
 import { getGlobal, setGlobal } from 'reactn'
 import { getParsedTranscript } from '../../lib/transcriptHelpers'
-import { convertPodcastIndexValueTagToStandardValueTag } from '../../lib/valueTagHelpers'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import {
@@ -22,7 +20,6 @@ import {
   playerGetDuration,
   getRemoteSkipButtonsTimeJumpOverride
 } from '../../services/player'
-import { getPodcastFromPodcastIndexById } from '../../services/podcastIndex'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 import { trackPlayerScreenPageView } from '../../services/tracking'
 import {
@@ -36,6 +33,7 @@ import { clearChapterPlaybackInfo, getChapterNext, getChapterPrevious, loadChapt
   setChapterOnGlobalState} from './playerChapters'
 import { videoInitializePlayer, videoStateClearVideoInfo,
   videoStateSetVideoInfo } from './playerVideo'
+import { v4vGetMatchingActiveProvider, v4vSetActiveProvider } from './v4v/v4v'
 
 export const initializePlayer = async () => {
   const item = await getNowPlayingItemLocally()
@@ -91,6 +89,12 @@ export const playerUpdatePlayerState = (item: NowPlayingItem, callback?: any) =>
       ...globalState.screenPlayer,
       showFullClipInfo: false
     }
+  }
+
+  const valueTags = item.episodeValue || item.podcastValue || []
+  const activeProvider = v4vGetMatchingActiveProvider(valueTags)
+  if (!!activeProvider) {
+    v4vSetActiveProvider(activeProvider.key)
   }
 
   setGlobal(newState, callback)
@@ -275,7 +279,6 @@ export const setLiveStreamWasPausedState = (bool: boolean) => {
 export const handleEnrichingPlayerState = (item: NowPlayingItem) => {
   trackPlayerScreenPageView(item)
   loadChaptersForNowPlayingItem(item)
-  enrichPodcastValue(item)
   enrichParsedTranscript(item)
 }
 
@@ -292,28 +295,6 @@ const enrichParsedTranscript = (item: NowPlayingItem) => {
     })
   } else {
     setGlobal({ parsedTranscript: null })
-  }
-}
-
-const enrichPodcastValue = async (item: NowPlayingItem) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
-
-  if (
-    item?.episodeValue?.length
-    || item?.episodeValue?.recipients?.length
-    || item?.podcastValue?.length
-    || item?.podcastValue?.recipients?.length
-  ) {
-    // No event emitter needed since it is immediately available to the PlayerScreen in the item
-  } else if (item?.podcastIndexPodcastId) {
-    const podcastIndexPodcast = await getPodcastFromPodcastIndexById(item.podcastIndexPodcastId)
-    const podcastIndexPodcastValueTag = podcastIndexPodcast?.feed?.value
-    if (podcastIndexPodcastValueTag?.model && podcastIndexPodcastValueTag?.destinations) {
-      const podcastValue = convertPodcastIndexValueTagToStandardValueTag(podcastIndexPodcastValueTag)
-      setGlobal({ podcastValueFinal: podcastValue }, () => {
-        PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
-      })
-    }
   }
 }
 

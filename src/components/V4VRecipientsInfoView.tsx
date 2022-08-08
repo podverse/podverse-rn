@@ -3,7 +3,7 @@ import React from 'react'
 import { StyleSheet } from 'react-native'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { Text, View } from '.'
 
 export type ValueTransactionRouteError = {
   address: string
@@ -18,7 +18,7 @@ type Props = {
   transactions: ValueTransaction[]
 }
 
-export class ValueTagInfoView extends React.PureComponent<Props> {
+export class V4VRecipientsInfoView extends React.PureComponent<Props> {
   render() {
     const { erroringTransactions = [], isReceipt, testID, totalAmount, transactions } = this.props
     const totalAmountText = isReceipt ? translate('amount paid') : translate('total amount')

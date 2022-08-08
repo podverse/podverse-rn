@@ -1,7 +1,6 @@
 import { PV } from '../resources'
 import { InitialState } from '../resources/Interfaces'
 import { v4vSettingsDefault } from './actions/v4v/v4v'
-import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './actions/valueTag'
 
 const initialTheme: InitialState = {
   globalTheme: {},
@@ -132,24 +131,13 @@ const initialTheme: InitialState = {
       subscribedUserIds: []
     },
     isLoggedIn: false,
-    valueTagSettings: {
-      lightningNetwork: {
-        lnpay: {
-          lnpayEnabled: false,
-          globalSettings: {
-            boostAmount: DEFAULT_BOOST_PAYMENT,
-            streamingAmount: DEFAULT_STREAMING_PAYMENT
-          }
-        }
-      },
-      streamingEnabled: false
-    },
     v4v: {
       settings: v4vSettingsDefault,
       providers: {
         active: '',
         connected: []
-      }
+      },
+      streamingValueOn: false
     }
   },
   subscribedPodcasts: [],

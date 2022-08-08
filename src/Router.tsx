@@ -27,7 +27,6 @@ import {
   FilterScreen,
   FundingScreen,
   HistoryScreen,
-  LNPaySignupScreen,
   MakeClipScreen,
   MembershipScreen,
   MoreScreen,
@@ -224,7 +223,6 @@ const MoreNavigator = createStackNavigator(
       screen: TermsOfServiceScreen,
       path: PV.DeepLinks.Terms.path
     },
-    [PV.RouteNames.LNPaySignupScreen]: LNPaySignupScreen,
     [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
     [PV.RouteNames.FAQScreen]: FAQScreen,
     [PV.RouteNames.V4VProvidersScreen]: V4VProvidersScreen,

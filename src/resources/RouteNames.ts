@@ -19,7 +19,6 @@ export const RouteNames = {
   FilterScreen: 'FilterScreen',
   FundingScreen: 'FundingScreen',
   HistoryScreen: 'HistoryScreen',
-  LNPaySignupScreen: 'LNPaySignupScreen',
   MainApp: 'MainApp',
   MakeClipScreen: 'MakeClipScreen',
   MembershipScreen: 'MembershipScreen',

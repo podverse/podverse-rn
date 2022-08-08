@@ -1,6 +1,5 @@
 import { ValueTransaction } from 'podverse-shared'
 import { Alert, Keyboard, Linking, Pressable, StyleSheet } from 'react-native'
-import Config from 'react-native-config'
 import React, { getGlobal } from 'reactn'
 import AsyncStorage from '@react-native-community/async-storage'
 import {
@@ -11,17 +10,16 @@ import {
   ScrollView,
   Text,
   TextInput,
-  ValueTagInfoView,
+  V4VRecipientsInfoView,
   View
 } from '../components'
-import { ValueTransactionRouteError } from '../components/ValueTagInfoView'
+import { ValueTransactionRouteError } from '../components/V4VRecipientsInfoView'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
-import { convertValueTagIntoValueTransactions } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
-import { checkLNPayRecipientRoute } from '../services/lnpay'
 import { trackPageView } from '../services/tracking'
-import { getLNWallet } from '../state/actions/lnpay'
+import { convertValueTagIntoValueTransactions } from '../services/v4v/v4v'
+import { v4vGetCurrentlyActiveProviderInfo } from '../state/actions/v4v/v4v'
 import { images } from '../styles'
 
 type Props = any
@@ -56,10 +54,12 @@ export class FundingScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    const { player, podcastValueFinal, session } = this.global
+    const { player, podcastValueFinal } = this.global
     const { nowPlayingItem } = player
-    const { boostAmount, streamingAmount } = session?.valueTagSettings?.lightningNetwork?.lnpay?.globalSettings || {}
 
+    const { activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(this.global)
+    const { boostAmount, streamingAmount } = activeProviderSettings || {}
+    
     const { episodeValue, podcastValue } = nowPlayingItem
     const valueTags =
       podcastValueFinal || (episodeValue?.length && episodeValue) || (podcastValue?.length && podcastValue)
@@ -88,38 +88,10 @@ export class FundingScreen extends React.Component<Props, State> {
     ])
 
     this.setState({ boostTransactions, streamingTransactions }, () => {
-      this.checkForErroringTransactions()
+      // this.checkForErroringTransactions()
     })
 
     trackPageView('/funding', 'Funding Screen')
-  }
-
-  checkForErroringTransactions = async () => {
-    const wallet = await getLNWallet()
-    const erroringTransactions = []
-
-    if (wallet) {
-      const { boostTransactions } = this.state
-
-      for (const boostTransaction of boostTransactions) {
-        try {
-          if (boostTransaction.normalizedValueRecipient.amount >= 1) {
-            await checkLNPayRecipientRoute(wallet, boostTransaction.normalizedValueRecipient)
-          }
-        } catch (error) {
-          if (error?.response?.data?.status === 400) {
-            erroringTransactions.push({
-              address: boostTransaction.normalizedValueRecipient.address,
-              message: error.response.data.message
-            })
-          }
-        }
-      }
-
-      if (erroringTransactions.length) {
-        this.setState({ erroringTransactions })
-      }
-    }
   }
 
   handleFollowLink = (url: string) => {
@@ -149,19 +121,20 @@ export class FundingScreen extends React.Component<Props, State> {
     if (consentGivenString && JSON.parse(consentGivenString) === true) {
       this.props.navigation.navigate(PV.RouteNames.V4VProvidersScreen)
     } else {
-      this.props.navigation.navigate(PV.RouteNames.ValueTagPreviewScreen)
+      this.props.navigation.navigate(PV.RouteNames.V4VPreviewScreen)
     }
   }
 
   render() {
     const { boostTransactions, streamingTransactions, erroringTransactions } = this.state
     const { player, podcastValueFinal, session } = this.global
+    const { active } = session.v4v.providers
     const { nowPlayingItem } = player
     const podcastFunding = nowPlayingItem?.podcastFunding || []
     const episodeFunding = nowPlayingItem?.episodeFunding || []
-
-    const { globalSettings, lnpayEnabled } = session?.valueTagSettings?.lightningNetwork?.lnpay || {}
-    const { boostAmount, streamingAmount } = globalSettings || {}
+    
+    const { activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(this.global)
+    const { boostAmount, streamingAmount } = activeProviderSettings || {}   
 
     const podcastLinks = podcastFunding.map((item: any, index: number) =>
       this.renderFundingLink(item, 'podcast', index)
@@ -170,10 +143,11 @@ export class FundingScreen extends React.Component<Props, State> {
       this.renderFundingLink(item, 'episode', index)
     )
     const hasValueInfo =
-      !!Config.ENABLE_VALUE_TAG_TRANSACTIONS &&
       (podcastValueFinal?.length > 0 ||
         nowPlayingItem?.episodeValue?.length > 0 ||
         nowPlayingItem?.podcastValue?.length > 0)
+
+    const hasActiveProvider = !!active
 
     const podcastTitle = nowPlayingItem?.podcastTitle.trim() || translate('Untitled Podcast')
     const episodeTitle = nowPlayingItem?.episodeTitle.trim() || translate('Untitled Episode')
@@ -225,27 +199,27 @@ export class FundingScreen extends React.Component<Props, State> {
               {translate('Value-for-Value')}
             </Text>
           )}
-          {hasValueInfo && !lnpayEnabled && (
-            <View style={styles.noLnpayView}>
-              <Text style={styles.noLnPayText}>{translate('Podcast supports value-for-value donations')}</Text>
+          {hasValueInfo && !hasActiveProvider && (
+            <View style={styles.noV4VView}>
+              <Text style={styles.noV4VText}>{translate('Podcast supports value-for-value donations')}</Text>
               <Pressable
                 accessibilityHint={translate('ARIA HINT - go to the Bitcoin wallet setup screen')}
-                accessibilityLabel={translate('Setup Bitcoin Wallet')}
+                accessibilityLabel={translate('Setup Wallet')}
                 accessibilityRole='button'
                 style={styles.goToV4VProvidersButton}
                 onPress={this._handleV4VProvidersPressed}>
-                <Text style={styles.goToV4VProvidersButtonText}>{translate('Setup Bitcoin Wallet')}</Text>
+                <Text style={styles.goToV4VProvidersButtonText}>{translate('Setup Wallet')}</Text>
               </Pressable>
             </View>
           )}
-          {lnpayEnabled && hasValueInfo && (
+          {hasActiveProvider && hasValueInfo && (
             <View>
               <Text style={styles.textLabel} testID={`${testIDPrefix}_value_settings_lightning_label`}>
-                {translate('Bitcoin Wallet')}
+                {translate('Value for Value')}
               </Text>
-              <Text style={styles.textSubLabel} testID={`${testIDPrefix}_value_settings_lightning_sub_label`}>
-                {translate('via your LNPay wallet')}
-              </Text>
+              {/* <Text style={styles.textSubLabel} testID={`${testIDPrefix}_value_settings_lightning_sub_label`}>
+                some wallet text here
+              </Text> */}
               <View style={styles.itemWrapper}>
                 <TextInput
                   editable={false}
@@ -267,13 +241,13 @@ export class FundingScreen extends React.Component<Props, State> {
                   value={`${boostAmount}`}
                 />
               </View>
-              <View style={styles.valueTagInfoViewWrapper}>
+              <View style={styles.V4VRecipientsInfoView}>
                 <Text
                   style={styles.textTableLabel}
                   testID={`${testIDPrefix}_value_settings_lightning_boost_sample_label`}>
                   {translate('Boost splits')}
                 </Text>
-                <ValueTagInfoView
+                <V4VRecipientsInfoView
                   testID={testIDPrefix}
                   totalAmount={boostAmount}
                   transactions={boostTransactions}
@@ -301,13 +275,13 @@ export class FundingScreen extends React.Component<Props, State> {
                   value={`${streamingAmount}`}
                 />
               </View>
-              <View style={styles.valueTagInfoViewWrapper}>
+              <View style={styles.V4VRecipientsInfoView}>
                 <Text
                   style={styles.textTableLabel}
                   testID={`${testIDPrefix}_value_settings_lightning_streaming_sample_label`}>
                   {translate('Streaming splits per minute')}
                 </Text>
-                <ValueTagInfoView
+                <V4VRecipientsInfoView
                   testID={testIDPrefix}
                   totalAmount={streamingAmount}
                   transactions={streamingTransactions}
@@ -432,11 +406,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start'
   },
-  valueTagInfoViewWrapper: {},
-  noLnpayView: {
+  V4VRecipientsInfoView: {},
+  noV4VView: {
     marginTop: 10
   },
-  noLnPayText: {
+  noV4VText: {
     fontSize: PV.Fonts.sizes.lg
   },
   goToV4VProvidersButton: {

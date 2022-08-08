@@ -43,7 +43,6 @@ import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPa
 import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
 import { initAutoQueue } from '../state/actions/autoQueue'
 import { initDownloads, removeDownloadedPodcast, updateDownloadedPodcasts } from '../state/actions/downloads'
-import { updateWalletInfo } from '../state/actions/lnpay'
 import { v4vAlbyHandleConnect } from '../state/actions/v4v/providers/alby'
 import { handleUpdateNewEpisodesCount } from '../state/actions/newEpisodesCount'
 import {
@@ -226,8 +225,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    PVEventEmitter.on(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
     PVEventEmitter.on(PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, this._handleNavigateToAddPodcastByRSSAuthScreen)
     PVEventEmitter.on(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -280,8 +277,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     iapEndConnection()
     AppState.removeEventListener('change', this._handleAppStateChange)
     Linking.removeEventListener('url', this._handleOpenURLEvent)
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    PVEventEmitter.removeListener(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
     PVEventEmitter.removeListener(
       PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW,
       this._handleNavigateToAddPodcastByRSSAuthScreen

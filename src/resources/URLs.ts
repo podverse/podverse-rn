@@ -69,10 +69,5 @@ export const URLs = {
     }
   },
   webDefaultBaseUrl,
-  webPaths,
-  lnpay: {
-    baseUrl: 'https://api.lnpay.co/v1',
-    DeveloperDashboardUrl: 'https://lnpay.co/developers/dashboard',
-    LoginUrl: 'https://dashboard.lnpay.co/home/login'
-  }
+  webPaths
 }
