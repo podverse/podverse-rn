@@ -93,9 +93,8 @@ export const playerUpdatePlayerState = (item: NowPlayingItem, callback?: any) =>
 
   const valueTags = item.episodeValue || item.podcastValue || []
   const activeProvider = v4vGetMatchingActiveProvider(valueTags)
-  if (!!activeProvider) {
-    v4vSetActiveProvider(activeProvider.key)
-  }
+  const activeProviderKey = activeProvider?.key || ''
+  v4vSetActiveProvider(activeProviderKey)
 
   setGlobal(newState, callback)
 }
