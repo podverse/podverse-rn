@@ -3,7 +3,6 @@ import { getGlobal, setGlobal } from 'reactn'
 import { v4vDeleteProviderFromStorage, v4vGetProvidersConnected, v4vGetSettings, v4vGetTypeMethodKey,
   v4vSetProvidersConnected, 
   v4vSetSettings} from '../../../services/v4v/v4v'
-import { v4vAlbyGetAccountInfo } from './providers/alby'
 
 export type V4VProviderConnectedState = {
   key: string
@@ -251,7 +250,9 @@ export const v4vSetActiveProvider = (key: string) => {
 export const v4vRefreshActiveProviderWalletInfo = () => {
   const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(getGlobal()) || {}
   if (activeProvider) {
+    // Use require here to prevent circular dependencies issues.
     if (activeProvider.key === 'alby') {
+      const { v4vAlbyGetAccountInfo } = require('./providers/alby')
       v4vAlbyGetAccountInfo()
     }
   }

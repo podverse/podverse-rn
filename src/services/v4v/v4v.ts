@@ -271,6 +271,7 @@ const sendValueTransaction = async (valueTransaction: ValueTransaction) => {
   const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(getGlobal()) || {}
 
   if (activeProvider) {
+    // Use require here to prevent circular dependencies issues.
     if (activeProvider.key === 'alby') {
       const { normalizedValueRecipient, satoshiStreamStats } = valueTransaction
       const { v4vAlbySendKeysendPayment } = require('./providers/alby')
@@ -479,7 +480,6 @@ export const v4vGetTypeMethodKey = (type: 'lightning', method: 'keysend') => {
 
 export const v4vDeleteProviderFromStorage = async (providerKey: 'alby') => {
   // Use require here to prevent circular dependencies issues.
-
   if (providerKey === 'alby') {
     const { v4vAlbyRemoveAccessData, v4vAlbyRemoveCodeVerifier } = require('./providers/alby')
     await v4vAlbyRemoveAccessData()
