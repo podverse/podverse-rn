@@ -6,9 +6,9 @@ import { getGlobal } from 'reactn'
 import { translate } from '../../lib/i18n'
 import { createSatoshiStreamStats } from '../../lib/satoshiStream'
 import { PV } from '../../resources'
-import { BannerInfoError } from '../../resources/Interfaces'
 import { V4VProviderListItem } from '../../resources/V4V'
-import { v4vGetCurrentlyActiveProviderInfo, V4VProviderConnectedState, v4vRefreshActiveProviderWalletInfo, V4VSettings,
+import { v4vAddPreviousTransactionError, v4vClearPreviousTransactionErrors,
+  v4vGetCurrentlyActiveProviderInfo, V4VProviderConnectedState, v4vRefreshActiveProviderWalletInfo, V4VSettings,
   v4vSettingsDefault } from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
 
@@ -213,8 +213,6 @@ const convertValueTagIntoValueTransaction = async (
 }
 
 export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFinal: any) => {
-  const errors: BannerInfoError[] = []
-
   const valueTags =
     podcastValueFinal ||
     (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue) ||
@@ -227,6 +225,8 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
 
   const { recipients } = valueTag
   if (!Array.isArray(recipients)) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
+
+  v4vClearPreviousTransactionErrors()
 
   const action = 'boost'
 
@@ -243,27 +243,46 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
     roundDownBoostTransactions
   )
 
-  for (const valueTransaction of valueTransactions) {
-    try {
-      const succesfull = await sendValueTransaction(valueTransaction)
-      if (succesfull) {
-        totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
-      }
-    } catch (error) {
-      errors.push({
-        error,
-        details: {
-          recipient: valueTransaction.normalizedValueRecipient.name,
-          address: valueTransaction.normalizedValueRecipient.address
+  // delay requests to not overload with Alby with simultaneous requests
+  const generateSendValueTransactionPromise = (
+    valueTransaction: ValueTransaction,
+    delay: number
+  ) => {
+    return new Promise(async (resolve) => {
+      setTimeout(async () => {
+        try {
+          const succesfull = await sendValueTransaction(valueTransaction)
+          if (succesfull) {
+            totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
+          }
+        } catch (error) {
+          v4vAddPreviousTransactionError(
+            'boost',
+            valueTransaction.normalizedValueRecipient.address,
+            error.message,
+            valueTransaction.normalizedValueRecipient.customKey,
+            valueTransaction.normalizedValueRecipient.customValue
+          )
         }
-      })
-    }
+        resolve()
+      }, delay)
+    })
   }
+
+  const valueTransactionPromises = []
+  let delay = 0
+  for (const valueTransaction of valueTransactions) {
+    valueTransactionPromises.push(
+      generateSendValueTransactionPromise(valueTransaction, delay))
+    delay += 1000
+  }
+
+  await Promise.all(valueTransactionPromises)
 
   // Run refresh wallet data in the background after transactions complete.
   v4vRefreshActiveProviderWalletInfo()
 
-  return { errors, transactions: valueTransactions, totalAmountPaid }
+  return { transactions: valueTransactions, totalAmountPaid }
 }
 
 const sendValueTransaction = async (valueTransaction: ValueTransaction) => {
@@ -287,7 +306,6 @@ const sendValueTransaction = async (valueTransaction: ValueTransaction) => {
 }
 
 export const processValueTransactionQueue = async () => {
-  const errors: BannerInfoError[] = []
   const bundledValueTransactionsToProcess = await bundleValueTransactionQueue()
 
   let totalAmount = 0
@@ -297,18 +315,17 @@ export const processValueTransactionQueue = async () => {
       await sendValueTransaction(transaction)
       totalAmount = totalAmount + transaction.normalizedValueRecipient.amount
     } catch (error) {
-      errors.push({
-        error,
-        details: {
-          recipient: transaction.normalizedValueRecipient.name,
-          address: transaction.normalizedValueRecipient.address
-        }
-      })
+      v4vAddPreviousTransactionError(
+        'streaming',
+        transaction.normalizedValueRecipient.address,
+        error.message,
+        transaction.normalizedValueRecipient.customKey,
+        transaction.normalizedValueRecipient.customValue
+      )
     }
   }
 
   return {
-    errors,
     totalAmount,
     transactions: bundledValueTransactionsToProcess
   }
@@ -485,4 +502,9 @@ export const v4vDeleteProviderFromStorage = async (providerKey: 'alby') => {
     await v4vAlbyRemoveAccessData()
     await v4vAlbyRemoveCodeVerifier()
   }
+}
+
+export const v4vGetActiveValueTag = (valueTags: ValueTag[], type?: 'lightning', method?: 'keysend') => {
+  if (!type || !method) return null
+  return valueTags.find((valueTag) => valueTag.type === type && valueTag.method === method)
 }

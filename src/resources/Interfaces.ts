@@ -205,6 +205,10 @@ export interface InitialState {
         connected: V4VProviderConnectedState[]
       }
       streamingValueOn: boolean
+      previousTransactionErrors: {
+        boost: BannerInfoError[]
+        streaming: BannerInfoError[]
+      }
     }
   }
   subscribedPodcasts: []

@@ -13,12 +13,11 @@ import {
   V4VRecipientsInfoView,
   View
 } from '../components'
-import { ValueTransactionRouteError } from '../components/V4VRecipientsInfoView'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
-import { convertValueTagIntoValueTransactions } from '../services/v4v/v4v'
+import { convertValueTagIntoValueTransactions, v4vGetActiveValueTag } from '../services/v4v/v4v'
 import { v4vGetCurrentlyActiveProviderInfo } from '../state/actions/v4v/v4v'
 import { images } from '../styles'
 
@@ -26,7 +25,6 @@ type Props = any
 type State = {
   boostTransactions: ValueTransaction[]
   streamingTransactions: ValueTransaction[]
-  erroringTransactions: ValueTransactionRouteError[]
 }
 
 const testIDPrefix = 'funding_screen'
@@ -36,8 +34,7 @@ export class FundingScreen extends React.Component<Props, State> {
     super()
     this.state = {
       boostTransactions: [],
-      streamingTransactions: [],
-      erroringTransactions: []
+      streamingTransactions: []
     }
   }
 
@@ -57,39 +54,37 @@ export class FundingScreen extends React.Component<Props, State> {
     const { player, podcastValueFinal } = this.global
     const { nowPlayingItem } = player
 
-    const { activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(this.global)
+    const { activeProvider, activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(this.global)
     const { boostAmount, streamingAmount } = activeProviderSettings || {}
     
     const { episodeValue, podcastValue } = nowPlayingItem
     const valueTags =
       podcastValueFinal || (episodeValue?.length && episodeValue) || (podcastValue?.length && podcastValue)
 
-    // TODO: right now we are assuming the first item will be the lightning network.
-    // This will need to be updated to support additional valueTags.
-    const valueTag = valueTags[0]
+    const activeValueTag = v4vGetActiveValueTag(
+      valueTags, activeProvider?.type, activeProvider?.method)
 
-    const roundDownBoostTransactions = true
-    const roundDownStreamingTransactions = false
-    const [boostTransactions, streamingTransactions] = await Promise.all([
-      convertValueTagIntoValueTransactions(
-        valueTag,
-        nowPlayingItem,
-        PV.V4V.ACTION_BOOST,
-        boostAmount,
-        roundDownBoostTransactions
-      ),
-      convertValueTagIntoValueTransactions(
-        valueTag,
-        nowPlayingItem,
-        PV.V4V.ACTION_STREAMING,
-        streamingAmount,
-        roundDownStreamingTransactions
-      )
-    ])
-
-    this.setState({ boostTransactions, streamingTransactions }, () => {
-      // this.checkForErroringTransactions()
-    })
+    if (activeValueTag) {
+      const roundDownBoostTransactions = true
+      const roundDownStreamingTransactions = false
+      const [boostTransactions, streamingTransactions] = await Promise.all([
+        convertValueTagIntoValueTransactions(
+          activeValueTag,
+          nowPlayingItem,
+          PV.V4V.ACTION_BOOST,
+          boostAmount,
+          roundDownBoostTransactions
+        ),
+        convertValueTagIntoValueTransactions(
+          activeValueTag,
+          nowPlayingItem,
+          PV.V4V.ACTION_STREAMING,
+          streamingAmount,
+          roundDownStreamingTransactions
+        )
+      ])
+      this.setState({ boostTransactions, streamingTransactions })
+    }
 
     trackPageView('/funding', 'Funding Screen')
   }
@@ -126,9 +121,11 @@ export class FundingScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { boostTransactions, streamingTransactions, erroringTransactions } = this.state
+    const { boostTransactions, streamingTransactions } = this.state
     const { player, podcastValueFinal, session } = this.global
-    const { active } = session.v4v.providers
+    const { v4v } = session
+    const { previousTransactionErrors, providers } = v4v
+    const { active } = providers
     const { nowPlayingItem } = player
     const podcastFunding = nowPlayingItem?.podcastFunding || []
     const episodeFunding = nowPlayingItem?.episodeFunding || []
@@ -251,13 +248,13 @@ export class FundingScreen extends React.Component<Props, State> {
                   testID={testIDPrefix}
                   totalAmount={boostAmount}
                   transactions={boostTransactions}
-                  erroringTransactions={erroringTransactions}
+                  erroringTransactions={previousTransactionErrors.boost}
                 />
               </View>
               <View style={styles.itemWrapper}>
                 <TextInput
                   editable={false}
-                  eyebrowTitle={translate('Streaming Amount for this Podcast')}
+                  eyebrowTitle={translate('Streaming Amount for this podcast')}
                   keyboardType='numeric'
                   wrapperStyle={styles.textInput}
                   onBlur={() => {
@@ -285,7 +282,7 @@ export class FundingScreen extends React.Component<Props, State> {
                   testID={testIDPrefix}
                   totalAmount={streamingAmount}
                   transactions={streamingTransactions}
-                  erroringTransactions={erroringTransactions}
+                  erroringTransactions={previousTransactionErrors.streaming}
                 />
               </View>
             </View>
@@ -355,6 +352,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 12
   },
   itemWrapper: {
+    marginBottom: 8,
     marginTop: 24
   },
   podcastTitle: {

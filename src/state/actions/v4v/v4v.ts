@@ -18,6 +18,13 @@ export type V4VProviderConnectedState = {
   unit: 'sat'
 }
 
+export type V4VTransactionError = {
+  address: string
+  message: string
+  customKey?: string
+  customValue?: string
+}
+
 export type V4VTypeMethod = {
   boostAmount: number
   streamingAmount: number
@@ -276,4 +283,58 @@ export const v4vGetCurrentlyActiveProviderInfo = (globalState: any) => {
     activeProvider,
     activeProviderSettings
   }
+}
+
+
+
+/* V4V PreviousTransactionErrors helpers */
+export const v4vAddPreviousTransactionError = (
+  type: 'boost' | 'streaming',
+  address: string,
+  message: string,
+  customKey?: string,
+  customValue?: string
+) => {
+  const globalState = getGlobal()
+
+  const newErrors = globalState.session.v4v.previousTransactionErrors[type]
+
+  const newError: V4VTransactionError = {
+    address,
+    message,
+    customKey,
+    customValue
+  }
+
+  newErrors.push(newError)
+
+  setGlobal({
+    session: {
+      ...globalState.session,
+      v4v: {
+        ...globalState.session.v4v,
+        previousTransactionErrors: {
+          ...globalState.session.v4v.previousTransactionErrors,
+          [type]: newErrors
+        }
+      }
+    }
+  })
+}
+
+export const v4vClearPreviousTransactionErrors = () => {
+  const globalState = getGlobal()
+
+  setGlobal({
+    session: {
+      ...globalState.session,
+      v4v: {
+        ...globalState.session.v4v,
+        previousTransactionErrors: {
+          boost: [],
+          streaming: []
+        }
+      }
+    }
+  })
 }

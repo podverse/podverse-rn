@@ -200,7 +200,8 @@ export const v4vAlbyAPIRequest = async ({ body, method, path }: AlbyAPIRequest) 
     {
       method,
       headers: { Authorization: providerBearerToken },
-      body
+      body,
+      timeout: 20000
     },
     `${albyApiPath}${path}`
   )

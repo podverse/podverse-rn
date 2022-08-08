@@ -36,26 +36,28 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
         {transactions.map((data, index) => {
           const { name, amount, split, address } = data.normalizedValueRecipient
           const erroring = erroringTransactions.find((trs) => trs.address === address)
-
           return (
-            <View key={`${index}`} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text
-                testID={`${testID}_boost_recipient_name_${index}}`}
-                style={[styles.recipientText, erroring ? { color: PV.Colors.redLighter } : {}]}>
-                {name}
-                {erroring && (
-                  <Text testID={`${testID}_boost_recipient_error_${index}}`} style={styles.recipientTextError}>
-                    {'\n'}
-                    {erroring.message}
+            <View key={`${testID}_boost_info_${index}`}>
+              <View>
+                <View style={styles.recipientInfoWrapper}>
+                  <Text
+                    testID={`${testID}_boost_recipient_name_${index}}`}
+                    style={[styles.recipientText, erroring ? { color: PV.Colors.redLighter } : {}]}>
+                    {name}
                   </Text>
-                )}
-              </Text>
-              <Text
-                key={`${index}`}
-                testID={`${testID}_boost_recipient_amount_${index}}`}
-                style={styles.recipientTextAmount}>
-                {split} / {amount}
-              </Text>
+                  <Text
+                    key={`${index}`}
+                    testID={`${testID}_boost_recipient_amount_${index}}`}
+                    style={styles.recipientTextAmount}>
+                    {`${split} / ${amount}`}
+                  </Text>
+                </View>
+              </View>
+              {erroring && (
+                <Text testID={`${testID}_boost_recipient_error_${index}}`} style={styles.recipientTextError}>
+                  {erroring.message}
+                </Text>
+              )}
             </View>
           )
         })}
@@ -78,15 +80,23 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     textAlign: 'right'
   },
+  recipientErrorWrapper: {
+    marginTop: 8
+  },
   recipientFooterText: {
     fontSize: PV.Fonts.sizes.lg,
     paddingBottom: 6,
     paddingTop: 8
   },
+  recipientInfoWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
   recipientTable: {
     borderColor: PV.Colors.skyLight,
     borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
+    marginBottom: 16
   },
   recipientTableFooter: {
     flexDirection: 'column',
@@ -114,9 +124,10 @@ const styles = StyleSheet.create({
     textAlign: 'right'
   },
   recipientTextError: {
-    fontSize: PV.Fonts.sizes.tiny,
+    fontSize: PV.Fonts.sizes.md,
     color: PV.Colors.redLighter,
-    marginTop: 5
+    flex: 0,
+    marginBottom: 8
   },
   recipientTextAmount: {
     paddingVertical: 10,

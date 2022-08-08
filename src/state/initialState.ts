@@ -137,7 +137,11 @@ const initialTheme: InitialState = {
         active: '',
         connected: []
       },
-      streamingValueOn: false
+      streamingValueOn: false,
+      previousTransactionErrors: {
+        boost: [],
+        streaming: []
+      }
     }
   },
   subscribedPodcasts: [],
