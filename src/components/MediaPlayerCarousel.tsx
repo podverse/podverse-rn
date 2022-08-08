@@ -237,7 +237,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
         )}
         {!!activeProvider && hasValueInfo && (
           <View style={styles.boostButtonsContainer}>
-            <PressableWithOpacity
+            {/* <PressableWithOpacity
               onPress={this._toggleSatStreaming}
               style={styles.boostButton}
               testID={'stream_button'.prependTestId()}>
@@ -250,7 +250,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
               {streamingValueOn && isPlaying && (
                 <ActivityIndicator size={15} styles={{ position: 'absolute', right: 20 }} testID={testIDPrefix} />
               )}
-            </PressableWithOpacity>
+            </PressableWithOpacity> */}
             <PressableWithOpacity
               disabled={boostIsSending || boostWasSent}
               onLayout={(event) => {
@@ -393,7 +393,9 @@ const styles = StyleSheet.create({
     marginVertical: 8
   },
   boostButtonsContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 8
   },
   boostButton: {
     flex: 1,
@@ -404,7 +406,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderColor: PV.Colors.brandBlueLight,
-    borderWidth: 2
+    borderWidth: 2,
+    maxWidth: '50%'
   },
   boostButtonMainText: {
     fontSize: PV.Fonts.sizes.sm
