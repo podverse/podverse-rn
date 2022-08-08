@@ -704,5 +704,6 @@
     "Auto download by default on subscribe": "Last ned som forvalg ved abonnering",
     "Data Settings": "Datainnstillinger",
     "Do you want to allow downloading episodes with your data plan": "Tillat nedlasting av episoder ved bruk av mobildata?",
-    "Connect to Wifi to download this episode": "Koble til Wi-Fi for å laste ned denne episoden."
+    "Connect to Wifi to download this episode": "Koble til Wi-Fi for å laste ned denne episoden.",
+    "Hide new episode count badges": "Skjul opptelling av nye episoder"
 }
