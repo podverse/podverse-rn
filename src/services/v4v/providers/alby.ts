@@ -1,10 +1,10 @@
+import { SatoshiStreamStats } from 'podverse-shared'
 import qs from 'qs'
 import * as RNKeychain from 'react-native-keychain'
 import { pkceGenerateRandomString, pkceGenerateCodeChallenge } from '../../pkce'
 import { request } from "../../request"
 import { PV } from '../../../resources'
 import { _v4v_env_ } from '../v4v'
-import { SatoshiStreamStats } from 'podverse-shared'
 
 const albyApiPath = PV.V4V.providers.alby.env[_v4v_env_].apiPath
 
@@ -12,7 +12,7 @@ const redirect_uri = PV.V4V.providers.alby.oauthRedirectUri
 
 const basicAuth = {
   username: PV.V4V.providers.alby.env.prod.clientId,
-  password: ''
+  password: PV.V4V.providers.alby.env.prod.clientSecret
 }
 
 /* Storage helpers */
@@ -79,7 +79,7 @@ const v4vAlbyGetAccessToken = async () => {
   let access_token = ''
   const accessData = await v4vAlbyGetAccessData()
   
-  if (accessData.access_token) {
+  if (accessData?.access_token) {
     access_token = accessData.access_token
   }
 

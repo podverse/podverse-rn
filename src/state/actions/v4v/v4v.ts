@@ -3,6 +3,7 @@ import { getGlobal, setGlobal } from 'reactn'
 import { v4vDeleteProviderFromStorage, v4vGetProvidersConnected, v4vGetSettings, v4vGetTypeMethodKey,
   v4vSetProvidersConnected, 
   v4vSetSettings} from '../../../services/v4v/v4v'
+import { v4vAlbyGetAccountInfo } from './providers/alby'
 
 export type V4VProviderConnectedState = {
   key: string
@@ -155,7 +156,7 @@ export const v4vGetConnectedProvider = (connectedProviders: V4VProviderConnected
 }
 
 export const v4vAddOrUpdateConnectedProvider = async (
-  newProviderState: V4VProviderConnectedState, callback: any) => {
+  newProviderState: V4VProviderConnectedState, callback?: any) => {
   const globalState = getGlobal()
 
   const previousConnected = globalState.session.v4v.providers.connected
@@ -182,7 +183,7 @@ export const v4vAddOrUpdateConnectedProvider = async (
       }
     }
   }, () => {
-    callback()
+    callback?.()
   })
 }
 
@@ -245,6 +246,15 @@ export const v4vSetActiveProvider = (key: string) => {
       }
     }
   })
+}
+
+export const v4vRefreshActiveProviderWalletInfo = () => {
+  const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(getGlobal()) || {}
+  if (activeProvider) {
+    if (activeProvider.key === 'alby') {
+      v4vAlbyGetAccountInfo()
+    }
+  }
 }
 
 export const v4vGetCurrentlyActiveProviderInfo = (globalState: any) => {

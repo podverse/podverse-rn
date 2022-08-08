@@ -25,7 +25,7 @@ export const v4vAlbyHandleConnect = async (navigation: any, code: string) => {
   PVEventEmitter.emit(PV.Events.V4V_PROVIDERS_ALBY_CONNECTED)
 }
 
-export const v4vAlbyGetAccountInfo = async (callback: any) => {
+export const v4vAlbyGetAccountInfo = async (callback?: any) => {
   const summaryData = await v4vAlbyGetAccountSummaryService()
   const v4vData = await v4vAlbyGetAccountValue4ValueService()
 

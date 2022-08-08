@@ -8,7 +8,7 @@ import { createSatoshiStreamStats } from '../../lib/satoshiStream'
 import { PV } from '../../resources'
 import { BannerInfoError } from '../../resources/Interfaces'
 import { V4VProviderListItem } from '../../resources/V4V'
-import { v4vGetCurrentlyActiveProviderInfo, V4VProviderConnectedState, V4VSettings,
+import { v4vGetCurrentlyActiveProviderInfo, V4VProviderConnectedState, v4vRefreshActiveProviderWalletInfo, V4VSettings,
   v4vSettingsDefault } from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
 
@@ -260,6 +260,9 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
     }
   }
 
+  // Run refresh wallet data in the background after transactions complete.
+  v4vRefreshActiveProviderWalletInfo()
+
   return { errors, transactions: valueTransactions, totalAmountPaid }
 }
 
@@ -278,6 +281,8 @@ const sendValueTransaction = async (valueTransaction: ValueTransaction) => {
       )
     }
   }
+
+  return true
 }
 
 export const processValueTransactionQueue = async () => {

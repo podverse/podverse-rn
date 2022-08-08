@@ -34,6 +34,7 @@ type V4VTypeProvider = {
       aboutUrl: string
       apiPath: string
       clientId: string
+      clientSecret: string
     }
   }
 }
@@ -70,7 +71,8 @@ export const V4V: V4VType = {
         prod: {
           aboutUrl: 'https://getalby.com/value4value',
           apiPath: 'https://api.getalby.com',
-          clientId: Config.V4V_PROVIDERS_ALBY_CLIENT_ID
+          clientId: Config.V4V_PROVIDERS_ALBY_CLIENT_ID,
+          clientSecret: Config.V4V_PROVIDERS_ALBY_CLIENT_SECRET
         }
       }
     }
