@@ -3,10 +3,10 @@ import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, ValueTag, Val
 import { Config } from 'react-native-config'
 import * as RNKeychain from 'react-native-keychain'
 import { getGlobal } from 'reactn'
-import { BannerInfoError } from 'src/resources/Interfaces'
 import { translate } from '../../lib/i18n'
 import { createSatoshiStreamStats } from '../../lib/satoshiStream'
 import { PV } from '../../resources'
+import { BannerInfoError } from '../../resources/Interfaces'
 import { V4VProviderListItem } from '../../resources/V4V'
 import { v4vGetCurrentlyActiveProviderInfo, V4VProviderConnectedState, V4VSettings,
   v4vSettingsDefault } from '../../state/actions/v4v/v4v'
@@ -265,12 +265,19 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
 
 const sendValueTransaction = async (valueTransaction: ValueTransaction) => {
   if (!valueTransaction.normalizedValueRecipient.amount) return
+  const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(getGlobal()) || {}
 
-  // v4vSendTransaction(valueTransaction)
-
-  // detect activeProvider and send value
-
-  throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
+  if (activeProvider) {
+    if (activeProvider.key === 'alby') {
+      const { normalizedValueRecipient, satoshiStreamStats } = valueTransaction
+      const { v4vAlbySendKeysendPayment } = require('./providers/alby')
+      await v4vAlbySendKeysendPayment(
+        normalizedValueRecipient.amount,
+        normalizedValueRecipient.address,
+        satoshiStreamStats
+      )
+    }
+  }
 }
 
 export const processValueTransactionQueue = async () => {

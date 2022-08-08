@@ -4,6 +4,7 @@ import { pkceGenerateRandomString, pkceGenerateCodeChallenge } from '../../pkce'
 import { request } from "../../request"
 import { PV } from '../../../resources'
 import { _v4v_env_ } from '../v4v'
+import { SatoshiStreamStats } from 'podverse-shared'
 
 const albyApiPath = PV.V4V.providers.alby.env[_v4v_env_].apiPath
 
@@ -186,7 +187,7 @@ export const v4vAlbyRefreshAccessToken = async (refresh_token: string) => {
 const generateBearerToken = (token: string) => `Bearer ${token}`
 
 type AlbyAPIRequest = {
-  body?: string
+  body?: any
   method: 'GET' | 'POST'
   path: string
 }
@@ -229,6 +230,33 @@ export const v4vAlbyGetAccountSummary = async () => {
   const data = await v4vAlbyAPIRequest({
     method: 'GET',
     path: '/user/summary'
+  })
+
+  return data
+}
+
+export const v4vAlbySendKeysendPayment = async (
+  amount: number, destination: string, customRecords: SatoshiStreamStats) => {
+
+  // This Alby endpoint requires a stringified version of all customRecords values
+  const stringified7629169 = JSON.stringify(customRecords[7629169])
+  const customRecordsKeys = Object.keys(customRecords)
+
+  const formattedCustomRecords = {}
+  for (const key of customRecordsKeys) {
+    formattedCustomRecords[key] = key === '7629169' ? stringified7629169 : customRecords[key]?.toString() || ''
+  }
+
+  const body = {
+    amount,
+    destination,
+    customRecords: formattedCustomRecords
+  }
+
+  const data = await v4vAlbyAPIRequest({
+    method: 'POST',
+    path: '/payments/keysend',
+    body
   })
 
   return data

@@ -28,7 +28,7 @@ export const createSatoshiStreamStats = (
   const amountNum = parseInt(amount, 10) * 1000 // in millisats
 
   return {
-    7629169: {
+    '7629169': {
       podcast,
       feedID: podcastIndexId,
       episode,
@@ -41,7 +41,7 @@ export const createSatoshiStreamStats = (
       app_name: Config.USER_AGENT_PREFIX,
       name
     },
-    7629175: podcastIndexId,
+    '7629175': podcastIndexId,
     ...(customKey ? { [customKey]: customValue } : {})
   } as SatoshiStreamStats
 }
