@@ -330,9 +330,7 @@
     "Listen Tracking subtext": "Popularitetsspårning räknar med dig i lyssnar-ranking.",
     "Live": "Live",
     "Live Chat": "Live-chat",
-    "LNPay Signup": "Anslut LNPay",
     "LNPay Wallet Removed": "LNPay-wallet raderad",
-    "LNPayDescriptionText2": "Lägg till din publika LNPay API-nyckel efterår nedan. Du hittar den genom att besöka ",
     "Video": "Video",
     "Videos": "Videor",
     "Video playback": "Videouppspelning",
@@ -532,7 +530,6 @@
     "sats / min": "Sats/min",
     "Save Clip": "Spara klipp",
     "Use External Storage For Downloads": "Lagra på externt lagringsmedia",
-    "Setup Bitcoin Wallet": "Konfigurera en Bitcoin wallet",
     "Share": "Dela",
     "shared using brandName": " — delad med Podverse",
     "Show your support": "Visa ditt stöd",
@@ -663,7 +660,6 @@
     "Premium": "Premium",
     "Premium Info": "Info om Podverse Premium",
     "Show Completed": "Visa färdigställda",
-    "Value-for-Value": "Value-for-Value",
     "value_tag_preview_boost": "Boost: Skicka en donation omedelbart",
     "value_tag_preview_stream": "Strömma: Skicka en donation per lyssnad minut",
     "value_tag_preview_title": "Skicka Bitcoin till dina favorit-podcasters",
@@ -683,7 +679,6 @@
     "ARIA HINT - This is the now playing episode": " —det avsnitt som spelas nu",
     "ARIA HINT - Type your password": "Ange ditt lösenord",
     "ARIA HINT - Type your premium membership email address": "Ange e-postadressen för din Podverse Premium-prenumeration",
-    "value_tag_consent_text_3": "— Podverse sparar LNPay konto- och wallet-accessnycklar i den säkra lagringen på enheten och använder dom enbart för LNPay-transaktioner. Om en enhet blir åtkomlig för andra kan inte Podverse förhindra ej auktoriserad användning av dina wallets.",
     "Your profile page is hidden": "Profilsekretess: Din profil är dold. Dina klipp och spellistelänkar är fortfarande åtkomlig för alla med länkar till dom.",
     "Your queue is empty": "Din kö är tom"
 }
