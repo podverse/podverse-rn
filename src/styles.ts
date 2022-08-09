@@ -118,6 +118,9 @@ export const darkTheme = StyleSheet.create({
   headerText: {
     color: PV.Colors.skyLight
   },
+  headerTextSuccess: {
+    color: PV.Colors.green
+  },
   link: {
     color: PV.Colors.blueLighter
   },
@@ -796,10 +799,19 @@ export const table = StyleSheet.create({
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold
   },
+  cellTextLarge: {
+    fontSize: PV.Fonts.sizes.xxl,
+    fontWeight: PV.Fonts.weights.bold
+  },
   cellWrapper: {
     justifyContent: "center",
     minHeight: PV.Table.cells.standard.height,
     paddingLeft: 8
+  },
+  sectionExplanationText: {
+    fontSize: PV.Fonts.sizes.md,
+    marginBottom: 8,
+    paddingHorizontal: 8
   }
 })
 

@@ -29,6 +29,7 @@ export const URLs = {
     }
   },
   apiDefaultBaseUrl,
+  appRepo: Config.URL_APP_REPO || '',
   social: {
     facebook: Config.URL_SOCIAL_FACEBOOK || '',
     github: Config.URL_SOCIAL_GITHUB || '',
@@ -68,10 +69,5 @@ export const URLs = {
     }
   },
   webDefaultBaseUrl,
-  webPaths,
-  lnpay: {
-    baseUrl: 'https://api.lnpay.co/v1',
-    DeveloperDashboardUrl: 'https://lnpay.co/developers/dashboard',
-    LoginUrl: 'https://dashboard.lnpay.co/home/login'
-  }
+  webPaths
 }
