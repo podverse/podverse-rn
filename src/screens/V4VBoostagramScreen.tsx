@@ -96,10 +96,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
           localAppBoostAmount: typeMethodSettings.appBoostAmount?.toString()
         },
         () => {
-          Promise.all([
-            this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, typeMethodSettings.boostAmount),
-            this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_STREAMING, typeMethodSettings.streamingAmount)
-          ])
+          this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, typeMethodSettings.boostAmount)
         }
       )
     }
@@ -116,7 +113,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleUpdateBoostTransactionsState = async (action: 'ACTION_BOOST' | 'ACTION_STREAMING', amount: number) => {
+  _handleUpdateBoostTransactionsState = async (action: 'ACTION_BOOST', amount: number) => {
     const { player, podcastValueFinal } = this.global
     const { nowPlayingItem } = player
     const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(this.global)
@@ -141,11 +138,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
         shouldRound
       )
 
-      if (action === 'ACTION_BOOST') {
-        this.setState({ boostTransactions: newValueTransactions })
-      } else if (action === 'ACTION_STREAMING') {
-        this.setState({ streamingTransactions: newValueTransactions })
-      }
+      this.setState({ boostTransactions: newValueTransactions })
     }
   }
 
