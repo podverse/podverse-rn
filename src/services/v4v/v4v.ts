@@ -8,7 +8,7 @@ import { createSatoshiStreamStats } from '../../lib/satoshiStream'
 import { PV } from '../../resources'
 import { V4VProviderListItem } from '../../resources/V4V'
 import { v4vAddPreviousTransactionError, v4vClearPreviousTransactionErrors,
-  v4vGetCurrentlyActiveProviderInfo, V4VProviderConnectedState, v4vRefreshActiveProviderWalletInfo, V4VSettings,
+  v4vGetCurrentlyActiveProviderInfo, V4VProviderConnectedState, v4vRefreshActiveProviderWalletInfo, V4VSenderInfo, V4VSettings,
   v4vSettingsDefault } from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
 
@@ -451,6 +451,36 @@ const saveTransactionQueue = async (transactionQueue: ValueTransaction[]) => {
     await clearValueTransactionQueue()
   }
 }
+
+
+
+/* V4V senderInfo helpers  */
+
+export const v4vGetSenderInfo = async () => {
+  let senderInfo = {
+    name: translate('anonymous')
+  }
+
+  try {
+    const senderInfoString = await AsyncStorage.getItem(PV.Keys.V4V_SENDER_INFO)
+    if (senderInfoString) {
+      senderInfo = JSON.parse(senderInfoString)
+    }
+  } catch (error) {
+    console.log('v4vGetSenderInfo error', error)
+  }
+
+  return senderInfo
+}
+
+export const v4vSetSenderInfo = async (senderInfo: V4VSenderInfo) => {
+  try {
+    await AsyncStorage.setItem(PV.Keys.V4V_SENDER_INFO, JSON.stringify(senderInfo))
+  } catch (error) {
+    console.log('v4vSetSenderInfo error', error)
+  }
+}
+
 
 
 

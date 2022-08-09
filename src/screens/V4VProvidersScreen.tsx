@@ -1,12 +1,12 @@
-import { SectionList } from 'react-native'
+import { Keyboard, SectionList, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { Divider, TableCell, TableSectionSelectors, Text, View } from '../components'
+import { Divider, TableCell, TableSectionSelectors, Text, TextInput, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { V4VProviderListItem, _albyKey } from '../resources/V4V'
 import { trackPageView } from '../services/tracking'
-import { v4vGetProviderListItems } from '../services/v4v/v4v'
-import { V4VProviderConnectedState } from '../state/actions/v4v/v4v'
+import { v4vGetProviderListItems, v4vSetSenderInfo } from '../services/v4v/v4v'
+import { V4VProviderConnectedState, v4vUpdateSenderInfoName } from '../state/actions/v4v/v4v'
 import { core, table } from '../styles'
 
 type Props = {
@@ -14,8 +14,9 @@ type Props = {
 }
 
 type State = {
-  options: any[]
   isLoading: boolean
+  localSenderName: string
+  options: any[]
 }
 
 const testIDPrefix = 'v4v_providers_screen'
@@ -25,8 +26,9 @@ const _sectionSetupKey = 'sectionSetup'
 
 export class V4VProvidersScreen extends React.Component<Props, State> {
   state = {
-    options: [],
-    isLoading: false
+    isLoading: false,
+    localSenderName: '',
+    options: []
   }
 
   static navigationOptions = () => ({
@@ -34,6 +36,8 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
   })
 
   componentDidMount() {
+    const { name } = this.global.session.v4v.senderInfo
+    this.setState({ localSenderName: name })
     trackPageView('/value-for-value/providers', 'Value for Value - Providers')
   }
 
@@ -66,6 +70,43 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
     }
   }
 
+  _generateListHeaderComponent = () => {
+    const { globalTheme } = this.global
+    const { localSenderName } = this.state
+
+    return (
+      <View key={`${testIDPrefix}_header_settings`}>
+        <TableSectionSelectors
+          disableFilter
+          includePadding
+          selectedFilterLabel={translate('Settings')}
+          textStyle={[globalTheme.headerText, core.sectionHeaderText]}
+        />
+        <TextInput
+          alwaysShowEyebrow
+          eyebrowTitle={translate('Name')}
+          keyboardType='numeric'
+          onBlur={async () => {
+            const { localSenderName } = this.state
+            await v4vUpdateSenderInfoName(localSenderName)
+          }}
+          onSubmitEditing={() => Keyboard.dismiss()}
+          onChangeText={(newText: string) => {
+            this.setState({ localSenderName: newText })
+          }}
+          testID={`${testIDPrefix}_settings_name`}
+          value={localSenderName}
+          wrapperStyle={styles.textInputWrapper}
+        />
+        <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          style={[table.sectionExplanationText, globalTheme.tableCellTextPrimary]}>
+          {translate('V4V set name helper text')}
+        </Text>
+      </View>
+    )
+  }
+
   render() {
     const { globalTheme } = this.global
     const connectedOptions = this._connectedOptions()
@@ -76,7 +117,7 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
       sections.push({ key: _sectionConnectedKey, title: translate('Connected'), data: connectedOptions })
     }
     if (setupOptions.length > 0) {
-      sections.push({ key: _sectionSetupKey, title: translate('Setup'), data: setupOptions })
+      sections.push({ key: _sectionSetupKey, title: translate('Available'), data: setupOptions })
     }
 
     return (
@@ -97,6 +138,7 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
               </TableCell>
             )
           }}
+          ListHeaderComponent={this._generateListHeaderComponent()}
           renderSectionHeader={({ section }) => {
             const helperText =
               section.key === _sectionConnectedKey
@@ -129,3 +171,10 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  textInputWrapper: {
+    marginTop: 0,
+    marginBottom: 12
+  }
+})

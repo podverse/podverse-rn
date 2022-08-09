@@ -1,7 +1,8 @@
 import { ValueTag } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
-import { v4vDeleteProviderFromStorage, v4vGetProvidersConnected, v4vGetSettings, v4vGetTypeMethodKey,
+import { v4vDeleteProviderFromStorage, v4vGetProvidersConnected, v4vGetSenderInfo, v4vGetSettings, v4vGetTypeMethodKey,
   v4vSetProvidersConnected, 
+  v4vSetSenderInfo, 
   v4vSetSettings} from '../../../services/v4v/v4v'
 
 export type V4VProviderConnectedState = {
@@ -30,6 +31,10 @@ export type V4VTypeMethod = {
   streamingAmount: number
   appBoostAmount: number
   appStreamingAmount: number
+}
+
+export type V4VSenderInfo = {
+  name: string
 }
 
 export type V4VSettings = {
@@ -288,6 +293,7 @@ export const v4vGetCurrentlyActiveProviderInfo = (globalState: any) => {
 
 
 /* V4V PreviousTransactionErrors helpers */
+
 export const v4vAddPreviousTransactionError = (
   type: 'boost' | 'streaming',
   address: string,
@@ -333,6 +339,44 @@ export const v4vClearPreviousTransactionErrors = () => {
         previousTransactionErrors: {
           boost: [],
           streaming: []
+        }
+      }
+    }
+  })
+}
+
+
+
+/* V4VSenderInfo helpers */
+
+export const v4vInitializeSenderInfo = async () => {
+  const globalState = getGlobal()
+  const savedSenderInfo = await v4vGetSenderInfo()
+
+  setGlobal({
+    session: {
+      ...globalState.session,
+      v4v: {
+        ...globalState.session.v4v,
+        senderInfo: savedSenderInfo
+      }
+    }
+  })
+}
+
+export const v4vUpdateSenderInfoName = async (newName: string) => {
+  const globalState = getGlobal()
+  
+  await v4vSetSenderInfo({ name: newName })
+
+  setGlobal({
+    session: {
+      ...globalState.session,
+      v4v: {
+        ...globalState.session.v4v,
+        senderInfo: {
+          ...globalState.session.v4v.senderInfo,
+          name: newName
         }
       }
     }

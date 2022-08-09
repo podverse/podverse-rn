@@ -1,6 +1,6 @@
 import { TranscriptRow, ValueTransaction } from 'podverse-shared'
 import { AutoQueueSettingsPosition } from '../services/autoQueue'
-import { V4VProviderConnectedState, V4VSettings } from '../state/actions/v4v/v4v'
+import { V4VProviderConnectedState, V4VSenderInfo, V4VSettings } from '../state/actions/v4v/v4v'
 import { AppModes } from './AppMode'
 export interface GlobalTheme {
   actionSheetButton?: any
@@ -209,6 +209,8 @@ export interface InitialState {
         boost: BannerInfoError[]
         streaming: BannerInfoError[]
       }
+      senderInfo: V4VSenderInfo
+      boostagramMessage: string
     }
   }
   subscribedPodcasts: []

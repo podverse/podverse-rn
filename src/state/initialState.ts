@@ -1,3 +1,4 @@
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { InitialState } from '../resources/Interfaces'
 import { v4vSettingsDefault } from './actions/v4v/v4v'
@@ -141,7 +142,11 @@ const initialTheme: InitialState = {
       previousTransactionErrors: {
         boost: [],
         streaming: []
-      }
+      },
+      senderInfo: {
+        name: translate('anonymous')
+      },
+      boostagramMessage: ''
     }
   },
   subscribedPodcasts: [],
