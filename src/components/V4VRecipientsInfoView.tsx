@@ -14,7 +14,7 @@ type Props = {
   erroringTransactions?: ValueTransactionRouteError[]
   isReceipt?: boolean
   testID: string
-  totalAmount?: number
+  totalAmount?: number | string
   transactions: ValueTransaction[]
 }
 
@@ -22,6 +22,7 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
   render() {
     const { erroringTransactions = [], isReceipt, testID, totalAmount, transactions } = this.props
     const totalAmountText = isReceipt ? translate('amount paid') : translate('total amount')
+    const parsedTotalAmount = typeof totalAmount === 'string' ? parseInt(totalAmount, 10) : totalAmount
 
     return (
       <View style={styles.recipientTable}>
@@ -63,7 +64,7 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
         })}
         <View style={styles.recipientTableFooter}>
           <Text testID={`${testID}_boost_recipient_amount_total`} style={styles.recipientFooterText}>
-            {`${totalAmountText}: ${totalAmount}*`}
+            {`${totalAmountText}: ${parsedTotalAmount}*`}
           </Text>
           <Text style={styles.disclaimerText} testID='boost_dropdown_banner_disclaimer_text'>
             {`*${translate('Actual amount will be higher due to network fees')}`}

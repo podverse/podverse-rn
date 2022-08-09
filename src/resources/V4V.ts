@@ -6,8 +6,8 @@ type V4VProvidersSupportedTypes = 'lightning'
 type V4VProvidersSupportedMethods = 'keysend'
 
 type V4VType = {
-  ACTION_BOOST: string
-  ACTION_STREAMING: string
+  ACTION_BOOST: 'ACTION_BOOST'
+  ACTION_STREAMING: 'ACTION_STREAMING'
   ALLOWED_PROVIDERS_LIST: string[]
   VALUE_TRANSACTION_QUEUE: string
   providers: {
