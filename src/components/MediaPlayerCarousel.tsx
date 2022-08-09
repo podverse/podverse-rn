@@ -7,13 +7,14 @@ import { checkIfHasSupportedCommentTag } from 'podverse-shared'
 import { PV } from '../resources'
 import { translate } from '../lib/i18n'
 import { audioCheckIfIsPlaying } from '../services/playerAudio'
-import { sendBoost, v4vGetPluralCurrencyUnit, v4vGetPluralCurrencyUnitPerMinute } from '../services/v4v/v4v'
+import { sendBoost, v4vGetPluralCurrencyUnit } from '../services/v4v/v4v'
 import { v4vGetCurrentlyActiveProviderInfo } from '../state/actions/v4v/v4v'
 import { toggleValueStreaming } from '../state/actions/valueTag'
 import { MediaPlayerCarouselComments } from './MediaPlayerCarouselComments'
 import {
   ActivityIndicator,
   DropdownButtonSelect,
+  Icon,
   MediaPlayerCarouselChapters,
   MediaPlayerCarouselClips,
   MediaPlayerCarouselShowNotes,
@@ -138,6 +139,11 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const items = accessibilitySelectorItems(hasChapters, hasComments, hasTranscript)
     const accessibilityItemSelected = items.find((x) => x.value === selectedKey)
     this.setState({ accessibilityItemSelected })
+  }
+
+  _handleBoostagramPress = () => {
+    const { navigation } = this.props
+    navigation.navigate(PV.RouteNames.V4VBoostagramScreen)
   }
 
   render() {
@@ -274,6 +280,21 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                 </>
               )}
             </PressableWithOpacity>
+            <PressableWithOpacity
+              onPress={this._handleBoostagramPress}
+              style={styles.boostagramButton}
+              testID={'boostagram_button'.prependTestId()}>
+              <Text style={styles.boostagramButtonMainText} testID='boost_button_text_1'>
+                {translate('Boostagram').toUpperCase()}
+              </Text>
+              <Icon
+                accessibilityLabel={translate('Boostagram')}
+                accessibilityRole='button'
+                name='comment-alt'
+                size={17}
+                testID={`${testIDPrefix}_boostagram_button`}
+              />
+            </PressableWithOpacity>
           </View>
         )}
         {
@@ -409,8 +430,25 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     maxWidth: '50%'
   },
+  boostagramButton: {
+    flex: 1,
+    flexDirection: 'row',
+    margin: 10,
+    height: 50,
+    borderRadius: 35,
+    backgroundColor: PV.Colors.velvet,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: PV.Colors.brandBlueLight,
+    borderWidth: 2,
+    maxWidth: '50%'
+  },
   boostButtonMainText: {
     fontSize: PV.Fonts.sizes.sm
+  },
+  boostagramButtonMainText: {
+    fontSize: PV.Fonts.sizes.sm,
+    marginRight: 8
   },
   boostButtonSubText: {
     fontSize: PV.Fonts.sizes.xs

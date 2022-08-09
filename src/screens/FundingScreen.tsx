@@ -35,9 +35,6 @@ type State = {
 
 const testIDPrefix = 'funding_screen'
 
-const roundDownBoostTransactions = true
-const roundDownStreamingTransactions = false
-
 export class FundingScreen extends React.Component<Props, State> {
   constructor() {
     super()

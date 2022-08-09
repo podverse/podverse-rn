@@ -60,6 +60,7 @@ import {
   SupportScreen,
   TermsOfServiceScreen,
   TrackingConsentScreen,
+  V4VBoostagramScreen,
   V4VConsentScreen,
   V4VPreviewScreen,
   V4VProvidersScreen,
@@ -314,6 +315,16 @@ const V4VProvidersModals = createStackNavigator(
   }
 )
 
+const V4VBoostagramModal = createStackNavigator(
+  {
+    [PV.RouteNames.V4VBoostagramScreen]: V4VBoostagramScreen
+  },
+  {
+    mode: 'modal',
+    defaultNavigationOptions
+  }
+)
+
 const allTabs = {
   Podcasts: {
     screen: PodcastsNavigator,
@@ -505,6 +516,7 @@ const MainApp = createStackNavigator(
     AddPodcastByRSSAuthNavigator,
     V4VOnboardingNavigator,
     V4VProvidersModals,
+    V4VBoostagramModal,
     TrackingConsentNavigator
   },
   {

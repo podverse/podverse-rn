@@ -5,6 +5,7 @@
 // 7629175: SatoshiStreamStatsPodcastIndexId // the Podcast Index feedId for the podcast
 
 import { NowPlayingItem, SatoshiStreamStats } from 'podverse-shared'
+import { getGlobal } from 'reactn'
 import Config from 'react-native-config'
 import { translate } from './i18n'
 const uuidv4 = require('uuid/v4')
@@ -27,6 +28,8 @@ export const createSatoshiStreamStats = (
   const ts = parseInt(currentPlaybackPosition, 10)
   const amountNum = parseInt(amount, 10) * 1000 // in millisats
 
+  const { senderName } = getGlobal().session.v4v
+
   return {
     '7629169': {
       podcast,
@@ -39,7 +42,8 @@ export const createSatoshiStreamStats = (
       value_msat: amountNum,
       uuid: uuidv4(),
       app_name: Config.USER_AGENT_PREFIX,
-      name
+      name,
+      sender_name: senderName
     },
     '7629175': podcastIndexId,
     ...(customKey ? { [customKey]: customValue } : {})

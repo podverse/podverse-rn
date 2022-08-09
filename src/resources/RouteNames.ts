@@ -62,6 +62,7 @@ export const RouteNames = {
   TabNavigator: 'TabNavigator',
   TermsOfServiceScreen: 'TermsOfServiceScreen',
   TrackingConsentScreen: 'TrackingConsentScreen',
+  V4VBoostagramScreen: 'V4VBoostagramScreen',
   V4VConsentScreen: 'V4VConsentScreen',
   V4VPreviewScreen: 'V4VPreviewScreen',
   V4VProvidersScreen: 'V4VProvidersScreen',

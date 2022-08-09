@@ -116,7 +116,7 @@ export class V4VWalletSettings extends React.Component<Props, State> {
             wrapperStyle={styles.textInputWrapper}
           />
         </View>
-        <View style={styles.sectionWrapper}>
+        {/* <View style={styles.sectionWrapper}>
           <Text style={core.headerText}>{translate('App')}</Text>
           <Text style={styles.explanationText}>{translate('Boost app explanation')}</Text>
           <TextInput
@@ -163,7 +163,7 @@ export class V4VWalletSettings extends React.Component<Props, State> {
             value={`${localAppStreamingAmount}`}
             wrapperStyle={styles.textInputWrapper}
           />
-        </View>
+        </View> */}
       </View>
     )
   }

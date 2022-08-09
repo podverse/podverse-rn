@@ -212,7 +212,7 @@ const convertValueTagIntoValueTransaction = async (
   }
 }
 
-export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFinal: any) => {
+export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFinal: any, includeMessage?: boolean) => {
   const valueTags =
     podcastValueFinal ||
     (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue) ||
@@ -251,7 +251,7 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
     return new Promise(async (resolve) => {
       setTimeout(async () => {
         try {
-          const succesfull = await sendValueTransaction(valueTransaction)
+          const succesfull = await sendValueTransaction(valueTransaction, includeMessage)
           if (succesfull) {
             totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
           }
@@ -285,7 +285,7 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
   return { transactions: valueTransactions, totalAmountPaid }
 }
 
-const sendValueTransaction = async (valueTransaction: ValueTransaction) => {
+const sendValueTransaction = async (valueTransaction: ValueTransaction, includeMessage?: boolean) => {
   if (!valueTransaction.normalizedValueRecipient.amount) return
   const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(getGlobal()) || {}
 
@@ -297,7 +297,8 @@ const sendValueTransaction = async (valueTransaction: ValueTransaction) => {
       await v4vAlbySendKeysendPayment(
         normalizedValueRecipient.amount,
         normalizedValueRecipient.address,
-        satoshiStreamStats
+        satoshiStreamStats,
+        includeMessage
       )
     }
   }

@@ -6,6 +6,8 @@ import { PV } from '../resources'
 import { Text, View } from '.'
 
 export type ValueTransactionRouteError = {
+  customKey?: string
+  customValue?: string
   address: string
   message: string
 }
@@ -35,8 +37,15 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
           </Text>
         </View>
         {transactions.map((data, index) => {
-          const { name, amount, split, address } = data.normalizedValueRecipient
-          const erroring = erroringTransactions.find((trs) => trs.address === address)
+          const { customKey, customValue, name, amount, split, address } = data.normalizedValueRecipient
+          const erroring = erroringTransactions.find((trs) => {
+            return (
+              (customKey &&
+                customValue &&
+                trs.customKey === customKey && trs.customValue === customValue && trs.address === trs.address) ||
+              ((!customKey || !customValue) && trs.address === address)
+            )            
+          })
           return (
             <View key={`${testID}_boost_info_${index}`}>
               <View>

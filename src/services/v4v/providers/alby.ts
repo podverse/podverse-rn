@@ -1,6 +1,7 @@
 import { SatoshiStreamStats } from 'podverse-shared'
 import qs from 'qs'
 import * as RNKeychain from 'react-native-keychain'
+import { getGlobal } from 'reactn'
 import { pkceGenerateRandomString, pkceGenerateCodeChallenge } from '../../pkce'
 import { request } from "../../request"
 import { PV } from '../../../resources'
@@ -201,7 +202,7 @@ export const v4vAlbyAPIRequest = async ({ body, method, path }: AlbyAPIRequest) 
       method,
       headers: { Authorization: providerBearerToken },
       body,
-      timeout: 20000
+      timeout: 30000
     },
     `${albyApiPath}${path}`
   )
@@ -237,7 +238,12 @@ export const v4vAlbyGetAccountSummary = async () => {
 }
 
 export const v4vAlbySendKeysendPayment = async (
-  amount: number, destination: string, customRecords: SatoshiStreamStats) => {
+  amount: number, destination: string, customRecords: SatoshiStreamStats, includeMessage?: boolean) => {
+  
+  if (includeMessage) {
+    const { boostagramMessage } = getGlobal().session.v4v
+    customRecords[7629169].message = boostagramMessage
+  }
 
   // This Alby endpoint requires a stringified version of all customRecords values
   const stringified7629169 = JSON.stringify(customRecords[7629169])

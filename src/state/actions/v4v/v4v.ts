@@ -321,7 +321,7 @@ export const v4vAddPreviousTransactionError = (
         ...globalState.session.v4v,
         previousTransactionErrors: {
           ...globalState.session.v4v.previousTransactionErrors,
-          [type]: newErrors
+          [type]: [...newErrors]
         }
       }
     }
@@ -378,6 +378,38 @@ export const v4vUpdateSenderInfoName = async (newName: string) => {
           ...globalState.session.v4v.senderInfo,
           name: newName
         }
+      }
+    }
+  })
+}
+
+
+
+/* V4VBoostagramMessage helpers */
+
+export const v4vUpdateBoostagramMessage = (newMessage: string) => {
+  const globalState = getGlobal()
+  
+  setGlobal({
+    session: {
+      ...globalState.session,
+      v4v: {
+        ...globalState.session.v4v,
+        boostagramMessage: newMessage
+      }
+    }
+  })
+}
+
+export const v4vClearBoostagramMessage = () => {
+  const globalState = getGlobal()
+
+  setGlobal({
+    session: {
+      ...globalState.session,
+      v4v: {
+        ...globalState.session.v4v,
+        boostagramMessage: ''
       }
     }
   })
