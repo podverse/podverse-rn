@@ -27,6 +27,7 @@ import {
   v4vGetTypeMethodKey
 } from '../services/v4v/v4v'
 import {
+  v4vClearBoostagramMessage,
   v4vGetCurrentlyActiveProviderInfo,
   V4VTypeMethod,
   v4vUpdateBoostagramMessage,
@@ -163,6 +164,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
           },
           () => {
             this.explosion && this.explosion.start()
+            v4vClearBoostagramMessage()
           }
         )
       })()
