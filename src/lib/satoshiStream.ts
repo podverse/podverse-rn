@@ -28,7 +28,7 @@ export const createSatoshiStreamStats = (
   const ts = parseInt(currentPlaybackPosition, 10)
   const amountNum = parseInt(amount, 10) * 1000 // in millisats
 
-  const { senderName } = getGlobal().session.v4v
+  const { name: senderName } = getGlobal().session.v4v.senderInfo
 
   return {
     '7629169': {
