@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Alert } from 'react-native'
 import Config from 'react-native-config'
-import RNSecureKeyStore from 'react-native-secure-key-store'
+import {resetInternetCredentials} from "react-native-keychain"
 import { getGlobal, setGlobal } from 'reactn'
 import { shouldShowMembershipAlert } from '../../lib/membership'
 import { safelyUnwrapNestedVariable } from '../../lib/utility'
@@ -14,7 +14,6 @@ import {
   signUp
 } from '../../services/auth'
 import { fcmTokenGetLocally } from '../../services/fcmDevices'
-import { getWalletInfo } from '../../services/lnpay'
 import { getPodcastCredentials, parseAllAddByRSSPodcasts,
   setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
 import { toggleSubscribeToPodcast } from '../../services/podcast'
@@ -23,10 +22,9 @@ import { setAllHistoryItemsLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemLocally,
   getNowPlayingItemOnServer, 
   setNowPlayingItemLocally} from '../../services/userNowPlayingItem'
-import { getLNWallet } from './lnpay'
+import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from '../../services/v4v/v4v'
 import { addAddByRSSPodcast, addAddByRSSPodcastWithCredentials } from './parser'
 import { combineWithAddByRSSPodcasts, getSubscribedPodcasts } from './podcast'
-import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './valueTag'
 
 export type Credentials = {
   addByRSSPodcastFeedUrls?: []
@@ -38,62 +36,26 @@ export type Credentials = {
 
 export const getAuthUserInfo = async () => {
   try {
-    const [results, lnpayEnabled, boostAmount, streamingAmount] = await Promise.all([
+    const [results, boostAmount, streamingAmount] = await Promise.all([
       getAuthenticatedUserInfo(),
-      AsyncStorage.getItem(PV.Keys.LNPAY_ENABLED),
       AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT),
       AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_STREAMING_AMOUNT)
     ])
     const userInfo = results[0]
     const isLoggedIn = results[1]
     const shouldShowAlert = shouldShowMembershipAlert(userInfo)
-    const lnpayEnabledParsed = lnpayEnabled ? JSON.parse(lnpayEnabled) : false
 
     const globalState = getGlobal()
+
     setGlobal({
       session: {
         userInfo,
         isLoggedIn,
-        valueTagSettings: {
-          ...globalState.session.valueTagSettings,
-          lightningNetwork: {
-            lnpay: {
-              lnpayEnabled: lnpayEnabledParsed,
-              globalSettings: {
-                boostAmount: boostAmount ? Number(boostAmount) : DEFAULT_BOOST_PAYMENT,
-                streamingAmount: streamingAmount ? Number(streamingAmount) : DEFAULT_STREAMING_PAYMENT
-              }
-            }
-          },
-        }
+        v4v: globalState.session.v4v
       },
       overlayAlert: {
         ...globalState.overlayAlert,
         showAlert: shouldShowAlert
-      }
-    }, async () => {
-      if (!!Config.ENABLE_VALUE_TAG_TRANSACTIONS && lnpayEnabled) {
-        const wallet = await getLNWallet()
-        if (wallet) {
-          const lnpayWalletInfo = await getWalletInfo(wallet)
-
-          setGlobal({
-            session: {
-              ...globalState.session,
-              valueTagSettings: {
-                ...globalState.session.valueTagSettings,
-                lightningNetwork: {
-                  ...globalState.session.valueTagSettings.lightningNetwork,
-                  lnpay: {
-                    ...globalState.session.valueTagSettings.lightningNetwork.lnpay,
-                    walletSatsBalance: lnpayWalletInfo?.balance || null,
-                    walletUserLabel: lnpayWalletInfo?.user_label || null
-                  }
-                }
-              }
-            }
-          })
-        }
       }
     })
 
@@ -119,7 +81,8 @@ export const getAuthenticatedUserInfoLocally = async () => {
   setGlobal({
     session: {
       userInfo,
-      isLoggedIn
+      isLoggedIn,
+      v4v: globalState.session.v4v
     },
     overlayAlert: {
       ...globalState.overlayAlert,
@@ -194,7 +157,7 @@ export const loginUser = async (credentials: Credentials) => {
     const globalState = getGlobal()
     const localUserInfo = globalState.session.userInfo
     const serverUserInfo = await login(credentials.email, credentials.password)
-    const { valueTagSettings } = globalState.session
+    const { v4v } = globalState.session
 
     const localFCMSaved = await fcmTokenGetLocally()
     serverUserInfo.notificationsEnabled = !!localFCMSaved
@@ -204,7 +167,7 @@ export const loginUser = async (credentials: Credentials) => {
         session: {
           userInfo: serverUserInfo,
           isLoggedIn: true,
-          valueTagSettings
+          v4v
         }
       },
       () => {
@@ -275,7 +238,7 @@ const askToSyncLocalPodcastsWithServer = (
 
 export const logoutUser = async () => {
   try {
-    await RNSecureKeyStore.remove(PV.Keys.BEARER_TOKEN)
+    await resetInternetCredentials(PV.Keys.BEARER_TOKEN)    
     await getAuthUserInfo()
   } catch (error) {
     console.log(error)

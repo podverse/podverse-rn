@@ -400,6 +400,8 @@ PODS:
     - React-Core
   - RNIap (8.0.7):
     - React-Core
+  - RNKeychain (8.1.1):
+    - React-Core
   - RNLocalize (2.1.1):
     - React-Core
   - RNReactNativeHapticFeedback (1.11.0):
@@ -505,6 +507,7 @@ DEPENDENCIES:
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNIap (from `../node_modules/react-native-iap`)
+  - RNKeychain (from `../node_modules/react-native-keychain`)
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -641,6 +644,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNIap:
     :path: "../node_modules/react-native-iap"
+  RNKeychain:
+    :path: "../node_modules/react-native-keychain"
   RNLocalize:
     :path: "../node_modules/react-native-localize"
   RNReactNativeHapticFeedback:
@@ -729,6 +734,7 @@ SPEC CHECKSUMS:
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
   RNGestureHandler: 61628a2c859172551aa2100d3e73d1e57878392f
   RNIap: 0f95fd117338bd1846e0a77600a02d16056f7795
+  RNKeychain: ff836453cba46938e0e9e4c22e43d43fa2c90333
   RNLocalize: 82a569022724d35461e2dc5b5d015a13c3ca995b
   RNReactNativeHapticFeedback: 653a8c126a0f5e88ce15ffe280b3ff37e1fbb285
   RNReanimated: 58b57be69a237fb02ec8099d25171057638cf41a

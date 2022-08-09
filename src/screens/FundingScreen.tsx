@@ -1,6 +1,5 @@
 import { ValueTransaction } from 'podverse-shared'
 import { Alert, Keyboard, Linking, Pressable, StyleSheet } from 'react-native'
-import Config from 'react-native-config'
 import React, { getGlobal } from 'reactn'
 import AsyncStorage from '@react-native-community/async-storage'
 import {
@@ -11,24 +10,27 @@ import {
   ScrollView,
   Text,
   TextInput,
-  ValueTagInfoView,
+  V4VRecipientsInfoView,
   View
 } from '../components'
-import { ValueTransactionRouteError } from '../components/ValueTagInfoView'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
-import { convertValueTagIntoValueTransactions } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
-import { checkLNPayRecipientRoute } from '../services/lnpay'
 import { trackPageView } from '../services/tracking'
-import { getLNWallet } from '../state/actions/lnpay'
+import { convertValueTagIntoValueTransactions, MINIMUM_BOOST_PAYMENT,
+  MINIMUM_STREAMING_PAYMENT, v4vGetActiveValueTag, v4vGetTypeMethodKey } from '../services/v4v/v4v'
+import { v4vGetCurrentlyActiveProviderInfo, V4VTypeMethod, v4vUpdateTypeMethodSettingsBoostAmount,
+  v4vUpdateTypeMethodSettingsStreamingAmount } from '../state/actions/v4v/v4v'
 import { images } from '../styles'
 
 type Props = any
 type State = {
   boostTransactions: ValueTransaction[]
   streamingTransactions: ValueTransaction[]
-  erroringTransactions: ValueTransactionRouteError[]
+  localBoostAmount: string
+  localStreamingAmount: string
+  localAppBoostAmount: string
+  localAppStreamingAmount: string
 }
 
 const testIDPrefix = 'funding_screen'
@@ -39,7 +41,10 @@ export class FundingScreen extends React.Component<Props, State> {
     this.state = {
       boostTransactions: [],
       streamingTransactions: [],
-      erroringTransactions: []
+      localBoostAmount: '0',
+      localStreamingAmount: '0',
+      localAppBoostAmount: '0',
+      localAppStreamingAmount: '0'
     }
   }
 
@@ -55,71 +60,37 @@ export class FundingScreen extends React.Component<Props, State> {
     }
   }
 
-  async componentDidMount() {
-    const { player, podcastValueFinal, session } = this.global
+  componentDidMount() {
+    const { player, podcastValueFinal } = this.global
     const { nowPlayingItem } = player
-    const { boostAmount, streamingAmount } = session?.valueTagSettings?.lightningNetwork?.lnpay?.globalSettings || {}
 
+    const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(this.global)
+    
     const { episodeValue, podcastValue } = nowPlayingItem
     const valueTags =
       podcastValueFinal || (episodeValue?.length && episodeValue) || (podcastValue?.length && podcastValue)
+    const activeValueTag = v4vGetActiveValueTag(
+      valueTags, activeProvider?.type, activeProvider?.method)
 
-    // TODO: right now we are assuming the first item will be the lightning network.
-    // This will need to be updated to support additional valueTags.
-    const valueTag = valueTags[0]
+    if (activeValueTag && activeProvider) {
+      const { method, type } = activeProvider
+      const typeMethodKey = v4vGetTypeMethodKey(type, method)
+      const typeMethodSettings = this.global.session.v4v.settings.typeMethod[typeMethodKey] as V4VTypeMethod
 
-    const roundDownBoostTransactions = true
-    const roundDownStreamingTransactions = false
-    const [boostTransactions, streamingTransactions] = await Promise.all([
-      convertValueTagIntoValueTransactions(
-        valueTag,
-        nowPlayingItem,
-        PV.ValueTag.ACTION_BOOST,
-        boostAmount,
-        roundDownBoostTransactions
-      ),
-      convertValueTagIntoValueTransactions(
-        valueTag,
-        nowPlayingItem,
-        PV.ValueTag.ACTION_STREAMING,
-        streamingAmount,
-        roundDownStreamingTransactions
-      )
-    ])
-
-    this.setState({ boostTransactions, streamingTransactions }, () => {
-      this.checkForErroringTransactions()
-    })
+      this.setState({
+        localBoostAmount: typeMethodSettings.boostAmount?.toString(),
+        localStreamingAmount: typeMethodSettings.streamingAmount?.toString(),
+        localAppBoostAmount: typeMethodSettings.appBoostAmount?.toString(),
+        localAppStreamingAmount: typeMethodSettings.appStreamingAmount?.toString()
+      }, () => {
+        Promise.all([
+          this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, typeMethodSettings.boostAmount),
+          this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_STREAMING, typeMethodSettings.streamingAmount)
+        ])
+      })
+    }
 
     trackPageView('/funding', 'Funding Screen')
-  }
-
-  checkForErroringTransactions = async () => {
-    const wallet = await getLNWallet()
-    const erroringTransactions = []
-
-    if (wallet) {
-      const { boostTransactions } = this.state
-
-      for (const boostTransaction of boostTransactions) {
-        try {
-          if (boostTransaction.normalizedValueRecipient.amount >= 1) {
-            await checkLNPayRecipientRoute(wallet, boostTransaction.normalizedValueRecipient)
-          }
-        } catch (error) {
-          if (error?.response?.data?.status === 400) {
-            erroringTransactions.push({
-              address: boostTransaction.normalizedValueRecipient.address,
-              message: error.response.data.message
-            })
-          }
-        }
-      }
-
-      if (erroringTransactions.length) {
-        this.setState({ erroringTransactions })
-      }
-    }
   }
 
   handleFollowLink = (url: string) => {
@@ -133,7 +104,10 @@ export class FundingScreen extends React.Component<Props, State> {
     const { url, value } = item
     if (!url || !value) return null
     return (
-      <PressableWithOpacity activeOpacity={0.7} onPress={() => this.handleFollowLink(url)}>
+      <PressableWithOpacity
+        activeOpacity={0.7}
+        key={`${testIDPrefix}-${type}-link-button-${index}`}
+        onPress={() => this.handleFollowLink(url)}>
         <Text
           key={`${testIDPrefix}-${type}-link-${index}`}
           style={styles.fundingLink}
@@ -144,24 +118,67 @@ export class FundingScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleValueTagSetupPressed = async () => {
+  _handleV4VProvidersPressed = async () => {
     const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS)
     if (consentGivenString && JSON.parse(consentGivenString) === true) {
-      this.props.navigation.navigate(PV.RouteNames.ValueTagSetupScreen)
+      this.props.navigation.navigate(PV.RouteNames.V4VProvidersScreen)
     } else {
-      this.props.navigation.navigate(PV.RouteNames.ValueTagPreviewScreen)
+      this.props.navigation.navigate(PV.RouteNames.V4VPreviewScreen)
+    }
+  }
+
+  _handleUpdateBoostTransactionsState = async (
+    action: 'ACTION_BOOST' | 'ACTION_STREAMING',
+    amount: number) => {
+    const { player, podcastValueFinal } = this.global
+    const { nowPlayingItem } = player
+    const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(this.global)
+
+    const valueTags =
+      podcastValueFinal ||
+      (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue) ||
+      (nowPlayingItem?.podcastValue?.length && nowPlayingItem?.podcastValue)
+    const activeValueTag = v4vGetActiveValueTag(
+      valueTags, activeProvider?.type, activeProvider?.method)
+
+    if (activeValueTag) {
+      let shouldRound = false
+      if (action === PV.V4V.ACTION_BOOST) {
+        shouldRound = true
+      }
+
+      const newValueTransactions = await convertValueTagIntoValueTransactions(
+        activeValueTag,
+        nowPlayingItem,
+        action,
+        amount,
+        shouldRound        
+      )
+      
+      if (action === 'ACTION_BOOST') {
+        this.setState({ boostTransactions: newValueTransactions })
+      } else if (action === 'ACTION_STREAMING') {
+        this.setState({ streamingTransactions: newValueTransactions })
+      }
+
     }
   }
 
   render() {
-    const { boostTransactions, streamingTransactions, erroringTransactions } = this.state
+    const {
+      boostTransactions,
+      // localAppBoostAmount,
+      // localAppStreamingAmount,
+      localBoostAmount,
+      localStreamingAmount,
+      streamingTransactions
+    } = this.state
     const { player, podcastValueFinal, session } = this.global
+    const { v4v } = session
+    const { previousTransactionErrors } = v4v
     const { nowPlayingItem } = player
     const podcastFunding = nowPlayingItem?.podcastFunding || []
-    const episodeFunding = nowPlayingItem?.episodeFunding || []
-
-    const { globalSettings, lnpayEnabled } = session?.valueTagSettings?.lightningNetwork?.lnpay || {}
-    const { boostAmount, streamingAmount } = globalSettings || {}
+    const episodeFunding = nowPlayingItem?.episodeFunding || []   
 
     const podcastLinks = podcastFunding.map((item: any, index: number) =>
       this.renderFundingLink(item, 'podcast', index)
@@ -169,11 +186,12 @@ export class FundingScreen extends React.Component<Props, State> {
     const episodeLinks = episodeFunding.map((item: any, index: number) =>
       this.renderFundingLink(item, 'episode', index)
     )
+    
     const hasValueInfo =
-      !!Config.ENABLE_VALUE_TAG_TRANSACTIONS &&
       (podcastValueFinal?.length > 0 ||
         nowPlayingItem?.episodeValue?.length > 0 ||
         nowPlayingItem?.podcastValue?.length > 0)
+    const { activeProvider, activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(this.global)
 
     const podcastTitle = nowPlayingItem?.podcastTitle.trim() || translate('Untitled Podcast')
     const episodeTitle = nowPlayingItem?.episodeTitle.trim() || translate('Untitled Episode')
@@ -225,93 +243,122 @@ export class FundingScreen extends React.Component<Props, State> {
               {translate('Value-for-Value')}
             </Text>
           )}
-          {hasValueInfo && !lnpayEnabled && (
-            <View style={styles.noLnpayView}>
-              <Text style={styles.noLnPayText}>{translate('Podcast supports value-for-value donations')}</Text>
+          {hasValueInfo && !activeProvider && (
+            <View style={styles.noV4VView}>
+              <Text style={styles.noV4VText}>{translate('Podcast supports value-for-value donations')}</Text>
               <Pressable
                 accessibilityHint={translate('ARIA HINT - go to the Bitcoin wallet setup screen')}
-                accessibilityLabel={translate('Setup Bitcoin Wallet')}
+                accessibilityLabel={translate('Setup Wallet')}
                 accessibilityRole='button'
-                style={styles.goToValueTagSetupButton}
-                onPress={this._handleValueTagSetupPressed}>
-                <Text style={styles.goToValueTagSetupButtonText}>{translate('Setup Bitcoin Wallet')}</Text>
+                style={styles.goToV4VProvidersButton}
+                onPress={this._handleV4VProvidersPressed}>
+                <Text style={styles.goToV4VProvidersButtonText}>{translate('Setup Wallet')}</Text>
               </Pressable>
             </View>
           )}
-          {lnpayEnabled && hasValueInfo && (
+          {!!activeProvider && hasValueInfo && (
             <View>
               <Text style={styles.textLabel} testID={`${testIDPrefix}_value_settings_lightning_label`}>
-                {translate('Bitcoin Wallet')}
+                {translate('Value for Value')}
               </Text>
-              <Text style={styles.textSubLabel} testID={`${testIDPrefix}_value_settings_lightning_sub_label`}>
-                {translate('via your LNPay wallet')}
-              </Text>
+              {/* <Text style={styles.textSubLabel} testID={`${testIDPrefix}_value_settings_lightning_sub_label`}>
+                some wallet text here
+              </Text> */}
               <View style={styles.itemWrapper}>
                 <TextInput
-                  editable={false}
+                  editable
                   eyebrowTitle={translate('Boost Amount for this Podcast')}
                   keyboardType='numeric'
                   wrapperStyle={styles.textInput}
-                  onBlur={() => {
-                    // if (this.global.session.boostAmount < MINIMUM_BOOST_PAYMENT) {
-                    //   this.setGlobal({ session: { ...session, boostAmount: MINIMUM_BOOST_PAYMENT } })
-                    //   AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, String(MINIMUM_BOOST_PAYMENT))
-                    // }
+                  onBlur={async () => {
+                    const { localBoostAmount } = this.state
+                    if (activeProvider) {
+                      const { type, method } = activeProvider
+                      if (Number(localBoostAmount) && Number(localBoostAmount) > MINIMUM_BOOST_PAYMENT) {
+                        await v4vUpdateTypeMethodSettingsBoostAmount(
+                          this.global,
+                          type,
+                          method,
+                          Number(localBoostAmount)
+                        )
+                        this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, Number(localBoostAmount))
+                      } else {
+                        await v4vUpdateTypeMethodSettingsBoostAmount(this.global, type, method, MINIMUM_BOOST_PAYMENT)
+                        this.setState({ localBoostAmount: MINIMUM_BOOST_PAYMENT.toString() })
+                        this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, MINIMUM_BOOST_PAYMENT)
+                      }
+                    }
                   }}
                   onSubmitEditing={() => Keyboard.dismiss()}
-                  // onChangeText={(newText: string) => {
-                  //   // this.setGlobal({ session: { ...session, boostAmount: Number(newText) } })
-                  //   // AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, newText)
-                  // }}
+                  onChangeText={(newText: string) => {
+                    this.setState({ localBoostAmount: newText })
+                  }}
                   testID={`${testIDPrefix}_boost_amount_text_input`}
-                  value={`${boostAmount}`}
+                  value={localBoostAmount}
                 />
               </View>
-              <View style={styles.valueTagInfoViewWrapper}>
+              <View style={styles.V4VRecipientsInfoView}>
                 <Text
                   style={styles.textTableLabel}
                   testID={`${testIDPrefix}_value_settings_lightning_boost_sample_label`}>
                   {translate('Boost splits')}
                 </Text>
-                <ValueTagInfoView
-                  testID={testIDPrefix}
-                  totalAmount={boostAmount}
+                <V4VRecipientsInfoView
+                  testID={`${testIDPrefix}_boost`}
+                  totalAmount={activeProviderSettings?.boostAmount || 0}
                   transactions={boostTransactions}
-                  erroringTransactions={erroringTransactions}
+                  erroringTransactions={previousTransactionErrors.boost}
                 />
               </View>
               <View style={styles.itemWrapper}>
                 <TextInput
-                  editable={false}
-                  eyebrowTitle={translate('Streaming Amount for this Podcast')}
+                  editable
+                  eyebrowTitle={translate('Streaming Amount for this podcast')}
                   keyboardType='numeric'
                   wrapperStyle={styles.textInput}
-                  onBlur={() => {
-                    // if (this.global.session.boostAmount < MINIMUM_BOOST_PAYMENT) {
-                    //   this.setGlobal({ session: { ...session, boostAmount: MINIMUM_BOOST_PAYMENT } })
-                    //   AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, String(MINIMUM_BOOST_PAYMENT))
-                    // }
+                  onBlur={async () => {
+                    const { localStreamingAmount } = this.state
+                    if (activeProvider) {
+                      const { type, method } = activeProvider
+                      if (Number(localStreamingAmount) && Number(localStreamingAmount) > MINIMUM_STREAMING_PAYMENT) {
+                        await v4vUpdateTypeMethodSettingsStreamingAmount(
+                          this.global,
+                          type,
+                          method,
+                          Number(localStreamingAmount)
+                        )
+                        this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_STREAMING, Number(localStreamingAmount))
+                      } else {
+                        await v4vUpdateTypeMethodSettingsStreamingAmount(
+                          this.global,
+                          type,
+                          method,
+                          MINIMUM_STREAMING_PAYMENT
+                        )
+                        this.setState({ localStreamingAmount: MINIMUM_STREAMING_PAYMENT.toString() })
+                        this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_STREAMING, MINIMUM_STREAMING_PAYMENT)
+                      }
+                    }
                   }}
                   onSubmitEditing={() => Keyboard.dismiss()}
-                  // onChangeText={(newText: string) => {
-                  //   // this.setGlobal({ session: { ...session, boostAmount: Number(newText) } })
-                  //   // AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, newText)
-                  // }}
-                  testID={`${testIDPrefix}_boost_amount_text_input`}
-                  value={`${streamingAmount}`}
+                  onChangeText={(newText: string) => {
+                    this.setState({ localStreamingAmount: newText })
+                  }}
+                  testID={`${testIDPrefix}_streaming_amount_text_input`}
+                  value={localStreamingAmount}
                 />
               </View>
-              <View style={styles.valueTagInfoViewWrapper}>
+              <View style={styles.V4VRecipientsInfoView}>
                 <Text
                   style={styles.textTableLabel}
                   testID={`${testIDPrefix}_value_settings_lightning_streaming_sample_label`}>
                   {translate('Streaming splits per minute')}
                 </Text>
-                <ValueTagInfoView
-                  testID={testIDPrefix}
-                  totalAmount={streamingAmount}
+                <V4VRecipientsInfoView
+                  testID={`${testIDPrefix}_streaming`}
+                  totalAmount={activeProviderSettings?.streamingAmount || 0}
                   transactions={streamingTransactions}
-                  erroringTransactions={erroringTransactions}
+                  erroringTransactions={previousTransactionErrors.streaming}
                 />
               </View>
             </View>
@@ -381,6 +428,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 12
   },
   itemWrapper: {
+    marginBottom: 8,
     marginTop: 24
   },
   podcastTitle: {
@@ -432,17 +480,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start'
   },
-  valueTagInfoViewWrapper: {},
-  noLnpayView: {
+  V4VRecipientsInfoView: {},
+  noV4VView: {
     marginTop: 10
   },
-  noLnPayText: {
+  noV4VText: {
     fontSize: PV.Fonts.sizes.lg
   },
-  goToValueTagSetupButton: {
+  goToV4VProvidersButton: {
     marginTop: 15
   },
-  goToValueTagSetupButtonText: {
+  goToV4VProvidersButtonText: {
     fontSize: PV.Fonts.sizes.lg,
     color: PV.Colors.blueLighter,
     fontWeight: PV.Fonts.weights.bold

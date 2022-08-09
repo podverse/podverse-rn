@@ -14,8 +14,7 @@ import { ValueTransaction } from 'podverse-shared'
 import { PV } from '../resources'
 import { BannerInfoError } from '../resources/Interfaces'
 import { PVIcon } from './PVIcon'
-import { ValueTagInfoView } from './ValueTagInfoView'
-import { Text } from '.'
+import { Text, V4VRecipientsInfoView } from '.'
 
 const SIZE = Dimensions.get('window').height
 const POPOUT_SIZE = 140
@@ -102,7 +101,7 @@ export const BoostDropdownBanner = () => {
             contentContainerStyle={styles.scrollViewContainer}
             showsVerticalScrollIndicator={false}>
             {!!transactions.length && (
-              <ValueTagInfoView
+              <V4VRecipientsInfoView
                 erroringTransactions={erroringTransactions}
                 isReceipt
                 testID='boost_dropdown_banner'

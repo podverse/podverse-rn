@@ -3,6 +3,7 @@ import 'reactn'
 import { AppModes } from '../resources/AppMode'
 import { BannerInfo, GlobalTheme, UserInfo, TempMediaRef } from '../resources/Interfaces'
 import { AutoQueueSettingsPosition } from '../services/queue'
+import { V4VProviderConnectedState, V4VSenderInfo, V4VTransactionError } from '../state/actions/v4v/v4v'
 
 declare module 'reactn/default' {
   export interface State {
@@ -110,19 +111,19 @@ declare module 'reactn/default' {
     session: {
       isLoggedIn: boolean
       userInfo: UserInfo
-      valueTagSettings: {
-        lightningNetwork: {
-          lnpay: {
-            walletSatsBalance?: number
-            walletUserLabel?: string
-            lnpayEnabled: boolean
-            globalSettings: {
-              boostAmount: number
-              streamingAmount: number
-            }
-          }
+      v4v: {
+        settings: V4VSettings
+        providers: {
+          active: string
+          connected: V4VProviderConnectedState[]
         }
-        streamingEnabled: boolean
+        streamingValueOn: boolean
+        previousTransactionErrors: {
+          boost: V4VTransactionError[]
+          streaming: V4VTransactionError[]
+        }
+        senderInfo: V4VSenderInfo
+        boostagramMessage: string
       }
     }
     subscribedPodcasts: []

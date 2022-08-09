@@ -29,7 +29,7 @@ import { Table } from './Table'
 import { Tabs } from './Tabs'
 import { TextInputs } from './TextInputs'
 import { URLs } from './URLs'
-import { ValueTag } from './ValueTag'
+import { V4V } from './V4V'
 
 export const PV = {
   ActionSheet,
@@ -63,5 +63,5 @@ export const PV = {
   Tabs,
   TextInputs,
   URLs,
-  ValueTag
+  V4V
 }

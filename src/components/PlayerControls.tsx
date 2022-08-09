@@ -240,7 +240,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 style={playerStyles.icon}>
                 {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS, `${testIDPrefix}_jump_backward`)}
                 <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
-                  <Text style={styles.skipTimeText}>{jumpBackwardsTime}</Text>
+                  <Text style={styles.skipTimeText}>{jumpBackwardsTime.toString()}</Text>
                 </View>
               </PressableWithOpacity>
             )}
@@ -260,7 +260,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 style={playerStyles.icon}>
                 {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, `${testIDPrefix}_step_forward`)}
                 <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
-                  <Text style={styles.skipTimeText}>{jumpForwardsTime}</Text>
+                  <Text style={styles.skipTimeText}>{jumpForwardsTime.toString()}</Text>
                 </View>
               </PressableWithOpacity>
             )}

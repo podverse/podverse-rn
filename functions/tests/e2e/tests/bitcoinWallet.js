@@ -6,8 +6,6 @@ const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
 const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
 const test_bitcoinWallet = async () => {
 
-  //IMPORTANT: Must be run after LNPaySetup.js
-
   console.log('_Bitcoin Wallet_')
   const driver = getDriver()
 

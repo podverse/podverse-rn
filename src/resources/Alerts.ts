@@ -1,5 +1,6 @@
 import { NowPlayingItem } from 'podverse-shared'
 import { translate } from '../lib/i18n'
+import { navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
 import { sendVerificationEmail } from '../services/auth'
 import { logoutUser } from '../state/actions/auth'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
@@ -81,6 +82,7 @@ export const Alerts = {
   GO_TO_LIVE_PODCAST: (
     navigation: any,
     podcastId: string,
+    episodeId: string,
     podcastTitle?: string,
     episodeTitle?: string,
     _goBackWithDelay?: any
@@ -94,10 +96,7 @@ export const Alerts = {
         onPress: async () => {
           await _goBackWithDelay()
           setTimeout(() => {
-            navigation.navigate(PV.RouteNames.PodcastScreen, {
-              podcastId,
-              forceRequest: true
-            })
+            navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(navigation, podcastId, episodeId)
           }, 1555)
         }
       }
