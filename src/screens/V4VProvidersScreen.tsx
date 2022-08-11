@@ -127,13 +127,14 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
           renderItem={({ item }) => {
             return (
               <TableCell
+                includeDivider
                 onPress={() => this._handleV4VProviderOnPress(item)}
                 testIDPrefix={`${testIDPrefix}_${item.key}`}
                 testIDSuffix=''>
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   style={[table.cellTextLarge, globalTheme.tableCellTextPrimary]}>
-                  {item.title}
+                  {`${item.title} >`}
                 </Text>
               </TableCell>
             )
@@ -161,6 +162,7 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
                   style={[table.sectionExplanationText, globalTheme.tableCellTextPrimary]}>
                   {helperText}
                 </Text>
+                <Divider />
               </>
             )
           }}
