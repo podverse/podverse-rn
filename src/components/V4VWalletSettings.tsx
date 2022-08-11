@@ -2,12 +2,21 @@ import { Keyboard, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { MINIMUM_APP_BOOST_PAYMENT, MINIMUM_APP_STREAMING_PAYMENT,
-  MINIMUM_BOOST_PAYMENT, MINIMUM_STREAMING_PAYMENT,
-  v4vGetPluralCurrencyUnit, v4vGetTypeMethodKey } from '../services/v4v/v4v'
-import { V4VProviderConnectedState, v4vUpdateTypeMethodSettingsAppBoostAmount,
-  v4vUpdateTypeMethodSettingsAppStreamingAmount, v4vUpdateTypeMethodSettingsBoostAmount,
-  v4vUpdateTypeMethodSettingsStreamingAmount } from '../state/actions/v4v/v4v'
+import {
+  MINIMUM_APP_BOOST_PAYMENT,
+  MINIMUM_APP_STREAMING_PAYMENT,
+  MINIMUM_BOOST_PAYMENT,
+  MINIMUM_STREAMING_PAYMENT,
+  v4vGetPluralCurrencyUnit,
+  v4vGetTypeMethodKey
+} from '../services/v4v/v4v'
+import {
+  V4VProviderConnectedState,
+  v4vUpdateTypeMethodSettingsAppBoostAmount,
+  v4vUpdateTypeMethodSettingsAppStreamingAmount,
+  v4vUpdateTypeMethodSettingsBoostAmount,
+  v4vUpdateTypeMethodSettingsStreamingAmount
+} from '../state/actions/v4v/v4v'
 import { core } from '../styles'
 import { Text, TextInput, View } from '.'
 
@@ -25,7 +34,6 @@ type State = {
 }
 
 export class V4VWalletSettings extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
 
@@ -56,17 +64,16 @@ export class V4VWalletSettings extends React.Component<Props, State> {
   render() {
     const { provider, testID } = this.props
     const { method, type } = provider
-    const { localAppBoostAmount, localAppStreamingAmount,
-      localBoostAmount, localStreamingAmount } = this.state
+    const { localAppBoostAmount, localAppStreamingAmount, localBoostAmount, localStreamingAmount } = this.state
     const { session } = this.global
     const typeMethodKey = v4vGetTypeMethodKey(type, method)
     const typeMethodSettings = session.v4v.settings.typeMethod[typeMethodKey]
-  
+
     if (!typeMethodSettings) return null
 
     const boostAmountText = `${translate('Boost Amount')} (${v4vGetPluralCurrencyUnit(provider.unit)})`
     const streamingAmountText = `${translate('Streaming Amount')} (${v4vGetPluralCurrencyUnit(provider.unit)})`
-  
+
     return (
       <View>
         <View style={styles.sectionWrapper}>
@@ -101,7 +108,11 @@ export class V4VWalletSettings extends React.Component<Props, State> {
               const { localStreamingAmount } = this.state
               if (Number(localStreamingAmount) && Number(localStreamingAmount) > MINIMUM_STREAMING_PAYMENT) {
                 await v4vUpdateTypeMethodSettingsStreamingAmount(
-                  this.global, type, method, Number(localStreamingAmount))
+                  this.global,
+                  type,
+                  method,
+                  Number(localStreamingAmount)
+                )
               } else {
                 await v4vUpdateTypeMethodSettingsStreamingAmount(this.global, type, method, MINIMUM_STREAMING_PAYMENT)
                 this.setState({ localStreamingAmount: MINIMUM_STREAMING_PAYMENT.toString() })
@@ -167,7 +178,6 @@ export class V4VWalletSettings extends React.Component<Props, State> {
       </View>
     )
   }
-
 }
 
 const styles = StyleSheet.create({

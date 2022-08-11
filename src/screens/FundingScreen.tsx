@@ -17,10 +17,19 @@ import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
-import { convertValueTagIntoValueTransactions, MINIMUM_BOOST_PAYMENT,
-  MINIMUM_STREAMING_PAYMENT, v4vGetActiveValueTag, v4vGetTypeMethodKey } from '../services/v4v/v4v'
-import { v4vGetCurrentlyActiveProviderInfo, V4VTypeMethod, v4vUpdateTypeMethodSettingsBoostAmount,
-  v4vUpdateTypeMethodSettingsStreamingAmount } from '../state/actions/v4v/v4v'
+import {
+  convertValueTagIntoValueTransactions,
+  MINIMUM_BOOST_PAYMENT,
+  MINIMUM_STREAMING_PAYMENT,
+  v4vGetActiveValueTag,
+  v4vGetTypeMethodKey
+} from '../services/v4v/v4v'
+import {
+  v4vGetCurrentlyActiveProviderInfo,
+  V4VTypeMethod,
+  v4vUpdateTypeMethodSettingsBoostAmount,
+  v4vUpdateTypeMethodSettingsStreamingAmount
+} from '../state/actions/v4v/v4v'
 import { images } from '../styles'
 
 type Props = any
@@ -65,29 +74,31 @@ export class FundingScreen extends React.Component<Props, State> {
     const { nowPlayingItem } = player
 
     const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(this.global)
-    
+
     const { episodeValue, podcastValue } = nowPlayingItem
     const valueTags =
       podcastValueFinal || (episodeValue?.length && episodeValue) || (podcastValue?.length && podcastValue)
-    const activeValueTag = v4vGetActiveValueTag(
-      valueTags, activeProvider?.type, activeProvider?.method)
+    const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
 
     if (activeValueTag && activeProvider) {
       const { method, type } = activeProvider
       const typeMethodKey = v4vGetTypeMethodKey(type, method)
       const typeMethodSettings = this.global.session.v4v.settings.typeMethod[typeMethodKey] as V4VTypeMethod
 
-      this.setState({
-        localBoostAmount: typeMethodSettings.boostAmount?.toString(),
-        localStreamingAmount: typeMethodSettings.streamingAmount?.toString(),
-        localAppBoostAmount: typeMethodSettings.appBoostAmount?.toString(),
-        localAppStreamingAmount: typeMethodSettings.appStreamingAmount?.toString()
-      }, () => {
-        Promise.all([
-          this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, typeMethodSettings.boostAmount),
-          this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_STREAMING, typeMethodSettings.streamingAmount)
-        ])
-      })
+      this.setState(
+        {
+          localBoostAmount: typeMethodSettings.boostAmount?.toString(),
+          localStreamingAmount: typeMethodSettings.streamingAmount?.toString(),
+          localAppBoostAmount: typeMethodSettings.appBoostAmount?.toString(),
+          localAppStreamingAmount: typeMethodSettings.appStreamingAmount?.toString()
+        },
+        () => {
+          Promise.all([
+            this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, typeMethodSettings.boostAmount),
+            this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_STREAMING, typeMethodSettings.streamingAmount)
+          ])
+        }
+      )
     }
 
     trackPageView('/funding', 'Funding Screen')
@@ -127,9 +138,7 @@ export class FundingScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleUpdateBoostTransactionsState = async (
-    action: 'ACTION_BOOST' | 'ACTION_STREAMING',
-    amount: number) => {
+  _handleUpdateBoostTransactionsState = async (action: 'ACTION_BOOST' | 'ACTION_STREAMING', amount: number) => {
     const { player, podcastValueFinal } = this.global
     const { nowPlayingItem } = player
     const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(this.global)
@@ -138,8 +147,7 @@ export class FundingScreen extends React.Component<Props, State> {
       podcastValueFinal ||
       (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue) ||
       (nowPlayingItem?.podcastValue?.length && nowPlayingItem?.podcastValue)
-    const activeValueTag = v4vGetActiveValueTag(
-      valueTags, activeProvider?.type, activeProvider?.method)
+    const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
 
     if (activeValueTag) {
       let shouldRound = false
@@ -152,15 +160,14 @@ export class FundingScreen extends React.Component<Props, State> {
         nowPlayingItem,
         action,
         amount,
-        shouldRound        
+        shouldRound
       )
-      
+
       if (action === 'ACTION_BOOST') {
         this.setState({ boostTransactions: newValueTransactions })
       } else if (action === 'ACTION_STREAMING') {
         this.setState({ streamingTransactions: newValueTransactions })
       }
-
     }
   }
 
@@ -178,7 +185,7 @@ export class FundingScreen extends React.Component<Props, State> {
     const { previousTransactionErrors } = v4v
     const { nowPlayingItem } = player
     const podcastFunding = nowPlayingItem?.podcastFunding || []
-    const episodeFunding = nowPlayingItem?.episodeFunding || []   
+    const episodeFunding = nowPlayingItem?.episodeFunding || []
 
     const podcastLinks = podcastFunding.map((item: any, index: number) =>
       this.renderFundingLink(item, 'podcast', index)
@@ -186,11 +193,11 @@ export class FundingScreen extends React.Component<Props, State> {
     const episodeLinks = episodeFunding.map((item: any, index: number) =>
       this.renderFundingLink(item, 'episode', index)
     )
-    
+
     const hasValueInfo =
-      (podcastValueFinal?.length > 0 ||
-        nowPlayingItem?.episodeValue?.length > 0 ||
-        nowPlayingItem?.podcastValue?.length > 0)
+      podcastValueFinal?.length > 0 ||
+      nowPlayingItem?.episodeValue?.length > 0 ||
+      nowPlayingItem?.podcastValue?.length > 0
     const { activeProvider, activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(this.global)
 
     const podcastTitle = nowPlayingItem?.podcastTitle.trim() || translate('Untitled Podcast')

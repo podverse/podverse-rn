@@ -219,7 +219,7 @@ const handleValueStreamingMinutePassed = async () => {
 
   const { activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(globalState)
   const { streamingAmount } = activeProviderSettings || {}
-  
+
   const valueTag = podcastValueFinal || nowPlayingItem.episodeValue || nowPlayingItem.podcastValue
 
   if (valueTag && streamingAmount) {

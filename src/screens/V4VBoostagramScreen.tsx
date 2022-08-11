@@ -49,7 +49,7 @@ const testIDPrefix = 'boostagram_screen'
 
 export class V4VBoostagramScreen extends React.Component<Props, State> {
   explosion: ConfettiCannon | null
-  
+
   constructor() {
     super()
     this.state = {

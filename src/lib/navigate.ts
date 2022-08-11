@@ -6,7 +6,10 @@ import { PV } from '../resources'
   Navigate to the EpisodeScreen located within the PodcastsStackNavigator.
  */
 export const navigateToEpisodeScreenInPodcastsStackNavigatorWithIds = (
-  navigation: any, podcastId: string, episodeId: string) => {
+  navigation: any,
+  podcastId: string,
+  episodeId: string
+) => {
   navigateBackToRoot(navigation)
   navigation.navigate({
     routeName: PV.RouteNames.PodcastScreen,

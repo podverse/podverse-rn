@@ -45,12 +45,11 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
     const { connected } = this.global.session.v4v.providers
     const allowedProvidersList = PV.V4V.ALLOWED_PROVIDERS_LIST
 
-    return v4vGetProviderListItems()
-      .filter((item: any) => {
-        const isAllowedProvider = allowedProvidersList?.some((providerKey: any) => item.key === providerKey)
-        const isConnectedProvider = connected?.some((provider: V4VProviderConnectedState) => item.key === provider.key)
-        return isAllowedProvider && isConnectedProvider
-      })
+    return v4vGetProviderListItems().filter((item: any) => {
+      const isAllowedProvider = allowedProvidersList?.some((providerKey: any) => item.key === providerKey)
+      const isConnectedProvider = connected?.some((provider: V4VProviderConnectedState) => item.key === provider.key)
+      return isAllowedProvider && isConnectedProvider
+    })
   }
 
   _setupOptions = () => {
@@ -146,9 +145,8 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
                 ? translate('V4V Providers connected explanation')
                 : translate('V4V Providers setup explanation')
 
-            const headerTextStyle = section.key === _sectionConnectedKey
-              ? globalTheme.headerTextSuccess
-              : globalTheme.headerText
+            const headerTextStyle =
+              section.key === _sectionConnectedKey ? globalTheme.headerTextSuccess : globalTheme.headerText
             return (
               <>
                 <TableSectionSelectors

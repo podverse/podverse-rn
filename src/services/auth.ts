@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import * as RNKeychain from "react-native-keychain"
+import * as RNKeychain from 'react-native-keychain'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { Credentials } from '../state/actions/auth'
@@ -12,7 +12,7 @@ export const getBearerToken = async () => {
   let bearerToken = ''
   try {
     const creds = await RNKeychain.getInternetCredentials(PV.Keys.BEARER_TOKEN)
-    if(creds){
+    if (creds) {
       bearerToken = creds.password
     }
   } catch (error) {
@@ -192,8 +192,8 @@ export const login = async (email: string, password: string) => {
 
   const data = (response && response.data) || []
   if (data.token) {
-    await RNKeychain.setInternetCredentials(PV.Keys.BEARER_TOKEN, "Bearer", data.token, {
-      accessible: RNKeychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY 
+    await RNKeychain.setInternetCredentials(PV.Keys.BEARER_TOKEN, 'Bearer', data.token, {
+      accessible: RNKeychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
     })
   }
 

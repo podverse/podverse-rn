@@ -242,12 +242,17 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
             await this._setExtDownloadFileLocationAndroid10()
             // await this._askToTransferDownloads()
           } else {
-            const grantedWrite = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE, {
-              title: translate('Podverse External Storage Permission'),
-              message: translate(`Podverse would like to access your device's external storage to store downloaded media.`),
-              buttonNegative: translate('Cancel'),
-              buttonPositive: translate('Approve')
-            })
+            const grantedWrite = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+              {
+                title: translate('Podverse External Storage Permission'),
+                message: translate(
+                  `Podverse would like to access your device's external storage to store downloaded media.`
+                ),
+                buttonNegative: translate('Cancel'),
+                buttonPositive: translate('Approve')
+              }
+            )
             const grantedRead = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
               title: translate('Podverse External Storage Permission'),
               message: translate(
@@ -256,8 +261,11 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
               buttonNegative: translate('Cancel'),
               buttonPositive: translate('Approve')
             })
-    
-            if (grantedWrite === PermissionsAndroid.RESULTS.GRANTED && grantedRead === PermissionsAndroid.RESULTS.GRANTED) {
+
+            if (
+              grantedWrite === PermissionsAndroid.RESULTS.GRANTED &&
+              grantedRead === PermissionsAndroid.RESULTS.GRANTED
+            ) {
               await this._setExtDownloadFileLocationAndroid9()
               await this._askToTransferDownloads()
             } else {
@@ -292,20 +300,16 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
   }
 
   _setExtDownloadFileLocationAndroid10 = async () => {
-      const dir = await ScopedStorage.openDocumentTree(true)
-      console.log('dir', dir)
+    const dir = await ScopedStorage.openDocumentTree(true)
 
-      if (dir?.uri) {
-        const parsedDownloadLocation = dir.uri
-        await AsyncStorage.setItem(
-          PV.Keys.EXT_STORAGE_DLOAD_LOCATION,
-          parsedDownloadLocation
-        )
-        this.setState({ customDownloadLocation: parsedDownloadLocation })
-      } else {
-        await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
-        this.setState({ customDownloadLocation: null })
-      }
+    if (dir?.uri) {
+      const parsedDownloadLocation = dir.uri
+      await AsyncStorage.setItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION, parsedDownloadLocation)
+      this.setState({ customDownloadLocation: parsedDownloadLocation })
+    } else {
+      await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+      this.setState({ customDownloadLocation: null })
+    }
   }
 
   _setExtDownloadFileLocationAndroid9 = async () => {
