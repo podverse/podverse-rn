@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import Config from 'react-native-config'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import {
@@ -8,7 +7,6 @@ import {
   playerUpdateTrackPlayerCapabilities
 } from '../../services/player'
 import { checkIfTrackingIsEnabled } from '../../services/tracking'
-import { removeLNPayWallet } from './lnpay'
 
 export const initializeSettings = async () => {
   const [
@@ -46,14 +44,6 @@ export const initializeSettings = async () => {
     AsyncStorage.getItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE),
     AsyncStorage.getItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED)
   ])
-
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) {
-    try {
-      await removeLNPayWallet()
-    } catch (error) {
-      //
-    }
-  }
 
   setGlobal({
     censorNSFWText,

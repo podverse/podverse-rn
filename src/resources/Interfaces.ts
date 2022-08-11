@@ -1,5 +1,6 @@
 import { TranscriptRow, ValueTransaction } from 'podverse-shared'
-import { AutoQueueSettingsPosition } from '../services/queue'
+import { AutoQueueSettingsPosition } from '../services/autoQueue'
+import { V4VProviderConnectedState, V4VSenderInfo, V4VSettings } from '../state/actions/v4v/v4v'
 import { AppModes } from './AppMode'
 export interface GlobalTheme {
   actionSheetButton?: any
@@ -26,6 +27,7 @@ export interface GlobalTheme {
   dropdownButtonText?: any
   flatList?: any
   headerText?: any
+  headerTextSuccess?: any
   inputContainerText?: any
   link?: any
   liveStatusBadge?: any
@@ -196,19 +198,19 @@ export interface InitialState {
   session: {
     isLoggedIn: boolean
     userInfo: UserInfo
-    valueTagSettings: {
-      lightningNetwork: {
-        lnpay: {
-          walletSatsBalance?: number
-          walletUserLabel?: string
-          lnpayEnabled: boolean
-          globalSettings: {
-            boostAmount: number
-            streamingAmount: number
-          }
-        }
+    v4v: {
+      settings: V4VSettings
+      providers: {
+        active: string
+        connected: V4VProviderConnectedState[]
       }
-      streamingEnabled: boolean
+      streamingValueOn: boolean
+      previousTransactionErrors: {
+        boost: BannerInfoError[]
+        streaming: BannerInfoError[]
+      }
+      senderInfo: V4VSenderInfo
+      boostagramMessage: string
     }
   }
   subscribedPodcasts: []

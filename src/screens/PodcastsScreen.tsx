@@ -27,6 +27,7 @@ import { navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/n
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
+import { v4vAlbyCheckConnectDeepLink } from '../services/v4v/providers/alby'
 import { getAutoDownloadsLastRefreshDate, handleAutoDownloadEpisodes } from '../services/autoDownloads'
 import { handleAutoQueueEpisodes } from '../services/autoQueue'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
@@ -42,7 +43,7 @@ import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPa
 import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
 import { initAutoQueue } from '../state/actions/autoQueue'
 import { initDownloads, removeDownloadedPodcast, updateDownloadedPodcasts } from '../state/actions/downloads'
-import { updateWalletInfo } from '../state/actions/lnpay'
+import { v4vAlbyHandleConnect } from '../state/actions/v4v/providers/alby'
 import { handleUpdateNewEpisodesCount } from '../state/actions/newEpisodesCount'
 import {
   initializePlayerSettings,
@@ -62,6 +63,7 @@ import {
 import { updateScreenReaderEnabledState } from '../state/actions/screenReader'
 import { initializeSettings } from '../state/actions/settings'
 import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
+import { v4vInitializeConnectedProviders, v4vInitializeSenderInfo, v4vInitializeSettings } from '../state/actions/v4v/v4v'
 import { initializeValueProcessor } from '../state/actions/valueTag'
 import { core } from '../styles'
 
@@ -223,8 +225,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    PVEventEmitter.on(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
     PVEventEmitter.on(PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, this._handleNavigateToAddPodcastByRSSAuthScreen)
     PVEventEmitter.on(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -277,8 +277,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     iapEndConnection()
     AppState.removeEventListener('change', this._handleAppStateChange)
     Linking.removeEventListener('url', this._handleOpenURLEvent)
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    PVEventEmitter.removeListener(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
     PVEventEmitter.removeListener(
       PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW,
       this._handleNavigateToAddPodcastByRSSAuthScreen
@@ -436,10 +434,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
       if (url) {
         const route = url.replace(/.*?:\/\//g, '')
         const splitPath = route.split('/')
+        const domain = splitPath[0] ? splitPath[0] : ''
         const path = splitPath[1] ? splitPath[1] : ''
         const id = splitPath[2] ? splitPath[2] : ''
         const urlParamsString = splitPath[splitPath.length - 1].split('?')[1]
-        const urlParams = {}
+        const urlParams: any = {}
         if (urlParamsString) {
           const urlParamsArr = urlParamsString.split('&')
           if (urlParamsArr.length) {
@@ -501,7 +500,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
         } else if (path === PV.DeepLinks.XMPP.path) {
           await navigate(PV.RouteNames.MoreScreen)
           await navigate(PV.RouteNames.ContactXMPPChatScreen)
-        } else {
+        }
+
+        // V4V PROVIDERS:
+        else if (v4vAlbyCheckConnectDeepLink(domain) && urlParams?.code) {
+          await v4vAlbyHandleConnect(navigation, urlParams.code)
+        }
+        
+        // ELSE:
+        else {
           await navigate(PV.RouteNames.PodcastsScreen)
         }
       }
@@ -514,6 +521,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { searchBarText } = this.state
     await initPlayerState(this.global)
     await initializeSettings()
+    await v4vInitializeSettings()
+    await v4vInitializeConnectedProviders()
+    await v4vInitializeSenderInfo()
 
     // Load the AsyncStorage authenticatedUser and subscribed podcasts immediately,
     // before getting the latest from server and parsing the addByPodcastFeedUrls in getAuthUserInfo.

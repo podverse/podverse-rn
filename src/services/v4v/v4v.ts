@@ -1,55 +1,97 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, ValueTag, ValueTransaction } from 'podverse-shared'
-import Config from 'react-native-config'
+import { Config } from 'react-native-config'
+import * as RNKeychain from 'react-native-keychain'
 import { getGlobal } from 'reactn'
-import { PV } from '../resources'
-import { BannerInfoError } from '../resources/Interfaces'
-import { playerGetRate, playerGetPosition } from '../services/player'
-import { sendLNPayValueTransaction } from '../services/lnpay'
-import { createSatoshiStreamStats } from './satoshiStream'
+import { translate } from '../../lib/i18n'
+import { createSatoshiStreamStats } from '../../lib/satoshiStream'
+import { credentialsPlaceholderUsername } from '../../lib/secutity'
+import { PV } from '../../resources'
+import { V4VProviderListItem } from '../../resources/V4V'
+import { v4vAddPreviousTransactionError, v4vClearPreviousTransactionErrors,
+  v4vGetCurrentlyActiveProviderInfo, V4VProviderConnectedState, v4vRefreshActiveProviderWalletInfo, V4VSenderInfo, V4VSettings,
+  v4vSettingsDefault } from '../../state/actions/v4v/v4v'
+import { playerGetPosition, playerGetRate } from '../player'
 
-/*
-  Currently Podcast Index only returns
-  a single podcast/channel-level value tag as an object,
-  but Podverse supports many podcast/channel
-  and episode/item-level value tags in an array.
-  That's why we're returning an array as the result of this function.
-*/
-export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueTag: any) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+/* Constants */
 
-  const { destinations, model } = podcastIndexValueTag
-  let valueModel = {}
-  const recipients = [] as ValueRecipient[]
+export const _v4v_env_ = !!Config.IS_DEV ? 'dev' : 'prod'
 
-  if (Array.isArray(destinations) && model) {
-    const { method, suggested, type } = model
-    valueModel = {
-      method,
-      suggested,
-      type
+export const DEFAULT_BOOST_PAYMENT = 1000
+export const MINIMUM_BOOST_PAYMENT = 100
+
+export const DEFAULT_STREAMING_PAYMENT = 10
+export const MINIMUM_STREAMING_PAYMENT = 1
+
+export const DEFAULT_APP_BOOST_PAYMENT = 50
+export const MINIMUM_APP_BOOST_PAYMENT = 0
+
+export const DEFAULT_APP_STREAMING_PAYMENT = 1
+export const MINIMUM_APP_STREAMING_PAYMENT = 0
+
+
+
+/* Secure storage helpers */
+
+export const v4vGetProvidersConnected = async () => {
+  let accessData = []
+  try {
+    const creds = await RNKeychain.getInternetCredentials(PV.Keys.V4V_PROVIDERS_CONNECTED)
+    if (creds) {
+      accessData = JSON.parse(creds.password)
     }
-
-    for (const destination of destinations) {
-      const valueRecipient = {
-        address: destination.address,
-        customKey: destination.customKey,
-        customValue: destination.customValue,
-        fee: destination.fee,
-        name: destination.name,
-        split: parseFloat(destination.split),
-        type: destination.type
-      } as ValueRecipient
-      recipients.push(valueRecipient)
-    }
+  } catch (error) {
+    console.log('v4vGetProvidersConnected error:', error)
   }
 
-  return [{ ...valueModel, recipients }] as ValueTag[]
+  return accessData
 }
 
-const calculateNormalizedSplits = (recipients: ValueRecipient[]) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return []
+export const v4vSetProvidersConnected = async (connected: V4VProviderConnectedState[]) => {
+  try {
+    await RNKeychain.setInternetCredentials(
+      PV.Keys.V4V_PROVIDERS_CONNECTED,
+      credentialsPlaceholderUsername,
+      JSON.stringify(connected)
+    )
+  } catch (error) {
+    console.log('v4vSetProvidersEnabled error:', error)
+  }
+}
 
+export const v4vGetSettings = async () => {
+  let settingsData = v4vSettingsDefault
+  try {
+    const creds = await RNKeychain.getInternetCredentials(PV.Keys.V4V_SETTINGS)
+    if (creds && creds.password) {
+      settingsData = JSON.parse(creds.password)
+    } else {
+      await v4vSetSettings(settingsData)
+    }
+  } catch (error) {
+    console.log('v4vGetSettings error:', error)
+  }
+
+  return settingsData
+}
+
+export const v4vSetSettings = async (settings: V4VSettings) => {
+  try {
+    await RNKeychain.setInternetCredentials(
+      PV.Keys.V4V_SETTINGS,
+      credentialsPlaceholderUsername,
+      JSON.stringify(settings)
+    )
+  } catch (error) {
+    console.log('v4vSetSettings error:', error)
+  }
+}
+
+
+
+/* V4V Transaction helpers */
+
+const calculateNormalizedSplits = (recipients: ValueRecipient[]) => {
   let normalizedValueRecipients: ValueRecipientNormalized[] = []
 
   const totalSplit = recipients.reduce((total, recipient) => {
@@ -79,8 +121,6 @@ const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipien
   )
 
 export const normalizeValueRecipients = (recipients: ValueRecipient[], total: number, roundDownValues: boolean) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return []
-
   const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(recipients)
   const feeRecipient = normalizedValueRecipients.find((valueRecipient) => valueRecipient.fee === true)
   let feeAmount = 0
@@ -112,11 +152,9 @@ export const convertValueTagIntoValueTransactions = async (
   valueTag: ValueTag,
   nowPlayingItem: NowPlayingItem,
   action: string,
-  amount: number,
+  amount = 0,
   roundDownValues: boolean
 ) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return []
-
   const { method, type } = valueTag
 
   if (!method || !type) {
@@ -157,8 +195,6 @@ const convertValueTagIntoValueTransaction = async (
   method: string,
   type: string
 ) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
-
   const timestamp = Date.now()
   const [speed, currentPlaybackPosition] = await Promise.all([playerGetRate(), playerGetPosition()])
   const pubkey = 'podverse-pubkey'
@@ -184,11 +220,7 @@ const convertValueTagIntoValueTransaction = async (
   }
 }
 
-export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFinal: any) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
-
-  const errors: BannerInfoError[] = []
-
+export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFinal: any, includeMessage?: boolean) => {
   const valueTags =
     podcastValueFinal ||
     (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue) ||
@@ -202,9 +234,12 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
   const { recipients } = valueTag
   if (!Array.isArray(recipients)) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
+  v4vClearPreviousTransactionErrors()
+
   const action = 'boost'
-  const { session } = getGlobal()
-  const { boostAmount } = session?.valueTagSettings?.lightningNetwork?.lnpay?.globalSettings || {}
+
+  const { activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(getGlobal())
+  const { boostAmount = 0 } = activeProviderSettings || {}
 
   let totalAmountPaid = 0
   const roundDownBoostTransactions = true
@@ -216,43 +251,70 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
     roundDownBoostTransactions
   )
 
-  for (const valueTransaction of valueTransactions) {
-    try {
-      const succesfull = await sendValueTransaction(valueTransaction)
-      if (succesfull) {
-        totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
-      }
-    } catch (error) {
-      errors.push({
-        error,
-        details: {
-          recipient: valueTransaction.normalizedValueRecipient.name,
-          address: valueTransaction.normalizedValueRecipient.address
+  // delay requests to not overload with Alby with simultaneous requests
+  const generateSendValueTransactionPromise = (
+    valueTransaction: ValueTransaction,
+    delay: number
+  ) => {
+    return new Promise(async (resolve) => {
+      setTimeout(async () => {
+        try {
+          const succesfull = await sendValueTransaction(valueTransaction, includeMessage)
+          if (succesfull) {
+            totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
+          }
+        } catch (error) {
+          v4vAddPreviousTransactionError(
+            'boost',
+            valueTransaction.normalizedValueRecipient.address,
+            error.message,
+            valueTransaction.normalizedValueRecipient.customKey,
+            valueTransaction.normalizedValueRecipient.customValue
+          )
         }
-      })
+        resolve()
+      }, delay)
+    })
+  }
+
+  const valueTransactionPromises = []
+  let delay = 0
+  for (const valueTransaction of valueTransactions) {
+    valueTransactionPromises.push(
+      generateSendValueTransactionPromise(valueTransaction, delay))
+    delay += 1000
+  }
+
+  await Promise.all(valueTransactionPromises)
+
+  // Run refresh wallet data in the background after transactions complete.
+  v4vRefreshActiveProviderWalletInfo()
+
+  return { transactions: valueTransactions, totalAmountPaid }
+}
+
+const sendValueTransaction = async (valueTransaction: ValueTransaction, includeMessage?: boolean) => {
+  if (!valueTransaction.normalizedValueRecipient.amount) return
+  const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(getGlobal()) || {}
+
+  if (activeProvider) {
+    // Use require here to prevent circular dependencies issues.
+    if (activeProvider.key === 'alby') {
+      const { normalizedValueRecipient, satoshiStreamStats } = valueTransaction
+      const { v4vAlbySendKeysendPayment } = require('./providers/alby')
+      await v4vAlbySendKeysendPayment(
+        normalizedValueRecipient.amount,
+        normalizedValueRecipient.address,
+        satoshiStreamStats,
+        includeMessage
+      )
     }
   }
 
-  return { errors, transactions: valueTransactions, totalAmountPaid }
-}
-
-export const sendValueTransaction = async (valueTransaction: ValueTransaction) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
-
-  if (!valueTransaction.normalizedValueRecipient.amount) return
-
-  // If a valueTransaction fails, then add it to the tempValueTransactionQueue
-  if (valueTransaction?.type === 'lightning' && valueTransaction?.method === 'keysend') {
-    return sendLNPayValueTransaction(valueTransaction)
-  }
-
-  throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
+  return true
 }
 
 export const processValueTransactionQueue = async () => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
-
-  const errors: BannerInfoError[] = []
   const bundledValueTransactionsToProcess = await bundleValueTransactionQueue()
 
   let totalAmount = 0
@@ -262,28 +324,25 @@ export const processValueTransactionQueue = async () => {
       await sendValueTransaction(transaction)
       totalAmount = totalAmount + transaction.normalizedValueRecipient.amount
     } catch (error) {
-      errors.push({
-        error,
-        details: {
-          recipient: transaction.normalizedValueRecipient.name,
-          address: transaction.normalizedValueRecipient.address
-        }
-      })
+      v4vAddPreviousTransactionError(
+        'streaming',
+        transaction.normalizedValueRecipient.address,
+        error.message,
+        transaction.normalizedValueRecipient.customKey,
+        transaction.normalizedValueRecipient.customValue
+      )
     }
   }
 
   return {
-    errors,
     totalAmount,
     transactions: bundledValueTransactionsToProcess
   }
 }
 
-export const getValueTransactionQueue = async () => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
-
+const getValueTransactionQueue = async () => {
   try {
-    const transactionQueueString = await AsyncStorage.getItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE)
+    const transactionQueueString = await AsyncStorage.getItem(PV.V4V.VALUE_TRANSACTION_QUEUE)
     return transactionQueueString ? JSON.parse(transactionQueueString) : []
   } catch (err) {
     console.log('getStreamingValueTransactionQueue error:', err)
@@ -291,19 +350,15 @@ export const getValueTransactionQueue = async () => {
   }
 }
 
-export const clearValueTransactionQueue = async () => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
-
-  await AsyncStorage.setItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE, JSON.stringify([]))
+const clearValueTransactionQueue = async () => {
+  await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify([]))
 }
 
 /*
   Bundle the ValueTransactionQueue so we can send the funds in the
   minimum number of transactions.
 */
-export const bundleValueTransactionQueue = async () => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return []
-
+const bundleValueTransactionQueue = async () => {
   try {
     const transactionQueue = await getValueTransactionQueue()
     const bundledTransactionQueue: ValueTransaction[] = []
@@ -348,8 +403,6 @@ const combineTransactionAmounts = (
   bundledValueTransactionIndex: number,
   transaction: ValueTransaction
 ) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
-
   const bundledAmount = bundledQueue[bundledValueTransactionIndex].normalizedValueRecipient.amount
   transaction.normalizedValueRecipient.amount = bundledAmount + transaction.normalizedValueRecipient.amount
 
@@ -372,8 +425,6 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
   nowPlayingItem: NowPlayingItem,
   amount: number
 ) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
-
   try {
     // TODO: right now we are assuming the first item will be the lightning network
     // this will need to be updated to support additional valueTags
@@ -394,7 +445,7 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
       transactionQueue.push(transaction)
     }
 
-    await AsyncStorage.setItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
+    await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
   } catch (err) {
     console.log('saveStreamingValueTransactionsToTransactionQueue error:', err)
     await clearValueTransactionQueue()
@@ -402,12 +453,97 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
 }
 
 const saveTransactionQueue = async (transactionQueue: ValueTransaction[]) => {
-  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
-
   try {
-    await AsyncStorage.setItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
+    await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
   } catch (error) {
     console.log('saveTransactionQueue error', error)
     await clearValueTransactionQueue()
   }
+}
+
+
+
+/* V4V senderInfo helpers  */
+
+export const v4vGetSenderInfo = async () => {
+  let senderInfo = {
+    name: translate('anonymous')
+  }
+
+  try {
+    const senderInfoString = await AsyncStorage.getItem(PV.Keys.V4V_SENDER_INFO)
+    if (senderInfoString) {
+      senderInfo = JSON.parse(senderInfoString)
+    }
+  } catch (error) {
+    console.log('v4vGetSenderInfo error', error)
+  }
+
+  return senderInfo
+}
+
+export const v4vSetSenderInfo = async (senderInfo: V4VSenderInfo) => {
+  try {
+    await AsyncStorage.setItem(PV.Keys.V4V_SENDER_INFO, JSON.stringify(senderInfo))
+  } catch (error) {
+    console.log('v4vSetSenderInfo error', error)
+  }
+}
+
+
+
+
+/* Misc helpers */
+
+export const v4vGetPluralCurrencyUnit = (unit: 'sat') => {
+  let pluralUnit: 'sat' | 'sats' = unit
+  if (pluralUnit === 'sat') {
+    pluralUnit = 'sats'
+  }
+
+  return pluralUnit
+}
+
+export const v4vGetPluralCurrencyUnitPerMinute = (unit: 'sat') => {
+  return `${v4vGetPluralCurrencyUnit(unit)} ${translate('per minute')}`
+}
+
+export const v4vGetProviderListItems = () => {
+  const providerKeys = Object.keys(PV.V4V.providers)
+
+  const providerItems = providerKeys.map((providerKey: string) => {
+    const provider = PV.V4V.providers[providerKey]
+    const providerItem: V4VProviderListItem = {
+      title: provider.title,
+      key: provider.key,
+      routeName: provider.routeName
+    }
+    return providerItem
+  })
+
+  return providerItems
+}
+
+export const v4vGetTypeMethodKey = (type: 'lightning', method: 'keysend') => {
+  let typeMethodKey = ''
+
+  if (type === 'lightning' && method === 'keysend') {
+    typeMethodKey = 'lightningKeysend'
+  }
+
+  return typeMethodKey
+}
+
+export const v4vDeleteProviderFromStorage = async (providerKey: 'alby') => {
+  // Use require here to prevent circular dependencies issues.
+  if (providerKey === 'alby') {
+    const { v4vAlbyRemoveAccessData, v4vAlbyRemoveCodeVerifier } = require('./providers/alby')
+    await v4vAlbyRemoveAccessData()
+    await v4vAlbyRemoveCodeVerifier()
+  }
+}
+
+export const v4vGetActiveValueTag = (valueTags: ValueTag[], type?: 'lightning', method?: 'keysend') => {
+  if (!type || !method) return null
+  return valueTags.find((valueTag) => valueTag.type === type && valueTag.method === method)
 }

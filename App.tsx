@@ -65,7 +65,11 @@ class App extends Component<Props, State> {
     }
 
     await this.setupGlobalState(globalTheme)
-    await migrateCredentialsIfNeeded()
+    try {
+      await migrateCredentialsIfNeeded()
+    } catch (error) {
+      console.log('migrateCredentialsIfNeeded error:', error)
+    }
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
   }
 

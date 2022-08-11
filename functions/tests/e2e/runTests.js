@@ -17,7 +17,7 @@ const { test_myProfileScreenFull } = require('./tests/myProfileScreenFull')
 const { test_profilesScreenFull } = require('./tests/profilesScreenFull')
 const { test_playlistsScreenFull } = require('./tests/playlistsScreenFull')
 const { test_fundingPresent } = require('./tests/fundingPresent')
-const { test_LNPaySetup } = require('./tests/LNPaySetup')
+
 const { test_bitcoinWallet } = require('./tests/bitcoinWallet')
 
 
@@ -70,7 +70,7 @@ const runTests = async (customCapabilities) => {
 
 // Currently Disabled
     // await test_fundingPresent()
-    // await test_LNPaySetup()
+    
     // await test_bitcoinWallet()
 
 
