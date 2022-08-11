@@ -290,11 +290,6 @@ const allMoreFeatures = [
     routeName: PV.RouteNames.AddPodcastByRSSScreen
   },
   {
-    title: translate('Mode'),
-    key: _appModeKey,
-    routeName: PV.RouteNames.AppModeScreen
-  },
-  {
     title: translate('Value for Value'),
     key: _value4ValueKey
   },
@@ -302,6 +297,11 @@ const allMoreFeatures = [
     title: translate('Settings'),
     key: _settingsKey,
     routeName: PV.RouteNames.SettingsScreen
+  },
+  {
+    title: translate('Mode'),
+    key: _appModeKey,
+    routeName: PV.RouteNames.AppModeScreen
   },
   {
     title: translate('Import OPML'),

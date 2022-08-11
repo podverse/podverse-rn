@@ -294,6 +294,9 @@ PODS:
     - React-Core
   - react-native-document-picker (7.1.2):
     - React-Core
+  - react-native-file-access (2.4.4):
+    - React-Core
+    - ZIPFoundation (= 0.9.11)
   - react-native-in-app-review (3.2.2):
     - React
   - react-native-netinfo (7.1.7):
@@ -448,6 +451,7 @@ PODS:
   - toolbar-android (0.2.1):
     - React
   - Yoga (1.14.0)
+  - ZIPFoundation (0.9.11)
 
 DEPENDENCIES:
   - appcenter-analytics (from `../node_modules/appcenter-analytics/ios`)
@@ -478,6 +482,7 @@ DEPENDENCIES:
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
+  - react-native-file-access (from `../node_modules/react-native-file-access`)
   - react-native-in-app-review (from `../node_modules/react-native-in-app-review`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-orientation-locker (from `../node_modules/react-native-orientation-locker`)
@@ -534,6 +539,7 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - SwiftAudioEx
+    - ZIPFoundation
 
 EXTERNAL SOURCES:
   appcenter-analytics:
@@ -586,6 +592,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-config"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
+  react-native-file-access:
+    :path: "../node_modules/react-native-file-access"
   react-native-in-app-review:
     :path: "../node_modules/react-native-in-app-review"
   react-native-netinfo:
@@ -705,6 +713,7 @@ SPEC CHECKSUMS:
   react-native-background-timer: 029c606b3fd6dd476b153e177c518b6ade4c169f
   react-native-config: 387b1ea507bc50a2059e69149dac1342b9532f58
   react-native-document-picker: b0f989906fda1c1af4257cf0c7958229defe51ac
+  react-native-file-access: 83c9eeea2c79ecc3f998c04e7a377bccfba175dc
   react-native-in-app-review: 00a66a085c61dbd4474041dc14e7bfee81a86130
   react-native-netinfo: 27f287f2d191693f3b9d01a4273137fcf91c3b5d
   react-native-orientation-locker: 851f6510d8046ea2f14aa169b1e01fcd309a94ba
@@ -746,6 +755,7 @@ SPEC CHECKSUMS:
   SwiftAudioEx: 3a4024e48f3b3e45dac6bf2668d7adbe7b83f50e
   toolbar-android: 2a73856e98b750d7e71ce4644d3f41cc98211719
   Yoga: 2b4a01651f42a32f82e6cef3830a3ba48088237f
+  ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
 PODFILE CHECKSUM: e07310a512f6b8c112e095f5f70a60adcdfffa36
 
