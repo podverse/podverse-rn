@@ -2,11 +2,12 @@ import { SatoshiStreamStats } from 'podverse-shared'
 import qs from 'qs'
 import * as RNKeychain from 'react-native-keychain'
 import { getGlobal } from 'reactn'
+import { _v4v_env_ } from '../v4v'
 import { pkceGenerateRandomString, pkceGenerateCodeChallenge } from '../../pkce'
 import { request } from "../../request"
 import { credentialsPlaceholderUsername } from '../../../lib/secutity'
 import { PV } from '../../../resources'
-import { _v4v_env_ } from '../v4v'
+import { v4vDisconnectProvider } from '../../../state/actions/v4v/v4v'
 
 const albyApiPath = PV.V4V.providers.alby.env[_v4v_env_].apiPath
 
@@ -81,7 +82,7 @@ export const v4vAlbyRemoveCodeVerifier = async () => {
   }
 }
 
-const v4vAlbyGetAccessToken = async () => {
+export const v4vAlbyGetAccessToken = async () => {
   let access_token = ''
   const accessData = await v4vAlbyGetAccessData()
   
@@ -162,27 +163,45 @@ export const v4vAlbyRequestAccessToken = async (code: string) => {
       )
     } catch (error) {
       console.log('v4vAlbyRequestAccessToken error:', error)
+      await RNKeychain.resetInternetCredentials(PV.Keys.V4V_PROVIDERS_ALBY_ACCESS_DATA)
     }
   }
 }
 
-export const v4vAlbyRefreshAccessToken = async (refresh_token: string) => {
-  const body = { refresh_token }
+export const v4vAlbyRefreshAccessToken = async () => {
+  const albyConnectedProvider = await v4vAlbyGetAccessData()
+  
+  try {
+    const body = {
+      refresh_token: albyConnectedProvider.refresh_token,
+      grant_type: 'refresh_token'
+    }
 
-  const response = await request(
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+    const response = await request(
+      {
+        method: 'POST',
+        basicAuth, // TODO: remove from prod after alby updates!
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: qs.stringify(body)
       },
-      body: qs.stringify(body)
-    },
-    `${albyApiPath}/oauth/token`
-  )
+      `${albyApiPath}/oauth/token`
+    )
 
-  // save to secure storage, include whole oauth response object
-
-  return response && response.data
+    if (response?.data) {
+      await RNKeychain.setInternetCredentials(
+        PV.Keys.V4V_PROVIDERS_ALBY_ACCESS_DATA,
+        credentialsPlaceholderUsername,
+        JSON.stringify(response?.data)
+      )
+    } else {
+      throw new Error('Alby missing response data for refresh_token endpoint')
+    }
+  } catch (error) {
+    console.log('v4vAlbyRefreshAccessToken error:', error)
+    await v4vDisconnectProvider(PV.V4V.providers.alby.key)
+  }
 }
 
 /* API request helpers */
@@ -198,21 +217,39 @@ type AlbyAPIRequest = {
   path: string
 }
 
-export const v4vAlbyAPIRequest = async ({ body, method, path }: AlbyAPIRequest) => {
+export const v4vAlbyAPIRequest = async ({ body, method, path }: AlbyAPIRequest, limitRetry?: boolean) => {
   const access_token = await v4vAlbyGetAccessToken()
+
+  if (!access_token) {
+    throw new Error('Alby - no access token found')
+  }
+
   const providerBearerToken = generateBearerToken(access_token)
 
-  const response = await request(
-    {
-      method,
-      headers: { Authorization: providerBearerToken },
-      body,
-      timeout: 30000
-    },
-    `${albyApiPath}${path}`
-  )
+  try {
+    const response = await request(
+      {
+        method,
+        headers: { Authorization: providerBearerToken },
+        body,
+        timeout: 30000
+      },
+      `${albyApiPath}${path}`
+    )
 
-  return response && response.data
+    return response?.data
+  } catch (error) {
+    const response = error?.response
+    if (limitRetry) {
+      throw error
+    } else if (response?.status === 401 && response?.data?.message === 'expired access token') {
+      await v4vAlbyRefreshAccessToken()
+      const shouldLimitRetry = true
+      await v4vAlbyAPIRequest({ body, method, path }, shouldLimitRetry)
+    } else {
+      throw error
+    }
+  }
 }
 
 export const v4vAlbyGetAccountBalance = async () => {

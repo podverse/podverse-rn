@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native'
-import React, { useGlobal } from 'reactn'
+import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { _albyKey } from '../resources/V4V'
 import { v4vGetPluralCurrencyUnit } from '../services/v4v/v4v'
-import { v4vGetConnectedProvider, V4VProviderConnectedState } from '../state/actions/v4v/v4v'
+import { V4VProviderConnectedState } from '../state/actions/v4v/v4v'
 import { Text, View } from '.'
 
 type Props = {

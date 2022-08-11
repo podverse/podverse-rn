@@ -29,19 +29,21 @@ export const v4vAlbyGetAccountInfo = async (callback?: any) => {
   const summaryData = await v4vAlbyGetAccountSummaryService()
   const v4vData = await v4vAlbyGetAccountValue4ValueService()
 
-  const albyProviderState: V4VProviderConnectedState = {
-    key: PV.V4V.providers.alby.key,
-    address: v4vData.lightning_address,
-    balance: summaryData.balance,
-    boostagrams_count: summaryData.boostagrams_count,
-    currency: summaryData.currency,
-    keysend_custom_key: v4vData.keysend_custom_key,
-    keysend_custom_value: v4vData.keysend_custom_value,
-    method: 'keysend',
-    transactions_count: summaryData.transactions_count,
-    type: 'lightning',
-    unit: summaryData.unit
-  }
+  if (v4vData) {
+    const albyProviderState: V4VProviderConnectedState = {
+      key: PV.V4V.providers.alby.key,
+      address: v4vData.lightning_address,
+      balance: summaryData.balance,
+      boostagrams_count: summaryData.boostagrams_count,
+      currency: summaryData.currency,
+      keysend_custom_key: v4vData.keysend_custom_key,
+      keysend_custom_value: v4vData.keysend_custom_value,
+      method: 'keysend',
+      transactions_count: summaryData.transactions_count,
+      type: 'lightning',
+      unit: summaryData.unit
+    }
 
-  v4vAddOrUpdateConnectedProvider(albyProviderState, callback)
+    v4vAddOrUpdateConnectedProvider(albyProviderState, callback)
+  }
 }

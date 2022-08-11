@@ -14,6 +14,7 @@ import { PV } from '../resources'
 import { _albyKey } from '../resources/V4V'
 import PVEventEmitter from '../services/eventEmitter'
 import { trackPageView } from '../services/tracking'
+import { v4vAlbyGetAccessToken } from '../services/v4v/providers/alby'
 import { v4vGetConnectedProvider } from '../state/actions/v4v/v4v'
 import {
   v4vAlbyGetAccountInfo
@@ -65,7 +66,12 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
   _handleInitialize = async () => {
     const callback = () => this.setState({ isLoading: false, isLoadingWaitForEvent: false })
     try {
-      await v4vAlbyGetAccountInfo(callback)
+      const access_token = await v4vAlbyGetAccessToken()
+      if (access_token) {
+        await v4vAlbyGetAccountInfo(callback)
+      } else {
+        callback()
+      }
     } catch (error) {
       console.log('_handleInitialize error', error)
       callback()
