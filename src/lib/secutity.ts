@@ -1,3 +1,4 @@
+import { Platform } from "react-native"
 import * as RNKeychain from "react-native-keychain"
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { PV } from '../resources'
@@ -32,4 +33,21 @@ export const migrateCredentialsIfNeeded = async () => {
             console.log("Podcasts creds migration error: ", err)
         }
     }
+}
+
+/* 
+  Since react-native-keychain does not clear storage on app delete,
+  we're manually clearing every possible keychain key the app may have
+  on first app launch.
+  https://github.com/oblador/react-native-keychain/issues/135
+*/
+export const resetAllAppKeychain = async () => {
+  if (Platform.OS === 'ios') {
+    await RNKeychain.resetInternetCredentials(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS)
+    await RNKeychain.resetInternetCredentials(PV.Keys.BEARER_TOKEN)
+    await RNKeychain.resetInternetCredentials(PV.Keys.V4V_PROVIDERS_CONNECTED)
+    await RNKeychain.resetInternetCredentials(PV.Keys.V4V_SETTINGS)
+    await RNKeychain.resetInternetCredentials(PV.Keys.V4V_PROVIDERS_ALBY_ACCESS_DATA)
+    await RNKeychain.resetInternetCredentials(PV.Keys.V4V_PROVIDERS_ALBY_CODE_VERIFIER)
+  }
 }

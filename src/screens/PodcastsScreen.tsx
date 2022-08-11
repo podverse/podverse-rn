@@ -25,6 +25,7 @@ import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel }
 import { translate } from '../lib/i18n'
 import { navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
+import { resetAllAppKeychain } from '../lib/secutity'
 import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
 import { v4vAlbyCheckConnectDeepLink } from '../services/v4v/providers/alby'
@@ -248,7 +249,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5'),
           AsyncStorage.setItem(PV.Keys.APP_MODE, PV.AppMode.podcasts),
           AsyncStorage.setItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED, 'TRUE'),
-          AsyncStorage.setItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP, 'TRUE')
+          AsyncStorage.setItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP, 'TRUE'),
+          resetAllAppKeychain()
         ])
 
         if (!Config.DISABLE_CRASH_LOGS) {
