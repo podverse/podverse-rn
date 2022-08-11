@@ -197,11 +197,7 @@ export const removeDownloadedPodcastsFromInternalStorage = async () => {
   for (const podcast of podcasts) {
     for (const episode of podcast.episodes) {
       try {
-        const ext = getExtensionFromUrl(episode.mediaUrl)
-        const downloader = await BackgroundDownloader()
-        const path = `${downloader.directories.documents}/${episode.id}${ext}`
-
-        await RNFS.unlink(path)
+        await deleteDownloadedEpisode(episode)
       } catch (error) {
         console.log('Error deleting episode: ', episode.id)
       }

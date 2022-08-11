@@ -8512,6 +8512,11 @@ react-native-elements@3.4.2:
     react-native-ratings "8.0.4"
     react-native-size-matters "^0.3.1"
 
+react-native-file-access@2.4.5-beta.0:
+  version "2.4.5-beta.0"
+  resolved "https://registry.yarnpkg.com/react-native-file-access/-/react-native-file-access-2.4.5-beta.0.tgz#1e1c255d5056d306f10ac9f7e61002d3fae19aaa"
+  integrity sha512-pzmTxpQSlixJZrjE8HO20DKXH/FpYTD3hKinB0hJTEsDSPFbu/useI1UpvCd45Rr29aF2GNu4T9jHamYq4ys5w==
+
 react-native-fs@2.18.0:
   version "2.18.0"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.18.0.tgz#987b99cc90518ef26663a8d60e62104694b41c21"
@@ -8634,6 +8639,11 @@ react-native-safe-area-view@2.0.0, react-native-safe-area-view@^0.14.9:
   integrity sha512-tGlGZwRoZpTQ0gEdSSRgbkeyyKC50ZsEv2H/LQKjXhc00IHffbU0BA5chSzTqNwDrs5MFXfTG1ooRQK+0FVTjw==
   dependencies:
     hoist-non-react-statics "^2.3.1"
+
+react-native-scoped-storage@1.9.3:
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/react-native-scoped-storage/-/react-native-scoped-storage-1.9.3.tgz#0a76fd73d3ed2e39bb6654f5505cc98ce1b7e076"
+  integrity sha512-hGqj+2I6pIziIh1CmWXXlgm59wCQLIikETqbMCaFQRHC3yQGI4HdYN6QvM3rteUuR69PNjso+Qd3TJfQnFhlMA==
 
 react-native-screens@3.7.2:
   version "3.7.2"
