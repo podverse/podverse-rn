@@ -4,6 +4,7 @@ import * as RNKeychain from 'react-native-keychain'
 import { getGlobal } from 'reactn'
 import { pkceGenerateRandomString, pkceGenerateCodeChallenge } from '../../pkce'
 import { request } from "../../request"
+import { credentialsPlaceholderUsername } from '../../../lib/secutity'
 import { PV } from '../../../resources'
 import { _v4v_env_ } from '../v4v'
 
@@ -22,7 +23,11 @@ export const v4vAlbySaveNewCodeVerifier = async () => {
   let codeVerifier = ''
   try {
     codeVerifier = pkceGenerateRandomString(64)
-    await RNKeychain.setInternetCredentials(PV.Keys.V4V_PROVIDERS_ALBY_CODE_VERIFIER, '', codeVerifier)
+    await RNKeychain.setInternetCredentials(
+      PV.Keys.V4V_PROVIDERS_ALBY_CODE_VERIFIER,
+      credentialsPlaceholderUsername,
+      codeVerifier
+    )
   } catch (error) {
     console.log('v4vAlbyRequestAccessToken error:', error)
   }
@@ -152,7 +157,7 @@ export const v4vAlbyRequestAccessToken = async (code: string) => {
     try {
       await RNKeychain.setInternetCredentials(
         PV.Keys.V4V_PROVIDERS_ALBY_ACCESS_DATA,
-        '',
+        credentialsPlaceholderUsername,
         JSON.stringify(data)
       )
     } catch (error) {

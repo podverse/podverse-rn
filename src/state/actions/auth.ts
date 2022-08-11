@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Alert } from 'react-native'
-import Config from 'react-native-config'
 import {resetInternetCredentials} from "react-native-keychain"
 import { getGlobal, setGlobal } from 'reactn'
 import { shouldShowMembershipAlert } from '../../lib/membership'
@@ -22,7 +21,6 @@ import { setAllHistoryItemsLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemLocally,
   getNowPlayingItemOnServer, 
   setNowPlayingItemLocally} from '../../services/userNowPlayingItem'
-import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from '../../services/v4v/v4v'
 import { addAddByRSSPodcast, addAddByRSSPodcastWithCredentials } from './parser'
 import { combineWithAddByRSSPodcasts, getSubscribedPodcasts } from './podcast'
 
