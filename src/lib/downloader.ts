@@ -4,7 +4,7 @@ import { Episode, getExtensionFromUrl } from 'podverse-shared'
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
 import * as ScopedStorage from 'react-native-scoped-storage'
-import { FileSystem } from 'react-native-file-access'
+import { AndroidScoped, FileSystem } from 'react-native-file-access'
 import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
 import { getSecureUrl } from '../services/tools'
@@ -242,14 +242,8 @@ export const deleteDownloadedEpisode = async (episode: Episode) => {
     ])
     const ext = getExtensionFromUrl(episode.mediaUrl)
     if (customLocation) {
-      const uri = `${customLocation}/${episode.id}${ext}`
-      const what = RNFS.stat(uri)
-      console.log('deleteDownloadedEpisode uri', uri)
-      console.log('deleteDownloadedEpisode what', what)
-      // NOTE: commenting out ScopedStorage.deleteFile because it was deleting the whole directory :(
-      // await ScopedStorage.deleteFile(uri)
-      // And FileSystem.unlink doesn't have permission to delete from scoped storage :...(
-      // await FileSystem.unlink(uri)
+      const uri = AndroidScoped.appendPath(customLocation, `/${episode.id}${ext}`)      
+      await FileSystem.unlink(uri)
     } else {
       const path = `${downloader.directories.documents}/${episode.id}${ext}`
       await FileSystem.unlink(path)
