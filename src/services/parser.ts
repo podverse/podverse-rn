@@ -4,6 +4,7 @@ import { checkIfContainsStringMatch, isValidDate } from 'podverse-shared'
 import * as RNKeychain from "react-native-keychain"
 import { downloadEpisode } from '../lib/downloader'
 import { downloadCustomFileNameId } from '../lib/hash'
+import { credentialsPlaceholderUsername } from '../lib/secutity'
 import { convertToSortableTitle, getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
 import { handleUpdateNewEpisodesCountAddByRSS } from '../state/actions/newEpisodesCount'
@@ -244,9 +245,14 @@ const getAllPodcastCredentials = async () => {
       allCredentials = allCredentialsString ? JSON.parse(allCredentialsString) : {}
     }
   } catch (error) {
-    RNKeychain.setInternetCredentials(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, "", JSON.stringify({}), {
-      accessible: RNKeychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
-    })
+    RNKeychain.setInternetCredentials(
+      PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS,
+      credentialsPlaceholderUsername,
+      JSON.stringify({}),
+      {
+        accessible: RNKeychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
+      }
+    )
   }
 
   return allCredentials
@@ -257,12 +263,14 @@ export const savePodcastCredentials = async (feedUrl: string, credentials?: stri
   const allAddByRSSPodcastCredentials = await getAllPodcastCredentials()
   allAddByRSSPodcastCredentials[feedUrl] = credentials
 
-  RNKeychain.setInternetCredentials(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, 
-    "", 
-    JSON.stringify(allAddByRSSPodcastCredentials), 
+  RNKeychain.setInternetCredentials(
+    PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS,
+    credentialsPlaceholderUsername,
+    JSON.stringify(allAddByRSSPodcastCredentials),
     {
       accessible: RNKeychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
-    })
+    }
+  )
 }
 
 export const removePodcastCredentials = async (feedUrl: string) => {
@@ -270,7 +278,7 @@ export const removePodcastCredentials = async (feedUrl: string) => {
   delete allAddByRSSPodcastCredentials[feedUrl]
 
   RNKeychain.setInternetCredentials(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, 
-                                    "", 
+                                    credentialsPlaceholderUsername, 
                                     JSON.stringify(allAddByRSSPodcastCredentials), 
                                     {
                                       accessible: RNKeychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY

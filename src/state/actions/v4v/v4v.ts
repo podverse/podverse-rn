@@ -162,7 +162,7 @@ export const v4vInitializeConnectedProviders = async () => {
 }
 
 export const v4vGetConnectedProvider = (connectedProviders: V4VProviderConnectedState[], key: string) => {
-  const connectedProvider = connectedProviders.find((item: any) => item.key === key)
+  const connectedProvider = connectedProviders?.find((item: any) => item.key === key)
   return connectedProvider
 }
 
@@ -233,7 +233,7 @@ export const v4vGetMatchingActiveProvider = (valueTags: ValueTag[]) => {
   const { connected } = globalState.session.v4v.providers
   let matchingActiveProvider = null
 
-  if (valueTags && valueTags.length > 0) {
+  if (valueTags && valueTags.length > 0 && connected && connected.length > 0) {
     matchingActiveProvider = connected.find((provider: V4VProviderConnectedState) => {
       return valueTags.some((valueTag) => valueTag.method === provider.method && valueTag.type === provider.type)
     })
