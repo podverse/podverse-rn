@@ -85,7 +85,7 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
         <TextInput
           alwaysShowEyebrow
           eyebrowTitle={translate('Name')}
-          keyboardType='numeric'
+          keyboardType='default'
           onBlur={async () => {
             const { localSenderName } = this.state
             await v4vUpdateSenderInfoName(localSenderName)
