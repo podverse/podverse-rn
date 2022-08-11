@@ -31,6 +31,7 @@ export type V4VTypeMethod = {
   streamingAmount: number
   appBoostAmount: number
   appStreamingAmount: number
+  boostagramCharLimit: number
 }
 
 export type V4VSenderInfo = {
@@ -49,7 +50,8 @@ export const v4vSettingsDefault = {
       boostAmount: 1000,
       streamingAmount: 10,
       appBoostAmount: 50,
-      appStreamingAmount: 1
+      appStreamingAmount: 1,
+      boostagramCharLimit: 500
     }
   }
 }

@@ -310,7 +310,7 @@ export class FundingScreen extends React.Component<Props, State> {
                   erroringTransactions={previousTransactionErrors.boost}
                 />
               </View>
-              <View style={styles.itemWrapper}>
+              {/* <View style={styles.itemWrapper}>
                 <TextInput
                   editable
                   eyebrowTitle={translate('Streaming Amount for this podcast')}
@@ -360,7 +360,7 @@ export class FundingScreen extends React.Component<Props, State> {
                   transactions={streamingTransactions}
                   erroringTransactions={previousTransactionErrors.streaming}
                 />
-              </View>
+              </View> */}
             </View>
           )}
           {hasValueInfo && episodeLinks?.length > 0 && <Divider />}

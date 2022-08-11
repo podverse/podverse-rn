@@ -59,7 +59,7 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
                     key={`${index}`}
                     testID={`${testID}_boost_recipient_amount_${index}}`}
                     style={styles.recipientTextAmount}>
-                    {`${split} / ${amount}`}
+                    {`${split}% – ${amount}`}
                   </Text>
                 </View>
               </View>
