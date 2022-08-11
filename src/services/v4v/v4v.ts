@@ -34,7 +34,7 @@ export const MINIMUM_APP_STREAMING_PAYMENT = 0
 /* Secure storage helpers */
 
 export const v4vGetProvidersConnected = async () => {
-  let accessData = null
+  let accessData = []
   try {
     const creds = await RNKeychain.getInternetCredentials(PV.Keys.V4V_PROVIDERS_CONNECTED)
     if (creds) {
@@ -60,13 +60,12 @@ export const v4vSetProvidersConnected = async (connected: V4VProviderConnectedSt
 }
 
 export const v4vGetSettings = async () => {
-  let settingsData = null
+  let settingsData = v4vSettingsDefault
   try {
     const creds = await RNKeychain.getInternetCredentials(PV.Keys.V4V_SETTINGS)
     if (creds && creds.password) {
       settingsData = JSON.parse(creds.password)
     } else {
-      settingsData = v4vSettingsDefault
       await v4vSetSettings(settingsData)
     }
   } catch (error) {
