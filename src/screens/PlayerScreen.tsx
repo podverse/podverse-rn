@@ -295,8 +295,8 @@ export class PlayerScreen extends React.Component<Props> {
       <React.Fragment>
         <SafeAreaView style={styles.view}>
           <View style={styles.view} transparent testID='player_screen_view'>
-            {/* <MediaPlayerCarousel hasChapters={hasChapters} navigation={navigation} /> */}
-            <PlayerControls navigation={navigation} />
+            <MediaPlayerCarousel hasChapters={hasChapters} navigation={navigation} />
+            {/* <PlayerControls navigation={navigation} /> */}
             <ActionSheet
               handleCancelPress={this._dismissShareActionSheet}
               items={shareActionSheetButtons(
