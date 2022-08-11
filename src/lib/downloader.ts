@@ -1,8 +1,10 @@
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
-import { getExtensionFromUrl } from 'podverse-shared'
+import { Episode, getExtensionFromUrl } from 'podverse-shared'
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
+import * as ScopedStorage from 'react-native-scoped-storage'
+import { AndroidScoped, FileSystem } from 'react-native-file-access'
 import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
 import { getSecureUrl } from '../services/tools'
@@ -41,23 +43,6 @@ let existingDownloadTasks: any[] = []
 export const cancelDownloadTask = (episodeId: string) => {
   const task = downloadTasks.find((x: any) => x.id === episodeId)
   if (task) task.stop()
-}
-
-export const deleteDownloadedEpisode = async (episode: any) => {
-  const ext = getExtensionFromUrl(episode.mediaUrl)
-  const [downloader, customLocation] = await Promise.all([
-    BackgroundDownloader(),
-    AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
-  ])
-  const folderPath = customLocation ? customLocation : downloader.directories.documents
-  const path = `${folderPath}/${episode.id}${ext}`
-
-  try {
-    await RNFS.unlink(path)
-    return true
-  } catch (error) {
-    return false
-  }
 }
 
 const addDLTask = (episode: any, podcast: any) =>
@@ -157,9 +142,8 @@ export const downloadEpisode = async (
     BackgroundDownloader(),
     AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
   ])
-  const folderPath = customLocation ? customLocation : downloader.directories.documents
-
-  const destination = `${folderPath}/${episode.id}${ext}`
+  const folderPath = customLocation ? RNFS.TemporaryDirectoryPath : downloader.directories.documents
+  const origDestination = `${folderPath}/${episode.id}${ext}`
   const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
 
   let downloadUrl = episode.mediaUrl
@@ -187,7 +171,7 @@ export const downloadEpisode = async (
       .download({
         id: episode.id,
         url: downloadUrl,
-        destination,
+        destination: origDestination,
         headers: {
           ...(Authorization ? { Authorization } : {})
         }
@@ -219,6 +203,20 @@ export const downloadEpisode = async (
       })
       .done(async () => {
         await progressLimiter.stop()
+
+        if (customLocation) {
+          try {
+            const tempDownloadFileType = await FileSystem.stat(origDestination)
+            const newFileType = await ScopedStorage.createFile(customLocation, `${episode.id}${ext}`, 'audio/mpeg')
+            if (tempDownloadFileType && newFileType) {
+              const { uri: newFileUri } = newFileType
+              await FileSystem.cp(origDestination, newFileUri)
+            }
+          } catch (error) {
+            console.log('done error', error)
+          }
+        }
+
         await addDownloadedPodcastEpisode(episode, podcast)
 
         // Call updateDownloadComplete after updateDownloadedPodcasts
@@ -234,6 +232,27 @@ export const downloadEpisode = async (
         console.log('Download canceled due to error: ', error)
       })
   }, timeout)
+}
+
+export const deleteDownloadedEpisode = async (episode: Episode) => {
+  try {
+    const [downloader, customLocation] = await Promise.all([
+      BackgroundDownloader(),
+      AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+    ])
+    const ext = getExtensionFromUrl(episode.mediaUrl)
+    if (customLocation) {
+      const uri = AndroidScoped.appendPath(customLocation, `/${episode.id}${ext}`)      
+      await FileSystem.unlink(uri)
+    } else {
+      const path = `${downloader.directories.documents}/${episode.id}${ext}`
+      await FileSystem.unlink(path)
+    }
+    return true
+  } catch (error) {
+    console.log('deleteDownloadedEpisode', error)
+    return false
+  }
 }
 
 export const initDownloads = async () => {
