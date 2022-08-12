@@ -248,10 +248,7 @@ const getAllPodcastCredentials = async () => {
     RNKeychain.setInternetCredentials(
       PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS,
       credentialsPlaceholderUsername,
-      JSON.stringify({}),
-      {
-        accessible: RNKeychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
-      }
+      JSON.stringify({})
     )
   }
 
@@ -266,10 +263,7 @@ export const savePodcastCredentials = async (feedUrl: string, credentials?: stri
   RNKeychain.setInternetCredentials(
     PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS,
     credentialsPlaceholderUsername,
-    JSON.stringify(allAddByRSSPodcastCredentials),
-    {
-      accessible: RNKeychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
-    }
+    JSON.stringify(allAddByRSSPodcastCredentials)
   )
 }
 
@@ -280,10 +274,7 @@ export const removePodcastCredentials = async (feedUrl: string) => {
   RNKeychain.setInternetCredentials(
     PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS,
     credentialsPlaceholderUsername,
-    JSON.stringify(allAddByRSSPodcastCredentials),
-    {
-      accessible: RNKeychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
-    }
+    JSON.stringify(allAddByRSSPodcastCredentials)
   )
 }
 

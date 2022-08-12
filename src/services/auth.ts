@@ -192,9 +192,7 @@ export const login = async (email: string, password: string) => {
 
   const data = (response && response.data) || []
   if (data.token) {
-    await RNKeychain.setInternetCredentials(PV.Keys.BEARER_TOKEN, 'Bearer', data.token, {
-      accessible: RNKeychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
-    })
+    await RNKeychain.setInternetCredentials(PV.Keys.BEARER_TOKEN, 'Bearer', data.token)
   }
 
   return data
