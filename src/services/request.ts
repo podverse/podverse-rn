@@ -19,8 +19,16 @@ type PVRequest = {
 }
 
 export const request = async (req: PVRequest, customUrl?: string) => {
-  const { basicAuth = {}, endpoint = '', query = {}, headers = {},
-    body, method = 'GET', opts = {}, timeout = 30000 } = req
+  const {
+    basicAuth = {},
+    endpoint = '',
+    query = {},
+    headers = {},
+    body,
+    method = 'GET',
+    opts = {},
+    timeout = 30000
+  } = req
 
   const queryString = Object.keys(query)
     .map((key) => {
@@ -33,15 +41,15 @@ export const request = async (req: PVRequest, customUrl?: string) => {
 
   const url = customUrl ? customUrl : `${urlsApi.baseUrl}${endpoint}?${queryString}`
 
-  const basicAuthHeader = basicAuth.username && basicAuth.password
-    ? `Basic ${btoa(`${basicAuth.username}:${basicAuth.password}`)}` : ''
+  const basicAuthHeader =
+    basicAuth.username && basicAuth.password ? `Basic ${btoa(`${basicAuth.username}:${basicAuth.password}`)}` : ''
 
   const axiosRequest = {
     url,
     headers: {
       ...headers,
       'User-Agent': userAgent,
-      ...(basicAuthHeader ? { Authorization: basicAuthHeader  } : {})
+      ...(basicAuthHeader ? { Authorization: basicAuthHeader } : {})
     },
     ...(body ? { data: body } : {}),
     method,

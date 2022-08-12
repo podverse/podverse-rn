@@ -9,7 +9,8 @@ import { credentialsPlaceholderUsername } from '../../lib/secutity'
 import { PV } from '../../resources'
 import { V4VProviderListItem } from '../../resources/V4V'
 import { v4vAddPreviousTransactionError, v4vClearPreviousTransactionErrors,
-  v4vGetCurrentlyActiveProviderInfo, V4VProviderConnectedState, v4vRefreshActiveProviderWalletInfo, V4VSenderInfo, V4VSettings,
+  v4vGetCurrentlyActiveProviderInfo, V4VProviderConnectedState,
+  v4vRefreshActiveProviderWalletInfo, V4VSenderInfo, V4VSettings,
   v4vSettingsDefault } from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
 
@@ -256,7 +257,8 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
     valueTransaction: ValueTransaction,
     delay: number
   ) => {
-    return new Promise(async (resolve) => {
+    return new Promise<void>((resolve) => {
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       setTimeout(async () => {
         try {
           const succesfull = await sendValueTransaction(valueTransaction, includeMessage)

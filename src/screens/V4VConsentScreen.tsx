@@ -55,7 +55,7 @@ export class V4VConsentScreen extends React.Component<Props, State> {
       PV.Fonts.fontScale.largest === fontScaleMode
         ? [styles.switchOptionText, { fontSize: PV.Fonts.largeSizes.sm }]
         : [styles.switchOptionText]
-    
+
     return (
       <SafeAreaView style={styles.content} testID={`${testIDPrefix}_view`.prependTestId()}>
         <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title}>

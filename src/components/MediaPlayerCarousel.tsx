@@ -179,9 +179,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       : [styles.boostButtonSubText]
 
     const hasValueInfo =
-      (podcastValueFinal?.length > 0 ||
-        nowPlayingItem?.episodeValue?.length > 0 ||
-        nowPlayingItem?.podcastValue?.length > 0)
+      podcastValueFinal?.length > 0 ||
+      nowPlayingItem?.episodeValue?.length > 0 ||
+      nowPlayingItem?.podcastValue?.length > 0
 
     const carouselComponents = mediaPlayerCarouselComponents(
       this._handlePressClipInfo,

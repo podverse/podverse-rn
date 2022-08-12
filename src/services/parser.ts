@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { encode as btoa } from 'base-64'
 import { checkIfContainsStringMatch, isValidDate } from 'podverse-shared'
-import * as RNKeychain from "react-native-keychain"
+import * as RNKeychain from 'react-native-keychain'
 import { downloadEpisode } from '../lib/downloader'
 import { downloadCustomFileNameId } from '../lib/hash'
 import { credentialsPlaceholderUsername } from '../lib/secutity'
@@ -240,7 +240,7 @@ const getAllPodcastCredentials = async () => {
 
   try {
     const allCredentialsResult = await RNKeychain.getInternetCredentials(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS)
-    if(allCredentialsResult) {
+    if (allCredentialsResult) {
       const allCredentialsString = allCredentialsResult.password
       allCredentials = allCredentialsString ? JSON.parse(allCredentialsString) : {}
     }
@@ -277,12 +277,14 @@ export const removePodcastCredentials = async (feedUrl: string) => {
   const allAddByRSSPodcastCredentials = await getAllPodcastCredentials()
   delete allAddByRSSPodcastCredentials[feedUrl]
 
-  RNKeychain.setInternetCredentials(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, 
-                                    credentialsPlaceholderUsername, 
-                                    JSON.stringify(allAddByRSSPodcastCredentials), 
-                                    {
-                                      accessible: RNKeychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
-                                    })
+  RNKeychain.setInternetCredentials(
+    PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS,
+    credentialsPlaceholderUsername,
+    JSON.stringify(allAddByRSSPodcastCredentials),
+    {
+      accessible: RNKeychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
+    }
+  )
 }
 
 export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string) => {

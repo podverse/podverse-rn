@@ -49,7 +49,7 @@ const testIDPrefix = 'boostagram_screen'
 
 export class V4VBoostagramScreen extends React.Component<Props, State> {
   explosion: ConfettiCannon | null
-  
+
   constructor() {
     super()
     this.state = {
@@ -189,6 +189,11 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     const pubDate = readableDate(nowPlayingItem.episodePubDate)
     const headerAccessibilityLabel = `${podcastTitle}, ${episodeTitle}, ${pubDate}`
 
+    const boostagramMessageCharCount = boostagramMessage?.length || 0
+    const boostagramCharLimit = activeProviderSettings?.boostagramCharLimit || 500
+    const boostagramMessageIsValid = boostagramMessageCharCount <= boostagramCharLimit
+    const sendButtonDisabled = boostIsSending || !boostagramMessageIsValid
+
     return (
       <View style={styles.content} testID='funding_screen_view'>
         <View accessible accessibilityLabel={headerAccessibilityLabel} style={styles.innerTopView}>
@@ -236,74 +241,78 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
           )}
           {!!activeProvider && hasValueInfo && (
             <View>
-              {
-                !boostWasSent && (
-                  <>
-                    <View style={styles.itemWrapper}>
-                      <TextInput
-                        editable
-                        eyebrowTitle={translate('Boost Amount for this Podcast')}
-                        keyboardType='numeric'
-                        wrapperStyle={styles.textInput}
-                        onBlur={async () => {
-                          const { localBoostAmount } = this.state
-                          if (activeProvider) {
-                            const { type, method } = activeProvider
-                            if (Number(localBoostAmount) && Number(localBoostAmount) > MINIMUM_BOOST_PAYMENT) {
-                              await v4vUpdateTypeMethodSettingsBoostAmount(
-                                this.global,
-                                type,
-                                method,
-                                Number(localBoostAmount)
-                              )
-                              this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, Number(localBoostAmount))
-                            } else {
-                              await v4vUpdateTypeMethodSettingsBoostAmount(this.global, type, method, MINIMUM_BOOST_PAYMENT)
-                              this.setState({ localBoostAmount: MINIMUM_BOOST_PAYMENT.toString() })
-                              this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, MINIMUM_BOOST_PAYMENT)
-                            }
+              {!boostWasSent && (
+                <>
+                  <View style={styles.itemWrapper}>
+                    <TextInput
+                      editable
+                      eyebrowTitle={translate('Boost Amount for this Podcast')}
+                      keyboardType='numeric'
+                      wrapperStyle={styles.textInput}
+                      onBlur={async () => {
+                        const { localBoostAmount } = this.state
+                        if (activeProvider) {
+                          const { type, method } = activeProvider
+                          if (Number(localBoostAmount) && Number(localBoostAmount) > MINIMUM_BOOST_PAYMENT) {
+                            await v4vUpdateTypeMethodSettingsBoostAmount(
+                              this.global,
+                              type,
+                              method,
+                              Number(localBoostAmount)
+                            )
+                            this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, Number(localBoostAmount))
+                          } else {
+                            await v4vUpdateTypeMethodSettingsBoostAmount(
+                              this.global,
+                              type,
+                              method,
+                              MINIMUM_BOOST_PAYMENT
+                            )
+                            this.setState({ localBoostAmount: MINIMUM_BOOST_PAYMENT.toString() })
+                            this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, MINIMUM_BOOST_PAYMENT)
                           }
-                        }}
-                        onSubmitEditing={() => Keyboard.dismiss()}
-                        onChangeText={(newText: string) => {
-                          this.setState({ localBoostAmount: newText })
-                        }}
-                        testID={`${testIDPrefix}_boost_amount_text_input`}
-                        value={localBoostAmount}
-                      />
-                    </View>
-                    <View style={styles.itemWrapper}>
-                      <TextInput
-                        editable
-                        eyebrowTitle={translate('Message')}
-                        keyboardType='default'
-                        wrapperStyle={styles.textInput}
-                        numberOfLines={4}
-                        onSubmitEditing={() => Keyboard.dismiss()}
-                        onChangeText={(newText: string) => {
-                          v4vUpdateBoostagramMessage(newText)
-                        }}
-                        placeholder={translate('Message optional')}
-                        testID={`${testIDPrefix}_message_text_input`}
-                        value={boostagramMessage}
-                      />
-                    </View>
-                    <View style={styles.boostagramButtonWrapper}>
-                      <Button
-                        accessibilityLabel={translate('Send')}
-                        disabled={boostIsSending}
-                        isLoading={boostIsSending}
-                        isSuccess
-                        onPress={this._attemptBoostagram}
-                        testID={`${testIDPrefix}_send_boostagram`}
-                        text={translate('Send')}
-                        wrapperStyles={styles.boostagramButton}
-                      />
-                    </View>
-                    <Divider />
-                  </>
-                )
-              }
+                        }
+                      }}
+                      onSubmitEditing={() => Keyboard.dismiss()}
+                      onChangeText={(newText: string) => {
+                        this.setState({ localBoostAmount: newText })
+                      }}
+                      testID={`${testIDPrefix}_boost_amount_text_input`}
+                      value={localBoostAmount}
+                    />
+                  </View>
+                  <View style={styles.itemWrapper}>
+                    <TextInput
+                      editable
+                      eyebrowTitle={translate('Message')}
+                      keyboardType='default'
+                      wrapperStyle={styles.textInput}
+                      numberOfLines={4}
+                      onSubmitEditing={() => Keyboard.dismiss()}
+                      onChangeText={(newText: string) => {
+                        v4vUpdateBoostagramMessage(newText)
+                      }}
+                      placeholder={translate('Message optional')}
+                      testID={`${testIDPrefix}_message_text_input`}
+                      value={boostagramMessage}
+                    />
+                  </View>
+                  <Text style={styles.charCounter}>{`${boostagramMessageCharCount} / ${boostagramCharLimit}`}</Text>
+                  <View style={styles.boostagramButtonWrapper}>
+                    <Button
+                      accessibilityLabel={translate('Send')}
+                      disabled={sendButtonDisabled}
+                      isLoading={boostIsSending}
+                      isSuccess={!sendButtonDisabled}
+                      onPress={this._attemptBoostagram}
+                      testID={`${testIDPrefix}_send_boostagram`}
+                      text={translate('Send')}
+                      wrapperStyles={styles.boostagramButton}
+                    />
+                  </View>
+                  <Divider />
+                </>
+              )}
               <View style={styles.V4VRecipientsInfoView}>
                 <Text
                   style={styles.textTableLabel}
@@ -344,7 +353,11 @@ const styles = StyleSheet.create({
   boostagramButtonWrapper: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
+    flex: 1
+  },
+  charCounter: {
+    fontSize: PV.Fonts.sizes.sm,
+    textAlign: 'right'
   },
   content: {
     flex: 1

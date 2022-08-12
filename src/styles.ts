@@ -810,7 +810,7 @@ export const table = StyleSheet.create({
   },
   sectionExplanationText: {
     fontSize: PV.Fonts.sizes.md,
-    marginBottom: 8,
+    marginBottom: 16,
     paddingHorizontal: 8
   }
 })

@@ -294,7 +294,7 @@ PODS:
     - React-Core
   - react-native-document-picker (7.1.2):
     - React-Core
-  - react-native-file-access (2.4.4):
+  - react-native-file-access (2.4.5-beta.0):
     - React-Core
     - ZIPFoundation (= 0.9.11)
   - react-native-in-app-review (3.2.2):
@@ -713,7 +713,7 @@ SPEC CHECKSUMS:
   react-native-background-timer: 029c606b3fd6dd476b153e177c518b6ade4c169f
   react-native-config: 387b1ea507bc50a2059e69149dac1342b9532f58
   react-native-document-picker: b0f989906fda1c1af4257cf0c7958229defe51ac
-  react-native-file-access: 83c9eeea2c79ecc3f998c04e7a377bccfba175dc
+  react-native-file-access: bb435161af8db8f4f5c94fa3f3a7d01b1fa1f714
   react-native-in-app-review: 00a66a085c61dbd4474041dc14e7bfee81a86130
   react-native-netinfo: 27f287f2d191693f3b9d01a4273137fcf91c3b5d
   react-native-orientation-locker: 851f6510d8046ea2f14aa169b1e01fcd309a94ba

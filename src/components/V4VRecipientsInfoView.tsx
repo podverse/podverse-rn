@@ -42,9 +42,11 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
             return (
               (customKey &&
                 customValue &&
-                trs.customKey === customKey && trs.customValue === customValue && trs.address === trs.address) ||
+                trs.customKey === customKey &&
+                trs.customValue === customValue &&
+                trs.address === trs.address) ||
               ((!customKey || !customValue) && trs.address === address)
-            )            
+            )
           })
           return (
             <View key={`${testID}_boost_info_${index}`}>
@@ -59,7 +61,7 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
                     key={`${index}`}
                     testID={`${testID}_boost_recipient_amount_${index}}`}
                     style={styles.recipientTextAmount}>
-                    {`${split} / ${amount}`}
+                    {`${split}% – ${amount}`}
                   </Text>
                 </View>
               </View>

@@ -25,6 +25,7 @@ import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel }
 import { translate } from '../lib/i18n'
 import { navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
+import { resetAllAppKeychain } from '../lib/secutity'
 import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
 import { v4vAlbyCheckConnectDeepLink } from '../services/v4v/providers/alby'
@@ -63,7 +64,11 @@ import {
 import { updateScreenReaderEnabledState } from '../state/actions/screenReader'
 import { initializeSettings } from '../state/actions/settings'
 import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
-import { v4vInitializeConnectedProviders, v4vInitializeSenderInfo, v4vInitializeSettings } from '../state/actions/v4v/v4v'
+import {
+  v4vInitializeConnectedProviders,
+  v4vInitializeSenderInfo,
+  v4vInitializeSettings
+} from '../state/actions/v4v/v4v'
 import { initializeValueProcessor } from '../state/actions/valueTag'
 import { core } from '../styles'
 
@@ -248,7 +253,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5'),
           AsyncStorage.setItem(PV.Keys.APP_MODE, PV.AppMode.podcasts),
           AsyncStorage.setItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED, 'TRUE'),
-          AsyncStorage.setItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP, 'TRUE')
+          AsyncStorage.setItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP, 'TRUE'),
+          resetAllAppKeychain()
         ])
 
         if (!Config.DISABLE_CRASH_LOGS) {
@@ -506,7 +512,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         else if (v4vAlbyCheckConnectDeepLink(domain) && urlParams?.code) {
           await v4vAlbyHandleConnect(navigation, urlParams.code)
         }
-        
+
         // ELSE:
         else {
           await navigate(PV.RouteNames.PodcastsScreen)
