@@ -16,7 +16,7 @@ export const createSatoshiStreamStats = (
   action: string,
   speed: string,
   pubkey: string,
-  amount: string,
+  totalBatchedAmount: number,
   name: string,
   customKey: string,
   customValue: string
@@ -26,7 +26,6 @@ export const createSatoshiStreamStats = (
   const podcastIndexId =
     (nowPlayingItem?.podcastIndexPodcastId && parseInt(nowPlayingItem.podcastIndexPodcastId, 10)) || null
   const ts = parseInt(currentPlaybackPosition, 10)
-  const amountNum = parseInt(amount, 10) * 1000 // in millisats
 
   const { name: senderName } = getGlobal().session.v4v.senderInfo
 
@@ -39,7 +38,7 @@ export const createSatoshiStreamStats = (
       action,
       speed,
       pubkey,
-      value_msat: amountNum,
+      value_msat_total: totalBatchedAmount * 1000,
       uuid: uuidv4(),
       app_name: Config.USER_AGENT_PREFIX,
       name,

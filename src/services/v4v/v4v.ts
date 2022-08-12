@@ -180,7 +180,8 @@ export const convertValueTagIntoValueTransactions = async (
       nowPlayingItem,
       action,
       method,
-      type
+      type,
+      amount
     )
 
     if (valueTransaction) valueTransactions.push(valueTransaction)
@@ -194,7 +195,10 @@ const convertValueTagIntoValueTransaction = async (
   nowPlayingItem: NowPlayingItem,
   action: string,
   method: string,
-  type: string
+  type: string,
+  // totalBatchedAmount is sent ONLY as metadata
+  // and is not used for the actual transaction amount that is sent
+  totalBatchedAmount: number
 ) => {
   const timestamp = Date.now()
   const [speed, currentPlaybackPosition] = await Promise.all([playerGetRate(), playerGetPosition()])
@@ -206,7 +210,7 @@ const convertValueTagIntoValueTransaction = async (
     action,
     speed.toString(),
     pubkey,
-    normalizedValueRecipient.amount.toString(),
+    totalBatchedAmount,
     normalizedValueRecipient.name || '',
     normalizedValueRecipient.customKey || '',
     normalizedValueRecipient.customValue || ''
