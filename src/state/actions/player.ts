@@ -91,7 +91,13 @@ export const playerUpdatePlayerState = (item: NowPlayingItem, callback?: any) =>
     }
   }
 
-  const valueTags = item.episodeValue || item.podcastValue || []
+  const valueTags = 
+    item.episodeValue?.length > 0
+    ? item.episodeValue
+    : item.podcastValue?.length > 0
+      ? item.podcastValue
+      : []
+
   const activeProvider = v4vGetMatchingActiveProvider(valueTags)
   const activeProviderKey = activeProvider?.key || ''
   v4vSetActiveProvider(activeProviderKey)

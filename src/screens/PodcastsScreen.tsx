@@ -179,7 +179,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const episodeId = remoteMessage?.data?.episodeId
 
       if (remoteMessage && podcastId && episodeId) {
-        await this._goBackWithDelay()
         setTimeout(() => {
           navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(navigation, podcastId, episodeId)
         }, 1555)

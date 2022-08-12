@@ -115,5 +115,11 @@ export const navigateToPodcastScreenWithPodcast = (navigation: any, podcast: any
 }
 
 export const navigateBackToRoot = (navigation: any) => {
+  navigation.dismiss()
+  navigation.goBack(null)
+  navigation.goBack(null)
+  navigation.goBack(null)
+  navigation.goBack(null)
+  navigation.goBack(null)
   navigation.navigate(PV.RouteNames.PodcastsScreen)
 }

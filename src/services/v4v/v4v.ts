@@ -153,7 +153,7 @@ export const convertValueTagIntoValueTransactions = async (
   valueTag: ValueTag,
   nowPlayingItem: NowPlayingItem,
   action: string,
-  amount = 0,
+  totalBatchedAmount = 0,
   roundDownValues: boolean
 ) => {
   const { method, type } = valueTag
@@ -172,7 +172,7 @@ export const convertValueTagIntoValueTransactions = async (
   const valueTransactions: ValueTransaction[] = []
   const recipients = valueTag.recipients
 
-  const normalizedValueRecipients = normalizeValueRecipients(recipients, amount, roundDownValues)
+  const normalizedValueRecipients = normalizeValueRecipients(recipients, totalBatchedAmount, roundDownValues)
 
   for (const normalizedValueRecipient of normalizedValueRecipients) {
     const valueTransaction = await convertValueTagIntoValueTransaction(
@@ -180,7 +180,8 @@ export const convertValueTagIntoValueTransactions = async (
       nowPlayingItem,
       action,
       method,
-      type
+      type,
+      totalBatchedAmount
     )
 
     if (valueTransaction) valueTransactions.push(valueTransaction)
@@ -194,7 +195,11 @@ const convertValueTagIntoValueTransaction = async (
   nowPlayingItem: NowPlayingItem,
   action: string,
   method: string,
-  type: string
+  type: string,
+  // This totalBatchedAmount parameter is sent ONLY as metadata
+  // and is not used for the actual transaction amount that is sent.
+  // The actual transaction amount is determined in the normalizeValueRecipients function.
+  totalBatchedAmount: number
 ) => {
   const timestamp = Date.now()
   const [speed, currentPlaybackPosition] = await Promise.all([playerGetRate(), playerGetPosition()])
@@ -206,7 +211,7 @@ const convertValueTagIntoValueTransaction = async (
     action,
     speed.toString(),
     pubkey,
-    normalizedValueRecipient.amount.toString(),
+    totalBatchedAmount,
     normalizedValueRecipient.name || '',
     normalizedValueRecipient.customKey || '',
     normalizedValueRecipient.customValue || ''

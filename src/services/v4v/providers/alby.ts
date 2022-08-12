@@ -240,9 +240,10 @@ export const v4vAlbyAPIRequest = async ({ body, method, path }: AlbyAPIRequest, 
     return response?.data
   } catch (error) {
     const response = error?.response
+
     if (limitRetry) {
       throw error
-    } else if (response?.status === 401 && response?.data?.message === 'expired access token') {
+    } else if (response?.status === 401 && response?.data?.error === 'expired access token') {
       await v4vAlbyRefreshAccessToken()
       const shouldLimitRetry = true
       await v4vAlbyAPIRequest({ body, method, path }, shouldLimitRetry)
