@@ -5,7 +5,6 @@ import AsyncStorage from '@react-native-community/async-storage'
 import {
   Divider,
   FastImage,
-  NavDismissIcon,
   PressableWithOpacity,
   ScrollView,
   Text,
@@ -62,9 +61,6 @@ export class FundingScreen extends React.Component<Props, State> {
 
     return {
       title: translate('Funding'),
-      headerLeft: () => (
-        <NavDismissIcon globalTheme={globalTheme} handlePress={navigation.dismiss} testID={testIDPrefix} />
-      ),
       headerRight: null
     }
   }

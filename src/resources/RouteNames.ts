@@ -35,6 +35,7 @@ export const RouteNames = {
   PlaylistScreen: 'PlaylistScreen',
   PlaylistsScreen: 'PlaylistsScreen',
   PlaylistsAddToScreen: 'PlaylistsAddToScreen',
+  PlaylistsAddToScreenModal: 'PlaylistsAddToScreenModal',
   PodcastScreen: 'PodcastScreen',
   PodcastInfoScreen: 'PodcastInfoScreen',
   PodcastsScreen: 'PodcastsScreen',

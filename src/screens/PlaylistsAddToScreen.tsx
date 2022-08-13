@@ -48,23 +48,29 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
     navigation.setParams({ isLoggedIn })
   }
 
-  static navigationOptions = ({ navigation }) => ({
-    title: translate('Add to Playlist'),
-    headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-    headerRight: () => (
-      <RNView>
-        {navigation.getParam('isLoggedIn') && (
-          <NavHeaderButtonText
-            accessibilityHint={translate('ARIA HINT - create a new playlist')}
-            accessibilityLabel={translate('New')}
-            handlePress={navigation.getParam('showNewPlaylistDialog')}
-            testID={`${testIDPrefix}_new`}
-            text={translate('New')}
-          />
-        )}
-      </RNView>
-    )
-  })
+  static navigationOptions = ({ navigation }) => {
+    const headerLeft = navigation.getParam('isModal')
+      ? <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} /> : null
+
+    return {
+      title: translate('Add to Playlist'),
+      ...(headerLeft ? { headerLeft } : {}),
+      headerRight: () => (
+        <RNView>
+          {navigation.getParam('isLoggedIn') && (
+            <NavHeaderButtonText
+              accessibilityHint={translate('ARIA HINT - create a new playlist')}
+              accessibilityLabel={translate('New')}
+              handlePress={navigation.getParam('showNewPlaylistDialog')}
+              testID={`${testIDPrefix}_new`}
+              text={translate('New')}
+            />
+          )}
+        </RNView>
+      )
+    }
+  }
+
 
   async componentDidMount() {
     this.props.navigation.setParams({
