@@ -12,6 +12,7 @@ type Props = {
   autoCapitalize?: any
   autoCompleteType?: any
   autoCorrect?: boolean
+  defaultValue?: string
   editable?: boolean
   eyebrowTitle?: string
   fontSizeLargerScale?: number
@@ -44,6 +45,7 @@ export const PVTextInput = (props: Props) => {
     autoCapitalize,
     autoCompleteType,
     autoCorrect,
+    defaultValue,
     editable = true,
     eyebrowTitle,
     inputRef,
@@ -103,6 +105,7 @@ export const PVTextInput = (props: Props) => {
         autoCompleteType={autoCompleteType}
         autoCorrect={autoCorrect}
         blurOnSubmit={returnKeyType === 'done'}
+        defaultValue={defaultValue}
         editable={!!editable}
         keyboardType={keyboardType}
         importantForAccessibility={!onPress ? 'yes' : 'no'}
