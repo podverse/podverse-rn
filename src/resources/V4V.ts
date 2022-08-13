@@ -17,7 +17,7 @@ type V4VType = {
 
 type V4VTypeProvider = {
   title: string
-  key: string
+  key: 'alby'
   routeName: string
   loginRouteName: string
   supportedTypes: V4VProvidersSupportedTypes[]

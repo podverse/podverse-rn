@@ -17,7 +17,7 @@ export class V4VPreviewScreen extends React.Component<Props> {
       headerLeft: () => (
         <NavDismissIcon globalTheme={globalTheme} handlePress={navigation.dismiss} testID={testIDPrefix} />
       ),
-      headerRight: null,
+      headerRight: () => null,
       title: null
     }
   }
