@@ -9,7 +9,6 @@ import {
   Button,
   Divider,
   FastImage,
-  NavDismissIcon,
   ScrollView,
   Text,
   TextInput,
@@ -70,9 +69,6 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
 
     return {
       title: translate('Boostagram'),
-      headerLeft: () => (
-        <NavDismissIcon globalTheme={globalTheme} handlePress={navigation.dismiss} testID={testIDPrefix} />
-      ),
       headerRight: null
     }
   }
