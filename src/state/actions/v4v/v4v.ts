@@ -4,6 +4,7 @@ import { v4vDeleteProviderFromStorage, v4vGetProvidersConnected, v4vGetSenderInf
   v4vSetProvidersConnected, 
   v4vSetSenderInfo, 
   v4vSetSettings} from '../../../services/v4v/v4v'
+import { playerUpdatePlayerState } from '../player'
 
 export type V4VProviderConnectedState = {
   key: string
@@ -196,6 +197,13 @@ export const v4vAddOrUpdateConnectedProvider = async (
       }
     }
   }, () => {
+    // Make sure the global player state is updated
+    // so the boostagram buttons show.
+    const nowPlayingItem = globalState?.player?.nowPlayingItem
+    if (nowPlayingItem) {
+      playerUpdatePlayerState(nowPlayingItem)
+    }
+    
     callback?.()
   })
 }
@@ -261,14 +269,22 @@ export const v4vSetActiveProvider = (key: string) => {
   })
 }
 
-export const v4vRefreshActiveProviderWalletInfo = () => {
-  const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(getGlobal()) || {}
+export const v4vRefreshActiveProviderWalletInfo = async () => {
+  const globalState = getGlobal()
+  const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(globalState) || {}
   if (activeProvider) {
     // Use require here to prevent circular dependencies issues.
     if (activeProvider.key === 'alby') {
       const { v4vAlbyGetAccountInfo } = require('./providers/alby')
-      v4vAlbyGetAccountInfo()
+      await v4vAlbyGetAccountInfo()
     }
+  }
+
+  // Make sure the global player state is updated
+  // so the boostagram buttons show.
+  const nowPlayingItem = globalState?.player?.nowPlayingItem
+  if (nowPlayingItem) {
+    playerUpdatePlayerState(nowPlayingItem)
   }
 }
 
