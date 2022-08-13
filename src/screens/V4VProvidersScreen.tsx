@@ -123,7 +123,7 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
       <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
-          renderItem={({ item }) => {
+          renderItem={({ item, index }) => {
             return (
               <TableCell
                 includeDivider
@@ -133,7 +133,7 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   style={[table.cellTextLarge, globalTheme.tableCellTextPrimary]}>
-                  {`${item.title} >`}
+                  {`${index + 1}. ${item.title}`}
                 </Text>
               </TableCell>
             )

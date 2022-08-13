@@ -172,31 +172,36 @@ export const v4vAlbyRefreshAccessToken = async () => {
   const albyConnectedProvider = await v4vAlbyGetAccessData()
   
   try {
-    const body = {
-      refresh_token: albyConnectedProvider.refresh_token,
-      grant_type: 'refresh_token'
-    }
+    if(albyConnectedProvider?.refresh_token) {
 
-    const response = await request(
-      {
-        method: 'POST',
-        basicAuth, // TODO: remove from prod after alby updates!
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+      const body = {
+        refresh_token: albyConnectedProvider.refresh_token,
+        grant_type: 'refresh_token'
+      }
+      
+      const response = await request(
+        {
+          method: 'POST',
+          basicAuth, // TODO: remove from prod after alby updates!
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: qs.stringify(body)
         },
-        body: qs.stringify(body)
-      },
-      `${albyApiPath}/oauth/token`
-    )
-
-    if (response?.data) {
-      await RNKeychain.setInternetCredentials(
-        PV.Keys.V4V_PROVIDERS_ALBY_ACCESS_DATA,
-        credentialsPlaceholderUsername,
-        JSON.stringify(response?.data)
-      )
+        `${albyApiPath}/oauth/token`
+        )
+        
+        if (response?.data) {
+          await RNKeychain.setInternetCredentials(
+            PV.Keys.V4V_PROVIDERS_ALBY_ACCESS_DATA,
+            credentialsPlaceholderUsername,
+            JSON.stringify(response?.data)
+            )
+          } else {
+            throw new Error('Alby missing response data for refresh_token endpoint')
+          }
     } else {
-      throw new Error('Alby missing response data for refresh_token endpoint')
+      throw new Error("Missing refresh token")
     }
   } catch (error) {
     console.log('v4vAlbyRefreshAccessToken error:', error)
