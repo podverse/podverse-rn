@@ -1,5 +1,4 @@
 import { Dimensions, StyleSheet } from 'react-native'
-import Config from 'react-native-config'
 import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
 import ConfettiCannon from 'react-native-confetti-cannon'
@@ -7,13 +6,15 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { checkIfHasSupportedCommentTag } from 'podverse-shared'
 import { PV } from '../resources'
 import { translate } from '../lib/i18n'
-import { sendBoost } from '../lib/valueTagHelpers'
 import { audioCheckIfIsPlaying } from '../services/playerAudio'
+import { sendBoost, v4vGetPluralCurrencyUnit } from '../services/v4v/v4v'
+import { v4vGetCurrentlyActiveProviderInfo } from '../state/actions/v4v/v4v'
 import { toggleValueStreaming } from '../state/actions/valueTag'
 import { MediaPlayerCarouselComments } from './MediaPlayerCarouselComments'
 import {
   ActivityIndicator,
   DropdownButtonSelect,
+  Icon,
   MediaPlayerCarouselChapters,
   MediaPlayerCarouselClips,
   MediaPlayerCarouselShowNotes,
@@ -104,23 +105,23 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   _attemptBoost = () => {
     ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
     this.setState({ boostIsSending: true }, () => {
-      this.explosion && this.explosion.start()
-      const { podcastValueFinal } = this.global
-      const { nowPlayingItem } = this.global.player
-      sendBoost(nowPlayingItem, podcastValueFinal)
-      setTimeout(() => {
+      (async () => {
+        const { podcastValueFinal } = this.global
+        const { nowPlayingItem } = this.global.player
+        await sendBoost(nowPlayingItem, podcastValueFinal)
         this.setState(
           {
             boostIsSending: false,
             boostWasSent: true
           },
           () => {
+            this.explosion && this.explosion.start()
             setTimeout(() => {
               this.setState({ boostWasSent: false })
             }, 4000)
           }
         )
-      }, 1000)
+      })()
     })
   }
 
@@ -140,19 +141,24 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     this.setState({ accessibilityItemSelected })
   }
 
+  _handleBoostagramPress = () => {
+    const { navigation } = this.props
+    navigation.navigate(PV.RouteNames.V4VBoostagramScreen)
+  }
+
   render() {
     const { navigation } = this.props
     const { accessibilityItemSelected, activeIndex, boostIsSending, boostWasSent, explosionOrigin } = this.state
-    const { parsedTranscript, player, podcastValueFinal, screenReaderEnabled } = this.global
+    const { parsedTranscript, player, podcastValueFinal, screenReaderEnabled, session } = this.global
     const { episode, nowPlayingItem, playbackState } = player
     const hasChapters = episode?.chaptersUrl
     const hasComments = !!checkIfHasSupportedCommentTag(episode)
     const hasTranscript = !!parsedTranscript
 
-    const { lightningNetwork, streamingEnabled } = this.global.session?.valueTagSettings || {}
-    const { lnpay } = lightningNetwork || {}
-    const { globalSettings, lnpayEnabled } = lnpay || {}
-    const { boostAmount, streamingAmount } = globalSettings || {}
+    const { activeProvider, activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(this.global)
+    const { boostAmount, streamingAmount } = activeProviderSettings || {}
+    const { streamingValueOn } = session.v4v
+
     const isPlaying = audioCheckIfIsPlaying(playbackState)
 
     let itemCount = 3
@@ -160,23 +166,22 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     if (hasComments) itemCount++
     if (hasTranscript) itemCount++
 
-    const satStreamText = streamingEnabled ? translate('Stream On') : translate('Stream Off')
+    const satStreamText = streamingValueOn ? translate('Stream On') : translate('Stream Off')
 
     const boostText = boostWasSent ? translate('Boost Sent').toUpperCase() : translate('Boost').toUpperCase()
 
-    const streamingButtonMainTextStyles = streamingEnabled
+    const streamingButtonMainTextStyles = streamingValueOn
       ? [styles.boostButtonMainText, { color: PV.Colors.green }]
       : [styles.boostButtonMainText]
 
-    const streamingButtonSubTextStyles = streamingEnabled
+    const streamingButtonSubTextStyles = streamingValueOn
       ? [styles.boostButtonSubText, { color: PV.Colors.green }]
       : [styles.boostButtonSubText]
 
     const hasValueInfo =
-      !!Config.ENABLE_VALUE_TAG_TRANSACTIONS &&
-      (podcastValueFinal?.length > 0 ||
-        nowPlayingItem?.episodeValue?.length > 0 ||
-        nowPlayingItem?.podcastValue?.length > 0)
+      podcastValueFinal?.length > 0 ||
+      nowPlayingItem?.episodeValue?.length > 0 ||
+      nowPlayingItem?.podcastValue?.length > 0
 
     const carouselComponents = mediaPlayerCarouselComponents(
       this._handlePressClipInfo,
@@ -236,9 +241,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
             </View>
           </>
         )}
-        {!!Config.ENABLE_VALUE_TAG_TRANSACTIONS && lnpayEnabled && hasValueInfo && (
+        {!!activeProvider && hasValueInfo && (
           <View style={styles.boostButtonsContainer}>
-            <PressableWithOpacity
+            {/* <PressableWithOpacity
               onPress={this._toggleSatStreaming}
               style={styles.boostButton}
               testID={'stream_button'.prependTestId()}>
@@ -246,12 +251,12 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                 {satStreamText.toUpperCase()}
               </Text>
               <Text style={streamingButtonSubTextStyles} testID='stream_button_text_2'>
-                {streamingAmount} {translate('sats / min')}
+                {`${streamingAmount} ${v4vGetPluralCurrencyUnitPerMinute(activeProvider.unit)}`}
               </Text>
-              {streamingEnabled && isPlaying && (
+              {streamingValueOn && isPlaying && (
                 <ActivityIndicator size={15} styles={{ position: 'absolute', right: 20 }} testID={testIDPrefix} />
               )}
-            </PressableWithOpacity>
+            </PressableWithOpacity> */}
             <PressableWithOpacity
               disabled={boostIsSending || boostWasSent}
               onLayout={(event) => {
@@ -269,11 +274,26 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                   </Text>
                   {!boostWasSent && (
                     <Text style={styles.boostButtonSubText} testID='Boost Button_text_2'>
-                      {boostAmount} {translate('sats')}
+                      {`${boostAmount} ${v4vGetPluralCurrencyUnit(activeProvider.unit)}`}
                     </Text>
                   )}
                 </>
               )}
+            </PressableWithOpacity>
+            <PressableWithOpacity
+              onPress={this._handleBoostagramPress}
+              style={styles.boostagramButton}
+              testID={'boostagram_button'.prependTestId()}>
+              <Text style={styles.boostagramButtonMainText} testID='boost_button_text_1'>
+                {translate('Boostagram').toUpperCase()}
+              </Text>
+              <Icon
+                accessibilityLabel={translate('Boostagram')}
+                accessibilityRole='button'
+                name='comment-alt'
+                size={17}
+                testID={`${testIDPrefix}_boostagram_button`}
+              />
             </PressableWithOpacity>
           </View>
         )}
@@ -394,7 +414,9 @@ const styles = StyleSheet.create({
     marginVertical: 8
   },
   boostButtonsContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 8
   },
   boostButton: {
     flex: 1,
@@ -405,10 +427,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderColor: PV.Colors.brandBlueLight,
-    borderWidth: 2
+    borderWidth: 2,
+    maxWidth: '50%'
+  },
+  boostagramButton: {
+    flex: 1,
+    flexDirection: 'row',
+    margin: 10,
+    height: 50,
+    borderRadius: 35,
+    backgroundColor: PV.Colors.velvet,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: PV.Colors.brandBlueLight,
+    borderWidth: 2,
+    maxWidth: '50%'
   },
   boostButtonMainText: {
     fontSize: PV.Fonts.sizes.sm
+  },
+  boostagramButtonMainText: {
+    fontSize: PV.Fonts.sizes.sm,
+    marginRight: 8
   },
   boostButtonSubText: {
     fontSize: PV.Fonts.sizes.xs

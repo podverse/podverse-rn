@@ -1,7 +1,7 @@
 import { convertSecToHHMMSS } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
-import { Button, NavDismissIcon, SafeAreaView, ScrollView, Text, TimePicker, View } from '../components'
+import { Button, SafeAreaView, ScrollView, Text, TimePicker } from '../components'
 import { translate } from '../lib/i18n'
 import { convertSecToHHMMSSAccessibilityLabel } from '../lib/utility'
 import { PV } from '../resources'
@@ -30,7 +30,6 @@ export class SleepTimerScreen extends React.Component<Props> {
 
   static navigationOptions = ({ navigation }) => ({
     title: translate('Sleep Timer'),
-    headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
     headerRight: () => <RNView />
   })
 

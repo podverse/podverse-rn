@@ -99,12 +99,12 @@ export class MoreScreen extends React.Component<Props, State> {
     return options
   }
 
-  _handleValueTagSetupPressed = async () => {
+  _handleV4VProvidersPressed = async () => {
     const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS)
     if (consentGivenString && JSON.parse(consentGivenString) === true) {
-      this.props.navigation.navigate(PV.RouteNames.ValueTagSetupScreen)
+      this.props.navigation.navigate(PV.RouteNames.V4VProvidersScreen)
     } else {
-      this.props.navigation.navigate(PV.RouteNames.ValueTagPreviewScreen)
+      this.props.navigation.navigate(PV.RouteNames.V4VPreviewScreen)
     }
   }
 
@@ -155,8 +155,8 @@ export class MoreScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     if (item.key === _logoutKey) {
       logoutUser()
-    } else if (item.key === _bitcoinWalletKey) {
-      this._handleValueTagSetupPressed()
+    } else if (item.key === _value4ValueKey) {
+      this._handleV4VProvidersPressed()
     } else if (item.key === _importOpml) {
       this._importOpml()
     } else if (item.key === _exportOpml) {
@@ -176,7 +176,7 @@ export class MoreScreen extends React.Component<Props, State> {
     const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
     const otherOptions = this._moreOtherOptions(membershipStatus)
 
-    const membershipAccessibilityLabel = `${translate('Membership')}${isLoggedIn ? ' - ' : ''} ${
+    const membershipAccessibilityLabel = `${translate('Membership')}${isLoggedIn ? ' – ' : ''} ${
       membershipStatus ? membershipStatus : ''
     }`
 
@@ -227,7 +227,7 @@ export class MoreScreen extends React.Component<Props, State> {
                         <Text
                           fontSizeLargestScale={PV.Fonts.largeSizes.md}
                           style={[table.cellText, membershipTextStyle]}>
-                          {membershipStatus}
+                          {`${translate('Membership')} – ${membershipStatus}`}
                         </Text>
                       )}
                     </>
@@ -266,7 +266,6 @@ export class MoreScreen extends React.Component<Props, State> {
 const _aboutKey = 'About'
 const _addPodcastByRSSKey = 'AddPodcastByRSS'
 const _appModeKey = 'AppMode'
-const _bitcoinWalletKey = 'BitcoinWallet'
 const _contactKey = 'Contact'
 const _loginKey = 'Login'
 const _logoutKey = 'Logout'
@@ -277,6 +276,7 @@ const _supportKey = 'Support'
 const _termsOfServiceKey = 'TermsOfService'
 const _importOpml = 'ImportOpml'
 const _exportOpml = 'ExportOpml'
+const _value4ValueKey = 'Value4Value'
 
 const allMoreFeatures = [
   {
@@ -290,18 +290,18 @@ const allMoreFeatures = [
     routeName: PV.RouteNames.AddPodcastByRSSScreen
   },
   {
-    title: translate('Mode'),
-    key: _appModeKey,
-    routeName: PV.RouteNames.AppModeScreen
-  },
-  {
-    title: translate('Bitcoin Wallet'),
-    key: _bitcoinWalletKey
+    title: translate('Value for Value'),
+    key: _value4ValueKey
   },
   {
     title: translate('Settings'),
     key: _settingsKey,
     routeName: PV.RouteNames.SettingsScreen
+  },
+  {
+    title: translate('Mode'),
+    key: _appModeKey,
+    routeName: PV.RouteNames.AppModeScreen
   },
   {
     title: translate('Import OPML'),

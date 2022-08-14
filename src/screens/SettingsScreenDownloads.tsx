@@ -5,7 +5,7 @@ import { StyleSheet, PermissionsAndroid, Platform, Alert, Linking } from 'react-
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import RNFS from 'react-native-fs'
-
+import * as ScopedStorage from 'react-native-scoped-storage'
 import {
   ActivityIndicator,
   Button,
@@ -28,6 +28,7 @@ import {
 } from '../lib/downloadedPodcast'
 import { refreshDownloads } from '../lib/downloader'
 import { translate } from '../lib/i18n'
+import { getAndroidVersion } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import * as DownloadState from '../state/actions/downloads'
@@ -209,82 +210,111 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
   }
 
   _handleToggleExternalStorage = async () => {
-    const { customDownloadLocation } = this.state
-    if (customDownloadLocation) {
-      Alert.alert(
-        translate('Disable External Storage?'),
-        translate('All downloaded episodes will be deleted from External Storage.'),
-        [
-          {
-            text: translate('OK'),
-            onPress: async () => {
-              try {
-                await removeAllDownloadedPodcasts()
-                await DownloadState.updateDownloadedPodcasts()
-              } catch (err) {
-                console.log('Ext Storage Deletion Error: ', err.message)
+    if (Platform.OS === 'android') {
+      const { customDownloadLocation } = this.state
+      if (customDownloadLocation) {
+        Alert.alert(
+          translate('Disable External Storage?'),
+          translate('All downloaded episodes will be deleted from External Storage.'),
+          [
+            {
+              text: translate('OK'),
+              onPress: async () => {
+                try {
+                  await removeAllDownloadedPodcasts()
+                  await DownloadState.updateDownloadedPodcasts()
+                } catch (err) {
+                  console.log('Ext Storage Deletion Error: ', err.message)
+                }
+                await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+                this.setState({ customDownloadLocation: null })
               }
-              await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
-              this.setState({ customDownloadLocation: null })
+            },
+            {
+              text: translate('Cancel')
             }
-          },
-          {
-            text: translate('Cancel')
-          }
-        ]
-      )
-    } else {
-      try {
-        const grantedWrite = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE, {
-          title: translate('Podverse External Storage Permission'),
-          message: translate(`Podverse would like to access your device's external storage to store downloaded media.`),
-          buttonNegative: translate('Cancel'),
-          buttonPositive: translate('Approve')
-        })
-        const grantedRead = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
-          title: translate('Podverse External Storage Permission'),
-          message: translate(
-            "Podverse would like to access your device's external storage to access your downloaded media."
-          ),
-          buttonNegative: translate('Cancel'),
-          buttonPositive: translate('Approve')
-        })
-
-        if (grantedWrite === PermissionsAndroid.RESULTS.GRANTED && grantedRead === PermissionsAndroid.RESULTS.GRANTED) {
-          await this._setExtDownloadFileLocation()
-          await this._askToTransferDownloads()
-        } else {
-          Alert.alert(
-            translate('Permission Denied'),
-            translate('The device does not allow Podverse to access the external storage for downloads.'),
-            [
+          ]
+        )
+      } else {
+        try {
+          const androidVersion = getAndroidVersion()
+          if (androidVersion >= 10) {
+            await this._setExtDownloadFileLocationAndroid10()
+            // await this._askToTransferDownloads()
+          } else {
+            const grantedWrite = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
               {
-                text: translate('OK'),
-                onPress: async () => {
-                  await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
-                  this.setState({ customDownloadLocation: null })
-                }
-              },
-              {
-                text: translate('Go To Settings'),
-                onPress: () => {
-                  Linking.openSettings()
-                }
+                title: translate('Podverse External Storage Permission'),
+                message: translate(
+                  `Podverse would like to access your device's external storage to store downloaded media.`
+                ),
+                buttonNegative: translate('Cancel'),
+                buttonPositive: translate('Approve')
               }
-            ]
-          )
+            )
+            const grantedRead = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
+              title: translate('Podverse External Storage Permission'),
+              message: translate(
+                "Podverse would like to access your device's external storage to access your downloaded media."
+              ),
+              buttonNegative: translate('Cancel'),
+              buttonPositive: translate('Approve')
+            })
+
+            if (
+              grantedWrite === PermissionsAndroid.RESULTS.GRANTED &&
+              grantedRead === PermissionsAndroid.RESULTS.GRANTED
+            ) {
+              await this._setExtDownloadFileLocationAndroid9()
+              await this._askToTransferDownloads()
+            } else {
+              Alert.alert(
+                translate('Permission Denied'),
+                translate('The device does not allow Podverse to access the external storage for downloads.'),
+                [
+                  {
+                    text: translate('OK'),
+                    onPress: async () => {
+                      await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+                      this.setState({ customDownloadLocation: null })
+                    }
+                  },
+                  {
+                    text: translate('Go To Settings'),
+                    onPress: () => {
+                      Linking.openSettings()
+                    }
+                  }
+                ]
+              )
+            }
+          }
+        } catch (err) {
+          console.log(err)
+          await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+          this.setState({ customDownloadLocation: null })
         }
-      } catch (err) {
-        console.log(err)
-        await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
-        this.setState({ customDownloadLocation: null })
       }
     }
   }
 
-  _setExtDownloadFileLocation = async () => {
+  _setExtDownloadFileLocationAndroid10 = async () => {
+    const dir = await ScopedStorage.openDocumentTree(true)
+
+    if (dir?.uri) {
+      const parsedDownloadLocation = dir.uri
+      await AsyncStorage.setItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION, parsedDownloadLocation)
+      this.setState({ customDownloadLocation: parsedDownloadLocation })
+    } else {
+      await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+      this.setState({ customDownloadLocation: null })
+    }
+  }
+
+  _setExtDownloadFileLocationAndroid9 = async () => {
     try {
-      const extPath = RNFS.DocumentDirectoryPath
+      const extPath = RNFS.ExternalStorageDirectoryPath
       try {
         const resp = await RNFS.stat(extPath)
         if (!resp.isDirectory()) {

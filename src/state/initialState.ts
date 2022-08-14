@@ -1,6 +1,7 @@
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { InitialState } from '../resources/Interfaces'
-import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './actions/valueTag'
+import { v4vSettingsDefault } from './actions/v4v/v4v'
 
 const initialTheme: InitialState = {
   globalTheme: {},
@@ -56,7 +57,7 @@ const initialTheme: InitialState = {
       videoPosition: 0
     },
     hidePlaybackSpeedButton: false,
-    remoteSkipButtonsAreTimeJumps: false
+    remoteSkipButtonsAreTimeJumps: true
   },
   playlists: {
     myPlaylists: [],
@@ -131,17 +132,21 @@ const initialTheme: InitialState = {
       subscribedUserIds: []
     },
     isLoggedIn: false,
-    valueTagSettings: {
-      lightningNetwork: {
-        lnpay: {
-          lnpayEnabled: false,
-          globalSettings: {
-            boostAmount: DEFAULT_BOOST_PAYMENT,
-            streamingAmount: DEFAULT_STREAMING_PAYMENT
-          }
-        }
+    v4v: {
+      settings: v4vSettingsDefault,
+      providers: {
+        active: '',
+        connected: []
       },
-      streamingEnabled: false
+      streamingValueOn: false,
+      previousTransactionErrors: {
+        boost: [],
+        streaming: []
+      },
+      senderInfo: {
+        name: translate('anonymous')
+      },
+      boostagramMessage: ''
     }
   },
   subscribedPodcasts: [],

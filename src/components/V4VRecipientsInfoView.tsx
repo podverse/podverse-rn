@@ -3,9 +3,11 @@ import React from 'react'
 import { StyleSheet } from 'react-native'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { Text, View } from '.'
 
 export type ValueTransactionRouteError = {
+  customKey?: string
+  customValue?: string
   address: string
   message: string
 }
@@ -14,14 +16,15 @@ type Props = {
   erroringTransactions?: ValueTransactionRouteError[]
   isReceipt?: boolean
   testID: string
-  totalAmount?: number
+  totalAmount?: number | string
   transactions: ValueTransaction[]
 }
 
-export class ValueTagInfoView extends React.PureComponent<Props> {
+export class V4VRecipientsInfoView extends React.PureComponent<Props> {
   render() {
     const { erroringTransactions = [], isReceipt, testID, totalAmount, transactions } = this.props
     const totalAmountText = isReceipt ? translate('amount paid') : translate('total amount')
+    const parsedTotalAmount = typeof totalAmount === 'string' ? parseInt(totalAmount, 10) : totalAmount
 
     return (
       <View style={styles.recipientTable}>
@@ -34,34 +37,45 @@ export class ValueTagInfoView extends React.PureComponent<Props> {
           </Text>
         </View>
         {transactions.map((data, index) => {
-          const { name, amount, split, address } = data.normalizedValueRecipient
-          const erroring = erroringTransactions.find((trs) => trs.address === address)
-
+          const { customKey, customValue, name, amount, split, address } = data.normalizedValueRecipient
+          const erroring = erroringTransactions.find((trs) => {
+            return (
+              (customKey &&
+                customValue &&
+                trs.customKey === customKey &&
+                trs.customValue === customValue &&
+                trs.address === trs.address) ||
+              ((!customKey || !customValue) && trs.address === address)
+            )
+          })
           return (
-            <View key={`${index}`} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text
-                testID={`${testID}_boost_recipient_name_${index}}`}
-                style={[styles.recipientText, erroring ? { color: PV.Colors.redLighter } : {}]}>
-                {name}
-                {erroring && (
-                  <Text testID={`${testID}_boost_recipient_error_${index}}`} style={styles.recipientTextError}>
-                    {'\n'}
-                    {erroring.message}
+            <View key={`${testID}_boost_info_${index}`}>
+              <View>
+                <View style={styles.recipientInfoWrapper}>
+                  <Text
+                    testID={`${testID}_boost_recipient_name_${index}}`}
+                    style={[styles.recipientText, erroring ? { color: PV.Colors.redLighter } : {}]}>
+                    {name}
                   </Text>
-                )}
-              </Text>
-              <Text
-                key={`${index}`}
-                testID={`${testID}_boost_recipient_amount_${index}}`}
-                style={styles.recipientTextAmount}>
-                {split} / {amount}
-              </Text>
+                  <Text
+                    key={`${index}`}
+                    testID={`${testID}_boost_recipient_amount_${index}}`}
+                    style={styles.recipientTextAmount}>
+                    {`${split}% – ${amount}`}
+                  </Text>
+                </View>
+              </View>
+              {erroring && (
+                <Text testID={`${testID}_boost_recipient_error_${index}}`} style={styles.recipientTextError}>
+                  {erroring.message}
+                </Text>
+              )}
             </View>
           )
         })}
         <View style={styles.recipientTableFooter}>
           <Text testID={`${testID}_boost_recipient_amount_total`} style={styles.recipientFooterText}>
-            {`${totalAmountText}: ${totalAmount}*`}
+            {`${totalAmountText}: ${parsedTotalAmount}*`}
           </Text>
           <Text style={styles.disclaimerText} testID='boost_dropdown_banner_disclaimer_text'>
             {`*${translate('Actual amount will be higher due to network fees')}`}
@@ -78,15 +92,23 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     textAlign: 'right'
   },
+  recipientErrorWrapper: {
+    marginTop: 8
+  },
   recipientFooterText: {
     fontSize: PV.Fonts.sizes.lg,
     paddingBottom: 6,
     paddingTop: 8
   },
+  recipientInfoWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
   recipientTable: {
     borderColor: PV.Colors.skyLight,
     borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
+    marginBottom: 16
   },
   recipientTableFooter: {
     flexDirection: 'column',
@@ -114,9 +136,10 @@ const styles = StyleSheet.create({
     textAlign: 'right'
   },
   recipientTextError: {
-    fontSize: PV.Fonts.sizes.tiny,
+    fontSize: PV.Fonts.sizes.md,
     color: PV.Colors.redLighter,
-    marginTop: 5
+    flex: 0,
+    marginBottom: 8
   },
   recipientTextAmount: {
     paddingVertical: 10,

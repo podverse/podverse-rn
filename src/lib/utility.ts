@@ -11,7 +11,8 @@ import 'moment/locale/pt'
 import 'moment/locale/ru'
 import 'moment/locale/sv'
 import 'moment/locale/tr'
-import { convertSecToHHMMSS } from 'podverse-shared'
+import { convertSecToHHMMSS, NowPlayingItem } from 'podverse-shared'
+import { Platform } from 'react-native'
 import Config from 'react-native-config'
 import { getUserAgent } from 'react-native-device-info'
 import { PV } from '../resources'
@@ -186,4 +187,8 @@ export const removeHTMLAttributesFromString = (html: string) => {
   })
 
   return $.html()
+}
+
+export const getAndroidVersion = () => {
+  return Platform.constants?.Release && parseInt(Platform.constants?.Release, 10)
 }

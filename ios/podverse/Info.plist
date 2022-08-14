@@ -32,6 +32,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>podverse</string>
+                <string>com.podverse</string>
 			</array>
 		</dict>
 	</array>

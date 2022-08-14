@@ -1,9 +1,14 @@
 import axios from 'axios'
+import { encode as btoa } from 'base-64'
 import { Alert } from 'react-native'
 import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
 
 type PVRequest = {
+  basicAuth?: {
+    username?: string
+    password?: string
+  }
   endpoint?: string
   query?: any
   body?: any
@@ -14,7 +19,16 @@ type PVRequest = {
 }
 
 export const request = async (req: PVRequest, customUrl?: string) => {
-  const { endpoint = '', query = {}, headers = {}, body, method = 'GET', opts = {}, timeout = 30000 } = req
+  const {
+    basicAuth = {},
+    endpoint = '',
+    query = {},
+    headers = {},
+    body,
+    method = 'GET',
+    opts = {},
+    timeout = 30000
+  } = req
 
   const queryString = Object.keys(query)
     .map((key) => {
@@ -27,11 +41,15 @@ export const request = async (req: PVRequest, customUrl?: string) => {
 
   const url = customUrl ? customUrl : `${urlsApi.baseUrl}${endpoint}?${queryString}`
 
+  const basicAuthHeader =
+    basicAuth.username && basicAuth.password ? `Basic ${btoa(`${basicAuth.username}:${basicAuth.password}`)}` : ''
+
   const axiosRequest = {
     url,
     headers: {
       ...headers,
-      'User-Agent': userAgent
+      'User-Agent': userAgent,
+      ...(basicAuthHeader ? { Authorization: basicAuthHeader } : {})
     },
     ...(body ? { data: body } : {}),
     method,

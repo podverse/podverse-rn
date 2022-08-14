@@ -21,3 +21,17 @@ The Podverse dev team will regularly update this document with context as we're 
 The use of the word "free" here means "3 months at no charge" or "3 months at no cost". It means the user will receive a 3 month free trial period when they sign up for Podverse premium.
 
 ---
+
+`"Boost": "Boost"`
+
+Basically a "boost" is what Podcasting 2.0 apps call a "donation". You're in effect "boosting" the show by giving it a donation. If there isn't a good alternative term for "boost" in another language, you can fallback to "donation" for the translation.
+
+`"Boostagram": "Boostagram",`
+
+This is a new word in the Podcasting 2.0 world. A boostagram is a donation (aka a "boost") WITH a message attached. Another commonly known phrase that is comparable to boostagram is the YouTube "superchat". A superchat is a donation sent to livestreamers with a message attached. Superchat however might be a trademarked YouTube term (I'm not sure) that we can't use in Podverse. I'm actually not sure of what word to use here if not "boostagram" or "superchat"...any ideas would be appreciated.
+
+Source: https://podnews.net/update/boostagrams
+
+`"Membership": "Membership"`
+
+The word membership needs to be translated as "Membership" because it does not represent the user's membership status. It is a title to accompany the actual membership status.

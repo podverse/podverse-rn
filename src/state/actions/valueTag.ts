@@ -1,15 +1,8 @@
-import AsyncStorage from '@react-native-community/async-storage'
 import { getGlobal, setGlobal } from 'reactn'
 import { translate } from '../../lib/i18n'
-import { processValueTransactionQueue } from '../../lib/valueTagHelpers'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
-
-export const DEFAULT_BOOST_PAYMENT = 200
-export const MINIMUM_BOOST_PAYMENT = 100
-
-export const DEFAULT_STREAMING_PAYMENT = 10
-export const MINIMUM_STREAMING_PAYMENT = 1
+import { processValueTransactionQueue } from '../../services/v4v/v4v'
 
 let valueTransactionProcessorInterval = null
 
@@ -20,11 +13,10 @@ let valueTransactionProcessorInterval = null
 export const initializeValueProcessor = () => {
   const globalState = getGlobal()
   const { session } = globalState
-  const { valueTagSettings } = session
-  const { lightningNetwork } = valueTagSettings
-  const { lnpayEnabled } = lightningNetwork?.lnpay || {}
+  const { v4v } = session
+  const hasV4VProvider = v4v.providers.connected && v4v.providers.connected.length > 0
 
-  if (lnpayEnabled) {
+  if (hasV4VProvider) {
     createValueTransactionProcessorInterval()
   }
 }
@@ -53,81 +45,24 @@ const createValueTransactionProcessorInterval = () => {
   }, 1000 * 60 * 10)
 }
 
-export const updateGlobalBoostAmount = (boostAmount: number) => {
-  const globalState = getGlobal()
-  const { session } = globalState
-  const { valueTagSettings } = session
-  const { lightningNetwork } = valueTagSettings
-  const { lnpay } = lightningNetwork
-  const { globalSettings } = lnpay
-  
-  setGlobal({
-    session: {
-      ...session,
-      valueTagSettings: {
-        ...valueTagSettings,
-        lightningNetwork: {
-          ...lightningNetwork,
-          lnpay: {
-            ...lnpay,
-            globalSettings: {
-              ...globalSettings,
-              boostAmount
-            }
-          },
-        }
-      }
-    }
-  })
-
-  AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, boostAmount.toString())
-}
-
-export const updateGlobalStreamingAmount = (streamingAmount: number) => {
-  const globalState = getGlobal()
-  const { session } = globalState
-  const { valueTagSettings } = session
-  const { lightningNetwork } = valueTagSettings
-  const { lnpay } = lightningNetwork
-  const { globalSettings } = lnpay
-  
-  setGlobal({
-    session: {
-      ...session,
-      valueTagSettings: {
-        ...valueTagSettings,
-        lightningNetwork: {
-          ...lightningNetwork,
-          lnpay: {
-            ...lnpay,
-            globalSettings: {
-              ...globalSettings,
-              streamingAmount
-            }
-          }
-        }
-      }
-    }
-  })
-
-  AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_STREAMING_AMOUNT, streamingAmount.toString())
-}
-
 export const toggleValueStreaming = () => {
   const globalState = getGlobal()
   const { session } = globalState
-  const { valueTagSettings } = session
-  const { streamingEnabled } = valueTagSettings
+  const { v4v } = session
+  const { streamingValueOn } = v4v
 
-  setGlobal({
-    session: {
-      ...session,
-      valueTagSettings: {
-        ...valueTagSettings,
-        streamingEnabled: !streamingEnabled
+  setGlobal(
+    {
+      session: {
+        ...session,
+        v4v: {
+          ...v4v,
+          streamingValueOn: !streamingValueOn
+        }
       }
+    },
+    () => {
+      PVEventEmitter.emit(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED)
     }
-  }, () => {
-    PVEventEmitter.emit(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED)
-  })
+  )
 }

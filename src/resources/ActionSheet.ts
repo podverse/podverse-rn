@@ -200,8 +200,9 @@ const mediaMoreButtons = (
         text: translate('Add to Playlist'),
         onPress: async () => {
           await handleDismiss()
-          navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, {
-            ...(item.clipId ? { mediaRefId: item.clipId } : { episodeId: item.episodeId })
+          navigation.navigate(PV.RouteNames.PlaylistsAddToScreenModal, {
+            ...(item.clipId ? { mediaRefId: item.clipId } : { episodeId: item.episodeId }),
+            isModal: true
           })
         }
       })

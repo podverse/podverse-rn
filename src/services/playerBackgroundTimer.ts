@@ -3,12 +3,13 @@ import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import BackgroundTimer from 'react-native-background-timer'
-import { processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../lib/valueTagHelpers'
 import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
+import { processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../services/v4v/v4v'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { v4vGetCurrentlyActiveProviderInfo } from '../state/actions/v4v/v4v'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
@@ -161,8 +162,9 @@ export const stopBackgroundTimerIfShouldBeStopped = async (
     }
   }
 
-  const { streamingEnabled } = globalState.session.valueTagSettings
-  if (!streamingValueShouldStop && !streamingEnabled) {
+  const { streamingValueOn } = getGlobal().session.v4v
+
+  if (!streamingValueShouldStop && !streamingValueOn) {
     streamingValueShouldStop = true
   }
 
@@ -199,9 +201,9 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
 
 const handleValueStreamingToggle = () => {
   const globalState = getGlobal()
-  const { streamingEnabled } = globalState.session.valueTagSettings
+  const { streamingValueOn } = globalState.session.v4v
 
-  if (streamingEnabled) {
+  if (streamingValueOn) {
     startBackgroundTimer()
   } else {
     const checkClipEndTimeShouldStop = false
@@ -214,10 +216,13 @@ const handleValueStreamingMinutePassed = async () => {
   const globalState = getGlobal()
   const { podcastValueFinal } = globalState
   const { nowPlayingItem } = globalState.player
-  const { streamingAmount } = globalState.session?.valueTagSettings?.lightningNetwork?.lnpay?.globalSettings || {}
+
+  const { activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(globalState)
+  const { streamingAmount } = activeProviderSettings || {}
+
   const valueTag = podcastValueFinal || nowPlayingItem.episodeValue || nowPlayingItem.podcastValue
 
-  if (valueTag) {
+  if (valueTag && streamingAmount) {
     await saveStreamingValueTransactionsToTransactionQueue(valueTag, nowPlayingItem, streamingAmount)
   }
 }
@@ -243,9 +248,9 @@ const handleBackgroundTimerInterval = () => {
 
   playerGetState().then(async (playbackState) => {
     const globalState = getGlobal()
-    const { streamingEnabled } = globalState.session.valueTagSettings
+    const { streamingValueOn } = globalState.session.v4v
 
-    if (streamingEnabled) {
+    if (streamingValueOn) {
       if (playerCheckIfStateIsPlaying(playbackState)) {
         valueStreamingIntervalSecondCount++
 
