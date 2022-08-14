@@ -44,7 +44,7 @@ export class V4VPreviewScreen extends React.Component<Props> {
             {translate('value_tag_preview_stream')}
           </Text>
           <Image
-            source={require('../resources/images/crypto_exmpl_1.png')}
+            source={require('../resources/images/crypto_exmpl_1.jpg')}
             resizeMode='contain'
             style={styles.previewImage}
           />
@@ -84,16 +84,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: '100%',
     height: 250,
-    marginTop: 20
+    marginTop: 36
   },
   title: {
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.bold,
     textAlign: 'center',
-    marginBottom: 20
+    marginBottom: 0
   },
   text: {
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.xxl,
     marginVertical: 10
   }
 })
