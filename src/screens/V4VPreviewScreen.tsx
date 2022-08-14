@@ -84,16 +84,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: '100%',
     height: 250,
-    marginTop: 20
+    marginTop: 36
   },
   title: {
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.bold,
     textAlign: 'center',
-    marginBottom: 20
+    marginBottom: 0
   },
   text: {
-    fontSize: PV.Fonts.sizes.xl,
+    fontSize: PV.Fonts.sizes.xxl,
     marginVertical: 10
   }
 })
