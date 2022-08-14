@@ -271,10 +271,14 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
             totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
           }
         } catch (error) {
+          const displayedErrorMessage = error.response?.data?.message
+            ? `${error.message} – ${error.response?.data?.message}`
+            : error.message
+
           v4vAddPreviousTransactionError(
             'boost',
             valueTransaction.normalizedValueRecipient.address,
-            error.message,
+            displayedErrorMessage,
             valueTransaction.normalizedValueRecipient.customKey,
             valueTransaction.normalizedValueRecipient.customValue
           )
