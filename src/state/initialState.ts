@@ -133,7 +133,7 @@ const initialTheme: InitialState = {
     },
     isLoggedIn: false,
     v4v: {
-      termsAccepted: false,
+      showLightningIcons: false,
       settings: v4vSettingsDefault,
       providers: {
         active: '',

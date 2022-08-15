@@ -66,9 +66,6 @@ export class ClipsScreen extends React.Component<Props, State> {
 
     this.shouldLoad = true
 
-    const { subscribedPodcastIds } = this.global.session.userInfo
-    const hasSubscribedPodcasts = subscribedPodcastIds && subscribedPodcastIds.length > 0
-
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
@@ -76,17 +73,17 @@ export class ClipsScreen extends React.Component<Props, State> {
       isLoading: false,
       isLoadingMore: true,
       isRefreshing: false,
-      queryFrom: hasSubscribedPodcasts ? PV.Filters._subscribedKey : PV.Filters._allPodcastsKey,
+      queryFrom: PV.Filters._subscribedKey,
       queryPage: 1,
       querySort: PV.Filters._mostRecentKey,
       searchBarText: '',
       selectedCategory: null,
       selectedCategorySub: null,
-      selectedFilterLabel: hasSubscribedPodcasts ? translate('Subscribed') : translate('All Podcasts'),
+      selectedFilterLabel: translate('Subscribed'),
       selectedSortLabel: translate('recent'),
       showActionSheet: false,
       tempQueryEnabled: false,
-      tempQueryFrom: hasSubscribedPodcasts ? PV.Filters._subscribedKey : PV.Filters._allPodcastsKey,
+      tempQueryFrom: PV.Filters._subscribedKey,
       tempQuerySort: PV.Filters._mostRecentKey
     }
 
@@ -485,7 +482,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
             ListHeaderComponent={this._ListHeaderComponent}
             noResultsMessage={
-              noSubscribedPodcasts ? translate('You are not subscribed to any podcasts') : translate('No clips found')
+              noSubscribedPodcasts ? translate('You are not subscribed to any podcasts yet') : translate('No clips found')
             }
             onEndReached={this._onEndReached}
             onRefresh={this._onRefresh}

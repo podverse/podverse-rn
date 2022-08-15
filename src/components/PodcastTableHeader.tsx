@@ -5,7 +5,7 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { IndicatorDownload } from './IndicatorDownload'
-import { ActivityIndicator, FastImage, LightningBoltIcon, SettingsButton, SubscribeButton, Text, View } from './'
+import { ActivityIndicator, FastImage, LightningIcon, SettingsButton, SubscribeButton, Text, View } from './'
 
 type Props = {
   autoDownloadOn?: boolean

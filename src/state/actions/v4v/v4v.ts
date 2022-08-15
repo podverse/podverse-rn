@@ -69,22 +69,28 @@ export const v4vSettingsDefault = {
 
 /* Terms Accepted helpers */
 
-export const v4vInitializeTermsAccepted = async () => {
-  const termsAcceptedString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS)
-  if (termsAcceptedString && JSON.parse(termsAcceptedString) === true) {
-    v4vSetTermsAccepted(true)
+export const v4vInitializeShowLightningIcon = async () => {
+  const showLightningIcons = await AsyncStorage.getItem(PV.Keys.V4V_SHOW_LIGHTNING_ICONS)
+  if (showLightningIcons) {
+    await v4vSetShowLightningIcons(true)
   }
 }
 
-export const v4vSetTermsAccepted = (termsAccepted: boolean) => {
+export const v4vSetShowLightningIcons = async (showLightningIcons: boolean) => {
   const globalState = getGlobal()
+
+  if (showLightningIcons) {
+    await AsyncStorage.setItem(PV.Keys.V4V_SHOW_LIGHTNING_ICONS, 'TRUE')
+  } else {
+    await AsyncStorage.removeItem(PV.Keys.V4V_SHOW_LIGHTNING_ICONS)
+  }
 
   setGlobal({
     session: {
       ...globalState.session,
       v4v: {
         ...globalState.session.v4v,
-        termsAccepted
+        showLightningIcons
       }
     }
   })

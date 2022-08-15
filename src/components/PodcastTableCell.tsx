@@ -4,7 +4,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { FastImage, IndicatorDownload, LightningBoltIcon, LiveStatusBadge,
+import { FastImage, IndicatorDownload, LightningIcon, LiveStatusBadge,
   NewContentBadge, Text, View } from './'
 
 type Props = {

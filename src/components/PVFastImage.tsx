@@ -4,7 +4,7 @@ import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
 import { PV } from '../resources'
-import { LightningBoltIcon, NewContentBadge, Text } from '.'
+import { LightningIcon, NewContentBadge, Text } from '.'
 const PlaceholderImage = PV.Images.PLACEHOLDER.default
 
 type Props = {
@@ -73,7 +73,8 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     const { accessible = false, newContentCount,
     placeholderLabel, resizeMode = 'contain', source, styles, valueTags } = this.props
     const { hasError, localImageSource } = this.state
-    const { hideNewEpisodesBadges, userAgent } = this.global
+    const { hideNewEpisodesBadges, session, userAgent } = this.global
+    const showLightningIcons = session?.v4v?.showLightningIcons
     let imageSource = source
     let isValid = false
     if (localImageSource.exists) {
@@ -110,9 +111,11 @@ export class PVFastImage extends React.PureComponent<Props, State> {
         {!hideNewEpisodesBadges && !!newContentCount && newContentCount > 0 && (
           <NewContentBadge count={newContentCount} />
         )}
-        <LightningBoltIcon
+        <LightningIcon
+          showLightningIcons={showLightningIcons}
           valueTags={valueTags}
-          wrapperStyles={defaultStyles.lightningBoltIcon} />
+          wrapperStyles={defaultStyles.lightningIcon}
+        />
       </View>
     )
 
@@ -136,7 +139,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
 }
 
 const defaultStyles = StyleSheet.create({
-  lightningBoltIcon: {
+  lightningIcon: {
     borderRadius: 100,
     borderWidth: 1,
     borderColor: PV.Colors.skyLight,

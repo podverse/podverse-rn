@@ -199,7 +199,7 @@ export interface InitialState {
     isLoggedIn: boolean
     userInfo: UserInfo
     v4v: {
-      termsAccepted: boolean
+      showLightningIcons: boolean
       settings: V4VSettings
       providers: {
         active: string
