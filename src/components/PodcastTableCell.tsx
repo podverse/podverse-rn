@@ -1,10 +1,11 @@
-import { LiveItemStatus } from 'podverse-shared'
+import { LiveItemStatus, ValueTag } from 'podverse-shared'
 import { Dimensions, Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { FastImage, IndicatorDownload, LiveStatusBadge, NewContentBadge, Text, View } from './'
+import { FastImage, IndicatorDownload, LightningIcon, LiveStatusBadge,
+  NewContentBadge, Text, View } from './'
 
 type Props = {
   downloadCount?: number
@@ -19,6 +20,7 @@ type Props = {
   showAutoDownload?: boolean
   showDownloadCount?: boolean
   testID: string
+  valueTags: ValueTag[]
 }
 
 export class PodcastTableCell extends React.PureComponent<Props> {
@@ -32,7 +34,8 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       podcastTitle = translate('Untitled Podcast'),
       showAutoDownload,
       showDownloadCount,
-      testID
+      testID,
+      valueTags
     } = this.props
     const {
       autoDownloadSettings,
@@ -84,7 +87,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
         onPress={onPress}
         {...(testID ? { testID: testID.prependTestId() } : {})}>
         <View style={styles.wrapper}>
-          <FastImage source={podcastImageUrl} styles={PV.Table.cells.podcast.image} />
+          <FastImage source={podcastImageUrl} styles={PV.Table.cells.podcast.image} valueTags={valueTags}/>
           <RNView style={styles.textWrapper}>
             <RNView style={styles.textWrapperInner}>
               {!!lastPubDate && fontScaleMode === PV.Fonts.fontScale.largest && lastPubDateNode}

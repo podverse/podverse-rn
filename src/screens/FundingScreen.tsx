@@ -21,6 +21,7 @@ import {
   MINIMUM_BOOST_PAYMENT,
   MINIMUM_STREAMING_PAYMENT,
   v4vGetActiveValueTag,
+  v4vGetPluralCurrencyUnit,
   v4vGetTypeMethodKey
 } from '../services/v4v/v4v'
 import {
@@ -201,6 +202,10 @@ export class FundingScreen extends React.Component<Props, State> {
     const pubDate = readableDate(nowPlayingItem.episodePubDate)
     const headerAccessibilityLabel = `${podcastTitle}, ${episodeTitle}, ${pubDate}`
 
+    const boostAmountLabelText = activeProvider?.unit ? `${translate(
+      'Boost Amount'
+    )} (${v4vGetPluralCurrencyUnit(activeProvider.unit)})` : ''
+
     return (
       <View style={styles.content} testID='funding_screen_view'>
         <View accessible accessibilityLabel={headerAccessibilityLabel} style={styles.innerTopView}>
@@ -270,7 +275,7 @@ export class FundingScreen extends React.Component<Props, State> {
               <View style={styles.itemWrapper}>
                 <TextInput
                   editable
-                  eyebrowTitle={translate('Boost Amount for this Podcast')}
+                  eyebrowTitle={boostAmountLabelText}
                   keyboardType='numeric'
                   wrapperStyle={styles.textInput}
                   onBlur={async () => {

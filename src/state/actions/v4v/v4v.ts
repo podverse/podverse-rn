@@ -1,9 +1,17 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { ValueTag } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
-import { v4vDeleteProviderFromStorage, v4vGetProvidersConnected, v4vGetSenderInfo, v4vGetSettings, v4vGetTypeMethodKey,
-  v4vSetProvidersConnected, 
-  v4vSetSenderInfo, 
-  v4vSetSettings} from '../../../services/v4v/v4v'
+import { PV } from '../../../resources'
+import {
+  v4vDeleteProviderFromStorage,
+  v4vGetProvidersConnected,
+  v4vGetSenderInfo,
+  v4vGetSettings,
+  v4vGetTypeMethodKey,
+  v4vSetProvidersConnected,
+  v4vSetSenderInfo,
+  v4vSetSettings
+} from '../../../services/v4v/v4v'
 import { playerUpdatePlayerState } from '../player'
 
 export type V4VProviderConnectedState = {
@@ -59,6 +67,35 @@ export const v4vSettingsDefault = {
 
 
 
+/* Terms Accepted helpers */
+
+export const v4vInitializeShowLightningIcon = async () => {
+  const showLightningIcons = await AsyncStorage.getItem(PV.Keys.V4V_SHOW_LIGHTNING_ICONS)
+  if (showLightningIcons) {
+    await v4vSetShowLightningIcons(true)
+  }
+}
+
+export const v4vSetShowLightningIcons = async (showLightningIcons: boolean) => {
+  const globalState = getGlobal()
+
+  if (showLightningIcons) {
+    await AsyncStorage.setItem(PV.Keys.V4V_SHOW_LIGHTNING_ICONS, 'TRUE')
+  } else {
+    await AsyncStorage.removeItem(PV.Keys.V4V_SHOW_LIGHTNING_ICONS)
+  }
+
+  setGlobal({
+    session: {
+      ...globalState.session,
+      v4v: {
+        ...globalState.session.v4v,
+        showLightningIcons
+      }
+    }
+  })
+}
+
 /* V4VSettings helpers */
 
 export const v4vInitializeSettings = async () => {
@@ -88,7 +125,11 @@ export const v4vGetTypeMethodSettings = (globalState: any, type: 'lightning', me
 }
 
 const v4vUpdateTypeMethodSettings = async (
-  globalState: any, type: 'lightning', method: 'keysend', newTypeMethodSettings: V4VTypeMethod) => {
+  globalState: any,
+  type: 'lightning',
+  method: 'keysend',
+  newTypeMethodSettings: V4VTypeMethod
+) => {
   const { settings } = globalState.session.v4v
   const typeMethodKey = v4vGetTypeMethodKey(type, method)
   const newSettings = {
@@ -103,7 +144,11 @@ const v4vUpdateTypeMethodSettings = async (
 }
 
 export const v4vUpdateTypeMethodSettingsBoostAmount = async (
-  globalState: any, type: 'lightning', method: 'keysend', newBoostAmount: number) => {
+  globalState: any,
+  type: 'lightning',
+  method: 'keysend',
+  newBoostAmount: number
+) => {
   const typeMethodSettings = v4vGetTypeMethodSettings(globalState, type, method)
   const newSettings = {
     ...typeMethodSettings,
@@ -113,7 +158,11 @@ export const v4vUpdateTypeMethodSettingsBoostAmount = async (
 }
 
 export const v4vUpdateTypeMethodSettingsStreamingAmount = async (
-  globalState: any, type: 'lightning', method: 'keysend', newStreamingAmount: number) => {
+  globalState: any,
+  type: 'lightning',
+  method: 'keysend',
+  newStreamingAmount: number
+) => {
   const typeMethodSettings = v4vGetTypeMethodSettings(globalState, type, method)
   const newSettings = {
     ...typeMethodSettings,
@@ -123,7 +172,11 @@ export const v4vUpdateTypeMethodSettingsStreamingAmount = async (
 }
 
 export const v4vUpdateTypeMethodSettingsAppBoostAmount = async (
-  globalState: any, type: 'lightning', method: 'keysend', newAppBoostAmount: number) => {
+  globalState: any,
+  type: 'lightning',
+  method: 'keysend',
+  newAppBoostAmount: number
+) => {
   const typeMethodSettings = v4vGetTypeMethodSettings(globalState, type, method)
   const newSettings = {
     ...typeMethodSettings,
@@ -133,7 +186,11 @@ export const v4vUpdateTypeMethodSettingsAppBoostAmount = async (
 }
 
 export const v4vUpdateTypeMethodSettingsAppStreamingAmount = async (
-  globalState: any, type: 'lightning', method: 'keysend', newAppStreamingAmount: number) => {
+  globalState: any,
+  type: 'lightning',
+  method: 'keysend',
+  newAppStreamingAmount: number
+) => {
   const typeMethodSettings = v4vGetTypeMethodSettings(globalState, type, method)
   const newSettings = {
     ...typeMethodSettings,
@@ -141,8 +198,6 @@ export const v4vUpdateTypeMethodSettingsAppStreamingAmount = async (
   }
   await v4vUpdateTypeMethodSettings(globalState, type, method, newSettings)
 }
-
-
 
 /* Connected Provider helpers */
 
@@ -169,8 +224,7 @@ export const v4vGetConnectedProvider = (connectedProviders: V4VProviderConnected
   return connectedProvider
 }
 
-export const v4vAddOrUpdateConnectedProvider = async (
-  newProviderState: V4VProviderConnectedState, callback?: any) => {
+export const v4vAddOrUpdateConnectedProvider = async (newProviderState: V4VProviderConnectedState, callback?: any) => {
   const globalState = getGlobal()
 
   const previousConnected = globalState.session.v4v.providers.connected
@@ -185,39 +239,6 @@ export const v4vAddOrUpdateConnectedProvider = async (
 
   await v4vSetProvidersConnected(newConnected)
 
-  setGlobal({
-    session: {
-      ...globalState.session,
-      v4v: {
-        ...globalState.session.v4v,
-        providers: {
-          ...globalState.session.v4v.providers,
-          connected: newConnected
-        }
-      }
-    }
-  }, () => {
-    // Make sure the global player state is updated
-    // so the boostagram buttons show.
-    const nowPlayingItem = globalState?.player?.nowPlayingItem
-    if (nowPlayingItem) {
-      playerUpdatePlayerState(nowPlayingItem)
-    }
-    
-    callback?.()
-  })
-}
-
-export const v4vDisconnectProvider = async (key: 'alby') => {
-  const globalState = getGlobal()
-
-  await v4vDeleteProviderFromStorage(key)
-
-  const previousConnected = globalState.session.v4v.providers.connected
-  const newConnected = previousConnected.filter((provider) => provider.key !== key )
-  
-  await v4vSetProvidersConnected(newConnected)
-
   setGlobal(
     {
       session: {
@@ -230,11 +251,43 @@ export const v4vDisconnectProvider = async (key: 'alby') => {
           }
         }
       }
+    },
+    () => {
+      // Make sure the global player state is updated
+      // so the boostagram buttons show.
+      const nowPlayingItem = globalState?.player?.nowPlayingItem
+      if (nowPlayingItem) {
+        playerUpdatePlayerState(nowPlayingItem)
+      }
+
+      callback?.()
     }
   )
 }
 
+export const v4vDisconnectProvider = async (key: 'alby') => {
+  const globalState = getGlobal()
 
+  await v4vDeleteProviderFromStorage(key)
+
+  const previousConnected = globalState.session.v4v.providers.connected
+  const newConnected = previousConnected.filter((provider) => provider.key !== key)
+
+  await v4vSetProvidersConnected(newConnected)
+
+  setGlobal({
+    session: {
+      ...globalState.session,
+      v4v: {
+        ...globalState.session.v4v,
+        providers: {
+          ...globalState.session.v4v.providers,
+          connected: newConnected
+        }
+      }
+    }
+  })
+}
 
 /* V4VActiveProvider helpers */
 
@@ -248,7 +301,7 @@ export const v4vGetMatchingActiveProvider = (valueTags: ValueTag[]) => {
       return valueTags.some((valueTag) => valueTag.method === provider.method && valueTag.type === provider.type)
     })
   }
-    
+
   return matchingActiveProvider
 }
 
@@ -295,11 +348,7 @@ export const v4vGetCurrentlyActiveProviderInfo = (globalState: any) => {
   let activeProviderSettings: V4VTypeMethod | null = null
 
   if (activeProvider) {
-    activeProviderSettings = v4vGetTypeMethodSettings(
-      globalState,
-      activeProvider.type,
-      activeProvider.method
-    )
+    activeProviderSettings = v4vGetTypeMethodSettings(globalState, activeProvider.type, activeProvider.method)
   }
 
   return {
@@ -307,8 +356,6 @@ export const v4vGetCurrentlyActiveProviderInfo = (globalState: any) => {
     activeProviderSettings
   }
 }
-
-
 
 /* V4V PreviousTransactionErrors helpers */
 
@@ -363,8 +410,6 @@ export const v4vClearPreviousTransactionErrors = () => {
   })
 }
 
-
-
 /* V4VSenderInfo helpers */
 
 export const v4vInitializeSenderInfo = async () => {
@@ -384,7 +429,7 @@ export const v4vInitializeSenderInfo = async () => {
 
 export const v4vUpdateSenderInfoName = async (newName: string) => {
   const globalState = getGlobal()
-  
+
   await v4vSetSenderInfo({ name: newName })
 
   setGlobal({
@@ -401,13 +446,11 @@ export const v4vUpdateSenderInfoName = async (newName: string) => {
   })
 }
 
-
-
 /* V4VBoostagramMessage helpers */
 
 export const v4vUpdateBoostagramMessage = (newMessage: string) => {
   const globalState = getGlobal()
-  
+
   setGlobal({
     session: {
       ...globalState.session,

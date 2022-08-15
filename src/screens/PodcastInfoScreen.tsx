@@ -59,6 +59,7 @@ export class PodcastInfoScreen extends React.Component<Props, State> {
         <PodcastTableHeader
           podcastImageUrl={podcast && (podcast.shrunkImageUrl || podcast.imageUrl)}
           podcastTitle={podcast && podcast.title}
+          podcastValue={podcast?.value}
           testID={testIDPrefix}
         />
         <HTMLScrollView
