@@ -1,12 +1,12 @@
 import { Keyboard, SectionList, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { Divider, TableCell, TableSectionSelectors, Text, TextInput, View } from '../components'
+import { Divider, SwitchWithText, TableCell, TableSectionSelectors, Text, TextInput, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { V4VProviderListItem, _albyKey } from '../resources/V4V'
 import { trackPageView } from '../services/tracking'
-import { v4vGetProviderListItems, v4vSetSenderInfo } from '../services/v4v/v4v'
-import { V4VProviderConnectedState, v4vUpdateSenderInfoName } from '../state/actions/v4v/v4v'
+import { v4vGetProviderListItems } from '../services/v4v/v4v'
+import { V4VProviderConnectedState, v4vSetShowLightningIcons, v4vUpdateSenderInfoName } from '../state/actions/v4v/v4v'
 import { core, table } from '../styles'
 
 type Props = {
@@ -69,8 +69,14 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
     }
   }
 
+  _handleShowLightningIconsToggle = () => {
+    const { showLightningIcons } = this.global.session.v4v
+    v4vSetShowLightningIcons(!showLightningIcons)
+  }
+
   _generateListHeaderComponent = () => {
-    const { globalTheme } = this.global
+    const { globalTheme, session } = this.global
+    const { showLightningIcons } = session?.v4v
     const { localSenderName } = this.state
 
     return (
@@ -102,6 +108,15 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
           style={[table.sectionExplanationText, globalTheme.tableCellTextPrimary]}>
           {translate('V4V set name helper text')}
         </Text>
+        <View style={core.itemWrapper}>
+          <SwitchWithText
+            accessibilityLabel={translate('Show lightning icons next to value for value enabled podcasts')}
+            onValueChange={this._handleShowLightningIconsToggle}
+            testID={`${testIDPrefix}_show_lightning_icons`}
+            text={translate('Show lightning icons next to value for value enabled podcasts')}
+            value={!!showLightningIcons}
+          />
+        </View>
       </View>
     )
   }

@@ -67,7 +67,8 @@ import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
 import {
   v4vInitializeConnectedProviders,
   v4vInitializeSenderInfo,
-  v4vInitializeSettings
+  v4vInitializeSettings,
+  v4vInitializeShowLightningIcon
 } from '../state/actions/v4v/v4v'
 import { initializeValueProcessor } from '../state/actions/valueTag'
 import { core } from '../styles'
@@ -526,6 +527,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { searchBarText } = this.state
     await initPlayerState(this.global)
     await initializeSettings()
+    await v4vInitializeShowLightningIcon()
     await v4vInitializeSettings()
     await v4vInitializeConnectedProviders()
     await v4vInitializeSenderInfo()
@@ -806,6 +808,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       showAutoDownload
       showDownloadCount
       testID={`${testIDPrefix}_podcast_item_${index}`}
+      valueTags={item.value}
     />
   )
 
@@ -1019,40 +1022,38 @@ export class PodcastsScreen extends React.Component<Props, State> {
             selectedSortLabel={selectedSortLabel}
             testID={testIDPrefix}
           />
-          {queryFrom && (
-            <FlatList
-              data={flatListData}
-              dataTotalCount={flatListDataTotalCount}
-              disableLeftSwipe={
-                queryFrom !== PV.Filters._subscribedKey &&
-                queryFrom !== PV.Filters._downloadedKey &&
-                queryFrom !== PV.Filters._customFeedsKey
-              }
-              extraData={flatListData}
-              handleNoResultsTopAction={!!Config.CURATOR_EMAIL ? this._navToRequestPodcastEmail : null}
-              keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
-              isLoadingMore={isLoadingMore}
-              isRefreshing={isRefreshing}
-              ItemSeparatorComponent={this._ItemSeparatorComponent}
-              {...(isCategoryScreen ? {} : { ListHeaderComponent: this._ListHeaderComponent })}
-              noResultsMessage={
-                // eslint-disable-next-line max-len
-                noSubscribedPodcasts
-                  ? translate('You are not subscribed to any podcasts yet')
-                  : translate('No podcasts found')
-              }
-              noResultsTopActionText={!!Config.CURATOR_EMAIL && searchBarText ? translate('Request Podcast') : ''}
-              noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - send us an email to request a podcast')}
-              onEndReached={this._onEndReached}
-              onRefresh={this._onRefresh}
-              renderHiddenItem={this._renderHiddenItem}
-              renderItem={this._renderPodcastItem}
-              showNoInternetConnectionMessage={showNoInternetConnectionMessage}
-              testID={testIDPrefix}
-              gridView={podcastsGridViewEnabled}
-              onGridItemSelected={this._onPodcastItemSelected}
-            />
-          )}
+          <FlatList
+            data={flatListData}
+            dataTotalCount={flatListDataTotalCount}
+            disableLeftSwipe={
+              queryFrom !== PV.Filters._subscribedKey &&
+              queryFrom !== PV.Filters._downloadedKey &&
+              queryFrom !== PV.Filters._customFeedsKey
+            }
+            extraData={flatListData}
+            handleNoResultsTopAction={!!Config.CURATOR_EMAIL ? this._navToRequestPodcastEmail : null}
+            keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
+            isLoadingMore={isLoadingMore}
+            isRefreshing={isRefreshing}
+            ItemSeparatorComponent={this._ItemSeparatorComponent}
+            {...(isCategoryScreen ? {} : { ListHeaderComponent: this._ListHeaderComponent })}
+            noResultsMessage={
+              // eslint-disable-next-line max-len
+              noSubscribedPodcasts
+                ? translate('You are not subscribed to any podcasts yet')
+                : translate('No podcasts found')
+            }
+            noResultsTopActionText={!!Config.CURATOR_EMAIL && searchBarText ? translate('Request Podcast') : ''}
+            noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - send us an email to request a podcast')}
+            onEndReached={this._onEndReached}
+            onRefresh={this._onRefresh}
+            renderHiddenItem={this._renderHiddenItem}
+            renderItem={this._renderPodcastItem}
+            showNoInternetConnectionMessage={showNoInternetConnectionMessage}
+            testID={testIDPrefix}
+            gridView={podcastsGridViewEnabled}
+            onGridItemSelected={this._onPodcastItemSelected}
+          />
         </RNView>
         <Dialog.Container accessible visible={showDataSettingsConfirmDialog}>
           <Dialog.Title>{translate('Data Settings')}</Dialog.Title>
