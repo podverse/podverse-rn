@@ -67,7 +67,8 @@ import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
 import {
   v4vInitializeConnectedProviders,
   v4vInitializeSenderInfo,
-  v4vInitializeSettings
+  v4vInitializeSettings,
+  v4vInitializeTermsAccepted
 } from '../state/actions/v4v/v4v'
 import { initializeValueProcessor } from '../state/actions/valueTag'
 import { core } from '../styles'
@@ -526,6 +527,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { searchBarText } = this.state
     await initPlayerState(this.global)
     await initializeSettings()
+    await v4vInitializeTermsAccepted()
     await v4vInitializeSettings()
     await v4vInitializeConnectedProviders()
     await v4vInitializeSenderInfo()
@@ -806,6 +808,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       showAutoDownload
       showDownloadCount
       testID={`${testIDPrefix}_podcast_item_${index}`}
+      valueTags={item.value}
     />
   )
 

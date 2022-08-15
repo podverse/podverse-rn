@@ -39,8 +39,8 @@ export const NewContentBadge = (props: Props) => {
           borderWidth: 1,
           borderColor: PV.Colors.skyLight,
           backgroundColor: PV.Colors.ink,
-          minWidth: 20,
-          minHeight: 20
+          minWidth: 23,
+          minHeight: 23
         }}
         textStyle={{
           fontSize: PV.Fonts.sizes.tiny,

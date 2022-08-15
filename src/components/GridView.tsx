@@ -38,6 +38,7 @@ export class GridView extends React.PureComponent<Props, any> {
                 resizeMode='cover'
                 source={item?.shrunkImageUrl || item?.imageUrl || ''}
                 styles={styles.imageThumbnail}
+                valueTags={item.value}
               />
             </PressableWithOpacity>
           )

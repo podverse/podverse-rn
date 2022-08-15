@@ -5,6 +5,7 @@ import React from 'reactn'
 import { Button, Text } from '../components'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
+import { v4vSetTermsAccepted } from '../state/actions/v4v/v4v'
 
 type Props = any
 type State = {
@@ -41,6 +42,7 @@ export class V4VConsentScreen extends React.Component<Props, State> {
 
   _acceptAgreement = async () => {
     await AsyncStorage.setItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS, 'true')
+    v4vSetTermsAccepted(true)
     this.props.navigation.navigate(PV.RouteNames.V4VProvidersScreen)
   }
 

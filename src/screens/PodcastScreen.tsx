@@ -916,6 +916,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
           isSubscribing={isSubscribing}
           podcastImageUrl={podcast && (podcast.shrunkImageUrl || podcast.imageUrl)}
           podcastTitle={podcast && podcast.title}
+          podcastValue={podcast?.value}
           showSettings={showSettings}
           testID={testIDPrefix}
         />
