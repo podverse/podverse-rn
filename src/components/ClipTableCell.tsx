@@ -64,6 +64,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const isDownloaded = downloadedEpisodeIds[episodeId]
     const episodeDownloading = item?.episode?.id && !!downloadsActive[item.episode.id]
     const chapterImageStyle = item?.linkUrl ? [styles.chapterImage, styles.chapterImageBorder] : styles.chapterImage
+    const podcastValue = item?.episode?.podcast?.value
 
     const podcastTitleText = podcastTitle.trim()
     const episodeTitleText = episodeTitle.trim()
@@ -88,7 +89,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
           {(showEpisodeInfo || showPodcastInfo) && (
             <RNView accessible={false} style={styles.imageAndTopRightTextWrapper}>
               {showPodcastInfo && !!podcastImageUrl && !hideImage && (
-                <FastImage isSmall source={podcastImageUrl} styles={styles.image} />
+                <FastImage isSmall source={podcastImageUrl} styles={styles.image} valueTags={podcastValue} />
               )}
               <RNView style={styles.textWrapper}>
                 {showPodcastInfo && podcastTitle && (

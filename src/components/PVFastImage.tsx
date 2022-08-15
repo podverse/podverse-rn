@@ -1,10 +1,10 @@
-import { isValidUrl } from 'podverse-shared'
+import { isValidUrl, ValueTag } from 'podverse-shared'
 import { Image, Platform, StyleSheet, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
 import { PV } from '../resources'
-import { NewContentBadge, Text } from '.'
+import { LightningIcon, NewContentBadge, Text } from '.'
 const PlaceholderImage = PV.Images.PLACEHOLDER.default
 
 type Props = {
@@ -14,8 +14,10 @@ type Props = {
   newContentCount?: number
   placeholderLabel?: string
   resizeMode?: any
-  styles?: any
   source?: string
+  styles?: any
+  // valueTags are used for rendering a lightning icon
+  valueTags?: ValueTag[] | null
 }
 
 type State = {
@@ -68,9 +70,11 @@ export class PVFastImage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { accessible = false, newContentCount, placeholderLabel, resizeMode = 'contain', source, styles } = this.props
+    const { accessible = false, newContentCount,
+    placeholderLabel, resizeMode = 'contain', source, styles, valueTags } = this.props
     const { hasError, localImageSource } = this.state
-    const { hideNewEpisodesBadges, userAgent } = this.global
+    const { hideNewEpisodesBadges, session, userAgent } = this.global
+    const showLightningIcons = session?.v4v?.showLightningIcons
     let imageSource = source
     let isValid = false
     if (localImageSource.exists) {
@@ -107,6 +111,11 @@ export class PVFastImage extends React.PureComponent<Props, State> {
         {!hideNewEpisodesBadges && !!newContentCount && newContentCount > 0 && (
           <NewContentBadge count={newContentCount} />
         )}
+        <LightningIcon
+          showLightningIcons={showLightningIcons}
+          valueTags={valueTags}
+          wrapperStyles={defaultStyles.lightningIcon}
+        />
       </View>
     )
 
@@ -130,6 +139,22 @@ export class PVFastImage extends React.PureComponent<Props, State> {
 }
 
 const defaultStyles = StyleSheet.create({
+  lightningIcon: {
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: PV.Colors.skyLight,
+    backgroundColor: PV.Colors.ink,
+    position: 'absolute',
+    bottom: 1,
+    left: 1,
+    zIndex: 1000000,
+    minWidth: 23,
+    minHeight: 23,
+    marginLeft: 0,
+    marginRight: 0,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   placeholderLabel: {
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.bold,

@@ -5,16 +5,23 @@ import { getTrackingStatus, requestTrackingPermission } from 'react-native-track
 import { PV } from '../resources'
 import { matomoTrackPageView } from './matomo'
 
-export const getTrackingConsentAcknowledged = async () => {
-  const trackingStatus = await getTrackingStatus()
-  let result
-  if (Platform.OS === 'ios' && trackingStatus !== 'not-determined') {
-    result = true
-  } else {
-    result = await AsyncStorage.getItem(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED)
-  }
-
-  return result
+export const getTrackingConsentAcknowledged = () => {
+  return new Promise((res, rej) => {
+    setTimeout(() => {
+        getTrackingStatus().then((trackingStatus) => {
+          if (Platform.OS === 'ios' && trackingStatus !== 'not-determined') {
+            res(true)
+          } else {
+            AsyncStorage.getItem(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED)
+            .then((result) => {
+              res(result)
+            })
+            .catch(rej)
+          }
+        })
+        .catch(rej)
+    }, 1000)
+  })
 }
 
 export const setTrackingConsentAcknowledged = async () => {

@@ -1,11 +1,11 @@
-import { removeHTMLFromString } from 'podverse-shared'
+import { removeHTMLFromString, ValueTag } from 'podverse-shared'
 import { Pressable, StyleSheet, Switch, View as RNView } from 'react-native'
 import React, { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { IndicatorDownload } from './IndicatorDownload'
-import { ActivityIndicator, FastImage, SettingsButton, SubscribeButton, Text, View } from './'
+import { ActivityIndicator, FastImage, LightningIcon, SettingsButton, SubscribeButton, Text, View } from './'
 
 type Props = {
   autoDownloadOn?: boolean
@@ -21,6 +21,7 @@ type Props = {
   podcast?: any
   podcastImageUrl?: string
   podcastTitle: string
+  podcastValue: ValueTag[]
   showSettings?: boolean
   testID: string
 }
@@ -39,6 +40,7 @@ export const PodcastTableHeader = (props: Props) => {
     isSubscribing,
     podcastImageUrl,
     podcastTitle = translate('Untitled Podcast'),
+    podcastValue,
     showSettings,
     testID
   } = props
@@ -57,7 +59,7 @@ export const PodcastTableHeader = (props: Props) => {
         <View style={{ flexDirection: 'column', flex: 1 }}>
           {!isNotFound && (
             <View style={styles.wrapper}>
-              <FastImage source={podcastImageUrl} styles={styles.image} />
+              <FastImage source={podcastImageUrl} styles={styles.image} valueTags={podcastValue} />
               <View style={styles.contentWrapper}>
                 <View style={styles.contentWrapperTop}>
                   <Text
