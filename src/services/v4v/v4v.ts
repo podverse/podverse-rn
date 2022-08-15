@@ -121,22 +121,16 @@ const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipien
     normalizedValueRecipient?.type
   )
 
+/*
+    Round down for boosts.
+    Don't round for streaming sats.
+*/
 export const normalizeValueRecipients = (recipients: ValueRecipient[], total: number, roundDownValues: boolean) => {
   const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(recipients)
-  const feeRecipient = normalizedValueRecipients.find((valueRecipient) => valueRecipient.fee === true)
-  let feeAmount = 0
-  if (feeRecipient) {
-    feeAmount = (total / 100) * (feeRecipient.normalizedSplit || 0)
-    total = total - feeAmount
-  }
 
   const finalNormalizedValueRecipients: ValueRecipientNormalized[] = []
   for (const normalizedValueRecipient of normalizedValueRecipients) {
     let amount = (total / 100) * (normalizedValueRecipient.normalizedSplit || 0)
-
-    if (feeAmount && normalizedValueRecipient.fee) {
-      amount = feeAmount
-    }
 
     amount = roundDownValues ? Math.floor(amount) : amount
 
