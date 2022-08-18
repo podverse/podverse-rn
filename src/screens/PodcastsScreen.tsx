@@ -175,14 +175,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     iapInitConnection()
 
-    messaging().onNotificationOpenedApp(async (remoteMessage) => {
+    messaging().onNotificationOpenedApp((remoteMessage) => {
       const podcastId = remoteMessage?.data?.podcastId
       const episodeId = remoteMessage?.data?.episodeId
 
       if (remoteMessage && podcastId && episodeId) {
         setTimeout(() => {
           navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(navigation, podcastId, episodeId)
-        }, 1555)
+        }, PV.Navigation.navigationTimeoutDelay)
       }
     })
 
@@ -215,7 +215,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           await this._goBackWithDelay()
           setTimeout(() => {
             navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(navigation, podcastId, episodeId)
-          }, 1555)
+          }, PV.Navigation.navigationTimeoutDelay)
         }
       })
 
