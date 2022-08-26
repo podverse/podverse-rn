@@ -16,7 +16,7 @@ import {
 } from '../../services/podcast'
 import { updateDownloadedPodcasts } from './downloads'
 
-export const combineWithAddByRSSPodcasts = async (searchTitle?: string) => {
+export const combineWithAddByRSSPodcasts = async (searchTitle?: string, sort?: string | null) => {
   const { appMode } = getGlobal()
   const videoOnlyMode = appMode === PV.AppMode.videos
 
@@ -32,6 +32,12 @@ export const combineWithAddByRSSPodcasts = async (searchTitle?: string) => {
 
   if (videoOnlyMode) {
     finalPodcasts = finalPodcasts.filter((podcast) => podcast.hasVideo)
+  }
+
+  if (sort === PV.Filters._mostRecentKey) {
+    finalPodcasts = finalPodcasts.sort(function(a, b) {
+      return new Date(b.lastEpisodePubDate) - new Date(a.lastEpisodePubDate)
+    })
   }
 
   setGlobal({

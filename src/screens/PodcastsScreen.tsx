@@ -197,9 +197,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const isLiveNotification = notificationType === 'live'
         const timeSent = remoteMessage?.data?.timeSent
         const currentDateTime = new Date()
-        const currentDateTime30MinutesEarlier = new Date(currentDateTime)
-        currentDateTime30MinutesEarlier.setMinutes(currentDateTime.getMinutes() - 30)
-        const wasRecentlySent = timeSent && new Date(timeSent) > currentDateTime30MinutesEarlier
+        const currentDateTime60MinutesEarlier = new Date(currentDateTime)
+        currentDateTime60MinutesEarlier.setMinutes(currentDateTime.getMinutes() - 60)
+        const wasRecentlySent = timeSent && new Date(timeSent) > currentDateTime60MinutesEarlier
 
         if (remoteMessage && podcastId && episodeId && isLiveNotification && wasRecentlySent) {
           const GO_TO_LIVE_PODCAST = PV.Alerts.GO_TO_LIVE_PODCAST(
@@ -1077,7 +1077,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _querySubscribedPodcasts = async (preventAutoDownloading?: boolean, preventParseCustomRSSFeeds?: boolean) => {
-    const { searchBarText } = this.state
+    const { querySort, searchBarText } = this.state
     await getSubscribedPodcasts()
 
     await handleUpdateNewEpisodesCount()
@@ -1085,7 +1085,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     if (!preventParseCustomRSSFeeds) {
       if (!searchBarText) await parseAllAddByRSSPodcasts()
 
-      await combineWithAddByRSSPodcasts(searchBarText)
+      await combineWithAddByRSSPodcasts(searchBarText, querySort)
     }
 
     if (!preventAutoDownloading) {
