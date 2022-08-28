@@ -82,7 +82,7 @@ export const findPodcastsByFeedUrls = async (feedUrls: string[]) => {
   return response && response.data
 }
 
-export const getSubscribedPodcasts = async (subscribedPodcastIds: string[]) => {
+export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], sort?: string | null) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
 
   const { appMode } = getGlobal()
@@ -90,7 +90,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[]) => {
 
   const query = {
     podcastIds: subscribedPodcastIds,
-    sort: PV.Filters._alphabeticalKey,
+    sort: sort ? sort : PV.Filters._alphabeticalKey,
     maxResults: true,
     ...(videoOnlyMode ? { hasVideo: true } : {})
   }
@@ -101,7 +101,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[]) => {
   if (subscribedPodcastIds.length < 1 && addByRSSPodcasts.length > 0) {
     await handleAutoDownloadEpisodesAddByRSSPodcasts()
     await setSubscribedPodcasts([])
-    const combinedPodcasts = await combineWithAddByRSSPodcasts()
+    const combinedPodcasts = await combineWithAddByRSSPodcasts(sort)
     return [combinedPodcasts, combinedPodcasts.length]
   }
 
@@ -110,20 +110,20 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[]) => {
       const data = await getPodcasts(query)
       let subscribedPodcasts = data[0] || []
       await setSubscribedPodcasts(subscribedPodcasts)
-      subscribedPodcasts = await combineWithAddByRSSPodcasts()
+      subscribedPodcasts = await combineWithAddByRSSPodcasts(sort)
       return [subscribedPodcasts, subscribedPodcasts.length]
     } catch (error) {
       console.log(error)
-      const combinedPodcasts = await combineWithAddByRSSPodcasts()
+      const combinedPodcasts = await combineWithAddByRSSPodcasts(sort)
       return [combinedPodcasts, combinedPodcasts.length]
     }
   } else {
-    const combinedPodcasts = await combineWithAddByRSSPodcasts()
+    const combinedPodcasts = await combineWithAddByRSSPodcasts(sort)
     return [combinedPodcasts, combinedPodcasts.length]
   }
 }
 
-export const combineWithAddByRSSPodcasts = async () => {
+export const combineWithAddByRSSPodcasts = async (sort?: string | null) => {
   const { appMode } = getGlobal()
   const videoOnlyMode = appMode === PV.AppMode.videos
 
@@ -142,7 +142,14 @@ export const combineWithAddByRSSPodcasts = async () => {
 
   const combinedPodcasts = [...subscribedPodcasts, ...addByRSSPodcasts]
 
-  return sortPodcastArrayAlphabetically(combinedPodcasts)
+  
+  if (sort === PV.Filters._mostRecentKey) {
+    return combinedPodcasts.sort(function(a, b) {
+      return new Date(b.lastEpisodePubDate) - new Date(a.lastEpisodePubDate)
+    })
+  } else {
+    return sortPodcastArrayAlphabetically(combinedPodcasts)
+  }
 }
 
 export const getSubscribedPodcastsLocally = async () => {
