@@ -40,6 +40,7 @@ import { getAddByRSSPodcastsLocally, parseAllAddByRSSPodcasts } from '../service
 import { playerUpdateUserPlaybackPosition } from '../services/player'
 import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudio'
 import { getPodcast, getPodcasts } from '../services/podcast'
+import { getSavedQueryPodcastsScreenSort, setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
 import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
 import { initAutoQueue } from '../state/actions/autoQueue'
@@ -175,14 +176,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     iapInitConnection()
 
-    messaging().onNotificationOpenedApp(async (remoteMessage) => {
+    messaging().onNotificationOpenedApp((remoteMessage) => {
       const podcastId = remoteMessage?.data?.podcastId
       const episodeId = remoteMessage?.data?.episodeId
 
       if (remoteMessage && podcastId && episodeId) {
         setTimeout(() => {
           navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(navigation, podcastId, episodeId)
-        }, 1555)
+        }, PV.Navigation.navigationTimeoutDelay)
       }
     })
 
@@ -197,9 +198,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const isLiveNotification = notificationType === 'live'
         const timeSent = remoteMessage?.data?.timeSent
         const currentDateTime = new Date()
-        const currentDateTime30MinutesEarlier = new Date(currentDateTime)
-        currentDateTime30MinutesEarlier.setMinutes(currentDateTime.getMinutes() - 30)
-        const wasRecentlySent = timeSent && new Date(timeSent) > currentDateTime30MinutesEarlier
+        const currentDateTime60MinutesEarlier = new Date(currentDateTime)
+        currentDateTime60MinutesEarlier.setMinutes(currentDateTime.getMinutes() - 60)
+        const wasRecentlySent = timeSent && new Date(timeSent) > currentDateTime60MinutesEarlier
 
         if (remoteMessage && podcastId && episodeId && isLiveNotification && wasRecentlySent) {
           const GO_TO_LIVE_PODCAST = PV.Alerts.GO_TO_LIVE_PODCAST(
@@ -215,7 +216,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           await this._goBackWithDelay()
           setTimeout(() => {
             navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(navigation, podcastId, episodeId)
-          }, 1555)
+          }, PV.Navigation.navigationTimeoutDelay)
         }
       })
 
@@ -535,7 +536,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // Load the AsyncStorage authenticatedUser and subscribed podcasts immediately,
     // before getting the latest from server and parsing the addByPodcastFeedUrls in getAuthUserInfo.
     await getAuthenticatedUserInfoLocally()
-    await combineWithAddByRSSPodcasts(searchBarText)
+    const savedQuerySort = await getSavedQueryPodcastsScreenSort()
+    await combineWithAddByRSSPodcasts(searchBarText, savedQuerySort)
 
     this._handleInitialDefaultQuery()
 
@@ -579,7 +581,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const preventIsLoading = true
     const preventAutoDownloading = false
     if (isConnected) {
-      this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
+      const savedQuerySort = await getSavedQueryPodcastsScreenSort()
+      this.setState({ querySort: savedQuerySort }, () => {
+        this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
+      })
     } else {
       this._setDownloadedDataIfOffline()
     }
@@ -661,9 +666,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  handleSelectSortItem = (selectedKey: string) => {
+  handleSelectSortItem = async (selectedKey: string) => {
     if (!selectedKey) {
       return
+    }
+
+    const { queryFrom } = this.state
+
+    if (queryFrom === PV.Filters._subscribedKey) {
+      await setSavedQueryPodcastsScreenSort(selectedKey)
     }
 
     const selectedSortLabel = getSelectedSortLabel(selectedKey)
@@ -988,7 +999,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     let flatListData = []
     let flatListDataTotalCount = null
-    if (queryFrom === PV.Filters._subscribedKey) {
+    if (isLoadingMore && queryFrom === PV.Filters._subscribedKey) {
+      // do nothing
+    } else if (queryFrom === PV.Filters._subscribedKey) {
       flatListData = subscribedPodcasts
       flatListDataTotalCount = subscribedPodcastsTotalCount
     } else {
@@ -1077,15 +1090,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _querySubscribedPodcasts = async (preventAutoDownloading?: boolean, preventParseCustomRSSFeeds?: boolean) => {
-    const { searchBarText } = this.state
-    await getSubscribedPodcasts()
+    const { querySort, searchBarText } = this.state
+    await getSubscribedPodcasts(querySort)
 
     await handleUpdateNewEpisodesCount()
 
     if (!preventParseCustomRSSFeeds) {
       if (!searchBarText) await parseAllAddByRSSPodcasts()
 
-      await combineWithAddByRSSPodcasts(searchBarText)
+      await combineWithAddByRSSPodcasts(searchBarText, querySort)
     }
 
     if (!preventAutoDownloading) {

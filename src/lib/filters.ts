@@ -40,18 +40,20 @@ export const getDefaultSortForFilter = (options: any) => {
       break
     case PV.RouteNames.PodcastScreen:
       if (addByRSSPodcastFeedUrl) {
-        newSelectedSortItemKey = PV.Filters._mostRecentKey
+        newSelectedSortItemKey = selectedSortItemKey ? selectedSortItemKey : PV.Filters._mostRecentKey
       } else if (selectedFilterItemKey === PV.Filters._downloadedKey) {
-        newSelectedSortItemKey = PV.Filters._mostRecentKey
+        newSelectedSortItemKey = selectedSortItemKey ? selectedSortItemKey : PV.Filters._mostRecentKey
       }
       break
     case PV.RouteNames.PodcastsScreen:
       if (
         selectedFilterItemKey === PV.Filters._downloadedKey ||
-        selectedFilterItemKey === PV.Filters._subscribedKey ||
         selectedFilterItemKey === PV.Filters._customFeedsKey
       ) {
         newSelectedSortItemKey = PV.Filters._alphabeticalKey
+      } else if (selectedFilterItemKey === PV.Filters._subscribedKey) {
+        newSelectedSortItemKey = selectedSortItemKey === PV.Filters._mostRecentKey
+          ? PV.Filters._mostRecentKey : PV.Filters._alphabeticalKey
       } else {
         newSelectedSortItemKey = !PV.FilterOptions.screenFilters.PodcastsScreen.sort.includes(newSelectedSortItemKey)
           ? PV.Filters._topPastWeek
@@ -289,7 +291,10 @@ export const generateSections = (options: any) => {
         filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
           PV.FilterOptions.screenFilters.PodcastScreen.type.includes(item.value)
         )
-        sortItems = sortItems.filter((item) => item.value === PV.Filters._mostRecentKey)
+        sortItems = sortItems.filter((item) =>
+          item.value === PV.Filters._mostRecentKey
+          || item.value === PV.Filters._oldestKey
+        )
       } else if (
         selectedFilterItemKey === PV.Filters._episodesKey ||
         selectedFilterItemKey === PV.Filters._showCompletedKey ||
@@ -332,7 +337,8 @@ export const generateSections = (options: any) => {
       ) {
         newSelectedCategoryItemKey = ''
         newSelectedCategorySubItemKey = ''
-        sortItems = sortItems.filter((item) => item.value === PV.Filters._alphabeticalKey)
+        sortItems = sortItems.filter((item) => item.value === PV.Filters._alphabeticalKey 
+          || item.value === PV.Filters._mostRecentKey)
       } else {
         if (selectedFilterItemKey === PV.Filters._allPodcastsKey) {
           newSelectedCategoryItemKey = ''

@@ -1,8 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { Alert, Linking } from 'react-native'
 import * as RNKeychain from 'react-native-keychain'
+import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
-import { Credentials } from '../state/actions/auth'
+import { Credentials, logoutUser } from '../state/actions/auth'
 import { fcmTokenGetLocally } from './fcmDevices'
 import { getQueueItems } from './queue'
 import { request } from './request'
@@ -192,7 +194,28 @@ export const login = async (email: string, password: string) => {
 
   const data = (response && response.data) || []
   if (data.token) {
-    await RNKeychain.setInternetCredentials(PV.Keys.BEARER_TOKEN, 'Bearer', data.token)
+    try {
+      await RNKeychain.setInternetCredentials(PV.Keys.BEARER_TOKEN, 'Bearer', data.token)
+    } catch (e) {
+      if(e.message.includes("Could not encrypt data with alias")) {
+        Alert.alert(translate("Login Status Not Saved"), 
+        translate("Saving login credentials error"),
+        [
+          {
+            text: translate('No Thanks')
+          },
+          {
+            onPress: () => {
+              logoutUser()
+              Linking.openSettings()
+            }, 
+            text: translate('Go to Settings')
+          }
+        ])
+      } else {
+        throw e
+      }
+    }
   }
 
   return data
