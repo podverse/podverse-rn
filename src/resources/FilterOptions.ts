@@ -221,12 +221,12 @@ export const FilterOptions = {
       type: [_downloadedKey, _episodesKey, _hideCompletedKey, _showCompletedKey, _clipsKey],
       sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
       addByPodcastRSSFeedURLType: [_downloadedKey, _episodesKey],
-      addByPodcastRSSFeedURLSort: [_mostRecentKey]
+      addByPodcastRSSFeedURLSort: [_mostRecentKey, _oldestKey]
     },
     PodcastsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _customFeedsKey],
       sort: [..._top],
-      subscribedSort: [_alphabeticalKey]
+      subscribedSort: [_alphabeticalKey, _mostRecentKey]
     },
     ProfileScreen: {
       type: [_podcastsKey, _clipsKey, _playlistsKey],

@@ -97,7 +97,7 @@ export const Alerts = {
           await _goBackWithDelay()
           setTimeout(() => {
             navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(navigation, podcastId, episodeId)
-          }, 1555)
+          }, PV.Navigation.navigationTimeoutDelay)
         }
       }
     ]
