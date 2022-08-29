@@ -8671,10 +8671,10 @@ react-native-secure-key-store@2.0.9:
   resolved "https://registry.yarnpkg.com/react-native-secure-key-store/-/react-native-secure-key-store-2.0.9.tgz#9094d4d914145a301864b941c6289f57058780a5"
   integrity sha512-9qi1rOlv4qNSpJIjqcIB7d0EQSwo2Yho8NVBT/Jc9NeYibDLHdArLXl8jn8H6nlf+8alk/bXqr4rPINrCTtmog==
 
-react-native-share@7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-7.0.0.tgz#38a1e875c216bf39564e40edcef246c7f5d95615"
-  integrity sha512-2ImJYJotFg3bTihNrQIqDKCAJ2xV0/MjGmH5MaC1GXDvGTeuU1L2/sFrJLHTAYi+K6D6VTWGbv5h9SzXtuo39Q==
+react-native-share@7.9.0:
+  version "7.9.0"
+  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-7.9.0.tgz#31f28d85201bada5e511c5f14d5935df2166fe93"
+  integrity sha512-I9RPp7Ph7dusPwN+/TgFq2V9vLVCN12gwUzpgM1eCoqTMN54dVWI+9k0loCgANv3CdajiKSOrGh+DTnsmhG9VA==
 
 react-native-size-matters@^0.3.1:
   version "0.3.1"
