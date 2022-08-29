@@ -40,9 +40,9 @@ export const getDefaultSortForFilter = (options: any) => {
       break
     case PV.RouteNames.PodcastScreen:
       if (addByRSSPodcastFeedUrl) {
-        newSelectedSortItemKey = PV.Filters._mostRecentKey
+        newSelectedSortItemKey = selectedSortItemKey ? selectedSortItemKey : PV.Filters._mostRecentKey
       } else if (selectedFilterItemKey === PV.Filters._downloadedKey) {
-        newSelectedSortItemKey = PV.Filters._mostRecentKey
+        newSelectedSortItemKey = selectedSortItemKey ? selectedSortItemKey : PV.Filters._mostRecentKey
       }
       break
     case PV.RouteNames.PodcastsScreen:
