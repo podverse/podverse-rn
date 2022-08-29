@@ -1107,7 +1107,19 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       const { addByRSSEpisodes, addByRSSEpisodesCount } = this._queryAddByRSSEpisodes(viewType, sort)
       return [addByRSSEpisodes, addByRSSEpisodesCount]
     } else if (viewType === PV.Filters._downloadedKey) {
-      const downloadedEpisodes = this._filterDownloadedEpisodes()
+      let downloadedEpisodes = this._filterDownloadedEpisodes()
+
+      // Use spread operator with sort to prevent mutate in place
+      if (sort === PV.Filters._oldestKey) {
+        downloadedEpisodes = [...downloadedEpisodes].sort(function(a, b) {
+          return new Date(a.pubDate) - new Date(b.pubDate)
+        })
+      } else if (sort === PV.Filters._mostRecentKey) {
+        downloadedEpisodes = [...downloadedEpisodes].sort(function(a, b) {
+          return new Date(b.pubDate) - new Date(a.pubDate)
+        })
+      }
+      
       return [downloadedEpisodes, downloadedEpisodes.length]
     } else {
       const results = await getEpisodesAndLiveItems(
