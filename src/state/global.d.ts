@@ -1,4 +1,4 @@
-import { TranscriptRow } from 'podverse-shared'
+import { Episode, NowPlayingItem, TranscriptRow } from 'podverse-shared'
 import 'reactn'
 import { AppModes } from '../resources/AppMode'
 import { BannerInfo, GlobalTheme, UserInfo, TempMediaRef } from '../resources/Interfaces'
@@ -35,7 +35,8 @@ declare module 'reactn/default' {
     player: {
       backupDuration?: number
       hasErrored: boolean
-      nowPlayingItem: any
+      nowPlayingItem: NowPlayingItem
+      episode: Episode
       playbackRate: number
       showMakeClip: boolean
       showMiniPlayer: boolean
