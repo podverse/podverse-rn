@@ -150,20 +150,22 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
 
     const completed = !!nowPlayingItem.episodeId && !!historyItemsIndex.episodes?.[nowPlayingItem.episodeId]?.completed
     const label = completed ? translate('Mark as Unplayed') : translate('Mark as Played')
-    if(!nowPlayingItem.liveItem) {
-      children.push(<TouchableHighlight
-        accessibilityLabel={label}
-        key='mark_as_played'
-        onPress={()=>this._handleMarkAsPlayed(nowPlayingItem, completed, isLoggedIn)}
-        style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
-        underlayColor={safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonUnderlay.backgroundColor, '')}>
-      <Text
-        style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}
-        testID={`${testIDPrefix}_go_to_podcast`}>
-        {label}
-      </Text>
-    </TouchableHighlight>)
-        }
+    if (!nowPlayingItem.liveItem) {
+      children.push(
+        <TouchableHighlight
+          accessibilityLabel={label}
+          key='mark_as_played'
+          onPress={() => this._handleMarkAsPlayed(nowPlayingItem, completed, isLoggedIn)}
+          style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
+          underlayColor={safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonUnderlay.backgroundColor, '')}>
+          <Text
+            style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}
+            testID={`${testIDPrefix}_go_to_podcast`}>
+            {label}
+          </Text>
+        </TouchableHighlight>
+      )
+    }
     return children
   }
 
@@ -171,7 +173,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     if (isLoggedIn) {
       const shouldMarkAsPlayed = !completed
       await toggleMarkAsPlayed(nowPlayingItem, shouldMarkAsPlayed)
-      if(shouldMarkAsPlayed){
+      if (shouldMarkAsPlayed) {
         playerPlayNextFromQueue()
       }
       this.props.handleDismiss()

@@ -8,15 +8,16 @@ import { matomoTrackPageView } from './matomo'
 export const getTrackingConsentAcknowledged = () => {
   return new Promise((res, rej) => {
     setTimeout(() => {
-        getTrackingStatus().then((trackingStatus) => {
+      getTrackingStatus()
+        .then((trackingStatus) => {
           if (Platform.OS === 'ios' && trackingStatus !== 'not-determined') {
             res(true)
           } else {
             AsyncStorage.getItem(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED)
-            .then((result) => {
-              res(result)
-            })
-            .catch(rej)
+              .then((result) => {
+                res(result)
+              })
+              .catch(rej)
           }
         })
         .catch(rej)

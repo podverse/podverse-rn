@@ -197,10 +197,8 @@ export const login = async (email: string, password: string) => {
     try {
       await RNKeychain.setInternetCredentials(PV.Keys.BEARER_TOKEN, 'Bearer', data.token)
     } catch (e) {
-      if(e.message.includes("Could not encrypt data with alias")) {
-        Alert.alert(translate("Login Status Not Saved"), 
-        translate("Saving login credentials error"),
-        [
+      if (e.message.includes('Could not encrypt data with alias')) {
+        Alert.alert(translate('Login Status Not Saved'), translate('Saving login credentials error'), [
           {
             text: translate('No Thanks')
           },
@@ -208,7 +206,7 @@ export const login = async (email: string, password: string) => {
             onPress: () => {
               logoutUser()
               Linking.openSettings()
-            }, 
+            },
             text: translate('Go to Settings')
           }
         ])
