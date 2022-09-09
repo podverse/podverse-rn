@@ -306,7 +306,6 @@ export class PlayerScreen extends React.Component<Props> {
                 mediaRefIsOfficialChapter,
                 this._handleShare
               )}
-              message={translate('What link do you want to share?')}
               showModal={showShareActionSheet}
               testID={`${testIDPrefix}_share`}
               title={translate('Share')}
