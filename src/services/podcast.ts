@@ -142,7 +142,6 @@ export const combineWithAddByRSSPodcasts = async (sort?: string | null) => {
 
   const combinedPodcasts = [...subscribedPodcasts, ...addByRSSPodcasts]
 
-  
   if (sort === PV.Filters._mostRecentKey) {
     return combinedPodcasts.sort(function(a, b) {
       return new Date(b.lastEpisodePubDate) - new Date(a.lastEpisodePubDate)
