@@ -306,10 +306,8 @@ export class PlayerScreen extends React.Component<Props> {
                 mediaRefIsOfficialChapter,
                 this._handleShare
               )}
-              message={translate('What link do you want to share?')}
               showModal={showShareActionSheet}
               testID={`${testIDPrefix}_share`}
-              title={translate('Share')}
             />
           </View>
         </SafeAreaView>
@@ -329,13 +327,13 @@ const shareActionSheetButtons = (
     {
       accessibilityHint: translate('ARIA HINT - share this podcast'),
       key: 'podcast',
-      text: translate('Podcast'),
+      text: translate('Share Podcast'),
       onPress: () => handleShare(podcastId, null, null)
     },
     {
       accessibilityHint: translate('ARIA HINT - share this episode'),
       key: 'episode',
-      text: translate('Episode'),
+      text: translate('Share Episode'),
       onPress: () => handleShare(null, episodeId, null)
     }
   ]
@@ -345,14 +343,14 @@ const shareActionSheetButtons = (
       items.push({
         accessibilityHint: translate('ARIA HINT - share this chapter'),
         key: 'chapter',
-        text: translate('Chapter'),
+        text: translate('Share Chapter'),
         onPress: () => handleShare(null, null, mediaRefId, mediaRefIsOfficialChapter)
       })
     } else {
       items.push({
         accessibilityHint: translate('ARIA HINT - share this clip'),
         key: 'clip',
-        text: translate('Clip'),
+        text: translate('Share Clip'),
         onPress: () => handleShare(null, null, mediaRefId)
       })
     }
