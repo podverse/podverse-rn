@@ -63,7 +63,6 @@ const initialTheme: InitialState = {
     myPlaylists: [],
     subscribedPlaylists: []
   },
-  podcastValueFinal: null,
   podcastsGridViewEnabled: true,
   profile: {
     flatListData: [],

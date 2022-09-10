@@ -220,9 +220,8 @@ const convertValueTagIntoValueTransaction = async (
   }
 }
 
-export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFinal: any, includeMessage?: boolean) => {
+export const sendBoost = async (nowPlayingItem: NowPlayingItem, includeMessage?: boolean) => {
   const valueTags =
-    podcastValueFinal ||
     (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue) ||
     (nowPlayingItem?.podcastValue?.length && nowPlayingItem?.podcastValue)
 

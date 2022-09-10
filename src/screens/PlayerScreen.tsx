@@ -55,7 +55,7 @@ export class PlayerScreen extends React.Component<Props> {
     const _getInitialProgressValue = navigation.getParam('_getInitialProgressValue')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
-    const { globalTheme, player, podcastValueFinal } = getGlobal()
+    const { globalTheme, player } = getGlobal()
 
     // nowPlayingItem will be undefined when loading from a deep link
     let { nowPlayingItem } = player
@@ -66,7 +66,6 @@ export class PlayerScreen extends React.Component<Props> {
     const showFundingIcon =
       podcastFunding?.length > 0 ||
       episodeFunding?.length > 0 ||
-      podcastValueFinal?.length > 0 ||
       episodeValue?.length > 0 ||
       podcastValue?.length > 0
 

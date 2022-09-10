@@ -108,9 +108,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
     this.setState({ boostIsSending: true }, () => {
       (async () => {
-        const { podcastValueFinal } = this.global
         const { nowPlayingItem } = this.global.player
-        await sendBoost(nowPlayingItem, podcastValueFinal)
+        await sendBoost(nowPlayingItem)
         this.setState(
           {
             boostIsSending: false,
@@ -153,7 +152,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   render() {
     const { navigation } = this.props
     const { accessibilityItemSelected, activeIndex, boostIsSending, boostWasSent, explosionOrigin } = this.state
-    const { parsedTranscript, player, podcastValueFinal, screenReaderEnabled, session } = this.global
+    const { parsedTranscript, player, screenReaderEnabled, session } = this.global
     const { episode, nowPlayingItem, playbackState } = player
     const hasChapters = episode?.chaptersUrl
     const hasClips = !episode?.liveItem
@@ -187,7 +186,6 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       : [styles.boostButtonSubText]
 
     const hasValueInfo =
-      podcastValueFinal?.length > 0 ||
       nowPlayingItem?.episodeValue?.length > 0 ||
       nowPlayingItem?.podcastValue?.length > 0
 
