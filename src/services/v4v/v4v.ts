@@ -259,8 +259,8 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, includeMessage?:
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       setTimeout(async () => {
         try {
-          const succesfull = await sendValueTransaction(valueTransaction, includeMessage)
-          if (succesfull) {
+          const succesful = await sendValueTransaction(valueTransaction, includeMessage)
+          if (succesful) {
             totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
           }
         } catch (error) {
