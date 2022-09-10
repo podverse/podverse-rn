@@ -145,7 +145,6 @@ export interface InitialState {
     myPlaylists: []
     subscribedPlaylists: []
   }
-  podcastValueFinal: any
   podcastsGridViewEnabled: boolean
   profile: {
     flatListData: []

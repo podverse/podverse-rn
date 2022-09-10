@@ -105,6 +105,7 @@ export const EpisodeTableHeader = (props: Props) => {
                   accessibilityLabel={podcastTitleText}
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary
+                  selectable
                   style={styles.podcastTitle}
                   testID={`${testID}_podcast_title`}>
                   {podcastTitleText}
@@ -113,6 +114,7 @@ export const EpisodeTableHeader = (props: Props) => {
                   accessibilityHint={translate('ARIA HINT - This is the episode title')}
                   accessibilityLabel={episodeTitleText}
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  selectable
                   style={styles.title}
                   testID={`${testID}_title`}>
                   {episodeTitleText}
@@ -123,6 +125,7 @@ export const EpisodeTableHeader = (props: Props) => {
                     accessibilityLabel={pubDateText}
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     isSecondary
+                    selectable
                     style={styles.pubDate}
                     testID={`${testID}_pub_date`}>
                     {pubDateText}

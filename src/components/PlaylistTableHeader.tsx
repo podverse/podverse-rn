@@ -56,6 +56,7 @@ export const PlaylistTableHeader = (props: Props) => {
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 numberOfLines={1}
+                selectable
                 style={styles.title}
                 testID={`${testID}_title`}>
                 {title}

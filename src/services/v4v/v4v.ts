@@ -220,9 +220,8 @@ const convertValueTagIntoValueTransaction = async (
   }
 }
 
-export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFinal: any, includeMessage?: boolean) => {
+export const sendBoost = async (nowPlayingItem: NowPlayingItem, includeMessage?: boolean) => {
   const valueTags =
-    podcastValueFinal ||
     (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue) ||
     (nowPlayingItem?.podcastValue?.length && nowPlayingItem?.podcastValue)
 
@@ -260,8 +259,8 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       setTimeout(async () => {
         try {
-          const succesfull = await sendValueTransaction(valueTransaction, includeMessage)
-          if (succesfull) {
+          const succesful = await sendValueTransaction(valueTransaction, includeMessage)
+          if (succesful) {
             totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
           }
         } catch (error) {

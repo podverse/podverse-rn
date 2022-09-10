@@ -43,6 +43,7 @@ export class FeatureVideosScreen extends React.Component<Props, State> {
           ref={(ref: Video) => (this.videoRef = ref)}
           style={styles.videoPlayer}
           controls
+          resizeMode='cover'
           onEnd={() => {
             setTimeout(() => this.props.navigation.dismiss(), 1000)
           }}

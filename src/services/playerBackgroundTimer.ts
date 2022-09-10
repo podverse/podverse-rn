@@ -214,13 +214,12 @@ const handleValueStreamingToggle = () => {
 
 const handleValueStreamingMinutePassed = async () => {
   const globalState = getGlobal()
-  const { podcastValueFinal } = globalState
   const { nowPlayingItem } = globalState.player
 
   const { activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(globalState)
   const { streamingAmount } = activeProviderSettings || {}
 
-  const valueTag = podcastValueFinal || nowPlayingItem.episodeValue || nowPlayingItem.podcastValue
+  const valueTag = nowPlayingItem.episodeValue || nowPlayingItem.podcastValue
 
   if (valueTag && streamingAmount) {
     await saveStreamingValueTransactionsToTransactionQueue(valueTag, nowPlayingItem, streamingAmount)

@@ -75,14 +75,13 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    const { player, podcastValueFinal } = this.global
+    const { player } = this.global
     const { nowPlayingItem } = player
 
     const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(this.global)
 
     const { episodeValue, podcastValue } = nowPlayingItem
-    const valueTags =
-      podcastValueFinal || (episodeValue?.length && episodeValue) || (podcastValue?.length && podcastValue)
+    const valueTags = (episodeValue?.length && episodeValue) || (podcastValue?.length && podcastValue)
     const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
 
     if (activeValueTag && activeProvider) {
@@ -122,12 +121,11 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
   }
 
   _handleUpdateBoostTransactionsState = async (action: 'ACTION_BOOST', amount: number) => {
-    const { player, podcastValueFinal } = this.global
+    const { player } = this.global
     const { nowPlayingItem } = player
     const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(this.global)
 
     const valueTags =
-      podcastValueFinal ||
       (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue) ||
       (nowPlayingItem?.podcastValue?.length && nowPlayingItem?.podcastValue)
     const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
@@ -158,10 +156,9 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
     this.setState({ boostIsSending: true }, () => {
       ;(async () => {
-        const { podcastValueFinal } = this.global
         const { nowPlayingItem } = this.global.player
         const includeMessage = true
-        await sendBoost(nowPlayingItem, podcastValueFinal, includeMessage)
+        await sendBoost(nowPlayingItem, includeMessage)
         this.setState(
           {
             boostIsSending: false,
@@ -186,13 +183,12 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
       // localAppBoostAmount,
       localBoostAmount
     } = this.state
-    const { player, podcastValueFinal, session } = this.global
+    const { player, session } = this.global
     const { v4v } = session
     const { boostagramMessage, previousTransactionErrors } = v4v
     const { nowPlayingItem } = player
 
     const hasValueInfo =
-      podcastValueFinal?.length > 0 ||
       nowPlayingItem?.episodeValue?.length > 0 ||
       nowPlayingItem?.podcastValue?.length > 0
     const { activeProvider, activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(this.global)
@@ -361,7 +357,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   boostSentText: {
-    marginBottom: 36,
+    marginBottom: 48,
     marginTop: 16,
     fontSize: PV.Fonts.sizes.huge,
     fontWeight: PV.Fonts.weights.semibold,
