@@ -44,7 +44,7 @@ type State = {
 
 const testIDPrefix = 'funding_screen'
 
-export class FundingScreen extends React.Component<Props, State> {
+export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
   constructor() {
     super()
     this.state = {

@@ -8,6 +8,7 @@ import {
   getUsernameAndPasswordFromCredentials
 } from 'podverse-shared'
 import { Platform, StyleSheet, View as RNView } from 'react-native'
+import { Config } from 'react-native-config'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
@@ -18,6 +19,7 @@ import {
   Divider,
   EpisodeTableCell,
   FlatList,
+  NavFundingIcon,
   NavShareIcon,
   NavNotificationsIcon,
   NumberSelectorWithText,
@@ -192,13 +194,23 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const podcastId = navigation.getParam('podcastId')
     const podcastTitle = navigation.getParam('podcastTitle')
+    const podcast = navigation.getParam('podcast')
     const notificationsEnabled = navigation.getParam('notificationsEnabled')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
+
+    const { globalTheme } = getGlobal()
+
+    const showFundingIcon =
+      podcast?.funding?.length > 0 || podcast?.funding?.length > 0
 
     return {
       title: getScreenTitle(),
       headerRight: () => (
         <RNView style={core.row}>
+          {/* Always show NavFundingIcon in dev, otherwise funding tag will be unavailable to Appium tests. */}
+          {(!!Config.IS_DEV || !!showFundingIcon) && podcast && (
+            <NavFundingIcon globalTheme={globalTheme} navigation={navigation} podcast={podcast} />
+          )}
           {!addByRSSPodcastFeedUrl && (
             <NavNotificationsIcon
               podcastId={podcastId}
