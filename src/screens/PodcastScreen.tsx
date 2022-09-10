@@ -201,7 +201,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     const { globalTheme } = getGlobal()
 
     const showFundingIcon =
-      podcast?.funding?.length > 0 || podcast?.funding?.length > 0
+      podcast?.funding?.length > 0 || podcast?.value?.length > 0
 
     return {
       title: getScreenTitle(),
@@ -554,6 +554,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
             const { hasInternetConnection } = this.state
             this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
               episode,
+              podcast,
               addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
               hasInternetConnection
             })

@@ -1,11 +1,13 @@
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem, replaceLinebreaksWithBrTags } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
+import { Config } from 'react-native-config'
 import React, { getGlobal } from 'reactn'
 import {
   ActionSheet,
   EpisodeTableHeader,
   HTMLScrollView,
   Icon,
+  NavFundingIcon,
   NavShareIcon,
   PressableWithOpacity,
   ScrollView,
@@ -98,11 +100,25 @@ export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
     const episodeTitle = navigation.getParam('episodeTitle')
     const podcastTitle = navigation.getParam('podcastTitle')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
+    const episode = navigation.getParam('episode')
+    const podcast = navigation.getParam('podcast')
+
+    const { globalTheme } = getGlobal()
+
+    const showFundingIcon =
+      episode?.funding?.length > 0
+      || episode?.value?.length > 0
+      || podcast?.funding?.length > 0
+      || podcast?.value?.length > 0
 
     return {
       title: getScreenTitle(),
       headerRight: () => (
         <RNView style={core.row}>
+          {/* Always show NavFundingIcon in dev, otherwise funding tag will be unavailable to Appium tests. */}
+          {(!!Config.IS_DEV || !!showFundingIcon) && podcast && episode && (
+            <NavFundingIcon episode={episode} globalTheme={globalTheme} navigation={navigation} podcast={podcast} />
+          )}
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon
               endingText={translate('shared using brandName')}

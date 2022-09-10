@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { ValueTransaction } from 'podverse-shared'
+import { Funding, ValueTag, ValueTransaction } from 'podverse-shared'
 import { Dimensions, Keyboard, StyleSheet } from 'react-native'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
@@ -21,6 +21,7 @@ import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import {
+  BoostagramItem,
   convertValueTagIntoValueTransactions,
   MINIMUM_BOOST_PAYMENT,
   sendBoost,
@@ -75,12 +76,11 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    const { player } = this.global
-    const { nowPlayingItem } = player
+    const boostagramItem = this._convertToBoostagramItem()
 
     const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(this.global)
 
-    const { episodeValue, podcastValue } = nowPlayingItem
+    const { episodeValue, podcastValue } = boostagramItem
     const valueTags = (episodeValue?.length && episodeValue) || (podcastValue?.length && podcastValue)
     const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
 
@@ -111,6 +111,50 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     trackPageView('/v4v/boostagram', 'V4V - Boostagram Screen')
   }
 
+  _convertToBoostagramItem = () => {
+    const { player } = this.global
+    const { nowPlayingItem } = player
+    const podcast = this.props.navigation.getParam('podcast')
+    const episode = this.props.navigation.getParam('episode')
+
+    let item = {} as BoostagramItem
+    if (episode && podcast) {
+      item = {
+        episodeFunding: episode.funding || [],
+        episodePubDate: episode.pubDate,
+        episodeTitle: episode.title || '',
+        episodeValue: episode.value || [],
+        podcastFunding: podcast.funding || [],
+        podcastIndexPodcastId: podcast.podcastIndexId || '',
+        podcastShrunkImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
+        podcastTitle: podcast.title || '',
+        podcastValue: podcast.value || []
+      }
+    } else if (podcast) {
+      item = {
+        podcastFunding: podcast.funding || [],
+        podcastIndexPodcastId: podcast.podcastIndexId || '',
+        podcastShrunkImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
+        podcastTitle: podcast.title || '',
+        podcastValue: podcast.value || []
+      }
+    } else if (nowPlayingItem) {
+      item = {
+        episodeFunding: nowPlayingItem.episodeFunding || [],
+        episodePubDate: nowPlayingItem.episodePubDate as any || new Date(),
+        episodeTitle: nowPlayingItem.episodeTitle || '',
+        episodeValue: nowPlayingItem.episodeValue || [],
+        podcastFunding: nowPlayingItem.podcastFunding || [],
+        podcastIndexPodcastId: nowPlayingItem.podcastIndexPodcastId || '',
+        podcastShrunkImageUrl: nowPlayingItem.podcastShrunkImageUrl || nowPlayingItem.podcastImageUrl || '',
+        podcastTitle: nowPlayingItem.podcastTitle || '',
+        podcastValue: nowPlayingItem.podcastValue || []
+      }
+    }
+
+    return item
+  }
+
   _handleV4VProvidersPressed = async () => {
     const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS)
     if (consentGivenString && JSON.parse(consentGivenString) === true) {
@@ -121,13 +165,14 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
   }
 
   _handleUpdateBoostTransactionsState = async (action: 'ACTION_BOOST', amount: number) => {
-    const { player } = this.global
-    const { nowPlayingItem } = player
+    const boostagramItem = this._convertToBoostagramItem()
+
     const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(this.global)
 
     const valueTags =
-      (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue) ||
-      (nowPlayingItem?.podcastValue?.length && nowPlayingItem?.podcastValue)
+      (boostagramItem?.episodeValue?.length > 0 && boostagramItem?.episodeValue) ||
+      (boostagramItem?.podcastValue?.length > 0 && boostagramItem?.podcastValue) ||
+      []
     const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
 
     if (activeValueTag) {
@@ -138,7 +183,9 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
 
       const newValueTransactions = await convertValueTagIntoValueTransactions(
         activeValueTag,
-        nowPlayingItem,
+        boostagramItem.podcastTitle || '',
+        boostagramItem.episodeTitle || '',
+        boostagramItem.podcastIndexPodcastId || '',
         action,
         amount,
         shouldRound
@@ -156,9 +203,9 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
     this.setState({ boostIsSending: true }, () => {
       ;(async () => {
-        const { nowPlayingItem } = this.global.player
+        const boostagramItem = this._convertToBoostagramItem()
         const includeMessage = true
-        await sendBoost(nowPlayingItem, includeMessage)
+        await sendBoost(boostagramItem, includeMessage)
         this.setState(
           {
             boostIsSending: false,
@@ -183,19 +230,17 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
       // localAppBoostAmount,
       localBoostAmount
     } = this.state
-    const { player, session } = this.global
+    const { session } = this.global
     const { v4v } = session
     const { boostagramMessage, previousTransactionErrors } = v4v
-    const { nowPlayingItem } = player
+    const boostagramItem = this._convertToBoostagramItem()
 
-    const hasValueInfo =
-      nowPlayingItem?.episodeValue?.length > 0 ||
-      nowPlayingItem?.podcastValue?.length > 0
+    const hasValueInfo = boostagramItem?.episodeValue?.length > 0 || boostagramItem?.podcastValue?.length > 0
     const { activeProvider, activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(this.global)
 
-    const podcastTitle = nowPlayingItem?.podcastTitle.trim() || translate('Untitled Podcast')
-    const episodeTitle = nowPlayingItem?.episodeTitle.trim() || translate('Untitled Episode')
-    const pubDate = readableDate(nowPlayingItem.episodePubDate)
+    const podcastTitle = boostagramItem?.podcastTitle?.trim() || translate('Untitled Podcast')
+    const episodeTitle = boostagramItem?.episodeTitle?.trim()
+    const pubDate = readableDate(boostagramItem.episodePubDate)
     const headerAccessibilityLabel = `${podcastTitle}, ${episodeTitle}, ${pubDate}`
 
     const boostagramMessageCharCount = boostagramMessage?.length || 0
@@ -210,8 +255,8 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     return (
       <View style={styles.content} testID='funding_screen_view'>
         <View accessible accessibilityLabel={headerAccessibilityLabel} style={styles.innerTopView}>
-          <FastImage isSmall source={nowPlayingItem.podcastShrunkImageUrl} styles={styles.image} />
-          <View style={{ flex: 1 }}>
+          <FastImage isSmall source={boostagramItem.podcastShrunkImageUrl} styles={styles.image} />
+          <View style={{ justifyContent: 'center', flex: 1 }}>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               isSecondary
@@ -220,22 +265,28 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
               testID={`${testIDPrefix}_podcast_title`}>
               {podcastTitle}
             </Text>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              numberOfLines={1}
-              style={styles.episodeTitle}
-              testID={`${testIDPrefix}_episode_title`}>
-              {episodeTitle}
-            </Text>
-            <View style={styles.textWrapperBottomRow}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                isSecondary
-                style={styles.pubDate}
-                testID={`${testIDPrefix}_pub_date`}>
-                {pubDate}
-              </Text>
-            </View>
+            {
+              !!episodeTitle && (
+                <>
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    numberOfLines={1}
+                    style={styles.episodeTitle}
+                    testID={`${testIDPrefix}_episode_title`}>
+                    {episodeTitle}
+                  </Text>
+                  <View style={styles.textWrapperBottomRow}>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                      isSecondary
+                      style={styles.pubDate}
+                      testID={`${testIDPrefix}_pub_date`}>
+                      {pubDate}
+                    </Text>
+                  </View>
+                </>
+              )
+            }
           </View>
         </View>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>

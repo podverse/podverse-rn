@@ -20,22 +20,12 @@ import {
   v4vGetCurrentlyActiveProviderInfo
 } from '../state/actions/v4v/v4v'
 import { images } from '../styles'
+import { BoostagramItem } from 'src/services/v4v/v4v'
 
 type Props = any
 type State = {}
 
 const testIDPrefix = 'funding_podcast_episode_screen'
-
-type PodcastEpisodeItem = {
-  episodeFunding?: Funding[]
-  episodePubDate?: Date
-  episodeTitle?: string
-  episodeValue?: ValueTag[]
-  podcastFunding: Funding[]
-  podcastShrunkImageUrl: string
-  podcastTitle: string
-  podcastValue: ValueTag[]
-}
 
 export class FundingPodcastEpisodeScreen extends React.Component<Props, State> {
   constructor() {
@@ -91,11 +81,11 @@ export class FundingPodcastEpisodeScreen extends React.Component<Props, State> {
     }
   }
 
-  _fundingConvertToPodcastEpisodeItem = () => {
+  _fundingConvertToBoostagramItem = () => {
     const podcast = this.props.navigation.getParam('podcast')
     const episode = this.props.navigation.getParam('episode')
 
-    let item = {} as PodcastEpisodeItem
+    let item = {} as BoostagramItem
     if (episode && podcast) {
       item = {
         episodeFunding: episode.funding || [],
@@ -121,14 +111,20 @@ export class FundingPodcastEpisodeScreen extends React.Component<Props, State> {
 
   _handleBoostagramPress = () => {
     const { navigation } = this.props
+    const podcast = this.props.navigation.getParam('podcast')
+    const episode = this.props.navigation.getParam('episode')
+
     navigation.dismiss()
-    navigation.navigate(PV.RouteNames.V4VBoostagramScreen)
+    navigation.navigate(PV.RouteNames.V4VBoostagramScreen, {
+      podcast,
+      episode
+    })
   }
 
   render() {
-    const item = this._fundingConvertToPodcastEpisodeItem()
-    const podcastFunding = item?.podcastFunding || []
-    const episodeFunding = item?.episodeFunding || []
+    const boostagramItem = this._fundingConvertToBoostagramItem()
+    const podcastFunding = boostagramItem?.podcastFunding || []
+    const episodeFunding = boostagramItem?.episodeFunding || []
 
     const podcastLinks = podcastFunding.map((item: any, index: number) =>
       this.renderFundingLink(item, 'podcast', index)
@@ -138,19 +134,19 @@ export class FundingPodcastEpisodeScreen extends React.Component<Props, State> {
     )
 
     const hasValueInfo =
-      (item?.episodeValue && item.episodeValue.length > 0)
-      || (item.podcastValue && item?.podcastValue.length > 0)
+      (boostagramItem?.episodeValue && boostagramItem.episodeValue.length > 0) ||
+      (boostagramItem.podcastValue && boostagramItem?.podcastValue.length > 0)
     const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(this.global)
 
-    const podcastTitle = item?.podcastTitle?.trim() || ''
-    const episodeTitle = item?.episodeTitle?.trim() || ''
-    const pubDate = readableDate(item?.episodePubDate)
+    const podcastTitle = boostagramItem?.podcastTitle?.trim() || ''
+    const episodeTitle = boostagramItem?.episodeTitle?.trim() || ''
+    const pubDate = readableDate(boostagramItem?.episodePubDate)
     const headerAccessibilityLabel = `${podcastTitle}, ${episodeTitle}, ${pubDate}`
 
     return (
       <View style={styles.content} testID='funding_screen_view'>
         <View accessible accessibilityLabel={headerAccessibilityLabel} style={styles.innerTopView}>
-          <FastImage isSmall source={item.podcastShrunkImageUrl} styles={styles.image} />
+          <FastImage isSmall source={boostagramItem.podcastShrunkImageUrl} styles={styles.image} />
           <View style={{ flex: 1, justifyContent: 'center' }}>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
@@ -197,27 +193,22 @@ export class FundingPodcastEpisodeScreen extends React.Component<Props, State> {
             </View>
           )}
           {!!activeProvider && hasValueInfo && (
-            <View>
-              {/* <Text style={styles.textSubLabel} testID={`${testIDPrefix}_value_settings_lightning_sub_label`}>
-                some wallet text here
-              </Text> */}
-              <View style={styles.boostagramButtonWrapper}>
-                <PressableWithOpacity
-                  onPress={this._handleBoostagramPress}
-                  style={styles.boostagramButton}
-                  testID={'boostagram_button'.prependTestId()}>
-                  <Text style={styles.boostagramButtonMainText} testID='boost_button_text_1'>
-                    {translate('Send Boostagram').toUpperCase()}
-                  </Text>
-                  <Icon
-                    accessibilityLabel={translate('Send Boostagram')}
-                    accessibilityRole='button'
-                    name='comment-alt'
-                    size={17}
-                    testID={`${testIDPrefix}_boostagram_button`}
-                  />
-                </PressableWithOpacity>
-              </View>
+            <View style={styles.boostagramButtonWrapper}>
+              <PressableWithOpacity
+                onPress={this._handleBoostagramPress}
+                style={styles.boostagramButton}
+                testID={'boostagram_button'.prependTestId()}>
+                <Text style={styles.boostagramButtonMainText} testID='boost_button_text_1'>
+                  {translate('Send Boostagram').toUpperCase()}
+                </Text>
+                <Icon
+                  accessibilityLabel={translate('Send Boostagram')}
+                  accessibilityRole='button'
+                  name='comment-alt'
+                  size={17}
+                  testID={`${testIDPrefix}_boostagram_button`}
+                />
+              </PressableWithOpacity>
             </View>
           )}
           {hasValueInfo && episodeLinks?.length > 0 && <Divider />}
@@ -254,7 +245,6 @@ export class FundingPodcastEpisodeScreen extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   boostagramButton: {
-    flex: 1,
     flexDirection: 'row',
     margin: 10,
     height: 50,
@@ -272,7 +262,6 @@ const styles = StyleSheet.create({
     marginRight: 8
   },
   boostagramButtonWrapper: {
-    alignItems: 'center',
     marginBottom: 8,
     marginTop: 6
   },

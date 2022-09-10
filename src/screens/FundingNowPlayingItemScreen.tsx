@@ -152,7 +152,9 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
 
       const newValueTransactions = await convertValueTagIntoValueTransactions(
         activeValueTag,
-        nowPlayingItem,
+        nowPlayingItem.podcastTitle || '',
+        nowPlayingItem.episodeTitle || '',
+        nowPlayingItem.podcastIndexPodcastId || '',
         action,
         amount,
         shouldRound
