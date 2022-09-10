@@ -55,6 +55,9 @@ export const HTMLScrollView = (props: Props) => {
       <RenderHTML
         baseStyle={styles.html}
         contentWidth={Dimensions.get('window').width}
+        defaultTextProps={{
+          selectable: true
+        }}
         imagesMaxWidth={Dimensions.get('window').width}
         renderersProps={{
           a: {

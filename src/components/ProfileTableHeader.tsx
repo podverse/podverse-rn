@@ -51,7 +51,11 @@ export const ProfileTableHeader = (props: Props) => {
             accessibilityLabel={name}
             style={styles.textWrapper}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.name}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                numberOfLines={1}
+                selectable
+                style={styles.name}>
                 {name}
               </Text>
             </View>

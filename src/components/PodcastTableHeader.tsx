@@ -67,6 +67,7 @@ export const PodcastTableHeader = (props: Props) => {
                     accessibilityLabel={podcastTitle}
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     numberOfLines={titleNumberOfLines}
+                    selectable
                     style={styles.title}>
                     {podcastTitle}
                   </Text>
@@ -145,7 +146,11 @@ export const PodcastTableHeader = (props: Props) => {
                 accessibilityLabel={finalDescription}
                 onPress={handleNavigateToPodcastInfoScreen}>
                 <RNView>
-                  <Text numberOfLines={2} style={styles.descriptionText} testID={`${testID}_description_text`}>
+                  <Text
+                    numberOfLines={2}
+                    selectable
+                    style={styles.descriptionText}
+                    testID={`${testID}_description_text`}>
                     {finalDescription}
                   </Text>
                   {/* <Text
