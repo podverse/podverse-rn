@@ -34,8 +34,8 @@ const styles = StyleSheet.create({
   },
   navDismissIcon: {
     position: 'absolute',
-    right: 16,
-    top: 64,
+    left: 0,
+    top: 52,
     zIndex: 101
   },
   view: {
