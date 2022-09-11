@@ -25,7 +25,8 @@ import {
   FAQScreen,
   FeatureVideosScreen,
   FilterScreen,
-  FundingScreen,
+  FundingNowPlayingItemScreen,
+  FundingPodcastEpisodeScreen,
   HistoryScreen,
   MakeClipScreen,
   MembershipScreen,
@@ -351,9 +352,17 @@ const PlayerNavigator = createStackNavigator(
     [PV.RouteNames.PlayerMyProfileScreen]: ProfileScreen,
     [PV.RouteNames.PlayerMembershipScreen]: MembershipScreen,
     [PV.RouteNames.SleepTimerScreen]: SleepTimerScreen,
-    [PV.RouteNames.V4VBoostagramScreen]: V4VBoostagramScreen,
-    [PV.RouteNames.FundingScreen]: FundingScreen,
+    [PV.RouteNames.FundingNowPlayingItemScreen]: FundingNowPlayingItemScreen,
     [PV.RouteNames.PlaylistsAddToScreen]: PlaylistsAddToScreen
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
+const V4VBoostagramNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.V4VBoostagramScreen]: V4VBoostagramScreen
   },
   {
     defaultNavigationOptions
@@ -363,6 +372,15 @@ const PlayerNavigator = createStackNavigator(
 const PlaylistsAddToNavigator = createStackNavigator(
   {
     [PV.RouteNames.PlaylistsAddToScreenModal]: PlaylistsAddToScreen
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
+const FundingPodcastEpisodeNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.FundingPodcastEpisodeScreen]: FundingPodcastEpisodeScreen
   },
   {
     defaultNavigationOptions
@@ -488,7 +506,9 @@ const MainApp = createStackNavigator(
     AddPodcastByRSSAuthNavigator,
     V4VOnboardingNavigator,
     V4VProvidersModals,
-    TrackingConsentNavigator
+    TrackingConsentNavigator,
+    FundingPodcastEpisodeNavigator,
+    V4VBoostagramNavigator
   },
   {
     mode: 'modal',
