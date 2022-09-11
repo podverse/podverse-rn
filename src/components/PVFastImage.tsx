@@ -1,5 +1,5 @@
 import { isValidUrl, ValueTag } from 'podverse-shared'
-import { Image, Platform, StyleSheet, View } from 'react-native'
+import { Alert, Image, Platform, StyleSheet, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
@@ -46,7 +46,10 @@ export class PVFastImage extends React.PureComponent<Props, State> {
   }
 
   _handleError = () => {
-    this.setState({ hasError: true })
+    const { localImageSource } = this.state
+    if (!localImageSource?.exists) {
+      this.setState({ hasError: true })
+    }
   }
 
   _loadImage = async () => {
@@ -54,17 +57,17 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     if (source) {
       const savedImageResults = await getSavedImageUri(source)
       if (savedImageResults.exists) {
-        this.setState({ localImageSource: savedImageResults }, () => {
-          (async () => {
+        this.setState({ hasError: false, localImageSource: savedImageResults }, () => {
+          ;(async () => {
             await downloadImageFile(source)
             const latestSavedImageResults = await getSavedImageUri(source)
-            this.setState({ localImageSource: latestSavedImageResults })
+            this.setState({ hasError: false, localImageSource: latestSavedImageResults })
           })()
         })
       } else {
         await downloadImageFile(source)
         const savedImageResults = await getSavedImageUri(source)
-        this.setState({ localImageSource: savedImageResults })
+        this.setState({ hasError: false, localImageSource: savedImageResults })
       }
     }
   }
