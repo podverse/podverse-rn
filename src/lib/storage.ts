@@ -5,6 +5,12 @@ import { hasValidNetworkConnection } from './network'
 
 const podverseImagesPath = RNFS.DocumentDirectoryPath + '/podverse_images/'
 
+/*
+  Limit attempts to re-download an image that may already be in cache
+  to once per user session.
+*/
+const downloadedImageCache = {} as any
+
 export const deleteImageCache = async () => {
   try {
     const folderExists = await RNFS.exists(podverseImagesPath)
@@ -18,8 +24,12 @@ export const deleteImageCache = async () => {
 
 export const downloadImageFile = async (uri: string) => {
   try {
+    if (downloadedImageCache[uri]) return
+
     const isConnected = await hasValidNetworkConnection()
     if (!isConnected) return
+
+    downloadedImageCache[uri] = true
 
     const ext = getExtensionFromUrl(uri)
     const folderExists = await RNFS.exists(podverseImagesPath)
