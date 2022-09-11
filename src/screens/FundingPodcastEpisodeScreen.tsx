@@ -16,11 +16,11 @@ import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
+import { BoostagramItem } from '../services/v4v/v4v'
 import {
   v4vGetCurrentlyActiveProviderInfo
 } from '../state/actions/v4v/v4v'
 import { images } from '../styles'
-import { BoostagramItem } from 'src/services/v4v/v4v'
 
 type Props = any
 type State = {}
