@@ -122,7 +122,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     } as NavigationStackOptions
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     super.componentDidMount()
 
     this.props.navigation.setParams({
@@ -133,15 +133,12 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     PVEventEmitter.on(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
 
     const { queryFrom } = this.state
-    // const hasInternetConnection = await hasValidNetworkConnection()
-    // const from = hasInternetConnection ? queryFrom : PV.Filters._downloadedKey
-    const from = queryFrom
+    const hasInternetConnection = await hasValidNetworkConnection()
+    const from = hasInternetConnection ? queryFrom : PV.Filters._downloadedKey
+
     this.handleSelectFilterItem(from)
 
     trackPageView('/episodes', 'Episodes Screen')
-    // this._unsubscribe = this.props.navigation.addListener('willFocus', () => {
-    //   this._setDownloadedDataIfOffline()
-    // })
   }
 
   componentWillUnmount() {
@@ -157,13 +154,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       _screenTitle: getScreenTitle()
     })
   }
-
-  // _setDownloadedDataIfOffline = async () => {
-  //   const isConnected = await hasValidNetworkConnection()
-  //   if (!isConnected) {
-  //     this.handleSelectFilterItem(PV.Filters._downloadedKey)
-  //   }
-  // }
 
   _handleToggleSubscribeEvent = () => {
     const { queryFrom } = this.state
