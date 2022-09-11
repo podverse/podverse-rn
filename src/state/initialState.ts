@@ -165,7 +165,9 @@ const initialTheme: InitialState = {
   },
   screenReaderEnabled: false,
   newEpisodesCount: {},
-  hideNewEpisodesBadges: false
+  hideNewEpisodesBadges: false,
+  imageFullViewSourceUrl: '',
+  imageFullViewShow: false
 }
 
 export default initialTheme

@@ -147,5 +147,7 @@ declare module 'reactn/default' {
       [key: string]: number
     }
     hideNewEpisodesBadges: boolean
+    imageFullViewSourceUrl?: string
+    imageFullViewShow?: boolean
   }
 }

@@ -98,7 +98,7 @@ export const EpisodeTableHeader = (props: Props) => {
             </View>
           ) : (
             <View style={styles.innerWrapper}>
-              <FastImage fallback source={imageUrl} styles={styles.image} />
+              <FastImage allowFullView source={imageUrl} styles={styles.image} />
               <View style={styles.textWrapper}>
                 <Text
                   accessibilityHint={translate('ARIA HINT - This is the podcast title')}
