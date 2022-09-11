@@ -1,4 +1,4 @@
-import { TranscriptRow } from 'podverse-shared'
+import { Episode, NowPlayingItem, TranscriptRow } from 'podverse-shared'
 import 'reactn'
 import { AppModes } from '../resources/AppMode'
 import { BannerInfo, GlobalTheme, UserInfo, TempMediaRef } from '../resources/Interfaces'
@@ -21,7 +21,6 @@ declare module 'reactn/default' {
     downloadedEpisodeLimitCount: number
     downloadedEpisodeLimitDefault: boolean | null
     downloadedPodcasts: any[]
-    offlineModeEnabled: any
     jumpBackwardsTime: string
     jumpForwardsTime: string
     addCurrentItemNextInQueue: boolean
@@ -35,7 +34,8 @@ declare module 'reactn/default' {
     player: {
       backupDuration?: number
       hasErrored: boolean
-      nowPlayingItem: any
+      nowPlayingItem: NowPlayingItem
+      episode: Episode
       playbackRate: number
       showMakeClip: boolean
       showMiniPlayer: boolean
@@ -59,7 +59,6 @@ declare module 'reactn/default' {
       subscribedPlaylists: []
     }
     podcastsGridViewEnabled: boolean
-    podcastValueFinal: any
     profile: {
       flatListData: []
       user: any
@@ -148,5 +147,7 @@ declare module 'reactn/default' {
       [key: string]: number
     }
     hideNewEpisodesBadges: boolean
+    imageFullViewSourceUrl?: string
+    imageFullViewShow?: boolean
   }
 }

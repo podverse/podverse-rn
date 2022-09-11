@@ -28,12 +28,6 @@ export const alertIfNoNetworkConnection = async (str?: string) => {
   for some devices.
 */
 export const hasValidNetworkConnection = async (): Promise<boolean> => {
-  const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
-
-  if (offlineModeEnabled) {
-    return false
-  }
-
   const state = await NetInfo.fetch()
   if (state.isInternetReachable === null) {
     return new Promise((resolve) => {

@@ -1,5 +1,5 @@
 import { isValidUrl, ValueTag } from 'podverse-shared'
-import { Image, Platform, StyleSheet, View } from 'react-native'
+import { Image, Platform, Pressable, StyleSheet, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
@@ -9,6 +9,7 @@ const PlaceholderImage = PV.Images.PLACEHOLDER.default
 
 type Props = {
   accessible?: boolean
+  allowFullView?: boolean
   cache?: string
   isSmall?: boolean
   newContentCount?: number
@@ -46,7 +47,10 @@ export class PVFastImage extends React.PureComponent<Props, State> {
   }
 
   _handleError = () => {
-    this.setState({ hasError: true })
+    const { localImageSource } = this.state
+    if (!localImageSource?.exists) {
+      this.setState({ hasError: true })
+    }
   }
 
   _loadImage = async () => {
@@ -54,23 +58,32 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     if (source) {
       const savedImageResults = await getSavedImageUri(source)
       if (savedImageResults.exists) {
-        this.setState({ localImageSource: savedImageResults }, () => {
-          (async () => {
+        this.setState({ hasError: false, localImageSource: savedImageResults }, () => {
+          ;(async () => {
             await downloadImageFile(source)
             const latestSavedImageResults = await getSavedImageUri(source)
-            this.setState({ localImageSource: latestSavedImageResults })
+            this.setState({ hasError: false, localImageSource: latestSavedImageResults })
           })()
         })
       } else {
         await downloadImageFile(source)
         const savedImageResults = await getSavedImageUri(source)
-        this.setState({ localImageSource: savedImageResults })
+        this.setState({ hasError: false, localImageSource: savedImageResults })
       }
     }
   }
 
+  _showImageFullView = () => {
+    const { source } = this.props
+
+    this.setGlobal({
+      imageFullViewSourceUrl: source,
+      imageFullViewShow: true
+    })
+  }
+
   render() {
-    const { accessible = false, newContentCount,
+    const { accessible = false, allowFullView, newContentCount,
     placeholderLabel, resizeMode = 'contain', source, styles, valueTags } = this.props
     const { hasError, localImageSource } = this.state
     const { hideNewEpisodesBadges, session, userAgent } = this.global
@@ -91,32 +104,36 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     const isSvg = imageSource && imageSource.endsWith('.svg')
 
     const image = isSvg ? (
-      <View style={styles}>
-        <SvgUri accessible={accessible} width='100%' height='100%' uri={imageSource || null} />
-      </View>
+      <Pressable disabled={!allowFullView} onPress={this._showImageFullView}>
+        <View style={styles}>
+          <SvgUri accessible={accessible} width='100%' height='100%' uri={imageSource || null} />
+        </View>
+      </Pressable>
     ) : (
-      <View style={styles}>
-        <Image
-          accessible={accessible}
-          onError={this._handleError}
-          resizeMode={resizeMode}
-          source={{
-            uri: imageSource,
-            headers: {
-              ...(userAgent ? { 'User-Agent': userAgent } : {})
-            }
-          }}
-          style={{ height: '100%', width: '100%' }}
-        />
-        {!hideNewEpisodesBadges && !!newContentCount && newContentCount > 0 && (
-          <NewContentBadge count={newContentCount} />
-        )}
-        <LightningIcon
-          showLightningIcons={showLightningIcons}
-          valueTags={valueTags}
-          wrapperStyles={defaultStyles.lightningIcon}
-        />
-      </View>
+      <Pressable disabled={!allowFullView} onPress={this._showImageFullView}>
+        <View style={styles}>
+          <Image
+            accessible={accessible}
+            onError={this._handleError}
+            resizeMode={resizeMode}
+            source={{
+              uri: imageSource,
+              headers: {
+                ...(userAgent ? { 'User-Agent': userAgent } : {})
+              }
+            }}
+            style={{ height: '100%', width: '100%' }}
+          />
+          {!hideNewEpisodesBadges && !!newContentCount && newContentCount > 0 && (
+            <NewContentBadge count={newContentCount} />
+          )}
+          <LightningIcon
+            showLightningIcons={showLightningIcons}
+            valueTags={valueTags}
+            wrapperStyles={defaultStyles.lightningIcon}
+          />
+        </View>
+      </Pressable>
     )
 
     return (

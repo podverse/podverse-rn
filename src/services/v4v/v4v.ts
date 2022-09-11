@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, ValueTag, ValueTransaction } from 'podverse-shared'
+import { Funding, NowPlayingItem, ValueRecipient, ValueRecipientNormalized,
+  ValueTag, ValueTransaction } from 'podverse-shared'
 import { Config } from 'react-native-config'
 import * as RNKeychain from 'react-native-keychain'
 import { getGlobal } from 'reactn'
@@ -13,6 +14,18 @@ import { v4vAddPreviousTransactionError, v4vClearPreviousTransactionErrors,
   v4vRefreshActiveProviderWalletInfo, V4VSenderInfo, V4VSettings,
   v4vSettingsDefault } from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
+
+export type BoostagramItem = {
+  episodeFunding?: Funding[]
+  episodePubDate?: Date
+  episodeTitle?: string
+  episodeValue?: ValueTag[]
+  podcastFunding: Funding[]
+  podcastIndexPodcastId: string
+  podcastShrunkImageUrl: string
+  podcastTitle: string
+  podcastValue: ValueTag[]
+}
 
 /* Constants */
 
@@ -29,8 +42,6 @@ export const MINIMUM_APP_BOOST_PAYMENT = 0
 
 export const DEFAULT_APP_STREAMING_PAYMENT = 1
 export const MINIMUM_APP_STREAMING_PAYMENT = 0
-
-
 
 /* Secure storage helpers */
 
@@ -145,7 +156,9 @@ export const normalizeValueRecipients = (recipients: ValueRecipient[], total: nu
 
 export const convertValueTagIntoValueTransactions = async (
   valueTag: ValueTag,
-  nowPlayingItem: NowPlayingItem,
+  podcastTitle: string,
+  episodeTitle: string,
+  podcastIndexPodcastId: string,
   action: string,
   totalBatchedAmount = 0,
   roundDownValues: boolean
@@ -171,7 +184,9 @@ export const convertValueTagIntoValueTransactions = async (
   for (const normalizedValueRecipient of normalizedValueRecipients) {
     const valueTransaction = await convertValueTagIntoValueTransaction(
       normalizedValueRecipient,
-      nowPlayingItem,
+      podcastTitle,
+      episodeTitle,
+      podcastIndexPodcastId,
       action,
       method,
       type,
@@ -186,7 +201,9 @@ export const convertValueTagIntoValueTransactions = async (
 
 const convertValueTagIntoValueTransaction = async (
   normalizedValueRecipient: ValueRecipientNormalized,
-  nowPlayingItem: NowPlayingItem,
+  podcastTitle: string,
+  episodeTitle: string,
+  podcastIndexPodcastId: string,
   action: string,
   method: string,
   type: string,
@@ -200,7 +217,9 @@ const convertValueTagIntoValueTransaction = async (
   const pubkey = 'podverse-pubkey'
 
   const satoshiStreamStats = createSatoshiStreamStats(
-    nowPlayingItem,
+    podcastTitle,
+    episodeTitle,
+    podcastIndexPodcastId,
     currentPlaybackPosition.toString(),
     action,
     speed.toString(),
@@ -220,11 +239,10 @@ const convertValueTagIntoValueTransaction = async (
   }
 }
 
-export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFinal: any, includeMessage?: boolean) => {
+export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMessage?: boolean) => {
   const valueTags =
-    podcastValueFinal ||
-    (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue) ||
-    (nowPlayingItem?.podcastValue?.length && nowPlayingItem?.podcastValue)
+    (item?.episodeValue?.length && item?.episodeValue) ||
+    (item?.podcastValue?.length && item?.podcastValue)
 
   // TODO: right now we are assuming the first item will be the lightning network
   // this will need to be updated to support additional valueTags
@@ -245,7 +263,9 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
   const roundDownBoostTransactions = true
   const valueTransactions = await convertValueTagIntoValueTransactions(
     valueTag,
-    nowPlayingItem,
+    item?.podcastTitle || '',
+    item?.episodeTitle || '',
+    item?.podcastIndexPodcastId || '',
     action,
     boostAmount,
     roundDownBoostTransactions
@@ -260,8 +280,8 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       setTimeout(async () => {
         try {
-          const succesfull = await sendValueTransaction(valueTransaction, includeMessage)
-          if (succesfull) {
+          const succesful = await sendValueTransaction(valueTransaction, includeMessage)
+          if (succesful) {
             totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
           }
         } catch (error) {
@@ -427,7 +447,7 @@ const getMatchingValueTransactionIndex = (valueTransaction: ValueTransaction, va
 
 export const saveStreamingValueTransactionsToTransactionQueue = async (
   valueTags: ValueTag[],
-  nowPlayingItem: NowPlayingItem,
+  item: NowPlayingItem | BoostagramItem,
   amount: number
 ) => {
   try {
@@ -439,7 +459,9 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
       getValueTransactionQueue(),
       convertValueTagIntoValueTransactions(
         valueTag,
-        nowPlayingItem,
+        item?.podcastTitle || '',
+        item?.episodeTitle || '',
+        item?.podcastIndexPodcastId || '',
         'streaming',
         amount,
         roundDownStreamingTransactions

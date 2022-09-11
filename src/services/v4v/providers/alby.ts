@@ -8,6 +8,7 @@ import { request } from "../../request"
 import { credentialsPlaceholderUsername } from '../../../lib/secutity'
 import { PV } from '../../../resources'
 import { v4vDisconnectProvider } from '../../../state/actions/v4v/v4v'
+import { Alert } from 'react-native'
 
 const albyApiPath = PV.V4V.providers.alby.env[_v4v_env_].apiPath
 
@@ -205,7 +206,13 @@ export const v4vAlbyRefreshAccessToken = async () => {
     }
   } catch (error) {
     console.log('v4vAlbyRefreshAccessToken error:', error)
-    await v4vDisconnectProvider(PV.V4V.providers.alby.key)
+    const statusNumber = error?.response?.status || 0
+
+    if (statusNumber.toString().startsWith('4')) {
+      await v4vDisconnectProvider(PV.V4V.providers.alby.key)
+    } else if (error) {
+      Alert.alert('Alby Error', error.message, PV.Alerts.BUTTONS.OK)
+    }
   }
 }
 

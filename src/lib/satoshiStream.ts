@@ -11,7 +11,9 @@ import { translate } from './i18n'
 const uuidv4 = require('uuid/v4')
 
 export const createSatoshiStreamStats = (
-  nowPlayingItem: NowPlayingItem,
+  podcastTitle: string,
+  episodeTitle: string,
+  podcastIndexPodcastId: string,
   currentPlaybackPosition: string,
   action: string,
   speed: string,
@@ -21,10 +23,10 @@ export const createSatoshiStreamStats = (
   customKey: string,
   customValue: string
 ) => {
-  const podcast = nowPlayingItem?.podcastTitle || translate('Untitled Podcast')
-  const episode = nowPlayingItem?.episodeTitle || translate('Untitled Episode')
+  const podcast = podcastTitle || translate('Untitled Podcast')
+  const episode = episodeTitle || translate('Untitled Episode')
   const podcastIndexId =
-    (nowPlayingItem?.podcastIndexPodcastId && parseInt(nowPlayingItem.podcastIndexPodcastId, 10)) || null
+    (podcastIndexPodcastId && parseInt(podcastIndexPodcastId, 10)) || null
   const ts = parseInt(currentPlaybackPosition, 10)
 
   const { name: senderName } = getGlobal().session.v4v.senderInfo

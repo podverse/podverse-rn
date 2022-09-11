@@ -544,7 +544,6 @@
     "TermsOfServiceScreenText1": "Podverse vil aldri selge eller dele privat brukerdata.",
     "Username": "Brukernavn",
     "WEAK OR NO CONNECTION": "Svak eller manglende tilkobling",
-    "What link do you want to share?": "Lenke å dele?",
     "Wallet ID (For An Existing Wallet)": "Lommeboks-ID (til eksisterende lommebok)",
     "Yes enable tracking": "Ja, spor meg",
     "has number": "— ett nummer",
@@ -708,5 +707,12 @@
     "V4V Providers connected explanation": "Tilkoblede lommebøker.",
     "V4V Providers setup explanation": "Støttede lommebøker.",
     "Available": "Tilgjengelig",
-    "Show lightning icons next to value for value enabled podcasts": "Vis lyn-ikoner ved siden av verdi-for-verdi -nettradioopptak"
+    "Show lightning icons next to value for value enabled podcasts": "Vis lyn-ikoner ved siden av verdi-for-verdi -nettradioopptak",
+    "Chat Room": "Sludrerom",
+    "Login Status Not Saved": "Innloggingstilstanden har ikke blitt lagret",
+    "Saving login credentials error": "Gikk noe galt under lagring av tilstand for innlogging?\nTilbakestill programlageret for å prøve å fikse problemet?",
+    "Share Episode": "Del episode",
+    "Share Chapter": "Del kapittel",
+    "Share Clip": "Del klipp",
+    "Share Podcast": "Del nettradioopptak"
 }
