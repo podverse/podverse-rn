@@ -107,7 +107,6 @@ export interface InitialState {
   listenTrackingEnabled: boolean
   urlsAPI?: any
   urlsWeb?: any
-  offlineModeEnabled?: any
   jumpBackwardsTime: string
   jumpForwardsTime: string
   addCurrentItemNextInQueue: boolean

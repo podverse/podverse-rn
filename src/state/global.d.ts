@@ -21,7 +21,6 @@ declare module 'reactn/default' {
     downloadedEpisodeLimitCount: number
     downloadedEpisodeLimitDefault: boolean | null
     downloadedPodcasts: any[]
-    offlineModeEnabled: any
     jumpBackwardsTime: string
     jumpForwardsTime: string
     addCurrentItemNextInQueue: boolean

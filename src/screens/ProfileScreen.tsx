@@ -480,7 +480,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       viewType
     } = this.state
 
-    const { offlineModeEnabled, profile, session } = this.global
+    const { profile, session } = this.global
     const { user } = profile
     const { isLoggedIn, userInfo } = session
     const { id } = userInfo
