@@ -5,7 +5,7 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { IndicatorDownload } from './IndicatorDownload'
-import { ActivityIndicator, FastImage, LightningIcon, SettingsButton, SubscribeButton, Text, View } from './'
+import { ActivityIndicator, FastImage, SettingsButton, SubscribeButton, Text, View } from './'
 
 type Props = {
   autoDownloadOn?: boolean
@@ -59,7 +59,7 @@ export const PodcastTableHeader = (props: Props) => {
         <View style={{ flexDirection: 'column', flex: 1 }}>
           {!isNotFound && (
             <View style={styles.wrapper}>
-              <FastImage source={podcastImageUrl} styles={styles.image} valueTags={podcastValue} />
+              <FastImage allowFullView source={podcastImageUrl} styles={styles.image} valueTags={podcastValue} />
               <View style={styles.contentWrapper}>
                 <View style={styles.contentWrapperTop}>
                   <Text
@@ -67,6 +67,7 @@ export const PodcastTableHeader = (props: Props) => {
                     accessibilityLabel={podcastTitle}
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     numberOfLines={titleNumberOfLines}
+                    selectable
                     style={styles.title}>
                     {podcastTitle}
                   </Text>
@@ -145,7 +146,11 @@ export const PodcastTableHeader = (props: Props) => {
                 accessibilityLabel={finalDescription}
                 onPress={handleNavigateToPodcastInfoScreen}>
                 <RNView>
-                  <Text numberOfLines={2} style={styles.descriptionText} testID={`${testID}_description_text`}>
+                  <Text
+                    numberOfLines={2}
+                    selectable
+                    style={styles.descriptionText}
+                    testID={`${testID}_description_text`}>
                     {finalDescription}
                   </Text>
                   {/* <Text

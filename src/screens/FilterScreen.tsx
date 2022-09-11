@@ -103,19 +103,6 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedSortItemKey
     })
 
-    /*
-      TODO: disabling automatic offline detection within the FilterScreen
-      since it is preventing the app from being usable for
-      some iOS users. It seems this bug is affecting data plan users,
-      not WiFi users.
-
-      BUT we'll continue handling offline mode when it is manually
-      selected by the user in Settings.
-    */
-    // const isOffline = await hasValidNetworkConnection()
-
-    const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
-
     this.setState({
       screenName,
       sections,
@@ -123,9 +110,7 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFromItemKey,
-      selectedSortItemKey: newSelectedSortItemKey,
-      // isOffline: !isOffline
-      isOffline: !!offlineModeEnabled
+      selectedSortItemKey: newSelectedSortItemKey
     })
   }
 

@@ -123,6 +123,8 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
         ? [styles.carouselImageWrapper, { width: width * 0.9 }, { height: '50%' }]
         : [styles.carouselImageWrapper, { width: width * 0.9 }]
 
+    const allowFullView = !currentChapter?.linkUrl
+
     return (
       <ScrollView scrollEnabled={false} contentContainerStyle={outerWrapperStyle}>
         <RNView
@@ -174,7 +176,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
               disabled={!clipUrl}
               {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
               style={styles.imageContainer}>
-              <FastImage key={imageUrl} source={imageUrl} styles={imageStyles} />
+              <FastImage allowFullView={allowFullView} key={imageUrl} source={imageUrl} styles={imageStyles} />
             </PressableWithOpacity>
           )}
         </RNView>

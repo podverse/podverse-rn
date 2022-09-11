@@ -1,13 +1,16 @@
+import { NowPlayingItem } from 'podverse-shared'
 import { Alert, StyleSheet, TouchableHighlight, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import SystemSetting from 'react-native-system-setting'
 import React from 'reactn'
+import { toggleMarkAsPlayed } from '../state/actions/userHistoryItem'
 import { translate } from '../lib/i18n'
 import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
+import { playerPlayNextFromQueue } from '../services/player'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { checkIfSubscribedToPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { actionSheetStyles, sliderStyles } from '../styles'
@@ -78,7 +81,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
       if (nowPlayingItem) {
         if (nowPlayingItem.addByRSSPodcastFeedUrl) {
           await toggleAddByRSSPodcastFeedUrl(nowPlayingItem.addByRSSPodcastFeedUrl)
-        } else {
+        } else if (nowPlayingItem.podcastId) {
           await toggleSubscribeToPodcast(nowPlayingItem.podcastId)
         }
       }
@@ -112,6 +115,8 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     nowPlayingItem = nowPlayingItem || {}
 
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => session.userInfo.subscribedPodcastIds, [])
+    const isLoggedIn = safelyUnwrapNestedVariable(() => session?.isLoggedIn, '')
+    const historyItemsIndex = safelyUnwrapNestedVariable(() => session?.userInfo?.historyItemsIndex, {})
     const isSubscribed = checkIfSubscribedToPodcast(
       subscribedPodcastIds,
       nowPlayingItem.podcastId,
@@ -143,7 +148,42 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
       </TouchableHighlight>
     ]
 
+    const completed = !!nowPlayingItem.episodeId && !!historyItemsIndex.episodes?.[nowPlayingItem.episodeId]?.completed
+    const label = completed ? translate('Mark as Unplayed') : translate('Mark as Played')
+    if (!nowPlayingItem.liveItem) {
+      children.push(
+        <TouchableHighlight
+          accessibilityLabel={label}
+          key='mark_as_played'
+          onPress={() => this._handleMarkAsPlayed(nowPlayingItem, completed, isLoggedIn)}
+          style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
+          underlayColor={safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonUnderlay.backgroundColor, '')}>
+          <Text
+            style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}
+            testID={`${testIDPrefix}_go_to_podcast`}>
+            {label}
+          </Text>
+        </TouchableHighlight>
+      )
+    }
     return children
+  }
+
+  _handleMarkAsPlayed = async (nowPlayingItem: NowPlayingItem, completed: boolean, isLoggedIn: boolean) => {
+    if (isLoggedIn) {
+      const shouldMarkAsPlayed = !completed
+      await toggleMarkAsPlayed(nowPlayingItem, shouldMarkAsPlayed)
+      if (shouldMarkAsPlayed) {
+        playerPlayNextFromQueue()
+      }
+      this.props.handleDismiss()
+    } else {
+      Alert.alert(
+        PV.Alerts.LOGIN_TO_MARK_EPISODES_AS_PLAYED.title,
+        PV.Alerts.LOGIN_TO_MARK_EPISODES_AS_PLAYED.message,
+        PV.Alerts.GO_TO_LOGIN_BUTTONS(this.props.navigation)
+      )
+    }
   }
 
   render() {

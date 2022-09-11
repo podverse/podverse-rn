@@ -1,3 +1,4 @@
+import { Episode, Podcast } from 'podverse-shared'
 import React, { getGlobal } from 'reactn'
 import { darkTheme } from '../../src/styles'
 import { translate } from '../lib/i18n'
@@ -6,21 +7,31 @@ import { PV } from '../resources'
 import { NavItemIcon, NavItemWrapper } from './'
 
 type Props = {
+  episode?: Episode
   globalTheme: any
   navigation: any
+  podcast?: Podcast
 }
 
 export const NavFundingIcon = (props: Props) => {
-  const { globalTheme, navigation } = props
+  const { episode, globalTheme, navigation, podcast } = props
 
   const handlePress = () => {
     const { globalTheme, session } = getGlobal()
     const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
-
-    navigation.navigate(PV.RouteNames.FundingScreen, {
-      isLoggedIn,
-      globalTheme
-    })
+    if (podcast) {
+      navigation.navigate(PV.RouteNames.FundingPodcastEpisodeScreen, {
+        isLoggedIn,
+        globalTheme,
+        podcast,
+        episode
+      })
+    } else {
+      navigation.navigate(PV.RouteNames.FundingNowPlayingItemScreen, {
+        isLoggedIn,
+        globalTheme
+      })
+    }
   }
 
   let color = darkTheme.text.color

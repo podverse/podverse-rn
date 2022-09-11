@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native'
+import { Dimensions, ScrollView, StyleSheet } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { translate } from '../lib/i18n'
@@ -48,7 +48,10 @@ export class ResetPassword extends React.Component<Props, State> {
     const { submitIsDisabled } = this.state
 
     return (
-      <View style={[styles.view, style]}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
+        showsVerticalScrollIndicator>
         <TextInput
           accessibilityHint={translate('ARIA HINT - Type your premium membership email address')}
           autoCapitalize='none'
@@ -77,10 +80,12 @@ export class ResetPassword extends React.Component<Props, State> {
           wrapperStyles={styles.signInButton}
         />
         {bottomButtons}
-      </View>
+      </ScrollView>
     )
   }
 }
+
+const deviceWidth = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
   headerLabel: {
@@ -91,9 +96,11 @@ const styles = StyleSheet.create({
   },
   signInButton: {},
   signInButtonText: {},
-  view: {
-    paddingHorizontal: 20,
-    justifyContent: 'center',
+  scrollView: {
     width: '100%'
+  },
+  scrollViewContent: {
+    paddingHorizontal: 20,
+    maxWidth: deviceWidth
   }
 })

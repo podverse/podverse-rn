@@ -44,7 +44,7 @@ type State = {
 
 const testIDPrefix = 'funding_screen'
 
-export class FundingScreen extends React.Component<Props, State> {
+export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
   constructor() {
     super()
     this.state = {
@@ -67,14 +67,13 @@ export class FundingScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    const { player, podcastValueFinal } = this.global
+    const { player } = this.global
     const { nowPlayingItem } = player
 
     const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(this.global)
 
     const { episodeValue, podcastValue } = nowPlayingItem
-    const valueTags =
-      podcastValueFinal || (episodeValue?.length && episodeValue) || (podcastValue?.length && podcastValue)
+    const valueTags = (episodeValue?.length && episodeValue) || (podcastValue?.length && podcastValue)
     const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
 
     if (activeValueTag && activeProvider) {
@@ -136,12 +135,11 @@ export class FundingScreen extends React.Component<Props, State> {
   }
 
   _handleUpdateBoostTransactionsState = async (action: 'ACTION_BOOST' | 'ACTION_STREAMING', amount: number) => {
-    const { player, podcastValueFinal } = this.global
+    const { player } = this.global
     const { nowPlayingItem } = player
     const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(this.global)
 
     const valueTags =
-      podcastValueFinal ||
       (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue) ||
       (nowPlayingItem?.podcastValue?.length && nowPlayingItem?.podcastValue)
     const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
@@ -154,7 +152,9 @@ export class FundingScreen extends React.Component<Props, State> {
 
       const newValueTransactions = await convertValueTagIntoValueTransactions(
         activeValueTag,
-        nowPlayingItem,
+        nowPlayingItem.podcastTitle || '',
+        nowPlayingItem.episodeTitle || '',
+        nowPlayingItem.podcastIndexPodcastId || '',
         action,
         amount,
         shouldRound
@@ -177,7 +177,7 @@ export class FundingScreen extends React.Component<Props, State> {
       localStreamingAmount,
       streamingTransactions
     } = this.state
-    const { player, podcastValueFinal, session } = this.global
+    const { player, session } = this.global
     const { v4v } = session
     const { previousTransactionErrors } = v4v
     const { nowPlayingItem } = player
@@ -192,7 +192,6 @@ export class FundingScreen extends React.Component<Props, State> {
     )
 
     const hasValueInfo =
-      podcastValueFinal?.length > 0 ||
       nowPlayingItem?.episodeValue?.length > 0 ||
       nowPlayingItem?.podcastValue?.length > 0
     const { activeProvider, activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(this.global)

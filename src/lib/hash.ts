@@ -7,12 +7,12 @@ export const base64Encode = (str: string) => {
 }
 
 /*
-  Hashed media file paths must be limited to 254 characters
+  Hashed media file paths must be limited to 250 characters
   for parseAddByRSSPodcast to save custom file name hashes.
 */
 export const downloadCustomFileNameId = (url: string) => {
   const ext = getExtensionFromUrl(url) || ''
-  const charLimit = 254 - ext.length
+  const charLimit = 250 - ext.length
   const buffer = base64Encode(url)
   return buffer?.substring(0, charLimit)
 }

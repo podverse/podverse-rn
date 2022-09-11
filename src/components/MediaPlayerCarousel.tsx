@@ -16,6 +16,7 @@ import {
   DropdownButtonSelect,
   Icon,
   MediaPlayerCarouselChapters,
+  MediaPlayerCarouselChatRoom,
   MediaPlayerCarouselClips,
   MediaPlayerCarouselShowNotes,
   MediaPlayerCarouselTranscripts,
@@ -46,6 +47,7 @@ const testIDPrefix = 'media_player_carousel'
 const _nowPlayingInfoKey = '_nowPlayingInfoKey'
 const _episodeSummaryKey = '_episodeSummaryKey'
 const _chaptersKey = '_chaptersKey'
+const _chatRoomKey = '_chatRoomKey'
 const _clipsKey = '_clipsKey'
 const _commentsKey = '_commentsKey'
 const _transcriptKey = '_transcriptKey'
@@ -106,9 +108,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
     this.setState({ boostIsSending: true }, () => {
       (async () => {
-        const { podcastValueFinal } = this.global
         const { nowPlayingItem } = this.global.player
-        await sendBoost(nowPlayingItem, podcastValueFinal)
+        await sendBoost(nowPlayingItem)
         this.setState(
           {
             boostIsSending: false,
@@ -134,9 +135,11 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { parsedTranscript, player } = this.global
     const { episode } = player
     const hasChapters = episode?.chaptersUrl
+    const hasClips = !episode?.liveItem
     const hasComments = !!checkIfHasSupportedCommentTag(episode)
     const hasTranscript = !!parsedTranscript
-    const items = accessibilitySelectorItems(hasChapters, hasComments, hasTranscript)
+    const hasChat = !!episode?.liveItem?.chatIRCURL
+    const items = accessibilitySelectorItems(hasChapters, hasComments, hasTranscript, hasChat, hasClips)
     const accessibilityItemSelected = items.find((x) => x.value === selectedKey)
     this.setState({ accessibilityItemSelected })
   }
@@ -149,11 +152,13 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   render() {
     const { navigation } = this.props
     const { accessibilityItemSelected, activeIndex, boostIsSending, boostWasSent, explosionOrigin } = this.state
-    const { parsedTranscript, player, podcastValueFinal, screenReaderEnabled, session } = this.global
+    const { parsedTranscript, player, screenReaderEnabled, session } = this.global
     const { episode, nowPlayingItem, playbackState } = player
     const hasChapters = episode?.chaptersUrl
+    const hasClips = !episode?.liveItem
     const hasComments = !!checkIfHasSupportedCommentTag(episode)
     const hasTranscript = !!parsedTranscript
+    const hasChat = !!episode?.liveItem?.chatIRCURL
 
     const { activeProvider, activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(this.global)
     const { boostAmount, streamingAmount } = activeProviderSettings || {}
@@ -161,10 +166,12 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
     const isPlaying = audioCheckIfIsPlaying(playbackState)
 
-    let itemCount = 3
+    let itemCount = 2
     if (hasChapters) itemCount++
+    if (hasClips) itemCount++
     if (hasComments) itemCount++
     if (hasTranscript) itemCount++
+    if (hasChat) itemCount++
 
     const satStreamText = streamingValueOn ? translate('Stream On') : translate('Stream Off')
 
@@ -179,7 +186,6 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       : [styles.boostButtonSubText]
 
     const hasValueInfo =
-      podcastValueFinal?.length > 0 ||
       nowPlayingItem?.episodeValue?.length > 0 ||
       nowPlayingItem?.podcastValue?.length > 0
 
@@ -188,6 +194,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       screenWidth,
       navigation,
       hasChapters,
+      hasChat,
+      hasClips,
       hasComments,
       hasTranscript,
       screenReaderEnabled,
@@ -200,7 +208,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           <>
             <DropdownButtonSelect
               accessibilityHint={translate('ARIA HINT - This is the now playing info selector')}
-              items={accessibilitySelectorItems(hasChapters, hasComments, hasTranscript)}
+              items={accessibilitySelectorItems(hasChapters, hasComments, hasTranscript, hasChat, hasClips)}
               label={accessibilityItemSelected?.label}
               onValueChange={this._handleAccessibilitySelectChange}
               placeholder={placeholderItem}
@@ -317,7 +325,13 @@ const placeholderItem = {
   value: null
 }
 
-const accessibilitySelectorItems = (hasChapters: boolean, hasComments: boolean, hasTranscript: boolean) => {
+const accessibilitySelectorItems = (
+  hasChapters: boolean,
+  hasComments: boolean,
+  hasTranscript: boolean,
+  hasChat: boolean,
+  hasClips: boolean
+) => {
   const items = [
     accessibilityNowPlayingInfo,
     {
@@ -333,10 +347,12 @@ const accessibilitySelectorItems = (hasChapters: boolean, hasComments: boolean, 
     })
   }
 
-  items.push({
-    label: translate('Clips'),
-    value: _clipsKey
-  })
+  if (hasClips) {
+    items.push({
+      label: translate('Clips'),
+      value: _clipsKey
+    })
+  }
 
   if (hasComments) {
     items.push({
@@ -352,6 +368,13 @@ const accessibilitySelectorItems = (hasChapters: boolean, hasComments: boolean, 
     })
   }
 
+  if (hasChat) {
+    items.push({
+      label: translate('Chat Room'),
+      value: _chatRoomKey
+    })
+  }
+
   return items
 }
 
@@ -360,6 +383,8 @@ const mediaPlayerCarouselComponents = (
   screenWidth: number,
   navigation: any,
   hasChapters: boolean,
+  hasChat: boolean,
+  hasClips: boolean,
   hasComments: boolean,
   hasTranscript: boolean,
   screenReaderEnabled: boolean,
@@ -389,6 +414,8 @@ const mediaPlayerCarouselComponents = (
             <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />
           )}
           {accessibilityItemSelectedValue === _transcriptKey && <MediaPlayerCarouselTranscripts width={screenWidth} />}
+          {accessibilityItemSelectedValue === _chatRoomKey && 
+            <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />}
         </>
       ) : (
         <>
@@ -399,9 +426,10 @@ const mediaPlayerCarouselComponents = (
           />
           <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
           {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
-          <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
+          {hasClips && <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />}
           {hasComments && <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />}
           {hasTranscript && <MediaPlayerCarouselTranscripts width={screenWidth} />}
+          {hasChat && <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />}
         </>
       )}
     </>
