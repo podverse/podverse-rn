@@ -10,7 +10,7 @@ import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-c
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
 import { isOnMinimumAllowedVersion } from './src/services/versioning'
-import { UpdateRequiredOverlay, OverlayAlert, BoostDropdownBanner } from './src/components'
+import { UpdateRequiredOverlay, OverlayAlert, ImageFullView } from './src/components'
 import { refreshDownloads } from './src/lib/downloader'
 import { PV } from './src/resources'
 import { determineFontScaleMode } from './src/resources/Fonts'
@@ -153,7 +153,7 @@ class App extends Component<Props, State> {
           <Router />
           <OverlayAlert />
         </View>
-        <BoostDropdownBanner />
+        <ImageFullView />
       </SafeAreaProvider>
     ) : (
       this._renderIntersitial()

@@ -1,5 +1,5 @@
 import { isValidUrl, ValueTag } from 'podverse-shared'
-import { Alert, Image, Platform, StyleSheet, View } from 'react-native'
+import { Image, Platform, Pressable, StyleSheet, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
@@ -9,6 +9,7 @@ const PlaceholderImage = PV.Images.PLACEHOLDER.default
 
 type Props = {
   accessible?: boolean
+  allowFullView?: boolean
   cache?: string
   isSmall?: boolean
   newContentCount?: number
@@ -72,6 +73,17 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     }
   }
 
+  _showImageFullView = () => {
+    const { allowFullView, source } = this.props
+
+    if (allowFullView) {
+      this.setGlobal({
+        imageFullViewSourceUrl: source,
+        imageFullViewShow: true
+      })
+    }
+  }
+
   render() {
     const { accessible = false, newContentCount,
     placeholderLabel, resizeMode = 'contain', source, styles, valueTags } = this.props
@@ -94,32 +106,36 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     const isSvg = imageSource && imageSource.endsWith('.svg')
 
     const image = isSvg ? (
-      <View style={styles}>
-        <SvgUri accessible={accessible} width='100%' height='100%' uri={imageSource || null} />
-      </View>
+      <Pressable onPress={this._showImageFullView}>
+        <View style={styles}>
+          <SvgUri accessible={accessible} width='100%' height='100%' uri={imageSource || null} />
+        </View>
+      </Pressable>
     ) : (
-      <View style={styles}>
-        <Image
-          accessible={accessible}
-          onError={this._handleError}
-          resizeMode={resizeMode}
-          source={{
-            uri: imageSource,
-            headers: {
-              ...(userAgent ? { 'User-Agent': userAgent } : {})
-            }
-          }}
-          style={{ height: '100%', width: '100%' }}
-        />
-        {!hideNewEpisodesBadges && !!newContentCount && newContentCount > 0 && (
-          <NewContentBadge count={newContentCount} />
-        )}
-        <LightningIcon
-          showLightningIcons={showLightningIcons}
-          valueTags={valueTags}
-          wrapperStyles={defaultStyles.lightningIcon}
-        />
-      </View>
+      <Pressable onPress={this._showImageFullView}>
+        <View style={styles}>
+          <Image
+            accessible={accessible}
+            onError={this._handleError}
+            resizeMode={resizeMode}
+            source={{
+              uri: imageSource,
+              headers: {
+                ...(userAgent ? { 'User-Agent': userAgent } : {})
+              }
+            }}
+            style={{ height: '100%', width: '100%' }}
+          />
+          {!hideNewEpisodesBadges && !!newContentCount && newContentCount > 0 && (
+            <NewContentBadge count={newContentCount} />
+          )}
+          <LightningIcon
+            showLightningIcons={showLightningIcons}
+            valueTags={valueTags}
+            wrapperStyles={defaultStyles.lightningIcon}
+          />
+        </View>
+      </Pressable>
     )
 
     return (
