@@ -227,6 +227,8 @@ export interface InitialState {
     [key: string]: number
   }
   hideNewEpisodesBadges: boolean
+  imageFullViewSourceUrl?: string
+  imageFullViewShow?: boolean
 }
 
 export interface BannerInfoError {
