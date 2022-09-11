@@ -62,13 +62,19 @@ export class PVFastImage extends React.PureComponent<Props, State> {
           ;(async () => {
             await downloadImageFile(source)
             const latestSavedImageResults = await getSavedImageUri(source)
-            this.setState({ hasError: false, localImageSource: latestSavedImageResults })
+            this.setState({
+              hasError: false,
+              localImageSource: latestSavedImageResults
+            })
           })()
         })
       } else {
         await downloadImageFile(source)
         const savedImageResults = await getSavedImageUri(source)
-        this.setState({ hasError: false, localImageSource: savedImageResults })
+        this.setState({
+          hasError: false,
+          localImageSource: savedImageResults
+        })
       }
     }
   }
@@ -106,7 +112,13 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     const image = isSvg ? (
       <Pressable disabled={!allowFullView} onPress={this._showImageFullView}>
         <View style={styles}>
-          <SvgUri accessible={accessible} width='100%' height='100%' uri={imageSource || null} />
+          <SvgUri
+            accessible={accessible}
+            key={imageSource}
+            width='100%'
+            height='100%'
+            uri={imageSource || null}
+          />
         </View>
       </Pressable>
     ) : (
@@ -114,6 +126,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
         <View style={styles}>
           <Image
             accessible={accessible}
+            key={imageSource}
             onError={this._handleError}
             resizeMode={resizeMode}
             source={{
