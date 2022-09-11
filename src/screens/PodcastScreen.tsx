@@ -312,11 +312,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
             } else {
               const forceRequest = navigation.getParam('forceRequest')
               newPodcast = await getPodcast(podcastId, forceRequest)
-              if (viewType === PV.Filters._episodesKey) {
-                newState = await this._queryData(PV.Filters._episodesKey)
-              } else if (viewType === PV.Filters._clipsKey) {
-                newState = await this._queryData(PV.Filters._clipsKey)
-              }
+              newState = await this._queryData(viewType)
             }
 
             newPodcast.description = newPodcast.description || translate('No summary available')
