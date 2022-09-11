@@ -14,26 +14,15 @@ type Props = {
   navigation: any
 }
 
-type State = {
-  offlineModeEnabled?: string | null
-}
-
 const testIDPrefix = 'app_mode_screen'
 
-export class AppModeScreen extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {}
-  }
+export class AppModeScreen extends React.Component<Props> {
 
   static navigationOptions = () => ({
     title: translate('App Mode')
   })
 
-  async componentDidMount() {
-    const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.APP_MODE)
-    this.setState({ offlineModeEnabled })
+  componentDidMount() {
     trackPageView('/app-mode', 'App Mode Screen')
   }
 

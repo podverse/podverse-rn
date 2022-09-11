@@ -11,7 +11,6 @@ import { checkIfTrackingIsEnabled } from '../../services/tracking'
 export const initializeSettings = async () => {
   const [
     censorNSFWText,
-    offlineModeEnabled,
     customAPIDomain,
     customAPIDomainEnabled,
     customWebDomain,
@@ -28,7 +27,6 @@ export const initializeSettings = async () => {
     podcastsGridViewEnabled
   ] = await Promise.all([
     AsyncStorage.getItem(PV.Keys.CENSOR_NSFW_TEXT),
-    AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED),
     AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN),
     AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN_ENABLED),
     AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN),
@@ -55,7 +53,6 @@ export const initializeSettings = async () => {
     hideCompleted,
     hideNewEpisodesBadges,
     listenTrackingEnabled,
-    offlineModeEnabled,
     podcastsGridViewEnabled,
     jumpBackwardsTime: jumpBackwardsTime || PV.Player.jumpBackSeconds,
     jumpForwardsTime: jumpForwardsTime || PV.Player.jumpSeconds,
@@ -135,14 +132,6 @@ export const setCustomWebDomainEnabled = (value?: boolean) => {
     value
       ? await AsyncStorage.setItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED, 'TRUE')
       : await AsyncStorage.removeItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED)
-  })
-}
-
-export const setOfflineModeEnabled = (value: boolean) => {
-  setGlobal({ offlineModeEnabled: value }, async () => {
-    value
-      ? await AsyncStorage.setItem(PV.Keys.OFFLINE_MODE_ENABLED, 'TRUE')
-      : await AsyncStorage.removeItem(PV.Keys.OFFLINE_MODE_ENABLED)
   })
 }
 

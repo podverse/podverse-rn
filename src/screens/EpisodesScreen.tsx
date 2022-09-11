@@ -490,7 +490,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       showNoInternetConnectionMessage
     } = this.state
     const { navigation } = this.props
-    const { offlineModeEnabled, session } = this.global
+    const { session } = this.global
     const { subscribedPodcastIds } = session?.userInfo
 
     const noSubscribedPodcasts =

@@ -26,7 +26,6 @@ const initialTheme: InitialState = {
   errorReportingEnabled: false,
   hideCompleted: false,
   listenTrackingEnabled: false,
-  offlineModeEnabled: false,
   jumpBackwardsTime: PV.Player.jumpBackSeconds.toString(),
   jumpForwardsTime: PV.Player.jumpSeconds.toString(),
   addCurrentItemNextInQueue: true,
