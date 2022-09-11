@@ -74,18 +74,16 @@ export class PVFastImage extends React.PureComponent<Props, State> {
   }
 
   _showImageFullView = () => {
-    const { allowFullView, source } = this.props
+    const { source } = this.props
 
-    if (allowFullView) {
-      this.setGlobal({
-        imageFullViewSourceUrl: source,
-        imageFullViewShow: true
-      })
-    }
+    this.setGlobal({
+      imageFullViewSourceUrl: source,
+      imageFullViewShow: true
+    })
   }
 
   render() {
-    const { accessible = false, newContentCount,
+    const { accessible = false, allowFullView, newContentCount,
     placeholderLabel, resizeMode = 'contain', source, styles, valueTags } = this.props
     const { hasError, localImageSource } = this.state
     const { hideNewEpisodesBadges, session, userAgent } = this.global
@@ -106,13 +104,13 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     const isSvg = imageSource && imageSource.endsWith('.svg')
 
     const image = isSvg ? (
-      <Pressable onPress={this._showImageFullView}>
+      <Pressable disabled={!allowFullView} onPress={this._showImageFullView}>
         <View style={styles}>
           <SvgUri accessible={accessible} width='100%' height='100%' uri={imageSource || null} />
         </View>
       </Pressable>
     ) : (
-      <Pressable onPress={this._showImageFullView}>
+      <Pressable disabled={!allowFullView} onPress={this._showImageFullView}>
         <View style={styles}>
           <Image
             accessible={accessible}
