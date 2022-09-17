@@ -570,7 +570,7 @@
     "Tap the Start and End Time inputs to set them with the current track time": "▸ Trykk på «Starttid» og «Slutt-tid» for å sette dem til nåværende avspillingstid.",
     "TermsOfServiceScreenText2": "Podverse vil aldri reklamere ved siden av eller i innholdet til et nettradioopptak uten dets samtykke.",
     "TermsOfServiceScreenText3": "Alle lyd- og videofiler som finnes på podverse.fm lastes inn fra opphavets egen offentlige tjener. Innhold vertstjenes ikke av Podverse.",
-    "value_tag_preview_stream": "Strøm: Send en donasjon med en offentlig melding",
+    "value_tag_preview_stream": "Påskjønnelsesgram: Send en donasjon med en offentlig melding",
     "Please retry processing or contact support": "Gjenta betaling (du vil ikke måtte betale dobbelt) eller kontakt brukerstøtte.",
     "Podverse would like to access your device's external storage to access your downloaded media.": "Innvilg tilgang for tilgang til nedlastet media.",
     "TermsOfServiceScreenMatomoTrackingText2": "Den gemenfrihetslige analyseplattformen Matomo brukes til popularitetssporing på Podverse-tjenerne. Identifiserbar brukerdata blir aldri delt eller solgt.",
@@ -714,5 +714,6 @@
     "Share Episode": "Del episode",
     "Share Chapter": "Del kapittel",
     "Share Clip": "Del klipp",
-    "Share Podcast": "Del nettradioopptak"
+    "Share Podcast": "Del nettradioopptak",
+    "Send Boostagram": "Send påskjønnelsesgram"
 }
