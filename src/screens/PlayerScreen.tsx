@@ -319,7 +319,7 @@ const shareActionSheetButtons = (
   podcastId: string,
   episodeId: string,
   mediaRefId: string,
-  chapterId: boolean,
+  chapterId: string,
   handleShare: any
 ) => {
   const items = [
