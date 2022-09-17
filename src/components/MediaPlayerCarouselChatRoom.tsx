@@ -30,8 +30,10 @@ export class MediaPlayerCarouselChatRoom extends React.PureComponent<Props> {
           accessible={false}
           containerStyle={styles.wrapper}
           originWhitelist={['*']}
+          overScrollMode='never'
+          removeClippedSubviews
           source={{ uri: chatIRCURL }}
-          style={{ backgroundColor: 'transparent' }}
+          style={{ backgroundColor: 'transparent', opacity: 0.99 }}
         />
       </View>
     )
