@@ -30,7 +30,12 @@ export class WebPageScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.wrapper}>
-        <WebView source={{ uri }} />
+        <WebView
+          overScrollMode='never'
+          removeClippedSubviews
+          source={{ uri }}
+          style={{ opacity: 0.99 }}
+        />
       </View>
     )
   }

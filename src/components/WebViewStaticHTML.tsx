@@ -68,8 +68,10 @@ export const WebViewStaticHTML = (props: Props) => {
         accessible={false}
         containerStyle={styles.view}
         originWhitelist={['*']}
+        overScrollMode='never'
+        removeClippedSubviews
         source={{ html: styledHTML }}
-        style={{ backgroundColor: 'transparent' }}
+        style={{ backgroundColor: 'transparent', opacity: 0.99 }}
       />
     </View>
   )
