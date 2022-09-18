@@ -150,7 +150,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
 
     const completed = !!nowPlayingItem.episodeId && !!historyItemsIndex.episodes?.[nowPlayingItem.episodeId]?.completed
     const label = completed ? translate('Mark as Unplayed') : translate('Mark as Played')
-    if (!nowPlayingItem.liveItem) {
+    if (!nowPlayingItem.liveItem && !nowPlayingItem.addByRSSPodcastFeedUrl) {
       children.push(
         <TouchableHighlight
           accessibilityLabel={label}

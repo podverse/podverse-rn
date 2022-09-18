@@ -269,7 +269,7 @@ const mediaMoreButtons = (
     })
   }
 
-  if (!item.liveItem && itemType === 'episode') {
+  if (!item.liveItem && itemType === 'episode' && !item.addByRSSPodcastFeedUrl) {
     const completed = historyItemsIndex.episodes[item.episodeId]?.completed
     const label = completed ? translate('Mark as Unplayed') : translate('Mark as Played')
     buttons.push({
