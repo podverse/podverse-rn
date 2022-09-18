@@ -3,6 +3,7 @@ import Config from 'react-native-config'
 
 const translationGetters = {
   // lazy requires (metro bundler does not support symlinks)
+  da: () => require('../resources/i18n/translations/da.json'),
   de: () => require('../resources/i18n/translations/de.json'),
   el: () => require('../resources/i18n/translations/el.json'),
   en: () => require('../resources/i18n/translations/en.json'),

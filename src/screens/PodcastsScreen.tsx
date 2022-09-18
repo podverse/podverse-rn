@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import messaging from '@react-native-firebase/messaging'
 import debounce from 'lodash/debounce'
-import { convertToNowPlayingItem, createEmailLinkUrl } from 'podverse-shared'
+import { checkIfContainsStringMatch, convertToNowPlayingItem, createEmailLinkUrl } from 'podverse-shared'
 import { Alert, AppState, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
 import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
@@ -58,6 +58,7 @@ import {
 } from '../state/actions/player'
 import {
   combineWithAddByRSSPodcasts,
+  findCombineWithAddByRSSPodcasts,
   getSubscribedPodcasts,
   removeAddByRSSPodcast,
   toggleSubscribeToPodcast
@@ -1122,12 +1123,38 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { searchBarText: searchTitle } = this.state
     const { appMode } = this.global
     const hasVideo = appMode === PV.AppMode.videos
+
+    let localPodcasts = [] as any
+    if (searchTitle && page === 1) {
+      localPodcasts = await findCombineWithAddByRSSPodcasts(searchTitle)
+      this.setState({
+        queryFrom: PV.Filters._allPodcastsKey,
+        flatListData: localPodcasts,
+        flatListDataTotalCount: localPodcasts.length,
+        // Need to set endOfResultsReached to true to prevent onEndReached from
+        // being called immediately after localPodcasts loads in the flatListData.
+        // It will be reset to false after _queryData finishes if the end is not reached yet.
+        endOfResultsReached: true
+      })
+    }
+
     const results = await getPodcasts({
       sort,
       page,
       ...(searchTitle ? { searchTitle } : {}),
       ...(hasVideo ? { hasVideo: true } : {})
     })
+
+    if (searchTitle) {
+      const filteredResults = results[0].filter((serverPodcast: any) => {
+        return !localPodcasts.some((localPodcast: any) => {
+          return checkIfContainsStringMatch(localPodcast?.title, serverPodcast?.title)
+        })
+      })
+
+      results[0] = [...localPodcasts, ...filteredResults]
+    }
+
     return results
   }
 

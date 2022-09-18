@@ -269,7 +269,7 @@ const mediaMoreButtons = (
     })
   }
 
-  if (!item.liveItem && itemType === 'episode') {
+  if (!item.liveItem && itemType === 'episode' && !item.addByRSSPodcastFeedUrl) {
     const completed = historyItemsIndex.episodes[item.episodeId]?.completed
     const label = completed ? translate('Mark as Unplayed') : translate('Mark as Played')
     buttons.push({
@@ -292,7 +292,9 @@ const mediaMoreButtons = (
     })
   }
 
-  if (includeGoToPodcast) {
+  // Limit the action sheet to 8 items, so all items appear even on smaller screens.
+  // Since this action sheet can't be scrollable, we're just hiding the less important buttons.
+  if (includeGoToPodcast && buttons.length < 8) {
     buttons.push({
       accessibilityLabel: translate('Go to Podcast'),
       key: PV.Keys.go_to_podcast,
@@ -304,7 +306,7 @@ const mediaMoreButtons = (
     })
   }
 
-  if (includeGoToEpisodeInEpisodesStack || includeGoToEpisodeInCurrentStack) {
+  if ((includeGoToEpisodeInEpisodesStack || includeGoToEpisodeInCurrentStack) && buttons.length < 8) {
     buttons.push({
       accessibilityLabel: translate('Go to Episode'),
       key: PV.Keys.go_to_episode,
