@@ -16,11 +16,7 @@ import {
 } from '../../services/podcast'
 import { updateDownloadedPodcasts } from './downloads'
 
-export const combineWithAddByRSSPodcasts = async (
-  searchTitle?: string,
-  sort?: string | null,
-  returnPodcasts?: boolean
-) => {
+const handleCombineWithAddByRSSPodcasts = async (searchTitle?: string, sort?: string | null) => {
   const { appMode } = getGlobal()
   const videoOnlyMode = appMode === PV.AppMode.videos
 
@@ -28,8 +24,7 @@ export const combineWithAddByRSSPodcasts = async (
   let finalPodcasts = []
 
   if (searchTitle) {
-    finalPodcasts = combinedPodcasts.filter((podcast) =>
-      checkIfContainsStringMatch(searchTitle, podcast.title))
+    finalPodcasts = combinedPodcasts.filter((podcast) => checkIfContainsStringMatch(searchTitle, podcast.title))
   } else {
     finalPodcasts = combinedPodcasts
   }
@@ -38,9 +33,20 @@ export const combineWithAddByRSSPodcasts = async (
     finalPodcasts = finalPodcasts.filter((podcast) => podcast.hasVideo)
   }
 
-  if (returnPodcasts) {
-    return finalPodcasts
-  }
+  return finalPodcasts
+}
+
+export const findCombineWithAddByRSSPodcasts = async (
+  searchTitle?: string
+) => {
+  return handleCombineWithAddByRSSPodcasts(searchTitle)
+}
+
+export const combineWithAddByRSSPodcasts = async (
+  searchTitle?: string,
+  sort?: string | null
+) => {
+  const finalPodcasts = await handleCombineWithAddByRSSPodcasts(searchTitle, sort)
 
   setGlobal({
     subscribedPodcasts: finalPodcasts,

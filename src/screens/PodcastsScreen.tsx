@@ -58,6 +58,7 @@ import {
 } from '../state/actions/player'
 import {
   combineWithAddByRSSPodcasts,
+  findCombineWithAddByRSSPodcasts,
   getSubscribedPodcasts,
   removeAddByRSSPodcast,
   toggleSubscribeToPodcast
@@ -1125,8 +1126,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     let localPodcasts = [] as any
     if (searchTitle && page === 1) {
-      const returnPodcasts = true
-      localPodcasts = await combineWithAddByRSSPodcasts(searchTitle, PV.Filters._allPodcastsKey, returnPodcasts)
+      localPodcasts = await findCombineWithAddByRSSPodcasts(searchTitle)
       this.setState({
         queryFrom: PV.Filters._allPodcastsKey,
         flatListData: localPodcasts,
