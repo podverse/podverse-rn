@@ -322,8 +322,6 @@ const mediaMoreButtons = (
     })
   }
 
-  console.log(buttons, buttons.length)
-
   return buttons
 }
 
