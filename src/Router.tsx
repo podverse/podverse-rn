@@ -353,7 +353,8 @@ const PlayerNavigator = createStackNavigator(
     [PV.RouteNames.PlayerMembershipScreen]: MembershipScreen,
     [PV.RouteNames.SleepTimerScreen]: SleepTimerScreen,
     [PV.RouteNames.FundingNowPlayingItemScreen]: FundingNowPlayingItemScreen,
-    [PV.RouteNames.PlaylistsAddToScreen]: PlaylistsAddToScreen
+    [PV.RouteNames.PlaylistsAddToScreen]: PlaylistsAddToScreen,
+    [PV.RouteNames.V4VBoostagramPlayerScreen]: V4VBoostagramScreen
   },
   {
     defaultNavigationOptions

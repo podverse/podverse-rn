@@ -146,7 +146,12 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   _handleBoostagramPress = () => {
     const { navigation } = this.props
-    navigation.navigate(PV.RouteNames.V4VBoostagramScreen)
+    navigation.navigate({
+      routeName: PV.RouteNames.V4VBoostagramPlayerScreen,
+      params: {
+        showBackButton: true
+      }
+    })
   }
 
   render() {
