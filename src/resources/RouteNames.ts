@@ -65,6 +65,7 @@ export const RouteNames = {
   TermsOfServiceScreen: 'TermsOfServiceScreen',
   TrackingConsentScreen: 'TrackingConsentScreen',
   V4VBoostagramScreen: 'V4VBoostagramScreen',
+  V4VBoostagramPlayerScreen: 'V4VBoostagramPlayerScreen',
   V4VConsentScreen: 'V4VConsentScreen',
   V4VPreviewScreen: 'V4VPreviewScreen',
   V4VProvidersScreen: 'V4VProvidersScreen',
