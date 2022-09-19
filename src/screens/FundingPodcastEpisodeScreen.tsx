@@ -115,10 +115,13 @@ export class FundingPodcastEpisodeScreen extends React.Component<Props, State> {
     const episode = this.props.navigation.getParam('episode')
 
     navigation.dismiss()
-    navigation.navigate(PV.RouteNames.V4VBoostagramScreen, {
-      podcast,
-      episode
-    })
+
+    setTimeout(() => {
+      navigation.navigate(PV.RouteNames.V4VBoostagramScreen, {
+        podcast,
+        episode
+      })
+    }, 0)
   }
 
   render() {
