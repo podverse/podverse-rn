@@ -68,8 +68,11 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = ({ navigation }) => {
+    const showBackButton = navigation.getParam('showBackButton')
     return {
-      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
+      ...(!!showBackButton ? {} : {
+        headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />
+      }),
       title: translate('Boostagram'),
       headerRight: null
     }
