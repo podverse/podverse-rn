@@ -289,7 +289,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
         'User-Agent': userAgent,
         ...(Authorization ? { Authorization } : {})
       },
-      timeout: 20000
+      timeout: 30000
     })
 
     if (credentials) {
