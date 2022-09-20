@@ -857,8 +857,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.setState({ isUnsubscribing: true }, () => {
       (async () => {
         try {
-          const { flatListData } = this.state
-
           if (queryFrom === PV.Filters._subscribedKey || queryFrom === PV.Filters._customFeedsKey) {
             addByRSSPodcastFeedUrl
               ? await removeAddByRSSPodcast(addByRSSPodcastFeedUrl)
@@ -867,19 +865,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
           } else if (queryFrom === PV.Filters._downloadedKey) {
             await removeDownloadedPodcast(selectedId || addByRSSPodcastFeedUrl)
           }
-          const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
 
-          const row = rowMap[selectedId] || rowMap[addByRSSPodcastFeedUrl]
-          row.closeRow()
-
-          this.setState({
-            flatListData: newFlatListData,
-            flatListDataTotalCount: newFlatListData.length,
-            isUnsubscribing: false
-          })
+          // TODO: the safeKeyExtractor is breaking the logic below
+          // by appending an index to the rowMap key
+          // const row = rowMap[selectedId] || rowMap[addByRSSPodcastFeedUrl]
+          // row.closeRow()
         } catch (error) {
-          this.setState({ isUnsubscribing: false })
+          console.log('_handleHiddenItemPress', error)
         }
+        this.setState({ isUnsubscribing: false })
       })()
     })
   }
@@ -980,6 +974,27 @@ export class PodcastsScreen extends React.Component<Props, State> {
     Linking.openURL(createEmailLinkUrl(PV.Emails.PODCAST_REQUEST))
   }
 
+  _getFlatListData = () => {
+    const { isLoadingMore, queryFrom } = this.state
+    const { subscribedPodcasts = [], subscribedPodcastsTotalCount = 0 } = this.global
+    let flatListData = []
+    let flatListDataTotalCount = null
+    if (isLoadingMore && queryFrom === PV.Filters._subscribedKey) {
+      // do nothing
+    } else if (queryFrom === PV.Filters._subscribedKey) {
+      flatListData = subscribedPodcasts
+      flatListDataTotalCount = subscribedPodcastsTotalCount
+    } else {
+      flatListData = this.state.flatListData
+      flatListDataTotalCount = this.state.flatListDataTotalCount
+    }
+
+    return {
+      flatListData,
+      flatListDataTotalCount
+    }
+  }
+
   render() {
     const { navigation } = this.props
     const {
@@ -995,25 +1010,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
       showDataSettingsConfirmDialog,
       showNoInternetConnectionMessage
     } = this.state
-    const { session, subscribedPodcasts = [], subscribedPodcastsTotalCount = 0, podcastsGridViewEnabled } = this.global
+    const { session, podcastsGridViewEnabled } = this.global
     const { subscribedPodcastIds } = session?.userInfo
-
-    let flatListData = []
-    let flatListDataTotalCount = null
-    if (isLoadingMore && queryFrom === PV.Filters._subscribedKey) {
-      // do nothing
-    } else if (queryFrom === PV.Filters._subscribedKey) {
-      flatListData = subscribedPodcasts
-      flatListDataTotalCount = subscribedPodcastsTotalCount
-    } else {
-      flatListData = this.state.flatListData
-      flatListDataTotalCount = this.state.flatListDataTotalCount
-    }
 
     const noSubscribedPodcasts =
       queryFrom === PV.Filters._subscribedKey && (!subscribedPodcastIds || subscribedPodcastIds.length === 0)
 
     const isCategoryScreen = queryFrom === PV.Filters._categoryKey
+
+    const { flatListData, flatListDataTotalCount } = this._getFlatListData()
 
     return (
       <View style={styles.view} testID={`${testIDPrefix}_view`}>

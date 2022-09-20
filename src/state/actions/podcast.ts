@@ -72,9 +72,9 @@ export const toggleSubscribeToPodcast = async (id: string) => {
   return new Promise<void>((resolve, reject) => {
     (async () => {
       try {
-        const globalState = getGlobal()
         const subscribedPodcastIds = await toggleSubscribeToPodcastService(id)
         const subscribedPodcast = await getPodcastService(id)
+        const globalState = getGlobal()
         let { subscribedPodcasts = [] } = globalState
         subscribedPodcasts = insertOrRemovePodcastFromAlphabetizedArray(subscribedPodcasts, subscribedPodcast) as any
         await setSubscribedPodcasts(subscribedPodcasts)
@@ -108,7 +108,21 @@ export const toggleSubscribeToPodcast = async (id: string) => {
 
 export const removeAddByRSSPodcast = async (feedUrl: string) => {
   await removeAddByRSSPodcastService(feedUrl)
-  await combineWithAddByRSSPodcasts()
+
+  const globalState = getGlobal()
+  const { subscribedPodcasts = [] } = globalState
+
+  const filteredPodcasts = subscribedPodcasts.filter((x: any) => {
+    return !x.addByRSSPodcastFeedUrl || x.addByRSSPodcastFeedUrl !== feedUrl
+  })
+
+  await setSubscribedPodcasts(filteredPodcasts)
+
+  setGlobal({
+    subscribedPodcasts: filteredPodcasts,
+    subscribedPodcastsTotalCount: filteredPodcasts.length
+  })
+
   PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
 }
 

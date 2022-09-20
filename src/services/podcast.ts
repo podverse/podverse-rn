@@ -259,7 +259,8 @@ const toggleSubscribeToPodcastLocally = async (id: string) => {
   }
 
   const index = items.indexOf(id)
-  if (index > -1) {
+  const isUnsubscribing = index > -1
+  if (isUnsubscribing) {
     items.splice(index, 1)
     await removeAutoDownloadSetting(id)
   } else {
