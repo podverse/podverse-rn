@@ -71,6 +71,7 @@ export interface UserInfo {
   historyItemsIndex: Record<string, any> | null
   historyQueryPage: number
   id?: string
+  isPublic: boolean
   membershipExpiration?: string | null
   name?: string
   notifications?: any[]

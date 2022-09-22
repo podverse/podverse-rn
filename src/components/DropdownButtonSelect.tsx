@@ -8,6 +8,7 @@ export const DropdownButtonSelect = (props: any) => {
   const {
     accessibilityHint,
     helpText,
+    helpTextLarger,
     hideHelpTextInAccessibility,
     items,
     label,
@@ -20,6 +21,8 @@ export const DropdownButtonSelect = (props: any) => {
   const [globalTheme] = useGlobal('globalTheme')
   const accessibilityLabel = `${label}${helpText && !hideHelpTextInAccessibility ? `, ${helpText}` : ''}`
 
+  const helpTextStyle = !!helpTextLarger ? styles.dropdownHelpTextLarger : styles.dropdownHelpText
+  
   return (
     <View style={[styles.dropdownWrapper, wrapperStyle]} transparent>
       <RNPickerSelect
@@ -51,7 +54,7 @@ export const DropdownButtonSelect = (props: any) => {
           />
         </View>
       </RNPickerSelect>
-      <Text accessible={false} accessibilityLabel='' importantForAccessibility='no' style={styles.dropdownHelpText}>
+      <Text accessible={false} accessibilityLabel='' importantForAccessibility='no' style={helpTextStyle}>
         {helpText}
       </Text>
     </View>
@@ -87,11 +90,15 @@ const styles = {
     maxWidth: '60%',
     flexWrap: 'wrap'
   },
+  dropdownHelpTextLarger: {
+    fontSize: PV.Fonts.sizes.lg,
+    maxWidth: '60%',
+    flexWrap: 'wrap'
+  },
   dropdownWrapper: {
     alignItems: 'center',
     flexDirection: 'row-reverse',
     justifyContent: 'space-between',
-    minHeight: PV.Table.sectionHeader.height,
-    paddingHorizontal: 8
+    minHeight: PV.Table.sectionHeader.height
   }
 }
