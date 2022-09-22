@@ -179,13 +179,13 @@ const defaultStyles = StyleSheet.create({
   addByRSSText: {
     fontSize: PV.Fonts.sizes.sm,
     fontWeight: PV.Fonts.weights.semibold,
-    paddingVertical: 8,
+    paddingVertical: 1,
     textAlign: 'center'
   },
   addByRSSTextLarger: {
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.semibold,
-    paddingVertical: 1,
+    paddingVertical: 4,
     textAlign: 'center'
   },
   addByRSSWrapper: {

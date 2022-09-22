@@ -230,7 +230,7 @@ export const videoLoadNowPlayingItem = async (
   const { clipId, episodeId } = item
 
   if (episodeId) {
-    item.episodeDuration = historyItemsIndex?.episodes[episodeId]?.mediaFileDuration || 0
+    item.episodeDuration = historyItemsIndex?.episodes?.[episodeId]?.mediaFileDuration || 0
     if (clipId && previousClipId !== clipId) {
       /* Use a callback to wait until video is finished loading in global state    
          before calling the PLAYER_VIDEO_NEW_ITEM event. */
@@ -238,7 +238,7 @@ export const videoLoadNowPlayingItem = async (
         PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_NEW_CLIP_ITEM_LOADED)
       })
     } else if (episodeId !== previousEpisodeId) {
-      item.episodeDuration = historyItemsIndex?.episodes[episodeId]?.mediaFileDuration || 0
+      item.episodeDuration = historyItemsIndex?.episodes?.[episodeId]?.mediaFileDuration || 0
       /* Use a callback to wait until video is finished loading in global state    
          before calling the PLAYER_VIDEO_NEW_ITEM event. */
       playerUpdatePlayerState(item, () => {

@@ -119,7 +119,8 @@ export const markAsPlayed = async (item: NowPlayingItem) => {
   if (item.episodeId) {
     let playbackPosition = 0
     let mediaFileDuration = null
-    const historyItem = historyItemsIndex?.episodes[item.episodeId]
+    const historyItem = historyItemsIndex?.episodes?.[item.episodeId]
+
     if (historyItem) {
       mediaFileDuration = historyItem.mediaFileDuration || 0
       playbackPosition = historyItem.userPlaybackPosition
@@ -146,7 +147,8 @@ export const toggleMarkAsPlayed = async (item: NowPlayingItem, shouldMarkAsPlaye
   if (item.episodeId) {
     let playbackPosition = 0
     let mediaFileDuration = null
-    const historyItem = historyItemsIndex?.episodes[item.episodeId]
+    const historyItem = historyItemsIndex?.episodes?.[item.episodeId]
+
     if (historyItem) {
       mediaFileDuration = historyItem.mediaFileDuration || 0
       playbackPosition = historyItem.userPlaybackPosition

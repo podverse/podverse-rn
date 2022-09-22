@@ -213,7 +213,7 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
       const shouldPlay = true
       const forceUpdateOrderDate = false
       const setCurrentItemNextInQueue = true
-      if (!item?.clipId) {
+      if (item && !item?.clipId) {
         const { episodes } = await getHistoryItemsIndex()
         if (episodes) {
           const foundEpisode = item?.episodeId ? episodes[item.episodeId] : null
