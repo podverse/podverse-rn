@@ -119,6 +119,7 @@ const initialTheme: InitialState = {
       historyItemsIndex: null,
       historyQueryPage: 1,
       id: '',
+      isPublic: false,
       membershipExpiration: '',
       name: '',
       notifications: [],
