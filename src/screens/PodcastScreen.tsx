@@ -833,7 +833,11 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   _handleNavigateToPodcastInfoScreen = () => {
     const { navigation } = this.props
     const { podcast } = this.state
-    navigation.navigate(PV.RouteNames.PodcastInfoScreen, { podcast })
+    const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
+    navigation.navigate(PV.RouteNames.PodcastInfoScreen, {
+      addByRSSPodcastFeedUrl,
+      podcast
+    })
   }
 
   render() {
@@ -891,6 +895,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     return (
       <View style={styles.headerView} testID={`${testIDPrefix}_view`}>
         <PodcastTableHeader
+          addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
           autoDownloadOn={autoDownloadOn}
           description={podcast && podcast.description}
           handleNavigateToPodcastInfoScreen={this._handleNavigateToPodcastInfoScreen}

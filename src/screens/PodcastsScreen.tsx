@@ -811,6 +811,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _renderPodcastItem = ({ item, index }) => (
     <PodcastTableCell
+      addByRSSPodcastFeedUrl={item?.addByRSSPodcastFeedUrl}
       id={item?.id}
       lastEpisodePubDate={item.lastEpisodePubDate}
       latestLiveItemStatus={item.latestLiveItemStatus}

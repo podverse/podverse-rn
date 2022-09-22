@@ -33,6 +33,7 @@ export class GridView extends React.PureComponent<Props, any> {
               }}
               style={styles.cellbutton}>
               <FastImage
+                isAddByRSSPodcast={!!item?.addByRSSPodcastFeedUrl}
                 newContentCount={newContentCount}
                 placeholderLabel={item?.title || ''}
                 resizeMode='cover'
