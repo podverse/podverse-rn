@@ -271,46 +271,31 @@ export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMe
     roundDownBoostTransactions
   )
 
-  // delay requests to not overload with Alby with simultaneous requests
-  const generateSendValueTransactionPromise = (
-    valueTransaction: ValueTransaction,
-    delay: number
-  ) => {
-    return new Promise<void>((resolve) => {
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      setTimeout(async () => {
-        try {
-          const succesful = await sendValueTransaction(valueTransaction, includeMessage)
-          if (succesful) {
-            totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
-          }
-        } catch (error) {
-          const displayedErrorMessage = error.response?.data?.message
-            ? `${error.message} – ${error.response?.data?.message}`
-            : error.message
+  const processSendValueTransaction = async (valueTransaction: ValueTransaction) => {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    try {
+      const succesful = await sendValueTransaction(valueTransaction, includeMessage)
+      if (succesful) {
+        totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
+      }
+    } catch (error) {
+      const displayedErrorMessage = error.response?.data?.message
+        ? `${error.message} – ${error.response?.data?.message}`
+        : error.message
 
-          v4vAddPreviousTransactionError(
-            'boost',
-            valueTransaction.normalizedValueRecipient.address,
-            displayedErrorMessage,
-            valueTransaction.normalizedValueRecipient.customKey,
-            valueTransaction.normalizedValueRecipient.customValue
-          )
-        }
-        resolve()
-      }, delay)
-    })
+      v4vAddPreviousTransactionError(
+        'boost',
+        valueTransaction.normalizedValueRecipient.address,
+        displayedErrorMessage,
+        valueTransaction.normalizedValueRecipient.customKey,
+        valueTransaction.normalizedValueRecipient.customValue
+      )
+    }
   }
 
-  const valueTransactionPromises = []
-  let delay = 0
   for (const valueTransaction of valueTransactions) {
-    valueTransactionPromises.push(
-      generateSendValueTransactionPromise(valueTransaction, delay))
-    delay += 1000
+    await processSendValueTransaction(valueTransaction)
   }
-
-  await Promise.all(valueTransactionPromises)
 
   // Run refresh wallet data in the background after transactions complete.
   v4vRefreshActiveProviderWalletInfo()
