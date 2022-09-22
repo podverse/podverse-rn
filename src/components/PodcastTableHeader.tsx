@@ -8,6 +8,7 @@ import { IndicatorDownload } from './IndicatorDownload'
 import { ActivityIndicator, FastImage, SettingsButton, SubscribeButton, Text, View } from './'
 
 type Props = {
+  addByRSSPodcastFeedUrl?: string
   autoDownloadOn?: boolean
   description?: string
   handleNavigateToPodcastInfoScreen?: any
@@ -28,6 +29,7 @@ type Props = {
 
 export const PodcastTableHeader = (props: Props) => {
   const {
+    addByRSSPodcastFeedUrl,
     autoDownloadOn,
     description,
     handleNavigateToPodcastInfoScreen,
@@ -59,7 +61,13 @@ export const PodcastTableHeader = (props: Props) => {
         <View style={{ flexDirection: 'column', flex: 1 }}>
           {!isNotFound && (
             <View style={styles.wrapper}>
-              <FastImage allowFullView source={podcastImageUrl} styles={styles.image} valueTags={podcastValue} />
+              <FastImage
+                allowFullView
+                isAddByRSSPodcast={!!addByRSSPodcastFeedUrl}
+                source={podcastImageUrl}
+                styles={styles.image}
+                valueTags={podcastValue}
+              />
               <View style={styles.contentWrapper}>
                 <View style={styles.contentWrapperTop}>
                   <Text

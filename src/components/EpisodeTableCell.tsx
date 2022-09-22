@@ -89,8 +89,13 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const innerTopView = (
       <RNView accessible={false} importantForAccessibility='no-hide-descendants' style={styles.innerTopView}>
-        {!!imageUrl && !hideImage && <FastImage isSmall source={imageUrl} styles={styles.image}
-          valueTags={podcast?.value} />}
+        {!!imageUrl && !hideImage && (
+          <FastImage
+            isAddByRSSPodcast={!!podcast?.addByRSSPodcastFeedUrl}
+            isSmall source={imageUrl}
+            styles={styles.image}
+            valueTags={podcast?.value} />
+        )}
         <RNView accessible={false} style={styles.textWrapper}>
           {showPodcastInfo && podcastTitle && (
             <Text
