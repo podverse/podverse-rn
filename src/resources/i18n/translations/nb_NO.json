@@ -485,7 +485,7 @@
     "I Accept": "Jeg godtar",
     "Invalid or missing QR data": "Ugyldig eller manglende QR-data",
     "Login Error": "Kunne ikke logge inn",
-    "Membership": "Premium",
+    "Membership": "Medlemskap",
     "Preview End Time": "Forhåndsvis slutt-tid",
     "Media Type": "Mediatype",
     "Preview Start Time": "Forhåndsvis starttid",
@@ -715,5 +715,11 @@
     "Share Chapter": "Del kapittel",
     "Share Clip": "Del klipp",
     "Share Podcast": "Del nettradioopptak",
-    "Send Boostagram": "Send påskjønnelsesgram"
+    "Send Boostagram": "Send påskjønnelsesgram",
+    "Enjoy all Premium features by renewing for only": "Kos deg med alle Podverse premium-funksjoner ved å fornye for 18 $ per år",
+    "Free trial expiration date": "Utløpsdato for gratis Podverse premium",
+    "Privacy": "Personvern",
+    "Premium membership expiration date": "Utløpsdato for Podverse premium",
+    "Added by RSS": "Tillagt via RSS",
+    "RSS": "RSS"
 }
