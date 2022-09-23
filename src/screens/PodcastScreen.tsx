@@ -1,9 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import {
-  checkIfContainsStringMatch,
   convertToNowPlayingItem,
-  Episode,
   getAuthorityFeedUrlFromArray,
   getUsernameAndPasswordFromCredentials
 } from 'podverse-shared'
@@ -54,6 +52,7 @@ import { getPodcast } from '../services/podcast'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import * as DownloadState from '../state/actions/downloads'
+import { clearEpisodesCountForPodcast } from '../state/actions/newEpisodesCount'
 import { checkIfNotificationsEnabledForPodcastId } from '../state/actions/notifications'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
@@ -590,6 +589,13 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     })
   }
 
+  _handleClearNewEpisodeIndicators = () => {
+    const { podcast } = this.state
+    if (podcast?.id) {
+      clearEpisodesCountForPodcast(podcast.id)
+    }
+  }
+
   _handleSearchBarTextChange = (text: string) => {
     const { viewType } = this.state
 
@@ -1035,7 +1041,16 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
             <Divider style={styles.divider} />
             <Button
               accessibilityHint={translate('ARIA HINT - delete all the episodes you have downloaded for this podcast')}
+              accessibilityLabel={translate('Clear new episode indicators')}
+              onPress={this._handleClearNewEpisodeIndicators}
+              wrapperStyles={styles.settingsClearNewEpisodeIndicators}
+              testID={`${testIDPrefix}_clear_new_episode_indicators`}
+              text={translate('Clear new episode indicators')}
+            />
+            <Button
+              accessibilityHint={translate('ARIA HINT - delete all the episodes you have downloaded for this podcast')}
               accessibilityLabel={translate('Delete Downloaded Episodes')}
+              isWarning
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
               wrapperStyles={styles.settingsDeletebutton}
               testID={`${testIDPrefix}_delete_downloaded_episodes`}
@@ -1303,10 +1318,16 @@ const styles = StyleSheet.create({
   },
   divider: {
     marginBottom: 24,
-    marginTop: 12
+    marginTop: 32
   },
   itemWrapper: {
     marginTop: 32
+  },
+  settingsClearNewEpisodeIndicators: {
+    marginBottom: 32,
+    marginHorizontal: 8,
+    marginTop: 8,
+    borderRadius: 8
   },
   settingsDeletebutton: {
     margin: 8,

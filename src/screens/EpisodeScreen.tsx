@@ -22,7 +22,6 @@ import { getEpisode } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
-import { clearEpisodesCountForPodcastEpisode } from '../state/actions/newEpisodesCount'
 import { retriveNowPlayingItemChapters } from '../state/actions/playerChapters'
 import { core } from '../styles'
 import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
@@ -135,7 +134,7 @@ export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
     }
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     super.componentDidMount()
 
     const { navigation } = this.props
@@ -146,10 +145,6 @@ export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
       ? episode.podcast.title + ' - ' + episodeTitle
       : translate('no info available')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
-
-    if ((episode?.podcast?.id || addByRSSPodcastFeedUrl) && episode?.id) {
-      await clearEpisodesCountForPodcastEpisode(episode.podcast?.id || addByRSSPodcastFeedUrl, episode.id)
-    }
 
     trackPageView(
       '/episode/' + getTrackingIdText(episodeId, !!addByRSSPodcastFeedUrl),
