@@ -127,7 +127,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     return sections
   }
 
-  _renderHiddenItem = ({ item, index, section }, rowMap) => {
+  _renderHiddenItem = ({ item, index, section }) => {    
     const { isRemoving } = this.state
     const sectionKey = section.value
     const buttonText =
@@ -143,14 +143,14 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     return (
       <SwipeRowBack
         isLoading={isRemoving}
-        onPress={() => onPress(item.id, rowMap)}
+        onPress={() => onPress(item.id,)}
         testID={`${testIDPrefix}_playlist_${sectionKey}_item_${index}_${testIDSuffix}`}
         text={buttonText}
       />
     )
   }
 
-  _handleHiddenItemPressUnsubscribe = async (id: string, rowMap: any) => {
+  _handleHiddenItemPressUnsubscribe = async (id: string) => {
     const wasAlerted = await alertIfNoNetworkConnection('subscribe to playlist')
     if (wasAlerted) return
 
@@ -158,8 +158,6 @@ export class PlaylistsScreen extends React.Component<Props, State> {
       (async () => {
         try {
           await toggleSubscribeToPlaylist(id)
-          const row = rowMap[id]
-          row?.closeRow()
           const sections = this.generatePlaylistsSections()
           this.setState({ isRemoving: false, sections })
         } catch (error) {
@@ -169,7 +167,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleHiddenItemPressDelete = async (id: string, rowMap: any) => {
+  _handleHiddenItemPressDelete = async (id: string) => {
     const wasAlerted = await alertIfNoNetworkConnection('delete playlist')
     if (wasAlerted) return
 
@@ -177,8 +175,6 @@ export class PlaylistsScreen extends React.Component<Props, State> {
       (async () => {
         try {
           await deletePlaylist(id)
-          const row = rowMap[id]
-          row?.closeRow()
           const sections = this.generatePlaylistsSections()
           this.setState({ isRemoving: false, sections })
         } catch (error) {

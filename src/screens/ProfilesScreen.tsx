@@ -115,7 +115,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
     />
   )
 
-  _handleHiddenItemPress = async (selectedId, rowMap) => {
+  _handleHiddenItemPress = async (selectedId) => {
     const wasAlerted = await alertIfNoNetworkConnection(translate('unsubscribe from this profile'))
     if (wasAlerted) return
 
@@ -123,7 +123,6 @@ export class ProfilesScreen extends React.Component<Props, State> {
       (async () => {
         try {
           await toggleSubscribeToUser(selectedId)
-          rowMap[selectedId].closeRow()
           this.setState({ isUnsubscribing: false })
         } catch (error) {
           this.setState({ isUnsubscribing: false })

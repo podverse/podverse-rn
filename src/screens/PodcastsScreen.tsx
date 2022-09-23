@@ -846,7 +846,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleHiddenItemPress = async (selectedId, addByRSSPodcastFeedUrl, rowMap) => {
+  _handleHiddenItemPress = async (selectedId, addByRSSPodcastFeedUrl) => {
     const { queryFrom } = this.state
 
     let wasAlerted = false
@@ -855,6 +855,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
 
     if (wasAlerted) return
+
     this.setState({ isUnsubscribing: true }, () => {
       (async () => {
         try {
@@ -866,11 +867,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
           } else if (queryFrom === PV.Filters._downloadedKey) {
             await removeDownloadedPodcast(selectedId || addByRSSPodcastFeedUrl)
           }
-
-          // TODO: the safeKeyExtractor is breaking the logic below
-          // by appending an index to the rowMap key
-          // const row = rowMap[selectedId] || rowMap[addByRSSPodcastFeedUrl]
-          // row.closeRow()
         } catch (error) {
           console.log('_handleHiddenItemPress', error)
         }

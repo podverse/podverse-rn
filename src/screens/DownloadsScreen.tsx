@@ -92,17 +92,16 @@ export class DownloadsScreen extends React.Component<Props, State> {
     />
   )
 
-  _renderHiddenItem = ({ item, index }, rowMap) => (
+  _renderHiddenItem = ({ item, index }) => (
     <SwipeRowBack
-      onPress={() => this._handleHiddenItemPress(item.episodeId, rowMap)}
+      onPress={() => this._handleHiddenItemPress(item.episodeId)}
       testID={`${testIDPrefix}_download_item_${index}`}
       text='Remove'
       styles={{ paddingVertical: 6 }}
     />
   )
 
-  _handleHiddenItemPress = async (selectedId, rowMap) => {
-    rowMap[selectedId].closeRow()
+  _handleHiddenItemPress = async (selectedId) => {
     await removeDownloadingEpisode(selectedId)
     cancelDownloadTask(selectedId)
   }

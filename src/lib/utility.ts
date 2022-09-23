@@ -138,12 +138,10 @@ export const getUniqueArrayByKey = (arr: any[], key: string) => {
 }
 
 export const safeKeyExtractor = (listName: string, index: number, id?: string) => {
-  if (id && index === -1) {
-    return id
-  } else if (id) {
-    return id + index
+  if (id) {
+    return `${id}`
   } else {
-    return `${listName}_${index}`
+    return `${index}`
   }
 }
 
