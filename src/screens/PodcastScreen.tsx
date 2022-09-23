@@ -54,7 +54,6 @@ import { getPodcast } from '../services/podcast'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import * as DownloadState from '../state/actions/downloads'
-import { clearEpisodesCountForPodcast } from '../state/actions/newEpisodesCount'
 import { checkIfNotificationsEnabledForPodcastId } from '../state/actions/notifications'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
@@ -244,8 +243,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Events.PODCAST_START_PODCAST_FROM_TIME_SET, this.refreshStartPodcastFromTime)
-
-    await clearEpisodesCountForPodcast(podcastId || addByRSSPodcastFeedUrl)
 
     const hasInternetConnection = await hasValidNetworkConnection()
 

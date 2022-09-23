@@ -12,7 +12,7 @@ import { getPodcastFeedUrlAuthority } from '../../services/podcast'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
 import { removeDownloadedPodcastEpisode } from './downloads'
-import { playerUpdatePlaybackState, playerUpdatePlayerState, showMiniPlayer } from './player'
+import { playerLoadNowPlayingItem, playerUpdatePlaybackState, playerUpdatePlayerState } from './player'
 import { updateHistoryItemsIndex } from './userHistoryItem'
 
 export const videoInitializePlayer = async (item: NowPlayingItem) => {
@@ -29,8 +29,8 @@ export const videoInitializePlayer = async (item: NowPlayingItem) => {
 
     const shouldPlay = false
     const forceUpdateOrderDate = false
-    await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
-    showMiniPlayer()
+    const setCurrentItemNextInQueue = true
+    await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   const globalState = getGlobal()
