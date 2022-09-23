@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { checkIfContainsStringMatch, getExtensionFromUrl } from 'podverse-shared'
 import RNFS from 'react-native-fs'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import { sortPodcastArrayAlphabetically } from '../services/podcast'
 import { clearNowPlayingItem, getNowPlayingItem } from '../services/userNowPlayingItem'
 import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
@@ -156,6 +157,8 @@ export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
     clearedNowPlayingItem = true
   }
 
+  PVEventEmitter.emit(PV.Events.DOWNLOADED_EPISODE_REFRESH)
+
   return {
     clearedNowPlayingItem,
     downloadedEpisodeIds: newDownloadedEpisodeIds,
@@ -203,6 +206,7 @@ export const removeDownloadedPodcastsFromInternalStorage = async () => {
       }
     }
   }
+  PVEventEmitter.emit(PV.Events.DOWNLOADED_EPISODE_REFRESH)
 }
 
 export const moveDownloadedPodcastsToExternalStorage = async () => {
