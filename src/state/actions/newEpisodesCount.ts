@@ -46,8 +46,6 @@ export const clearEpisodesCountForPodcast = async (podcastId: string) => {
 }
 
 export const clearEpisodesCountForPodcastEpisode = async (podcastId: string, episodeId: string) => {
-  const global = getGlobal()
-  const previousEps = global.newEpisodesCount
   const episodesCount = await clearEpisodesCountForPodcastEpisodeService(podcastId, episodeId)
   setGlobal({ newEpisodesCount: episodesCount })
 }
