@@ -721,5 +721,8 @@
     "Privacy": "Personvern",
     "Premium membership expiration date": "Utløpsdato for Podverse premium",
     "Added by RSS": "Tillagt via RSS",
-    "RSS": "RSS"
+    "RSS": "RSS",
+    "ARIA HINT - clear the new episode indicators for only this podcast": "Fjern indikering av nye episoder for dette nettradioopptaket",
+    "ARIA HINT - clear the new episode indicators for all podcasts": "Fjern indikering av nye episoder for alle nettradioopptak",
+    "Clear new episode indicators": "Fjern alle indikatorer om nye episoder"
 }
