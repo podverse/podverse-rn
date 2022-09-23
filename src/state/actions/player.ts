@@ -27,6 +27,7 @@ import {
   getNowPlayingItemLocally,
   setNowPlayingItem as setNowPlayingItemService
 } from '../../services/userNowPlayingItem'
+import { clearEpisodesCountForPodcastEpisode } from './newEpisodesCount'
 import { audioInitializePlayerQueue, audioPlayNextFromQueue } from './playerAudio'
 import { clearChapterPlaybackInfo, getChapterNext, getChapterPrevious, loadChapterPlaybackInfo,
   loadChaptersForNowPlayingItem, 
@@ -227,6 +228,10 @@ export const playerLoadNowPlayingItem = async (
 
     if (!checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
       playerUpdatePlayerState(item)
+    }
+
+    if ((item?.podcastId || item?.addByRSSPodcastFeedUrl) && item?.episodeId) {
+      await clearEpisodesCountForPodcastEpisode(item?.podcastId || item?.addByRSSPodcastFeedUrl, item.episodeId)
     }
 
     const itemToSetNextInQueue = setCurrentItemNextInQueue ? previousNowPlayingItem : null

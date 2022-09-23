@@ -57,7 +57,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       shouldAutoDownload = autoDownloadSettings[id]
     }
 
-    const newContentCount = newEpisodesCount[id] || 0
+    const newContentCount = newEpisodesCount?.[id]?.count || 0
 
     let lastPubDate = ''
     if (lastEpisodePubDate) {
