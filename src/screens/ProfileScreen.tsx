@@ -422,6 +422,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     if (viewType === PV.Filters._podcastsKey) {
       return (
         <PodcastTableCell
+          addByRSSPodcastFeedUrl={item?.addByRSSPodcastFeedUrl}
           hasZebraStripe={isOdd(index)}
           id={item.id}
           lastEpisodePubDate={item.lastEpisodePubDate}

@@ -163,6 +163,12 @@ export class MembershipScreen extends React.Component<Props, State> {
                 text={translate('Renew Membership')}
                 wrapperStyles={styles.button}
               />
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={styles.explainText}
+                testID={`${testIDPrefix}_renew_explanation`}>
+                {translate('Enjoy all Premium features by renewing for only')}
+              </Text>
             </View>
           </View>
         )}
@@ -366,9 +372,14 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   buttonWrapper: {
-    marginBottom: 16,
-    marginTop: 20,
+    marginVertical: 16,
     paddingHorizontal: 32
+  },
+  explainText: {
+    fontSize: PV.Fonts.sizes.lg,
+    fontWeight: PV.Fonts.weights.semibold,
+    marginBottom: 12,
+    textAlign: 'center'
   },
   label: {
     fontSize: PV.Fonts.sizes.xl,

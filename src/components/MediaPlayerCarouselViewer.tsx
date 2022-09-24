@@ -67,7 +67,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
 
-    const { clipTitle, episodeImageUrl, episodeTitle, podcastImageUrl } = nowPlayingItem
+    const { addByRSSPodcastFeedUrl, clipTitle, episodeImageUrl, episodeTitle, podcastImageUrl } = nowPlayingItem
     let { clipId, clipEndTime, clipStartTime } = nowPlayingItem
     let clipUrl = ''
     let imageUrl = episodeImageUrl || podcastImageUrl
@@ -176,7 +176,13 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
               disabled={!clipUrl}
               {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
               style={styles.imageContainer}>
-              <FastImage allowFullView={allowFullView} key={imageUrl} source={imageUrl} styles={imageStyles} />
+              <FastImage
+                allowFullView={allowFullView}
+                isAddByRSSPodcast={!!addByRSSPodcastFeedUrl}
+                isAddByRSSPodcastLarger
+                key={imageUrl}
+                source={imageUrl}
+                styles={imageStyles} />
             </PressableWithOpacity>
           )}
         </RNView>

@@ -160,7 +160,7 @@ export const audioLoadNowPlayingItem = async (
 
   const { clipId, episodeId } = item
   if (!clipId && episodeId) {
-    item.episodeDuration = historyItemsIndex?.episodes[episodeId]?.mediaFileDuration || 0
+    item.episodeDuration = historyItemsIndex?.episodes?.[episodeId]?.mediaFileDuration || 0
   }
 
   addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)

@@ -2,11 +2,10 @@ import { checkIfVideoFileOrVideoLiveType, NowPlayingItem } from 'podverse-shared
 import { getGlobal, setGlobal } from 'reactn'
 import {
   audioInitializePlayerQueue as audioInitializePlayerQueueService,
-  audioLoadNowPlayingItem,
   audioPlayNextFromQueue as audioPlayNextFromQueueService
 } from '../../services/playerAudio'
 import { trackPlayerScreenPageView } from '../../services/tracking'
-import { showMiniPlayer } from './player'
+import { playerLoadNowPlayingItem } from './player'
 import { getQueueItems } from './queue'
 
 export const audioInitializePlayerQueue = async (item: NowPlayingItem) => {
@@ -15,8 +14,8 @@ export const audioInitializePlayerQueue = async (item: NowPlayingItem) => {
   if (item && !checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
     const shouldPlay = false
     const forceUpdateOrderDate = false
-    await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
-    showMiniPlayer()
+    const setCurrentItemNextInQueue = true
+    await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   const globalState = getGlobal()

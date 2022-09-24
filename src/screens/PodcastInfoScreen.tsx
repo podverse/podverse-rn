@@ -54,9 +54,12 @@ export class PodcastInfoScreen extends React.Component<Props, State> {
 
   render() {
     const { podcast } = this.state
+    const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
+
     return (
       <View style={styles.content} testID={`${testIDPrefix}_view`}>
         <PodcastTableHeader
+          addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
           podcastImageUrl={podcast && (podcast.shrunkImageUrl || podcast.imageUrl)}
           podcastTitle={podcast && podcast.title}
           podcastValue={podcast?.value}

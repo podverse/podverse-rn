@@ -196,11 +196,11 @@ export const parseAllAddByRSSPodcasts = async () => {
     if (parsedPodcast.episodes && parsedPodcast.episodes.length) {
       const lastAutoDownloadsRefreshDate = await getAutoDownloadsLastRefreshDate()
       const lastNewEpisodesCountRefreshDate = await getNewEpisodeCountCustomRSSLastRefreshDate()
-      let newEpisodesFoundCount = 0
+      const newEpisodeIds = []
 
       for (const episode of parsedPodcast.episodes) {
         if (new Date(episode.pubDate).valueOf() > new Date(lastNewEpisodesCountRefreshDate).valueOf()) {
-          newEpisodesFoundCount++
+          newEpisodeIds.push(episode.id)
         }
         if (new Date(episode.pubDate).valueOf() > new Date(lastAutoDownloadsRefreshDate).valueOf()) {
           const restart = false
@@ -210,7 +210,7 @@ export const parseAllAddByRSSPodcasts = async () => {
           }
         }
       }
-      await handleUpdateNewEpisodesCountAddByRSS(parsedPodcast.id, newEpisodesFoundCount)
+      await handleUpdateNewEpisodesCountAddByRSS(parsedPodcast.id, newEpisodeIds)
     }
   }
 
@@ -289,7 +289,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
         'User-Agent': userAgent,
         ...(Authorization ? { Authorization } : {})
       },
-      timeout: 20000
+      timeout: 30000
     })
 
     if (credentials) {

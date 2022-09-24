@@ -119,6 +119,7 @@ const initialTheme: InitialState = {
       historyItemsIndex: null,
       historyQueryPage: 1,
       id: '',
+      isPublic: false,
       membershipExpiration: '',
       name: '',
       notifications: [],
@@ -134,7 +135,6 @@ const initialTheme: InitialState = {
       showLightningIcons: false,
       settings: v4vSettingsDefault,
       providers: {
-        active: '',
         connected: []
       },
       streamingValueOn: false,
