@@ -12,7 +12,7 @@ import { getPodcastFeedUrlAuthority } from '../../services/podcast'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
 import { removeDownloadedPodcastEpisode } from './downloads'
-import { playerUpdatePlaybackState, playerUpdatePlayerState, showMiniPlayer } from './player'
+import { playerLoadNowPlayingItem, playerUpdatePlaybackState, playerUpdatePlayerState } from './player'
 import { updateHistoryItemsIndex } from './userHistoryItem'
 
 export const videoInitializePlayer = async (item: NowPlayingItem) => {
@@ -29,8 +29,8 @@ export const videoInitializePlayer = async (item: NowPlayingItem) => {
 
     const shouldPlay = false
     const forceUpdateOrderDate = false
-    await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
-    showMiniPlayer()
+    const setCurrentItemNextInQueue = true
+    await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   const globalState = getGlobal()
@@ -230,7 +230,7 @@ export const videoLoadNowPlayingItem = async (
   const { clipId, episodeId } = item
 
   if (episodeId) {
-    item.episodeDuration = historyItemsIndex?.episodes[episodeId]?.mediaFileDuration || 0
+    item.episodeDuration = historyItemsIndex?.episodes?.[episodeId]?.mediaFileDuration || 0
     if (clipId && previousClipId !== clipId) {
       /* Use a callback to wait until video is finished loading in global state    
          before calling the PLAYER_VIDEO_NEW_ITEM event. */
@@ -238,7 +238,7 @@ export const videoLoadNowPlayingItem = async (
         PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_NEW_CLIP_ITEM_LOADED)
       })
     } else if (episodeId !== previousEpisodeId) {
-      item.episodeDuration = historyItemsIndex?.episodes[episodeId]?.mediaFileDuration || 0
+      item.episodeDuration = historyItemsIndex?.episodes?.[episodeId]?.mediaFileDuration || 0
       /* Use a callback to wait until video is finished loading in global state    
          before calling the PLAYER_VIDEO_NEW_ITEM event. */
       playerUpdatePlayerState(item, () => {

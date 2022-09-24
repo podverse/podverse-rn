@@ -172,6 +172,7 @@ export class SearchScreen extends React.Component<Props, State> {
 
   _renderPodcastItem = ({ item, index }) => (
     <PodcastTableCell
+      addByRSSPodcastFeedUrl={item?.addByRSSPodcastFeedUrl}
       hasZebraStripe={isOdd(index)}
       id={item.id}
       lastEpisodePubDate={item.lastEpisodePubDate}

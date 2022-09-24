@@ -20,7 +20,7 @@ export const getNewEpisodeCountCustomRSSLastRefreshDate = async () => {
 }
 
 export const getNewEpisodesCount = async () => {
-  const dataStr = await AsyncStorage.getItem(PV.Keys.NEW_EPISODES_COUNT_DATA)
+  const dataStr = await AsyncStorage.getItem(PV.Keys.NEW_EPISODES_COUNT_DATA_2)
   let data = {}
   try {
     data = dataStr ? JSON.parse(dataStr) : {}
@@ -31,52 +31,102 @@ export const getNewEpisodesCount = async () => {
   return data
 }
 
-export const handleUpdateNewEpisodesCountAddByRSS = async (podcastId: string, newEpisodesFoundCount: number) => {
-  const newEpisodesCount = await getNewEpisodesCount()
-  const previousCount = newEpisodesCount[podcastId] || 0
-  if (podcastId) {
-    newEpisodesCount[podcastId] = previousCount + newEpisodesFoundCount
+const updateNewEpisodesCountEpisode = (
+  newEpisodesCount: any,
+  episodeId: string,
+  podcastId: string
+) => {
+  const podcastNewEpisodesCountData = newEpisodesCount?.[podcastId] || { count: 0, data: {} }
+  if (podcastNewEpisodesCountData?.data?.[episodeId]) {
+    return newEpisodesCount
+  } else {
+    const previousCount = podcastNewEpisodesCountData.count || 0
+    podcastNewEpisodesCountData.data[episodeId] = true
+    podcastNewEpisodesCountData.count = previousCount + 1
+    newEpisodesCount[podcastId] = podcastNewEpisodesCountData
+    return newEpisodesCount
   }
-  await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA, JSON.stringify(newEpisodesCount))
-  return newEpisodesCount
+}
+
+export const handleUpdateNewEpisodesCountAddByRSS = async (
+  podcastId: string,
+  episodeIds: string[]
+) => {
+  let updatedNewEpisodesCount = await getNewEpisodesCount()
+  
+  if (Array.isArray(episodeIds)) {
+    for (const episodeId of episodeIds) {
+      if (!podcastId || !episodeId) continue
+      updatedNewEpisodesCount = updateNewEpisodesCountEpisode(
+        updatedNewEpisodesCount,
+        episodeId,
+        podcastId
+      )
+    }
+  }
+
+  await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA_2, JSON.stringify(updatedNewEpisodesCount))
+
+  return updatedNewEpisodesCount
 }
 
 export const handleUpdateNewEpisodesCount = async () => {
   const global = getGlobal()
   const dateISOString = await getNewEpisodeCountLastRefreshDate()
   const subscribedPodcastIds = global?.session?.userInfo?.subscribedPodcastIds
-  const newEpisodesCounts = await getNewEpisodesCount()
+  let updatedNewEpisodesCount = await getNewEpisodesCount()
 
   if (subscribedPodcastIds && subscribedPodcastIds.length > 0) {
     const newEpisodes = await getEpisodesSincePubDate(dateISOString, subscribedPodcastIds)
 
     for (const newEpisode of newEpisodes) {
-      if (newEpisode?.podcast?.id) {
-        const previousCount = newEpisodesCounts[newEpisode?.podcast?.id] || 0
-        newEpisodesCounts[newEpisode?.podcast?.id] = previousCount + 1
-      }
-    }
+      const podcastId = newEpisode?.podcast?.id
+      const episodeId = newEpisode?.id
+      if (!podcastId || !episodeId) continue
 
-    await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA, JSON.stringify(newEpisodesCounts))
+      updatedNewEpisodesCount = updateNewEpisodesCountEpisode(
+        updatedNewEpisodesCount,
+        episodeId,
+        podcastId
+      )
+    }
+    
+    await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA_2, JSON.stringify(updatedNewEpisodesCount))
   }
 
   await AsyncStorage.setItem(PV.Keys.NEW_EPISODE_COUNT_LAST_REFRESHED, new Date().toISOString())
 
-  return newEpisodesCounts
+  return updatedNewEpisodesCount
 }
 
 export const clearEpisodesCount = async () => {
-  await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA, JSON.stringify({}))
+  await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA_2, JSON.stringify({}))
 }
 
 export const clearEpisodesCountForPodcast = async (podcastId: string) => {
   const newEpisodesCount = await getNewEpisodesCount()
   try {
     if (newEpisodesCount[podcastId]) {
-      newEpisodesCount[podcastId] = 0
+      newEpisodesCount[podcastId] = { count: 0, data: {} }
     }
 
-    await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA, JSON.stringify(newEpisodesCount))
+    await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA_2, JSON.stringify(newEpisodesCount))
+  } catch (error) {
+    console.log('clearEpisodesCountForPodcast error', error)
+  }
+  return newEpisodesCount
+}
+
+export const clearEpisodesCountForPodcastEpisode = async (podcastId: string, episodeId: string) => {
+  const newEpisodesCount = await getNewEpisodesCount()
+  try {
+    if (newEpisodesCount[podcastId]?.data?.[episodeId]) {
+      delete newEpisodesCount[podcastId].data[episodeId]
+      newEpisodesCount[podcastId].count = newEpisodesCount[podcastId].count
+        ? newEpisodesCount[podcastId].count - 1 : 0
+    }
+
+    await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA_2, JSON.stringify(newEpisodesCount))
   } catch (error) {
     console.log('clearEpisodesCountForPodcast error', error)
   }

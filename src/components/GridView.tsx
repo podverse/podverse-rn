@@ -25,7 +25,7 @@ export class GridView extends React.PureComponent<Props, any> {
         refreshing={this.props.isRefreshing}
         renderItem={({ item }: { item: Podcast }) => {
           const id = item?.id
-          const newContentCount = newEpisodesCount[id] || 0
+          const newContentCount = newEpisodesCount?.[id]?.count || 0
           return (
             <PressableWithOpacity
               onPress={() => {
@@ -33,6 +33,7 @@ export class GridView extends React.PureComponent<Props, any> {
               }}
               style={styles.cellbutton}>
               <FastImage
+                isAddByRSSPodcast={!!item?.addByRSSPodcastFeedUrl}
                 newContentCount={newContentCount}
                 placeholderLabel={item?.title || ''}
                 resizeMode='cover'

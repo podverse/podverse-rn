@@ -71,6 +71,7 @@ export interface UserInfo {
   historyItemsIndex: Record<string, any> | null
   historyQueryPage: number
   id?: string
+  isPublic: boolean
   membershipExpiration?: string | null
   name?: string
   notifications?: any[]
@@ -200,7 +201,6 @@ export interface InitialState {
       showLightningIcons: boolean
       settings: V4VSettings
       providers: {
-        active: string
         connected: V4VProviderConnectedState[]
       }
       streamingValueOn: boolean

@@ -213,7 +213,7 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
       const shouldPlay = true
       const forceUpdateOrderDate = false
       const setCurrentItemNextInQueue = true
-      if (!item?.clipId) {
+      if (item && !item?.clipId) {
         const { episodes } = await getHistoryItemsIndex()
         if (episodes) {
           const foundEpisode = item?.episodeId ? episodes[item.episodeId] : null
@@ -397,7 +397,7 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
             extraData={historyItems}
             isLoadingMore={isLoadingMore}
             keyExtractor={(item: any, index: number) =>
-              safeKeyExtractor(testIDPrefix, index, item?.clipId || item?.episodeId)
+              safeKeyExtractor(testIDPrefix, index, item?.clipId || item?.episodeId || item?.id)
             }
             noResultsMessage={translate('No history items found')}
             onEndReached={this._onEndReached}

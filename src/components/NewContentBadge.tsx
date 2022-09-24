@@ -4,30 +4,49 @@ import { Badge } from 'react-native-elements'
 import { PV } from '../resources'
 
 type Props = {
-  count: number
+  count?: number
+  isNewUnplayedContent?: boolean
   isPodcastTableCell?: boolean
 }
 
 export const NewContentBadge = (props: Props) => {
-  const { count, isPodcastTableCell } = props
+  const { count, isNewUnplayedContent, isPodcastTableCell } = props
 
-  const hasCount = count > 0
+  const hasCount = count && count > 0
 
-  if (!hasCount) return null
+  if (!hasCount && !isNewUnplayedContent) return null
 
-  let viewStyle = {
-    position: 'absolute',
-    bottom: 1,
-    right: 1,
-    zIndex: 1000000
-  } as any
+  let viewStyle = {} as any
+  let size = 23
+  let backgroundColor = PV.Colors.ink
+  const borderColor = PV.Colors.skyLight
 
   if (isPodcastTableCell) {
     viewStyle = {
+      position: 'absolute',
+      bottom: 1,
+      right: 1,
+      zIndex: 1000000,
       flex: 1,
       alignItems: 'flex-end',
       marginRight: 8,
       marginTop: -3
+    }
+  } else if (isNewUnplayedContent) {
+    size = 15
+    backgroundColor = PV.Colors.skyLight
+    viewStyle = {
+      alignItems: 'center',
+      flex: 0,
+      justifyContent: 'center',
+      marginLeft: 4
+    }
+  } else {
+    viewStyle = {
+      position: 'absolute',
+      bottom: 1,
+      right: 1,
+      zIndex: 1000000
     }
   }
 
@@ -37,10 +56,10 @@ export const NewContentBadge = (props: Props) => {
         badgeStyle={{
           borderRadius: 100,
           borderWidth: 1,
-          borderColor: PV.Colors.skyLight,
-          backgroundColor: PV.Colors.ink,
-          minWidth: 23,
-          minHeight: 23
+          borderColor,
+          backgroundColor,
+          minWidth: size,
+          minHeight: size
         }}
         textStyle={{
           fontSize: PV.Fonts.sizes.tiny,
@@ -49,7 +68,7 @@ export const NewContentBadge = (props: Props) => {
           paddingHorizontal: 4
         }}
         status={'error'}
-        {...(count ? { value: count.toString() } : {})}
+        {...(count && !isNewUnplayedContent ? { value: count.toString() } : {})}
       />
     </View>
   )

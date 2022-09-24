@@ -7,7 +7,7 @@ import { PV } from '../resources'
 import { images } from '../styles'
 import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
-import { FastImage, Text, View } from './'
+import { FastImage, NewContentBadge, Text, View } from './'
 
 type Props = {
   handleDeletePress?: any
@@ -57,7 +57,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       finalPubDate = liveItem.start
     }
 
-    const { downloadedEpisodeIds, downloadsActive, fontScaleMode, screenReaderEnabled, session } = this.global
+    const { downloadedEpisodeIds, downloadsActive, fontScaleMode, newEpisodesCount,
+      screenReaderEnabled, session } = this.global
     const { userInfo } = session
     const { historyItemsIndex } = userInfo
 
@@ -87,10 +88,21 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       showPodcastInfo ? `${podcastTitleText}, ` : ''
     } ${episodeTitleText}, ${pubDateText}, ${timeLabelText}`
 
+    const podcastId = podcast?.id
+    const episodeId = item?.id
+    const isNewUnplayedEpisode = !!(podcastId && episodeId && newEpisodesCount?.[podcastId]?.data?.[episodeId])
+
     const innerTopView = (
       <RNView accessible={false} importantForAccessibility='no-hide-descendants' style={styles.innerTopView}>
-        {!!imageUrl && !hideImage && <FastImage isSmall source={imageUrl} styles={styles.image}
-          valueTags={podcast?.value} />}
+        {!!imageUrl && !hideImage && (
+          <FastImage
+            isAddByRSSPodcast={!!podcast?.addByRSSPodcastFeedUrl}
+            isSmall
+            source={imageUrl}
+            styles={styles.image}
+            valueTags={podcast?.value}
+          />
+        )}
         <RNView accessible={false} style={styles.textWrapper}>
           {showPodcastInfo && podcastTitle && (
             <Text
@@ -124,6 +136,9 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             </Text>
           </RNView>
         </RNView>
+        {isNewUnplayedEpisode && (
+          <NewContentBadge isNewUnplayedContent={isNewUnplayedEpisode} />
+        )}
       </RNView>
     )
 

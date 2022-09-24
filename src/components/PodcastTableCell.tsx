@@ -8,6 +8,7 @@ import { FastImage, IndicatorDownload, LightningIcon, LiveStatusBadge,
   NewContentBadge, Text, View } from './'
 
 type Props = {
+  addByRSSPodcastFeedUrl?: string
   downloadCount?: number
   downloadedPodcastEpisodeCounts?: any
   hasZebraStripe?: boolean
@@ -26,6 +27,7 @@ type Props = {
 export class PodcastTableCell extends React.PureComponent<Props> {
   render() {
     const {
+      addByRSSPodcastFeedUrl,
       id,
       lastEpisodePubDate,
       latestLiveItemStatus,
@@ -55,7 +57,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       shouldAutoDownload = autoDownloadSettings[id]
     }
 
-    const newContentCount = newEpisodesCount[id] || 0
+    const newContentCount = newEpisodesCount?.[id]?.count || 0
 
     let lastPubDate = ''
     if (lastEpisodePubDate) {
@@ -87,7 +89,11 @@ export class PodcastTableCell extends React.PureComponent<Props> {
         onPress={onPress}
         {...(testID ? { testID: testID.prependTestId() } : {})}>
         <View style={styles.wrapper}>
-          <FastImage source={podcastImageUrl} styles={PV.Table.cells.podcast.image} valueTags={valueTags}/>
+          <FastImage
+            isAddByRSSPodcast={!!addByRSSPodcastFeedUrl}
+            source={podcastImageUrl}
+            styles={PV.Table.cells.podcast.image}
+            valueTags={valueTags}/>
           <RNView style={styles.textWrapper}>
             <RNView style={styles.textWrapperInner}>
               {!!lastPubDate && fontScaleMode === PV.Fonts.fontScale.largest && lastPubDateNode}

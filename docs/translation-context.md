@@ -32,6 +32,10 @@ This is a new word in the Podcasting 2.0 world. A boostagram is a donation (aka 
 
 Source: https://podnews.net/update/boostagrams
 
+`"Free": "Free"`
+
+Previously instead of saying "Free" as in "Free features accessible without a Premium membership", we had changed it to "At no cost". Kingu had recommended that "At no cost" would be clearer for translations, but on Sept 21 2022 Google Play rejected our release saying that the Membership Features page "Your offer does not clearly and accurately describe the terms of your subscription, including the cost, frequency of billing cycle, and whether a subscription is required to use the app." Since "Free vs Premium" is commonly understood as "Free Features vs Paid Features" in US English, we decided to change "At no cost" back to "Free" in the hopes that Google would consider that a more clear description.
+
 `"Membership": "Membership"`
 
 The word membership needs to be translated as "Membership" because it does not represent the user's membership status. It is a title to accompany the actual membership status.

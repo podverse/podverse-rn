@@ -2,6 +2,7 @@ import { isValidUrl, ValueTag } from 'podverse-shared'
 import { Image, Platform, Pressable, StyleSheet, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
 import { PV } from '../resources'
 import { LightningIcon, NewContentBadge, Text } from '.'
@@ -11,6 +12,8 @@ type Props = {
   accessible?: boolean
   allowFullView?: boolean
   cache?: string
+  isAddByRSSPodcast?: boolean
+  isAddByRSSPodcastLarger?: boolean
   isSmall?: boolean
   newContentCount?: number
   placeholderLabel?: string
@@ -89,10 +92,11 @@ export class PVFastImage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { accessible = false, allowFullView, newContentCount,
-    placeholderLabel, resizeMode = 'contain', source, styles, valueTags } = this.props
+    const { accessible = false, allowFullView, isAddByRSSPodcast, isAddByRSSPodcastLarger,
+      newContentCount, placeholderLabel, resizeMode = 'contain', source, styles,
+      valueTags } = this.props
     const { hasError, localImageSource } = this.state
-    const { hideNewEpisodesBadges, session, userAgent } = this.global
+    const { hideNewEpisodesBadges, globalTheme, session, userAgent } = this.global
     const showLightningIcons = session?.v4v?.showLightningIcons
     let imageSource = source
     let isValid = false
@@ -109,16 +113,14 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     }
     const isSvg = imageSource && imageSource.endsWith('.svg')
 
+    const addByRSSText = isAddByRSSPodcastLarger
+      ? translate('Added by RSS') : translate('RSS')
+    const addByRSSTextStyle = isAddByRSSPodcastLarger ? defaultStyles.addByRSSTextLarger : defaultStyles.addByRSSText
+
     const image = isSvg ? (
       <Pressable disabled={!allowFullView} onPress={this._showImageFullView}>
         <View style={styles}>
-          <SvgUri
-            accessible={accessible}
-            key={imageSource}
-            width='100%'
-            height='100%'
-            uri={imageSource || null}
-          />
+          <SvgUri accessible={accessible} key={imageSource} width='100%' height='100%' uri={imageSource || null} />
         </View>
       </Pressable>
     ) : (
@@ -137,6 +139,11 @@ export class PVFastImage extends React.PureComponent<Props, State> {
             }}
             style={{ height: '100%', width: '100%' }}
           />
+          {!!isAddByRSSPodcast && (
+            <View style={[globalTheme.view, defaultStyles.addByRSSWrapper]}>
+              <Text style={addByRSSTextStyle}>{addByRSSText}</Text>
+            </View>
+          )}
           {!hideNewEpisodesBadges && !!newContentCount && newContentCount > 0 && (
             <NewContentBadge count={newContentCount} />
           )}
@@ -169,6 +176,29 @@ export class PVFastImage extends React.PureComponent<Props, State> {
 }
 
 const defaultStyles = StyleSheet.create({
+  addByRSSText: {
+    fontSize: PV.Fonts.sizes.sm,
+    fontWeight: PV.Fonts.weights.semibold,
+    paddingVertical: 1,
+    textAlign: 'center'
+  },
+  addByRSSTextLarger: {
+    fontSize: PV.Fonts.sizes.xxl,
+    fontWeight: PV.Fonts.weights.semibold,
+    paddingVertical: 4,
+    textAlign: 'center'
+  },
+  addByRSSWrapper: {
+    alignItems: 'center',
+    backgroundColor: PV.Colors.blackOpaque,
+    justifyContent: 'center',
+    left: 0,
+    paddingHorizontal: 2,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    zIndex: 1000000
+  },
   lightningIcon: {
     borderRadius: 100,
     borderWidth: 1,

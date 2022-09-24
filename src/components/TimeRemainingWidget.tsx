@@ -12,7 +12,6 @@ import {
   playerGetState
 } from '../services/player'
 import { setNowPlayingItem } from '../services/userNowPlayingItem'
-import { clearEpisodesCountForPodcast } from '../state/actions/newEpisodesCount'
 import { playerLoadNowPlayingItem, playerTogglePlay, playerUpdatePlayerState } from '../state/actions/player'
 import { Icon, LiveStatusBadge, MoreButton, PressableWithOpacity, Text, View } from './'
 
@@ -132,10 +131,6 @@ export const TimeRemainingWidget = (props: Props) => {
   }
 
   const playItem = async () => {
-    if (convertedItem?.podcastId || convertedItem?.addByRSSPodcastFeedUrl) {
-      await clearEpisodesCountForPodcast(nowPlayingItem?.podcastId || nowPlayingItem?.addByRSSPodcastFeedUrl)
-    }
-
     const isNowPlayingItem = checkIfNowPlayingItem(item, nowPlayingItem)
     if (loadChapterOnPlay) {
       await handleChapterLoad()
@@ -211,15 +206,17 @@ export const TimeRemainingWidget = (props: Props) => {
           )}
         </View>
       )}
-      {!!handleMorePress && (
-        <MoreButton
-          accessible={false}
-          handleMorePress={handleMorePress}
-          isLoading={episodeDownloading}
-          itemType={itemType}
-          testID={testID}
-        />
-      )}
+      <View style={{ flexDirection: 'row' }}>
+        {!!handleMorePress && (
+          <MoreButton
+            accessible={false}
+            handleMorePress={handleMorePress}
+            isLoading={episodeDownloading}
+            itemType={itemType}
+            testID={testID}
+          />
+        )}
+      </View>
     </View>
   )
 }

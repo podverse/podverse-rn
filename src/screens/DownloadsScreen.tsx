@@ -116,9 +116,8 @@ export class DownloadsScreen extends React.Component<Props, State> {
       <View style={styles.view} testID='downloads_screen_view'>
         <FlatList
           disableLeftSwipe={false}
-          keyExtractor={(item: any) => {
-            const ignoreIndex = -1
-            return safeKeyExtractor(testIDPrefix, ignoreIndex, item?.episodeId)
+          keyExtractor={(item: any, index: number) => {
+            return safeKeyExtractor(testIDPrefix, index, item?.episodeId)
           }}
           ItemSeparatorComponent={this._ItemSeparatorComponent}
           renderHiddenItem={this._renderHiddenItem}

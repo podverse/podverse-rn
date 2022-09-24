@@ -7,9 +7,10 @@ import * as ScopedStorage from 'react-native-scoped-storage'
 import { AndroidScoped, FileSystem } from 'react-native-file-access'
 import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
-import { getSecureUrl } from '../services/tools'
+import PVEventEmitter from '../services/eventEmitter'
 import { getPodcastCredentialsHeader } from '../services/parser'
 import { getPodcastFeedUrlAuthority } from '../services/podcast'
+import { getSecureUrl } from '../services/tools'
 import * as DownloadState from '../state/actions/downloads'
 import { addDownloadedPodcastEpisode, getDownloadedPodcasts } from './downloadedPodcast'
 import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode } from './downloadingEpisode'
@@ -226,6 +227,8 @@ export const downloadEpisode = async (
           DownloadState.updateDownloadComplete(episode.id)
           removeDownloadingEpisode(episode.id)
         })
+
+        PVEventEmitter.emit(PV.Events.DOWNLOADED_EPISODE_REFRESH)
       })
       .error((error: string) => {
         DownloadState.updateDownloadError(episode.id)
