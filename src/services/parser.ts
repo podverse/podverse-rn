@@ -283,14 +283,32 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
     const userAgent = getAppUserAgent()
     const Authorization = credentials ? `Basic ${btoa(credentials)}` : ''
 
-    const result = await podcastFeedParser.getPodcastFromURL({
-      url: feedUrl,
-      headers: {
-        'User-Agent': userAgent,
-        ...(Authorization ? { Authorization } : {})
-      },
-      timeout: 30000
-    })
+    let result = null
+
+    try {
+      result = await podcastFeedParser.getPodcastFromURL({
+        url: feedUrl,
+        headers: {
+          'User-Agent': userAgent,
+          ...(Authorization ? { Authorization } : {})
+        },
+        timeout: 30000
+      })
+    } catch (error) {
+      if (feedUrl?.startsWith('http://')) {
+        console.log('retry parse using a secure protocol')
+        result = await podcastFeedParser.getPodcastFromURL({
+          url: feedUrl.replace('http://', 'https://'),
+          headers: {
+            'User-Agent': userAgent,
+            ...(Authorization ? { Authorization } : {})
+          },
+          timeout: 30000
+        })
+      } else {
+        throw error
+      }
+    }
 
     if (credentials) {
       await savePodcastCredentials(feedUrl, credentials)
@@ -402,7 +420,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
 
     return podcast
   } catch (error) {
-    console.log('parseAddByRSSPodcast error:', error)
+    console.log('parseAddByRSSPodcast error', feedUrl, error)
     const previouslySavedPodcast = await getAddByRSSPodcastLocally(feedUrl)
     return previouslySavedPodcast
   }
