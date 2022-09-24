@@ -34,7 +34,6 @@ import { clearChapterPlaybackInfo, getChapterNext, getChapterPrevious, loadChapt
   setChapterOnGlobalState} from './playerChapters'
 import { videoInitializePlayer, videoStateClearVideoInfo,
   videoStateSetVideoInfo } from './playerVideo'
-import { v4vGetMatchingActiveProvider, v4vSetActiveProvider } from './v4v/v4v'
 
 export const initializePlayer = async () => {
   const item = await getNowPlayingItemLocally()
@@ -90,17 +89,6 @@ export const playerUpdatePlayerState = (item: NowPlayingItem, callback?: any) =>
       showFullClipInfo: false
     }
   }
-
-  const valueTags = 
-    item.episodeValue?.length > 0
-    ? item.episodeValue
-    : item.podcastValue?.length > 0
-      ? item.podcastValue
-      : []
-
-  const activeProvider = v4vGetMatchingActiveProvider(valueTags)
-  const activeProviderKey = activeProvider?.key || ''
-  v4vSetActiveProvider(activeProviderKey)
 
   setGlobal(newState, callback)
 }

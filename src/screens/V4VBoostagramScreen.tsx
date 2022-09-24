@@ -1,9 +1,9 @@
 import debounce from 'lodash/debounce'
-import { Funding, ValueTag, ValueTransaction } from 'podverse-shared'
+import { ValueTransaction } from 'podverse-shared'
 import { Dimensions, Keyboard, StyleSheet } from 'react-native'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
-import React, { getGlobal } from 'reactn'
+import React from 'reactn'
 import AsyncStorage from '@react-native-community/async-storage'
 import {
   Button,
@@ -30,8 +30,9 @@ import {
   v4vGetTypeMethodKey
 } from '../services/v4v/v4v'
 import {
+  getBoostagramItemValueTags,
   v4vClearBoostagramMessage,
-  v4vGetCurrentlyActiveProviderInfo,
+  v4vGetActiveProviderInfo,
   V4VTypeMethod,
   v4vUpdateBoostagramMessage,
   v4vUpdateTypeMethodSettingsBoostAmount
@@ -81,10 +82,10 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
   componentDidMount() {
     const boostagramItem = this._convertToBoostagramItem()
 
-    const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(this.global)
+    const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(boostagramItem))
 
     const { episodeValue, podcastValue } = boostagramItem
-    const valueTags = (episodeValue?.length && episodeValue) || (podcastValue?.length && podcastValue)
+    const valueTags = (episodeValue?.length && episodeValue) || (podcastValue?.length && podcastValue) || []
     const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
 
     if (activeValueTag && activeProvider) {
@@ -170,15 +171,15 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
   _handleUpdateBoostTransactionsState = async (action: 'ACTION_BOOST', amount: number) => {
     const boostagramItem = this._convertToBoostagramItem()
 
-    const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(this.global)
+    const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(boostagramItem))
 
     const valueTags =
-      (boostagramItem?.episodeValue?.length > 0 && boostagramItem?.episodeValue) ||
-      (boostagramItem?.podcastValue?.length > 0 && boostagramItem?.podcastValue) ||
-      []
+      (boostagramItem?.episodeValue?.length && boostagramItem?.episodeValue)
+      || (boostagramItem?.podcastValue?.length && boostagramItem?.podcastValue)
+      || []
     const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
 
-    if (activeValueTag) {
+    if (activeValueTag && activeProvider?.key) {
       let shouldRound = false
       if (action === PV.V4V.ACTION_BOOST) {
         shouldRound = true
@@ -191,7 +192,8 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
         boostagramItem.podcastIndexPodcastId || '',
         action,
         amount,
-        shouldRound
+        shouldRound,
+        activeProvider.key
       )
 
       this.setState({ boostTransactions: newValueTransactions })
@@ -238,8 +240,10 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     const { boostagramMessage, previousTransactionErrors } = v4v
     const boostagramItem = this._convertToBoostagramItem()
 
-    const hasValueInfo = boostagramItem?.episodeValue?.length > 0 || boostagramItem?.podcastValue?.length > 0
-    const { activeProvider, activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(this.global)
+    const hasValueInfo = (boostagramItem?.episodeValue && boostagramItem?.episodeValue.length > 0)
+      || (boostagramItem?.podcastValue && boostagramItem?.podcastValue?.length > 0)
+    const { activeProvider, activeProviderSettings } =
+      v4vGetActiveProviderInfo(getBoostagramItemValueTags(boostagramItem))
 
     const podcastTitle = boostagramItem?.podcastTitle?.trim() || translate('Untitled Podcast')
     const episodeTitle = boostagramItem?.episodeTitle?.trim()

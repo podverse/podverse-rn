@@ -135,7 +135,6 @@ const initialTheme: InitialState = {
       showLightningIcons: false,
       settings: v4vSettingsDefault,
       providers: {
-        active: '',
         connected: []
       },
       streamingValueOn: false,

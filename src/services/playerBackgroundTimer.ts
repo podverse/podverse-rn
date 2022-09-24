@@ -1,22 +1,22 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
-import { getGlobal, setGlobal } from 'reactn'
+import { getGlobal } from 'reactn'
 import BackgroundTimer from 'react-native-background-timer'
-import { translate } from '../lib/i18n'
+// import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
-import { processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../services/v4v/v4v'
+// import { saveStreamingValueTransactionsToTransactionQueue } from '../services/v4v/v4v'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
-import { v4vGetCurrentlyActiveProviderInfo } from '../state/actions/v4v/v4v'
+// import { v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
-  playerCheckIfStateIsPlaying,
+  // playerCheckIfStateIsPlaying,
   playerGetCurrentLoadedTrackId,
   playerGetPosition,
-  playerGetState,
+  // playerGetState,
   playerHandlePauseWithUpdate,
   playerSetPositionWhenDurationIsAvailable,
   setClipHasEnded
@@ -180,7 +180,7 @@ const stopCheckClipIfEndTimeReached = () => {
     if (nowPlayingItem) {
       const { clipEndTime } = nowPlayingItem
       const currentPosition = await playerGetPosition()
-      if (currentPosition > clipEndTime) {
+      if (clipEndTime && currentPosition > clipEndTime) {
         playerHandlePauseWithUpdate()
         await setClipHasEnded(true)
       }
@@ -199,34 +199,34 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
   HANDLE VALUE STREAMING TOGGLE
 */
 
-const handleValueStreamingToggle = () => {
-  const globalState = getGlobal()
-  const { streamingValueOn } = globalState.session.v4v
+// const handleValueStreamingToggle = () => {
+//   const globalState = getGlobal()
+//   const { streamingValueOn } = globalState.session.v4v
 
-  if (streamingValueOn) {
-    startBackgroundTimer()
-  } else {
-    const checkClipEndTimeShouldStop = false
-    const streamingValueShouldStop = true
-    stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeShouldStop, streamingValueShouldStop)
-  }
-}
+//   if (streamingValueOn) {
+//     startBackgroundTimer()
+//   } else {
+//     const checkClipEndTimeShouldStop = false
+//     const streamingValueShouldStop = true
+//     stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeShouldStop, streamingValueShouldStop)
+//   }
+// }
 
-const handleValueStreamingMinutePassed = async () => {
-  const globalState = getGlobal()
-  const { nowPlayingItem } = globalState.player
+// const handleValueStreamingMinutePassed = async () => {
+//   const globalState = getGlobal()
+//   const { nowPlayingItem } = globalState.player
 
-  const { activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(globalState)
-  const { streamingAmount } = activeProviderSettings || {}
+//   const valueTags = nowPlayingItem.episodeValue || nowPlayingItem.podcastValue || []
+  
+//   const { activeProviderSettings } = v4vGetActiveProviderInfo(valueTags)
+//   const { streamingAmount } = activeProviderSettings || {}
 
-  const valueTag = nowPlayingItem.episodeValue || nowPlayingItem.podcastValue
+//   if (Array.isArray(valueTags) && valueTags.length > 0 && streamingAmount) {
+//     await saveStreamingValueTransactionsToTransactionQueue(valueTags, nowPlayingItem, streamingAmount)
+//   }
+// }
 
-  if (valueTag && streamingAmount) {
-    await saveStreamingValueTransactionsToTransactionQueue(valueTag, nowPlayingItem, streamingAmount)
-  }
-}
-
-PVEventEmitter.on(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED, handleValueStreamingToggle)
+// PVEventEmitter.on(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED, handleValueStreamingToggle)
 
 /*
   BACKGROUND TIMER
@@ -241,39 +241,39 @@ const stopBackgroundTimer = () => {
   BackgroundTimer.stopBackgroundTimer()
 }
 
-let valueStreamingIntervalSecondCount = 1
+// let valueStreamingIntervalSecondCount = 1
 const handleBackgroundTimerInterval = () => {
   stopCheckClipIfEndTimeReached()
 
-  playerGetState().then(async (playbackState) => {
-    const globalState = getGlobal()
-    const { streamingValueOn } = globalState.session.v4v
+  // playerGetState().then(async (playbackState) => {
+  //   const globalState = getGlobal()
+  //   const { streamingValueOn } = globalState.session.v4v
 
-    if (streamingValueOn) {
-      if (playerCheckIfStateIsPlaying(playbackState)) {
-        valueStreamingIntervalSecondCount++
+  //   if (streamingValueOn) {
+  //     if (playerCheckIfStateIsPlaying(playbackState)) {
+  //       valueStreamingIntervalSecondCount++
 
-        if (valueStreamingIntervalSecondCount && valueStreamingIntervalSecondCount % 60 === 0) {
-          await handleValueStreamingMinutePassed()
-        }
-      }
+  //       if (valueStreamingIntervalSecondCount && valueStreamingIntervalSecondCount % 60 === 0) {
+  //         await handleValueStreamingMinutePassed()
+  //       }
+  //     }
 
-      if (valueStreamingIntervalSecondCount === 600) {
-        valueStreamingIntervalSecondCount = 1
+  //     if (valueStreamingIntervalSecondCount === 600) {
+  //       valueStreamingIntervalSecondCount = 1
 
-        const { errors, transactions, totalAmount } = await processValueTransactionQueue()
-        if (transactions.length > 0 && totalAmount > 0) {
-          setGlobal({
-            bannerInfo: {
-              show: true,
-              description: translate('Streaming Value Sent'),
-              errors,
-              transactions,
-              totalAmount
-            }
-          })
-        }
-      }
-    }
-  })
+  //       const { errors, transactions, totalAmount } = await processValueTransactionQueue()
+  //       if (transactions.length > 0 && totalAmount > 0) {
+  //         setGlobal({
+  //           bannerInfo: {
+  //             show: true,
+  //             description: translate('Streaming Value Sent'),
+  //             errors,
+  //             transactions,
+  //             totalAmount
+  //           }
+  //         })
+  //       }
+  //     }
+  //   }
+  // })
 }
