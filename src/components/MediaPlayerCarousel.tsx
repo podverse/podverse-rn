@@ -8,7 +8,7 @@ import { PV } from '../resources'
 import { translate } from '../lib/i18n'
 import { audioCheckIfIsPlaying } from '../services/playerAudio'
 import { sendBoost, v4vGetPluralCurrencyUnit } from '../services/v4v/v4v'
-import { v4vGetCurrentlyActiveProviderInfo } from '../state/actions/v4v/v4v'
+import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import { toggleValueStreaming } from '../state/actions/valueTag'
 import { MediaPlayerCarouselComments } from './MediaPlayerCarouselComments'
 import {
@@ -165,7 +165,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const hasTranscript = !!parsedTranscript
     const hasChat = !!episode?.liveItem?.chatIRCURL
 
-    const { activeProvider, activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(this.global)
+    const { activeProvider, activeProviderSettings } = 
+      v4vGetActiveProviderInfo(getBoostagramItemValueTags(nowPlayingItem))
     const { boostAmount, streamingAmount } = activeProviderSettings || {}
     const { streamingValueOn } = session.v4v
 

@@ -1,8 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { ValueTag } from 'podverse-shared'
+import { NowPlayingItem, ValueTag } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../../resources'
 import {
+  BoostagramItem,
   v4vDeleteProviderFromStorage,
   v4vGetProvidersConnected,
   v4vGetSenderInfo,
@@ -118,7 +119,8 @@ const v4vUpdateSettings = async (globalState: any, newSettings: V4VSettings) => 
   })
 }
 
-export const v4vGetTypeMethodSettings = (globalState: any, type: 'lightning', method: 'keysend') => {
+export const v4vGetTypeMethodSettings = (type: 'lightning', method: 'keysend') => {
+  const globalState = getGlobal()
   const typeMethodKey = v4vGetTypeMethodKey(type, method)
   const typeMethodSettings = globalState.session.v4v.settings.typeMethod[typeMethodKey]
   return typeMethodSettings
@@ -149,7 +151,7 @@ export const v4vUpdateTypeMethodSettingsBoostAmount = async (
   method: 'keysend',
   newBoostAmount: number
 ) => {
-  const typeMethodSettings = v4vGetTypeMethodSettings(globalState, type, method)
+  const typeMethodSettings = v4vGetTypeMethodSettings(type, method)
   const newSettings = {
     ...typeMethodSettings,
     boostAmount: newBoostAmount
@@ -163,7 +165,7 @@ export const v4vUpdateTypeMethodSettingsStreamingAmount = async (
   method: 'keysend',
   newStreamingAmount: number
 ) => {
-  const typeMethodSettings = v4vGetTypeMethodSettings(globalState, type, method)
+  const typeMethodSettings = v4vGetTypeMethodSettings(type, method)
   const newSettings = {
     ...typeMethodSettings,
     streamingAmount: newStreamingAmount
@@ -177,7 +179,7 @@ export const v4vUpdateTypeMethodSettingsAppBoostAmount = async (
   method: 'keysend',
   newAppBoostAmount: number
 ) => {
-  const typeMethodSettings = v4vGetTypeMethodSettings(globalState, type, method)
+  const typeMethodSettings = v4vGetTypeMethodSettings(type, method)
   const newSettings = {
     ...typeMethodSettings,
     appBoostAmount: newAppBoostAmount
@@ -191,7 +193,7 @@ export const v4vUpdateTypeMethodSettingsAppStreamingAmount = async (
   method: 'keysend',
   newAppStreamingAmount: number
 ) => {
-  const typeMethodSettings = v4vGetTypeMethodSettings(globalState, type, method)
+  const typeMethodSettings = v4vGetTypeMethodSettings(type, method)
   const newSettings = {
     ...typeMethodSettings,
     appStreamingAmount: newAppStreamingAmount
@@ -305,32 +307,13 @@ export const v4vGetMatchingActiveProvider = (valueTags: ValueTag[]) => {
   return matchingActiveProvider
 }
 
-export const v4vSetActiveProvider = (key: string) => {
+export const v4vRefreshProviderWalletInfo = async (activeProviderKey: string) => {
   const globalState = getGlobal()
 
-  setGlobal({
-    session: {
-      ...globalState.session,
-      v4v: {
-        ...globalState.session.v4v,
-        providers: {
-          ...globalState.session.v4v.providers,
-          active: key
-        }
-      }
-    }
-  })
-}
-
-export const v4vRefreshActiveProviderWalletInfo = async () => {
-  const globalState = getGlobal()
-  const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(globalState) || {}
-  if (activeProvider) {
-    // Use require here to prevent circular dependencies issues.
-    if (activeProvider.key === 'alby') {
-      const { v4vAlbyGetAccountInfo } = require('./providers/alby')
-      await v4vAlbyGetAccountInfo()
-    }
+  // Use require here to prevent circular dependencies issues.
+  if (activeProviderKey === 'alby') {
+    const { v4vAlbyGetAccountInfo } = require('./providers/alby')
+    await v4vAlbyGetAccountInfo()
   }
 
   // Make sure the global player state is updated
@@ -341,14 +324,17 @@ export const v4vRefreshActiveProviderWalletInfo = async () => {
   }
 }
 
-export const v4vGetCurrentlyActiveProviderInfo = (globalState: any) => {
-  const { active, connected } = globalState.session?.v4v?.providers || {}
+export const v4vGetActiveProviderInfo = (valueTags: ValueTag[]) => {
+  let activeProvider = null
+  let activeProviderSettings = null
 
-  const activeProvider: V4VProviderConnectedState | undefined = v4vGetConnectedProvider(connected, active)
-  let activeProviderSettings: V4VTypeMethod | null = null
-
-  if (activeProvider) {
-    activeProviderSettings = v4vGetTypeMethodSettings(globalState, activeProvider.type, activeProvider.method)
+  if (Array.isArray(valueTags)) {
+    const tempProvider = v4vGetMatchingActiveProvider(valueTags)
+    
+    if (tempProvider?.type && tempProvider?.method) {
+      activeProvider = tempProvider
+      activeProviderSettings = v4vGetTypeMethodSettings(tempProvider.type, tempProvider.method)
+    }
   }
 
   return {
@@ -474,4 +460,16 @@ export const v4vClearBoostagramMessage = () => {
       }
     }
   })
+}
+
+/* Misc helpers */
+
+export const getBoostagramItemValueTags = (item?: NowPlayingItem | BoostagramItem) => {
+  let valueTags = []
+  if (item) {
+    valueTags = (item.episodeValue?.length && item.episodeValue)
+      || (item.podcastValue?.length && item.podcastValue)
+      || []
+  }
+  return valueTags
 }

@@ -3,16 +3,22 @@ import { Funding, NowPlayingItem, ValueRecipient, ValueRecipientNormalized,
   ValueTag, ValueTransaction } from 'podverse-shared'
 import { Config } from 'react-native-config'
 import * as RNKeychain from 'react-native-keychain'
-import { getGlobal } from 'reactn'
 import { translate } from '../../lib/i18n'
 import { createSatoshiStreamStats } from '../../lib/satoshiStream'
 import { credentialsPlaceholderUsername } from '../../lib/secutity'
 import { PV } from '../../resources'
 import { V4VProviderListItem } from '../../resources/V4V'
-import { v4vAddPreviousTransactionError, v4vClearPreviousTransactionErrors,
-  v4vGetCurrentlyActiveProviderInfo, V4VProviderConnectedState,
-  v4vRefreshActiveProviderWalletInfo, V4VSenderInfo, V4VSettings,
-  v4vSettingsDefault } from '../../state/actions/v4v/v4v'
+import {
+  getBoostagramItemValueTags,
+  v4vAddPreviousTransactionError,
+  v4vClearPreviousTransactionErrors,
+  v4vGetActiveProviderInfo,
+  V4VProviderConnectedState,
+  v4vRefreshProviderWalletInfo,
+  V4VSenderInfo,
+  V4VSettings,
+  v4vSettingsDefault
+} from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
 
 export type BoostagramItem = {
@@ -161,9 +167,15 @@ export const convertValueTagIntoValueTransactions = async (
   podcastIndexPodcastId: string,
   action: string,
   totalBatchedAmount = 0,
-  roundDownValues: boolean
+  roundDownValues: boolean,
+  providerKey: string
 ) => {
   const { method, type } = valueTag
+
+  // Only alby is supported right now
+  if (!providerKey || providerKey !== 'alby') {
+    throw new Error("No matching connected v4v provider found.")
+  }
 
   if (!method || !type) {
     throw new Error("Invalid value tag found in the podcaster's RSS feed. Please contact us for support.")
@@ -190,7 +202,8 @@ export const convertValueTagIntoValueTransactions = async (
       action,
       method,
       type,
-      totalBatchedAmount
+      totalBatchedAmount,
+      providerKey
     )
 
     if (valueTransaction) valueTransactions.push(valueTransaction)
@@ -210,7 +223,8 @@ const convertValueTagIntoValueTransaction = async (
   // This totalBatchedAmount parameter is sent ONLY as metadata
   // and is not used for the actual transaction amount that is sent.
   // The actual transaction amount is determined in the normalizeValueRecipients function.
-  totalBatchedAmount: number
+  totalBatchedAmount: number,
+  providerKey: string
 ) => {
   const timestamp = Date.now()
   const [speed, currentPlaybackPosition] = await Promise.all([playerGetRate(), playerGetPosition()])
@@ -235,7 +249,8 @@ const convertValueTagIntoValueTransaction = async (
     method,
     normalizedValueRecipient,
     satoshiStreamStats,
-    type
+    type,
+    providerKey
   }
 }
 
@@ -244,9 +259,9 @@ export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMe
     (item?.episodeValue?.length && item?.episodeValue) ||
     (item?.podcastValue?.length && item?.podcastValue)
 
-  // TODO: right now we are assuming the first item will be the lightning network
-  // this will need to be updated to support additional valueTags
-  const valueTag = valueTags[0]
+  // Only support Bitcoin Lightning network boosts right now
+  const valueTag = v4vGetActiveValueTag(valueTags, 'lightning', 'keysend')
+
   if (!valueTag) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
   const { recipients } = valueTag
@@ -256,8 +271,11 @@ export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMe
 
   const action = 'boost'
 
-  const { activeProviderSettings } = v4vGetCurrentlyActiveProviderInfo(getGlobal())
+  const { activeProvider, activeProviderSettings } =
+    v4vGetActiveProviderInfo(getBoostagramItemValueTags(item))
   const { boostAmount = 0 } = activeProviderSettings || {}
+
+  if (!activeProvider?.key) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
   let totalAmountPaid = 0
   const roundDownBoostTransactions = true
@@ -268,7 +286,8 @@ export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMe
     item?.podcastIndexPodcastId || '',
     action,
     boostAmount,
-    roundDownBoostTransactions
+    roundDownBoostTransactions,
+    activeProvider.key
   )
 
   const processSendValueTransaction = async (valueTransaction: ValueTransaction) => {
@@ -298,18 +317,18 @@ export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMe
   }
 
   // Run refresh wallet data in the background after transactions complete.
-  v4vRefreshActiveProviderWalletInfo()
+  v4vRefreshProviderWalletInfo(activeProvider?.key)
 
   return { transactions: valueTransactions, totalAmountPaid }
 }
 
 const sendValueTransaction = async (valueTransaction: ValueTransaction, includeMessage?: boolean) => {
-  if (!valueTransaction.normalizedValueRecipient.amount) return
-  const { activeProvider } = v4vGetCurrentlyActiveProviderInfo(getGlobal()) || {}
 
-  if (activeProvider) {
+  if (!valueTransaction.normalizedValueRecipient.amount) return
+
+  if (valueTransaction?.providerKey) {
     // Use require here to prevent circular dependencies issues.
-    if (activeProvider.key === 'alby') {
+    if (valueTransaction.providerKey === 'alby') {
       const { normalizedValueRecipient, satoshiStreamStats } = valueTransaction
       const { v4vAlbySendKeysendPayment } = require('./providers/alby')
       await v4vAlbySendKeysendPayment(
@@ -433,7 +452,8 @@ const getMatchingValueTransactionIndex = (valueTransaction: ValueTransaction, va
 export const saveStreamingValueTransactionsToTransactionQueue = async (
   valueTags: ValueTag[],
   item: NowPlayingItem | BoostagramItem,
-  amount: number
+  amount: number,
+  providerKey: string
 ) => {
   try {
     // TODO: right now we are assuming the first item will be the lightning network
@@ -449,7 +469,8 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
         item?.podcastIndexPodcastId || '',
         'streaming',
         amount,
-        roundDownStreamingTransactions
+        roundDownStreamingTransactions,
+        providerKey
       )
     ])
 
