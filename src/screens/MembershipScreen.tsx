@@ -3,7 +3,12 @@ import { Alert, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, Button, ComparisonTable, Text, View } from '../components'
 import { translate } from '../lib/i18n'
-import { getMembershipExpiration, getMembershipStatus } from '../lib/membership'
+import {
+  checkIfExpiredMembership,
+  checkIfValidFreeTrialMembership,
+  getMembershipExpiration,
+  getMembershipStatus
+} from '../lib/membership'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { buy1YearPremium } from '../services/purchaseShared'
@@ -105,11 +110,20 @@ export class MembershipScreen extends React.Component<Props, State> {
     const expirationDate = getMembershipExpiration(userInfo)
     const statusAccessibilityLabel = `${translate('Status')}: ${membershipStatus}`
     const expiresAccessibilityLabel = `${translate('Expires')}: ${readableDate(expirationDate)}`
+    const expiresLabel = checkIfExpiredMembership(membershipStatus) ? translate('Expired') : translate('Expires')
+    const isValidFreeTrial = checkIfValidFreeTrialMembership(membershipStatus)
+    const isValidMembership = !checkIfExpiredMembership(membershipStatus)
+    const renewButtonLabel = isValidMembership ? translate('Extend Membership') : translate('Renew Membership')
+    const renewMembershipExplanation = isValidMembership
+      ? translate('Your membership is still valid')
+      : translate('Enjoy all Premium features by renewing for only')
+    const renewMembershipExplanation2 = isValidFreeTrial
+      ? translate('Your membership will not auto-renew')
+      : translate('You are not being charged during your free trial')
 
-    return (
-      <View style={styles.wrapper} testID={`${testIDPrefix}_view`}>
-        {isLoading && isLoggedIn && <ActivityIndicator fillSpace testID={testIDPrefix} />}
-        {!isLoading && isLoggedIn && !!membershipStatus && (
+    const listHeaderComponent = (
+      <View style={styles.listHeaderWrapper}>
+        {isLoggedIn && !!membershipStatus && (
           <View>
             <View
               accessible
@@ -121,13 +135,7 @@ export class MembershipScreen extends React.Component<Props, State> {
               style={styles.textRowCentered}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={styles.label}
-                testID={`${testIDPrefix}_status_label`}>
-                {translate('Status')}{' '}
-              </Text>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={[styles.text, membershipTextStyle]}
+                style={[styles.textLargest, membershipTextStyle]}
                 testID={`${testIDPrefix}_status_membership`}>
                 {membershipStatus}
               </Text>
@@ -143,7 +151,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 style={styles.label}
                 testID={`${testIDPrefix}_expires`}>
-                {`${translate('Expires')}: `}
+                {`${expiresLabel}: `}
               </Text>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -160,19 +168,19 @@ export class MembershipScreen extends React.Component<Props, State> {
                 isSuccess
                 onPress={this.handleRenewPress}
                 testID={`${testIDPrefix}_renew_membership`}
-                text={translate('Renew Membership')}
+                text={renewButtonLabel}
                 wrapperStyles={styles.button}
               />
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={styles.explainText}
-                testID={`${testIDPrefix}_renew_explanation`}>
-                {translate('Enjoy all Premium features by renewing for only')}
-              </Text>
             </View>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              style={styles.explainText}
+              testID={`${testIDPrefix}_renew_explanation`}>
+              {`${renewMembershipExplanation} ${renewMembershipExplanation2}`}
+            </Text>
           </View>
         )}
-        {!isLoading && !isLoggedIn && (
+        {!isLoggedIn && (
           <View>
             <View style={styles.textRowCentered}>
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.subTextCentered}>
@@ -202,12 +210,19 @@ export class MembershipScreen extends React.Component<Props, State> {
             </View>
           </View>
         )}
+      </View>
+    )
+
+    return (
+      <View style={styles.wrapper} testID={`${testIDPrefix}_view`}>
+        {isLoading && isLoggedIn && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && (
           <View style={styles.tableWrapper}>
             <ComparisonTable
               column1Title={translate('Free')}
               column2Title={translate('Premium')}
               data={comparisonData}
+              listHeaderComponent={listHeaderComponent}
               mainTitle={translate('Features')}
               mainTitleAccessibilityHint={translate('ARIA HINT - Membership features header')}
               navigation={this.props.navigation}
@@ -369,21 +384,26 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 30,
     height: 32,
-    marginBottom: 16
+    marginBottom: 20
   },
   buttonWrapper: {
-    marginVertical: 16,
+    marginBottom: 28,
+    marginTop: 22,
     paddingHorizontal: 32
   },
   explainText: {
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.sm,
     fontWeight: PV.Fonts.weights.semibold,
-    marginBottom: 12,
+    marginBottom: 16,
+    paddingHorizontal: 16,
     textAlign: 'center'
   },
   label: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold
+  },
+  listHeaderWrapper: {
+    marginBottom: 24
   },
   subText: {
     fontSize: PV.Fonts.sizes.xl,
@@ -407,6 +427,10 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
     textAlign: 'center'
+  },
+  textLargest: {
+    fontSize: PV.Fonts.sizes.xxxl,
+    fontWeight: PV.Fonts.weights.bold
   },
   textRow: {
     flexDirection: 'row',
