@@ -317,8 +317,10 @@
   "Error Reporting subtext": "Error reports are anonymous and help identify and fix bugs.",
   "Error Setting External Storage": "Could not select external storage card",
   "error_boundary_description": "Pardon this interruption. Feel free to listen on.",
+  "Expired": "Expired",
   "Expires": "Expires",
   "Export OPML": "Export OPML",
+  "Extend Membership": "Extend Membership",
   "External Storage Enabled": "External storage card on",
   "FAQ": "FAQ",
   "Feature Demo": "Feature Demo",
@@ -708,6 +710,7 @@
   "Yes Allow Data": "Yes, allow data",
   "Yes enable tracking": "Yes, track me",
   "Yes save them": "Yes, save them",
+  "Your premium membership is still valid": "Your premium membership is still valid. If you would ",
   "You are about to be navigated to a website outside the app Are you sure you want to leave brandName": "Leave Podverse for a website outside the app?",
   "You are not subscribed to any podcasts": "You have no podcast subscriptions.",
   "You are not subscribed to any podcasts yet": "You have no podcast subscriptions yet",
@@ -719,10 +722,13 @@
   "Your free trial expired": "Your Podverse Premium ended ",
   "Your free trial expires": "Your free period of Podverse Premium ends ",
   "Your membership expired": "Your Podverse Premium ended ",
+  "Your membership is still valid": "Your membership is still valid. You can extend your membership for $18/year.",
   "Your password was changed succesfully": "You can now use your new password",
   "Your premium membership expires": "Your Podverse Premium ends ",
   "Your profile page is hidden": "Your profile is hidden. Your clip and playlist links are still accessible to anyone with the links.",
   "Your profile page will be hidden": "Your profile will be hidden. Your clip and playlist links will still be accessible to anyone with the links.",
   "Your purchase was successful You may close this window": "Thank you. You may close this window.",
-  "Your queue is empty": "Your queue is empty"
+  "Your queue is empty": "Your queue is empty",
+  "Your membership will not auto-renew": "Your membership will not auto-renew.",
+  "You will not be charged for your free trial": "You will not be charged for your free trial, and your subscription will not auto-renew."
 }
