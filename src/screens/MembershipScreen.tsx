@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     marginVertical: 16,
-    paddingHorizontal: 32
+    paddingHorizontal: 28
   },
   explainText: {
     fontSize: PV.Fonts.sizes.md,
