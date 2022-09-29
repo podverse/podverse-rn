@@ -186,7 +186,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   style={styles.explainText}
                   testID={`${testIDPrefix}_will_not_charged_free_trial`}>
-                  {translate('You will not be charged for your free trial')}
+                  {translate('You are not being charged during your free trial')}
                 </Text>
               )}
             </View>
