@@ -722,7 +722,7 @@
   "Your free trial expired": "Your Podverse Premium ended ",
   "Your free trial expires": "Your free period of Podverse Premium ends ",
   "Your membership expired": "Your Podverse Premium ended ",
-  "Your membership is still valid": "Your membership is still valid. You can extend your membership for $18/year.",
+  "Your membership is still valid": "Your membership is still valid. You can extend it for $18/year.",
   "Your password was changed succesfully": "You can now use your new password",
   "Your premium membership expires": "Your Podverse Premium ends ",
   "Your profile page is hidden": "Your profile is hidden. Your clip and playlist links are still accessible to anyone with the links.",
@@ -730,5 +730,5 @@
   "Your purchase was successful You may close this window": "Thank you. You may close this window.",
   "Your queue is empty": "Your queue is empty",
   "Your membership will not auto-renew": "Your membership will not auto-renew.",
-  "You will not be charged for your free trial": "You will not be charged for your free trial, and your subscription will not auto-renew."
+  "You will not be charged for your free trial": "You will not be charged for your free trial, and your membership will not auto-renew."
 }

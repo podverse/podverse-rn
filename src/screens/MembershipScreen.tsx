@@ -3,7 +3,12 @@ import { Alert, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, Button, ComparisonTable, Text, View } from '../components'
 import { translate } from '../lib/i18n'
-import { checkIfExpiredMembership, checkIfFreeTrialMembership, getMembershipExpiration, getMembershipStatus } from '../lib/membership'
+import {
+  checkIfExpiredMembership,
+  checkIfValidFreeTrialMembership,
+  getMembershipExpiration,
+  getMembershipStatus
+} from '../lib/membership'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { buy1YearPremium } from '../services/purchaseShared'
@@ -106,7 +111,7 @@ export class MembershipScreen extends React.Component<Props, State> {
     const statusAccessibilityLabel = `${translate('Status')}: ${membershipStatus}`
     const expiresAccessibilityLabel = `${translate('Expires')}: ${readableDate(expirationDate)}`
     const expiresLabel = checkIfExpiredMembership(membershipStatus) ? translate('Expired') : translate('Expires')
-    const isFreeTrial = checkIfFreeTrialMembership(membershipStatus)
+    const isValidFreeTrial = checkIfValidFreeTrialMembership(membershipStatus)
     const isValidMembership = !checkIfExpiredMembership(membershipStatus)
     const renewButtonLabel = isValidMembership ? translate('Extend Membership') : translate('Renew Membership')
     const renewMembershipExplanation = isValidMembership
@@ -169,7 +174,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                 testID={`${testIDPrefix}_renew_explanation`}>
                 {renewMembershipExplanation}
               </Text>
-              {!!isFreeTrial ? (
+              {!!isValidFreeTrial ? (
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   style={styles.explainText}
