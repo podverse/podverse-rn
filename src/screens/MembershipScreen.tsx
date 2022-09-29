@@ -117,6 +117,9 @@ export class MembershipScreen extends React.Component<Props, State> {
     const renewMembershipExplanation = isValidMembership
       ? translate('Your membership is still valid')
       : translate('Enjoy all Premium features by renewing for only')
+    const renewMembershipExplanation2 = isValidFreeTrial
+      ? translate('Your membership will not auto-renew')
+      : translate('You are not being charged during your free trial')
 
     const listHeaderComponent = (
       <View style={styles.listHeaderWrapper}>
@@ -168,28 +171,13 @@ export class MembershipScreen extends React.Component<Props, State> {
                 text={renewButtonLabel}
                 wrapperStyles={styles.button}
               />
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={styles.explainText}
-                testID={`${testIDPrefix}_renew_explanation`}>
-                {renewMembershipExplanation}
-              </Text>
-              {!!isValidFreeTrial ? (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={styles.explainText}
-                  testID={`${testIDPrefix}_will_not_auto-renew`}>
-                  {translate('Your membership will not auto-renew')}
-                </Text>
-              ) : (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={styles.explainText}
-                  testID={`${testIDPrefix}_will_not_charged_free_trial`}>
-                  {translate('You are not being charged during your free trial')}
-                </Text>
-              )}
             </View>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              style={styles.explainText}
+              testID={`${testIDPrefix}_renew_explanation`}>
+              {`${renewMembershipExplanation} ${renewMembershipExplanation2}`}
+            </Text>
           </View>
         )}
         {!isLoggedIn && (
@@ -399,13 +387,15 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   buttonWrapper: {
-    marginVertical: 16,
-    paddingHorizontal: 28
+    marginBottom: 28,
+    marginTop: 22,
+    paddingHorizontal: 32
   },
   explainText: {
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.sm,
     fontWeight: PV.Fonts.weights.semibold,
     marginBottom: 16,
+    paddingHorizontal: 16,
     textAlign: 'center'
   },
   label: {
