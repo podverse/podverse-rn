@@ -18,45 +18,54 @@ type ComparisonTableProps = {
   column1Title: string
   column2Title: string
   data: TableLineItem[] | []
+  listHeaderComponent: any
   mainTitle: string
   mainTitleAccessibilityHint: string
   navigation: any
 }
 
 export const ComparisonTable = (props: ComparisonTableProps) => {
-  const { column1Title, column2Title, data, mainTitle, mainTitleAccessibilityHint, navigation } = props
+  const { column1Title, column2Title, data, listHeaderComponent, 
+    mainTitle, mainTitleAccessibilityHint, navigation } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <View style={styles.wrapper}>
-      <View style={[styles.tableHeaderRow, globalTheme.tableSectionHeader]}>
-        <Text
-          accessibilityHint={mainTitleAccessibilityHint}
-          accessibilityLabel={mainTitle}
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          numberOfLines={1}
-          style={[styles.tableHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
-          {mainTitle}
-        </Text>
-        <Text
-          accessible={false}
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          importantForAccessibility='no'
-          numberOfLines={1}
-          style={[styles.tableHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-          {column1Title}
-        </Text>
-        <Text
-          accessible={false}
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          importantForAccessibility='no'
-          numberOfLines={1}
-          style={[styles.tableHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-          {column2Title}
-        </Text>
-      </View>
       <FlatList
         data={data}
+        ListHeaderComponent={() => {
+          return (
+            <>
+              {listHeaderComponent}
+              <View style={[styles.tableHeaderRow, globalTheme.tableSectionHeader]}>
+                <Text
+                  accessibilityHint={mainTitleAccessibilityHint}
+                  accessibilityLabel={mainTitle}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  numberOfLines={1}
+                  style={[styles.tableHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
+                  {mainTitle}
+                </Text>
+                <Text
+                  accessible={false}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  importantForAccessibility='no'
+                  numberOfLines={1}
+                  style={[styles.tableHeaderTextRight, globalTheme.tableSectionHeaderText]}>
+                  {column1Title}
+                </Text>
+                <Text
+                  accessible={false}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  importantForAccessibility='no'
+                  numberOfLines={1}
+                  style={[styles.tableHeaderTextRight, globalTheme.tableSectionHeaderText]}>
+                  {column2Title}
+                </Text>
+              </View>
+            </>
+          )
+        }}
         keyExtractor={(item: any, index: number) => `comparisonTable${index}`}
         renderItem={({ item }) => (
           <>
