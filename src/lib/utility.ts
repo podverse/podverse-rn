@@ -24,6 +24,7 @@ export const getAppUserAgent = () => {
     This will return device specific user agents as follows:
     Podverse/iOS Mobile App
     Podverse/Android Mobile App
+    Podverse/F-Droid Android Mobile App
 
     NOTE: if a change to userAgent is made, make sure to update
     the OPAWG definition so our user agents can be easily identified by other servers.
