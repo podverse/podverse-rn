@@ -162,6 +162,7 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
           handleNavigationPress={() =>
             navigateToEpisodeScreenWithItem(navigation, convertToNowPlayingItem(item, null, null, userPlaybackPosition))
           }
+          hideDivider
           item={item}
           mediaFileDuration={mediaFileDuration}
           navigation={navigation}

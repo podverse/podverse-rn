@@ -332,8 +332,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     )
   }
 
-  _ItemSeparatorComponent = () => <Divider style={{ marginHorizontal: 10 }} />
-
   _handleCancelPress = () =>
     new Promise((resolve) => {
       this.setState({ showActionSheet: false }, resolve)
@@ -534,7 +532,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
             handleNoResultsTopAction={this._handleNoResultsTopAction}
             isLoadingMore={isLoadingMore}
             isRefreshing={isRefreshing}
-            ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
             {...(isCategoryScreen ? {} : { ListHeaderComponent: this._ListHeaderComponent })}
             noResultsMessage={
