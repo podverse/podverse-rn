@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native'
-import React, { getGlobal } from 'reactn'
+import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { _albyKey } from '../resources/V4V'
 import { v4vDisconnectProvider } from '../state/actions/v4v/v4v'
 import { Button, View } from '.'
 

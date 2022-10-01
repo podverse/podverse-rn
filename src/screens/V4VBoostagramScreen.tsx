@@ -71,9 +71,11 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const showBackButton = navigation.getParam('showBackButton')
     return {
-      ...(!!showBackButton ? {} : {
-        headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />
-      }),
+      ...(!!showBackButton
+        ? {}
+        : {
+            headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />
+          }),
       title: translate('Boostagram'),
       headerRight: null
     }
@@ -106,11 +108,11 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
       )
     }
 
-    this._handleBoostagramMessageTextUpdate = debounce(
-      this._handleBoostagramMessageTextUpdate,
-      200,
-      { leading: false, maxWait: 200, trailing: true }
-    )
+    this._handleBoostagramMessageTextUpdate = debounce(this._handleBoostagramMessageTextUpdate, 200, {
+      leading: false,
+      maxWait: 200,
+      trailing: true
+    })
 
     trackPageView('/v4v/boostagram', 'V4V - Boostagram Screen')
   }
@@ -145,7 +147,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     } else if (nowPlayingItem) {
       item = {
         episodeFunding: nowPlayingItem.episodeFunding || [],
-        episodePubDate: nowPlayingItem.episodePubDate as any || new Date(),
+        episodePubDate: (nowPlayingItem.episodePubDate as any) || new Date(),
         episodeTitle: nowPlayingItem.episodeTitle || '',
         episodeValue: nowPlayingItem.episodeValue || [],
         podcastFunding: nowPlayingItem.podcastFunding || [],
@@ -174,9 +176,9 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(boostagramItem))
 
     const valueTags =
-      (boostagramItem?.episodeValue?.length && boostagramItem?.episodeValue)
-      || (boostagramItem?.podcastValue?.length && boostagramItem?.podcastValue)
-      || []
+      (boostagramItem?.episodeValue?.length && boostagramItem?.episodeValue) ||
+      (boostagramItem?.podcastValue?.length && boostagramItem?.podcastValue) ||
+      []
     const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
 
     if (activeValueTag && activeProvider?.key) {
@@ -207,7 +209,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
   _attemptBoostagram = () => {
     ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
     this.setState({ boostIsSending: true }, () => {
-      ;(async () => {
+      (async () => {
         const boostagramItem = this._convertToBoostagramItem()
         const includeMessage = true
         await sendBoost(boostagramItem, includeMessage)
@@ -240,10 +242,12 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     const { boostagramMessage, previousTransactionErrors } = v4v
     const boostagramItem = this._convertToBoostagramItem()
 
-    const hasValueInfo = (boostagramItem?.episodeValue && boostagramItem?.episodeValue.length > 0)
-      || (boostagramItem?.podcastValue && boostagramItem?.podcastValue?.length > 0)
-    const { activeProvider, activeProviderSettings } =
-      v4vGetActiveProviderInfo(getBoostagramItemValueTags(boostagramItem))
+    const hasValueInfo =
+      (boostagramItem?.episodeValue && boostagramItem?.episodeValue.length > 0) ||
+      (boostagramItem?.podcastValue && boostagramItem?.podcastValue?.length > 0)
+    const { activeProvider, activeProviderSettings } = v4vGetActiveProviderInfo(
+      getBoostagramItemValueTags(boostagramItem)
+    )
 
     const podcastTitle = boostagramItem?.podcastTitle?.trim() || translate('Untitled Podcast')
     const episodeTitle = boostagramItem?.episodeTitle?.trim()
@@ -255,9 +259,9 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     const boostagramMessageIsValid = boostagramMessageCharCount <= boostagramCharLimit
     const sendButtonDisabled = boostIsSending || !boostagramMessageIsValid
 
-    const boostAmountLabelText = activeProvider?.unit ? `${translate(
-      'Boost Amount'
-    )} (${v4vGetPluralCurrencyUnit(activeProvider.unit)})` : ''
+    const boostAmountLabelText = activeProvider?.unit
+      ? `${translate('Boost Amount')} (${v4vGetPluralCurrencyUnit(activeProvider.unit)})`
+      : ''
 
     return (
       <View style={styles.content} testID='funding_screen_view'>
@@ -272,28 +276,26 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
               testID={`${testIDPrefix}_podcast_title`}>
               {podcastTitle}
             </Text>
-            {
-              !!episodeTitle && (
-                <>
+            {!!episodeTitle && (
+              <>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  numberOfLines={1}
+                  style={styles.episodeTitle}
+                  testID={`${testIDPrefix}_episode_title`}>
+                  {episodeTitle}
+                </Text>
+                <View style={styles.textWrapperBottomRow}>
                   <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    numberOfLines={1}
-                    style={styles.episodeTitle}
-                    testID={`${testIDPrefix}_episode_title`}>
-                    {episodeTitle}
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                    isSecondary
+                    style={styles.pubDate}
+                    testID={`${testIDPrefix}_pub_date`}>
+                    {pubDate}
                   </Text>
-                  <View style={styles.textWrapperBottomRow}>
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                      isSecondary
-                      style={styles.pubDate}
-                      testID={`${testIDPrefix}_pub_date`}>
-                      {pubDate}
-                    </Text>
-                  </View>
-                </>
-              )
-            }
+                </View>
+              </>
+            )}
           </View>
         </View>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>

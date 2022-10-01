@@ -482,7 +482,9 @@ export class ClipsScreen extends React.Component<Props, State> {
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
             ListHeaderComponent={this._ListHeaderComponent}
             noResultsMessage={
-              noSubscribedPodcasts ? translate('You are not subscribed to any podcasts yet') : translate('No clips found')
+              noSubscribedPodcasts
+                ? translate('You are not subscribed to any podcasts yet')
+                : translate('No clips found')
             }
             onEndReached={this._onEndReached}
             onRefresh={this._onRefresh}

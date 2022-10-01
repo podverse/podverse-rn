@@ -106,10 +106,10 @@ export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
     const { globalTheme } = getGlobal()
 
     const showFundingIcon =
-      episode?.funding?.length > 0
-      || episode?.value?.length > 0
-      || podcast?.funding?.length > 0
-      || podcast?.value?.length > 0
+      episode?.funding?.length > 0 ||
+      episode?.value?.length > 0 ||
+      podcast?.funding?.length > 0 ||
+      podcast?.value?.length > 0
 
     return {
       title: getScreenTitle(),

@@ -198,8 +198,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
     const { globalTheme } = getGlobal()
 
-    const showFundingIcon =
-      podcast?.funding?.length > 0 || podcast?.value?.length > 0
+    const showFundingIcon = podcast?.funding?.length > 0 || podcast?.value?.length > 0
 
     return {
       title: getScreenTitle(),
@@ -637,9 +636,8 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   _handleSearchAddByRSSEpisodes = (searchTitle: string) => {
     const { querySort, viewType } = this.state
     this.setState({ searchTitle }, () => {
-      const { addByRSSEpisodes, addByRSSEpisodesCount } =
-        this._queryAddByRSSEpisodes(viewType, querySort)
-  
+      const { addByRSSEpisodes, addByRSSEpisodesCount } = this._queryAddByRSSEpisodes(viewType, querySort)
+
       this.setState({
         endOfResultsReached: true,
         flatListData: addByRSSEpisodes,
@@ -856,7 +854,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       podcast,
       podcastId,
       querySort,
-      searchBarText,
       selectedFilterLabel,
       selectedSortLabel,
       selectedItem,
@@ -1145,7 +1142,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
           return new Date(b.pubDate) - new Date(a.pubDate)
         })
       }
-      
+
       return [downloadedEpisodes, downloadedEpisodes.length]
     } else {
       const results = await getEpisodesAndLiveItems(
@@ -1157,7 +1154,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
         },
         podcastId
       )
-  
+
       const { combinedEpisodes } = results
       return combinedEpisodes
     }
@@ -1193,23 +1190,22 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
     try {
       if (
-        ( filterKey === PV.Filters._downloadedKey ||
+        (filterKey === PV.Filters._downloadedKey ||
           filterKey === PV.Filters._episodesKey ||
           filterKey === PV.Filters._hideCompletedKey ||
           filterKey === PV.Filters._showCompletedKey) &&
         podcast &&
         podcast.addByRSSPodcastFeedUrl
       ) {
-          const { addByRSSEpisodes, addByRSSEpisodesCount } =
-            this._queryAddByRSSEpisodes(filterKey, querySort)
-          newState.flatListData = addByRSSEpisodes || []
-          newState.flatListDataTotalCount = addByRSSEpisodesCount
+        const { addByRSSEpisodes, addByRSSEpisodesCount } = this._queryAddByRSSEpisodes(filterKey, querySort)
+        newState.flatListData = addByRSSEpisodes || []
+        newState.flatListDataTotalCount = addByRSSEpisodesCount
       } else if (
         !podcast?.addByRSSPodcastFeedUrl &&
         (filterKey === PV.Filters._downloadedKey ||
-        filterKey === PV.Filters._episodesKey ||
-        filterKey === PV.Filters._hideCompletedKey ||
-        filterKey === PV.Filters._showCompletedKey)
+          filterKey === PV.Filters._episodesKey ||
+          filterKey === PV.Filters._hideCompletedKey ||
+          filterKey === PV.Filters._showCompletedKey)
       ) {
         const results = await this._queryEpisodes(filterKey, querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
@@ -1226,8 +1222,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
         let results = []
 
         if (podcast?.addByRSSPodcastFeedUrl) {
-          const { addByRSSEpisodes, addByRSSEpisodesCount } =
-            this._queryAddByRSSEpisodes(viewType, filterKey)
+          const { addByRSSEpisodes, addByRSSEpisodesCount } = this._queryAddByRSSEpisodes(viewType, filterKey)
           newState.flatListData = addByRSSEpisodes || []
           newState.flatListDataTotalCount = addByRSSEpisodesCount
         } else if (
@@ -1307,7 +1302,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     }
   }
 }
-
 
 const styles = StyleSheet.create({
   aboutView: {

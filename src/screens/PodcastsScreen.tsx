@@ -846,7 +846,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleHiddenItemPress = async (selectedId, addByRSSPodcastFeedUrl, rowMap) => {
+  _handleHiddenItemPress = async (selectedId, addByRSSPodcastFeedUrl) => {
     const { queryFrom } = this.state
 
     let wasAlerted = false

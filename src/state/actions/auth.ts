@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-community/async-storage'
 import { Alert } from 'react-native'
 import {resetInternetCredentials} from "react-native-keychain"
 import { getGlobal, setGlobal } from 'reactn'
@@ -34,10 +33,8 @@ export type Credentials = {
 
 export const getAuthUserInfo = async () => {
   try {
-    const [results, boostAmount, streamingAmount] = await Promise.all([
-      getAuthenticatedUserInfo(),
-      AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT),
-      AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_STREAMING_AMOUNT)
+    const [results] = await Promise.all([
+      getAuthenticatedUserInfo()
     ])
     const userInfo = results[0]
     const isLoggedIn = results[1]

@@ -165,8 +165,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const hasTranscript = !!parsedTranscript
     const hasChat = !!episode?.liveItem?.chatIRCURL
 
-    const { activeProvider, activeProviderSettings } = 
-      v4vGetActiveProviderInfo(getBoostagramItemValueTags(nowPlayingItem))
+    const { activeProvider, activeProviderSettings } = v4vGetActiveProviderInfo(
+      getBoostagramItemValueTags(nowPlayingItem)
+    )
     const { boostAmount, streamingAmount } = activeProviderSettings || {}
     const { streamingValueOn } = session.v4v
 
@@ -191,9 +192,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       ? [styles.boostButtonSubText, { color: PV.Colors.green }]
       : [styles.boostButtonSubText]
 
-    const hasValueInfo =
-      nowPlayingItem?.episodeValue?.length > 0 ||
-      nowPlayingItem?.podcastValue?.length > 0
+    const hasValueInfo = nowPlayingItem?.episodeValue?.length > 0 || nowPlayingItem?.podcastValue?.length > 0
 
     const carouselComponents = mediaPlayerCarouselComponents(
       this._handlePressClipInfo,
@@ -420,8 +419,9 @@ const mediaPlayerCarouselComponents = (
             <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />
           )}
           {accessibilityItemSelectedValue === _transcriptKey && <MediaPlayerCarouselTranscripts width={screenWidth} />}
-          {accessibilityItemSelectedValue === _chatRoomKey && 
-            <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />}
+          {accessibilityItemSelectedValue === _chatRoomKey && (
+            <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />
+          )}
         </>
       ) : (
         <>

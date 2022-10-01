@@ -57,8 +57,14 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       finalPubDate = liveItem.start
     }
 
-    const { downloadedEpisodeIds, downloadsActive, fontScaleMode, newEpisodesCount,
-      screenReaderEnabled, session } = this.global
+    const {
+      downloadedEpisodeIds,
+      downloadsActive,
+      fontScaleMode,
+      newEpisodesCount,
+      screenReaderEnabled,
+      session
+    } = this.global
     const { userInfo } = session
     const { historyItemsIndex } = userInfo
 
@@ -136,9 +142,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             </Text>
           </RNView>
         </RNView>
-        {isNewUnplayedEpisode && (
-          <NewContentBadge isNewUnplayedContent={isNewUnplayedEpisode} />
-        )}
+        {isNewUnplayedEpisode && <NewContentBadge isNewUnplayedContent={isNewUnplayedEpisode} />}
       </RNView>
     )
 

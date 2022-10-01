@@ -314,13 +314,3 @@ export const insertOrRemovePodcastFromAlphabetizedArray = (podcasts: any[], podc
     return podcasts
   }
 }
-
-const addOrRemovePodcastIdFromArray = (podcastIds: any[], podcastId: string) => {
-  if (!Array.isArray(podcastIds)) return []
-  if (podcastIds.some((x) => x === podcastId)) {
-    return podcastIds.filter((x) => x !== podcastId)
-  } else {
-    podcastIds.push(podcastId)
-    return podcastIds
-  }
-}
