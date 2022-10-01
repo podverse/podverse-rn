@@ -182,7 +182,7 @@
   "ARIA LABEL - Queue Next": "Enqueue as next",
   "Audio livestreams": "Audio livestreams",
   "Auto": "Auto",
-  "Auto download by default on subscribe": "Download when subscribing",
+  "Auto download by default on subscribe": "Turn on auto-downloading for a podcast when you subscribe to it.",
   "Auto Downloading Off": "Auto-downloading off",
   "Auto Downloading On": "Auto-downloading on",
   "Auto queue position helper text": "Only has an impact if auto-queueing is turned on for a podcast.",
