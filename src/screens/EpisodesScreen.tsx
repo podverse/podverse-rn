@@ -361,7 +361,10 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _renderEpisodeItem = ({ item, index }) => {
     const { navigation } = this.props
-    const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
+    const { completed, mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
+
+    const { hideCompleted } = this.global
+    const shouldHideCompleted = hideCompleted && completed
 
     return (
       <EpisodeTableCell
@@ -380,6 +383,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
         }}
         mediaFileDuration={mediaFileDuration}
         navigation={navigation}
+        shouldHideCompleted={shouldHideCompleted}
         showPodcastInfo
         testID={`${testIDPrefix}_episode_item_${index}`}
         userPlaybackPosition={userPlaybackPosition}
