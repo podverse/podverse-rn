@@ -472,8 +472,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     )
   }
 
-  _ItemSeparatorComponent = () => <Divider style={{ marginHorizontal: 10 }} />
-
   _handleCancelPress = () =>
     new Promise((resolve) => {
       this.setState({ showActionSheet: false }, resolve)
@@ -1066,7 +1064,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
                 extraData={flatListData}
                 isLoadingMore={isLoadingMore}
                 isRefreshing={isRefreshing}
-                ItemSeparatorComponent={this._ItemSeparatorComponent}
                 keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
                 ListHeaderComponent={this._ListHeaderComponent}
                 noResultsMessage={noResultsMessage}
