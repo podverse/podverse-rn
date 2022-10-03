@@ -729,5 +729,8 @@
     "You are not being charged during your free trial": "Du vil ikke bli belastet under gratisperioden, og din Podverse premium vil ikke fornyes automatisk.",
     "Your premium membership is still valid": "Din Podverse premium er fremdeles gyldig. Hvis du vil ",
     "Your membership is still valid": "Ditt Podverse premium er fremdeles gyldig. Du kan utvide det for 18 $ per år.",
-    "Your membership will not auto-renew": "Ditt Podverse premium vil ikke fornyes automatisk."
+    "Your membership will not auto-renew": "Ditt Podverse premium vil ikke fornyes automatisk.",
+    "_moment.js date format": "Do MMM YYYY",
+    "_moment.js date with time format": "Do MMM YYYY h:mm:ss a",
+    "Auto-enqueue downloaded episodes": "Legg nedlastede episoder i kø"
 }
