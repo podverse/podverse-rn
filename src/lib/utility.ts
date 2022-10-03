@@ -47,7 +47,7 @@ export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
 export const readableDate = (date?: Date, withTime?: boolean) => {
   moment.locale(getLanguageTag())
   date = date || new Date()
-  const format = withTime ? 'MMM Do YYYY, h:mm:ss a' : 'MMM Do YYYY'
+  const format = withTime ? translate('_moment.js date with time format') : translate('_moment.js date format')
   return moment(date).format(format)
 }
 
