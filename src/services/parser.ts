@@ -292,7 +292,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
           'User-Agent': userAgent,
           ...(Authorization ? { Authorization } : {})
         },
-        timeout: 30000
+        timeout: 60000
       })
     } catch (error) {
       if (feedUrl?.startsWith('http://')) {
@@ -303,7 +303,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
             'User-Agent': userAgent,
             ...(Authorization ? { Authorization } : {})
           },
-          timeout: 30000
+          timeout: 60000
         })
       } else {
         throw error
