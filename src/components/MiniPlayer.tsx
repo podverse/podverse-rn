@@ -5,7 +5,7 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { playerCheckIfStateIsBuffering, playerCheckIfStateIsPlaying } from '../services/player'
-import { playerTogglePlay } from '../state/actions/player'
+import { handleNavigateToPlayerScreen, playerTogglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { ActivityIndicator, FastImage, Icon, PVVideo, Text, TextTicker } from './'
 
@@ -118,12 +118,12 @@ export class MiniPlayer extends React.PureComponent<Props> {
               accessibilityLabel={nowPlayingAccessibilityLabel}
               accessibilityHint={translate('ARIA HINT - open the full player screen')}
               onPress={() => {
-                PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS)
-                navigation.navigate(PV.RouteNames.PlayerScreen, {
+                handleNavigateToPlayerScreen(
+                  navigation,
                   nowPlayingItem,
-                  addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl,
+                  nowPlayingItem?.addByRSSPodcastFeedUrl,
                   isDarkMode
-                })
+                )
               }}
               style={{ flex: 1 }}
               testID={testIDPrefix.prependTestId()}>
