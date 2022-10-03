@@ -4,13 +4,19 @@ import {
   getAutoQueueSettings,
   getAutoQueueSettingsPosition,
   setAutoQueueSettingsPosition,
-  updateAutoQueueSettings as updateAutoQueueSettingsService
+  getAutoQueueDownloadsOn,
+  updateAutoQueueSettings as updateAutoQueueSettingsService,
+  setAutoQueueDownloadsOn as setAutoQueueDownloadsOnService
 } from '../../services/autoQueue'
 
+/* Init both auto queue new episodes and auto queue downloads */
+
 export const initAutoQueue = async () => {
-  const [autoQueueSettings, autoQueueSettingsPosition] = await Promise.all([
+  const [autoQueueSettings, autoQueueSettingsPosition,
+    autoQueueDownloadsOn] = await Promise.all([
     getAutoQueueSettings(),
-    getAutoQueueSettingsPosition()
+    getAutoQueueSettingsPosition(),
+    getAutoQueueDownloadsOn()
   ])
   
   // TODO: There is a race condition preventing this state from being set properly on app launch :(
@@ -18,10 +24,13 @@ export const initAutoQueue = async () => {
   setTimeout(() => {
     setGlobal({
       autoQueueSettings,
-      autoQueueSettingsPosition
+      autoQueueSettingsPosition,
+      autoQueueDownloadsOn
     })
   }, 1000)
 }
+
+/* Auto queue new episdoes helpers */
 
 export const updateAutoQueueSettings = (podcastId: string, autoQueueOn: boolean) => {
   const { autoQueueSettings } = getGlobal()
@@ -44,4 +53,17 @@ export const updateAutoQueueSettingsPosition = (position: AutoQueueSettingsPosit
   async () => {
     await setAutoQueueSettingsPosition(position)
   })
+}
+
+/* Auto queue downloads helpers */
+
+export const setAutoQueueDownloadsOn = (autoQueueDownloadsOn: boolean) => {
+  setGlobal(
+    {
+      autoQueueDownloadsOn
+    },
+    async () => {
+      await setAutoQueueDownloadsOnService(autoQueueDownloadsOn)
+    }
+  )
 }

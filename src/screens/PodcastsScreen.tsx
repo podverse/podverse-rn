@@ -26,7 +26,7 @@ import { translate } from '../lib/i18n'
 import { navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { resetAllAppKeychain } from '../lib/secutity'
-import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty } from '../lib/utility'
+import { getAppUserAgent, safeKeyExtractor, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
 import { v4vAlbyCheckConnectDeepLink } from '../services/v4v/providers/alby'
 import { getAutoDownloadsLastRefreshDate, handleAutoDownloadEpisodes } from '../services/autoDownloads'
@@ -542,9 +542,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     this._handleInitialDefaultQuery()
 
-    // Set the appUserAgent one time on initialization, then retrieve from a constant
-    // using the getAppUserAgent method, or from the global state (for synchronous access).
-    await setAppUserAgent()
     const userAgent = getAppUserAgent()
     this.setGlobal({ userAgent })
     this.setState({ isLoadingMore: false }, () => {
