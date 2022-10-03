@@ -54,7 +54,8 @@ import {
   playerLoadNowPlayingItem,
   playerUpdatePlaybackState,
   playerUpdatePlayerState,
-  showMiniPlayer
+  showMiniPlayer,
+  handleNavigateToPlayerScreen
 } from '../state/actions/player'
 import {
   combineWithAddByRSSPodcasts,
@@ -412,7 +413,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _handleDeepLinkClip = async (mediaRefId: string) => {
     if (mediaRefId) {
       const { navigation } = this.props
-      const { navigate } = navigation
 
       try {
         const currentItem = await getNowPlayingItem()
@@ -427,7 +427,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           }
         }
 
-        navigate(PV.RouteNames.PlayerScreen)
+        handleNavigateToPlayerScreen(navigation)
       } catch (error) {
         console.log(error)
       }

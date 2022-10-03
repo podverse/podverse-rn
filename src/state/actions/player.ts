@@ -370,3 +370,23 @@ export const initializePlayerSettings = async () => {
     }
   })
 }
+
+/*
+  Always send the event to destroy the previous video players
+  before navigating to the player screen.
+*/
+export const handleNavigateToPlayerScreen = (
+  navigation: any,
+  nowPlayingItem?: NowPlayingItem,
+  addByRSSPodcastFeedUrl?: string,
+  isDarkMode?: boolean
+) => {
+  PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS)
+  setTimeout(() => {
+    navigation.navigate(PV.RouteNames.PlayerScreen, {
+      ...(nowPlayingItem ? { nowPlayingItem } : {}),
+      ...(addByRSSPodcastFeedUrl ? { addByRSSPodcastFeedUrl } : {}),
+      ...(isDarkMode ? { isDarkMode } : {})
+    })
+  }, 0)
+}
