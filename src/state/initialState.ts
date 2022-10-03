@@ -10,6 +10,7 @@ const initialTheme: InitialState = {
   autoDownloadSettings: {},
   autoQueueSettings: {},
   autoQueueSettingsPosition: 'last',
+  autoQueueDownloadsOn: false,
   downloadsArrayInProgress: [],
   downloadsArrayFinished: [],
   downloadsActive: {},

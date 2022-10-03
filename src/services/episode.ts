@@ -60,7 +60,7 @@ export const getEpisodesSincePubDate = async (sincePubDate: string, podcastIds: 
       result = response[0]
     }
   } catch (error) {
-    console.log('getEpisodesSincePubDate', getEpisodesSincePubDate)
+    console.log('getEpisodesSincePubDate', error)
   }
 
   return result

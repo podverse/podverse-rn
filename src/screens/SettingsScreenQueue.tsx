@@ -3,11 +3,11 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { ActivityIndicator, Icon, ScrollView, SwitchWithText, Text, View } from '../components'
+import { ActivityIndicator, Divider, Icon, ScrollView, SwitchWithText, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
-import { updateAutoQueueSettingsPosition } from '../state/actions/autoQueue'
+import { setAutoQueueDownloadsOn, updateAutoQueueSettingsPosition } from '../state/actions/autoQueue'
 import { setAddCurrentItemNextInQueue } from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent } from '../styles'
 
@@ -59,9 +59,15 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
     }
   }
 
+  _toggleAutoQueueDownloadsOn = () => {
+    const { autoQueueDownloadsOn } = this.global
+    setAutoQueueDownloadsOn(!autoQueueDownloadsOn)
+  }
+
   render() {
     const { isLoading } = this.state
-    const { addCurrentItemNextInQueue, autoQueueSettingsPosition, globalTheme } = this.global
+    const { addCurrentItemNextInQueue, autoQueueSettingsPosition,
+      autoQueueDownloadsOn, globalTheme } = this.global
     const isDarkMode = globalTheme === darkTheme
 
     const autoQueueOptionSelected = PV.Queue.autoQueuePositionOptions.find((option: any) => {
@@ -85,7 +91,16 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
                 value={!!addCurrentItemNextInQueue}
               />
             </View>
-            <View style={core.itemWrapperReducedHeight}>
+            <View style={core.itemWrapper}>
+              <SwitchWithText
+                onValueChange={this._toggleAutoQueueDownloadsOn}
+                accessibilityLabel={translate('Auto-enqueue downloaded episodes')}
+                testID={`${testIDPrefix}_auto_queue_downloaded_episodes`}
+                text={translate('Auto-enqueue downloaded episodes')}
+                value={!!autoQueueDownloadsOn}
+              />
+            </View>
+            <View style={[core.itemWrapperReducedHeight, styles.extraMarginBottom]}>
               <RNPickerSelect
                 fixAndroidTouchableBug
                 items={PV.Queue.autoQueuePositionOptions}
@@ -121,16 +136,6 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
                   </View>
                 </View>
               </RNPickerSelect>
-              <View>
-                <Text
-                  accessible={false}
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  importantForAccessibility='no'
-                  style={[globalTheme.textSecondary, styles.subText]}
-                  testID={`${testIDPrefix}_auto_queue_position_sub_text`}>
-                  {translate('Auto queue position helper text')}
-                </Text>
-              </View>
             </View>
           </>
         )}
@@ -140,11 +145,23 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
+  divider: {
+    marginBottom: 16
+  },
+  divider2: {
+    marginBottom: 28
+  },
+  extraMarginBottom: {
+    marginBottom: 32
+  },
   scrollViewContentContainer: {
     paddingBottom: 48
   },
+  selectWrapper: {
+    marginTop: 8
+  },
   subText: {
-    marginTop: 16,
+    marginTop: 4,
     fontSize: PV.Fonts.sizes.lg
   },
   wrapper: {

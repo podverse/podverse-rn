@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { convertToNowPlayingItem, NowPlayingItem } from 'podverse-shared'
+import { convertToNowPlayingItem, Episode, NowPlayingItem } from 'podverse-shared'
+import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { getEpisodesSincePubDate } from './episode'
 import { addQueueItemLast, addQueueItemNext } from './queue'
@@ -7,7 +8,7 @@ import { getNowPlayingItem } from './userNowPlayingItem'
 
 export type AutoQueueSettingsPosition = 'next' | 'last'
 
-/* Auto queue helpers */
+/* Auto queue new episdoes helpers */
 
 export const getAutoQueueSettings = async () => {
   try {
@@ -47,6 +48,21 @@ export const setAutoQueueSettingsPosition = async (position: AutoQueueSettingsPo
   return position
 }
 
+export const handleAutoQueueDownloadingEpisode = async (episode: Episode) => {
+  const { autoQueueDownloadsOn } = getGlobal()
+  if (autoQueueDownloadsOn && episode) {
+    const nowPlayingItem = convertToNowPlayingItem(episode)
+    if (nowPlayingItem?.episodeId && !nowPlayingItem.addByRSSPodcastFeedUrl) {
+      const autoQueueSettingsPosition = await getAutoQueueSettingsPosition()
+      if (autoQueueSettingsPosition === 'next') {
+        await addQueueItemNext(nowPlayingItem)
+      } else {
+        await addQueueItemLast(nowPlayingItem)
+      }
+    }
+  }
+}
+
 export const handleAutoQueueEpisodes = async (dateISOString: string) => {
   const currentNowPlayingItem = await getNowPlayingItem()
   const autoQueueSettingsString = await AsyncStorage.getItem(PV.Keys.AUTO_QUEUE_SETTINGS)
@@ -84,5 +100,29 @@ export const handleAutoQueueEpisodes = async (dateISOString: string) => {
         await addQueueItemLast(nowPlayingItem)
       }
     }
+  }
+}
+
+/* Auto queue downloads helpers */
+
+export const getAutoQueueDownloadsOn = async () => {
+  try {
+    const booleanString = await AsyncStorage.getItem(PV.Keys.AUTO_QUEUE_DOWNLOADS_ON)
+    return booleanString === 'true'
+  } catch (error) {
+    console.log('getAutoQueueDownloadsOn error', error)
+    return false
+  }
+}
+
+export const setAutoQueueDownloadsOn = async (autoQueueDownloadsOn: boolean) => {
+  try {
+    if (autoQueueDownloadsOn) {
+      await AsyncStorage.setItem(PV.Keys.AUTO_QUEUE_DOWNLOADS_ON, 'true')
+    } else {
+      await AsyncStorage.removeItem(PV.Keys.AUTO_QUEUE_DOWNLOADS_ON)
+    }
+  } catch (error) {
+    console.log('setAutoQueueDownloadsOn error', error)
   }
 }

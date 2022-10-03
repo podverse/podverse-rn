@@ -13,6 +13,7 @@ declare module 'reactn/default' {
     autoDownloadSettings: any
     autoQueueSettings: any
     autoQueueSettingsPosition: AutoQueueSettingsPosition
+    autoQueueDownloadsOn: boolean
     downloadsActive: any
     downloadsArrayInProgress: any[]
     downloadsArrayFinished: any[]
