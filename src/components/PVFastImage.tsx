@@ -176,6 +176,11 @@ export class PVFastImage extends React.PureComponent<Props, State> {
                 <Text style={defaultStyles.placeholderLabel}>{placeholderLabel}</Text>
               </View>
             )}
+            {!!isAddByRSSPodcast && (
+              <View style={[globalTheme.view, defaultStyles.addByRSSWrapper]}>
+                <Text style={addByRSSTextStyle}>{addByRSSText}</Text>
+              </View>
+            )}
           </View>
         )}
       </>
