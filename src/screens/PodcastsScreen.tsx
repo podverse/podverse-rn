@@ -1151,7 +1151,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     if (searchTitle) {
       const filteredResults = results[0].filter((serverPodcast: any) => {
         return !localPodcasts.some((localPodcast: any) => {
-          return checkIfContainsStringMatch(localPodcast?.title, serverPodcast?.title)
+          return localPodcast?.title === serverPodcast?.title
         })
       })
 
