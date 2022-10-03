@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { ActivityIndicator, Divider, Icon, ScrollView, SwitchWithText, Text, View } from '../components'
+import { ActivityIndicator, Icon, ScrollView, SwitchWithText, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -145,24 +145,11 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
-  divider: {
-    marginBottom: 16
-  },
-  divider2: {
-    marginBottom: 28
-  },
   extraMarginBottom: {
     marginBottom: 32
   },
   scrollViewContentContainer: {
     paddingBottom: 48
-  },
-  selectWrapper: {
-    marginTop: 8
-  },
-  subText: {
-    marginTop: 4,
-    fontSize: PV.Fonts.sizes.lg
   },
   wrapper: {
     flex: 1,
