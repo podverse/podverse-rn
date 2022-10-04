@@ -66,8 +66,7 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
 
   render() {
     const { isLoading } = this.state
-    const { addCurrentItemNextInQueue, autoQueueSettingsPosition,
-      autoQueueDownloadsOn, globalTheme } = this.global
+    const { addCurrentItemNextInQueue, autoQueueSettingsPosition, autoQueueDownloadsOn, globalTheme } = this.global
     const isDarkMode = globalTheme === darkTheme
 
     const autoQueueOptionSelected = PV.Queue.autoQueuePositionOptions.find((option: any) => {

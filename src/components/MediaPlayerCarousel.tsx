@@ -434,8 +434,9 @@ const mediaPlayerCarouselComponents = (
           {accessibilityItemSelectedValue === _commentsKey && hasComments && (
             <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />
           )}
-          {accessibilityItemSelectedValue === _transcriptKey && hasTranscript
-            && <MediaPlayerCarouselTranscripts width={screenWidth} />}
+          {accessibilityItemSelectedValue === _transcriptKey && hasTranscript && (
+            <MediaPlayerCarouselTranscripts width={screenWidth} />
+          )}
           {accessibilityItemSelectedValue === _chatRoomKey && hasChat && (
             <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />
           )}
