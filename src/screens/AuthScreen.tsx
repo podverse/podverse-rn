@@ -1,6 +1,6 @@
 import { Alert, Image, StyleSheet, View } from 'react-native'
 import React from 'reactn'
-import { Login, NavDismissIcon, ResetPassword, SafeAreaView, ScrollView, SignUp, Text } from '../components'
+import { Login, NavDismissIcon, ResetPassword, SafeAreaView, SignUp, Text } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { sendResetPassword } from '../services/auth'

@@ -90,7 +90,7 @@ export class ClipInfoView extends React.PureComponent<Props> {
                   {readableClipTime(startTime, endTime)}
                 </Text>
               </View>
-              {userId && userId === ownerId && (
+              {!!userId && userId === ownerId && (
                 <View accessible={false} style={styles.topEditButtonWrapper}>
                   <Icon
                     accessible={false}

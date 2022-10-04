@@ -3,7 +3,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { getFlatCategoryItems } from '../services/category'
-import { DropdownButton, Icon, Text } from './'
+import { DropdownButton, Text } from './'
 
 type Props = {
   accessible?: boolean

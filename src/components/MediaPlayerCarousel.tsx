@@ -3,7 +3,7 @@ import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
-import { checkIfHasSupportedCommentTag } from 'podverse-shared'
+import { checkIfHasSupportedCommentTag, Episode } from 'podverse-shared'
 import { PV } from '../resources'
 import { translate } from '../lib/i18n'
 import { audioCheckIfIsPlaying } from '../services/playerAudio'
@@ -55,6 +55,22 @@ const _transcriptKey = '_transcriptKey'
 const accessibilityNowPlayingInfo = {
   label: translate('Episode Summary'),
   value: _nowPlayingInfoKey
+}
+
+const checkIfHasChapters = (episode: Episode) => {
+  return !!episode?.chaptersUrl
+}
+
+const checkIfHasClips = (episode: Episode, addByRSSPodcastFeedUrl?: string) => {
+  return episode && !episode.liveItem && !addByRSSPodcastFeedUrl
+}
+
+const checkIfHasTranscript = (parsedTranscript: any) => {
+  return !!parsedTranscript
+}
+
+const checkIfHasChat = (episode: Episode) => {
+  return episode && episode.liveItem && !!episode.liveItem.chatIRCURL
 }
 
 export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
@@ -133,12 +149,12 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   _handleAccessibilitySelectChange = (selectedKey: string) => {
     const { parsedTranscript, player } = this.global
-    const { episode } = player
-    const hasChapters = episode?.chaptersUrl
-    const hasClips = !episode?.liveItem
+    const { episode, nowPlayingItem } = player
+    const hasChapters = checkIfHasChapters(episode)
+    const hasClips = checkIfHasClips(episode, nowPlayingItem?.addByRSSPodcastFeedUrl)
     const hasComments = !!checkIfHasSupportedCommentTag(episode)
-    const hasTranscript = !!parsedTranscript
-    const hasChat = !!episode?.liveItem?.chatIRCURL
+    const hasTranscript = checkIfHasTranscript(parsedTranscript)
+    const hasChat = checkIfHasChat(episode)
     const items = accessibilitySelectorItems(hasChapters, hasComments, hasTranscript, hasChat, hasClips)
     const accessibilityItemSelected = items.find((x) => x.value === selectedKey)
     this.setState({ accessibilityItemSelected })
@@ -159,14 +175,15 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { accessibilityItemSelected, activeIndex, boostIsSending, boostWasSent, explosionOrigin } = this.state
     const { parsedTranscript, player, screenReaderEnabled, session } = this.global
     const { episode, nowPlayingItem, playbackState } = player
-    const hasChapters = episode?.chaptersUrl
-    const hasClips = !episode?.liveItem
+    const hasChapters = checkIfHasChapters(episode)
+    const hasClips = checkIfHasClips(episode, nowPlayingItem?.addByRSSPodcastFeedUrl)
     const hasComments = !!checkIfHasSupportedCommentTag(episode)
-    const hasTranscript = !!parsedTranscript
-    const hasChat = !!episode?.liveItem?.chatIRCURL
+    const hasTranscript = checkIfHasTranscript(parsedTranscript)
+    const hasChat = checkIfHasChat(episode)
 
-    const { activeProvider, activeProviderSettings } = 
-      v4vGetActiveProviderInfo(getBoostagramItemValueTags(nowPlayingItem))
+    const { activeProvider, activeProviderSettings } = v4vGetActiveProviderInfo(
+      getBoostagramItemValueTags(nowPlayingItem)
+    )
     const { boostAmount, streamingAmount } = activeProviderSettings || {}
     const { streamingValueOn } = session.v4v
 
@@ -191,9 +208,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       ? [styles.boostButtonSubText, { color: PV.Colors.green }]
       : [styles.boostButtonSubText]
 
-    const hasValueInfo =
-      nowPlayingItem?.episodeValue?.length > 0 ||
-      nowPlayingItem?.podcastValue?.length > 0
+    const hasValueInfo = nowPlayingItem?.episodeValue?.length > 0 || nowPlayingItem?.podcastValue?.length > 0
 
     const carouselComponents = mediaPlayerCarouselComponents(
       this._handlePressClipInfo,
@@ -410,18 +425,20 @@ const mediaPlayerCarouselComponents = (
           {accessibilityItemSelectedValue === _episodeSummaryKey && (
             <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
           )}
-          {accessibilityItemSelectedValue === _chaptersKey && (
+          {accessibilityItemSelectedValue === _chaptersKey && hasChapters && (
             <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />
           )}
-          {accessibilityItemSelectedValue === _clipsKey && (
+          {accessibilityItemSelectedValue === _clipsKey && hasClips && (
             <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
           )}
-          {accessibilityItemSelectedValue === _commentsKey && (
+          {accessibilityItemSelectedValue === _commentsKey && hasComments && (
             <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />
           )}
-          {accessibilityItemSelectedValue === _transcriptKey && <MediaPlayerCarouselTranscripts width={screenWidth} />}
-          {accessibilityItemSelectedValue === _chatRoomKey && 
-            <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />}
+          {accessibilityItemSelectedValue === _transcriptKey && hasTranscript
+            && <MediaPlayerCarouselTranscripts width={screenWidth} />}
+          {accessibilityItemSelectedValue === _chatRoomKey && hasChat && (
+            <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />
+          )}
         </>
       ) : (
         <>

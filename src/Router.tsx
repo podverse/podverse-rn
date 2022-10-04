@@ -73,7 +73,7 @@ import { darkTheme } from './styles'
 import { PodcastInfoScreen } from './screens/PodcastInfoScreen'
 import { translate } from './lib/i18n'
 
-const defaultNavigationOptions = ({ navigation }) => {
+const defaultNavigationOptions = () => {
   return {
     headerStyle: { backgroundColor: PV.Colors.ink, shadowColor: 'transparent' },
     title: PV.Tabs.Podcasts.title,

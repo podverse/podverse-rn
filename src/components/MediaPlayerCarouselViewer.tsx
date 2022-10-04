@@ -182,7 +182,8 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
                 isAddByRSSPodcastLarger
                 key={imageUrl}
                 source={imageUrl}
-                styles={imageStyles} />
+                styles={imageStyles}
+              />
             </PressableWithOpacity>
           )}
         </RNView>

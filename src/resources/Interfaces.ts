@@ -90,6 +90,7 @@ export interface InitialState {
   autoDownloadSettings: any
   autoQueueSettings: any
   autoQueueSettingsPosition: AutoQueueSettingsPosition
+  autoQueueDownloadsOn: boolean
   downloadsActive: any
   downloadsArrayInProgress: any[]
   downloadsArrayFinished: any[]

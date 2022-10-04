@@ -1,6 +1,6 @@
 import { PVComment } from 'podverse-shared'
 import React from 'react'
-import { Alert, Linking } from 'react-native'
+import { Alert, Dimensions, Linking } from 'react-native'
 import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -10,6 +10,8 @@ type Props = {
   children?: React.ReactNode[]
   comment: PVComment
 }
+
+const screenHeight = Dimensions.get('screen').width
 
 export const Comment = ({ children, comment }: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
@@ -25,6 +27,11 @@ export const Comment = ({ children, comment }: Props) => {
     }
   }
 
+  const imageStyles = {
+    height: screenHeight * 0.9,
+    width: screenHeight * 0.9
+  }
+
   return (
     <View style={[styles.wrapper, globalTheme.flatList]}>
       <View style={styles.innerWrapper}>
@@ -36,7 +43,7 @@ export const Comment = ({ children, comment }: Props) => {
           <View style={styles.innerLinkWrapper}>
             <Text style={styles.content}>{content}</Text>
             <Text style={styles.published}>{readableDate(published, withTime)}</Text>
-            {isRoot && imageUrl && <FastImage styles={styles.rootImage} source={imageUrl} />}
+            {isRoot && imageUrl && <FastImage resizeMode='contain' styles={imageStyles} source={imageUrl} />}
           </View>
         </PressableWithOpacity>
       </View>

@@ -672,7 +672,6 @@
     "Ask to sync local podcasts with server": "Votre appareil est abonné à des podcasts qui ne sont pas enregistrés sur votre compte Premium. Voulez-vous les sauvegarder ?",
     "Sync podcasts": "Synchroniser les podcasts",
     "ARIA HINT - auto queue new episodes position": "Définissez si les nouveaux épisodes doivent être ajoutés au début ou à la fin de votre file d'attente lorsque la file d'attente automatique est activée pour un podcast.",
-    "Auto queue position helper text": "Définissez l'endroit où les nouveaux épisodes doivent être ajoutés à votre file d'attente lorsque la file d'attente automatique est activée pour un podcast.",
     "Yes save them": "Oui, les enregistrer",
     "_translatorsFieldExample": "Jeanne Dupont<https://jane.doe.homepage>,Jean Blogue,Juan Pérez<https://some.socialmedia/juan>",
     "Send Bitcoin donations and boostagrams": "Envoyer des dons en Bitcoins et des boostagrams (web uniquement)"

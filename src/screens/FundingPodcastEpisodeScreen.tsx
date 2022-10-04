@@ -1,16 +1,7 @@
 import { Alert, Linking, Pressable, StyleSheet } from 'react-native'
 import React from 'reactn'
 import AsyncStorage from '@react-native-community/async-storage'
-import {
-  Divider,
-  FastImage,
-  Icon,
-  NavDismissIcon,
-  PressableWithOpacity,
-  ScrollView,
-  Text,
-  View
-} from '../components'
+import { Divider, FastImage, Icon, NavDismissIcon, PressableWithOpacity, ScrollView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -20,18 +11,16 @@ import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../state/a
 import { images } from '../styles'
 
 type Props = any
-type State = {}
 
 const testIDPrefix = 'funding_podcast_episode_screen'
 
-export class FundingPodcastEpisodeScreen extends React.Component<Props, State> {
+export class FundingPodcastEpisodeScreen extends React.Component<Props> {
   constructor() {
     super()
     this.state = {}
   }
 
   static navigationOptions = ({ navigation }) => {
-
     return {
       headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
       title: translate('Funding'),
@@ -136,8 +125,7 @@ export class FundingPodcastEpisodeScreen extends React.Component<Props, State> {
     const hasValueInfo =
       (boostagramItem?.episodeValue && boostagramItem.episodeValue.length > 0) ||
       (boostagramItem.podcastValue && boostagramItem?.podcastValue.length > 0)
-    const { activeProvider } =
-      v4vGetActiveProviderInfo(getBoostagramItemValueTags(boostagramItem))
+    const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(boostagramItem))
 
     const podcastTitle = boostagramItem?.podcastTitle?.trim() || ''
     const episodeTitle = boostagramItem?.episodeTitle?.trim() || ''

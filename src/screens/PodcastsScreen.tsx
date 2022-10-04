@@ -26,7 +26,7 @@ import { translate } from '../lib/i18n'
 import { navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { resetAllAppKeychain } from '../lib/secutity'
-import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty } from '../lib/utility'
+import { getAppUserAgent, safeKeyExtractor, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
 import { v4vAlbyCheckConnectDeepLink } from '../services/v4v/providers/alby'
 import { getAutoDownloadsLastRefreshDate, handleAutoDownloadEpisodes } from '../services/autoDownloads'
@@ -54,7 +54,8 @@ import {
   playerLoadNowPlayingItem,
   playerUpdatePlaybackState,
   playerUpdatePlayerState,
-  showMiniPlayer
+  showMiniPlayer,
+  handleNavigateToPlayerScreen
 } from '../state/actions/player'
 import {
   combineWithAddByRSSPodcasts,
@@ -412,7 +413,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _handleDeepLinkClip = async (mediaRefId: string) => {
     if (mediaRefId) {
       const { navigation } = this.props
-      const { navigate } = navigation
 
       try {
         const currentItem = await getNowPlayingItem()
@@ -427,7 +427,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           }
         }
 
-        navigate(PV.RouteNames.PlayerScreen)
+        handleNavigateToPlayerScreen(navigation)
       } catch (error) {
         console.log(error)
       }
@@ -542,9 +542,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     this._handleInitialDefaultQuery()
 
-    // Set the appUserAgent one time on initialization, then retrieve from a constant
-    // using the getAppUserAgent method, or from the global state (for synchronous access).
-    await setAppUserAgent()
     const userAgent = getAppUserAgent()
     this.setGlobal({ userAgent })
     this.setState({ isLoadingMore: false }, () => {
@@ -846,7 +843,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleHiddenItemPress = async (selectedId, addByRSSPodcastFeedUrl, rowMap) => {
+  _handleHiddenItemPress = async (selectedId, addByRSSPodcastFeedUrl) => {
     const { queryFrom } = this.state
 
     let wasAlerted = false
@@ -1154,7 +1151,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     if (searchTitle) {
       const filteredResults = results[0].filter((serverPodcast: any) => {
         return !localPodcasts.some((localPodcast: any) => {
-          return checkIfContainsStringMatch(localPodcast?.title, serverPodcast?.title)
+          return localPodcast?.title === serverPodcast?.title
         })
       })
 

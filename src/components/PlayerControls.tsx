@@ -13,7 +13,6 @@ import {
   playerHandleSeekTo
 } from '../services/player'
 import {
-  playerLoadNowPlayingItem,
   playerPlayNextChapterOrQueueItem,
   playerPlayPreviousChapterOrReturnToBeginningOfTrack,
   playerSetPlaybackSpeed,

@@ -44,7 +44,7 @@ export class ResetPassword extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading, style, bottomButtons } = this.props
+    const { isLoading, bottomButtons } = this.props
     const { submitIsDisabled } = this.state
 
     return (

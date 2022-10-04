@@ -162,6 +162,7 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
           handleNavigationPress={() =>
             navigateToEpisodeScreenWithItem(navigation, convertToNowPlayingItem(item, null, null, userPlaybackPosition))
           }
+          hideDivider
           item={item}
           mediaFileDuration={mediaFileDuration}
           navigation={navigation}
@@ -262,8 +263,9 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
             extraData={flatListData}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
-            keyExtractor={(item: any, index: number) => safeKeyExtractor(
-              testIDPrefix, index, item?.clipId || item?.episodeId || item?.id)}
+            keyExtractor={(item: any, index: number) =>
+              safeKeyExtractor(testIDPrefix, index, item?.clipId || item?.episodeId || item?.id)
+            }
             noResultsMessage={translate('No playlist items found')}
             renderItem={this._renderItem}
           />

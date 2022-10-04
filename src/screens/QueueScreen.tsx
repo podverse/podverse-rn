@@ -1,4 +1,4 @@
-import { convertNowPlayingItemToEpisode, NowPlayingItem } from 'podverse-shared'
+import { NowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'

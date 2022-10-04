@@ -8,6 +8,7 @@ import 'moment/locale/es'
 import 'moment/locale/fr'
 import 'moment/locale/lt'
 import 'moment/locale/nb'
+import 'moment/locale/oc-lnc'
 import 'moment/locale/pt'
 import 'moment/locale/ru'
 import 'moment/locale/sv'
@@ -15,29 +16,23 @@ import 'moment/locale/tr'
 import { convertSecToHHMMSS } from 'podverse-shared'
 import { Platform } from 'react-native'
 import Config from 'react-native-config'
-import { getUserAgent } from 'react-native-device-info'
 import { PV } from '../resources'
 import { getLanguageTag, translate } from './i18n'
 const cheerio = require('react-native-cheerio')
 
-let userAgent = ''
-
-/*
- * getUserAgent sometimes crashes in the iOS simulator. This is apparently related
- * to parallel process handling, so we are trying to only call the getUserAgent
- * method once on app launch, then access that value in the userAgent constant.
- */
-export const setAppUserAgent = async () => {
-  try {
-    userAgent = await getUserAgent()
-  } catch (e) {
-    console.log('setAppUserAgent', e)
-  }
-}
-
 export const getAppUserAgent = () => {
+  /*
+    This will return device specific user agents as follows:
+    Podverse/iOS Mobile App
+    Podverse/Android Mobile App
+    Podverse/F-Droid Android Mobile App
+
+    NOTE: if a change to userAgent is made, make sure to update
+    the OPAWG definition so our user agents can be easily identified by other servers.
+    https://github.com/opawg/user-agents/blob/master/src/user-agents.json
+  */
   return `${Config.USER_AGENT_PREFIX || 'Unknown App'}/${`${Config.USER_AGENT_APP_TYPE}` ||
-    'Unknown App Type'}/${userAgent}`
+    'Unknown App Type'}`
 }
 
 export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
@@ -52,7 +47,7 @@ export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
 export const readableDate = (date?: Date, withTime?: boolean) => {
   moment.locale(getLanguageTag())
   date = date || new Date()
-  const format = withTime ? 'MMM Do YYYY, h:mm:ss a' : 'MMM Do YYYY'
+  const format = withTime ? translate('_moment.js date with time format') : translate('_moment.js date format')
   return moment(date).format(format)
 }
 
