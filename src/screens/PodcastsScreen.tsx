@@ -983,14 +983,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
     let flatListData = []
     let flatListDataTotalCount = null
     if (isLoadingMore && queryFrom === PV.Filters._subscribedKey) {
-      console.log('_getFlatListData1')
       // do nothing
     } else if (queryFrom === PV.Filters._subscribedKey) {
-      console.log('_getFlatListData2')
       flatListData = subscribedPodcasts
       flatListDataTotalCount = subscribedPodcastsTotalCount
     } else {
-      console.log('_getFlatListData3')
       flatListData = this.state.flatListData
       flatListDataTotalCount = this.state.flatListDataTotalCount
     }
@@ -1026,11 +1023,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const isCategoryScreen = queryFrom === PV.Filters._categoryKey
 
     const { flatListData, flatListDataTotalCount } = this._getFlatListData()
-
-    console.log('queryFrom', queryFrom)
-    console.log('querySort', querySort)
-    console.log('flatListData', flatListData)
-    console.log('flatListDataTotalCount', flatListDataTotalCount)
 
     return (
       <View style={styles.view} testID={`${testIDPrefix}_view`}>
@@ -1203,6 +1195,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       ...nextState
     } as State
 
+    let shouldCleanFlatListData = true
+
     try {
       const {
         searchBarText: searchTitle,
@@ -1222,9 +1216,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const isDownloadedSelected = filterKey === PV.Filters._downloadedKey || queryFrom === PV.Filters._downloadedKey
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
+
       if (isSubscribedSelected) {
         if (!preventParseCustomRSSFeeds) {
           await getAuthUserInfo() // get the latest subscribedPodcastIds first
+          shouldCleanFlatListData = false
         }
         await this._querySubscribedPodcasts(preventAutoDownloading, preventParseCustomRSSFeeds)
       } else if (isCustomFeedsSelected) {
@@ -1281,7 +1277,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
       console.log('PodcastsScreen _queryData error', error)
     }
 
-    newState.flatListData = this.cleanFlatListData(newState.flatListData)
+    if (shouldCleanFlatListData) {
+      newState.flatListData = this.cleanFlatListData(newState.flatListData)
+    }
 
     this.shouldLoad = true
 
