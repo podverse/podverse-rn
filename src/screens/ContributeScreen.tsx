@@ -13,15 +13,15 @@ type Props = {
   navigation?: any
 }
 
-const testIDPrefix = 'support_screen'
+const testIDPrefix = 'contribute_screen'
 
-export class SupportScreen extends React.Component<Props> {
+export class ContributeScreen extends React.Component<Props> {
   static navigationOptions = () => ({
-    title: translate('Support')
+    title: translate('Contribute')
   })
 
   componentDidMount() {
-    trackPageView('/support', 'Support Screen')
+    trackPageView('/contribute', 'Contribute Screen')
   }
 
   handleFollowLink = (url: string) => {
@@ -36,7 +36,7 @@ export class SupportScreen extends React.Component<Props> {
   }
 
   showYourSupport = () => {
-    this.handleFollowLink('https://podverse.fm/support')
+    this.handleFollowLink('https://podverse.fm/contribute')
   }
 
   joinOurDiscordServer = () => {
@@ -72,9 +72,8 @@ export class SupportScreen extends React.Component<Props> {
             text={translate('Show your support')}
           />
           <Divider style={styles.divider} />
-          <Text style={styles.headerText}>Contribute</Text>
-          <Text style={styles.text}>Here is a partial list of tasks we could use help with:</Text>
-          <Text style={styles.listText}>- Share with friends and family!</Text>
+          <Text style={styles.textTop}>Here is a partial list of tasks we would appreciate help with:</Text>
+          <Text style={styles.listText}>- Share with friends and family</Text>
           <Text style={styles.listText}>- Translations</Text>
           <Text style={styles.listText}>- QA Testing</Text>
           <Text style={styles.listText}>- Graphic Design</Text>
@@ -84,8 +83,8 @@ export class SupportScreen extends React.Component<Props> {
           <Text style={styles.listText}>- Creating Memes</Text>
           <Text style={styles.listText}>- Other ideas?</Text>
           <Text style={styles.text}>
-            If you are interested in contributing to Podverse, please join our official XMPP chat server, Discord
-            server, or send us an email!
+            If you are interested in contributing to Podverse, please join our Discord
+            server, or send us an email. Thank you ❤️
           </Text>
           <TextLink
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -132,6 +131,12 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: PV.Fonts.sizes.xl,
+    paddingVertical: 4,
+    marginBottom: 8
+  },
+  textTop: {
+    fontSize: PV.Fonts.sizes.xl,
+    marginTop: 16,
     paddingVertical: 4,
     marginBottom: 8
   },
