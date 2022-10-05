@@ -84,6 +84,7 @@ type State = {
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
+  isInitialLoadFinished: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
   isUnsubscribing: boolean
@@ -137,6 +138,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
+      isInitialLoadFinished: false,
       isLoadingMore: true,
       isRefreshing: false,
       isUnsubscribing: false,
@@ -658,7 +660,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
             preventAutoDownloading,
             preventParseCustomRSSFeeds
           )
-          this.setState(newState)
+          this.setState({
+            ...newState,
+            isInitialLoadFinished: true
+          })
         })()
       }
     )
@@ -978,11 +983,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
     let flatListData = []
     let flatListDataTotalCount = null
     if (isLoadingMore && queryFrom === PV.Filters._subscribedKey) {
+      console.log('_getFlatListData1')
       // do nothing
     } else if (queryFrom === PV.Filters._subscribedKey) {
+      console.log('_getFlatListData2')
       flatListData = subscribedPodcasts
       flatListDataTotalCount = subscribedPodcastsTotalCount
     } else {
+      console.log('_getFlatListData3')
       flatListData = this.state.flatListData
       flatListDataTotalCount = this.state.flatListDataTotalCount
     }
@@ -996,6 +1004,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const {
+      isInitialLoadFinished,
       isLoadingMore,
       isRefreshing,
       queryFrom,
@@ -1017,6 +1026,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const isCategoryScreen = queryFrom === PV.Filters._categoryKey
 
     const { flatListData, flatListDataTotalCount } = this._getFlatListData()
+
+    console.log('queryFrom', queryFrom)
+    console.log('querySort', querySort)
+    console.log('flatListData', flatListData)
+    console.log('flatListDataTotalCount', flatListDataTotalCount)
 
     return (
       <View style={styles.view} testID={`${testIDPrefix}_view`}>
@@ -1047,6 +1061,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               queryFrom !== PV.Filters._downloadedKey &&
               queryFrom !== PV.Filters._customFeedsKey
             }
+            disableNoResultsMessage={!isInitialLoadFinished}
             extraData={flatListData}
             handleNoResultsTopAction={!!Config.CURATOR_EMAIL ? this._navToRequestPodcastEmail : null}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
