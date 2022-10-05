@@ -60,7 +60,7 @@ export const RouteNames = {
   SettingsScreenTracking: 'SettingsScreenTracking',
   SleepTimerScreen: 'SleepTimerScreen',
   StartPodcastFromTimeScreen: 'StartPodcastFromTimeScreen',
-  SupportScreen: 'SupportScreen',
+  ContributeScreen: 'ContributeScreen',
   TabNavigator: 'TabNavigator',
   TermsOfServiceScreen: 'TermsOfServiceScreen',
   TrackingConsentScreen: 'TrackingConsentScreen',

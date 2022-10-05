@@ -19,6 +19,9 @@ export const DeepLinks = {
   Contact: {
     path: 'contact'
   },
+  Contribute: {
+    path: 'contribute'
+  },
   Episode: {
     path: 'episode/:episodeId',
     pathPrefix: 'episode'
@@ -49,9 +52,6 @@ export const DeepLinks = {
   },
   Search: {
     path: 'search'
-  },
-  Support: {
-    path: 'support'
   },
   Terms: {
     path: 'terms'

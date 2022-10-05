@@ -501,9 +501,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         } else if (path === PV.DeepLinks.Membership.path) {
           await navigate(PV.RouteNames.MoreScreen)
           await navigate(PV.RouteNames.MembershipScreen)
-        } else if (path === PV.DeepLinks.Support.path) {
+        } else if (path === PV.DeepLinks.Contribute.path) {
           await navigate(PV.RouteNames.MoreScreen)
-          await navigate(PV.RouteNames.SupportScreen)
+          await navigate(PV.RouteNames.ContributeScreen)
         } else if (path === PV.DeepLinks.Terms.path) {
           await navigate(PV.RouteNames.MoreScreen)
           await navigate(PV.RouteNames.TermsOfServiceScreen)
