@@ -43,7 +43,7 @@ export const getEpisodesAndLiveItems = async (query: any, podcastId: string) => 
     const { currentlyLive, scheduled } = await getPublicLiveItemsByPodcastId(podcastId)
     combinedEpisodesData = [...currentlyLive, ...episodesData]
     scheduledLiveItems = [...currentlyLive, ...scheduled]
-    combinedCount = combinedEpisodesData.length
+    combinedCount = combinedCount + scheduledLiveItems.length
   }
 
   return {
