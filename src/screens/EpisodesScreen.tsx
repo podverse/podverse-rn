@@ -140,11 +140,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     const savedQuery = await getSavedQueryEpisodesScreen()
 
     if (savedQuery?.queryFrom && savedQuery?.querySort) {
-      const nonCategoryFilters = [
-        PV.Filters._allPodcastsKey,
-        PV.Filters._downloadedKey,
-        PV.Filters._subscribedKey
-      ]
+      const nonCategoryFilters = [PV.Filters._allPodcastsKey, PV.Filters._downloadedKey, PV.Filters._subscribedKey]
       if (nonCategoryFilters.includes(savedQuery.queryFrom)) {
         const { queryFrom, querySort } = savedQuery
         this.setState({ querySort }, () => {
@@ -225,10 +221,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       },
       () => {
         (async () => {
-          await setSavedQueryEpisodesScreen(
-            selectedKey,
-            sort
-          )
+          await setSavedQueryEpisodesScreen(selectedKey, sort)
 
           const newState = await this._queryData(selectedKey)
           this.setState(newState)
@@ -256,10 +249,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       },
       () => {
         (async () => {
-          await setSavedQueryEpisodesScreen(
-            this.state.queryFrom,
-            selectedKey
-          )
+          await setSavedQueryEpisodesScreen(this.state.queryFrom, selectedKey)
 
           const newState = await this._queryData(selectedKey)
           this.setState(newState)
@@ -300,8 +290,8 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
           await setSavedQueryEpisodesScreen(
             PV.Filters._categoryKey,
             sort,
-            !isCategorySub && selectedKey || '',
-            isCategorySub && selectedKey || ''
+            (!isCategorySub && selectedKey) || '',
+            (isCategorySub && selectedKey) || ''
           )
 
           const newState = await this._queryData(selectedKey, { isCategorySub })

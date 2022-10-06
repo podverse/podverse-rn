@@ -31,8 +31,7 @@ export const getAppUserAgent = () => {
     the OPAWG definition so our user agents can be easily identified by other servers.
     https://github.com/opawg/user-agents/blob/master/src/user-agents.json
   */
-  return `${Config.USER_AGENT_PREFIX || 'Unknown App'}/${`${Config.USER_AGENT_APP_TYPE}` ||
-    'Unknown App Type'}`
+  return `${Config.USER_AGENT_PREFIX || 'Unknown App'}/${`${Config.USER_AGENT_APP_TYPE}` || 'Unknown App Type'}`
 }
 
 export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {

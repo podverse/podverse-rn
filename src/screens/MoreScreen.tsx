@@ -69,9 +69,9 @@ export class MoreScreen extends React.Component<Props, State> {
         routeName: PV.RouteNames.ContactScreen
       },
       {
-        title: translate('Support'),
+        title: translate('Contribute'),
         key: _supportKey,
-        routeName: PV.RouteNames.SupportScreen
+        routeName: PV.RouteNames.ContributeScreen
       },
       {
         title: translate('About'),

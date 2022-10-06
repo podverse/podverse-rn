@@ -146,11 +146,11 @@ export const combineWithAddByRSSPodcasts = async (sort?: string | null) => {
     const sortedPodcasts = combinedPodcasts.sort(function(a, b) {
       return new Date(b.lastEpisodePubDate) - new Date(a.lastEpisodePubDate)
     })
-      
+
     return [
       ...sortedPodcasts.filter((podcast: Podcast) => podcast?.latestLiveItemStatus === 'live'),
       ...sortedPodcasts.filter((podcast: Podcast) => podcast?.latestLiveItemStatus !== 'live')
-    ] 
+    ]
   } else {
     return sortPodcastArrayAlphabetically(combinedPodcasts)
   }

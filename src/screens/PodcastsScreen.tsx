@@ -84,6 +84,7 @@ type State = {
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
+  isInitialLoadFinished: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
   isUnsubscribing: boolean
@@ -137,6 +138,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
+      isInitialLoadFinished: false,
       isLoadingMore: true,
       isRefreshing: false,
       isUnsubscribing: false,
@@ -499,9 +501,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         } else if (path === PV.DeepLinks.Membership.path) {
           await navigate(PV.RouteNames.MoreScreen)
           await navigate(PV.RouteNames.MembershipScreen)
-        } else if (path === PV.DeepLinks.Support.path) {
+        } else if (path === PV.DeepLinks.Contribute.path) {
           await navigate(PV.RouteNames.MoreScreen)
-          await navigate(PV.RouteNames.SupportScreen)
+          await navigate(PV.RouteNames.ContributeScreen)
         } else if (path === PV.DeepLinks.Terms.path) {
           await navigate(PV.RouteNames.MoreScreen)
           await navigate(PV.RouteNames.TermsOfServiceScreen)
@@ -658,7 +660,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
             preventAutoDownloading,
             preventParseCustomRSSFeeds
           )
-          this.setState(newState)
+          this.setState({
+            ...newState,
+            isInitialLoadFinished: true
+          })
         })()
       }
     )
@@ -996,6 +1001,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const {
+      isInitialLoadFinished,
       isLoadingMore,
       isRefreshing,
       queryFrom,
@@ -1047,6 +1053,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               queryFrom !== PV.Filters._downloadedKey &&
               queryFrom !== PV.Filters._customFeedsKey
             }
+            disableNoResultsMessage={!isInitialLoadFinished}
             extraData={flatListData}
             handleNoResultsTopAction={!!Config.CURATOR_EMAIL ? this._navToRequestPodcastEmail : null}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
@@ -1188,6 +1195,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       ...nextState
     } as State
 
+    let shouldCleanFlatListData = true
+
     try {
       const {
         searchBarText: searchTitle,
@@ -1207,9 +1216,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const isDownloadedSelected = filterKey === PV.Filters._downloadedKey || queryFrom === PV.Filters._downloadedKey
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
+
       if (isSubscribedSelected) {
         if (!preventParseCustomRSSFeeds) {
           await getAuthUserInfo() // get the latest subscribedPodcastIds first
+          shouldCleanFlatListData = false
         }
         await this._querySubscribedPodcasts(preventAutoDownloading, preventParseCustomRSSFeeds)
       } else if (isCustomFeedsSelected) {
@@ -1266,7 +1277,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
       console.log('PodcastsScreen _queryData error', error)
     }
 
-    newState.flatListData = this.cleanFlatListData(newState.flatListData)
+    if (shouldCleanFlatListData) {
+      newState.flatListData = this.cleanFlatListData(newState.flatListData)
+    }
 
     this.shouldLoad = true
 
