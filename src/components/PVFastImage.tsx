@@ -62,7 +62,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
       const savedImageResults = await getSavedImageUri(source)
       if (savedImageResults.exists) {
         this.setState({ hasError: false, localImageSource: savedImageResults }, () => {
-          ;(async () => {
+          (async () => {
             await downloadImageFile(source)
             const latestSavedImageResults = await getSavedImageUri(source)
             this.setState({
@@ -92,9 +92,18 @@ export class PVFastImage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { accessible = false, allowFullView, isAddByRSSPodcast, isAddByRSSPodcastLarger,
-      newContentCount, placeholderLabel, resizeMode = 'contain', source, styles,
-      valueTags } = this.props
+    const {
+      accessible = false,
+      allowFullView,
+      isAddByRSSPodcast,
+      isAddByRSSPodcastLarger,
+      newContentCount,
+      placeholderLabel,
+      resizeMode = 'contain',
+      source,
+      styles,
+      valueTags
+    } = this.props
     const { hasError, localImageSource } = this.state
     const { hideNewEpisodesBadges, globalTheme, session, userAgent } = this.global
     const showLightningIcons = session?.v4v?.showLightningIcons
@@ -113,8 +122,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     }
     const isSvg = imageSource && imageSource.endsWith('.svg')
 
-    const addByRSSText = isAddByRSSPodcastLarger
-      ? translate('Added by RSS') : translate('RSS')
+    const addByRSSText = isAddByRSSPodcastLarger ? translate('Added by RSS') : translate('RSS')
     const addByRSSTextStyle = isAddByRSSPodcastLarger ? defaultStyles.addByRSSTextLarger : defaultStyles.addByRSSText
 
     const image = isSvg ? (
@@ -166,6 +174,11 @@ export class PVFastImage extends React.PureComponent<Props, State> {
             {!!placeholderLabel && (
               <View style={defaultStyles.placeholderWrapper}>
                 <Text style={defaultStyles.placeholderLabel}>{placeholderLabel}</Text>
+              </View>
+            )}
+            {!!isAddByRSSPodcast && (
+              <View style={[globalTheme.view, defaultStyles.addByRSSWrapper]}>
+                <Text style={addByRSSTextStyle}>{addByRSSText}</Text>
               </View>
             )}
           </View>

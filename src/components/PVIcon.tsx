@@ -1,5 +1,5 @@
 import React from 'react'
-import { AccessibilityRole, Pressable, View as RNView } from 'react-native'
+import { AccessibilityRole, View as RNView } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
 import { ImportantForAccessibility } from '../lib/accessibilityHelpers'

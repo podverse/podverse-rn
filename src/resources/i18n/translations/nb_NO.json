@@ -676,7 +676,6 @@
     "Automatically add new episodes to queue": "Kølegg nye episoder automatisk",
     "Auto queue new episodes position": "Posisjon for automatisk kølegging av nye episoder",
     "ARIA HINT - auto queue new episodes position": "Kølegg på starten eller slutten av spillelister?",
-    "Auto queue position helper text": "Har kun innvirkning når automatisk kølegging er påskrudd for et nettradioopptak.",
     "Show Completed": "Vis fullførte",
     "Hide completed episodes by default": "Skjul fullførte episoder som forvalg",
     "Are you sure you want to delete the cache": "Slett hurtiglageret?",
@@ -724,5 +723,14 @@
     "RSS": "RSS",
     "ARIA HINT - clear the new episode indicators for only this podcast": "Fjern indikering av nye episoder for dette nettradioopptaket",
     "ARIA HINT - clear the new episode indicators for all podcasts": "Fjern indikering av nye episoder for alle nettradioopptak",
-    "Clear new episode indicators": "Fjern alle indikatorer om nye episoder"
+    "Clear new episode indicators": "Fjern alle indikatorer om nye episoder",
+    "Expired": "Utløpt",
+    "Extend Membership": "Utvid medlemskapet",
+    "You are not being charged during your free trial": "Du vil ikke bli belastet under gratisperioden, og din Podverse premium vil ikke fornyes automatisk.",
+    "Your premium membership is still valid": "Din Podverse premium er fremdeles gyldig. Hvis du vil ",
+    "Your membership is still valid": "Ditt Podverse premium er fremdeles gyldig. Du kan utvide det for 18 $ per år.",
+    "Your membership will not auto-renew": "Ditt Podverse premium vil ikke fornyes automatisk.",
+    "_moment.js date format": "Do MMM YYYY",
+    "_moment.js date with time format": "Do MMM YYYY h:mm:ss a",
+    "Auto-enqueue downloaded episodes": "Legg nedlastede episoder i kø"
 }

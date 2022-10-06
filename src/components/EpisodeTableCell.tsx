@@ -7,13 +7,14 @@ import { PV } from '../resources'
 import { images } from '../styles'
 import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
-import { FastImage, NewContentBadge, Text, View } from './'
+import { Divider, FastImage, NewContentBadge, Text, View } from './'
 
 type Props = {
   handleDeletePress?: any
   handleDownloadPress?: any
   handleMorePress?: any
   handleNavigationPress?: any
+  hideDivider?: boolean
   hideImage?: boolean
   item?: any
   mediaFileDuration?: number
@@ -32,6 +33,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       handleDownloadPress,
       handleMorePress,
       handleNavigationPress,
+      hideDivider,
       hideImage,
       item,
       mediaFileDuration,
@@ -57,8 +59,14 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       finalPubDate = liveItem.start
     }
 
-    const { downloadedEpisodeIds, downloadsActive, fontScaleMode, newEpisodesCount,
-      screenReaderEnabled, session } = this.global
+    const {
+      downloadedEpisodeIds,
+      downloadsActive,
+      fontScaleMode,
+      newEpisodesCount,
+      screenReaderEnabled,
+      session
+    } = this.global
     const { userInfo } = session
     const { historyItemsIndex } = userInfo
 
@@ -136,9 +144,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             </Text>
           </RNView>
         </RNView>
-        {isNewUnplayedEpisode && (
-          <NewContentBadge isNewUnplayedContent={isNewUnplayedEpisode} />
-        )}
+        {isNewUnplayedEpisode && <NewContentBadge isNewUnplayedContent={isNewUnplayedEpisode} />}
       </RNView>
     )
 
@@ -159,62 +165,65 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     return (
       <RNView>
-        {!shouldHideCompleted && (
-          <Pressable
-            accessible={screenReaderEnabled}
-            accessibilityHint={translate('ARIA HINT - tap to show options for this episode')}
-            accessibilityLabel={accessibilityLabel}
-            importantForAccessibility={screenReaderEnabled ? 'yes' : 'no-hide-descendants'}
-            onPress={screenReaderEnabled ? handleMorePress : null}
-            style={styles.wrapper}>
-            <RNView accessible={false} importantForAccessibility='no-hide-descendants' style={styles.wrapperTop}>
+        {(!shouldHideCompleted || !!liveItem) && (
+          <RNView>
+            <Pressable
+              accessible={screenReaderEnabled}
+              accessibilityHint={translate('ARIA HINT - tap to show options for this episode')}
+              accessibilityLabel={accessibilityLabel}
+              importantForAccessibility={screenReaderEnabled ? 'yes' : 'no-hide-descendants'}
+              onPress={screenReaderEnabled ? handleMorePress : null}
+              style={styles.wrapper}>
+              <RNView accessible={false} importantForAccessibility='no-hide-descendants' style={styles.wrapperTop}>
+                {handleNavigationPress && !screenReaderEnabled ? (
+                  <Pressable
+                    accessible={false}
+                    importantForAccessibility='no-hide-descendants'
+                    {...(!screenReaderEnabled ? { onPress: handleNavigationPress } : {})}
+                    style={{ flex: 1 }}
+                    {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
+                    {innerTopView}
+                  </Pressable>
+                ) : (
+                  innerTopView
+                )}
+                {!liveItem && (
+                  <DownloadOrDeleteButton
+                    isDownloaded={isDownloaded}
+                    isDownloading={isDownloading}
+                    onPressDelete={() => handleDeletePress(item)}
+                    onPressDownload={() => handleDownloadPress(item)}
+                    testID={testID}
+                  />
+                )}
+              </RNView>
               {handleNavigationPress && !screenReaderEnabled ? (
                 <Pressable
                   accessible={false}
                   importantForAccessibility='no-hide-descendants'
                   {...(!screenReaderEnabled ? { onPress: handleNavigationPress } : {})}
-                  style={{ flex: 1 }}
-                  {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
-                  {innerTopView}
+                  {...(testID ? { testID: `${testID}_bottom_view_nav`.prependTestId() } : {})}>
+                  <RNView>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</RNView>
                 </Pressable>
               ) : (
-                innerTopView
+                bottomText
               )}
-              {!liveItem && (
-                <DownloadOrDeleteButton
-                  isDownloaded={isDownloaded}
-                  isDownloading={isDownloading}
-                  onPressDelete={() => handleDeletePress(item)}
-                  onPressDownload={() => handleDownloadPress(item)}
+              <View style={styles.timeRemainingWrapper}>
+                <TimeRemainingWidget
+                  episodeCompleted={episodeCompleted}
+                  handleMorePress={handleMorePress}
+                  item={item}
+                  itemType='episode'
+                  mediaFileDuration={mediaFileDuration}
+                  navigation={navigation}
                   testID={testID}
+                  timeLabel={timeLabel}
+                  userPlaybackPosition={userPlaybackPosition}
                 />
-              )}
-            </RNView>
-            {handleNavigationPress && !screenReaderEnabled ? (
-              <Pressable
-                accessible={false}
-                importantForAccessibility='no-hide-descendants'
-                {...(!screenReaderEnabled ? { onPress: handleNavigationPress } : {})}
-                {...(testID ? { testID: `${testID}_bottom_view_nav`.prependTestId() } : {})}>
-                <RNView>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</RNView>
-              </Pressable>
-            ) : (
-              bottomText
-            )}
-            <View style={styles.timeRemainingWrapper}>
-              <TimeRemainingWidget
-                episodeCompleted={episodeCompleted}
-                handleMorePress={handleMorePress}
-                item={item}
-                itemType='episode'
-                mediaFileDuration={mediaFileDuration}
-                navigation={navigation}
-                testID={testID}
-                timeLabel={timeLabel}
-                userPlaybackPosition={userPlaybackPosition}
-              />
-            </View>
-          </Pressable>
+              </View>
+            </Pressable>
+            {!hideDivider && <Divider style={{ marginHorizontal: 10 }} />}
+          </RNView>
         )}
       </RNView>
     )

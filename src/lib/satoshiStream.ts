@@ -4,7 +4,7 @@
 // 7629169: SatoshiStreamStatsPodcast // the "podcast" subject according to SatoshiStream spec
 // 7629175: SatoshiStreamStatsPodcastIndexId // the Podcast Index feedId for the podcast
 
-import { NowPlayingItem, SatoshiStreamStats } from 'podverse-shared'
+import { SatoshiStreamStats } from 'podverse-shared'
 import { getGlobal } from 'reactn'
 import Config from 'react-native-config'
 import { translate } from './i18n'
@@ -25,8 +25,7 @@ export const createSatoshiStreamStats = (
 ) => {
   const podcast = podcastTitle || translate('Untitled Podcast')
   const episode = episodeTitle || translate('Untitled Episode')
-  const podcastIndexId =
-    (podcastIndexPodcastId && parseInt(podcastIndexPodcastId, 10)) || null
+  const podcastIndexId = (podcastIndexPodcastId && parseInt(podcastIndexPodcastId, 10)) || null
   const ts = parseInt(currentPlaybackPosition, 10)
 
   const { name: senderName } = getGlobal().session.v4v.senderInfo

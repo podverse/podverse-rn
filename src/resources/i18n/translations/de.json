@@ -659,7 +659,6 @@
     "_translatorsField": "Übersetzer",
     "Live": "Live",
     "Auto queue new episodes position": "Neue Episoden automatisch in die Warteschlange einreihen",
-    "Auto queue position helper text": "Legen Sie fest, wo neue Episoden zu Ihrer Warteschlange hinzugefügt werden sollen, wenn die automatische Warteschlange für einen Podcast aktiviert ist.",
     "Automatically add new episodes to queue": "Automatisches Hinzufügen neuer Episoden zur Warteschlange",
     "Hide completed episodes by default": "Abgeschlossene Episoden standardmäßig ausblenden",
     "Login to enable podcast notifications": "Anmelden, um Podcast-Benachrichtigungen zu aktivieren",

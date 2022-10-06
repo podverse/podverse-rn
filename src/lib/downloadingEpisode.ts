@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
+import { handleAutoQueueDownloadingEpisode } from '../services/autoQueue'
 
 type DownloadingEpisode = {
   id: string
@@ -16,6 +17,7 @@ export const addDownloadingEpisode = async (episode: any) => {
   if (episode && episode.id && !episodes.some((x: any) => x.id === episode.id)) {
     episodes.push(episode)
     await setDownloadingEpisodes(episodes)
+    handleAutoQueueDownloadingEpisode(episode)
   }
 }
 

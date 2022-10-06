@@ -216,8 +216,9 @@ export class HistoryScreen extends HistoryIndexListenerScreen<Props, State> {
             disableLeftSwipe
             extraData={historyItems}
             isLoadingMore={isLoadingMore}
-            keyExtractor={(item: any, index: number) => safeKeyExtractor(
-              testIDPrefix, index, item?.clipId || item?.episodeId || item?.id )}
+            keyExtractor={(item: any, index: number) =>
+              safeKeyExtractor(testIDPrefix, index, item?.clipId || item?.episodeId || item?.id)
+            }
             noResultsMessage={translate('No history items found')}
             onEndReached={this._onEndReached}
             renderItem={this._renderHistoryItem}

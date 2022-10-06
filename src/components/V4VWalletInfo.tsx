@@ -2,7 +2,6 @@ import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { _albyKey } from '../resources/V4V'
 import { v4vGetPluralCurrencyUnit } from '../services/v4v/v4v'
 import { V4VProviderConnectedState } from '../state/actions/v4v/v4v'
 import { Text, View } from '.'
@@ -14,10 +13,6 @@ type Props = {
 
 export const V4VWalletInfo = (props: Props) => {
   const { provider } = props
-
-  const handleMoreInfoPress = () => {
-    console.log('handleMoreInfoPress')
-  }
 
   const balanceText = `${translate('Balance')}: ${provider.balance} ${v4vGetPluralCurrencyUnit(provider.unit)}`
 

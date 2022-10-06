@@ -13,7 +13,7 @@ type Props = {
 
 export const LightningIcon = (props: Props) => {
   const { showLightningIcons, testID = '', valueTags, wrapperStyles } = props
-  
+
   if (!showLightningIcons || !valueTags) return null
 
   const isLightningEnabled = getLightningKeysendValueItem(valueTags)

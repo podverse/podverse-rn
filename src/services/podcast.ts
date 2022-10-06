@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { getAuthorityFeedUrlFromArray } from 'podverse-shared'
+import { getAuthorityFeedUrlFromArray, Podcast } from 'podverse-shared'
 import { getGlobal } from 'reactn'
 import { setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedPodcast, removeDownloadedPodcast } from '../lib/downloadedPodcast'
@@ -143,9 +143,14 @@ export const combineWithAddByRSSPodcasts = async (sort?: string | null) => {
   const combinedPodcasts = [...subscribedPodcasts, ...addByRSSPodcasts]
 
   if (sort === PV.Filters._mostRecentKey) {
-    return combinedPodcasts.sort(function(a, b) {
+    const sortedPodcasts = combinedPodcasts.sort(function(a, b) {
       return new Date(b.lastEpisodePubDate) - new Date(a.lastEpisodePubDate)
     })
+
+    return [
+      ...sortedPodcasts.filter((podcast: Podcast) => podcast?.latestLiveItemStatus === 'live'),
+      ...sortedPodcasts.filter((podcast: Podcast) => podcast?.latestLiveItemStatus !== 'live')
+    ]
   } else {
     return sortPodcastArrayAlphabetically(combinedPodcasts)
   }
@@ -312,15 +317,5 @@ export const insertOrRemovePodcastFromAlphabetizedArray = (podcasts: any[], podc
     podcasts.push(podcast)
     sortPodcastArrayAlphabetically(podcasts)
     return podcasts
-  }
-}
-
-const addOrRemovePodcastIdFromArray = (podcastIds: any[], podcastId: string) => {
-  if (!Array.isArray(podcastIds)) return []
-  if (podcastIds.some((x) => x === podcastId)) {
-    return podcastIds.filter((x) => x !== podcastId)
-  } else {
-    podcastIds.push(podcastId)
-    return podcastIds
   }
 }

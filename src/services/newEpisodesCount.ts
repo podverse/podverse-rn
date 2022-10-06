@@ -31,11 +31,7 @@ export const getNewEpisodesCount = async () => {
   return data
 }
 
-const updateNewEpisodesCountEpisode = (
-  newEpisodesCount: any,
-  episodeId: string,
-  podcastId: string
-) => {
+const updateNewEpisodesCountEpisode = (newEpisodesCount: any, episodeId: string, podcastId: string) => {
   const podcastNewEpisodesCountData = newEpisodesCount?.[podcastId] || { count: 0, data: {} }
   if (podcastNewEpisodesCountData?.data?.[episodeId]) {
     return newEpisodesCount
@@ -48,20 +44,13 @@ const updateNewEpisodesCountEpisode = (
   }
 }
 
-export const handleUpdateNewEpisodesCountAddByRSS = async (
-  podcastId: string,
-  episodeIds: string[]
-) => {
+export const handleUpdateNewEpisodesCountAddByRSS = async (podcastId: string, episodeIds: string[]) => {
   let updatedNewEpisodesCount = await getNewEpisodesCount()
-  
+
   if (Array.isArray(episodeIds)) {
     for (const episodeId of episodeIds) {
       if (!podcastId || !episodeId) continue
-      updatedNewEpisodesCount = updateNewEpisodesCountEpisode(
-        updatedNewEpisodesCount,
-        episodeId,
-        podcastId
-      )
+      updatedNewEpisodesCount = updateNewEpisodesCountEpisode(updatedNewEpisodesCount, episodeId, podcastId)
     }
   }
 
@@ -84,13 +73,9 @@ export const handleUpdateNewEpisodesCount = async () => {
       const episodeId = newEpisode?.id
       if (!podcastId || !episodeId) continue
 
-      updatedNewEpisodesCount = updateNewEpisodesCountEpisode(
-        updatedNewEpisodesCount,
-        episodeId,
-        podcastId
-      )
+      updatedNewEpisodesCount = updateNewEpisodesCountEpisode(updatedNewEpisodesCount, episodeId, podcastId)
     }
-    
+
     await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA_2, JSON.stringify(updatedNewEpisodesCount))
   }
 
@@ -122,8 +107,7 @@ export const clearEpisodesCountForPodcastEpisode = async (podcastId: string, epi
   try {
     if (newEpisodesCount[podcastId]?.data?.[episodeId]) {
       delete newEpisodesCount[podcastId].data[episodeId]
-      newEpisodesCount[podcastId].count = newEpisodesCount[podcastId].count
-        ? newEpisodesCount[podcastId].count - 1 : 0
+      newEpisodesCount[podcastId].count = newEpisodesCount[podcastId].count ? newEpisodesCount[podcastId].count - 1 : 0
     }
 
     await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA_2, JSON.stringify(newEpisodesCount))

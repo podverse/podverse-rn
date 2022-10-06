@@ -249,7 +249,7 @@ const comparisonData = [
     column2: true,
     accessibilityLabel: translate('Download episodes'),
     videoUrl:
-      'https://peertube.podverse.fm/static/streaming-playlists/hls/04138079-cc99-41ae-8080-8a5ed34be417/d4760840-77d3-4ad7-b71c-3ab5856696a1-360-fragmented.mp4'
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/04138079-cc99-41ae-8080-8a5ed34be417/1a8cdb78-0065-40b8-8db8-62995724e7bc-1080-fragmented.mp4'
   },
   {
     text: translate('Audio livestreams'),
@@ -257,7 +257,7 @@ const comparisonData = [
     column2: true,
     accessibilityLabel: translate('Audio livestreams'),
     videoUrl:
-      'https://peertube.podverse.fm/static/streaming-playlists/hls/bbf6eb1c-46a0-407d-b1ef-682590885882/a4daf0f9-8e10-49ce-814b-43ecebbe10ac-360-fragmented.mp4'
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/bbf6eb1c-46a0-407d-b1ef-682590885882/ba490a30-5e85-41ea-aae7-72b8bc2aac75-828-fragmented.mp4'
   },
   {
     text: translate('Video playback'),
@@ -273,7 +273,7 @@ const comparisonData = [
     column2: true,
     accessibilityLabel: translate('Add custom RSS feeds'),
     videoUrl:
-      'https://peertube.podverse.fm/static/streaming-playlists/hls/8c6541ac-9523-42a9-9f6b-b8e1629720ee/8aa0df27-e695-4e17-8a19-6907892a05b6-360-fragmented.mp4'
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/8c6541ac-9523-42a9-9f6b-b8e1629720ee/e8eb02b6-eaa4-4ec7-a8fd-5380ca041b95-1080-fragmented.mp4'
   },
   {
     text: translate('Sleep timer'),
@@ -293,7 +293,9 @@ const comparisonData = [
     text: translate('Podcasting 2.0 chapters'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('Podcasting 2.0 chapters')
+    accessibilityLabel: translate('Podcasting 2.0 chapters'),
+    videoUrl:
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/2c27da49-6df8-4d86-9d4b-b617af5ef3dc/1f4bd85b-9749-433c-bc20-eda78cb38068-1080-fragmented.mp4'
   },
   {
     text: translate('Podcasting 2.0 cross-app comments'),
@@ -301,7 +303,7 @@ const comparisonData = [
     column2: true,
     accessibilityLabel: translate('Podcasting 2.0 cross-app comments'),
     videoUrl:
-      'https://peertube.podverse.fm/static/streaming-playlists/hls/e214c3a9-9c2e-4d70-9f88-c3820a7189df/83febd73-b612-4e92-bfb8-e55a438d1f44-360-fragmented.mp4'
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/e214c3a9-9c2e-4d70-9f88-c3820a7189df/1162def8-8c14-47d3-b77f-59856c14e067-1080-fragmented.mp4'
   },
   {
     text: translate('Podcasting 2.0 transcripts'),
@@ -339,7 +341,7 @@ const comparisonData = [
     column2: true,
     accessibilityLabel: translate('New episodes and livestream notifications'),
     videoUrl:
-      'https://peertube.podverse.fm/static/streaming-playlists/hls/bbf6eb1c-46a0-407d-b1ef-682590885882/a4daf0f9-8e10-49ce-814b-43ecebbe10ac-360-fragmented.mp4'
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/bbf6eb1c-46a0-407d-b1ef-682590885882/ba490a30-5e85-41ea-aae7-72b8bc2aac75-828-fragmented.mp4'
   },
   {
     text: translate('Create and share podcast clips'),
@@ -355,7 +357,7 @@ const comparisonData = [
     column2: true,
     accessibilityLabel: translate('Create and share playlists'),
     videoUrl:
-      'https://peertube.podverse.fm/static/streaming-playlists/hls/2a1d5f03-7415-4462-9758-738f7c93f68c/be7c693f-aab8-4da8-ac56-3672d636fef5-360-fragmented.mp4'
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/2a1d5f03-7415-4462-9758-738f7c93f68c/af4476db-8f7d-4e5f-8886-d03dfa2ef3e7-1080-fragmented.mp4'
   },
   {
     text: translate('Mark episodes as played'),
@@ -363,7 +365,7 @@ const comparisonData = [
     column2: true,
     accessibilityLabel: translate('Mark episodes as played'),
     videoUrl:
-      'https://peertube.podverse.fm/static/streaming-playlists/hls/ba616db8-9b46-436a-994f-383ff66576a2/9d0d8a84-5ae9-4fe1-b04b-c12a2a9a3350-360-fragmented.mp4'
+      'https://peertube.podverse.fm/static/streaming-playlists/hls/ba616db8-9b46-436a-994f-383ff66576a2/a8ab3251-31be-4005-b45e-081c72be7b67-1080-fragmented.mp4'
   },
   {
     text: translate('Subscribe to listener profiles'),

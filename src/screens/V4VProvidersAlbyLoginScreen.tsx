@@ -41,12 +41,7 @@ export class V4VProvidersAlbyLoginScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.wrapper}>
-        <WebView
-          overScrollMode='never'
-          removeClippedSubviews
-          source={{ uri: url }}
-          style={{ opacity: 0.99 }}
-        />
+        <WebView overScrollMode='never' removeClippedSubviews source={{ uri: url }} style={{ opacity: 0.99 }} />
       </View>
     )
   }

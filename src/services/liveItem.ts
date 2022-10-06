@@ -1,4 +1,4 @@
-import { LiveItem, Podcast } from 'podverse-shared'
+import { LiveItem } from 'podverse-shared'
 import { getEpisodes } from './episode'
 import { request } from './request'
 
@@ -35,6 +35,7 @@ export const getEpisodesAndLiveItems = async (query: any, podcastId: string) => 
   // TODO: Scheduled live shows should appear in their own section.
   const episodesResponse = await getEpisodes(query)
   const [episodesData, episodesDataCount] = episodesResponse
+  let combinedCount = episodesDataCount
   let combinedEpisodesData = episodesData
   let scheduledLiveItems: LiveItem[] = []
 
@@ -42,10 +43,11 @@ export const getEpisodesAndLiveItems = async (query: any, podcastId: string) => 
     const { currentlyLive, scheduled } = await getPublicLiveItemsByPodcastId(podcastId)
     combinedEpisodesData = [...currentlyLive, ...episodesData]
     scheduledLiveItems = [...currentlyLive, ...scheduled]
+    combinedCount = combinedCount + scheduledLiveItems.length
   }
 
   return {
-    combinedEpisodes: [combinedEpisodesData, episodesDataCount],
+    combinedEpisodes: [combinedEpisodesData, combinedCount],
     scheduledLiveItems
   }
 }

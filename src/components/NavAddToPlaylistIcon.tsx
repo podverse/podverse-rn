@@ -52,7 +52,7 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
     const isLoggedIn = safelyUnwrapNestedVariable(() => this.global.session.isLoggedIn, false)
     if (Config.DISABLE_ADD_TO_PLAYLIST || !isLoggedIn) return null
 
-    const { getEpisodeId, getMediaRefId, isModal, navigation } = this.props
+    const { getEpisodeId, getMediaRefId, navigation } = this.props
     const episodeId = getEpisodeId ? getEpisodeId() : null
     const mediaRefId = getMediaRefId ? getMediaRefId() : null
     const { showActionSheet } = this.state
@@ -83,8 +83,7 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
   }
 }
 
-const actionSheetButtons = (episodeId: string,
-  mediaRefId: string, navigation: any, handleDismiss: any) => [
+const actionSheetButtons = (episodeId: string, mediaRefId: string, navigation: any, handleDismiss: any) => [
   {
     key: 'episode',
     text: translate('Episode'),

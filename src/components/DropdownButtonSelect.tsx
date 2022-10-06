@@ -22,7 +22,7 @@ export const DropdownButtonSelect = (props: any) => {
   const accessibilityLabel = `${label}${helpText && !hideHelpTextInAccessibility ? `, ${helpText}` : ''}`
 
   const helpTextStyle = !!helpTextLarger ? styles.dropdownHelpTextLarger : styles.dropdownHelpText
-  
+
   return (
     <View style={[styles.dropdownWrapper, wrapperStyle]} transparent>
       <RNPickerSelect

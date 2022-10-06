@@ -25,8 +25,15 @@ type ComparisonTableProps = {
 }
 
 export const ComparisonTable = (props: ComparisonTableProps) => {
-  const { column1Title, column2Title, data, listHeaderComponent, 
-    mainTitle, mainTitleAccessibilityHint, navigation } = props
+  const {
+    column1Title,
+    column2Title,
+    data,
+    listHeaderComponent,
+    mainTitle,
+    mainTitleAccessibilityHint,
+    navigation
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (

@@ -217,7 +217,7 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
 //   const { nowPlayingItem } = globalState.player
 
 //   const valueTags = nowPlayingItem.episodeValue || nowPlayingItem.podcastValue || []
-  
+
 //   const { activeProviderSettings } = v4vGetActiveProviderInfo(valueTags)
 //   const { streamingAmount } = activeProviderSettings || {}
 

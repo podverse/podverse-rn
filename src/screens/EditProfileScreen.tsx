@@ -1,6 +1,14 @@
 import { Alert, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, Divider, DropdownButtonSelect, NavHeaderButtonText, Text, TextInput, View } from '../components'
+import {
+  ActivityIndicator,
+  Divider,
+  DropdownButtonSelect,
+  NavHeaderButtonText,
+  Text,
+  TextInput,
+  View
+} from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'

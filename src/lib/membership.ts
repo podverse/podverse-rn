@@ -46,17 +46,11 @@ export const getMembershipStatus = (user: any) => {
 }
 
 export const checkIfValidFreeTrialMembership = (membershipStatus: string) => {
-  return ![
-    PV.MembershipStatus.FREE_TRIAL,
-    PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON
-  ].includes(membershipStatus)
+  return ![PV.MembershipStatus.FREE_TRIAL, PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON].includes(membershipStatus)
 }
 
 export const checkIfExpiredMembership = (membershipStatus: string) => {
-  return [
-    PV.MembershipStatus.FREE_TRIAL_EXPIRED,
-    PV.MembershipStatus.PREMIUM_EXPIRED
-  ].includes(membershipStatus)
+  return [PV.MembershipStatus.FREE_TRIAL_EXPIRED, PV.MembershipStatus.PREMIUM_EXPIRED].includes(membershipStatus)
 }
 
 export const shouldShowMembershipAlert = (user: any) => {

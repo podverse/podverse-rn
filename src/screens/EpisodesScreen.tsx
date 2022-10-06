@@ -7,7 +7,6 @@ import React, { getGlobal } from 'reactn'
 import {
   ActionSheet,
   ActivityIndicator,
-  Divider,
   EpisodeTableCell,
   FlatList,
   SearchBar,
@@ -25,6 +24,7 @@ import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCate
 import { getEpisodes } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { combineEpisodesWithAddByRSSEpisodesLocally, hasAddByRSSEpisodesLocally } from '../services/parser'
+import { getSavedQueryEpisodesScreen, setSavedQueryEpisodesScreen } from '../services/savedQueryFilters'
 import { trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
@@ -137,7 +137,26 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     const hasInternetConnection = await hasValidNetworkConnection()
     const from = hasInternetConnection ? queryFrom : PV.Filters._downloadedKey
 
-    this.handleSelectFilterItem(from)
+    const savedQuery = await getSavedQueryEpisodesScreen()
+
+    if (savedQuery?.queryFrom && savedQuery?.querySort) {
+      const nonCategoryFilters = [PV.Filters._allPodcastsKey, PV.Filters._downloadedKey, PV.Filters._subscribedKey]
+      if (nonCategoryFilters.includes(savedQuery.queryFrom)) {
+        const { queryFrom, querySort } = savedQuery
+        this.setState({ querySort }, () => {
+          this.handleSelectFilterItem(queryFrom)
+        })
+      } else if (savedQuery.queryFrom === PV.Filters._categoryKey) {
+        const { querySort, selectedCategory, selectedCategorySub } = savedQuery
+        this.setState({ querySort }, () => {
+          const isCategorySub = !!selectedCategorySub
+          const categoryId = isCategorySub ? selectedCategorySub : selectedCategory
+          this._selectCategory(categoryId, isCategorySub)
+        })
+      }
+    } else {
+      this.handleSelectFilterItem(from)
+    }
 
     trackPageView('/episodes', 'Episodes Screen')
   }
@@ -202,6 +221,8 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       },
       () => {
         (async () => {
+          await setSavedQueryEpisodesScreen(selectedKey, sort)
+
           const newState = await this._queryData(selectedKey)
           this.setState(newState)
         })()
@@ -228,6 +249,8 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       },
       () => {
         (async () => {
+          await setSavedQueryEpisodesScreen(this.state.queryFrom, selectedKey)
+
           const newState = await this._queryData(selectedKey)
           this.setState(newState)
         })()
@@ -264,6 +287,13 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       },
       () => {
         (async () => {
+          await setSavedQueryEpisodesScreen(
+            PV.Filters._categoryKey,
+            sort,
+            (!isCategorySub && selectedKey) || '',
+            (isCategorySub && selectedKey) || ''
+          )
+
           const newState = await this._queryData(selectedKey, { isCategorySub })
           this.setState(newState)
         })()
@@ -332,8 +362,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     )
   }
 
-  _ItemSeparatorComponent = () => <Divider style={{ marginHorizontal: 10 }} />
-
   _handleCancelPress = () =>
     new Promise((resolve) => {
       this.setState({ showActionSheet: false }, resolve)
@@ -361,7 +389,10 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _renderEpisodeItem = ({ item, index }) => {
     const { navigation } = this.props
-    const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
+    const { completed, mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
+
+    const { hideCompleted } = this.global
+    const shouldHideCompleted = hideCompleted && completed
 
     return (
       <EpisodeTableCell
@@ -380,6 +411,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
         }}
         mediaFileDuration={mediaFileDuration}
         navigation={navigation}
+        shouldHideCompleted={shouldHideCompleted}
         showPodcastInfo
         testID={`${testIDPrefix}_episode_item_${index}`}
         userPlaybackPosition={userPlaybackPosition}
@@ -530,7 +562,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
             handleNoResultsTopAction={this._handleNoResultsTopAction}
             isLoadingMore={isLoadingMore}
             isRefreshing={isRefreshing}
-            ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
             {...(isCategoryScreen ? {} : { ListHeaderComponent: this._ListHeaderComponent })}
             noResultsMessage={

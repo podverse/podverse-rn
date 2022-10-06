@@ -64,10 +64,7 @@ export class PlayerScreen extends React.Component<Props> {
     const { episodeFunding, episodeValue, liveItem, podcastFunding, podcastValue } = nowPlayingItem
 
     const showFundingIcon =
-      podcastFunding?.length > 0 ||
-      episodeFunding?.length > 0 ||
-      episodeValue?.length > 0 ||
-      podcastValue?.length > 0
+      podcastFunding?.length > 0 || episodeFunding?.length > 0 || episodeValue?.length > 0 || podcastValue?.length > 0
 
     return {
       title: '',
@@ -225,12 +222,7 @@ export class PlayerScreen extends React.Component<Props> {
     })
   }
 
-  _handleShare = async (
-    podcastId?: string,
-    episodeId?: string,
-    mediaRefId?: string,
-    chapterId?: string
-  ) => {
+  _handleShare = async (podcastId?: string, episodeId?: string, mediaRefId?: string, chapterId?: string) => {
     let { nowPlayingItem } = this.global.player
     nowPlayingItem = nowPlayingItem || {}
     let url = ''
@@ -298,13 +290,7 @@ export class PlayerScreen extends React.Component<Props> {
             <PlayerControls navigation={navigation} />
             <ActionSheet
               handleCancelPress={this._dismissShareActionSheet}
-              items={shareActionSheetButtons(
-                podcastId,
-                episodeId,
-                mediaRefId,
-                chapterId,
-                this._handleShare
-              )}
+              items={shareActionSheetButtons(podcastId, episodeId, mediaRefId, chapterId, this._handleShare)}
               showModal={showShareActionSheet}
               testID={`${testIDPrefix}_share`}
             />
