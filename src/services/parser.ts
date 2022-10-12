@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { encode as btoa } from 'base-64'
+import pLimit from 'p-limit'
 import { checkIfContainsStringMatch, isValidDate } from 'podverse-shared'
 import * as RNKeychain from 'react-native-keychain'
 import { downloadEpisode } from '../lib/downloader'
@@ -167,20 +168,26 @@ export const parseAllAddByRSSPodcasts = async () => {
     getAutoDownloadSettings(),
     getAllPodcastCredentials()
   ])
-  const parsedPodcasts = []
+  const parsedPodcasts: any[] = []
   const finalParsedPodcasts = []
 
-  for (const url of urls) {
-    try {
-      const credentials = allAddByRSSPodcastCredentials[url] || ''
-      const parsedPodcast = await parseAddByRSSPodcast(url, credentials)
-      if (parsedPodcast) {
-        parsedPodcasts.push(parsedPodcast)
+  /* Parse up to 3 RSS feeds simultaneously */
+  const limitParallelDownloads = pLimit(3)
+  const promises = urls.map((url: string) => {
+    return limitParallelDownloads(async () => {
+      try {
+        const credentials = allAddByRSSPodcastCredentials[url] || ''
+        const parsedPodcast = await parseAddByRSSPodcast(url, credentials)
+        if (parsedPodcast) {
+          parsedPodcasts.push(parsedPodcast)
+        }
+      } catch (error) {
+        console.log('parseAllAddByRSSPodcasts url', url, error)
       }
-    } catch (error) {
-      console.log('parseAllAddByRSSPodcasts', error)
-    }
-  }
+    })
+  })
+
+  await Promise.all(promises)
 
   const localPodcasts = await getAddByRSSPodcastsLocally()
   for (const parsedPodcast of parsedPodcasts) {
