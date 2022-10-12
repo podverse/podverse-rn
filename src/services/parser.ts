@@ -171,8 +171,8 @@ export const parseAllAddByRSSPodcasts = async () => {
   const parsedPodcasts: any[] = []
   const finalParsedPodcasts = []
 
-  /* Parse up to 3 RSS feeds simultaneously */
-  const limitParallelDownloads = pLimit(3)
+  /* Parse up to 4 RSS feeds simultaneously */
+  const limitParallelDownloads = pLimit(4)
   const promises = urls.map((url: string) => {
     return limitParallelDownloads(async () => {
       try {
