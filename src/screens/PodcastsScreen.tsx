@@ -1107,7 +1107,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     await handleUpdateNewEpisodesCount()
 
     if (!preventParseCustomRSSFeeds) {
-      if (!searchBarText) await parseAllAddByRSSPodcasts()
+      if (!searchBarText && preventAutoDownloading) await parseAllAddByRSSPodcasts()
 
       await combineWithAddByRSSPodcasts(searchBarText, querySort)
     }
