@@ -257,6 +257,8 @@
   "Create and share podcast clips": "Create and share podcast clips",
   "Custom API domain": "Custom API domain",
   "Custom Feeds": "Custom Feeds",
+  "Custom RSS feeds to parse in parallel": "Custom RSS feeds to parse in parallel",
+  "Custom RSS feeds to parse in parallel helper text": "Parsing too many feeds in parallel may cause issues on some devices. 3 is recommended.",
   "Custom web domain": "Web domain",
   "Custom web domain subtext": "Custom domains to use an alternate server for your app data.",
   "Dark Mode": "Dark",

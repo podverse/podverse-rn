@@ -3,6 +3,7 @@ import { encode as btoa } from 'base-64'
 import pLimit from 'p-limit'
 import { checkIfContainsStringMatch, isValidDate } from 'podverse-shared'
 import * as RNKeychain from 'react-native-keychain'
+import { getGlobal } from 'reactn'
 import { downloadEpisode } from '../lib/downloader'
 import { downloadCustomFileNameId } from '../lib/hash'
 import { credentialsPlaceholderUsername } from '../lib/secutity'
@@ -171,8 +172,14 @@ export const parseAllAddByRSSPodcasts = async () => {
   const parsedPodcasts: any[] = []
   const finalParsedPodcasts = []
 
-  /* Parse up to 4 RSS feeds simultaneously */
-  const limitParallelDownloads = pLimit(4)
+  /* Parse up to X RSS feeds simultaneously */
+  const globalState = getGlobal()
+  const { customRSSParallelParserLimit } = globalState
+  const safeLimit = customRSSParallelParserLimit >= 1 && !isNaN(customRSSParallelParserLimit)
+    ? customRSSParallelParserLimit
+    : PV.CustomRSS.parallelParserDefaultLimit
+
+  const limitParallelDownloads = pLimit(safeLimit)
   const promises = urls.map((url: string) => {
     return limitParallelDownloads(async () => {
       try {
