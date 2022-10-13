@@ -32,6 +32,7 @@ import { v4vAlbyCheckConnectDeepLink } from '../services/v4v/providers/alby'
 import { getAutoDownloadsLastRefreshDate, handleAutoDownloadEpisodes } from '../services/autoDownloads'
 import { handleAutoQueueEpisodes } from '../services/autoQueue'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
+import { getCustomLaunchScreenKey } from '../services/customLaunchScreen'
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRef } from '../services/mediaRef'
@@ -529,7 +530,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _initializeScreenData = async () => {
+    const { navigation } = this.props
+    const { navigate } = navigation 
     const { searchBarText } = this.state
+
     await initPlayerState(this.global)
     await initializeSettings()
     await v4vInitializeShowLightningIcon()
@@ -543,10 +547,17 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const savedQuerySort = await getSavedQueryPodcastsScreenSort()
     await combineWithAddByRSSPodcasts(searchBarText, savedQuerySort)
 
+    /* Navigate to custom screen on app launch */
+    const customLaunchScreen = await getCustomLaunchScreenKey()
+    if (customLaunchScreen && PV.CustomLaunchScreen.nonDefaultValidScreenKeys.includes(customLaunchScreen)) {
+      navigate(customLaunchScreen)
+    }
+
     this._handleInitialDefaultQuery()
 
     const userAgent = getAppUserAgent()
     this.setGlobal({ userAgent })
+
     this.setState({ isLoadingMore: false }, () => {
       (async () => {
         let isLoggedIn = false
