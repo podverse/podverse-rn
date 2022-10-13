@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import messaging from '@react-native-firebase/messaging'
 import debounce from 'lodash/debounce'
-import { checkIfContainsStringMatch, convertToNowPlayingItem, createEmailLinkUrl } from 'podverse-shared'
+import { convertToNowPlayingItem, createEmailLinkUrl } from 'podverse-shared'
 import { Alert, AppState, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
 import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
@@ -259,6 +259,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.APP_MODE, PV.AppMode.podcasts),
           AsyncStorage.setItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP, 'TRUE'),
+          AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT, 'TRUE'),
           resetAllAppKeychain()
         ])
 
