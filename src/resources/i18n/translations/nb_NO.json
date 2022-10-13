@@ -733,5 +733,6 @@
     "_moment.js date format": "Do MMM YYYY",
     "_moment.js date with time format": "Do MMM YYYY h:mm:ss a",
     "Auto-enqueue downloaded episodes": "Legg nedlastede episoder i kø",
-    "Contribute": "Bidra"
+    "Contribute": "Bidra",
+    "This may take a while": "Dette kan ta sin tid …"
 }
