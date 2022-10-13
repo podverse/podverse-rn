@@ -4,11 +4,12 @@ import { StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
-import { ActivityIndicator, Button, Divider, ScrollView, SwitchWithText, View } from '../components'
+import { ActivityIndicator, Button, Divider, NumberSelectorWithText, ScrollView, SwitchWithText, View } from '../components'
 import { translate } from '../lib/i18n'
 import { deleteImageCache } from '../lib/storage'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
+import { setCustomRSSParallelParserLimit } from '../state/actions/customRSSParallelParserLimit'
 import { toggleHideNewEpisodesBadges } from '../state/actions/newEpisodesCount'
 import { setCensorNSFWText, setHideCompleted } from '../state/actions/settings'
 import { core, darkTheme, lightTheme } from '../styles'
@@ -18,6 +19,7 @@ type Props = {
 }
 
 type State = {
+  customRSSParallelParserLimit: string
   isLoading?: boolean
   showDeleteCacheDialog?: boolean
 }
@@ -28,7 +30,10 @@ export class SettingsScreenOther extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
+    const { customRSSParallelParserLimit } = this.global
+
     this.state = {
+      customRSSParallelParserLimit: customRSSParallelParserLimit?.toString(),
       isLoading: false,
       showDeleteCacheDialog: false
     }
@@ -62,6 +67,18 @@ export class SettingsScreenOther extends React.Component<Props, State> {
     })
   }
 
+  _handleChangeCustomRSSParallelParserLimit = (value: string) => {
+    this.setState({ customRSSParallelParserLimit: value })
+  }
+
+  _handleSetCustomRSSParallelParserLimit = () => {
+    const { customRSSParallelParserLimit } = this.state
+    const parsedLimit = parseInt(customRSSParallelParserLimit, 10)
+    const safeLimit = parsedLimit >= 1 && !isNaN(parsedLimit) ? parsedLimit : 3
+    this.setState({ customRSSParallelParserLimit: safeLimit.toString() })
+    setCustomRSSParallelParserLimit(safeLimit)
+  }
+
   _handleToggleDeleteCacheDialog = () => {
     this.setState({
       showDeleteCacheDialog: !this.state.showDeleteCacheDialog
@@ -88,8 +105,9 @@ export class SettingsScreenOther extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading, showDeleteCacheDialog } = this.state
-    const { censorNSFWText, globalTheme, hideCompleted, hideNewEpisodesBadges } = this.global
+    const { customRSSParallelParserLimit, isLoading, showDeleteCacheDialog } = this.state
+    const { censorNSFWText, globalTheme, hideCompleted,
+      hideNewEpisodesBadges } = this.global
 
     return (
       <ScrollView
@@ -137,6 +155,17 @@ export class SettingsScreenOther extends React.Component<Props, State> {
                 testID={`${testIDPrefix}_hide_new_episodes_badges`}
                 text={translate('Hide new episode count badges')}
                 value={!!hideNewEpisodesBadges}
+              />
+            </View>
+            <View style={core.itemWrapper}>
+              <NumberSelectorWithText
+                accessibilityLabel={`${translate('Custom RSS feeds to parse in parallel')}`}
+                handleChangeText={this._handleChangeCustomRSSParallelParserLimit}
+                handleSubmitEditing={this._handleSetCustomRSSParallelParserLimit}
+                selectedNumber={customRSSParallelParserLimit}
+                subText={translate('Custom RSS feeds to parse in parallel helper text')}
+                testID={`${testIDPrefix}_custom_rss_parallel_parser_limit`}
+                text={translate('Custom RSS feeds to parse in parallel')}
               />
             </View>
             <Divider />

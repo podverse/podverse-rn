@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
+import { getCustomRSSParallelParserLimit } from '../../services/customRSSParallelParserLimit'
 import {
   setPlayerJumpBackwards as setPlayerJumpBackwardsService,
   setPlayerJumpForwards as setPlayerJumpForwardsService,
@@ -24,7 +25,8 @@ export const initializeSettings = async () => {
     jumpBackwardsTime,
     jumpForwardsTime,
     addCurrentItemNextInQueue,
-    podcastsGridViewEnabled
+    podcastsGridViewEnabled,
+    customRSSParallelParserLimit
   ] = await Promise.all([
     AsyncStorage.getItem(PV.Keys.CENSOR_NSFW_TEXT),
     AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN),
@@ -40,11 +42,13 @@ export const initializeSettings = async () => {
     AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_BACKWARDS),
     AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_FORWARDS),
     AsyncStorage.getItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE),
-    AsyncStorage.getItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED)
+    AsyncStorage.getItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED),
+    getCustomRSSParallelParserLimit()
   ])
 
   setGlobal({
     censorNSFWText,
+    customRSSParallelParserLimit,
     customAPIDomain: customAPIDomain ? customAPIDomain : PV.URLs.apiDefaultBaseUrl,
     customAPIDomainEnabled: customAPIDomainEnabled === 'TRUE',
     customWebDomain: customWebDomain ? customWebDomain : PV.URLs.webDefaultBaseUrl,

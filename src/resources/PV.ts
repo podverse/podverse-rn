@@ -3,6 +3,7 @@ import { Alerts } from './Alerts'
 import { AlertStatuses } from './AlertStatuses'
 import { AppMode } from './AppMode'
 import { Colors } from './Colors'
+import { CustomRSS } from './CustomRSS'
 import { DeepLinks } from './DeepLinks'
 import { Dimensions } from './Dimensions'
 import { Emails } from './Emails'
@@ -37,6 +38,7 @@ export const PV = {
   AlertStatuses,
   AppMode,
   Colors,
+  CustomRSS,
   DeepLinks,
   Dimensions,
   Emails,
