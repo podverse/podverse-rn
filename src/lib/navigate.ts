@@ -39,6 +39,7 @@ export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
       NavigationActions.navigate({
         routeName: PV.RouteNames.EpisodeScreen,
         params: {
+          addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
           episodeId: item.episodeId,
           episode,
           includeGoToPodcast: true
@@ -65,6 +66,7 @@ export const navigateToEpisodeScreenWithItemInCurrentStack = (
     NavigationActions.navigate({
       routeName: PV.RouteNames.EpisodeScreen,
       params: {
+        addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
         episodeId: item.episodeId,
         episode,
         includeGoToPodcast
@@ -87,6 +89,7 @@ export const navigateToPodcastScreenWithItem = (navigation: any, item: NowPlayin
         addByRSSPodcastFeedUrl: item?.addByRSSPodcastFeedUrl,
         podcastId: item?.podcastId,
         podcast: {
+          addByRSSPodcastFeedUrl: item?.addByRSSPodcastFeedUrl,
           id: item?.podcastId,
           title: item?.podcastTitle,
           imageUrl: item?.podcastImageUrl
