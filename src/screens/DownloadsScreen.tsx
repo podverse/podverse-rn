@@ -102,7 +102,10 @@ export class DownloadsScreen extends React.Component<Props, State> {
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
-    rowMap[selectedId].closeRow()
+    const ignoreIndex = -1
+    const rowId = safeKeyExtractor(testIDPrefix, ignoreIndex, selectedId)
+
+    rowMap[rowId]?.closeRow()
     await removeDownloadingEpisode(selectedId)
     cancelDownloadTask(selectedId)
   }
