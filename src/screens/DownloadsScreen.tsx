@@ -105,7 +105,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
     const ignoreIndex = -1
     const rowId = safeKeyExtractor(testIDPrefix, ignoreIndex, selectedId)
 
-    rowMap[rowId].closeRow()
+    rowMap[rowId]?.closeRow()
     await removeDownloadingEpisode(selectedId)
     cancelDownloadTask(selectedId)
   }
