@@ -85,6 +85,18 @@ export class SettingsScreen extends React.Component<Props, State> {
             </Text>
           </TableCell>
           <TableCell
+            accessibilityLabel={translate('Languages')}
+            includeDivider
+            onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenLanguages)}
+            testIDPrefix={`${testIDPrefix}_languages`}
+            testIDSuffix=''>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+              {translate('Languages')}
+            </Text>
+          </TableCell>
+          <TableCell
             accessibilityLabel={translate('Player')}
             includeDivider
             onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenPlayer)}

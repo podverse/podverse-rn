@@ -404,7 +404,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
         text: translate('Premium Info'),
         onPress: () => this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
       },
-      { text: translate('Ok') }
+      { text: translate('OK') }
     ])
   }
 

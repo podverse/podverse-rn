@@ -19,6 +19,7 @@ import { HTML } from './HTML'
 import { Icons } from './Icons'
 import { Images } from './Images'
 import { Keys } from './Keys'
+import { Languages } from './Languages'
 import { MembershipStatus } from './MembershipStatus'
 import { Navigation } from './Navigation'
 import { Player } from './Player'
@@ -55,6 +56,7 @@ export const PV = {
   Icons,
   Images,
   Keys,
+  Languages,
   MembershipStatus,
   Navigation,
   Player,
