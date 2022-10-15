@@ -233,6 +233,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
         )}
         {!isSingleLineTranscript && (
           <FlatList
+            contentContainerStyle={styles.contentContainerStyle}
             data={data}
             dataTotalCount={data.length}
             disableLeftSwipe
@@ -255,6 +256,9 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 }
 
 const styles = StyleSheet.create({
+  contentContainerStyle: {
+    marginVertical: 16
+  },
   header: {
     flexDirection: 'row',
     paddingBottom: 12
