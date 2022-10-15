@@ -130,11 +130,11 @@ const generateCommentNodes = (comment: PVComment) => {
 
 const styles = StyleSheet.create({
   commentsWrapper: {
+    flex: 1,
     marginHorizontal: 8
   },
   headerText: {},
   noResultsFound: {
-    flex: 1,
     fontSize: PV.Fonts.sizes.xl,
     marginBottom: 32,
     marginHorizontal: 16,
@@ -142,5 +142,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   wrapper: {},
-  wrapperContainer: {}
+  wrapperContainer: {
+    flex: 1
+  }
 })
