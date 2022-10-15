@@ -7,6 +7,7 @@ import { PV } from '../resources'
 import { ActivityIndicator, MessageWithAction, View, GridView } from './'
 
 type Props = {
+  contentContainerStyle: any
   contentOffset?: {
     x: number
     y: number
@@ -58,6 +59,7 @@ const _renderHiddenItem = (transparent?: boolean) => <View transparent={transpar
 
 export const PVFlatList = (props: Props) => {
   const {
+    contentContainerStyle = {},
     contentOffset = { x: 0, y: 0 },
     data,
     dataTotalCount,
@@ -153,6 +155,7 @@ export const PVFlatList = (props: Props) => {
       ) : (
         <SwipeListView
           closeOnRowPress
+          contentContainerStyle={contentContainerStyle}
           contentOffset={contentOffset}
           data={shouldShowResults ? data : []}
           disableLeftSwipe={disableLeftSwipe}

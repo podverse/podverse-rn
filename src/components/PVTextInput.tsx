@@ -122,7 +122,7 @@ export const PVTextInput = (props: Props) => {
         ref={inputRef}
         returnKeyType={returnKeyType}
         secureTextEntry={secureTextEntry}
-        style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
+        style={[globalTheme.textInput, core.textInput, textInputStyle, style]}
         underlineColorAndroid={underlineColorAndroid}
         {...(testID ? { testID: `${testID}_text_input`.prependTestId() } : {})}
         value={value}

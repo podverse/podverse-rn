@@ -22,6 +22,7 @@ declare module 'reactn/default' {
     downloadedEpisodeLimitCount: number
     downloadedEpisodeLimitDefault: boolean | null
     downloadedPodcasts: any[]
+    customRSSParallelParserLimit: number
     jumpBackwardsTime: string
     jumpForwardsTime: string
     addCurrentItemNextInQueue: boolean

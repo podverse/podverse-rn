@@ -99,6 +99,7 @@ export interface InitialState {
   downloadedEpisodeLimitCount: number
   downloadedEpisodeLimitDefault: number | null
   downloadedPodcasts: any[]
+  customRSSParallelParserLimit: number
   censorNSFWText?: boolean
   customAPIDomain?: string
   customAPIDomainEnabled?: boolean

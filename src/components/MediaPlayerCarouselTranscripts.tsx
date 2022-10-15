@@ -6,7 +6,7 @@ import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPlaybackSpeed, playerGetPosition, playerHandleSeekTo } from '../services/player'
 import { PVSearchBar } from './PVSearchBar'
-import { AutoScrollToggle, FlatList, PressableWithOpacity, TableSectionSelectors, Text, View } from './'
+import { AutoScrollToggle, FlatList, PressableWithOpacity, ScrollView, TableSectionSelectors, Text, View } from './'
 
 type Props = {
   navigation?: any
@@ -45,49 +45,6 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
   componentWillUnmount() {
     PVEventEmitter.removeListener(PV.Events.PLAYER_SPEED_UPDATED)
     this.clearAutoScrollInterval()
-  }
-
-  renderItem = (item: any) => {
-    const { activeTranscriptRowIndex } = this.state
-    const transcriptionItem = item.item
-    const { speaker, startTime, startTimeHHMMSS, text } = transcriptionItem
-    const cellID = getCellID(transcriptionItem)
-
-    if (speaker && speaker !== this.currentSpeaker) {
-      this.currentSpeaker = speaker
-    } else {
-      this.currentSpeaker = ''
-    }
-
-    const activeTranscriptStyle =
-      ((activeTranscriptRowIndex && activeTranscriptRowIndex >= 0) || activeTranscriptRowIndex === 0) &&
-      activeTranscriptRowIndex === item.index
-        ? { color: PV.Colors.orange }
-        : {}
-
-    const accessibilityLabel = `${this.currentSpeaker ? `${this.currentSpeaker}, ` : ''} ${text}, ${startTimeHHMMSS}`
-
-    return (
-      <PressableWithOpacity
-        accessible
-        accessibilityLabel={accessibilityLabel}
-        activeOpacity={0.7}
-        onPress={() => playerHandleSeekTo(startTime)}>
-        {!!this.currentSpeaker && (
-          <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
-            {this.currentSpeaker}
-          </Text>
-        )}
-        <View style={styles.row}>
-          <Text style={[styles.text, activeTranscriptStyle]} testID={cellID}>
-            {text}
-          </Text>
-          <Text style={[styles.startTime, activeTranscriptStyle]} testID={`${cellID}-${startTime}`}>
-            {startTimeHHMMSS}
-          </Text>
-        </View>
-      </PressableWithOpacity>
-    )
   }
 
   disableAutoscroll = () => {
@@ -153,6 +110,59 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     }
   }
 
+  renderItem = (item: any) => {
+    const { activeTranscriptRowIndex } = this.state
+    const transcriptionItem = item.item
+    const { speaker, startTime, startTimeHHMMSS, text } = transcriptionItem
+    const cellID = getCellID(transcriptionItem)
+
+    if (speaker && speaker !== this.currentSpeaker) {
+      this.currentSpeaker = speaker
+    } else {
+      this.currentSpeaker = ''
+    }
+
+    const activeTranscriptStyle =
+      ((activeTranscriptRowIndex && activeTranscriptRowIndex >= 0) || activeTranscriptRowIndex === 0) &&
+      activeTranscriptRowIndex === item.index
+        ? { color: PV.Colors.orange }
+        : {}
+
+    const accessibilityLabel = `${this.currentSpeaker ? `${this.currentSpeaker}, ` : ''} ${text}, ${startTimeHHMMSS}`
+
+    return (
+      <PressableWithOpacity
+        accessible
+        accessibilityLabel={accessibilityLabel}
+        activeOpacity={0.7}
+        onPress={() => playerHandleSeekTo(startTime)}>
+        {!!this.currentSpeaker && (
+          <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
+            {this.currentSpeaker}
+          </Text>
+        )}
+        <View style={styles.row}>
+          <Text style={[styles.text, activeTranscriptStyle]} testID={cellID}>
+            {text}
+          </Text>
+          <Text style={[styles.startTime, activeTranscriptStyle]} testID={`${cellID}-${startTime}`}>
+            {startTimeHHMMSS}
+          </Text>
+        </View>
+      </PressableWithOpacity>
+    )
+  }
+
+  renderSingleLineTranscript = (item: any) => {
+    const transcriptionItem = item
+    const { text } = transcriptionItem
+    return (
+      <View style={styles.singleLineWrapper}>
+        <Text style={styles.singleLineText}>{text}</Text>
+      </View>
+    )
+  }
+
   render() {
     const { width } = this.props
     const { autoScrollOn } = this.state
@@ -163,11 +173,13 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
       data = this.state.searchResults || []
     }
 
+    const isSingleLineTranscript = data.length === 1
+
     return (
       <View style={{ width }}>
         <TableSectionSelectors
           customButtons={
-            !screenReaderEnabled ? (
+            !screenReaderEnabled && !isSingleLineTranscript ? (
               <AutoScrollToggle autoScrollOn={autoScrollOn} toggleAutoscroll={this.toggleAutoscroll} />
             ) : null
           }
@@ -216,28 +228,37 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
           testID='transcript_search_bar'
           value={this.state.searchText}
         />
-        <FlatList
-          data={data}
-          dataTotalCount={data.length}
-          disableLeftSwipe
-          getItemLayout={(_: any, index: number) => {
-            return { length: 80, offset: 80 * index, index }
-          }}
-          keyExtractor={(item: TranscriptRow) => getCellID(item)}
-          listRef={(ref: any) => {
-            this.listRef = ref
-          }}
-          onScrollBeginDrag={this.disableAutoscroll}
-          renderItem={this.renderItem}
-          testID='transcript-flat-list'
-          transparent
-        />
+        {isSingleLineTranscript && (
+          <ScrollView>{this.renderSingleLineTranscript(data[0])}</ScrollView>
+        )}
+        {!isSingleLineTranscript && (
+          <FlatList
+            contentContainerStyle={styles.contentContainerStyle}
+            data={data}
+            dataTotalCount={data.length}
+            disableLeftSwipe
+            getItemLayout={(_: any, index: number) => {
+              return { length: 80, offset: 80 * index, index }
+            }}
+            keyExtractor={(item: TranscriptRow) => getCellID(item)}
+            listRef={(ref: any) => {
+              this.listRef = ref
+            }}
+            onScrollBeginDrag={this.disableAutoscroll}
+            renderItem={this.renderItem}
+            testID='transcript-flat-list'
+            transparent
+          />
+        )}
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  contentContainerStyle: {
+    marginVertical: 16
+  },
   header: {
     flexDirection: 'row',
     paddingBottom: 12
@@ -260,6 +281,15 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     paddingHorizontal: 12,
     paddingTop: 16
+  },
+  singleLineText: {
+    fontSize: PV.Fonts.sizes.xxl,
+    lineHeight: PV.Fonts.sizes.xxl + 7,
+    paddingHorizontal: 8
+  },
+  singleLineWrapper: {
+    paddingHorizontal: 12,
+    paddingVertical: 12
   },
   startTime: {
     flex: 0,
