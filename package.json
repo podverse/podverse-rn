@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.6.9",
+  "version": "4.6.10",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -66,7 +66,8 @@
     "lodash": "4.17.21",
     "lodash.memoize": "4.1.2",
     "moment": "^2.29.4",
-    "podverse-shared": "^4.6.9",
+    "p-limit": "^4.0.0",
+    "podverse-shared": "^4.6.12",
     "qs": "^6.11.0",
     "react": "17.0.1",
     "react-native": "0.66.1",

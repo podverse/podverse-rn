@@ -3,21 +3,30 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
+import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { ActivityIndicator, Button, Divider, ScrollView, SwitchWithText, View } from '../components'
+import { ActivityIndicator, Button, Divider, Icon, NumberSelectorWithText, ScrollView,
+  SwitchWithText, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { deleteImageCache } from '../lib/storage'
 import { PV } from '../resources'
+import { getCustomLaunchScreenKey, setCustomLaunchScreenKey } from '../services/customLaunchScreen'
 import { trackPageView } from '../services/tracking'
+import { setCustomRSSParallelParserLimit } from '../state/actions/customRSSParallelParserLimit'
 import { toggleHideNewEpisodesBadges } from '../state/actions/newEpisodesCount'
 import { setCensorNSFWText, setHideCompleted } from '../state/actions/settings'
-import { core, darkTheme, lightTheme } from '../styles'
+import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {
   navigation: any
 }
 
 type State = {
+  customLaunchScreenOptionSelected: {
+    label: string
+    value: string
+  }
+  customRSSParallelParserLimit: string
   isLoading?: boolean
   showDeleteCacheDialog?: boolean
 }
@@ -28,7 +37,12 @@ export class SettingsScreenOther extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
+    const { customRSSParallelParserLimit } = this.global
+
     this.state = {
+      customLaunchScreenOptionSelected: PV.CustomLaunchScreen.getCustomLaunchScreenOption(
+        PV.CustomLaunchScreen.defaultLaunchScreenKey),
+      customRSSParallelParserLimit: customRSSParallelParserLimit?.toString(),
       isLoading: false,
       showDeleteCacheDialog: false
     }
@@ -38,7 +52,12 @@ export class SettingsScreenOther extends React.Component<Props, State> {
     title: translate('Other')
   })
 
-  componentDidMount() {
+  async componentDidMount() {
+    const customLaunchScreenKey = await getCustomLaunchScreenKey()
+    const customLaunchScreenOptionSelected =
+      PV.CustomLaunchScreen.getCustomLaunchScreenOption(customLaunchScreenKey)
+    this.setState({ customLaunchScreenOptionSelected })
+
     trackPageView('/settings-others', 'Settings Screen Other')
   }
 
@@ -60,6 +79,24 @@ export class SettingsScreenOther extends React.Component<Props, State> {
         ? await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'TRUE')
         : await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'FALSE')
     })
+  }
+
+  _setCustomLaunchScreen = async (value: string) => {
+    const customLaunchScreenOptionSelected = PV.CustomLaunchScreen.getCustomLaunchScreenOption(value)
+    this.setState({ customLaunchScreenOptionSelected })
+    await setCustomLaunchScreenKey(value)
+  }
+
+  _handleChangeCustomRSSParallelParserLimit = (value: string) => {
+    this.setState({ customRSSParallelParserLimit: value })
+  }
+
+  _handleSetCustomRSSParallelParserLimit = () => {
+    const { customRSSParallelParserLimit } = this.state
+    const parsedLimit = parseInt(customRSSParallelParserLimit, 10)
+    const safeLimit = parsedLimit >= 1 && !isNaN(parsedLimit) ? parsedLimit : 3
+    this.setState({ customRSSParallelParserLimit: safeLimit.toString() })
+    setCustomRSSParallelParserLimit(safeLimit)
   }
 
   _handleToggleDeleteCacheDialog = () => {
@@ -88,8 +125,15 @@ export class SettingsScreenOther extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading, showDeleteCacheDialog } = this.state
-    const { censorNSFWText, globalTheme, hideCompleted, hideNewEpisodesBadges } = this.global
+    const {
+      customLaunchScreenOptionSelected,
+      customRSSParallelParserLimit,
+      isLoading,
+      showDeleteCacheDialog
+    } = this.state
+    const { censorNSFWText, globalTheme, hideCompleted,
+      hideNewEpisodesBadges } = this.global
+    const isDarkMode = globalTheme === darkTheme
 
     return (
       <ScrollView
@@ -104,11 +148,11 @@ export class SettingsScreenOther extends React.Component<Props, State> {
                 <SwitchWithText
                   accessible={false}
                   accessibilityHint={translate('ARIA HINT - change the colors of the user interface')}
-                  accessibilityLabel={`${globalTheme === darkTheme ? translate('Dark Mode') : translate('Light Mode')}`}
+                  accessibilityLabel={`${isDarkMode ? translate('Dark Mode') : translate('Light Mode')}`}
                   onValueChange={this._toggleTheme}
                   testID={`${testIDPrefix}_dark_mode`}
-                  text={`${globalTheme === darkTheme ? translate('Dark Mode') : translate('Light Mode')}`}
-                  value={globalTheme === darkTheme}
+                  text={`${isDarkMode ? translate('Dark Mode') : translate('Light Mode')}`}
+                  value={isDarkMode}
                 />
               </View>
             )}
@@ -137,6 +181,50 @@ export class SettingsScreenOther extends React.Component<Props, State> {
                 testID={`${testIDPrefix}_hide_new_episodes_badges`}
                 text={translate('Hide new episode count badges')}
                 value={!!hideNewEpisodesBadges}
+              />
+            </View>
+            <View style={core.itemWrapperReducedHeight}>
+              <RNPickerSelect
+                fixAndroidTouchableBug
+                items={PV.CustomLaunchScreen.customLaunchScreenOptions}
+                onValueChange={this._setCustomLaunchScreen}
+                style={hidePickerIconOnAndroidTransparent(isDarkMode)}
+                useNativeAndroidPickerStyle={false}
+                value={customLaunchScreenOptionSelected.value}>
+                <View
+                  accessible
+                  accessibilityLabel={`${translate('Launch screen')} ${customLaunchScreenOptionSelected.label}`}
+                  importantForAccessibility='yes'
+                  style={core.selectorWrapper}>
+                  <View
+                    accessible={false}
+                    importantForAccessibility='no-hide-descendants'
+                    style={core.selectorWrapperLeft}>
+                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[core.pickerSelect, globalTheme.text]}>
+                      {customLaunchScreenOptionSelected.label}
+                    </Text>
+                    <Icon name='angle-down' size={14} style={[core.pickerSelectIcon, globalTheme.text]} />
+                  </View>
+                  <View
+                    accessible={false}
+                    importantForAccessibility='no-hide-descendants'
+                    style={core.selectorWrapperRight}>
+                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[core.pickerSelect, globalTheme.text]}>
+                      {translate('Launch screen')}
+                    </Text>
+                  </View>
+                </View>
+              </RNPickerSelect>
+            </View>
+            <View style={core.itemWrapper}>
+              <NumberSelectorWithText
+                accessibilityLabel={`${translate('Custom RSS feeds to parse in parallel')}`}
+                handleChangeText={this._handleChangeCustomRSSParallelParserLimit}
+                handleSubmitEditing={this._handleSetCustomRSSParallelParserLimit}
+                selectedNumber={customRSSParallelParserLimit}
+                subText={translate('Custom RSS feeds to parse in parallel helper text')}
+                testID={`${testIDPrefix}_custom_rss_parallel_parser_limit`}
+                text={translate('Custom RSS feeds to parse in parallel')}
               />
             </View>
             <Divider />

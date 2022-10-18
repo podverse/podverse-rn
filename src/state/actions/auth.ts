@@ -185,7 +185,7 @@ export const loginUser = async (credentials: Credentials) => {
   }
 }
 
-const askToSyncLocalPodcastsWithServer = (
+const askToSyncLocalPodcastsWithServer = async (
   localUserInfo: UserInfo, serverUserInfo: UserInfo, callback: any) => {
   const localSubscribedPodcastIds: string[] = localUserInfo?.subscribedPodcastIds || []
   const localAddByRSSPodcastFeedUrls: string[] = localUserInfo?.addByRSSPodcastFeedUrls || []
@@ -213,8 +213,8 @@ const askToSyncLocalPodcastsWithServer = (
       }
     }
 
-    const newUserInfo = await getAuthUserInfo()
-
+    await getAuthUserInfo()
+    const newUserInfo = await getAuthenticatedUserInfo()
     await callback(newUserInfo)
   }
 
@@ -227,7 +227,8 @@ const askToSyncLocalPodcastsWithServer = (
       PV.Alerts.ASK_TO_SYNC_LOCAL_PODCASTS_WITH_SERVER(handleSync, callback).buttons
     )
   } else {
-    callback()
+    const newUserInfo = await getAuthenticatedUserInfo()
+    await callback(newUserInfo)
   }
 }
 

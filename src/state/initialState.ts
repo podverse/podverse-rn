@@ -19,6 +19,7 @@ const initialTheme: InitialState = {
   downloadedEpisodeLimitDefault: null,
   downloadedPodcastEpisodeCounts: {},
   downloadedPodcasts: [],
+  customRSSParallelParserLimit: PV.CustomRSS.parallelParserDefaultLimit,
   censorNSFWText: true,
   customAPIDomain: '',
   customAPIDomainEnabled: false,

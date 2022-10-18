@@ -1,7 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { encode as btoa } from 'base-64'
+import pLimit from 'p-limit'
 import { checkIfContainsStringMatch, isValidDate } from 'podverse-shared'
 import * as RNKeychain from 'react-native-keychain'
+import { getGlobal } from 'reactn'
 import { downloadEpisode } from '../lib/downloader'
 import { downloadCustomFileNameId } from '../lib/hash'
 import { credentialsPlaceholderUsername } from '../lib/secutity'
@@ -167,20 +169,32 @@ export const parseAllAddByRSSPodcasts = async () => {
     getAutoDownloadSettings(),
     getAllPodcastCredentials()
   ])
-  const parsedPodcasts = []
+  const parsedPodcasts: any[] = []
   const finalParsedPodcasts = []
 
-  for (const url of urls) {
-    try {
-      const credentials = allAddByRSSPodcastCredentials[url] || ''
-      const parsedPodcast = await parseAddByRSSPodcast(url, credentials)
-      if (parsedPodcast) {
-        parsedPodcasts.push(parsedPodcast)
+  /* Parse up to X RSS feeds simultaneously */
+  const globalState = getGlobal()
+  const { customRSSParallelParserLimit } = globalState
+  const safeLimit = customRSSParallelParserLimit >= 1 && !isNaN(customRSSParallelParserLimit)
+    ? customRSSParallelParserLimit
+    : PV.CustomRSS.parallelParserDefaultLimit
+
+  const limitParallelDownloads = pLimit(safeLimit)
+  const promises = urls.map((url: string) => {
+    return limitParallelDownloads(async () => {
+      try {
+        const credentials = allAddByRSSPodcastCredentials[url] || ''
+        const parsedPodcast = await parseAddByRSSPodcast(url, credentials)
+        if (parsedPodcast) {
+          parsedPodcasts.push(parsedPodcast)
+        }
+      } catch (error) {
+        console.log('parseAllAddByRSSPodcasts url', url, error)
       }
-    } catch (error) {
-      console.log('parseAllAddByRSSPodcasts', error)
-    }
-  }
+    })
+  })
+
+  await Promise.all(promises)
 
   const localPodcasts = await getAddByRSSPodcastsLocally()
   for (const parsedPodcast of parsedPodcasts) {
