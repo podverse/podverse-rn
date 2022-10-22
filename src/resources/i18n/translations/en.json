@@ -411,6 +411,8 @@
   "Login to view your profile": "Log in to view your profile",
   "Login to enable podcast notifications": "Log in to turn on podcast notifications",
   "Maintainers": "Maintainers",
+  "Maintenance mode message": "Our servers are down for maintenance. The app will only work in offline mode until the update is complete.",
+  "Maintenance mode title": "Under maintenance",
   "Make Clip": "Make Clip",
   "Mark as Played": "Mark as Played",
   "Mark as Unplayed": "Mark as Unplayed",

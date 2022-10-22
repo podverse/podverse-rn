@@ -156,9 +156,10 @@ export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
   async _initializePageData() {
     const { episodeId } = this.state
     let { episode } = this.state
+    const { isInMaintenanceMode } = this.global
     const hasInternetConnection = await hasValidNetworkConnection()
 
-    if (!hasInternetConnection) {
+    if (!hasInternetConnection || isInMaintenanceMode) {
       this.setState({ hasInternetConnection: !hasInternetConnection })
     } else if (!episode && episodeId) {
       episode = await getEpisode(episodeId)

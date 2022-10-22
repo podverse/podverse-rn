@@ -132,10 +132,12 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     PVEventEmitter.on(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
     PVEventEmitter.on(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
     PVEventEmitter.on(PV.Events.DOWNLOADED_EPISODE_REFRESH, this._handleDownloadEpisodeFinishedEvent)
+    PVEventEmitter.on(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
 
     const { queryFrom } = this.state
+    const { isInMaintenanceMode } = this.global
     const hasInternetConnection = await hasValidNetworkConnection()
-    const from = hasInternetConnection ? queryFrom : PV.Filters._downloadedKey
+    const from = hasInternetConnection && !isInMaintenanceMode ? queryFrom : PV.Filters._downloadedKey
 
     const savedQuery = await getSavedQueryEpisodesScreen()
 
@@ -166,7 +168,16 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     PVEventEmitter.removeListener(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
     PVEventEmitter.removeListener(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
     PVEventEmitter.removeListener(PV.Events.DOWNLOADED_EPISODE_REFRESH, this._handleDownloadEpisodeFinishedEvent)
+    PVEventEmitter.removeListener(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
     // this._unsubscribe?.()
+  }
+
+  _handleMaintenanceMode = () => {
+    const { queryFrom } = this.state
+    
+    if (queryFrom !== PV.Filters._downloadedKey) {
+      this.handleSelectFilterItem(PV.Filters._downloadedKey)
+    }
   }
 
   _handleAppModeChanged = () => {
