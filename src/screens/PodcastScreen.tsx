@@ -237,11 +237,13 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
     const { navigation } = this.props
     const { podcastId } = this.state
+    const { isInMaintenanceMode } = this.global
     let podcast = navigation.getParam('podcast')
     const forceRequest = navigation.getParam('forceRequest')
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Events.PODCAST_START_PODCAST_FROM_TIME_SET, this.refreshStartPodcastFromTime)
+    PVEventEmitter.on(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
 
     const hasInternetConnection = await hasValidNetworkConnection()
 
@@ -257,7 +259,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
     this.setState(
       {
-        ...(!hasInternetConnection
+        ...(!hasInternetConnection || isInMaintenanceMode
           ? {
               viewType: PV.Filters._downloadedKey
             }
@@ -276,6 +278,12 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
         )
       }
     )
+  }
+
+  componentWillUnmount() {
+    super.componentWillUnmount()
+    PVEventEmitter.removeListener(PV.Events.PODCAST_START_PODCAST_FROM_TIME_SET, this.refreshStartPodcastFromTime)
+    PVEventEmitter.removeListener(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
   }
 
   async _initializePageData() {
@@ -299,12 +307,16 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
         (async () => {
           let newState = {}
           let newPodcast: any
+          const { isInMaintenanceMode } = this.global
 
           try {
             if (podcast && podcast.addByRSSPodcastFeedUrl) {
               newPodcast = podcast
               newState.flatListData = podcast.episodes || []
               newState.flatListDataTotalCount = newState.flatListData.length
+            } else if (isInMaintenanceMode) {
+              newPodcast = podcast
+              newState = await this._queryData(PV.Filters._downloadedKey)
             } else {
               const forceRequest = navigation.getParam('forceRequest')
               newPodcast = await getPodcast(podcastId, forceRequest)
@@ -349,6 +361,14 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
         })()
       }
     )
+  }
+
+  _handleMaintenanceMode = () => {
+    const { queryFrom } = this.state
+    
+    if (queryFrom !== PV.Filters._downloadedKey) {
+      this.handleSelectFilterItem(PV.Filters._downloadedKey)
+    }
   }
 
   refreshStartPodcastFromTime = async () => {

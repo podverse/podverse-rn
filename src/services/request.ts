@@ -3,6 +3,7 @@ import { encode as btoa } from 'base-64'
 import { Alert } from 'react-native'
 import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 
 type PVRequest = {
   basicAuth?: {
@@ -65,9 +66,13 @@ export const request = async (req: PVRequest, customUrl?: string) => {
     console.log('error message:', error.message)
     console.log('error response:', error.response)
 
-    // NOTE: Maybe we don't want these alerts handled in this global file, and instead handle them in the
-    // components that use the requests.
-    if (error.response && error.response.code === PV.ResponseErrorCodes.PREMIUM_MEMBERSHIP_REQUIRED) {
+    if (
+      error?.response?.status === PV.ResponseErrorCodes.SERVER_MAINTENANCE_MODE &&
+      error.response.data?.isInMaintenanceMode
+    ) {
+      PVEventEmitter.emit(PV.Events.SERVER_MAINTENANCE_MODE)
+      return
+    } else if (error.response && error.response.code === PV.ResponseErrorCodes.PREMIUM_MEMBERSHIP_REQUIRED) {
       Alert.alert(
         PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.title,
         PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.message,

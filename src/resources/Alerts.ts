@@ -120,6 +120,10 @@ export const Alerts = {
     message: translate('Please login to mark episodes as played'),
     title: translate('Login Needed')
   },
+  MAINTENANCE_MODE: {
+    message: translate('Maintenance mode message'),
+    title: translate('Maintenance mode title')
+  },
   NETWORK_ERROR: {
     message: (str?: string) =>
       !str
