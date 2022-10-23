@@ -35,7 +35,9 @@ export type BoostagramItem = {
 
 /* Constants */
 
-export const _v4v_env_ = !!Config.IS_DEV ? 'dev' : 'prod'
+/* Dev alby mode is working for me on mobile...settings to prod by default */
+// export const _v4v_env_ = !!Config.IS_DEV ? 'dev' : 'prod'
+export const _v4v_env_ = 'prod'
 
 export const DEFAULT_BOOST_PAYMENT = 1000
 export const MINIMUM_BOOST_PAYMENT = 100
