@@ -5,6 +5,7 @@ import React from 'reactn'
 import { Button, Divider, Icon, ScrollView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { getMembershipExpiration } from '../lib/membership'
+import { downloadMyUserDataFile } from '../lib/storage'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -93,7 +94,7 @@ export class SettingsScreenAccount extends React.Component<Props, State> {
 
     const privacyText = !!session?.userInfo?.isPublic
       ? translate('Your profile page is hidden')
-      : translate('Your profile page is not hidden')
+      : translate('Your profile page is public')
 
     const editIcon = (
       <Icon
@@ -147,6 +148,16 @@ export class SettingsScreenAccount extends React.Component<Props, State> {
         </View>
         <Divider style={styles.divider} />
         <Button
+          accessibilityLabel={translate('Download my data')}
+          isPrimary
+          onPress={downloadMyUserDataFile}
+          testID={`${testIDPrefix}_download_my_data`}
+          text={translate('Download my data')}
+          wrapperStyles={core.button}
+        />
+        <Text style={styles.buttonExplanation}>{translate('Download my data explanation')}</Text>
+        <Divider style={styles.divider} />
+        <Button
           accessibilityLabel={translate('Delete Account')}
           isWarning
           onPress={this._handleToggleDeleteAccountDialog}
@@ -184,6 +195,10 @@ export class SettingsScreenAccount extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
+  buttonExplanation: {
+    fontSize: PV.Fonts.sizes.md,
+    paddingHorizontal: 12
+  },
   divider: {
     marginTop: 32,
     marginBottom: 40
