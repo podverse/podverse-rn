@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { checkIfVideoFileOrVideoLiveType, NowPlayingItem } from 'podverse-shared'
-import TrackPlayer, { Capability, PitchAlgorithm, State, Track } from 'react-native-track-player'
+import TrackPlayer, { Capability, IOSCategoryMode, PitchAlgorithm, State, Track } from 'react-native-track-player'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../lib/downloader'
@@ -69,7 +69,8 @@ PVAudioPlayer.getTrackDuration = async () => {
 
 PVAudioPlayer.setupPlayer({
   waitForBuffer: true,
-  maxCacheSize: 1000000 // 1 GB from KB, this affects Android only I think.
+  maxCacheSize: 1000000, // 1 GB from KB, this affects Android only I think.
+  iosCategoryMode: IOSCategoryMode.SpokenAudio
 }).then(() => {
   audioUpdateTrackPlayerCapabilities()
 })
