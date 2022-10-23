@@ -198,7 +198,14 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
 
     const podcastTitle = nowPlayingItem?.podcastTitle?.trim() || translate('Untitled Podcast')
     const episodeTitle = nowPlayingItem?.episodeTitle?.trim() || translate('Untitled Episode')
-    const pubDate = readableDate(nowPlayingItem.episodePubDate)
+
+    let pubDate = ''
+    if (nowPlayingItem?.liveItem?.start) {
+      pubDate = readableDate(nowPlayingItem?.liveItem?.start)
+    } else if (nowPlayingItem?.episodePubDate) {
+      pubDate = readableDate(nowPlayingItem?.episodePubDate)
+    }
+
     const headerAccessibilityLabel = `${podcastTitle}, ${episodeTitle}, ${pubDate}`
 
     const boostAmountLabelText = activeProvider?.unit
@@ -226,13 +233,17 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
               {episodeTitle}
             </Text>
             <View style={styles.textWrapperBottomRow}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                isSecondary
-                style={styles.pubDate}
-                testID={`${testIDPrefix}_pub_date`}>
-                {pubDate}
-              </Text>
+              {
+                !!pubDate && (
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                    isSecondary
+                    style={styles.pubDate}
+                    testID={`${testIDPrefix}_pub_date`}>
+                    {pubDate}
+                  </Text>
+                )
+              }
             </View>
           </View>
         </View>
@@ -247,7 +258,7 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
               accessibilityRole='header'
               style={styles.textHeader}
               testID={`${testIDPrefix}_episode_funding_header`}>
-              {translate('Value-for-Value')}
+              {translate('Value for Value')}
             </Text>
           )}
           {hasValueInfo && !activeProvider && (
@@ -265,9 +276,6 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
           )}
           {!!activeProvider && hasValueInfo && (
             <View>
-              <Text style={styles.textLabel} testID={`${testIDPrefix}_value_settings_lightning_label`}>
-                {translate('Value for Value')}
-              </Text>
               {/* <Text style={styles.textSubLabel} testID={`${testIDPrefix}_value_settings_lightning_sub_label`}>
                 some wallet text here
               </Text> */}
@@ -476,7 +484,6 @@ const styles = StyleSheet.create({
   },
   textTableLabel: {
     fontSize: PV.Fonts.sizes.xl,
-    fontStyle: 'italic',
     marginBottom: 16
   },
   textWrapper: {
