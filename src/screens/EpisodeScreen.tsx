@@ -128,6 +128,9 @@ export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
               urlPath={PV.URLs.webPaths.episode}
             />
           )}
+          {!!addByRSSPodcastFeedUrl && episode?.linkUrl && (
+            <NavShareIcon customUrl={episode?.linkUrl} episodeTitle={episodeTitle} podcastTitle={podcastTitle} />
+          )}
           {/* <NavSearchIcon navigation={navigation} /> */}
         </RNView>
       )
