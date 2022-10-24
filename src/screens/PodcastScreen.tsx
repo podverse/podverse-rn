@@ -220,10 +220,16 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
           )}
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon
-              endingText={translate('shared using brandName')}
               podcastTitle={podcastTitle}
               urlId={podcastId}
               urlPath={PV.URLs.webPaths.podcast}
+            />
+          )}
+          {!!addByRSSPodcastFeedUrl && podcast?.linkUrl && (
+            <NavShareIcon
+              customUrl={podcast.linkUrl}
+              endingText={translate('shared using brandName')}
+              podcastTitle={podcastTitle}
             />
           )}
           {/* <NavSearchIcon navigation={navigation} /> */}

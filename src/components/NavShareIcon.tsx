@@ -9,6 +9,7 @@ import { NavItemIcon, NavItemWrapper } from './'
 
 type Props = {
   clipTitle?: string
+  customUrl?: string
   endingText?: string
   episodeTitle?: string
   getUrl?: any
@@ -26,6 +27,7 @@ export const NavShareIcon = (props: Props) => {
 
   const {
     clipTitle,
+    customUrl,
     endingText,
     episodeTitle,
     handlePress,
@@ -38,7 +40,11 @@ export const NavShareIcon = (props: Props) => {
 
   const onShare = async () => {
     const { urlsWeb } = getGlobal()
-    const url = `${urlsWeb.baseUrl}${urlPath}${urlId ? `${urlId}` : ''}`
+    
+    let url = `${urlsWeb.baseUrl}${urlPath}${urlId ? `${urlId}` : ''}`
+    if (customUrl) {
+      url = customUrl
+    }
 
     let title = ''
     if (playlistTitle) title = playlistTitle

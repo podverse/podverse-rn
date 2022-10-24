@@ -102,9 +102,9 @@ export class PlayerScreen extends React.Component<Props> {
                   />
                 </>
               )}
-              <NavShareIcon globalTheme={globalTheme} handlePress={_showShareActionSheet} />
             </RNView>
           )}
+          <NavShareIcon globalTheme={globalTheme} handlePress={_showShareActionSheet} />
           {!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
             <NavQueueIcon globalTheme={globalTheme} isTransparent navigation={navigation} showBackButton />
           )}
@@ -151,7 +151,6 @@ export class PlayerScreen extends React.Component<Props> {
   }
 
   _handleRefreshNavigationHeader = () => {
-    console.log('_handleRefreshNavigationHeader')
     this.props.navigation.setParams()
   }
 
@@ -222,13 +221,26 @@ export class PlayerScreen extends React.Component<Props> {
     })
   }
 
-  _handleShare = async (podcastId?: string, episodeId?: string, mediaRefId?: string, chapterId?: string) => {
+  _handleShare = async (
+    podcastId?: string,
+    episodeId?: string,
+    mediaRefId?: string,
+    chapterId?: string,
+    customRSSPodcastLink?: string,
+    customRSSEpisodeLink?: string
+  ) => {
     let { nowPlayingItem } = this.global.player
     nowPlayingItem = nowPlayingItem || {}
     let url = ''
     let title = ''
 
-    if (podcastId) {
+    if (customRSSPodcastLink) {
+      url = customRSSPodcastLink
+      title = `${nowPlayingItem?.podcastTitle}`
+    } else if (customRSSEpisodeLink) {
+      url = customRSSEpisodeLink
+      title = `${nowPlayingItem?.podcastTitle} – ${nowPlayingItem?.episodeTitle}`
+    } else if (podcastId) {
       url = this.global.urlsWeb.podcast + podcastId
       title = `${nowPlayingItem?.podcastTitle}${translate('shared using brandName')}`
     } else if (episodeId) {
@@ -275,6 +287,16 @@ export class PlayerScreen extends React.Component<Props> {
     const episodeId = episode?.id || null
     const mediaRefId = mediaRef?.id || null
     const chapterId = currentChapter?.id || null
+    const customRSSPodcastLink =
+      nowPlayingItem.addByRSSPodcastFeedUrl
+      && nowPlayingItem.podcastLinkUrl
+        ? nowPlayingItem.podcastLinkUrl
+        : null
+    const customRSSEpisodeLink =
+      nowPlayingItem.addByRSSPodcastFeedUrl
+      && nowPlayingItem.episodeLinkUrl
+        ? nowPlayingItem.episodeLinkUrl
+        : null
 
     if (episode?.description) {
       episode.description = replaceLinebreaksWithBrTags(episode.description)
@@ -290,7 +312,15 @@ export class PlayerScreen extends React.Component<Props> {
             <PlayerControls navigation={navigation} />
             <ActionSheet
               handleCancelPress={this._dismissShareActionSheet}
-              items={shareActionSheetButtons(podcastId, episodeId, mediaRefId, chapterId, this._handleShare)}
+              items={shareActionSheetButtons(
+                podcastId,
+                episodeId,
+                mediaRefId,
+                chapterId,
+                this._handleShare,
+                customRSSPodcastLink,
+                customRSSEpisodeLink
+              )}
               showModal={showShareActionSheet}
               testID={`${testIDPrefix}_share`}
             />
@@ -306,39 +336,64 @@ const shareActionSheetButtons = (
   episodeId: string,
   mediaRefId: string,
   chapterId: string,
-  handleShare: any
+  handleShare: any,
+  customRSSPodcastLink: string,
+  customRSSEpisodeLink: string
 ) => {
-  const items = [
-    {
-      accessibilityHint: translate('ARIA HINT - share this podcast'),
-      key: 'podcast',
-      text: translate('Share Podcast'),
-      onPress: () => handleShare(podcastId, null, null)
-    },
-    {
-      accessibilityHint: translate('ARIA HINT - share this episode'),
-      key: 'episode',
-      text: translate('Share Episode'),
-      onPress: () => handleShare(null, episodeId, null)
+  let items: any[] = []
+
+  if (customRSSPodcastLink || customRSSEpisodeLink) {
+    if (customRSSPodcastLink) {
+      items.push(
+        {
+          accessibilityHint: translate('ARIA HINT - share this podcast'),
+          key: 'customRSSPodcastLink',
+          text: translate('Share Podcast'),
+          onPress: () => handleShare(null, null, null, null, customRSSPodcastLink, null)
+        }
+      )
     }
-  ]
+    if (customRSSEpisodeLink) {
+      items.push({
+        accessibilityHint: translate('ARIA HINT - share this episode'),
+        key: 'customRSSEpisodeLink',
+        text: translate('Share Episode'),
+        onPress: () => handleShare(null, null, null, null, null, customRSSEpisodeLink)
+      })
+    }
+  } else {
+    items = [
+      {
+        accessibilityHint: translate('ARIA HINT - share this podcast'),
+        key: 'podcast',
+        text: translate('Share Podcast'),
+        onPress: () => handleShare(podcastId, null, null)
+      },
+      {
+        accessibilityHint: translate('ARIA HINT - share this episode'),
+        key: 'episode',
+        text: translate('Share Episode'),
+        onPress: () => handleShare(null, episodeId, null)
+      }
+    ]
 
-  if (mediaRefId) {
-    items.push({
-      accessibilityHint: translate('ARIA HINT - share this clip'),
-      key: 'clip',
-      text: translate('Share Clip'),
-      onPress: () => handleShare(null, null, mediaRefId)
-    })
-  }
+    if (mediaRefId) {
+      items.push({
+        accessibilityHint: translate('ARIA HINT - share this clip'),
+        key: 'clip',
+        text: translate('Share Clip'),
+        onPress: () => handleShare(null, null, mediaRefId)
+      })
+    }
 
-  if (!mediaRefId && chapterId) {
-    items.push({
-      accessibilityHint: translate('ARIA HINT - share this chapter'),
-      key: 'chapter',
-      text: translate('Share Chapter'),
-      onPress: () => handleShare(null, null, null, chapterId)
-    })
+    if (!mediaRefId && chapterId) {
+      items.push({
+        accessibilityHint: translate('ARIA HINT - share this chapter'),
+        key: 'chapter',
+        text: translate('Share Chapter'),
+        onPress: () => handleShare(null, null, null, chapterId)
+      })
+    }
   }
 
   return items
