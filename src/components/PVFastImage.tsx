@@ -5,7 +5,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
 import { PV } from '../resources'
-import { LightningIcon, NewContentBadge, Text } from '.'
+import { LightningIcon, LiveStatusBadge, NewContentBadge, Text } from '.'
 const PlaceholderImage = PV.Images.PLACEHOLDER.default
 
 type Props = {
@@ -18,6 +18,7 @@ type Props = {
   newContentCount?: number
   placeholderLabel?: string
   resizeMode?: any
+  showLiveIndicator?: boolean
   source?: string
   styles?: any
   // valueTags are used for rendering a lightning icon
@@ -100,6 +101,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
       newContentCount,
       placeholderLabel,
       resizeMode = 'contain',
+      showLiveIndicator,
       source,
       styles,
       valueTags
@@ -147,6 +149,11 @@ export class PVFastImage extends React.PureComponent<Props, State> {
             }}
             style={{ height: '100%', width: '100%' }}
           />
+          {!!showLiveIndicator && 
+            <View style={defaultStyles.liveStatusBadge}>
+              <LiveStatusBadge />
+            </View>
+          }
           {!!isAddByRSSPodcast && (
             <View style={[globalTheme.view, defaultStyles.addByRSSWrapper]}>
               <Text style={addByRSSTextStyle}>{addByRSSText}</Text>
@@ -227,6 +234,12 @@ const defaultStyles = StyleSheet.create({
     marginRight: 0,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  liveStatusBadge: {
+    position: 'absolute',
+    zIndex: 1000001,
+    right: 0,
+    top: 0,
   },
   placeholderLabel: {
     fontSize: PV.Fonts.sizes.lg,

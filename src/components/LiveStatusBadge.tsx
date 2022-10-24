@@ -6,24 +6,25 @@ import { PV } from '../resources'
 import { Text } from '.'
 
 type Props = {
-  testID: string
+  testID?: string
+  wrapperStyles?: any
 }
 
 export const LiveStatusBadge = (props: Props) => {
-  const { testID } = props
+  const { testID, wrapperStyles = {} } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <View
       accessible={false}
       importantForAccessibility='no-hide-descendants'
-      style={[styles.badge, globalTheme.liveStatusBadge]}>
+      style={[styles.badge, globalTheme.liveStatusBadge, wrapperStyles]}>
       <Text
         accessible={false}
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
         numberOfLines={1}
         style={[styles.text, globalTheme.liveStatusBadgeText]}
-        testID={`${testID}_live_status_badge`}>
+        {...(testID ? { testID: `${testID}_live_status_badge` } : {})}>
         {translate('Live')}
       </Text>
     </View>
