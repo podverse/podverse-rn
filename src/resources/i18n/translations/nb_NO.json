@@ -105,7 +105,7 @@
     "ARIA HINT - tap to stop removing items from your queue": "Trykk for å fjerne «Fjern»-knappen fra hvert element i køen din.",
     "ARIA HINT - tap to switch between queue and history": "Trykk for å bytte mellom kø og historikk",
     "ARIA HINT - type a username and password for this feed": "Skriv inn et brukernavn og passord for denne informasjonskanalen",
-    "ARIA LABEL - Queue Last": "Legg i kø",
+    "ARIA LABEL - Queue Last": "Legg sist i kø",
     "ARIA LABEL - Queue Next": "Spill som påfølgende",
     "About Premium": "Om Podverse premium",
     "About": "Om",
@@ -235,7 +235,7 @@
     "Network error": "Nettverksfeil",
     "New": "Ny",
     "Next Up": "Spilles etterpå",
-    "Next": "Påfølgende",
+    "Next": "Neste",
     "No Thanks": "Nei",
     "No Wifi Connection": "Ingen Wi-Fi-tilkobling",
     "No Wifi Only": "Nei, kun Wi-Fi",
@@ -681,7 +681,7 @@
     "Are you sure you want to delete the cache": "Slett hurtiglageret?",
     "Delete cache": "Slett hurtiglager",
     "Hide Completed": "Skjul fullførte",
-    "Auto download by default on subscribe": "Last ned ved abonnering",
+    "Auto download by default on subscribe": "Ved abonnering",
     "Data Settings": "Datainnstillinger",
     "Do you want to allow downloading episodes with your data plan": "Tillat bruk av mobildata fra abonnement for nedlasting av episoder?",
     "Connect to Wifi to download this episode": "Koble til Wi-Fi for å laste ned denne episoden.",
@@ -742,5 +742,7 @@
     "Maintenance mode title": "Vedlikehold pågår",
     "Your profile page is public": "Profilen din er offentlig.",
     "Download my data": "Last ned dataen min",
-    "Download my data explanation": "Last ned full kopi av dataen din fra databasen."
+    "Download my data explanation": "Last ned full kopi av dataen din fra databasen.",
+    "Alby unauthorized timeout message": "Koble til Alby-lommeboken din igjen for å fortsette å bruke den.",
+    "Alby unauthorized timeout title": "Alby frakoblet"
 }
