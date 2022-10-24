@@ -217,7 +217,7 @@
     "Login Needed": "Commencez par vous connecter",
     "Login to add to playlists": "Connectez-vous pour ajouter à des listes de lecture",
     "Maintainers": "Mainteneurs",
-    "Mark as Played": "Marquer comme lu",
+    "Mark as Played": "Marquer comme joué",
     "Membership": "Abonnement",
     "More Info": "Plus d'informations",
     "More player options": "Plus d'options du lecteur",
@@ -466,7 +466,7 @@
     "Download limit max": "Limite de téléchargement max",
     "DELETE": "Supprimer",
     "Delete Episode": "Supprimer l'épisode",
-    "Delete Clip": "Supprimer l'extrait",
+    "Delete Clip": "Supprimer Clip",
     "Do you want to update the download limit for all of your currently subscribed podcasts": "Mettre à jour la limite de téléchargement pour tous les podcasts suivis ?",
     "Download in progress": "Téléchargement…",
     "End of results": "Pas d'autres résultats",
@@ -609,7 +609,7 @@
     "hour": "heure",
     "minute": "minute",
     "second": "seconde",
-    "Mark as Unplayed": "Marquer comme non lu",
+    "Mark as Unplayed": "Marquer comme non joué",
     "15 minutes": "15 minutes",
     "30 minutes": "30 minutes",
     "45 minutes": "45 minutes",
@@ -674,5 +674,6 @@
     "ARIA HINT - auto queue new episodes position": "Définissez si les nouveaux épisodes doivent être ajoutés au début ou à la fin de votre file d'attente lorsque la file d'attente automatique est activée pour un podcast.",
     "Yes save them": "Oui, les enregistrer",
     "_translatorsFieldExample": "Jeanne Dupont<https://jane.doe.homepage>,Jean Blogue,Juan Pérez<https://some.socialmedia/juan>",
-    "Send Bitcoin donations and boostagrams": "Envoyer des dons en Bitcoins et des boostagrams (web uniquement)"
+    "Send Bitcoin donations and boostagrams": "Envoyer des dons en Bitcoins et des boostagrams (web uniquement)",
+    "Contribute": "Contribuez"
 }

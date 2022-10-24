@@ -734,5 +734,10 @@
     "_moment.js date with time format": "Do MMM YYYY h:mm:ss a",
     "Auto-enqueue downloaded episodes": "Legg nedlastede episoder i kø",
     "Contribute": "Bidra",
-    "This may take a while": "Dette kan ta sin tid …"
+    "This may take a while": "Dette kan ta sin tid …",
+    "Custom RSS feeds to parse in parallel": "Egendefinert RSS-informasjonskanaler å tolke i parallell",
+    "Custom RSS feeds to parse in parallel helper text": "Tolkning av for mange informasjonskanaler i parallell kan være problematisk på noen enheter. 3 anbefales.",
+    "Launch screen": "Oppstartsskjerm",
+    "Maintenance mode message": "Tjenerne er nede mens de blir fikset på. Programmet vil virke i frakoblet modus til dette er ferdig.",
+    "Maintenance mode title": "Vedlikehold pågår"
 }

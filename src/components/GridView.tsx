@@ -37,6 +37,7 @@ export class GridView extends React.PureComponent<Props, any> {
                 newContentCount={newContentCount}
                 placeholderLabel={item?.title || ''}
                 resizeMode='cover'
+                showLiveIndicator={item?.latestLiveItemStatus === 'live'}
                 source={item?.shrunkImageUrl || item?.imageUrl || ''}
                 styles={styles.imageThumbnail}
                 valueTags={item.value}

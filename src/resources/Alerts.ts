@@ -16,6 +16,10 @@ const _sendVerificationEmailMessage = translate(
 const _cancelText = translate('Cancel')
 
 export const Alerts = {
+  ALBY_UNAUTHORIZED_EXPIRED: {
+    message: `${translate('Alby unauthorized timeout message')}`,
+    title: `${translate('Alby unauthorized timeout title')}`
+  },
   ASK_TO_SYNC_LOCAL_PODCASTS_WITH_SERVER: (handleSync: any, callback: any) => {
     return {
       message: `${translate('Ask to sync local podcasts with server')}`,
@@ -119,6 +123,10 @@ export const Alerts = {
   LOGIN_TO_MARK_EPISODES_AS_PLAYED: {
     message: translate('Please login to mark episodes as played'),
     title: translate('Login Needed')
+  },
+  MAINTENANCE_MODE: {
+    message: translate('Maintenance mode message'),
+    title: translate('Maintenance mode title')
   },
   NETWORK_ERROR: {
     message: (str?: string) =>

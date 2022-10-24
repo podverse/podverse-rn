@@ -3,8 +3,10 @@ import { encode as btoa } from 'base-64'
 import { Alert } from 'react-native'
 import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
+import { v4vDisconnectProvider } from '../state/actions/v4v/v4v'
 
-type PVRequest = {
+export type PVRequest = {
   basicAuth?: {
     username?: string
     password?: string
@@ -16,7 +18,10 @@ type PVRequest = {
   method?: string
   opts?: any
   timeout?: any
+  isAlby?: boolean
 }
+
+let hasShownAlbyUnauthorizedExpiredAlert = false
 
 export const request = async (req: PVRequest, customUrl?: string) => {
   const {
@@ -27,7 +32,8 @@ export const request = async (req: PVRequest, customUrl?: string) => {
     body,
     method = 'GET',
     opts = {},
-    timeout = 30000
+    timeout = 30000,
+    isAlby
   } = req
 
   const queryString = Object.keys(query)
@@ -65,9 +71,25 @@ export const request = async (req: PVRequest, customUrl?: string) => {
     console.log('error message:', error.message)
     console.log('error response:', error.response)
 
-    // NOTE: Maybe we don't want these alerts handled in this global file, and instead handle them in the
-    // components that use the requests.
-    if (error.response && error.response.code === PV.ResponseErrorCodes.PREMIUM_MEMBERSHIP_REQUIRED) {
+    if (
+      isAlby &&
+      !hasShownAlbyUnauthorizedExpiredAlert &&
+      error?.response?.status === PV.ResponseErrorCodes.UNAUTHORIZED
+    ) {
+      hasShownAlbyUnauthorizedExpiredAlert = true
+      await v4vDisconnectProvider(PV.V4V.providers.alby.key)
+      Alert.alert(
+        PV.Alerts.ALBY_UNAUTHORIZED_EXPIRED.title,
+        PV.Alerts.ALBY_UNAUTHORIZED_EXPIRED.message,
+        PV.Alerts.BUTTONS.OK
+      )
+    } else if (
+      error?.response?.status === PV.ResponseErrorCodes.SERVER_MAINTENANCE_MODE &&
+      error.response.data?.isInMaintenanceMode
+    ) {
+      PVEventEmitter.emit(PV.Events.SERVER_MAINTENANCE_MODE)
+      return
+    } else if (error.response && error.response.code === PV.ResponseErrorCodes.PREMIUM_MEMBERSHIP_REQUIRED) {
       Alert.alert(
         PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.title,
         PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.message,

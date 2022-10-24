@@ -84,6 +84,7 @@ export interface UserInfo {
 }
 
 export interface InitialState {
+  isInMaintenanceMode: boolean
   globalTheme: GlobalTheme
   fontScale: number
   fontScaleMode: string | null

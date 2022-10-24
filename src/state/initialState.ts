@@ -4,6 +4,7 @@ import { InitialState } from '../resources/Interfaces'
 import { v4vSettingsDefault } from './actions/v4v/v4v'
 
 const initialTheme: InitialState = {
+  isInMaintenanceMode: false,
   globalTheme: {},
   fontScale: 1,
   fontScaleMode: null,
