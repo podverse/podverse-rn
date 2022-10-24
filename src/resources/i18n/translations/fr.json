@@ -589,7 +589,7 @@
     "Reset Password Failed": "Impossible de réinitialiser votre mot de passe",
     "Submit": "Valider",
     "Something went wrong when resetting your password": "Essayez de réinitialiser votre mot de passe à nouveau.",
-    "Your password was changed succesfully": "Votre mot de passe a été modifié",
+    "Your password was changed succesfully": "Vous pouvez maintenant utiliser votre nouveau mot de passe",
     "Podcast supports value-for-value donations": "Ce podcast prend en charge les dons en valeur aux créateurs. Configurez votre portefeuille Bitcoin pour commencer à faire des dons depuis l'application.",
     "Custom Feeds": "Flux personnalisés",
     "Search clips": "Rechercher des extraits",
@@ -675,5 +675,8 @@
     "Yes save them": "Oui, les enregistrer",
     "_translatorsFieldExample": "Jeanne Dupont<https://jane.doe.homepage>,Jean Blogue,Juan Pérez<https://some.socialmedia/juan>",
     "Send Bitcoin donations and boostagrams": "Envoyer des dons en Bitcoins et des boostagrams (web uniquement)",
-    "Contribute": "Contribuez"
+    "Contribute": "Contribuez",
+    "Your profile page is public": "Votre profil est public.",
+    "Your membership will not auto-renew": "Votre adhésion ne sera pas renouvelée automatiquement.",
+    "V4V set name helper text": "Le nom sera envoyé publiquement avec vos boosts."
 }
