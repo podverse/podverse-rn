@@ -16,6 +16,10 @@ const _sendVerificationEmailMessage = translate(
 const _cancelText = translate('Cancel')
 
 export const Alerts = {
+  ALBY_UNAUTHORIZED_EXPIRED: {
+    message: `${translate('Alby unauthorized timeout message')}`,
+    title: `${translate('Alby unauthorized timeout title')}`
+  },
   ASK_TO_SYNC_LOCAL_PODCASTS_WITH_SERVER: (handleSync: any, callback: any) => {
     return {
       message: `${translate('Ask to sync local podcasts with server')}`,

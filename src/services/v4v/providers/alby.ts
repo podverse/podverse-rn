@@ -5,7 +5,7 @@ import { getGlobal } from 'reactn'
 import { Alert } from 'react-native'
 import { _v4v_env_ } from '../v4v'
 import { pkceGenerateRandomString, pkceGenerateCodeChallenge } from '../../pkce'
-import { request } from "../../request"
+import { PVRequest, request } from "../../request"
 import { credentialsPlaceholderUsername } from '../../../lib/secutity'
 import { PV } from '../../../resources'
 import { v4vDisconnectProvider } from '../../../state/actions/v4v/v4v'
@@ -17,6 +17,13 @@ const redirect_uri = PV.V4V.providers.alby.oauthRedirectUri
 const basicAuth = {
   username: PV.V4V.providers.alby.env.prod.clientId,
   password: PV.V4V.providers.alby.env.prod.clientSecret
+}
+
+const albyRequest = (requestOptions: PVRequest) => {
+  return request({
+    ...requestOptions,
+    isAlby: true
+  })
 }
 
 /* Storage helpers */
@@ -143,7 +150,7 @@ export const v4vAlbyRequestAccessToken = async (code: string) => {
 
     const queryString = qs.stringify(body)
 
-    const response = await request(
+    const response = await albyRequest(
       {
         method: 'POST',
         basicAuth, // TODO: remove from prod after alby updates!
@@ -180,7 +187,7 @@ export const v4vAlbyRefreshAccessToken = async () => {
         grant_type: 'refresh_token'
       }
       
-      const response = await request(
+      const response = await albyRequest(
         {
           method: 'POST',
           basicAuth, // TODO: remove from prod after alby updates!
@@ -239,7 +246,7 @@ export const v4vAlbyAPIRequest = async ({ body, method, path }: AlbyAPIRequest, 
   const providerBearerToken = generateBearerToken(access_token)
 
   try {
-    const response = await request(
+    const response = await albyRequest(
       {
         method,
         headers: { Authorization: providerBearerToken },
