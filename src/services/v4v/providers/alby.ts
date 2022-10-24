@@ -19,11 +19,14 @@ const basicAuth = {
   password: PV.V4V.providers.alby.env.prod.clientSecret
 }
 
-const albyRequest = (requestOptions: PVRequest) => {
-  return request({
-    ...requestOptions,
-    isAlby: true
-  })
+const albyRequest = (requestOptions: PVRequest, url: string) => {
+  return request(
+    {
+      ...requestOptions,
+      isAlby: true
+    },
+    url
+  )
 }
 
 /* Storage helpers */
