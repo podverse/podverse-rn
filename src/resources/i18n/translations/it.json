@@ -50,5 +50,22 @@
     "ARIA HINT - add this episode next in your queue": "Aggiungi questo episodio come successivo",
     "ARIA HINT - add this episode to a playlist": "Aggiungi questo episodio a una playlist",
     "ARIA HINT - add this item to a playlist": "Aggiungi questo elemento a una playlist",
-    "ARIA HINT - clear the end time for this clip": "Cancella il tempo della fine di questo clip"
+    "ARIA HINT - clear the end time for this clip": "Cancella il tempo della fine di questo clip",
+    "Alby unauthorized timeout title": "Alby disconnesso",
+    "ARIA HINT - Currently selected filter": "Filtro selezionato",
+    "30 minutes": "30 minuti",
+    "A-Z": "A-Z",
+    "About Premium": "Informazioni su Podverse Premium",
+    "Active Downloads": "Download attivi",
+    "Actual amount will be higher due to network fees": "L'importo effettivo può essere superiore a causa delle spese di rete",
+    "ARIA HINT - clear the new episode indicators for all podcasts": "Cancellare gli indicatori di nuovi episodi per tutti i podcast",
+    "ARIA HINT - clear the new episode indicators for only this podcast": "Cancella gli indicatori dei nuovi episodi solo per questo podcast",
+    "ARIA HINT - continue to the Make Clip screen": "Continua a \"Fare clip\"",
+    "ARIA HINT - create a new playlist": "Creare una nuova playlist",
+    "ARIA HINT - current playback speed": "Modificare la velocità di riproduzione.",
+    "Add current item next in queue when playing a new item": "Aggiungere l'elemento corrente al successivo in coda quando si riproduce un nuovo episodio",
+    "Add custom RSS feeds": "Aggiungere feed RSS personalizzati",
+    "ARIA HINT - delete all the episodes you have downloaded for this podcast": "Elimina tutti gli episodi scaricati di questo podcast",
+    "ARIA HINT - disable the downloaded episode limit for this podcast": "Disattivare il limite di download degli episodi per questo podcast",
+    "ARIA HINT - delete this downloaded episode": "Elimina questo episodio scaricato"
 }
