@@ -1,7 +1,12 @@
 import { getExtensionFromUrl } from 'podverse-shared'
+import { Platform } from 'react-native'
 import RNFS, { DownloadFileOptions } from 'react-native-fs'
+import Share, { ShareOptions } from 'react-native-share'
+import { PV } from '../resources'
+import { getBearerToken } from '../services/auth'
 import { downloadCustomFileNameId } from './hash'
 import { hasValidNetworkConnection } from './network'
+import { getAppUserAgent } from './utility'
 
 const podverseImagesPath = RNFS.DocumentDirectoryPath + '/podverse_images/'
 
@@ -19,6 +24,43 @@ export const deleteImageCache = async () => {
     }
   } catch (error) {
     console.log('deleteImageCache', error)
+  }
+}
+
+export const downloadMyUserDataFile = async () => {
+  try {
+    const urlsApi = await PV.URLs.api()
+    const bearerToken = await getBearerToken()
+    const userAgent = getAppUserAgent()
+    const filePath = `${RNFS.TemporaryDirectoryPath}/podverse-my-data.zip`
+
+    const downloadOptions: DownloadFileOptions = {
+      fromUrl: `${urlsApi.baseUrl}/user/download`,
+      toFile: filePath,
+      headers: {
+        ...(bearerToken ? { Authorization: bearerToken } : {}),
+        'User-Agent': userAgent
+      }
+    }
+
+    await RNFS.downloadFile(downloadOptions).promise
+
+    let base64Data = null
+    const isAndroid = Platform.OS === 'android'
+    if (isAndroid) {
+      base64Data = await RNFS.readFile(filePath, 'base64')
+    }
+
+    const options: ShareOptions = {
+      type: 'zip',
+      url: isAndroid ? `data:application/zip;base64,${base64Data}` : filePath,
+      filename: isAndroid ? 'podverse-my-data' : undefined
+    }
+
+    await Share.open(options)
+    await RNFS.unlink(filePath)
+  } catch (error) {
+    console.log('downloadMyUserDataFile error', error)
   }
 }
 

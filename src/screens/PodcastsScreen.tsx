@@ -241,6 +241,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED, this._handleTrackingTermsAcknowledged)
     PVEventEmitter.on(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
+    PVEventEmitter.on(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
 
     updateScreenReaderEnabledState()
 
@@ -296,7 +297,33 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
     PVEventEmitter.removeListener(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
     PVEventEmitter.removeListener(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
+    PVEventEmitter.removeListener(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
     // this._unsubscribe?.()
+  }
+
+  _handleMaintenanceMode = () => {
+    const { queryFrom } = this.state
+    
+    this.setGlobal({
+      isInMaintenanceMode: true
+    }, async () => {
+      if (queryFrom !== PV.Filters._downloadedKey) {
+        const forceOffline = true
+        // Prevent flash of grid view in case the event for _handleMaintenanceMode
+        // is called before the app finishes with initializeSettings.
+        const podcastsGridViewEnabled = await AsyncStorage.getItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED)
+        this.setGlobal({
+          podcastsGridViewEnabled: !!podcastsGridViewEnabled
+        }, () => {
+          this._setDownloadedDataIfOffline(forceOffline)
+          Alert.alert(
+            PV.Alerts.MAINTENANCE_MODE.title,
+            PV.Alerts.MAINTENANCE_MODE.message,
+            PV.Alerts.BUTTONS.OK
+          )
+        })
+      }
+    })
   }
 
   _handleAppModeChanged = () => {
@@ -313,9 +340,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
-  _setDownloadedDataIfOffline = async () => {
+  _setDownloadedDataIfOffline = async (forceOffline?: boolean) => {
     const isConnected = await hasValidNetworkConnection()
-    if (!isConnected) {
+    if (!isConnected || forceOffline) {
       const preventIsLoading = false
       const preventAutoDownloading = true
       this.handleSelectFilterItem(PV.Filters._downloadedKey, preventIsLoading, preventAutoDownloading)
@@ -589,16 +616,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleInitialDefaultQuery = async () => {
-    const isConnected = await hasValidNetworkConnection()
-    const preventIsLoading = true
-    const preventAutoDownloading = false
-    if (isConnected) {
-      const savedQuerySort = await getSavedQueryPodcastsScreenSort()
-      this.setState({ querySort: savedQuerySort }, () => {
-        this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
-      })
-    } else {
-      this._setDownloadedDataIfOffline()
+    const { isInMaintenanceMode } = this.global
+    if (!isInMaintenanceMode) {
+      const isConnected = await hasValidNetworkConnection()
+      const preventIsLoading = true
+      const preventAutoDownloading = false
+      if (isConnected) {
+        const savedQuerySort = await getSavedQueryPodcastsScreenSort()
+        this.setState({ querySort: savedQuerySort }, () => {
+          this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
+        })
+      } else {
+        this._setDownloadedDataIfOffline()
+      }
     }
   }
 
@@ -1219,17 +1249,25 @@ export class PodcastsScreen extends React.Component<Props, State> {
         selectedCategorySub
       } = prevState
 
-      const { appMode } = this.global
+      const { appMode, isInMaintenanceMode } = this.global
       const hasVideo = appMode === PV.AppMode.videos
 
       const hasInternetConnection = await hasValidNetworkConnection()
       const isSubscribedSelected = filterKey === PV.Filters._subscribedKey || queryFrom === PV.Filters._subscribedKey
       const isCustomFeedsSelected = filterKey === PV.Filters._customFeedsKey || queryFrom === PV.Filters._customFeedsKey
-      const isDownloadedSelected = filterKey === PV.Filters._downloadedKey || queryFrom === PV.Filters._downloadedKey
+      const isDownloadedSelected =
+        filterKey === PV.Filters._downloadedKey || queryFrom === PV.Filters._downloadedKey || isInMaintenanceMode
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
 
-      if (isSubscribedSelected) {
+      if (isDownloadedSelected) {
+        const podcasts = await getDownloadedPodcasts(searchTitle, hasVideo)
+        newState.flatListData = [...podcasts]
+        newState.queryFrom = PV.Filters._downloadedKey
+        newState.selectedFilterLabel = await getSelectedFilterLabel(PV.Filters._downloadedKey)
+        newState.endOfResultsReached = true
+        newState.flatListDataTotalCount = podcasts.length
+      } else if (isSubscribedSelected) {
         if (!preventParseCustomRSSFeeds) {
           await getAuthUserInfo() // get the latest subscribedPodcastIds first
           shouldCleanFlatListData = false
@@ -1237,11 +1275,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await this._querySubscribedPodcasts(preventAutoDownloading, preventParseCustomRSSFeeds)
       } else if (isCustomFeedsSelected) {
         const podcasts = await this._queryCustomFeeds()
-        newState.flatListData = [...podcasts]
-        newState.endOfResultsReached = true
-        newState.flatListDataTotalCount = podcasts.length
-      } else if (isDownloadedSelected) {
-        const podcasts = await getDownloadedPodcasts(searchTitle, hasVideo)
         newState.flatListData = [...podcasts]
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = podcasts.length

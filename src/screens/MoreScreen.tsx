@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { parseOpmlFile } from 'podverse-shared'
-import { SectionList, Alert } from 'react-native'
+import { SectionList, Alert, Linking } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import { parseString } from 'react-native-xml2js'
@@ -79,6 +79,10 @@ export class MoreScreen extends React.Component<Props, State> {
         routeName: PV.RouteNames.AboutScreen
       },
       {
+        title: translate('Tutorials'),
+        key: _tutorialsKey
+      },
+      {
         title: translate('Terms of Service'),
         key: _termsOfServiceKey,
         routeName: PV.RouteNames.TermsOfServiceScreen
@@ -151,7 +155,14 @@ export class MoreScreen extends React.Component<Props, State> {
     }
   }
 
-  _onPress = (item: any) => {
+  _handleFollowLink = (url: string) => {
+    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
+      { text: 'Cancel' },
+      { text: 'Yes', onPress: () => Linking.openURL(url) }
+    ])
+  }
+
+  _onPress = async (item: any) => {
     const { navigation } = this.props
     if (item.key === _logoutKey) {
       logoutUser()
@@ -161,6 +172,10 @@ export class MoreScreen extends React.Component<Props, State> {
       this._importOpml()
     } else if (item.key === _exportOpml) {
       exportSubscribedPodcastsAsOPML()
+    } else if (item.key === _tutorialsKey) {
+      const urls = await PV.URLs.web()
+      const { tutorials } = urls
+      this._handleFollowLink(tutorials)
     } else {
       navigation.navigate(item.routeName)
     }
@@ -276,6 +291,7 @@ const _privacyPolicyKey = 'PrivacyPolicy'
 const _settingsKey = 'Settings'
 const _supportKey = 'Support'
 const _termsOfServiceKey = 'TermsOfService'
+const _tutorialsKey = 'Tutorials'
 const _importOpml = 'ImportOpml'
 const _exportOpml = 'ExportOpml'
 const _value4ValueKey = 'Value4Value'

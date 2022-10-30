@@ -7,6 +7,7 @@ import { V4VProviderConnectedState, V4VSenderInfo, V4VTransactionError } from '.
 
 declare module 'reactn/default' {
   export interface State {
+    isInMaintenanceMode: boolean
     globalTheme: GlobalTheme
     fontScale: number
     fontScaleMode: string | null
