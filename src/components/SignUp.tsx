@@ -30,6 +30,7 @@ type State = {
   name: string
   password: string
   passwordVerification: string
+  passwordVerificationBlurred: boolean
   submitIsDisabled: boolean
 }
 
@@ -51,6 +52,7 @@ export class SignUp extends React.Component<Props, State> {
       name: '',
       password: '',
       passwordVerification: '',
+      passwordVerificationBlurred: false,
       submitIsDisabled: true
     }
   }
@@ -129,6 +131,7 @@ export class SignUp extends React.Component<Props, State> {
       hasUppercase,
       password,
       passwordVerification,
+      passwordVerificationBlurred,
       submitIsDisabled
     } = this.state
 
@@ -185,6 +188,9 @@ export class SignUp extends React.Component<Props, State> {
           inputRef={(input) => {
             this.thirdTextInput = input
           }}
+          onBlur={() => {
+            this.setState({ passwordVerificationBlurred: true })
+          }}
           onSubmitEditing={() => {
             Keyboard.dismiss()
           }}
@@ -193,7 +199,7 @@ export class SignUp extends React.Component<Props, State> {
           placeholderTextColor={PV.Colors.gray}
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
           secureTextEntry
-          style={passwordMismatch ? errorStyle : null}
+          style={passwordVerificationBlurred && passwordMismatch ? errorStyle : null}
           testID={`${testIDPrefix}_verify_password`}
           underlineColorAndroid='transparent'
           value={this.state.passwordVerification}

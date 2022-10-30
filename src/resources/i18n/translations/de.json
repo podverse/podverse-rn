@@ -737,5 +737,12 @@
     "This may take a while": "Das kann eine Weile dauern…",
     "Custom RSS feeds to parse in parallel": "Benutzerdefinierte RSS-Feeds zum parallelen Parsen",
     "Custom RSS feeds to parse in parallel helper text": "Die parallele Verarbeitung zu vieler Feeds kann bei einigen Geräten zu Problemen führen. Wir empfehlen maximal 3 Feeds parallel zu parsen.",
-    "Launch screen": "Startbildschirm"
+    "Launch screen": "Startbildschirm",
+    "Alby unauthorized timeout message": "Ihr Alby-Wallet wurde aufgrund von Inaktivität getrennt.\nBitte verbinden Sie Ihr Portemonnaie erneut, um Alby weiter zu nutzen.",
+    "Download my data": "Meine Daten herunterladen",
+    "Download my data explanation": "Herunterladen einer vollständigen Kopie Ihrer Daten aus unserer Datenbank.",
+    "Maintenance mode title": "Wird gewartet",
+    "Alby unauthorized timeout title": "Alby getrennt",
+    "Maintenance mode message": "Unsere Server sind wegen Wartungsarbeiten außer Betrieb. Die App wird nur im Offline-Modus funktionieren, bis das Update abgeschlossen ist.",
+    "Your profile page is public": "Ihr Profil ist öffentlich."
 }

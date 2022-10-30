@@ -212,7 +212,7 @@ export const v4vAlbyRefreshAccessToken = async () => {
             throw new Error('Alby missing response data for refresh_token endpoint')
           }
     } else {
-      throw new Error("Missing refresh token")
+      throw new Error("Something went wrong with your Alby refresh token. Please reconnect your Alby wallet.")
     }
   } catch (error) {
     console.log('v4vAlbyRefreshAccessToken error:', error)

@@ -14,7 +14,8 @@ const webPaths = {
   episode: `/episode/`,
   playlist: `/playlist/`,
   podcast: `/podcast/`,
-  profile: `/profile/`
+  profile: `/profile/`,
+  tutorials: `/tutorials`
 }
 
 export const URLs = {
@@ -65,7 +66,8 @@ export const URLs = {
       episode: `${base}${webPaths.episode}`,
       playlist: `${base}${webPaths.playlist}`,
       podcast: `${base}${webPaths.podcast}`,
-      profile: `${base}${webPaths.profile}`
+      profile: `${base}${webPaths.profile}`,
+      tutorials: `${base}${webPaths.tutorials}`
     }
   },
   webDefaultBaseUrl,
