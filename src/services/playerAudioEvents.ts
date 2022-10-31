@@ -277,10 +277,8 @@ module.exports = async () => {
         } else if (isPlaying && paused) {
           wasPausedByDuck = true
           audioHandlePauseWithUpdate()
-        } else if (!permanent && wasPausedByDuck) {
+        } else if ((!permanent && wasPausedByDuck) || !paused) {
           wasPausedByDuck = false
-          audioHandlePlayWithUpdate()
-        } else if (!permanent && !paused) {
           audioHandlePlayWithUpdate()
         }
       } else {
