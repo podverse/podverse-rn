@@ -270,14 +270,27 @@ module.exports = async () => {
       const { paused, permanent } = x
       const currentState = await audioGetState()
       const isPlaying = audioCheckIfIsPlaying(currentState)
-      if (permanent && isPlaying) {
-        audioHandlePauseWithUpdate()
-      } else if (isPlaying && paused) {
-        wasPausedByDuck = true
-        audioHandlePauseWithUpdate()
-      } else if (!permanent && wasPausedByDuck) {
-        wasPausedByDuck = false
-        audioHandlePlayWithUpdate()
+
+      if (Platform.OS === 'ios') {
+        if (permanent && isPlaying) {
+          audioHandlePauseWithUpdate()
+        } else if (isPlaying && paused) {
+          wasPausedByDuck = true
+          audioHandlePauseWithUpdate()
+        } else if ((!permanent && wasPausedByDuck) || !paused) {
+          wasPausedByDuck = false
+          audioHandlePlayWithUpdate()
+        }
+      } else {
+        if (permanent && isPlaying) {
+          audioHandlePauseWithUpdate()
+        } else if (isPlaying && paused) {
+          wasPausedByDuck = true
+          audioHandlePauseWithUpdate()
+        } else if (!permanent && wasPausedByDuck) {
+          wasPausedByDuck = false
+          audioHandlePlayWithUpdate()
+        }
       }
     })()
   })
