@@ -1,3 +1,5 @@
+#!/bin/sh
+
 ######################################################################################
 #  Script requirements:
 #  - Yarn (brew install yarn)
@@ -8,7 +10,6 @@
 #  
 ######################################################################################
 
-#!/bin/sh
 kill -9 $(pgrep Electron)
 
 echo "Killing packager..."
@@ -35,4 +36,4 @@ rm -rf ./ios/Podfile.lock 2>/dev/null
 
 echo "Clearing node modules..."
 
-rm -rf node_modules/ && yarn cache clean && yarn install && npx pod-install && yarn postinstall && code . && clear
+rm -rf node_modules/ && yarn cache clean && yarn install && npx pod-install && yarn postinstall
