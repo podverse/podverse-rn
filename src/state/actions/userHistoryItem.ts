@@ -15,6 +15,7 @@ import {
   removeHistoryItem as removeHistoryItemService,
   setHistoryItemsIndexLocally
 } from '../../services/userHistoryItem'
+import { clearEpisodesCountForPodcastEpisode } from './newEpisodesCount'
 
 export const clearHistoryItems = async () => {
   const globalState = getGlobal()
@@ -157,6 +158,10 @@ export const toggleMarkAsPlayed = async (item: NowPlayingItem, shouldMarkAsPlaye
     const forceUpdateOrderDate = false
     const skipSetNowPlaying = true
     const completed = shouldMarkAsPlayed
+
+    if ((item?.podcastId || item?.addByRSSPodcastFeedUrl) && item?.episodeId) {
+      await clearEpisodesCountForPodcastEpisode(item?.podcastId || item?.addByRSSPodcastFeedUrl, item.episodeId)
+    }
 
     await addOrUpdateHistoryItem(
       item,
