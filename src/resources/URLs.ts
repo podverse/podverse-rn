@@ -39,7 +39,8 @@ export const URLs = {
     twitter: Config.URL_SOCIAL_TWITTER || '',
     podcastIndex: Config.URL_PODCAST_INDEX || '',
     discord: Config.URL_SOCIAL_DISCORD || '',
-    mastodonAccount: Config.URL_SOCIAL_MASTODON_ACCOUNT || ''
+    mastodonAccount: Config.URL_SOCIAL_MASTODON_ACCOUNT || '',
+    matrix: Config.URL_SOCIAL_MATRIX || ''
   },
   xmpp: {
     chatRooms: {
