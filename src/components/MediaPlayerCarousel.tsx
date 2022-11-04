@@ -3,7 +3,7 @@ import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
-import { checkIfHasSupportedCommentTag, Episode } from 'podverse-shared'
+import { checkIfHasSupportedCommentTag, Episode, TranscriptRow } from 'podverse-shared'
 import { PV } from '../resources'
 import { translate } from '../lib/i18n'
 import { audioCheckIfIsPlaying } from '../services/playerAudio'
@@ -220,6 +220,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       hasComments,
       hasTranscript,
       screenReaderEnabled,
+      this.global.parsedTranscript || [],
       accessibilityItemSelected?.value || null
     )
 
@@ -409,6 +410,7 @@ const mediaPlayerCarouselComponents = (
   hasComments: boolean,
   hasTranscript: boolean,
   screenReaderEnabled: boolean,
+  parsedTranscript: TranscriptRow[],
   accessibilityItemSelectedValue?: string | null
 ) => {
   return (
@@ -435,7 +437,7 @@ const mediaPlayerCarouselComponents = (
             <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />
           )}
           {accessibilityItemSelectedValue === _transcriptKey && hasTranscript && (
-            <MediaPlayerCarouselTranscripts width={screenWidth} />
+            <MediaPlayerCarouselTranscripts isNowPlaying parsedTranscript={parsedTranscript} width={screenWidth} />
           )}
           {accessibilityItemSelectedValue === _chatRoomKey && hasChat && (
             <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />
@@ -452,7 +454,9 @@ const mediaPlayerCarouselComponents = (
           {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
           {hasClips && <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />}
           {hasComments && <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />}
-          {hasTranscript && <MediaPlayerCarouselTranscripts width={screenWidth} />}
+          {hasTranscript && (
+            <MediaPlayerCarouselTranscripts isNowPlaying parsedTranscript={parsedTranscript} width={screenWidth} />
+          )}
           {hasChat && <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />}
         </>
       )}
