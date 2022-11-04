@@ -744,5 +744,7 @@
     "Maintenance mode title": "Wird gewartet",
     "Alby unauthorized timeout title": "Alby getrennt",
     "Maintenance mode message": "Unsere Server sind wegen Wartungsarbeiten außer Betrieb. Die App wird nur im Offline-Modus funktionieren, bis das Update abgeschlossen ist.",
-    "Your profile page is public": "Ihr Profil ist öffentlich."
+    "Your profile page is public": "Ihr Profil ist öffentlich.",
+    "Join our Matrix space": "Treten Sie unserem Matrix-Raum bei",
+    "Tutorials": "Anleitungen"
 }
