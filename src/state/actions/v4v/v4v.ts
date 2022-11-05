@@ -208,8 +208,11 @@ export const v4vInitializeConnectedProviders = async () => {
   const savedProviders = await v4vGetProvidersConnected()
   
   for (const savedProvider of savedProviders) {
-    const preventPlayerUpdate = true
-    v4vRefreshProviderWalletInfo(savedProvider?.key, preventPlayerUpdate)
+    (async () => {
+      await v4vRefreshAccessToken(savedProvider?.key)
+      const preventPlayerUpdate = true
+      v4vRefreshProviderWalletInfo(savedProvider?.key, preventPlayerUpdate)
+    })()
   }
 
   setGlobal({
@@ -310,6 +313,14 @@ export const v4vGetMatchingActiveProvider = (valueTags: ValueTag[]) => {
   }
 
   return matchingActiveProvider
+}
+
+export const v4vRefreshAccessToken = async (activeProviderKey: string) => {
+  // Use require here to prevent circular dependencies issues.
+  if (activeProviderKey === 'alby') {
+    const { v4vAlbyRefreshAccessToken } = require('../../../services/v4v/providers/alby')
+    await v4vAlbyRefreshAccessToken()
+  }
 }
 
 export const v4vRefreshProviderWalletInfo = async (activeProviderKey: string, preventPlayerUpdate?: boolean) => {

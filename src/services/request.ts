@@ -4,7 +4,6 @@ import { Alert } from 'react-native'
 import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
-import { v4vDisconnectProvider } from '../state/actions/v4v/v4v'
 
 export type PVRequest = {
   basicAuth?: {
@@ -18,10 +17,7 @@ export type PVRequest = {
   method?: string
   opts?: any
   timeout?: any
-  isAlby?: boolean
 }
-
-let hasShownAlbyUnauthorizedExpiredAlert = false
 
 export const request = async (req: PVRequest, customUrl?: string) => {
   const {
@@ -32,8 +28,7 @@ export const request = async (req: PVRequest, customUrl?: string) => {
     body,
     method = 'GET',
     opts = {},
-    timeout = 30000,
-    isAlby
+    timeout = 30000
   } = req
 
   const queryString = Object.keys(query)
@@ -72,24 +67,6 @@ export const request = async (req: PVRequest, customUrl?: string) => {
     console.log('error response:', error.response)
 
     if (
-      isAlby &&
-      error?.response?.status === PV.ResponseErrorCodes.UNAUTHORIZED &&
-      error?.response?.data?.error === 'expired access token'
-    ) {
-      await v4vDisconnectProvider(PV.V4V.providers.alby.key)
-      
-      if (!hasShownAlbyUnauthorizedExpiredAlert) {
-        hasShownAlbyUnauthorizedExpiredAlert = true
-        Alert.alert(
-          PV.Alerts.ALBY_UNAUTHORIZED_EXPIRED.title,
-          PV.Alerts.ALBY_UNAUTHORIZED_EXPIRED.message,
-          PV.Alerts.BUTTONS.OK
-        )
-        setTimeout(() => {
-          hasShownAlbyUnauthorizedExpiredAlert = false
-        }, 60000)
-      }
-    } else if (
       error?.response?.status === PV.ResponseErrorCodes.SERVER_MAINTENANCE_MODE &&
       error.response.data?.isInMaintenanceMode
     ) {
