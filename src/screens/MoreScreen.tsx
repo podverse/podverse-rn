@@ -121,7 +121,8 @@ export class MoreScreen extends React.Component<Props, State> {
       if (!res) {
         throw new Error('Something went wrong with the import process.')
       } else {
-        const contents = await RNFS.readFile(res.uri, 'utf8')
+        const contents = await RNFS.readFile(decodeURI(res.uri), 'utf8')
+        console.log("Res: ", res.uri)
 
         this.setState({ isLoading: true }, () => {
           parseString(contents, async (err: any, result: any) => {
