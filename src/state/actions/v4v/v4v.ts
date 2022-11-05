@@ -206,6 +206,11 @@ export const v4vUpdateTypeMethodSettingsAppStreamingAmount = async (
 export const v4vInitializeConnectedProviders = async () => {
   const globalState = getGlobal()
   const savedProviders = await v4vGetProvidersConnected()
+  
+  for (const savedProvider of savedProviders) {
+    const preventPlayerUpdate = true
+    v4vRefreshProviderWalletInfo(savedProvider?.key, preventPlayerUpdate)
+  }
 
   setGlobal({
     session: {
@@ -307,7 +312,7 @@ export const v4vGetMatchingActiveProvider = (valueTags: ValueTag[]) => {
   return matchingActiveProvider
 }
 
-export const v4vRefreshProviderWalletInfo = async (activeProviderKey: string) => {
+export const v4vRefreshProviderWalletInfo = async (activeProviderKey: string, preventPlayerUpdate?: boolean) => {
   const globalState = getGlobal()
 
   // Use require here to prevent circular dependencies issues.
@@ -319,7 +324,7 @@ export const v4vRefreshProviderWalletInfo = async (activeProviderKey: string) =>
   // Make sure the global player state is updated
   // so the boostagram buttons show.
   const nowPlayingItem = globalState?.player?.nowPlayingItem
-  if (nowPlayingItem) {
+  if (!preventPlayerUpdate && nowPlayingItem) {
     playerUpdatePlayerState(nowPlayingItem)
   }
 }

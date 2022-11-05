@@ -73,16 +73,22 @@ export const request = async (req: PVRequest, customUrl?: string) => {
 
     if (
       isAlby &&
-      !hasShownAlbyUnauthorizedExpiredAlert &&
-      error?.response?.status === PV.ResponseErrorCodes.UNAUTHORIZED
+      error?.response?.status === PV.ResponseErrorCodes.UNAUTHORIZED &&
+      error?.response?.data?.error === 'expired access token'
     ) {
-      hasShownAlbyUnauthorizedExpiredAlert = true
       await v4vDisconnectProvider(PV.V4V.providers.alby.key)
-      Alert.alert(
-        PV.Alerts.ALBY_UNAUTHORIZED_EXPIRED.title,
-        PV.Alerts.ALBY_UNAUTHORIZED_EXPIRED.message,
-        PV.Alerts.BUTTONS.OK
-      )
+      
+      if (!hasShownAlbyUnauthorizedExpiredAlert) {
+        hasShownAlbyUnauthorizedExpiredAlert = true
+        Alert.alert(
+          PV.Alerts.ALBY_UNAUTHORIZED_EXPIRED.title,
+          PV.Alerts.ALBY_UNAUTHORIZED_EXPIRED.message,
+          PV.Alerts.BUTTONS.OK
+        )
+        setTimeout(() => {
+          hasShownAlbyUnauthorizedExpiredAlert = false
+        }, 60000)
+      }
     } else if (
       error?.response?.status === PV.ResponseErrorCodes.SERVER_MAINTENANCE_MODE &&
       error.response.data?.isInMaintenanceMode
