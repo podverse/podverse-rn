@@ -131,8 +131,8 @@ export const getUniqueArrayByKey = (arr: any[], key: string) => {
   return [...new Map(arr.map((item: any) => [item[key], item])).values()]
 }
 
-export const safeKeyExtractor = (prefix: string, index: number, id?: string) => {
-  if (id) {
+export const safeKeyExtractor = (prefix: string, index: number, id?: string, isCustomRSS?: boolean) => {
+  if (id && !isCustomRSS) {
     return `${prefix}_${id}`
   } else {
     return `${prefix}_${index}`
