@@ -24,6 +24,6 @@ export const setCustomRSSParallelParserLimit = async (limit: number) => {
   } catch (error) {
     console.log('setCustomRSSParallelParserLimit error', error)
   }
-  
+
   return limit
 }

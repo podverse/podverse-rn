@@ -372,6 +372,7 @@
   "If a podcast inserts dynamic ads the clip start time may not stay accurate": "▸ Start time varies for clips with dynamic ads.",
   "If this is a password protected feed": "If this is a password protected feed.\nEnter the username and password above before pressing the \"Save\".",
   "Import OPML": "Import OPML",
+  "Importing Feeds": "Importing Feeds",
   "Include username and password": "Include username and password",
   "Incomplete": "Incomplete",
   "In progress": "In progress",

@@ -92,11 +92,11 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
         const { parsedTranscript } = this.props
         if (parsedTranscript) {
           const currentPosition = await playerGetPosition()
-  
+
           const index = parsedTranscript.findIndex(
             (item: Record<string, any>) => item.startTime < currentPosition && item.endTime > currentPosition
           )
-  
+
           if (index !== -1) {
             const indexBefore = index > 0 ? index - 1 : 0
             this.listRef.scrollToIndex({ index: indexBefore, animated: false })
@@ -178,7 +178,6 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     const { autoScrollOn } = this.state
     const { screenReaderEnabled } = this.global
 
-    
     if (this.state.searchText) {
       parsedTranscript = this.state.searchResults || []
     }

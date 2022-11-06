@@ -83,8 +83,8 @@ export class ContributeScreen extends React.Component<Props> {
           <Text style={styles.listText}>- Creating Memes</Text>
           <Text style={styles.listText}>- Other ideas?</Text>
           <Text style={styles.text}>
-            If you are interested in contributing to Podverse, please join our Discord
-            server, or send us an email. Thank you ❤️
+            If you are interested in contributing to Podverse, please join our Discord server, or send us an email.
+            Thank you ❤️
           </Text>
           <TextLink
             fontSizeLargestScale={PV.Fonts.largeSizes.md}

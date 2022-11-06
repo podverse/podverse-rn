@@ -57,8 +57,9 @@ export class EpisodeTranscriptScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view}>
         {isLoading && <ActivityIndicator testID={testIDPrefix} />}
-        {!isLoading && <MediaPlayerCarouselTranscripts
-          isNowPlaying={isNowPlaying} parsedTranscript={parsedTranscript} />}
+        {!isLoading && (
+          <MediaPlayerCarouselTranscripts isNowPlaying={isNowPlaying} parsedTranscript={parsedTranscript} />
+        )}
       </View>
     )
   }

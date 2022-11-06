@@ -39,6 +39,10 @@ export class MoreScreen extends React.Component<Props, State> {
 
   componentDidMount() {
     trackPageView('/more', 'More Screen')
+    if (this.props.navigation?.state?.params?.opmlUri) {
+      console.log('importing')
+      this._importOpml(this.props.navigation.state.params.opmlUri)
+    }
   }
 
   _moreFeaturesOptions = (isLoggedIn: boolean) => {
@@ -112,40 +116,42 @@ export class MoreScreen extends React.Component<Props, State> {
     }
   }
 
-  _importOpml = async () => {
+  _importOpml = async (uri?: string) => {
     try {
-      const res = await DocumentPicker.pickSingle({
-        type: [DocumentPicker.types.allFiles]
-      })
-
-      if (!res) {
-        throw new Error('Something went wrong with the import process.')
-      } else {
-        const contents = await RNFS.readFile(decodeURI(res.uri), 'utf8')
-        console.log("Res: ", res.uri)
-
-        this.setState({ isLoading: true }, () => {
-          parseString(contents, async (err: any, result: any) => {
-            try {
-              if (err) {
-                throw err
-              } else if (!result?.opml?.body[0]?.outline) {
-                throw new Error('OPML file is not in the correct format')
-              }
-
-              const rssArr = parseOpmlFile(result, true)
-              await addAddByRSSPodcasts(rssArr)
-
-              this.setState({ isLoading: false }, () => {
-                this.props.navigation.navigate(PV.RouteNames.PodcastsScreen)
-              })
-            } catch (error) {
-              console.log('Error parsing podcast: ', error)
-              this.setState({ isLoading: false })
-            }
-          })
+      if (!uri) {
+        const res = await DocumentPicker.pickSingle({
+          type: [DocumentPicker.types.allFiles]
         })
+
+        if (!res) {
+          throw new Error('Something went wrong with the import process.')
+        }
+
+        uri = res.uri
       }
+      const contents = await RNFS.readFile(decodeURI(uri), 'utf8')
+
+      this.setState({ isLoading: true }, () => {
+        parseString(contents, async (err: any, result: any) => {
+          try {
+            if (err) {
+              throw err
+            } else if (!result?.opml?.body[0]?.outline) {
+              throw new Error('OPML file is not in the correct format')
+            }
+
+            const rssArr = parseOpmlFile(result, true)
+            await addAddByRSSPodcasts(rssArr)
+
+            this.setState({ isLoading: false }, () => {
+              this.props.navigation.navigate(PV.RouteNames.PodcastsScreen)
+            })
+          } catch (error) {
+            console.log('Error parsing podcast: ', error)
+            this.setState({ isLoading: false })
+          }
+        })
+      })
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -274,7 +280,12 @@ export class MoreScreen extends React.Component<Props, State> {
           stickySectionHeadersEnabled={false}
         />
         {this.state.isLoading && (
-          <ActivityIndicator isOverlay showMayTakeAwhileMsg testID={testIDPrefix} transparent={false} />
+          <ActivityIndicator
+            isOverlay
+            loadingMessage={`${translate('Importing Feeds')}\n${translate('This may take a while')}`}
+            testID={testIDPrefix}
+            transparent={false}
+          />
         )}
       </View>
     )

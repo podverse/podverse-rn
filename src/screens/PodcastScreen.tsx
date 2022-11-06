@@ -219,11 +219,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
             />
           )}
           {!addByRSSPodcastFeedUrl && (
-            <NavShareIcon
-              podcastTitle={podcastTitle}
-              urlId={podcastId}
-              urlPath={PV.URLs.webPaths.podcast}
-            />
+            <NavShareIcon podcastTitle={podcastTitle} urlId={podcastId} urlPath={PV.URLs.webPaths.podcast} />
           )}
           {!!addByRSSPodcastFeedUrl && podcast?.linkUrl && (
             <NavShareIcon
@@ -371,7 +367,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _handleMaintenanceMode = () => {
     const { queryFrom } = this.state
-    
+
     if (queryFrom !== PV.Filters._downloadedKey) {
       this.handleSelectFilterItem(PV.Filters._downloadedKey)
     }
