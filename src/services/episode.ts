@@ -10,7 +10,8 @@ export const getEpisodes = async (query: any = {}) => {
     ...(searchTitle ? { searchTitle } : {}),
     ...(query.includePodcast ? { includePodcast: query.includePodcast } : {}),
     ...(query.sincePubDate ? { sincePubDate: query.sincePubDate } : {}),
-    ...(query.hasVideo ? { hasVideo: query.hasVideo } : {})
+    ...(query.hasVideo ? { hasVideo: query.hasVideo } : {}),
+    ...(query.maxResults ? { maxResults: query.maxResults } : {})
   } as any
 
   if (query.categories && query.categories) {
@@ -54,7 +55,8 @@ export const getEpisodesSincePubDate = async (sincePubDate: string, podcastIds: 
       const response = await getEpisodes({
         podcastId: podcastIds,
         sincePubDate,
-        includePodcast: true
+        includePodcast: true,
+        maxResults: true
       })
 
       result = response[0]

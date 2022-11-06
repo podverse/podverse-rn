@@ -6,6 +6,7 @@ const protocol = 'https://'
 const domain = Config.WEB_DOMAIN || 'stage.podverse.fm'
 const root = protocol + domain
 
+// const apiDefaultBaseUrl = 'http://localhost:1234/api/v1'
 const apiDefaultBaseUrl = Config.API_DOMAIN || 'https://api.stage.podverse.fm/api/v1'
 const webDefaultBaseUrl = root
 

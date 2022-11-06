@@ -36,18 +36,18 @@ import { getCustomLaunchScreenKey } from '../services/customLaunchScreen'
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRef } from '../services/mediaRef'
-import { getNowPlayingItem, getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { getAddByRSSPodcastsLocally, parseAllAddByRSSPodcasts } from '../services/parser'
 import { playerUpdateUserPlaybackPosition } from '../services/player'
 import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudio'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getSavedQueryPodcastsScreenSort, setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
+import { getNowPlayingItem, getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
 import { initAutoQueue } from '../state/actions/autoQueue'
 import { initDownloads, removeDownloadedPodcast, updateDownloadedPodcasts } from '../state/actions/downloads'
 import { v4vAlbyHandleConnect } from '../state/actions/v4v/providers/alby'
-import { handleUpdateNewEpisodesCount } from '../state/actions/newEpisodesCount'
+import { handleUpdateNewEpisodesCount, syncNewEpisodesCountWithHistory } from '../state/actions/newEpisodesCount'
 import {
   initializePlayerSettings,
   initializePlayer,
@@ -1164,6 +1164,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
       }
       await AsyncStorage.setItem(PV.Keys.AUTODOWNLOADS_LAST_REFRESHED, new Date().toISOString())
     }
+
+    // let syncing with server history data run in the background
+    syncNewEpisodesCountWithHistory()
   }
 
   _queryCustomFeeds = async () => {
