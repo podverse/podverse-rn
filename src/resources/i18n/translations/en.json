@@ -26,7 +26,7 @@
   "AddPodcastByRSSScreenText1": "Note: Clips, playlists, and sharing are not supported for custom RSS feeds.",
   "AddPodcastByRSSScreenText2": "Add a podcast with support for clips and playlists to our database.",
   "Advanced": "Advanced",
-  "Alby unauthorized timeout message": "Your Alby wallet has been disconnected due to inactivity.\nPlease re-connect your wallet to resume using Alby.",
+  "Alby unauthorized timeout message": "Your Alby wallet has been disconnected.\nPlease re-connect your wallet to resume using Alby.",
   "Alby unauthorized timeout title": "Alby disconnected",
   "All": "All",
   "All brandName software is provided free and open source under the AGPLv3 license": "Copy, inspect, change and share — with all. All Podverse software is licensed AGPLv3+.",
