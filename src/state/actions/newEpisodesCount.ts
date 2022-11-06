@@ -62,20 +62,22 @@ export const toggleHideNewEpisodesBadges = async () => {
   This only needs to run for logged-in users.
 */
 export const syncNewEpisodesCountWithHistory = async () => {
-  const { isLoggedIn } = getGlobal().session
-  if (isLoggedIn) {
-    const historyItemsIndex = await getHistoryItemsIndex()
-    const newEpisodesCount = await getNewEpisodesCountService()
-    const newEpisodesPodcastIds = Object.keys(newEpisodesCount)
-
-    if (newEpisodesPodcastIds && historyItemsIndex?.episodes) {
-      for (const newEpisodePodcastId of newEpisodesPodcastIds) {
-        const newEpisodesPodcastData = newEpisodesCount[newEpisodePodcastId]?.data
-        if (newEpisodesPodcastData) {
-          const newEpisodesEpisodeIds = Object.keys(newEpisodesPodcastData)
-          for (const newEpisodesEpisodeId of newEpisodesEpisodeIds) {
-            if (historyItemsIndex.episodes[newEpisodesEpisodeId]) {
-              await clearEpisodesCountForPodcastEpisode(newEpisodePodcastId, newEpisodesEpisodeId)
+  try {
+    const { isLoggedIn } = getGlobal().session
+    if (isLoggedIn) {
+      const historyItemsIndex = await getHistoryItemsIndex()
+      const newEpisodesCount = await getNewEpisodesCountService()
+      const newEpisodesPodcastIds = Object.keys(newEpisodesCount)
+  
+      if (newEpisodesPodcastIds && historyItemsIndex?.episodes) {
+        for (const newEpisodePodcastId of newEpisodesPodcastIds) {
+          const newEpisodesPodcastData = newEpisodesCount[newEpisodePodcastId]?.data
+          if (newEpisodesPodcastData) {
+            const newEpisodesEpisodeIds = Object.keys(newEpisodesPodcastData)
+            for (const newEpisodesEpisodeId of newEpisodesEpisodeIds) {
+              if (historyItemsIndex.episodes[newEpisodesEpisodeId]) {
+                await clearEpisodesCountForPodcastEpisode(newEpisodePodcastId, newEpisodesEpisodeId)
+              }
             }
           }
         }
@@ -84,5 +86,7 @@ export const syncNewEpisodesCountWithHistory = async () => {
 
     // After updated in storage, then update the global state
     getNewEpisodesCount()
+  } catch (error) {
+    console.log('syncNewEpisodesCountWithHistory error', error)
   }
 }
