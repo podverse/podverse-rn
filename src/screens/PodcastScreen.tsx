@@ -1087,7 +1087,8 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
                 extraData={flatListData}
                 isLoadingMore={isLoadingMore}
                 isRefreshing={isRefreshing}
-                keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
+                keyExtractor={(item: any, index: number) => 
+                  safeKeyExtractor(testIDPrefix, index, item?.id, !!item?.addedByRSS)}
                 ListHeaderComponent={this._ListHeaderComponent}
                 noResultsMessage={noResultsMessage}
                 onEndReached={this._onEndReached}
