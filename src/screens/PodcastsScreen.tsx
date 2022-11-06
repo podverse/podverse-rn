@@ -600,7 +600,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         try {
           isLoggedIn = await getAuthUserInfo()
           if (isLoggedIn) await askToSyncWithNowPlayingItem(this._initializeScreenDataPart2)
-          downloadedEpisodeDeleteMarked()
         } catch (error) {
           console.log('initializeScreenData getAuthUserInfo', error)
           // If getAuthUserInfo fails, continue with the networkless version of the app
@@ -622,6 +621,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     initializeValueProcessor()
 
     this._setDownloadedDataIfOffline()
+    downloadedEpisodeDeleteMarked()
     trackPageView('/podcasts', 'Podcasts Screen')
   }
 
