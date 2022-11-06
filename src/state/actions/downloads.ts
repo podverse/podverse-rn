@@ -397,3 +397,29 @@ export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
   await removeDownloadedPodcastEpisodeService(episodeId)
   await updateDownloadedPodcasts()
 }
+
+export const downloadedEpisodeMarkForDeletion = async (episodeId: string) => {
+  try {
+    const markedForDeletionString = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION)
+    const markedForDeletion = JSON.parse(markedForDeletionString || '[]') || []
+    if (episodeId && !markedForDeletion.includes(episodeId)) {
+      markedForDeletion.push(episodeId)
+    }
+    await AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION, JSON.stringify(markedForDeletion))
+  } catch (error) {
+    console.log('downloadedEpisodeMarkForDeletion error', error, episodeId)
+  }
+}
+
+export const downloadedEpisodeDeleteMarked = async () => {
+  try {
+    const markedForDeletionString = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION)
+    const markedForDeletion = JSON.parse(markedForDeletionString || '[]') || []
+    for (const episodeId of markedForDeletion) {
+      await removeDownloadedPodcastEpisode(episodeId)
+    }
+  } catch (error) {
+    console.log('downloadedEpisodeDeleteMarked error', error)
+  }
+  await AsyncStorage.removeItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION)
+}

@@ -45,7 +45,8 @@ import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPa
 import { getNowPlayingItem, getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
 import { initAutoQueue } from '../state/actions/autoQueue'
-import { initDownloads, removeDownloadedPodcast, updateDownloadedPodcasts } from '../state/actions/downloads'
+import { downloadedEpisodeDeleteMarked, initDownloads, removeDownloadedPodcast,
+  updateDownloadedPodcasts } from '../state/actions/downloads'
 import { v4vAlbyHandleConnect } from '../state/actions/v4v/providers/alby'
 import { handleUpdateNewEpisodesCount, syncNewEpisodesCountWithHistory } from '../state/actions/newEpisodesCount'
 import {
@@ -599,6 +600,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         try {
           isLoggedIn = await getAuthUserInfo()
           if (isLoggedIn) await askToSyncWithNowPlayingItem(this._initializeScreenDataPart2)
+          downloadedEpisodeDeleteMarked()
         } catch (error) {
           console.log('initializeScreenData getAuthUserInfo', error)
           // If getAuthUserInfo fails, continue with the networkless version of the app
