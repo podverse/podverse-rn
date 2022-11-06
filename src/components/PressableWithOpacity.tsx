@@ -3,13 +3,14 @@ import { Pressable } from 'react-native'
 
 type Props = {
   children: any
+  disable: boolean
   onPress: any
   style?: any
 }
 
 export const PressableWithOpacity = (props: Props) => {
   return (
-    <Pressable {...props} style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1.0 }, props.style]}>
+    <Pressable {...props} style={({ pressed }) => [{ opacity: pressed && !props.disable ? 0.5 : 1.0 }, props.style]}>
       {props.children}
     </Pressable>
   )

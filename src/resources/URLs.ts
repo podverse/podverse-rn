@@ -6,6 +6,7 @@ const protocol = 'https://'
 const domain = Config.WEB_DOMAIN || 'stage.podverse.fm'
 const root = protocol + domain
 
+// const apiDefaultBaseUrl = 'http://localhost:1234/api/v1'
 const apiDefaultBaseUrl = Config.API_DOMAIN || 'https://api.stage.podverse.fm/api/v1'
 const webDefaultBaseUrl = root
 
@@ -39,7 +40,8 @@ export const URLs = {
     twitter: Config.URL_SOCIAL_TWITTER || '',
     podcastIndex: Config.URL_PODCAST_INDEX || '',
     discord: Config.URL_SOCIAL_DISCORD || '',
-    mastodonAccount: Config.URL_SOCIAL_MASTODON_ACCOUNT || ''
+    mastodonAccount: Config.URL_SOCIAL_MASTODON_ACCOUNT || '',
+    matrix: Config.URL_SOCIAL_MATRIX || ''
   },
   xmpp: {
     chatRooms: {

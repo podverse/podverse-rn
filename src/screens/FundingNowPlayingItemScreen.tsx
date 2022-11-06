@@ -233,17 +233,15 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
               {episodeTitle}
             </Text>
             <View style={styles.textWrapperBottomRow}>
-              {
-                !!pubDate && (
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    isSecondary
-                    style={styles.pubDate}
-                    testID={`${testIDPrefix}_pub_date`}>
-                    {pubDate}
-                  </Text>
-                )
-              }
+              {!!pubDate && (
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  isSecondary
+                  style={styles.pubDate}
+                  testID={`${testIDPrefix}_pub_date`}>
+                  {pubDate}
+                </Text>
+              )}
             </View>
           </View>
         </View>

@@ -25,7 +25,16 @@ buildscript {
     }
 }
 
+// Adding this becuase of react-native-reanimated issue
+// https://github.com/software-mansion/react-native-reanimated/issues/3743#issuecomment-1304437673
+def REACT_NATIVE_VERSION = new File(['node', '--print',"JSON.parse(require('fs').readFileSync(require.resolve('react-native/package.json'), 'utf-8')).version"].execute(null, rootDir).text.trim())
+
 allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force "com.facebook.react:react-native:" + REACT_NATIVE_VERSION
+        }
+    }
     repositories {
         mavenLocal()
         

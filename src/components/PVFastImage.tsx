@@ -149,11 +149,11 @@ export class PVFastImage extends React.PureComponent<Props, State> {
             }}
             style={{ height: '100%', width: '100%' }}
           />
-          {!!showLiveIndicator && 
+          {!!showLiveIndicator && (
             <View style={defaultStyles.liveStatusBadge}>
               <LiveStatusBadge />
             </View>
-          }
+          )}
           {!!isAddByRSSPodcast && (
             <View style={[globalTheme.view, defaultStyles.addByRSSWrapper]}>
               <Text style={addByRSSTextStyle}>{addByRSSText}</Text>
@@ -239,7 +239,7 @@ const defaultStyles = StyleSheet.create({
     position: 'absolute',
     zIndex: 1000001,
     right: 0,
-    top: 0,
+    top: 0
   },
   placeholderLabel: {
     fontSize: PV.Fonts.sizes.lg,
