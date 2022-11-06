@@ -15549,8 +15549,8 @@
 		BFDFE7DC352907FC980B868725387E98 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1300;
-				LastUpgradeCheck = 1300;
+				LastSwiftUpdateCheck = 1240;
+				LastUpgradeCheck = 1240;
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -19039,6 +19039,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTNetwork/React-RCTNetwork-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -19063,6 +19064,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -19079,6 +19081,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -19103,6 +19106,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/ZIPFoundation/ZIPFoundation-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MODULEMAP_FILE = Headers/Public/ZIPFoundation/ZIPFoundation.modulemap;
@@ -19129,6 +19133,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-jsi/React-jsi-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -19154,6 +19159,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-config/react-native-config-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -19179,6 +19185,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-logger/React-logger-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -19203,6 +19210,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-netinfo/react-native-netinfo-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -19228,6 +19236,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTLinking/React-RCTLinking-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -19252,6 +19261,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -19275,6 +19285,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNCAsyncStorage/RNCAsyncStorage-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -19300,6 +19311,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/ReactCommon/ReactCommon-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -19325,6 +19337,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNSecureKeyStore/RNSecureKeyStore-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "";
@@ -19350,6 +19363,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNLocalize/RNLocalize-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -19375,6 +19389,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/toolbar-android/toolbar-android-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -19400,6 +19415,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNCMaskedView/RNCMaskedView-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -19425,6 +19441,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -19442,6 +19459,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/FBReactNativeSpec/FBReactNativeSpec-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -19466,6 +19484,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNDeviceInfo/RNDeviceInfo-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -19492,6 +19511,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-jsinspector/React-jsinspector-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -19517,6 +19537,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNCPicker/RNCPicker-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -19542,6 +19563,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-webview/react-native-webview-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -19566,6 +19588,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNDeviceInfo/RNDeviceInfo-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -19592,6 +19615,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				MACH_O_TYPE = staticlib;
 				OTHER_LDFLAGS = "";
@@ -19612,6 +19636,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNSVG/RNSVG-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -19637,6 +19662,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -19661,6 +19687,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-jsinspector/React-jsinspector-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -19685,6 +19712,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNShare/RNShare-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LDFLAGS = "";
@@ -19711,6 +19739,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/glog/glog-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -19736,6 +19765,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-perflogger/React-perflogger-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -19760,6 +19790,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNFS/RNFS-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LDFLAGS = "";
@@ -19784,6 +19815,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNScreens/RNScreens-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -19808,6 +19840,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -19824,6 +19857,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RCTTypeSafety/RCTTypeSafety-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -19848,6 +19882,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/appcenter-core/appcenter-core-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -19874,6 +19909,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-document-picker/react-native-document-picker-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -19898,6 +19934,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -19914,6 +19951,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -19937,6 +19975,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RCT-Folly/RCT-Folly-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -19961,6 +20000,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-orientation-locker/react-native-orientation-locker-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LDFLAGS = "";
@@ -19988,6 +20028,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-podverse/Pods-podverse.modulemap";
@@ -20011,6 +20052,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNFBMessaging/RNFBMessaging-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				OTHER_LDFLAGS = "";
@@ -20037,6 +20079,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/Yoga/Yoga-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MODULEMAP_FILE = Headers/Public/yoga/Yoga.modulemap;
@@ -20064,6 +20107,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-cxxreact/React-cxxreact-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -20089,6 +20133,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RCTSystemSetting/RCTSystemSetting-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "";
@@ -20113,6 +20158,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/appcenter-crashes/appcenter-crashes-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -20139,6 +20185,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/DoubleConversion/DoubleConversion-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -20164,6 +20211,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-background-downloader/react-native-background-downloader-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "";
@@ -20190,6 +20238,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/SwiftAudioEx/SwiftAudioEx-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MODULEMAP_FILE = Headers/Public/SwiftAudioEx/SwiftAudioEx.modulemap;
@@ -20216,6 +20265,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-jsiexecutor/React-jsiexecutor-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -20240,6 +20290,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNCPicker/RNCPicker-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -20264,6 +20315,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNSVG/RNSVG-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -20288,6 +20340,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/appcenter-core/appcenter-core-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -20312,6 +20365,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -20328,6 +20382,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTText/React-RCTText-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -20353,6 +20408,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/appcenter-analytics/appcenter-analytics-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -20378,6 +20434,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTAnimation/React-RCTAnimation-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -20399,7 +20456,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4F0AFBC8F4DD084C0CF874BEC09C0E11 /* React-Core.debug.xcconfig */;
 			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/React-Core";
+				ENABLE_BITCODE = NO;
 				IBSC_MODULE = React;
 				INFOPLIST_FILE = "Target Support Files/React-Core/ResourceBundle-AccessibilityResources-React-Core-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -20419,6 +20478,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -20443,6 +20503,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNLocalize/RNLocalize-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -20467,6 +20528,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-tracking-transparency/react-native-tracking-transparency-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -20492,6 +20554,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/DoubleConversion/DoubleConversion-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -20518,6 +20581,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-podverse/Pods-podverse.modulemap";
@@ -20539,6 +20603,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNVectorIcons/RNVectorIcons-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -20563,6 +20628,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/toolbar-android/toolbar-android-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -20588,6 +20654,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-cxxreact/React-cxxreact-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -20612,6 +20679,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-orientation-locker/react-native-orientation-locker-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LDFLAGS = "";
@@ -20636,6 +20704,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNShare/RNShare-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LDFLAGS = "";
@@ -20660,6 +20729,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-background-downloader/react-native-background-downloader-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "";
@@ -20685,6 +20755,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTAnimation/React-RCTAnimation-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -20709,6 +20780,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-in-app-review/react-native-in-app-review-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MODULEMAP_FILE = "Headers/Public/react_native_in_app_review/react-native-in-app-review.modulemap";
@@ -20734,6 +20806,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -20751,6 +20824,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-perflogger/React-perflogger-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -20776,6 +20850,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNReanimated/RNReanimated-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -20801,6 +20876,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -20817,6 +20893,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-Core/React-Core-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MODULEMAP_FILE = "Headers/Public/React/React-Core.modulemap";
@@ -20843,6 +20920,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNCAsyncStorage/RNCAsyncStorage-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -20868,6 +20946,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNGestureHandler/RNGestureHandler-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -20894,6 +20973,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/fmt/fmt-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				OTHER_LDFLAGS = "";
@@ -20918,6 +20998,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNIap/RNIap-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MODULEMAP_FILE = Headers/Public/RNIap/RNIap.modulemap;
@@ -20943,6 +21024,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -20959,6 +21041,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-tracking-transparency/react-native-tracking-transparency-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -20984,6 +21067,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNVectorIcons/RNVectorIcons-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -21009,6 +21093,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-video/react-native-video-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LIBTOOLFLAGS = "";
@@ -21033,6 +21118,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-safe-area-context/react-native-safe-area-context-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -21059,6 +21145,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTVibration/React-RCTVibration-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -21084,6 +21171,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-document-picker/react-native-document-picker-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -21109,6 +21197,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-webview/react-native-webview-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -21134,6 +21223,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNReactNativeHapticFeedback/RNReactNativeHapticFeedback-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -21158,6 +21248,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-background-timer/react-native-background-timer-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LDFLAGS = "";
@@ -21184,6 +21275,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNFBMessaging/RNFBMessaging-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				OTHER_LDFLAGS = "";
@@ -21209,6 +21301,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTImage/React-RCTImage-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -21233,6 +21326,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNScreens/RNScreens-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -21257,6 +21351,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RCT-Folly/RCT-Folly-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -21282,6 +21377,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -21305,6 +21401,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -21320,6 +21417,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-background-timer/react-native-background-timer-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LDFLAGS = "";
@@ -21345,6 +21443,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTLinking/React-RCTLinking-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -21370,6 +21469,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -21385,6 +21485,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -21408,6 +21509,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-config/react-native-config-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -21434,6 +21536,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTBlob/React-RCTBlob-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -21459,6 +21562,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNKeychain/RNKeychain-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -21484,6 +21588,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/nanopb/nanopb-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -21508,6 +21613,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -21523,6 +21629,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-safe-area-context/react-native-safe-area-context-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -21548,6 +21655,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-file-access/react-native-file-access-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MODULEMAP_FILE = "Headers/Public/react_native_file_access/react-native-file-access.modulemap";
@@ -21574,6 +21682,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-logger/React-logger-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -21599,6 +21708,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -21616,6 +21726,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -21640,6 +21751,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/glog/glog-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -21665,6 +21777,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -21690,6 +21803,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/FBReactNativeSpec/FBReactNativeSpec-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -21715,6 +21829,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -21730,6 +21845,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -21754,6 +21870,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/appcenter-crashes/appcenter-crashes-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -21779,6 +21896,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-jsi/React-jsi-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -21803,6 +21921,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNIap/RNIap-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MODULEMAP_FILE = Headers/Public/RNIap/RNIap.modulemap;
@@ -21828,6 +21947,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -21844,6 +21964,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-jsiexecutor/React-jsiexecutor-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -21870,6 +21991,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTSettings/React-RCTSettings-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -21894,6 +22016,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -21909,6 +22032,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -21925,6 +22049,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/Yoga/Yoga-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MODULEMAP_FILE = Headers/Public/yoga/Yoga.modulemap;
@@ -21950,6 +22075,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/appcenter-analytics/appcenter-analytics-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -21975,6 +22101,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNKeychain/RNKeychain-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -21999,6 +22126,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-netinfo/react-native-netinfo-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -22025,6 +22153,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTText/React-RCTText-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -22049,6 +22178,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -22066,6 +22196,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-Core/React-Core-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MODULEMAP_FILE = "Headers/Public/React/React-Core.modulemap";
@@ -22092,6 +22223,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNFBApp/RNFBApp-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				OTHER_LDFLAGS = "";
@@ -22116,6 +22248,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -22133,6 +22266,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RCTTypeSafety/RCTTypeSafety-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -22158,6 +22292,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNSecureKeyStore/RNSecureKeyStore-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "";
@@ -22182,6 +22317,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNReanimated/RNReanimated-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -22207,6 +22343,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/ReactCommon/ReactCommon-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -22232,6 +22369,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTSettings/React-RCTSettings-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -22256,6 +22394,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MODULEMAP_FILE = Headers/Public/FBLPromises/PromisesObjC.modulemap;
 				OTHER_LDFLAGS = "";
@@ -22282,6 +22421,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				MACH_O_TYPE = staticlib;
 				OTHER_LDFLAGS = "";
@@ -22303,6 +22443,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNReactNativeHapticFeedback/RNReactNativeHapticFeedback-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -22328,6 +22469,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -22352,6 +22494,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-video/react-native-video-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LIBTOOLFLAGS = "";
@@ -22376,6 +22519,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/fmt/fmt-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				OTHER_LDFLAGS = "";
@@ -22401,6 +22545,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RCTSystemSetting/RCTSystemSetting-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = "";
@@ -22422,7 +22567,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 908E569FD3E88C420BDA3D9E719E91B8 /* React-Core.release.xcconfig */;
 			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/React-Core";
+				ENABLE_BITCODE = NO;
 				IBSC_MODULE = React;
 				INFOPLIST_FILE = "Target Support Files/React-Core/ResourceBundle-AccessibilityResources-React-Core-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -22443,6 +22590,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNFBApp/RNFBApp-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				OTHER_LDFLAGS = "";
@@ -22468,6 +22616,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MODULEMAP_FILE = Headers/Public/FBLPromises/PromisesObjC.modulemap;
 				OTHER_LDFLAGS = "";
@@ -22494,6 +22643,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-track-player/react-native-track-player-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MODULEMAP_FILE = "Headers/Public/react_native_track_player/react-native-track-player.modulemap";
@@ -22582,6 +22732,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-track-player/react-native-track-player-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MODULEMAP_FILE = "Headers/Public/react_native_track_player/react-native-track-player.modulemap";
@@ -22608,6 +22759,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/ZIPFoundation/ZIPFoundation-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MODULEMAP_FILE = Headers/Public/ZIPFoundation/ZIPFoundation.modulemap;
@@ -22635,6 +22787,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTImage/React-RCTImage-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -22661,6 +22814,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-file-access/react-native-file-access-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MODULEMAP_FILE = "Headers/Public/react_native_file_access/react-native-file-access.modulemap";
@@ -22687,6 +22841,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNGestureHandler/RNGestureHandler-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -22711,6 +22866,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNCMaskedView/RNCMaskedView-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -22736,6 +22892,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTBlob/React-RCTBlob-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -22760,6 +22917,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/react-native-in-app-review/react-native-in-app-review-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MODULEMAP_FILE = "Headers/Public/react_native_in_app_review/react-native-in-app-review.modulemap";
@@ -22787,6 +22945,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-CoreModules/React-CoreModules-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -22812,6 +22971,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/nanopb/nanopb-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				OTHER_LDFLAGS = "";
@@ -22837,6 +22997,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/RNFS/RNFS-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LDFLAGS = "";
@@ -22862,6 +23023,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -22879,6 +23041,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/SwiftAudioEx/SwiftAudioEx-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MODULEMAP_FILE = Headers/Public/SwiftAudioEx/SwiftAudioEx.modulemap;
@@ -22906,6 +23069,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-CoreModules/React-CoreModules-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -22931,6 +23095,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTVibration/React-RCTVibration-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
@@ -22957,6 +23122,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -22980,6 +23146,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ENABLE_BITCODE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -22997,6 +23164,7 @@
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "Target Support Files/React-RCTNetwork/React-RCTNetwork-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = "";
