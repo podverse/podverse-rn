@@ -745,5 +745,7 @@
     "Download my data explanation": "Last ned full kopi av dataen din fra databasen.",
     "Alby unauthorized timeout message": "Koble til Alby-lommeboken din igjen for å fortsette å bruke den.",
     "Alby unauthorized timeout title": "Alby frakoblet",
-    "Tutorials": "Veiledninger"
+    "Tutorials": "Veiledninger",
+    "Join our Matrix space": "Ta del i vårt Matrix-rom",
+    "Importing Feeds": "Importering av informasonskanaler"
 }
