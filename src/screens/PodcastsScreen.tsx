@@ -474,7 +474,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
     try {
       if (url) {
         if (url.endsWith('xml') || url.endsWith('opml')) {
-          await navigate(PV.RouteNames.MoreScreen, { opmlUri: url })
+            await getAuthUserInfo(() => {
+              navigate(PV.RouteNames.MoreScreen, { opmlUri: url })
+            })
         } else {
           const route = url.replace(/.*?:\/\//g, '')
           const splitPath = route.split('/')
