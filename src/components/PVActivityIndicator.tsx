@@ -3,7 +3,6 @@ import { ActivityIndicator, Dimensions, Pressable, StyleSheet, View } from 'reac
 import { useGlobal } from 'reactn'
 import { Text } from '../components'
 import { ImportantForAccessibility } from '../lib/accessibilityHelpers'
-import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { Colors } from '../resources/Colors'
 import { core } from '../styles'
@@ -17,7 +16,7 @@ type Props = {
   importantForAccessibility?: ImportantForAccessibility
   isOverlay?: boolean
   onPress?: any
-  showMayTakeAwhileMsg?: boolean
+  loadingMessage?: string
   size?: any
   styles?: any
   testID: string
@@ -34,7 +33,7 @@ export const PVActivityIndicator = (props: Props) => {
     importantForAccessibility = 'auto',
     isOverlay,
     onPress,
-    showMayTakeAwhileMsg,
+    loadingMessage,
     size = 'large',
     testID,
     transparent = true
@@ -43,13 +42,9 @@ export const PVActivityIndicator = (props: Props) => {
   const viewStyle = fillSpace ? { flex: 1 } : {}
   const backgroundColor = transparent ? {} : { backgroundColor: Colors.blackOpaque }
 
-  const mayTakeAWhileMsg = !!showMayTakeAwhileMsg
-    ? <Text style={styles.subText}>{translate('This may take a while')}</Text>
-    : null
-
   return (
     <Fragment>
-      {isOverlay && (
+      {isOverlay ? (
         <View
           accessible={accessible}
           accessibilityHint={accessibilityHint}
@@ -62,10 +57,9 @@ export const PVActivityIndicator = (props: Props) => {
             size={size}
             testID={`${testID}_activity_indicator`.prependTestId()}
           />
-          {mayTakeAWhileMsg}
+          <Text style={styles.subText}>{loadingMessage}</Text>
         </View>
-      )}
-      {!isOverlay && (
+      ) : (
         <Pressable
           accessible={accessible}
           accessibilityHint={accessibilityHint}
@@ -80,7 +74,7 @@ export const PVActivityIndicator = (props: Props) => {
               size={size}
               testID={`${testID}_activity_indicator`.prependTestId()}
             />
-            {mayTakeAWhileMsg}
+            <Text style={styles.subText}>{loadingMessage}</Text>
           </View>
         </Pressable>
       )}
@@ -101,7 +95,8 @@ const styles = StyleSheet.create({
   subText: {
     flex: 0,
     marginTop: 24,
-    fontSize: PV.Fonts.sizes.xl
+    fontSize: PV.Fonts.sizes.xl,
+    textAlign: 'center'
   },
   view: {
     flex: 0

@@ -174,7 +174,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _handleMaintenanceMode = () => {
     const { queryFrom } = this.state
-    
+
     if (queryFrom !== PV.Filters._downloadedKey) {
       this.handleSelectFilterItem(PV.Filters._downloadedKey)
     }

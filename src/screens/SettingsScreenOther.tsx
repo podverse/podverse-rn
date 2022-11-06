@@ -5,8 +5,17 @@ import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { ActivityIndicator, Button, Divider, Icon, NumberSelectorWithText, ScrollView,
-  SwitchWithText, Text, View } from '../components'
+import {
+  ActivityIndicator,
+  Button,
+  Divider,
+  Icon,
+  NumberSelectorWithText,
+  ScrollView,
+  SwitchWithText,
+  Text,
+  View
+} from '../components'
 import { translate } from '../lib/i18n'
 import { deleteImageCache } from '../lib/storage'
 import { PV } from '../resources'
@@ -41,7 +50,8 @@ export class SettingsScreenOther extends React.Component<Props, State> {
 
     this.state = {
       customLaunchScreenOptionSelected: PV.CustomLaunchScreen.getCustomLaunchScreenOption(
-        PV.CustomLaunchScreen.defaultLaunchScreenKey),
+        PV.CustomLaunchScreen.defaultLaunchScreenKey
+      ),
       customRSSParallelParserLimit: customRSSParallelParserLimit?.toString(),
       isLoading: false,
       showDeleteCacheDialog: false
@@ -54,8 +64,7 @@ export class SettingsScreenOther extends React.Component<Props, State> {
 
   async componentDidMount() {
     const customLaunchScreenKey = await getCustomLaunchScreenKey()
-    const customLaunchScreenOptionSelected =
-      PV.CustomLaunchScreen.getCustomLaunchScreenOption(customLaunchScreenKey)
+    const customLaunchScreenOptionSelected = PV.CustomLaunchScreen.getCustomLaunchScreenOption(customLaunchScreenKey)
     this.setState({ customLaunchScreenOptionSelected })
 
     trackPageView('/settings-others', 'Settings Screen Other')
@@ -131,8 +140,7 @@ export class SettingsScreenOther extends React.Component<Props, State> {
       isLoading,
       showDeleteCacheDialog
     } = this.state
-    const { censorNSFWText, globalTheme, hideCompleted,
-      hideNewEpisodesBadges } = this.global
+    const { censorNSFWText, globalTheme, hideCompleted, hideNewEpisodesBadges } = this.global
     const isDarkMode = globalTheme === darkTheme
 
     return (
