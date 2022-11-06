@@ -118,7 +118,7 @@
     "Add current item next in queue when playing a new item": "Ajouter l'élément courant juste après lors de la lecture d'un nouvel épisode",
     "Add to Playlist": "Ajouter à la liste de lecture",
     "AddPodcastByRSSScreenText1": "Remarque : Les extraits, listes de lecture et le partage ne sont pas pris en charge pour les flux RSS personnalisés.",
-    "All downloaded episodes will be deleted from External Storage.": "Tous les épisodes téléchargés vont être supprimés de la carte de stockage externe.",
+    "All downloaded episodes will be deleted from External Storage.": "Tous les fichiers d'épisodes téléchargés seront supprimés.",
     "All": "Tout",
     "Analytics Tracking": "Suivi de popularité",
     "Approve": "Approuver",
@@ -548,7 +548,7 @@
     "Wallet ID (For An Existing Wallet)": "Identifiant du portefeuille (du portefeuille existant)",
     "amount paid": "montant payé",
     "Your profile page will be hidden": "Visibilité du profil : Votre profil sera privé. Vos extraits et listes de lecture seront toujours accessibles à quiconque possède le lien.",
-    "anonymous": "anonyme",
+    "anonymous": "Anonyme",
     "chapter shared using brandName": " — chapitre partagé via Podverse",
     "by": "par :",
     "copyleft": "copyleft",
@@ -669,7 +669,7 @@
     "Automatically add new episodes to queue": "Ajouter automatiquement les nouveaux épisodes à la file d'attente",
     "Last": "Dernier",
     "No remove them": "Non, les retirer",
-    "Ask to sync local podcasts with server": "Votre appareil est abonné à des podcasts qui ne sont pas enregistrés sur votre compte Premium. Voulez-vous les sauvegarder ?",
+    "Ask to sync local podcasts with server": "Enregistrer les abonnements locaux dans Podverse Premium afin qu'ils soient disponibles sur tous les appareils ?",
     "Sync podcasts": "Synchroniser les podcasts",
     "ARIA HINT - auto queue new episodes position": "Définissez si les nouveaux épisodes doivent être ajoutés au début ou à la fin de votre file d'attente lorsque la file d'attente automatique est activée pour un podcast.",
     "Yes save them": "Oui, les enregistrer",
@@ -744,5 +744,7 @@
     "per minute": "par minute",
     "Podcaster": "Créateur",
     "Launch screen": "Écran de lancement",
-    "Login Status Not Saved": "L'état de connexion n'est pas sauvegardé"
+    "Login Status Not Saved": "L'état de connexion n'est pas sauvegardé",
+    "_moment.js date format": "DD/MM/YYYY",
+    "_moment.js date with time format": "DD/MM/YYYY, HH:mm:ss"
 }
