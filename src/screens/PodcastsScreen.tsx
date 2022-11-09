@@ -36,18 +36,19 @@ import { getCustomLaunchScreenKey } from '../services/customLaunchScreen'
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRef } from '../services/mediaRef'
-import { getNowPlayingItem, getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { getAddByRSSPodcastsLocally, parseAllAddByRSSPodcasts } from '../services/parser'
 import { playerUpdateUserPlaybackPosition } from '../services/player'
 import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudio'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getSavedQueryPodcastsScreenSort, setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
+import { getNowPlayingItem, getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
 import { initAutoQueue } from '../state/actions/autoQueue'
-import { initDownloads, removeDownloadedPodcast, updateDownloadedPodcasts } from '../state/actions/downloads'
+import { downloadedEpisodeDeleteMarked, initDownloads, removeDownloadedPodcast,
+  updateDownloadedPodcasts } from '../state/actions/downloads'
 import { v4vAlbyHandleConnect } from '../state/actions/v4v/providers/alby'
-import { handleUpdateNewEpisodesCount } from '../state/actions/newEpisodesCount'
+import { handleUpdateNewEpisodesCount, syncNewEpisodesCountWithHistory } from '../state/actions/newEpisodesCount'
 import {
   initializePlayerSettings,
   initializePlayer,
@@ -303,27 +304,29 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _handleMaintenanceMode = () => {
     const { queryFrom } = this.state
-    
-    this.setGlobal({
-      isInMaintenanceMode: true
-    }, async () => {
-      if (queryFrom !== PV.Filters._downloadedKey) {
-        const forceOffline = true
-        // Prevent flash of grid view in case the event for _handleMaintenanceMode
-        // is called before the app finishes with initializeSettings.
-        const podcastsGridViewEnabled = await AsyncStorage.getItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED)
-        this.setGlobal({
-          podcastsGridViewEnabled: !!podcastsGridViewEnabled
-        }, () => {
-          this._setDownloadedDataIfOffline(forceOffline)
-          Alert.alert(
-            PV.Alerts.MAINTENANCE_MODE.title,
-            PV.Alerts.MAINTENANCE_MODE.message,
-            PV.Alerts.BUTTONS.OK
+
+    this.setGlobal(
+      {
+        isInMaintenanceMode: true
+      },
+      async () => {
+        if (queryFrom !== PV.Filters._downloadedKey) {
+          const forceOffline = true
+          // Prevent flash of grid view in case the event for _handleMaintenanceMode
+          // is called before the app finishes with initializeSettings.
+          const podcastsGridViewEnabled = await AsyncStorage.getItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED)
+          this.setGlobal(
+            {
+              podcastsGridViewEnabled: !!podcastsGridViewEnabled
+            },
+            () => {
+              this._setDownloadedDataIfOffline(forceOffline)
+              Alert.alert(PV.Alerts.MAINTENANCE_MODE.title, PV.Alerts.MAINTENANCE_MODE.message, PV.Alerts.BUTTONS.OK)
+            }
           )
-        })
+        }
       }
-    })
+    )
   }
 
   _handleAppModeChanged = () => {
@@ -471,84 +474,90 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     try {
       if (url) {
-        const route = url.replace(/.*?:\/\//g, '')
-        const splitPath = route.split('/')
-        const domain = splitPath[0] ? splitPath[0] : ''
-        const path = splitPath[1] ? splitPath[1] : ''
-        const id = splitPath[2] ? splitPath[2] : ''
-        const urlParamsString = splitPath[splitPath.length - 1].split('?')[1]
-        const urlParams: any = {}
-        if (urlParamsString) {
-          const urlParamsArr = urlParamsString.split('&')
-          if (urlParamsArr.length) {
-            urlParamsArr.forEach((param) => {
-              const [key, value] = param.split('=')
-              urlParams[key] = value
+        if (url.endsWith('xml') || url.endsWith('opml')) {
+            await getAuthUserInfo(() => {
+              navigate(PV.RouteNames.MoreScreen, { opmlUri: url })
             })
+        } else {
+          const route = url.replace(/.*?:\/\//g, '')
+          const splitPath = route.split('/')
+          const domain = splitPath[0] ? splitPath[0] : ''
+          const path = splitPath[1] ? splitPath[1] : ''
+          const id = splitPath[2] ? splitPath[2] : ''
+          const urlParamsString = splitPath[splitPath.length - 1].split('?')[1]
+          const urlParams: any = {}
+          if (urlParamsString) {
+            const urlParamsArr = urlParamsString.split('&')
+            if (urlParamsArr.length) {
+              urlParamsArr.forEach((param) => {
+                const [key, value] = param.split('=')
+                urlParams[key] = value
+              })
+            }
           }
-        }
 
-        await this._goBackWithDelay()
-        if (path === PV.DeepLinks.Clip.pathPrefix) {
-          await this._handleDeepLinkClip(id)
-        } else if (path === PV.DeepLinks.Episode.pathPrefix) {
-          const episode = await getEpisode(id)
-          if (episode) {
-            const podcast = await getPodcast(episode.podcast?.id)
-            navigate(PV.RouteNames.PodcastScreen, {
-              podcast,
-              navToEpisodeWithId: id
+          await this._goBackWithDelay()
+          if (path === PV.DeepLinks.Clip.pathPrefix) {
+            await this._handleDeepLinkClip(id)
+          } else if (path === PV.DeepLinks.Episode.pathPrefix) {
+            const episode = await getEpisode(id)
+            if (episode) {
+              const podcast = await getPodcast(episode.podcast?.id)
+              navigate(PV.RouteNames.PodcastScreen, {
+                podcast,
+                navToEpisodeWithId: id
+              })
+              navigate(PV.RouteNames.EpisodeScreen, {
+                episode
+              })
+            }
+          } else if (path === PV.DeepLinks.Playlist.pathPrefix) {
+            await navigate(PV.RouteNames.MyLibraryScreen)
+            await navigate(PV.RouteNames.PlaylistsScreen, {
+              navToPlaylistWithId: id
             })
-            navigate(PV.RouteNames.EpisodeScreen, {
-              episode
+          } else if (path === PV.DeepLinks.Podcast.pathPrefix) {
+            await navigate(PV.RouteNames.PodcastScreen, {
+              podcastId: id
             })
+          } else if (path === PV.DeepLinks.Profile.pathPrefix) {
+            await navigate(PV.RouteNames.MyLibraryScreen)
+            await navigate(PV.RouteNames.ProfilesScreen, {
+              navToProfileWithId: id
+            })
+          } else if (path.startsWith(PV.DeepLinks.Account.resetPassword)) {
+            navigate(PV.RouteNames.ResetPasswordScreen, {
+              resetToken: urlParams.token
+            })
+          } else if (path === PV.DeepLinks.About.path) {
+            await navigate(PV.RouteNames.MoreScreen)
+            await navigate(PV.RouteNames.AboutScreen)
+          } else if (path === PV.DeepLinks.Contact.path) {
+            await navigate(PV.RouteNames.MoreScreen)
+            await navigate(PV.RouteNames.ContactScreen)
+          } else if (path === PV.DeepLinks.Membership.path) {
+            await navigate(PV.RouteNames.MoreScreen)
+            await navigate(PV.RouteNames.MembershipScreen)
+          } else if (path === PV.DeepLinks.Contribute.path) {
+            await navigate(PV.RouteNames.MoreScreen)
+            await navigate(PV.RouteNames.ContributeScreen)
+          } else if (path === PV.DeepLinks.Terms.path) {
+            await navigate(PV.RouteNames.MoreScreen)
+            await navigate(PV.RouteNames.TermsOfServiceScreen)
+          } else if (path === PV.DeepLinks.XMPP.path) {
+            await navigate(PV.RouteNames.MoreScreen)
+            await navigate(PV.RouteNames.ContactXMPPChatScreen)
           }
-        } else if (path === PV.DeepLinks.Playlist.pathPrefix) {
-          await navigate(PV.RouteNames.MyLibraryScreen)
-          await navigate(PV.RouteNames.PlaylistsScreen, {
-            navToPlaylistWithId: id
-          })
-        } else if (path === PV.DeepLinks.Podcast.pathPrefix) {
-          await navigate(PV.RouteNames.PodcastScreen, {
-            podcastId: id
-          })
-        } else if (path === PV.DeepLinks.Profile.pathPrefix) {
-          await navigate(PV.RouteNames.MyLibraryScreen)
-          await navigate(PV.RouteNames.ProfilesScreen, {
-            navToProfileWithId: id
-          })
-        } else if (path.startsWith(PV.DeepLinks.Account.resetPassword)) {
-          navigate(PV.RouteNames.ResetPasswordScreen, {
-            resetToken: urlParams.token
-          })
-        } else if (path === PV.DeepLinks.About.path) {
-          await navigate(PV.RouteNames.MoreScreen)
-          await navigate(PV.RouteNames.AboutScreen)
-        } else if (path === PV.DeepLinks.Contact.path) {
-          await navigate(PV.RouteNames.MoreScreen)
-          await navigate(PV.RouteNames.ContactScreen)
-        } else if (path === PV.DeepLinks.Membership.path) {
-          await navigate(PV.RouteNames.MoreScreen)
-          await navigate(PV.RouteNames.MembershipScreen)
-        } else if (path === PV.DeepLinks.Contribute.path) {
-          await navigate(PV.RouteNames.MoreScreen)
-          await navigate(PV.RouteNames.ContributeScreen)
-        } else if (path === PV.DeepLinks.Terms.path) {
-          await navigate(PV.RouteNames.MoreScreen)
-          await navigate(PV.RouteNames.TermsOfServiceScreen)
-        } else if (path === PV.DeepLinks.XMPP.path) {
-          await navigate(PV.RouteNames.MoreScreen)
-          await navigate(PV.RouteNames.ContactXMPPChatScreen)
-        }
 
-        // V4V PROVIDERS:
-        else if (v4vAlbyCheckConnectDeepLink(domain) && urlParams?.code) {
-          await v4vAlbyHandleConnect(navigation, urlParams.code)
-        }
+          // V4V PROVIDERS:
+          else if (v4vAlbyCheckConnectDeepLink(domain) && urlParams?.code) {
+            await v4vAlbyHandleConnect(navigation, urlParams.code)
+          }
 
-        // ELSE:
-        else {
-          await navigate(PV.RouteNames.PodcastsScreen)
+          // ELSE:
+          else {
+            await navigate(PV.RouteNames.PodcastsScreen)
+          }
         }
       }
     } catch (error) {
@@ -558,7 +567,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _initializeScreenData = async () => {
     const { navigation } = this.props
-    const { navigate } = navigation 
+    const { navigate } = navigation
     const { searchBarText } = this.state
 
     await initPlayerState(this.global)
@@ -612,6 +621,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     initializeValueProcessor()
 
     this._setDownloadedDataIfOffline()
+    downloadedEpisodeDeleteMarked()
     trackPageView('/podcasts', 'Podcasts Screen')
   }
 
@@ -1164,6 +1174,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
       }
       await AsyncStorage.setItem(PV.Keys.AUTODOWNLOADS_LAST_REFRESHED, new Date().toISOString())
     }
+
+    // let syncing with server history data run in the background
+    syncNewEpisodesCountWithHistory()
   }
 
   _queryCustomFeeds = async () => {
@@ -1258,7 +1271,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const isDownloadedSelected =
         filterKey === PV.Filters._downloadedKey || queryFrom === PV.Filters._downloadedKey || isInMaintenanceMode
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
-
 
       if (isDownloadedSelected) {
         const podcasts = await getDownloadedPodcasts(searchTitle, hasVideo)

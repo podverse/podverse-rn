@@ -22,8 +22,7 @@ const basicAuth = {
 const albyRequest = (requestOptions: PVRequest, url: string) => {
   return request(
     {
-      ...requestOptions,
-      isAlby: true
+      ...requestOptions
     },
     url
   )
@@ -181,7 +180,6 @@ export const v4vAlbyRequestAccessToken = async (code: string) => {
 
 export const v4vAlbyRefreshAccessToken = async () => {
   const albyConnectedProvider = await v4vAlbyGetAccessData()
-  
   try {
     if(albyConnectedProvider?.refresh_token) {
 
@@ -200,17 +198,17 @@ export const v4vAlbyRefreshAccessToken = async () => {
           body: qs.stringify(body)
         },
         `${albyApiPath}/oauth/token`
-        )
-        
-        if (response?.data) {
-          await RNKeychain.setInternetCredentials(
-            PV.Keys.V4V_PROVIDERS_ALBY_ACCESS_DATA,
-            credentialsPlaceholderUsername,
-            JSON.stringify(response?.data)
-            )
-          } else {
-            throw new Error('Alby missing response data for refresh_token endpoint')
-          }
+      )
+      
+      if (response?.data) {
+        await RNKeychain.setInternetCredentials(
+          PV.Keys.V4V_PROVIDERS_ALBY_ACCESS_DATA,
+          credentialsPlaceholderUsername,
+          JSON.stringify(response?.data)
+          )
+      } else {
+        throw new Error('Alby missing response data for refresh_token endpoint')
+      }
     } else {
       throw new Error("Something went wrong with your Alby refresh token. Please reconnect your Alby wallet.")
     }
@@ -220,6 +218,11 @@ export const v4vAlbyRefreshAccessToken = async () => {
 
     if (statusNumber.toString().startsWith('4')) {
       await v4vDisconnectProvider(PV.V4V.providers.alby.key)
+      Alert.alert(
+        PV.Alerts.ALBY_UNAUTHORIZED_EXPIRED.title,
+        PV.Alerts.ALBY_UNAUTHORIZED_EXPIRED.message,
+        PV.Alerts.BUTTONS.OK
+      )
     } else if (error) {
       Alert.alert('Alby Error', error.message, PV.Alerts.BUTTONS.OK)
     }
@@ -263,9 +266,7 @@ export const v4vAlbyAPIRequest = async ({ body, method, path }: AlbyAPIRequest, 
   } catch (error) {
     const response = error?.response
 
-    if (limitRetry) {
-      throw error
-    } else if (response?.status === 401 && response?.data?.error === 'expired access token') {
+    if (!limitRetry && response?.status === 401 && response?.data?.error === 'expired access token') {
       await v4vAlbyRefreshAccessToken()
       const shouldLimitRetry = true
       await v4vAlbyAPIRequest({ body, method, path }, shouldLimitRetry)

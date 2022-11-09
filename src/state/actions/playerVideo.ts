@@ -11,7 +11,7 @@ import { PVAudioPlayer } from '../../services/playerAudio'
 import { getPodcastFeedUrlAuthority } from '../../services/podcast'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
-import { removeDownloadedPodcastEpisode } from './downloads'
+import { downloadedEpisodeMarkForDeletion } from './downloads'
 import { playerLoadNowPlayingItem, playerUpdatePlaybackState, playerUpdatePlayerState } from './player'
 import { updateHistoryItemsIndex } from './userHistoryItem'
 
@@ -276,8 +276,9 @@ export const videoResetHistoryItem = async () => {
   const nowPlayingItem = await getNowPlayingItemLocally()
   if (nowPlayingItem) {
     const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+
     if (autoDeleteEpisodeOnEnd && nowPlayingItem?.episodeId) {
-      removeDownloadedPodcastEpisode(nowPlayingItem.episodeId)
+      downloadedEpisodeMarkForDeletion(nowPlayingItem.episodeId)
     }
 
     const forceUpdateOrderDate = false

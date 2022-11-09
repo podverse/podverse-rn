@@ -20,8 +20,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-track-player/android/build/.transforms/d607075085597dd06cba990e00418ef1/transformed/classes/classes.dex b/node_modules/react-native-track-player/android/build/.transforms/d607075085597dd06cba990e00418ef1/transformed/classes/classes.dex
 new file mode 100644
-index 0000000..28c267a
-Binary files /dev/null and b/node_modules/react-native-track-player/android/build/.transforms/d607075085597dd06cba990e00418ef1/transformed/classes/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-track-player/android/build/.transforms/e9bd883bc088a065ffa86d4c4f52f378/results.bin b/node_modules/react-native-track-player/android/build/.transforms/e9bd883bc088a065ffa86d4c4f52f378/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -1240,7 +1239,7 @@ index 6d480e2..71d2dbd 100644
 +<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/main/assets"/><source path="/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/build/intermediates/shader_assets/debug/out"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/debug/assets"/></dataSet></merger>
 \ No newline at end of file
 diff --git a/node_modules/react-native-track-player/android/build/intermediates/incremental/packageDebugResources/compile-file-map.properties b/node_modules/react-native-track-player/android/build/intermediates/incremental/packageDebugResources/compile-file-map.properties
-index 659b839..ba4022e 100644
+index 659b839..151947f 100644
 --- a/node_modules/react-native-track-player/android/build/intermediates/incremental/packageDebugResources/compile-file-map.properties
 +++ b/node_modules/react-native-track-player/android/build/intermediates/incremental/packageDebugResources/compile-file-map.properties
 @@ -1,11 +1,36 @@
@@ -1255,7 +1254,7 @@ index 659b839..ba4022e 100644
 -/Users/dcvz/Github/react-native-track-player/example/node_modules/react-native-track-player/android/src/main/res/drawable-xhdpi/forward.png=/Users/dcvz/Github/react-native-track-player/example/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-xhdpi-v4/forward.png
 -/Users/dcvz/Github/react-native-track-player/example/node_modules/react-native-track-player/android/src/main/res/drawable-xxhdpi/rewind.png=/Users/dcvz/Github/react-native-track-player/example/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-xxhdpi-v4/rewind.png
 -/Users/dcvz/Github/react-native-track-player/example/node_modules/react-native-track-player/android/src/main/res/drawable-xxxhdpi/rewind.png=/Users/dcvz/Github/react-native-track-player/example/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-xxxhdpi-v4/rewind.png
-+#Fri Aug 12 22:47:12 CDT 2022
++#Sun Nov 06 20:34:15 CST 2022
 +/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/main/res/drawable-hdpi/rewind.png=/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-hdpi-v4/rewind.png
 +/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/main/res/drawable-xxhdpi/previous.png=/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-xxhdpi-v4/previous.png
 +/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/main/res/drawable-mdpi/forward.png=/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-mdpi-v4/forward.png
@@ -2592,7 +2591,7 @@ index f082031..e6328a8 100644
 +		INJECTED from /Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/main/AndroidManifest.xml
 diff --git a/node_modules/react-native-track-player/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin b/node_modules/react-native-track-player/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin
 new file mode 100644
-index 0000000..921f29b
+index 0000000..9366b6a
 Binary files /dev/null and b/node_modules/react-native-track-player/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin differ
 diff --git a/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/service/metadata/MetadataManager.java b/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/service/metadata/MetadataManager.java
 index 42dc212..f654b06 100644
@@ -2612,3 +2611,45 @@ index 42dc212..f654b06 100644
  
          builder.setSmallIcon(R.drawable.play);
          builder.setCategory(NotificationCompat.CATEGORY_TRANSPORT);
+diff --git a/node_modules/react-native-track-player/ios/RNTrackPlayer/Models/Track.swift b/node_modules/react-native-track-player/ios/RNTrackPlayer/Models/Track.swift
+index 1e131c7..c895d91 100644
+--- a/node_modules/react-native-track-player/ios/RNTrackPlayer/Models/Track.swift
++++ b/node_modules/react-native-track-player/ios/RNTrackPlayer/Models/Track.swift
+@@ -24,6 +24,7 @@ class Track: NSObject, AudioItem, TimePitching, AssetOptionsProviding {
+     var skipped: Bool = false
+     var artworkURL: MediaURL?
+     let headers: [String: Any]?
++    var userAgent: String?
+     let pitchAlgorithm: String?
+     var isLiveStream: Bool?
+     
+@@ -48,6 +49,7 @@ class Track: NSObject, AudioItem, TimePitching, AssetOptionsProviding {
+         self.desc = dictionary["description"] as? String
+         self.duration = dictionary["duration"] as? Double
+         self.headers = dictionary["headers"] as? [String: Any]
++        self.userAgent = dictionary["userAgent"] as? String
+         self.artworkURL = MediaURL(object: dictionary["artwork"])
+         self.pitchAlgorithm = dictionary["pitchAlgorithm"] as? String
+         self.isLiveStream = dictionary["isLiveStream"] as? Bool
+@@ -140,11 +142,18 @@ class Track: NSObject, AudioItem, TimePitching, AssetOptionsProviding {
+     // MARK: - Authorizing Protocol
+     
+     func getAssetOptions() -> [String: Any] {
++        var options: [String: Any] = [:]
+         if let headers = headers {
+-            return ["AVURLAssetHTTPHeaderFieldsKey": headers]
++            options["AVURLAssetHTTPHeaderFieldsKey"] = headers
+         }
+-        
+-        return [:]
++        if #available(iOS 16, *) {
++            if let userAgent = userAgent {
++                // there is now an official, working way to set the user-agent for every request
++                // https://developer.apple.com/documentation/avfoundation/avurlassethttpuseragentkey
++                options[AVURLAssetHTTPUserAgentKey] = userAgent
++            }
++        }
++        return options
+     }
+     
+ }

@@ -31,7 +31,7 @@ export type Credentials = {
   subscribedPodcastIds?: []
 }
 
-export const getAuthUserInfo = async () => {
+export const getAuthUserInfo = async (callback?: () => void) => {
   try {
     const [results] = await Promise.all([
       getAuthenticatedUserInfo()
@@ -52,6 +52,8 @@ export const getAuthUserInfo = async () => {
         ...globalState.overlayAlert,
         showAlert: shouldShowAlert
       }
+    }, () => {
+      callback?.()
     })
 
     return isLoggedIn
