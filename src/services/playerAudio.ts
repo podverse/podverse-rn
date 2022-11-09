@@ -296,7 +296,8 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
         pitchAlgorithm: PitchAlgorithm.Voice,
         isLiveStream: Platform.OS === 'ios' && liveItem ? true : false,
         headers: {
-          ...(Authorization ? { Authorization } : {})
+          ...(Authorization ? { Authorization } : {}),
+          'User-Agent': getAppUserAgent()
         }
       }
     }
