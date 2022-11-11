@@ -2,11 +2,19 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { getEpisodesSincePubDate } from './episode'
+import { getHistoryItemsIndex } from './userHistoryItem'
 
 export const getNewEpisodeCountLastRefreshDate = async () => {
   const dateStr = await AsyncStorage.getItem(PV.Keys.NEW_EPISODE_COUNT_LAST_REFRESHED)
 
-  const dateISOString = !!dateStr ? new Date(dateStr).toISOString() : new Date().toISOString()
+  let dateISOString = !!dateStr ? new Date(dateStr).toISOString() : new Date().toISOString()
+
+  // If lastRefreshDate is over 3 months old, limit the date to 3 months ago.
+  const threeMonthsAgo = new Date()
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
+  if (new Date(dateISOString) < threeMonthsAgo) {
+    dateISOString = threeMonthsAgo.toISOString()
+  }
 
   return dateISOString
 }
@@ -65,13 +73,17 @@ export const handleUpdateNewEpisodesCount = async () => {
   const subscribedPodcastIds = global?.session?.userInfo?.subscribedPodcastIds
   let updatedNewEpisodesCount = await getNewEpisodesCount()
 
+  const historyItemsIndex = await getHistoryItemsIndex()
+
   if (subscribedPodcastIds && subscribedPodcastIds.length > 0) {
     const newEpisodes = await getEpisodesSincePubDate(dateISOString, subscribedPodcastIds)
-
     for (const newEpisode of newEpisodes) {
       const podcastId = newEpisode?.podcast?.id
       const episodeId = newEpisode?.id
       if (!podcastId || !episodeId) continue
+
+      // Don't add to newEpisodesCount if item is already in historyItemsIndex.
+      if (historyItemsIndex?.episodes?.[episodeId]) continue 
 
       updatedNewEpisodesCount = updateNewEpisodesCountEpisode(updatedNewEpisodesCount, episodeId, podcastId)
     }

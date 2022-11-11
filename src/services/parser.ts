@@ -175,9 +175,10 @@ export const parseAllAddByRSSPodcasts = async () => {
   /* Parse up to X RSS feeds simultaneously */
   const globalState = getGlobal()
   const { customRSSParallelParserLimit } = globalState
-  const safeLimit = customRSSParallelParserLimit >= 1 && !isNaN(customRSSParallelParserLimit)
-    ? customRSSParallelParserLimit
-    : PV.CustomRSS.parallelParserDefaultLimit
+  const safeLimit =
+    customRSSParallelParserLimit >= 1 && !isNaN(customRSSParallelParserLimit)
+      ? customRSSParallelParserLimit
+      : PV.CustomRSS.parallelParserDefaultLimit
 
   const limitParallelDownloads = pLimit(safeLimit)
   const promises = urls.map((url: string) => {

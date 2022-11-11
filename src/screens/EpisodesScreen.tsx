@@ -174,7 +174,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _handleMaintenanceMode = () => {
     const { queryFrom } = this.state
-    
+
     if (queryFrom !== PV.Filters._downloadedKey) {
       this.handleSelectFilterItem(PV.Filters._downloadedKey)
     }
@@ -573,7 +573,9 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
             handleNoResultsTopAction={this._handleNoResultsTopAction}
             isLoadingMore={isLoadingMore}
             isRefreshing={isRefreshing}
-            keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
+            keyExtractor={(item: any, index: number) =>
+              safeKeyExtractor(testIDPrefix, index, item?.id, !!item.addedByRSS)
+            }
             {...(isCategoryScreen ? {} : { ListHeaderComponent: this._ListHeaderComponent })}
             noResultsMessage={
               // eslint-disable-next-line max-len

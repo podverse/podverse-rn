@@ -20,16 +20,8 @@ export const CustomLaunchScreen = {
   customLaunchScreenOptions,
   defaultLaunchScreenKey: RouteNames.PodcastsScreen,
   getCustomLaunchScreenOption: (value: string) => {
-    return customLaunchScreenOptions
-      .find((x: any) => x.value === value) || customLaunchScreenOptions[0]
+    return customLaunchScreenOptions.find((x: any) => x.value === value) || customLaunchScreenOptions[0]
   },
-  nonDefaultValidScreenKeys: [
-    RouteNames.EpisodesScreen,
-    RouteNames.ClipsScreen
-  ],
-  validScreenKeys: [
-    RouteNames.PodcastsScreen,
-    RouteNames.EpisodesScreen,
-    RouteNames.ClipsScreen
-  ]
+  nonDefaultValidScreenKeys: [RouteNames.EpisodesScreen, RouteNames.ClipsScreen],
+  validScreenKeys: [RouteNames.PodcastsScreen, RouteNames.EpisodesScreen, RouteNames.ClipsScreen]
 }

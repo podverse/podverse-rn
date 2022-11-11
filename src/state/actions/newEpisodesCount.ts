@@ -8,6 +8,7 @@ import {
   handleUpdateNewEpisodesCountAddByRSS as handleUpdateNewEpisodesCountAddByRSSService,
   toggleHideNewEpisodesBadges as toggleHideNewEpisodesBadgesService
 } from '../../services/newEpisodesCount'
+import { getHistoryItemsIndex } from '../../services/userHistoryItem'
 
 export const getNewEpisodesCount = async () => {
   const newEpisodesCount = await getNewEpisodesCountService()
@@ -53,4 +54,39 @@ export const clearEpisodesCountForPodcastEpisode = async (podcastId: string, epi
 export const toggleHideNewEpisodesBadges = async () => {
   const newValue = await toggleHideNewEpisodesBadgesService()
   setGlobal({ hideNewEpisodesBadges: newValue })
+}
+
+/*
+  In case episodes have been played on a different device, we need to remove
+  the newEpisodesCount indicator for those episodes.
+  This only needs to run for logged-in users.
+*/
+export const syncNewEpisodesCountWithHistory = async () => {
+  try {
+    const { isLoggedIn } = getGlobal().session
+    if (isLoggedIn) {
+      const historyItemsIndex = await getHistoryItemsIndex()
+      const newEpisodesCount = await getNewEpisodesCountService()
+      const newEpisodesPodcastIds = Object.keys(newEpisodesCount)
+  
+      if (newEpisodesPodcastIds && historyItemsIndex?.episodes) {
+        for (const newEpisodePodcastId of newEpisodesPodcastIds) {
+          const newEpisodesPodcastData = newEpisodesCount[newEpisodePodcastId]?.data
+          if (newEpisodesPodcastData) {
+            const newEpisodesEpisodeIds = Object.keys(newEpisodesPodcastData)
+            for (const newEpisodesEpisodeId of newEpisodesEpisodeIds) {
+              if (historyItemsIndex.episodes[newEpisodesEpisodeId]) {
+                await clearEpisodesCountForPodcastEpisode(newEpisodePodcastId, newEpisodesEpisodeId)
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // After updated in storage, then update the global state
+    getNewEpisodesCount()
+  } catch (error) {
+    console.log('syncNewEpisodesCountWithHistory error', error)
+  }
 }
