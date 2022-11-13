@@ -56,6 +56,9 @@ export const DeepLinks = {
   Terms: {
     path: 'terms'
   },
+  VerifyEmail: {
+    path: 'verify-email'
+  },
   XMPP: {
     path: 'xmpp'
   },
