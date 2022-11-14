@@ -165,7 +165,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
             </View>
           )}
           {!hideNewEpisodesBadges && !!newContentCount && newContentCount > 0 && (
-            <NewContentBadge count={newContentCount} />
+            <NewContentBadge count={newContentCount} isTabletGridView={isTabletGridView} />
           )}
           <LightningIcon
             largeIcon={isTabletGridView}

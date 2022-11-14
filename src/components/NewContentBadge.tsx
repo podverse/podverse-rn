@@ -1,4 +1,4 @@
-import React, { getGlobal } from 'reactn'
+import React from 'reactn'
 import { View } from 'react-native'
 import { Badge } from 'react-native-elements'
 import { PV } from '../resources'
@@ -7,19 +7,19 @@ type Props = {
   count?: number
   isNewUnplayedContent?: boolean
   isPodcastTableCell?: boolean
+  isTabletGridView?: boolean
 }
 
 export const NewContentBadge = (props: Props) => {
-  const { count, isNewUnplayedContent, isPodcastTableCell } = props
-  const { deviceType } = getGlobal()
+  const { count, isNewUnplayedContent, isPodcastTableCell, isTabletGridView } = props
 
   const hasCount = count && count > 0
 
   if (!hasCount && !isNewUnplayedContent) return null
 
   let viewStyle = {} as any
-  let size = deviceType === 'tablet' ? 36 : 23
-  const fontSize = deviceType === 'tablet' ? PV.Fonts.sizes.md : PV.Fonts.sizes.tiny
+  let size = isTabletGridView ? 36 : 23
+  const fontSize = isTabletGridView ? PV.Fonts.sizes.lg : PV.Fonts.sizes.tiny
   let backgroundColor = PV.Colors.ink
   const borderColor = PV.Colors.skyLight
 
