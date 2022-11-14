@@ -85,6 +85,7 @@ export interface UserInfo {
 
 export interface InitialState {
   isInMaintenanceMode: boolean
+  deviceType: 'mobile' | 'tablet'
   globalTheme: GlobalTheme
   fontScale: number
   fontScaleMode: string | null

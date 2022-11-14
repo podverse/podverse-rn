@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { getGlobal } from 'reactn'
 import { View } from 'react-native'
 import { Badge } from 'react-native-elements'
 import { PV } from '../resources'
@@ -11,13 +11,15 @@ type Props = {
 
 export const NewContentBadge = (props: Props) => {
   const { count, isNewUnplayedContent, isPodcastTableCell } = props
+  const { deviceType } = getGlobal()
 
   const hasCount = count && count > 0
 
   if (!hasCount && !isNewUnplayedContent) return null
 
   let viewStyle = {} as any
-  let size = 23
+  let size = deviceType === 'tablet' ? 36 : 23
+  const fontSize = deviceType === 'tablet' ? PV.Fonts.sizes.md : PV.Fonts.sizes.tiny
   let backgroundColor = PV.Colors.ink
   const borderColor = PV.Colors.skyLight
 
@@ -62,7 +64,7 @@ export const NewContentBadge = (props: Props) => {
           minHeight: size
         }}
         textStyle={{
-          fontSize: PV.Fonts.sizes.tiny,
+          fontSize,
           color: PV.Colors.white,
           marginTop: 0,
           paddingHorizontal: 4

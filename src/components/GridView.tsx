@@ -12,8 +12,12 @@ type Props = {
 
 export class GridView extends React.PureComponent<Props, any> {
   render() {
-    const { newEpisodesCount } = this.global
+    const { deviceType, newEpisodesCount } = this.global
     const shouldShowResults = this.props.data && this.props.data.length > 0
+    const imageThumbnailStyle = deviceType === 'tablet'
+      ? styles.imageThumbnailTablet : styles.imageThumbnailMobile
+    const columns = deviceType === 'tablet' ? 4 : 3
+    const isTabletGridView = deviceType === 'tablet'
 
     return (
       <FlatList
@@ -34,18 +38,19 @@ export class GridView extends React.PureComponent<Props, any> {
               style={styles.cellbutton}>
               <FastImage
                 isAddByRSSPodcast={!!item?.addByRSSPodcastFeedUrl}
+                isTabletGridView={isTabletGridView}
                 newContentCount={newContentCount}
                 placeholderLabel={item?.title || ''}
                 resizeMode='cover'
                 showLiveIndicator={item?.latestLiveItemStatus === 'live'}
                 source={item?.shrunkImageUrl || item?.imageUrl || ''}
-                styles={styles.imageThumbnail}
+                styles={imageThumbnailStyle}
                 valueTags={item.value}
               />
             </PressableWithOpacity>
           )
         }}
-        numColumns={3}
+        numColumns={columns}
         keyExtractor={(_, index) => index.toString()}
         style={shouldShowResults ? [] : styles.noResultsView}
       />
@@ -58,13 +63,21 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     flexShrink: 0
   },
-  imageThumbnail: {
+  imageThumbnailMobile: {
     justifyContent: 'center',
     alignItems: 'center',
     // subtract 2 so the device doesn't round up to a size that
     // cuts off the end of the last item in the grid.
     height: Dimensions.get('screen').width / 3 - 2,
     width: Dimensions.get('screen').width / 3 - 2
+  },
+  imageThumbnailTablet: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    // subtract 2 so the device doesn't round up to a size that
+    // cuts off the end of the last item in the grid.
+    height: Dimensions.get('screen').width / 4 - 2,
+    width: Dimensions.get('screen').width / 4 - 2
   },
   cellbutton: {
     flex: 0,
