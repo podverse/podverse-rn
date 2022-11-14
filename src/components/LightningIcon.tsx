@@ -5,6 +5,7 @@ import { PV } from '../resources'
 import { Text } from '.'
 
 type Props = {
+  largeIcon?: boolean
   showLightningIcons: boolean
   testID?: string
   valueTags?: ValueTag[] | null
@@ -12,7 +13,7 @@ type Props = {
 }
 
 export const LightningIcon = (props: Props) => {
-  const { showLightningIcons, testID = '', valueTags, wrapperStyles } = props
+  const { largeIcon, showLightningIcons, testID = '', valueTags, wrapperStyles } = props
 
   if (!showLightningIcons || !valueTags) return null
 
@@ -21,9 +22,14 @@ export const LightningIcon = (props: Props) => {
   if (!isLightningEnabled) return null
 
   const finalWrapperStyle = wrapperStyles ? [styles.wrapper, wrapperStyles] : [styles.wrapper]
-  const LightningIconstyle = {
-    fontSize: PV.Fonts.sizes.sm
-  }
+  const LightningIconstyle = largeIcon
+    ? {
+        fontSize: PV.Fonts.sizes.xxl,
+        textAlign: 'center'
+      }
+    : {
+        fontSize: PV.Fonts.sizes.sm
+      }
 
   return (
     <View accessible={false} importantForAccessibility='no-hide-descendants' style={finalWrapperStyle}>
