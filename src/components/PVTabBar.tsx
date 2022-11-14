@@ -22,6 +22,7 @@ export const PVTabBar = (props: Props) => {
         activeTintColor={PV.Colors.skyLight}
         inactiveTintColor={PV.Colors.white}
         style={darkTheme.tabbar}
+        labelPosition='below-icon'
       />
     </View>
   )
