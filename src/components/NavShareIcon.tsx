@@ -40,7 +40,7 @@ export const NavShareIcon = (props: Props) => {
 
   const onShare = async () => {
     const { urlsWeb } = getGlobal()
-    
+
     let url = `${urlsWeb.baseUrl}${urlPath}${urlId ? `${urlId}` : ''}`
     if (customUrl) {
       url = customUrl

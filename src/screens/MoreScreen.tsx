@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { parseOpmlFile } from 'podverse-shared'
-import { SectionList, Alert } from 'react-native'
+import { SectionList, Alert, Linking } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import { parseString } from 'react-native-xml2js'
@@ -39,6 +39,19 @@ export class MoreScreen extends React.Component<Props, State> {
 
   componentDidMount() {
     trackPageView('/more', 'More Screen')
+    const {opmlUri} = this.props.navigation?.state?.params || {}
+    
+    if (opmlUri) {
+      this._importOpml(this.props.navigation.state.params.opmlUri)
+    }
+  }
+
+  componentDidUpdate(prevProps: Readonly<Props>): void {
+    const {opmlUri} = this.props.navigation?.state?.params || {}
+
+    if (opmlUri && opmlUri !== prevProps.navigation?.state?.params?.opmlUri) {
+      this._importOpml(this.props.navigation.state.params.opmlUri)
+    }
   }
 
   _moreFeaturesOptions = (isLoggedIn: boolean) => {
@@ -79,6 +92,10 @@ export class MoreScreen extends React.Component<Props, State> {
         routeName: PV.RouteNames.AboutScreen
       },
       {
+        title: translate('Tutorials'),
+        key: _tutorialsKey
+      },
+      {
         title: translate('Terms of Service'),
         key: _termsOfServiceKey,
         routeName: PV.RouteNames.TermsOfServiceScreen
@@ -108,39 +125,42 @@ export class MoreScreen extends React.Component<Props, State> {
     }
   }
 
-  _importOpml = async () => {
+  _importOpml = async (uri?: string) => {
     try {
-      const res = await DocumentPicker.pickSingle({
-        type: [DocumentPicker.types.allFiles]
-      })
-
-      if (!res) {
-        throw new Error('Something went wrong with the import process.')
-      } else {
-        const contents = await RNFS.readFile(res.uri, 'utf8')
-
-        this.setState({ isLoading: true }, () => {
-          parseString(contents, async (err: any, result: any) => {
-            try {
-              if (err) {
-                throw err
-              } else if (!result?.opml?.body[0]?.outline) {
-                throw new Error('OPML file is not in the correct format')
-              }
-
-              const rssArr = parseOpmlFile(result, true)
-              await addAddByRSSPodcasts(rssArr)
-
-              this.setState({ isLoading: false }, () => {
-                this.props.navigation.navigate(PV.RouteNames.PodcastsScreen)
-              })
-            } catch (error) {
-              console.log('Error parsing podcast: ', error)
-              this.setState({ isLoading: false })
-            }
-          })
+      if (!uri) {
+        const res = await DocumentPicker.pickSingle({
+          type: [DocumentPicker.types.allFiles]
         })
+
+        if (!res) {
+          throw new Error('Something went wrong with the import process.')
+        }
+
+        uri = res.uri
       }
+      const contents = await RNFS.readFile(decodeURI(uri), 'utf8')
+
+      this.setState({ isLoading: true }, () => {
+        parseString(contents, async (err: any, result: any) => {
+          try {
+            if (err) {
+              throw err
+            } else if (!result?.opml?.body[0]?.outline) {
+              throw new Error('OPML file is not in the correct format')
+            }
+
+            const rssArr = parseOpmlFile(result, true)
+            await addAddByRSSPodcasts(rssArr)
+
+            this.setState({ isLoading: false }, () => {
+              this.props.navigation.navigate(PV.RouteNames.PodcastsScreen)
+            })
+          } catch (error) {
+            console.log('Error parsing podcast: ', error)
+            this.setState({ isLoading: false })
+          }
+        })
+      })
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -151,7 +171,14 @@ export class MoreScreen extends React.Component<Props, State> {
     }
   }
 
-  _onPress = (item: any) => {
+  _handleFollowLink = (url: string) => {
+    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
+      { text: 'Cancel' },
+      { text: 'Yes', onPress: () => Linking.openURL(url) }
+    ])
+  }
+
+  _onPress = async (item: any) => {
     const { navigation } = this.props
     if (item.key === _logoutKey) {
       logoutUser()
@@ -161,6 +188,10 @@ export class MoreScreen extends React.Component<Props, State> {
       this._importOpml()
     } else if (item.key === _exportOpml) {
       exportSubscribedPodcastsAsOPML()
+    } else if (item.key === _tutorialsKey) {
+      const urls = await PV.URLs.web()
+      const { tutorials } = urls
+      this._handleFollowLink(tutorials)
     } else {
       navigation.navigate(item.routeName)
     }
@@ -258,7 +289,12 @@ export class MoreScreen extends React.Component<Props, State> {
           stickySectionHeadersEnabled={false}
         />
         {this.state.isLoading && (
-          <ActivityIndicator isOverlay showMayTakeAwhileMsg testID={testIDPrefix} transparent={false} />
+          <ActivityIndicator
+            isOverlay
+            loadingMessage={`${translate('Importing Feeds')}\n${translate('This may take a while')}`}
+            testID={testIDPrefix}
+            transparent={false}
+          />
         )}
       </View>
     )
@@ -276,6 +312,7 @@ const _privacyPolicyKey = 'PrivacyPolicy'
 const _settingsKey = 'Settings'
 const _supportKey = 'Support'
 const _termsOfServiceKey = 'TermsOfService'
+const _tutorialsKey = 'Tutorials'
 const _importOpml = 'ImportOpml'
 const _exportOpml = 'ExportOpml'
 const _value4ValueKey = 'Value4Value'

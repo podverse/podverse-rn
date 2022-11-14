@@ -5,6 +5,7 @@ import {
   NowPlayingItem
 } from 'podverse-shared'
 import { Platform } from 'react-native'
+import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import {
   videoCheckIfStateIsBuffering,
@@ -347,7 +348,10 @@ export const playerHandleSeekToWithUpdate = async (position: number) => {
 export const getPlaybackSpeed = async () => {
   try {
     const rate = await AsyncStorage.getItem(PV.Keys.PLAYER_PLAYBACK_SPEED)
-    if (rate) {
+
+    const nowPlayingItem = getGlobal().player?.nowPlayingItem
+
+    if (rate && !nowPlayingItem?.liveItem) {
       return parseFloat(rate)
     } else {
       return 1.0

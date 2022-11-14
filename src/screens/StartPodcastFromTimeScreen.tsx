@@ -75,7 +75,7 @@ export class StartPodcastFromTimeScreen extends React.Component<Props, State> {
           <TimePicker
             currentTime={startPodcastFromTime}
             handleUpdateSleepTimer={this._updateStartPodcastFromTime}
-            isActive
+            isActive={false}
           />
           <Button
             accessibilityHint={translate('ARIA HINT - dismiss this screen')}

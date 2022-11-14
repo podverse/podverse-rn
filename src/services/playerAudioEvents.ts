@@ -3,7 +3,7 @@ import { Platform } from 'react-native'
 import { State } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
 import { PV } from '../resources'
-import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
+import { downloadedEpisodeMarkForDeletion } from '../state/actions/downloads'
 import {
   playerPlayNextChapterOrQueueItem,
   playerPlayPreviousChapterOrReturnToBeginningOfTrack
@@ -40,13 +40,13 @@ export const audioResetHistoryItem = async (x: any) => {
   const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(loadedTrackId)
   if (metaEpisode) {
     const { mediaFileDuration } = metaEpisode
-    if (mediaFileDuration > 59 && mediaFileDuration - 59 < position) {
+    if ((mediaFileDuration > 59 && mediaFileDuration - 59 < position) || !mediaFileDuration) {
       const setPlayerClipIsLoadedIfClip = false
       const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(loadedTrackId, setPlayerClipIsLoadedIfClip)
       if (currentNowPlayingItem) {
         const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
         if (autoDeleteEpisodeOnEnd && currentNowPlayingItem?.episodeId) {
-          removeDownloadedPodcastEpisode(currentNowPlayingItem.episodeId)
+          downloadedEpisodeMarkForDeletion(currentNowPlayingItem.episodeId)
         }
 
         const forceUpdateOrderDate = false
@@ -270,14 +270,27 @@ module.exports = async () => {
       const { paused, permanent } = x
       const currentState = await audioGetState()
       const isPlaying = audioCheckIfIsPlaying(currentState)
-      if (permanent && isPlaying) {
-        audioHandlePauseWithUpdate()
-      } else if (isPlaying && paused) {
-        wasPausedByDuck = true
-        audioHandlePauseWithUpdate()
-      } else if (!permanent && wasPausedByDuck) {
-        wasPausedByDuck = false
-        audioHandlePlayWithUpdate()
+
+      if (Platform.OS === 'ios') {
+        if (permanent && isPlaying) {
+          audioHandlePauseWithUpdate()
+        } else if (isPlaying && paused) {
+          wasPausedByDuck = true
+          audioHandlePauseWithUpdate()
+        } else if ((!permanent && wasPausedByDuck) || !paused) {
+          wasPausedByDuck = false
+          audioHandlePlayWithUpdate()
+        }
+      } else {
+        if (permanent && isPlaying) {
+          audioHandlePauseWithUpdate()
+        } else if (isPlaying && paused) {
+          wasPausedByDuck = true
+          audioHandlePauseWithUpdate()
+        } else if (!permanent && wasPausedByDuck) {
+          wasPausedByDuck = false
+          audioHandlePlayWithUpdate()
+        }
       }
     })()
   })

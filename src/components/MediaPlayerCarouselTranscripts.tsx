@@ -9,8 +9,10 @@ import { PVSearchBar } from './PVSearchBar'
 import { AutoScrollToggle, FlatList, PressableWithOpacity, ScrollView, TableSectionSelectors, Text, View } from './'
 
 type Props = {
+  isNowPlaying?: boolean
   navigation?: any
-  width: number
+  parsedTranscript: TranscriptRow[]
+  width?: number
 }
 
 type State = {
@@ -87,17 +89,19 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     this.setState({ autoScrollOn: true })
     this.interval = setInterval(() => {
       (async () => {
-        const { parsedTranscript } = this.global
-        const currentPosition = await playerGetPosition()
+        const { parsedTranscript } = this.props
+        if (parsedTranscript) {
+          const currentPosition = await playerGetPosition()
 
-        const index = parsedTranscript.findIndex(
-          (item: Record<string, any>) => item.startTime < currentPosition && item.endTime > currentPosition
-        )
+          const index = parsedTranscript.findIndex(
+            (item: Record<string, any>) => item.startTime < currentPosition && item.endTime > currentPosition
+          )
 
-        if (index !== -1) {
-          const indexBefore = index > 0 ? index - 1 : 0
-          this.listRef.scrollToIndex({ index: indexBefore, animated: false })
-          this.setState({ activeTranscriptRowIndex: index })
+          if (index !== -1) {
+            const indexBefore = index > 0 ? index - 1 : 0
+            this.listRef.scrollToIndex({ index: indexBefore, animated: false })
+            this.setState({ activeTranscriptRowIndex: index })
+          }
         }
       })()
     }, intervalTime)
@@ -111,6 +115,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
   }
 
   renderItem = (item: any) => {
+    const { isNowPlaying } = this.props
     const { activeTranscriptRowIndex } = this.state
     const transcriptionItem = item.item
     const { speaker, startTime, startTimeHHMMSS, text } = transcriptionItem
@@ -130,12 +135,16 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
     const accessibilityLabel = `${this.currentSpeaker ? `${this.currentSpeaker}, ` : ''} ${text}, ${startTimeHHMMSS}`
 
+    const disable = !isNowPlaying
+    const onPress = isNowPlaying ? () => playerHandleSeekTo(startTime) : null
+
     return (
       <PressableWithOpacity
         accessible
         accessibilityLabel={accessibilityLabel}
         activeOpacity={0.7}
-        onPress={() => playerHandleSeekTo(startTime)}>
+        disable={disable}
+        onPress={onPress}>
         {!!this.currentSpeaker && (
           <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
             {this.currentSpeaker}
@@ -164,22 +173,23 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
   }
 
   render() {
-    const { width } = this.props
+    const { isNowPlaying, width } = this.props
+    let { parsedTranscript } = this.props
     const { autoScrollOn } = this.state
     const { screenReaderEnabled } = this.global
 
-    let data: never[] | [] = this.global.parsedTranscript || []
     if (this.state.searchText) {
-      data = this.state.searchResults || []
+      parsedTranscript = this.state.searchResults || []
     }
 
-    const isSingleLineTranscript = data.length === 1
+    const isSingleLineTranscript = parsedTranscript.length === 1
+    const wrapperStyle = width ? { width } : { width: '100%' }
 
     return (
-      <View style={{ width }}>
+      <View style={[styles.view, wrapperStyle]}>
         <TableSectionSelectors
           customButtons={
-            !screenReaderEnabled && !isSingleLineTranscript ? (
+            !screenReaderEnabled && !isSingleLineTranscript && isNowPlaying ? (
               <AutoScrollToggle autoScrollOn={autoScrollOn} toggleAutoscroll={this.toggleAutoscroll} />
             ) : null
           }
@@ -211,7 +221,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
                 searchResults: []
               })
             } else {
-              const searchResults = this.global.parsedTranscript.filter((item: Record<string, any>) => {
+              const searchResults = parsedTranscript.filter((item: Record<string, any>) => {
                 return item?.text?.toLowerCase().includes(searchText?.toLowerCase())
               })
 
@@ -228,14 +238,12 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
           testID='transcript_search_bar'
           value={this.state.searchText}
         />
-        {isSingleLineTranscript && (
-          <ScrollView>{this.renderSingleLineTranscript(data[0])}</ScrollView>
-        )}
+        {isSingleLineTranscript && <ScrollView>{this.renderSingleLineTranscript(parsedTranscript[0])}</ScrollView>}
         {!isSingleLineTranscript && (
           <FlatList
             contentContainerStyle={styles.contentContainerStyle}
-            data={data}
-            dataTotalCount={data.length}
+            data={parsedTranscript}
+            dataTotalCount={parsedTranscript.length}
             disableLeftSwipe
             getItemLayout={(_: any, index: number) => {
               return { length: 80, offset: 80 * index, index }
@@ -303,6 +311,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexWrap: 'wrap',
     fontSize: PV.Fonts.sizes.xxl
+  },
+  view: {
+    flex: 1
   },
   wrapper: {
     flex: 1,

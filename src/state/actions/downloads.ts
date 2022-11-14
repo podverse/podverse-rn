@@ -145,20 +145,16 @@ export const initDownloads = async () => {
     AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
   ])
 
-  // TODO: There is a race condition preventing this state from being set properly on app launch :(
-  // I don't know where the problem is coming from...
-  setTimeout(() => {
-    setGlobal({
-      autoDownloadSettings,
-      downloadsActive,
-      downloadsArrayInProgress,
-      downloadedEpisodeIds,
-      downloadedEpisodeLimitCount,
-      downloadedEpisodeLimitDefault,
-      downloadedPodcastEpisodeCounts,
-      downloadedPodcasts
-    })
-  }, 1000)
+  setGlobal({
+    autoDownloadSettings,
+    downloadsActive,
+    downloadsArrayInProgress,
+    downloadedEpisodeIds,
+    downloadedEpisodeLimitCount,
+    downloadedEpisodeLimitDefault,
+    downloadedPodcastEpisodeCounts,
+    downloadedPodcasts
+  })
 }
 
 export const updateAutoDownloadSettings = (podcastId: string, autoDownloadOn: boolean) => {
@@ -396,4 +392,30 @@ export const removeDownloadedPodcast = async (podcastId: string) => {
 export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
   await removeDownloadedPodcastEpisodeService(episodeId)
   await updateDownloadedPodcasts()
+}
+
+export const downloadedEpisodeMarkForDeletion = async (episodeId: string) => {
+  try {
+    const markedForDeletionString = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION)
+    const markedForDeletion = JSON.parse(markedForDeletionString || '[]') || []
+    if (episodeId && !markedForDeletion.includes(episodeId)) {
+      markedForDeletion.push(episodeId)
+    }
+    await AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION, JSON.stringify(markedForDeletion))
+  } catch (error) {
+    console.log('downloadedEpisodeMarkForDeletion error', error, episodeId)
+  }
+}
+
+export const downloadedEpisodeDeleteMarked = async () => {
+  try {
+    const markedForDeletionString = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION)
+    const markedForDeletion = JSON.parse(markedForDeletionString || '[]') || []
+    for (const episodeId of markedForDeletion) {
+      await removeDownloadedPodcastEpisode(episodeId)
+    }
+  } catch (error) {
+    console.log('downloadedEpisodeDeleteMarked error', error)
+  }
+  await AsyncStorage.removeItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION)
 }

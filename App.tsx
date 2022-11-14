@@ -42,8 +42,6 @@ class App extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    Orientation.lockToPortrait()
-
     this.state = {
       appReady: false,
       minVersionMismatch: false
