@@ -1,3 +1,4 @@
+import { Dimensions } from "react-native"
 import { isTablet } from "react-native-device-info"
 
 export const pvIsTablet = () => {
@@ -21,3 +22,8 @@ export const pvIsTablet = () => {
 //     return true
 //   }
 // }
+
+export const isPortrait = () => {
+  const dim = Dimensions.get('screen')
+  return dim.height >= dim.width
+}
