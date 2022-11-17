@@ -1,7 +1,7 @@
 import React from 'react'
 import { BottomTabBar } from 'react-navigation-tabs'
 import { useGlobal } from 'reactn'
-import { SafeAreaView, View } from '../components'
+import { SafeAreaView } from '../components'
 import { PV } from '../resources'
 import { darkTheme } from '../styles'
 import { MiniPlayer } from './MiniPlayer'
