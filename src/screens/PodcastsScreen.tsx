@@ -31,6 +31,7 @@ import { PV } from '../resources'
 import { v4vAlbyCheckConnectDeepLink } from '../services/v4v/providers/alby'
 import { getAutoDownloadsLastRefreshDate, handleAutoDownloadEpisodes } from '../services/autoDownloads'
 import { handleAutoQueueEpisodes } from '../services/autoQueue'
+import { verifyEmail } from '../services/auth'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getCustomLaunchScreenKey } from '../services/customLaunchScreen'
 import { getEpisode } from '../services/episode'
@@ -497,7 +498,16 @@ export class PodcastsScreen extends React.Component<Props, State> {
           }
 
           await this._goBackWithDelay()
-          if (path === PV.DeepLinks.Clip.pathPrefix) {
+          if (path.indexOf(PV.DeepLinks.VerifyEmail.path) > -1) {
+            const ok = await verifyEmail(urlParams?.token || '')
+            if (ok) {
+              Alert.alert(
+                translate('Verify email title'),
+                translate('Verify email succeeded'),
+                PV.Alerts.BUTTONS.OK
+              )
+            }
+          } else if (path === PV.DeepLinks.Clip.pathPrefix) {
             await this._handleDeepLinkClip(id)
           } else if (path === PV.DeepLinks.Episode.pathPrefix) {
             const episode = await getEpisode(id)

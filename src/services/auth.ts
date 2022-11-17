@@ -269,3 +269,23 @@ export const signUp = async (credentials: Credentials) => {
 
   return response.data
 }
+
+export const verifyEmail = async (token: string) => {
+  let ok = false
+  try {
+    const response = await request({
+      endpoint: '/auth/verify-email',
+      method: 'GET',
+      query: {
+        token
+      }
+    })
+    
+    if (response?.status === 200) {
+      ok = true
+    }
+  } catch (error) {
+    console.log('verifyEmail', error)
+  }
+  return ok
+}
