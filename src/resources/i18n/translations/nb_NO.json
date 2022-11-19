@@ -747,5 +747,7 @@
     "Alby unauthorized timeout title": "Alby frakoblet",
     "Tutorials": "Veiledninger",
     "Join our Matrix space": "Ta del i vårt Matrix-rom",
-    "Importing Feeds": "Importering av informasonskanaler"
+    "Importing Feeds": "Importering av informasonskanaler",
+    "Verify email title": "E-post bekreftet",
+    "Verify email succeeded": "E-postadressen din har blitt bekreftet. Du kan nå logge inn."
 }
