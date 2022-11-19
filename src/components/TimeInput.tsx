@@ -44,6 +44,7 @@ export const TimeInput = (props: Props) => {
         accessibilityLabel={accessibilityLabel}
         accessibilityRole='button'
         onPress={handleSetTime}
+        style={{ flex: 1 }}
         testID={`${testID}_time_input_set_button`.prependTestId()}>
         <View style={styles.timeInputTextWrapper}>
           <Text
@@ -76,7 +77,6 @@ export const TimeInput = (props: Props) => {
             top: 4
           }}
           onPress={handlePreview}
-          style={{ flex: 1 }}
           testID={`${testID}_time_input_preview_button`.prependTestId()}>
           <View style={styles.previewIconWrapper}>
             <Icon color={globalTheme.dropdownButtonText.color} name='play' size={20} style={styles.previewIcon} />
@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     height: 71,
+    justifyContent: 'space-between',
     paddingVertical: 12
   },
   timeInputTextWrapper: {
