@@ -63,10 +63,9 @@ type State = {
   shouldClearClipInfo: boolean
 }
 
-const testIDPrefix = 'make_clip_screen'
+const inputsWrapperMaxWidth = PV.Player.playerControlsMaxWidth - 250
 
-const screenHeight = Dimensions.get('screen').width
-const screenWidth = Dimensions.get('screen').width
+const testIDPrefix = 'make_clip_screen'
 
 export class MakeClipScreen extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -418,8 +417,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { globalTheme, jumpBackwardsTime, jumpForwardsTime, player } = this.global
+    const { globalTheme, jumpBackwardsTime, jumpForwardsTime, player, screen } = this.global
     const { backupDuration, nowPlayingItem, playbackRate, playbackState } = player
+    const { screenWidth } = screen
     const hasErrored = playbackState === PV.Player.errorState
     const {
       endTime,
@@ -470,7 +470,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const outerWrapperStyle = [styles.outerWrapper, { padding: 10 }, { width: screenWidth }]
 
     const imageWrapperStyle =
-      screenHeight < PV.Dimensions.smallScreen.height
+      screenWidth < PV.Dimensions.smallScreen.height
         ? [styles.carouselImageWrapper, { width: screenWidth * 0.9 }, { height: '100%' }]
         : [styles.carouselImageWrapper, { width: screenWidth * 0.9 }]
 
@@ -478,181 +478,199 @@ export class MakeClipScreen extends React.Component<Props, State> {
       <SafeAreaView style={styles.view}>
         <View style={styles.view} transparent testID='make_clip_screen_view'>
           <View style={styles.contentContainer}>
-            <View style={styles.wrapperTop} transparent>
-              <TextInput
-                accessibilityHint={translate('ARIA HINT - You can optionally provide a title for your clip here')}
-                autoCapitalize='none'
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                onChangeText={this._onChangeTitle}
-                numberOfLines={3}
-                placeholder={translate('Clip title')}
-                returnKeyType='done'
-                style={[globalTheme.textInput]}
-                underlineColorAndroid='transparent'
-                testID={`${testIDPrefix}_title`}
-                value={title}
-                wrapperStyle={styles.textInputTitleWrapper}
+            <View style={styles.contentContainerInner}>
+              <View style={styles.wrapperTop} transparent>
+                <TextInput
+                  accessibilityHint={translate('ARIA HINT - You can optionally provide a title for your clip here')}
+                  autoCapitalize='none'
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  onChangeText={this._onChangeTitle}
+                  numberOfLines={3}
+                  placeholder={translate('Clip title')}
+                  returnKeyType='done'
+                  style={[globalTheme.textInput]}
+                  underlineColorAndroid='transparent'
+                  testID={`${testIDPrefix}_title`}
+                  value={title}
+                  wrapperStyle={styles.textInputTitleWrapper}
+                />
+              </View>
+              <DropdownButtonSelect
+                accessibilityHint={translate('ARIA HINT - change the privacy setting for your clip')}
+                helpText={translate('Tip: Titling your clips')}
+                hideHelpTextInAccessibility
+                items={privacyItems()}
+                label={isPublicItemSelected.label}
+                onValueChange={this._handleSelectPrivacy}
+                placeholder={placeholderItem}
+                testID={testIDPrefix}
+                value={isPublicItemSelected.value}
+                wrapperStyle={styles.dropdownButtonSelectWrapper}
               />
-            </View>
-            <DropdownButtonSelect
-              accessibilityHint={translate('ARIA HINT - change the privacy setting for your clip')}
-              helpText={translate('Tip: Titling your clips')}
-              hideHelpTextInAccessibility
-              items={privacyItems()}
-              label={isPublicItemSelected.label}
-              onValueChange={this._handleSelectPrivacy}
-              placeholder={placeholderItem}
-              testID={testIDPrefix}
-              value={isPublicItemSelected.value}
-              wrapperStyle={styles.dropdownButtonSelectWrapper}
-            />
-            {checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
-              <RNView style={outerWrapperStyle}>
-                <RNView style={imageWrapperStyle}>
-                  <PVVideo disableFullscreen navigation={navigation} />
+              {checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
+                <RNView style={outerWrapperStyle}>
+                  <RNView style={imageWrapperStyle}>
+                    <PVVideo disableFullscreen navigation={navigation} />
+                  </RNView>
                 </RNView>
-              </RNView>
-            )}
-            {!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
-              <View style={styles.fillerView} transparent />
-            )}
-            <View style={styles.wrapperBottom} transparent>
-              <View style={styles.wrapperBottomInside} transparent>
-                <TimeInput
-                  // eslint-disable-next-line max-len
-                  accessibilityHint={translate(
-                    'ARIA HINT - tap to set the current playback position as the start time for this clip'
-                  )}
-                  handlePreview={() => {
-                    if (startTime) {
-                      playerPreviewStartTime(startTime, endTime)
-                    }
-                  }}
-                  handleSetTime={this._setStartTime}
-                  labelText={translate('Start time')}
-                  placeholder='--:--'
-                  previewAccessibilityLabel={translate('Preview Start Time')}
-                  testID={`${testIDPrefix}_start`}
-                  time={startTime}
-                />
-                <View style={styles.wrapperBottomInsideSpacer} transparent />
-                <TimeInput
-                  // eslint-disable-next-line max-len
-                  accessibilityHint={translate(
-                    'ARIA HINT - tap to set the current playback position as the end time for this clip'
-                  )}
-                  handleClearTime={endTime ? this._clearEndTime : null}
-                  handlePreview={() => {
-                    if (endTime) {
-                      playerPreviewEndTime(endTime)
-                    }
-                  }}
-                  handleSetTime={this._setEndTime}
-                  labelText={translate('End time')}
-                  placeholder={translate('optional')}
-                  previewAccessibilityLabel={translate('Preview End Time')}
-                  testID={`${testIDPrefix}_end`}
-                  time={endTime}
-                />
-              </View>
-              <View style={styles.clearEndTimeWrapper} transparent>
-                <View style={styles.clearEndTimeTextSpacer} transparent />
-                {endTime && (
-                  <Pressable
-                    accessible
-                    accessibilityHint={translate('ARIA HINT - clear the end time for this clip')}
-                    accessibilityLabel={translate('Remove end time')}
-                    accessibilityRole='button'
-                    importantForAccessibility='yes'
-                    hitSlop={{
-                      bottom: 0,
-                      left: 2,
-                      right: 8,
-                      top: 4
+              )}
+              {!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
+                <View style={styles.fillerView} transparent />
+              )}
+              <View style={styles.wrapperBottom} transparent>
+                <View style={styles.wrapperBottomInside} transparent>
+                  <TimeInput
+                    // eslint-disable-next-line max-len
+                    accessibilityHint={translate(
+                      'ARIA HINT - tap to set the current playback position as the start time for this clip'
+                    )}
+                    handlePreview={() => {
+                      if (startTime) {
+                        playerPreviewStartTime(startTime, endTime)
+                      }
                     }}
-                    onPress={this._clearEndTime}
-                    testID={`${testIDPrefix}_time_input_clear_button`.prependTestId()}>
-                    <Text style={styles.clearEndTimeText}>{translate('Remove end time')}</Text>
-                  </Pressable>
-                )}
-              </View>
-              <View style={[styles.wrapper, globalTheme.player]} transparent>
-                <View style={styles.progressWrapper} transparent>
-                  <PlayerProgressBar
-                    backupDuration={backupDuration}
-                    clipEndTime={endTime}
-                    clipStartTime={startTime}
-                    globalTheme={globalTheme}
-                    isMakeClipScreen
-                    {...(progressValue || progressValue === 0 ? { value: progressValue } : {})}
+                    handleSetTime={this._setStartTime}
+                    labelText={translate('Start time')}
+                    placeholder='--:--'
+                    previewAccessibilityLabel={translate('Preview Start Time')}
+                    testID={`${testIDPrefix}_start`}
+                    time={startTime}
+                  />
+                  <View style={styles.wrapperBottomInsideSpacer} transparent />
+                  <TimeInput
+                    // eslint-disable-next-line max-len
+                    accessibilityHint={translate(
+                      'ARIA HINT - tap to set the current playback position as the end time for this clip'
+                    )}
+                    handleClearTime={endTime ? this._clearEndTime : null}
+                    handlePreview={() => {
+                      if (endTime) {
+                        playerPreviewEndTime(endTime)
+                      }
+                    }}
+                    handleSetTime={this._setEndTime}
+                    labelText={translate('End time')}
+                    placeholder={translate('optional')}
+                    previewAccessibilityLabel={translate('Preview End Time')}
+                    testID={`${testIDPrefix}_end`}
+                    time={endTime}
                   />
                 </View>
-                <View style={styles.playerControlsMiddleRow} transparent>
-                  <View style={styles.playerControlsMiddleRowTop} transparent>
-                    <PressableWithOpacity
-                      accessibilityLabel={jumpBackAccessibilityLabel}
+                <View style={styles.clearEndTimeWrapper} transparent>
+                  <View style={styles.clearEndTimeTextSpacer} transparent />
+                  {endTime && (
+                    <Pressable
+                      accessible
+                      accessibilityHint={translate('ARIA HINT - clear the end time for this clip')}
+                      accessibilityLabel={translate('Remove end time')}
                       accessibilityRole='button'
-                      onPress={this._playerJumpBackward}
-                      style={playerStyles.icon}
-                      testID={`${testIDPrefix}_jump_backward`.prependTestId()}>
-                      {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS)}
-                      <View
-                        importantForAccessibility='no-hide-descendants'
-                        style={styles.skipTimeTextWrapper}
-                        transparent>
-                        <Text style={styles.skipTimeText}>{jumpBackwardsTime.toString()}</Text>
-                      </View>
-                    </PressableWithOpacity>
-                    <PressableWithOpacity
-                      accessibilityLabel={miniJumpBackAccessibilityLabel}
-                      accessibilityRole='button'
-                      onPress={this._playerMiniJumpBackward}
-                      style={playerStyles.icon}
-                      testID={`${testIDPrefix}_mini_jump_backward`.prependTestId()}>
-                      {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS)}
-                      <View
-                        importantForAccessibility='no-hide-descendants'
-                        style={styles.skipTimeTextWrapper}
-                        transparent>
-                        <Text style={styles.skipTimeText}>1</Text>
-                      </View>
-                    </PressableWithOpacity>
-                    <PressableWithOpacity
-                      accessibilityHint={playButtonAccessibilityHint}
-                      accessibilityLabel={playButtonAccessibilityLabel}
-                      onPress={() => playerTogglePlay()}
-                      testID={`${testIDPrefix}_toggle_play`.prependTestId()}>
-                      <View
-                        importantForAccessibility='no-hide-descendants'
-                        style={[playerStyles.playButton, playButtonAdjust]}>
-                        {playButtonIcon}
-                      </View>
-                    </PressableWithOpacity>
-                    <PressableWithOpacity
-                      accessibilityLabel={miniJumpForwardAccessibilityLabel}
-                      accessibilityRole='button'
-                      onPress={this._playerMiniJumpForward}
-                      style={playerStyles.icon}
-                      testID={`${testIDPrefix}_mini_jump_forward`.prependTestId()}>
-                      {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD)}
-                      <View style={styles.skipTimeTextWrapper} transparent>
-                        <Text style={styles.skipTimeText}>1</Text>
-                      </View>
-                    </PressableWithOpacity>
-                    <PressableWithOpacity
-                      accessibilityLabel={jumpForwardAccessibilityLabel}
-                      accessibilityRole='button'
-                      onPress={this._playerJumpForward}
-                      style={playerStyles.icon}
-                      testID={`${testIDPrefix}_jump_forward`.prependTestId()}>
-                      {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD)}
-                      <View style={styles.skipTimeTextWrapper} transparent>
-                        <Text style={styles.skipTimeText}>{jumpForwardsTime.toString()}</Text>
-                      </View>
-                    </PressableWithOpacity>
-                  </View>
+                      importantForAccessibility='yes'
+                      hitSlop={{
+                        bottom: 0,
+                        left: 2,
+                        right: 8,
+                        top: 4
+                      }}
+                      onPress={this._clearEndTime}
+                      testID={`${testIDPrefix}_time_input_clear_button`.prependTestId()}>
+                      <Text style={styles.clearEndTimeText}>{translate('Remove end time')}</Text>
+                    </Pressable>
+                  )}
                 </View>
-                <View style={styles.playerControlsBottomRow} transparent>
+              </View>
+              {!isLoggedIn && (
+                <RNView style={styles.loginBlockedView}>
+                  <RNView>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                      numberOfLines={1}
+                      style={[core.textInputEyeBrow, styles.loginMessage]}>
+                      {translate('You must be logged in to make clips')}
+                    </Text>
+                  </RNView>
+                </RNView>
+              )}
+            </View>
+          </View>
+          <View style={styles.playerOuterWrapper}>
+            <View style={[styles.wrapper, globalTheme.player]} transparent>
+              <View style={styles.progressWrapper} transparent>
+                <PlayerProgressBar
+                  backupDuration={backupDuration}
+                  clipEndTime={endTime}
+                  clipStartTime={startTime}
+                  globalTheme={globalTheme}
+                  isMakeClipScreen
+                  {...(progressValue || progressValue === 0 ? { value: progressValue } : {})}
+                />
+              </View>
+              <View style={styles.playerControlsMiddleRow} transparent>
+                <View style={styles.playerControlsMiddleRowTop} transparent>
+                  <PressableWithOpacity
+                    accessibilityLabel={jumpBackAccessibilityLabel}
+                    accessibilityRole='button'
+                    onPress={this._playerJumpBackward}
+                    style={playerStyles.icon}
+                    testID={`${testIDPrefix}_jump_backward`.prependTestId()}>
+                    {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS)}
+                    <View
+                      importantForAccessibility='no-hide-descendants'
+                      style={styles.skipTimeTextWrapper}
+                      transparent>
+                      <Text style={styles.skipTimeText}>{jumpBackwardsTime.toString()}</Text>
+                    </View>
+                  </PressableWithOpacity>
+                  <PressableWithOpacity
+                    accessibilityLabel={miniJumpBackAccessibilityLabel}
+                    accessibilityRole='button'
+                    onPress={this._playerMiniJumpBackward}
+                    style={playerStyles.icon}
+                    testID={`${testIDPrefix}_mini_jump_backward`.prependTestId()}>
+                    {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS)}
+                    <View
+                      importantForAccessibility='no-hide-descendants'
+                      style={styles.skipTimeTextWrapper}
+                      transparent>
+                      <Text style={styles.skipTimeText}>1</Text>
+                    </View>
+                  </PressableWithOpacity>
+                  <PressableWithOpacity
+                    accessibilityHint={playButtonAccessibilityHint}
+                    accessibilityLabel={playButtonAccessibilityLabel}
+                    onPress={() => playerTogglePlay()}
+                    testID={`${testIDPrefix}_toggle_play`.prependTestId()}>
+                    <View
+                      importantForAccessibility='no-hide-descendants'
+                      style={[playerStyles.playButton, playButtonAdjust]}>
+                      {playButtonIcon}
+                    </View>
+                  </PressableWithOpacity>
+                  <PressableWithOpacity
+                    accessibilityLabel={miniJumpForwardAccessibilityLabel}
+                    accessibilityRole='button'
+                    onPress={this._playerMiniJumpForward}
+                    style={playerStyles.icon}
+                    testID={`${testIDPrefix}_mini_jump_forward`.prependTestId()}>
+                    {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD)}
+                    <View style={styles.skipTimeTextWrapper} transparent>
+                      <Text style={styles.skipTimeText}>1</Text>
+                    </View>
+                  </PressableWithOpacity>
+                  <PressableWithOpacity
+                    accessibilityLabel={jumpForwardAccessibilityLabel}
+                    accessibilityRole='button'
+                    onPress={this._playerJumpForward}
+                    style={playerStyles.icon}
+                    testID={`${testIDPrefix}_jump_forward`.prependTestId()}>
+                    {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD)}
+                    <View style={styles.skipTimeTextWrapper} transparent>
+                      <Text style={styles.skipTimeText}>{jumpForwardsTime.toString()}</Text>
+                    </View>
+                  </PressableWithOpacity>
+                </View>
+              </View>
+              <View style={styles.playerControlsBottomRow} transparent>
+                <View style={styles.playerControlsBottomRowInner}>
                   <PressableWithOpacity
                     accessibilityHint={translate('ARIA HINT - show how to information for the make clip screen')}
                     accessibilityLabel={translate('How To')}
@@ -729,18 +747,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 </View>
               </View>
             </View>
-            {!isLoggedIn && (
-              <RNView style={styles.loginBlockedView}>
-                <RNView>
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    numberOfLines={1}
-                    style={[core.textInputEyeBrow, styles.loginMessage]}>
-                    {translate('You must be logged in to make clips')}
-                  </Text>
-                </RNView>
-              </RNView>
-            )}
           </View>
         </View>
         {isSaving && (
@@ -809,7 +815,17 @@ const styles = StyleSheet.create({
     backgroundColor: PV.Colors.ink
   },
   contentContainer: {
-    flex: 1
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  contentContainerInner: {
+    flex: 1,
+    justifyContent: 'center',
+    // maxWidth: inputsWrapperMaxWidth
+  },
+  playerOuterWrapper: {
+    justifyContent: 'center',
   },
   dropdownButtonSelectWrapper: {
     marginTop: 16
@@ -824,10 +840,16 @@ const styles = StyleSheet.create({
   playerControlsBottomRow: {
     alignItems: 'center',
     flexDirection: 'row',
+    justifyContent: 'center',
     minHeight: PV.Player.styles.bottomRow.height,
-    justifyContent: 'space-evenly',
     marginHorizontal: 15,
     marginTop: 10
+  },
+  playerControlsBottomRowInner: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    maxWidth: PV.Player.playerControlsMaxWidth
   },
   playerControlsBottomRowText: {
     fontSize: PV.Fonts.sizes.md,
@@ -890,14 +912,17 @@ const styles = StyleSheet.create({
     marginBottom: 4
   },
   playerControlsMiddleRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
     marginTop: 2
   },
   playerControlsMiddleRowTop: {
-    alignItems: 'center',
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     marginTop: 2,
-    marginHorizontal: 10
+    maxWidth: PV.Player.playerControlsMaxWidth
   },
   modalBackdrop: {
     alignItems: 'center',
@@ -950,7 +975,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8
   },
   wrapperBottomInsideSpacer: {
-    width: 16
+    width: 32
   },
   wrapperTop: {
     marginHorizontal: 8
