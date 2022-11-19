@@ -1,6 +1,6 @@
 import { PVComment } from 'podverse-shared'
 import React from 'react'
-import { Alert, Dimensions, Linking } from 'react-native'
+import { Alert, Linking } from 'react-native'
 import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -11,10 +11,10 @@ type Props = {
   comment: PVComment
 }
 
-const screenHeight = Dimensions.get('screen').width
-
 export const Comment = ({ children, comment }: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
+  const [screen] = useGlobal('screen')
+  const { screenWidth } = screen
   const { content, imageUrl, isRoot, profileIcon, published, url, username } = comment
   const withTime = true
 
@@ -28,8 +28,8 @@ export const Comment = ({ children, comment }: Props) => {
   }
 
   const imageStyles = {
-    height: screenHeight * 0.9,
-    width: screenHeight * 0.9
+    height: screenWidth * 0.9,
+    width: screenWidth * 0.9
   }
 
   return (

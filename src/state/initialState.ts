@@ -1,4 +1,6 @@
+import { Dimensions } from 'react-native'
 import { isTablet } from 'react-native-device-info'
+import { isPortrait } from '../lib/deviceDetection'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { InitialState } from '../resources/Interfaces'
@@ -9,6 +11,10 @@ const deviceType = isTablet() ? 'tablet' : 'mobile'
 const initialTheme: InitialState = {
   isInMaintenanceMode: false,
   deviceType,
+  screen: {
+    orientation: isPortrait() ? 'portrait' : 'landscape',
+    screenWidth: Dimensions.get('screen').width
+  },
   globalTheme: {},
   fontScale: 1,
   fontScaleMode: null,
