@@ -110,7 +110,9 @@ export const setChapterOnGlobalState = (newCurrentChapter: any, haptic?: boolean
 }
 
 export const setChaptersOnGlobalState = async (currentChapters: any[]) => {
-  const sliderWidth = Dimensions.get('screen').width - PV.Player.sliderStyles.wrapper.marginHorizontal * 2
+  const { screen } = getGlobal('screen')
+  const { screenWidth } = screen
+  const sliderWidth = screenWidth - PV.Player.sliderStyles.wrapper.marginHorizontal * 2
   const duration = await playerGetDuration()
   const currentChaptersStartTimePositions = [] as number[]
 
@@ -127,6 +129,11 @@ export const setChaptersOnGlobalState = async (currentChapters: any[]) => {
     currentChapters,
     currentChaptersStartTimePositions
   })
+}
+
+export const refreshChaptersWidth = () => {
+  const { currentChapters } = getGlobal()
+  setChaptersOnGlobalState(currentChapters)
 }
 
 export const getChapterPrevious = () => {

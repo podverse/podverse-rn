@@ -40,8 +40,6 @@ type State = {
   explosionOrigin: number
 }
 
-const screenWidth = Dimensions.get('screen').width
-
 const testIDPrefix = 'media_player_carousel'
 
 const _nowPlayingInfoKey = '_nowPlayingInfoKey'
@@ -98,6 +96,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   scrollToActiveIndex = (activeIndex: number, animated: boolean) => {
+    const { screenWidth } = this.global.screen
     setTimeout(() => {
       this.scrollView &&
         this.scrollView.scrollTo({
@@ -110,6 +109,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   onScrollEnd = ({ nativeEvent }) => {
+    const { screenWidth } = this.global.screen
     const { contentOffset } = nativeEvent
     const activeIndex = Math.round(contentOffset.x / screenWidth)
     this.setState({ activeIndex })
@@ -173,8 +173,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   render() {
     const { navigation } = this.props
     const { accessibilityItemSelected, activeIndex, boostIsSending, boostWasSent, explosionOrigin } = this.state
-    const { parsedTranscript, player, screenReaderEnabled, session } = this.global
+    const { parsedTranscript, player, screen, screenReaderEnabled, session } = this.global
     const { episode, nowPlayingItem, playbackState } = player
+    const { screenWidth } = screen
     const hasChapters = checkIfHasChapters(episode)
     const hasClips = checkIfHasClips(episode, nowPlayingItem?.addByRSSPodcastFeedUrl)
     const hasComments = !!checkIfHasSupportedCommentTag(episode)
@@ -272,66 +273,68 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           </>
         )}
         {!!activeProvider && hasValueInfo && (
-          <View style={styles.boostButtonsContainer}>
-            {/* <PressableWithOpacity
-              onPress={this._toggleSatStreaming}
-              style={styles.boostButton}
-              testID={'stream_button'.prependTestId()}>
-              <Text style={streamingButtonMainTextStyles} testID='stream_button_text_1'>
-                {satStreamText.toUpperCase()}
-              </Text>
-              <Text style={streamingButtonSubTextStyles} testID='stream_button_text_2'>
-                {`${streamingAmount} ${v4vGetPluralCurrencyUnitPerMinute(activeProvider.unit)}`}
-              </Text>
-              {streamingValueOn && isPlaying && (
-                <ActivityIndicator size={15} styles={{ position: 'absolute', right: 20 }} testID={testIDPrefix} />
-              )}
-            </PressableWithOpacity> */}
-            <PressableWithOpacity
-              disabled={boostIsSending || boostWasSent}
-              onLayout={(event) => {
-                this.setState({ explosionOrigin: event.nativeEvent.layout.y })
-              }}
-              onPress={this._attemptBoost}
-              style={styles.boostButton}
-              testID={'boost_button'.prependTestId()}>
-              {boostIsSending ? (
-                <ActivityIndicator testID={testIDPrefix} />
-              ) : (
-                <>
-                  <Text style={styles.boostButtonMainText} testID='boost_button_text_1'>
-                    {boostText}
-                  </Text>
-                  {!boostWasSent && (
-                    <Text style={styles.boostButtonSubText} testID='Boost Button_text_2'>
-                      {`${boostAmount} ${v4vGetPluralCurrencyUnit(activeProvider.unit)}`}
+          <View style={styles.maxWidthWrapper}>
+            <View style={styles.boostButtonsContainer}>
+              {/* <PressableWithOpacity
+                onPress={this._toggleSatStreaming}
+                style={styles.boostButton}
+                testID={'stream_button'.prependTestId()}>
+                <Text style={streamingButtonMainTextStyles} testID='stream_button_text_1'>
+                  {satStreamText.toUpperCase()}
+                </Text>
+                <Text style={streamingButtonSubTextStyles} testID='stream_button_text_2'>
+                  {`${streamingAmount} ${v4vGetPluralCurrencyUnitPerMinute(activeProvider.unit)}`}
+                </Text>
+                {streamingValueOn && isPlaying && (
+                  <ActivityIndicator size={15} styles={{ position: 'absolute', right: 20 }} testID={testIDPrefix} />
+                )}
+              </PressableWithOpacity> */}
+              <PressableWithOpacity
+                disabled={boostIsSending || boostWasSent}
+                onLayout={(event) => {
+                  this.setState({ explosionOrigin: event.nativeEvent.layout.y })
+                }}
+                onPress={this._attemptBoost}
+                style={styles.boostButton}
+                testID={'boost_button'.prependTestId()}>
+                {boostIsSending ? (
+                  <ActivityIndicator testID={testIDPrefix} />
+                ) : (
+                  <>
+                    <Text style={styles.boostButtonMainText} testID='boost_button_text_1'>
+                      {boostText}
                     </Text>
-                  )}
-                </>
-              )}
-            </PressableWithOpacity>
-            <PressableWithOpacity
-              onPress={this._handleBoostagramPress}
-              style={styles.boostagramButton}
-              testID={'boostagram_button'.prependTestId()}>
-              <Text style={styles.boostagramButtonMainText} testID='boost_button_text_1'>
-                {translate('Boostagram').toUpperCase()}
-              </Text>
-              <Icon
-                accessibilityLabel={translate('Boostagram')}
-                accessibilityRole='button'
-                name='comment-alt'
-                size={17}
-                testID={`${testIDPrefix}_boostagram_button`}
-              />
-            </PressableWithOpacity>
+                    {!boostWasSent && (
+                      <Text style={styles.boostButtonSubText} testID='Boost Button_text_2'>
+                        {`${boostAmount} ${v4vGetPluralCurrencyUnit(activeProvider.unit)}`}
+                      </Text>
+                    )}
+                  </>
+                )}
+              </PressableWithOpacity>
+              <PressableWithOpacity
+                onPress={this._handleBoostagramPress}
+                style={styles.boostagramButton}
+                testID={'boostagram_button'.prependTestId()}>
+                <Text style={styles.boostagramButtonMainText} testID='boost_button_text_1'>
+                  {translate('Boostagram').toUpperCase()}
+                </Text>
+                <Icon
+                  accessibilityLabel={translate('Boostagram')}
+                  accessibilityRole='button'
+                  name='comment-alt'
+                  size={17}
+                  testID={`${testIDPrefix}_boostagram_button`}
+                />
+              </PressableWithOpacity>
+            </View>
           </View>
         )}
         {
           <ConfettiCannon
             count={200}
             explosionSpeed={500}
-            origin={{ x: Dimensions.get('screen').width, y: explosionOrigin }}
+            origin={{ x: screenWidth, y: explosionOrigin }}
             autoStart={false}
             ref={(ref) => (this.explosion = ref)}
             fadeOut
@@ -471,8 +474,8 @@ const styles = StyleSheet.create({
   },
   boostButtonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 8
+    marginBottom: 8,
+    maxWidth: PV.Player.playerControlsMaxWidth - 500
   },
   boostButton: {
     flex: 1,
@@ -508,6 +511,10 @@ const styles = StyleSheet.create({
   },
   boostButtonSubText: {
     fontSize: PV.Fonts.sizes.xs
+  },
+  maxWidthWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   wrapper: {
     flex: 1
