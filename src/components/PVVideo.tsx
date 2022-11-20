@@ -25,6 +25,7 @@ import {
   videoStateUpdatePosition,
   videoUpdatePlaybackState
 } from '../state/actions/playerVideo'
+import { isTablet } from 'react-native-device-info'
 
 type Props = {
   disableFullscreen?: boolean
@@ -212,7 +213,11 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
   _disableFullscreen = () => {
     this._handleScreenChange()
-    Orientation.lockToPortrait()
+    
+    if (!isTablet()) {
+      Orientation.lockToPortrait()
+    }
+
     this.setState({ isFullscreen: false }, () => {
       const { playbackState: lastPlaybackState } = this.global.player
       if (videoCheckIfStateIsPlaying(lastPlaybackState)) {
@@ -223,8 +228,12 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
   _enableFullscreen = () => {
     this._handleScreenChange()
-    Orientation.unlockAllOrientations()
-    Orientation.lockToLandscape()
+
+    if (!isTablet()) {
+      Orientation.unlockAllOrientations()
+      Orientation.lockToLandscape()
+    }
+
     this.setState({ isFullscreen: true }, () => {
       const { playbackState: lastPlaybackState } = this.global.player
       if (videoCheckIfStateIsPlaying(lastPlaybackState)) {
