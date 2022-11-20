@@ -3,6 +3,7 @@ import { Modal, StyleSheet } from 'react-native'
 import React from 'reactn'
 import Orientation from 'react-native-orientation-locker'
 import Video from 'react-native-video-controls'
+import { pvIsTablet } from '../lib/deviceDetection'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { syncNowPlayingItemWithTrack } from '../services/playerBackgroundTimer'
@@ -25,7 +26,6 @@ import {
   videoStateUpdatePosition,
   videoUpdatePlaybackState
 } from '../state/actions/playerVideo'
-import { isTablet } from 'react-native-device-info'
 
 type Props = {
   disableFullscreen?: boolean
@@ -214,7 +214,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
   _disableFullscreen = () => {
     this._handleScreenChange()
     
-    if (!isTablet()) {
+    if (!pvIsTablet()) {
       Orientation.lockToPortrait()
     }
 
@@ -229,7 +229,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
   _enableFullscreen = () => {
     this._handleScreenChange()
 
-    if (!isTablet()) {
+    if (!pvIsTablet()) {
       Orientation.unlockAllOrientations()
       Orientation.lockToLandscape()
     }
