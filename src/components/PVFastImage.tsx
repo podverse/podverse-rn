@@ -15,6 +15,7 @@ type Props = {
   isAddByRSSPodcast?: boolean
   isAddByRSSPodcastLarger?: boolean
   isSmall?: boolean
+  isTabletGridView?: boolean
   newContentCount?: number
   placeholderLabel?: string
   resizeMode?: any
@@ -98,6 +99,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
       allowFullView,
       isAddByRSSPodcast,
       isAddByRSSPodcastLarger,
+      isTabletGridView,
       newContentCount,
       placeholderLabel,
       resizeMode = 'contain',
@@ -126,6 +128,9 @@ export class PVFastImage extends React.PureComponent<Props, State> {
 
     const addByRSSText = isAddByRSSPodcastLarger ? translate('Added by RSS') : translate('RSS')
     const addByRSSTextStyle = isAddByRSSPodcastLarger ? defaultStyles.addByRSSTextLarger : defaultStyles.addByRSSText
+    const lightningIconStyles = isTabletGridView
+      ? [defaultStyles.lightningIcon, defaultStyles.lightningIconLarge]
+      : [defaultStyles.lightningIcon]
 
     const image = isSvg ? (
       <Pressable disabled={!allowFullView} onPress={this._showImageFullView}>
@@ -160,12 +165,13 @@ export class PVFastImage extends React.PureComponent<Props, State> {
             </View>
           )}
           {!hideNewEpisodesBadges && !!newContentCount && newContentCount > 0 && (
-            <NewContentBadge count={newContentCount} />
+            <NewContentBadge count={newContentCount} isTabletGridView={isTabletGridView} />
           )}
           <LightningIcon
+            largeIcon={isTabletGridView}
             showLightningIcons={showLightningIcons}
             valueTags={valueTags}
-            wrapperStyles={defaultStyles.lightningIcon}
+            wrapperStyles={lightningIconStyles}
           />
         </View>
       </Pressable>
@@ -234,6 +240,10 @@ const defaultStyles = StyleSheet.create({
     marginRight: 0,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  lightningIconLarge: {
+    minWidth: 36,
+    minHeight: 36
   },
   liveStatusBadge: {
     position: 'absolute',

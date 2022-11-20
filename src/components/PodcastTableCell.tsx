@@ -80,6 +80,16 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       </Text>
     )
 
+    const textWrapper = [
+      styles.textWrapper,
+      {
+        maxWidth:
+          Dimensions.get('screen').width -
+          (PV.Table.cells.podcast.image.width + PV.Table.cells.podcast.image.margin * 2) -
+          10
+      }
+    ]
+
     const accessibilityLabel = `${trimmedPodcastTitle}, ${lastPubDate}, ${downloadCountText}`
 
     return (
@@ -94,7 +104,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
             styles={PV.Table.cells.podcast.image}
             valueTags={valueTags}
           />
-          <RNView style={styles.textWrapper}>
+          <RNView style={textWrapper}>
             <RNView style={styles.textWrapperInner}>
               {!!lastPubDate && fontScaleMode === PV.Fonts.fontScale.largest && lastPubDateNode}
               {podcastTitle && (
@@ -148,11 +158,7 @@ const styles = StyleSheet.create({
   },
   textWrapper: {
     flex: 1,
-    justifyContent: 'center',
-    maxWidth:
-      Dimensions.get('screen').width -
-      (PV.Table.cells.podcast.image.width + PV.Table.cells.podcast.image.margin * 2) -
-      10
+    justifyContent: 'center'
   },
   textWrapperInner: {
     flexDirection: 'column-reverse'

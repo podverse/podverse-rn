@@ -8,6 +8,11 @@ import { V4VProviderConnectedState, V4VSenderInfo, V4VTransactionError } from '.
 declare module 'reactn/default' {
   export interface State {
     isInMaintenanceMode: boolean
+    deviceType: 'mobile' | 'tablet'
+    screen: {
+      orientation: 'portrait' | 'landscape'
+      screenWidth: number
+    }
     globalTheme: GlobalTheme
     fontScale: number
     fontScaleMode: string | null

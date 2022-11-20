@@ -1,6 +1,6 @@
 import { Podcast } from 'podverse-shared'
 import React from 'reactn'
-import { StyleSheet, FlatList, Dimensions } from 'react-native'
+import { StyleSheet, FlatList } from 'react-native'
 import { FastImage, PressableWithOpacity } from './'
 
 type Props = {
@@ -9,17 +9,46 @@ type Props = {
   onItemSelected: any
   ListFooterComponent: any
 }
-
-export class GridView extends React.PureComponent<Props, any> {
+export class GridView extends React.PureComponent<Props> {
   render() {
-    const { newEpisodesCount } = this.global
+    const { deviceType, newEpisodesCount, screen } = this.global
+    const { orientation, screenWidth } = screen
     const shouldShowResults = this.props.data && this.props.data.length > 0
+    const isTablet = deviceType === 'tablet'
+    const isLandscapeMode = orientation === 'landscape'
+    const isTabletLandscape = isTablet && isLandscapeMode
+    
+    const getImageThumbnailInfo = () => {
+      let imageThumbnailStyle = styles.imageThumbnailMobile
+      let columns = 3
+      if (isTabletLandscape) {
+        imageThumbnailStyle = styles.imageThumbnailTabletLandscape
+        columns = 5
+      } else if (isTablet) {
+        imageThumbnailStyle = styles.imageThumbnailTabletPortrait
+        columns = 4
+      }
+
+      // subtract 2 so the device doesn't round up to a size that
+      // cuts off the end of the last item in the grid.
+      const imageThumbnailDimensions = {
+        height: screenWidth / columns - 2,
+        width: screenWidth / columns - 2
+      }
+
+      return {
+        columns,
+        imageThumbnailStyles: [imageThumbnailStyle, imageThumbnailDimensions]
+      }
+    }
+    const { columns, imageThumbnailStyles } = getImageThumbnailInfo()
 
     return (
       <FlatList
         {...this.props}
         ItemSeparatorComponent={null}
         testID='grid_view'
+        key={isTabletLandscape ? 'landscape' : 'portrait'}
         data={this.props.data}
         onEndReachedThreshold={0.3}
         refreshing={this.props.isRefreshing}
@@ -34,18 +63,19 @@ export class GridView extends React.PureComponent<Props, any> {
               style={styles.cellbutton}>
               <FastImage
                 isAddByRSSPodcast={!!item?.addByRSSPodcastFeedUrl}
+                isTabletGridView={isTablet}
                 newContentCount={newContentCount}
                 placeholderLabel={item?.title || ''}
                 resizeMode='cover'
                 showLiveIndicator={item?.latestLiveItemStatus === 'live'}
                 source={item?.shrunkImageUrl || item?.imageUrl || ''}
-                styles={styles.imageThumbnail}
+                styles={imageThumbnailStyles}
                 valueTags={item.value}
               />
             </PressableWithOpacity>
           )
         }}
-        numColumns={3}
+        numColumns={columns}
         keyExtractor={(_, index) => index.toString()}
         style={shouldShowResults ? [] : styles.noResultsView}
       />
@@ -58,13 +88,17 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     flexShrink: 0
   },
-  imageThumbnail: {
+  imageThumbnailMobile: {
     justifyContent: 'center',
     alignItems: 'center',
-    // subtract 2 so the device doesn't round up to a size that
-    // cuts off the end of the last item in the grid.
-    height: Dimensions.get('screen').width / 3 - 2,
-    width: Dimensions.get('screen').width / 3 - 2
+  },
+  imageThumbnailTabletLandscape: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageThumbnailTabletPortrait: {
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   cellbutton: {
     flex: 0,

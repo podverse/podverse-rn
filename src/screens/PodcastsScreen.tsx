@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import messaging from '@react-native-firebase/messaging'
 import debounce from 'lodash/debounce'
 import { convertToNowPlayingItem, createEmailLinkUrl } from 'podverse-shared'
-import { Alert, AppState, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
+import { Alert, AppState, Dimensions, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
 import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
 import { endConnection as iapEndConnection, initConnection as iapInitConnection } from 'react-native-iap'
@@ -20,6 +20,7 @@ import {
   TableSectionSelectors,
   View
 } from '../components'
+import { isPortrait } from '../lib/deviceDetection'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
@@ -31,6 +32,7 @@ import { PV } from '../resources'
 import { v4vAlbyCheckConnectDeepLink } from '../services/v4v/providers/alby'
 import { getAutoDownloadsLastRefreshDate, handleAutoDownloadEpisodes } from '../services/autoDownloads'
 import { handleAutoQueueEpisodes } from '../services/autoQueue'
+import { verifyEmail } from '../services/auth'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getCustomLaunchScreenKey } from '../services/customLaunchScreen'
 import { getEpisode } from '../services/episode'
@@ -59,6 +61,7 @@ import {
   showMiniPlayer,
   handleNavigateToPlayerScreen
 } from '../state/actions/player'
+import { refreshChaptersWidth } from '../state/actions/playerChapters'
 import {
   combineWithAddByRSSPodcasts,
   findCombineWithAddByRSSPodcasts,
@@ -235,6 +238,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         }
       }, 300)
     })
+
+    Dimensions.addEventListener('change', this._handleOrientationChange)    
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
     PVEventEmitter.on(PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, this._handleNavigateToAddPodcastByRSSAuthScreen)
@@ -291,6 +296,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   componentWillUnmount() {
     iapEndConnection()
     AppState.removeEventListener('change', this._handleAppStateChange)
+    Dimensions.removeEventListener('change', this._handleOrientationChange)
     Linking.removeEventListener('url', this._handleOpenURLEvent)
     PVEventEmitter.removeListener(
       PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW,
@@ -341,6 +347,16 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.props.navigation.setParams({
       _screenTitle: getScreenTitle()
     })
+  }
+
+  _handleOrientationChange = () => {
+    this.setGlobal({
+      screen: {
+        orientation: isPortrait() ? 'portrait' : 'landscape',
+        screenWidth: Dimensions.get('screen').width
+      }      
+    })
+    refreshChaptersWidth()
   }
 
   _setDownloadedDataIfOffline = async (forceOffline?: boolean) => {
@@ -497,7 +513,16 @@ export class PodcastsScreen extends React.Component<Props, State> {
           }
 
           await this._goBackWithDelay()
-          if (path === PV.DeepLinks.Clip.pathPrefix) {
+          if (path.indexOf(PV.DeepLinks.VerifyEmail.path) > -1) {
+            const ok = await verifyEmail(urlParams?.token || '')
+            if (ok) {
+              Alert.alert(
+                translate('Verify email title'),
+                translate('Verify email succeeded'),
+                PV.Alerts.BUTTONS.OK
+              )
+            }
+          } else if (path === PV.DeepLinks.Clip.pathPrefix) {
             await this._handleDeepLinkClip(id)
           } else if (path === PV.DeepLinks.Episode.pathPrefix) {
             const episode = await getEpisode(id)
