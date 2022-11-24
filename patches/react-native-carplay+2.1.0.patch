@@ -1,0 +1,19 @@
+diff --git a/node_modules/react-native-carplay/ios/RNCarPlay.m b/node_modules/react-native-carplay/ios/RNCarPlay.m
+index 65a329c..4453ecc 100644
+--- a/node_modules/react-native-carplay/ios/RNCarPlay.m
++++ b/node_modules/react-native-carplay/ios/RNCarPlay.m
+@@ -710,6 +710,14 @@ - (void) applyConfigForMapTemplate:(CPMapTemplate*)mapTemplate templateId:(NSStr
+     for (NSDictionary *tpl in tpls) {
+         CPTemplate *templ = [store findTemplateById:tpl[@"id"]];
+         // @todo UITabSystemItem
++        if(tpl[@"config"][@"title"]) {
++            templ.tabTitle = tpl[@"config"][@"title"];
++        }
++        
++        if(tpl[@"config"][@"tabSystemImg"]) {
++            templ.tabImage = [UIImage systemImageNamed:tpl[@"config"][@"tabSystemImg"]];
++        }
++        
+         [templates addObject:templ];
+     }
+     return templates;
