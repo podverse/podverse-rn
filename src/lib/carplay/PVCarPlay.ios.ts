@@ -1,4 +1,4 @@
-import { CarPlay, ListTemplate, TabBarTemplate } from 'react-native-carplay';
+import { CarPlay, ListTemplate, NowPlayingTemplate, TabBarTemplate } from 'react-native-carplay';
 import { getEpisodesForPodcast, loadNowPlayingItem } from './helpers';
 
 const subscribedPodcastsList = (podcasts: any[]) => {
@@ -57,11 +57,18 @@ const showEpisodesList = (podcastTitle: string, episodes: any[]) => {
           },
         ],
         onItemSelect: async ({index}) => {
-            return loadNowPlayingItem(episodes[index])
+            return showCarPlayerForItem(episodes[index])
         }
     });
 
     CarPlay.pushTemplate(episodesList)
+}
+
+export const showCarPlayerForItem = async (nowPlayingItem:any) => {
+    await loadNowPlayingItem(nowPlayingItem)
+    const playerTemplate = new NowPlayingTemplate({})
+    CarPlay.pushTemplate(playerTemplate)
+    CarPlay.enableNowPlaying(true)
 }
   
   
