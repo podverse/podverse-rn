@@ -1,6 +1,6 @@
-import { Episode, Podcast } from 'podverse-shared';
+import { Episode, NowPlayingItem, Podcast } from 'podverse-shared';
 import { CarPlay, ListTemplate, NowPlayingTemplate, TabBarTemplate } from 'react-native-carplay';
-import { getEpisodesForPodcast, loadEpisodeInPlayer } from './helpers';
+import { getEpisodesForPodcast, loadEpisodeInPlayer, loadNowPlayingItemInPlayer } from './helpers';
 
 const subscribedPodcastsList = (podcasts: Podcast[]) => {
     const subscribedList = new ListTemplate({
@@ -26,16 +26,30 @@ const subscribedPodcastsList = (podcasts: Podcast[]) => {
     return subscribedList
 }
 
-const historyItemsList = (historyItems: any[]) => {
+const historyItemsList = (historyItems: NowPlayingItem[]) => {
     const subscribedList = new ListTemplate({
         sections: [
           {
             header: 'Recently Played',
-            items: historyItems.map((historyItems) => {return {text: historyItems?.episodeTitle || "Undefined"}}),
+            items: historyItems.map((historyItem) => {
+              const imgUrl = historyItem?.episodeImageUrl
+                || historyItem?.podcastShrunkImageUrl
+                || historyItem?.podcastImageUrl
+                || null
+              return {
+                text: historyItem?.episodeTitle || "Untitled Episode",
+                detailText: historyItem?.podcastTitle || "Untitled Podcast",
+                imgUrl
+              }
+            }),
           },
         ],
         title: 'History',
-        tabSystemImg:"timer"
+        tabSystemImg:"timer",
+        onItemSelect: async (item) => {
+            const nowPlayingItem = historyItems[item.index]
+            await showCarPlayerForNowPlayingItem(nowPlayingItem)
+        }
     });
 
     return subscribedList
@@ -71,8 +85,14 @@ export const showCarPlayerForEpisode = async (episode: Episode, podcast: Podcast
     CarPlay.pushTemplate(playerTemplate)
     CarPlay.enableNowPlaying(true)
 }
-  
-  
+
+export const showCarPlayerForNowPlayingItem = async (nowPlayingItem: NowPlayingItem) => {
+  await loadNowPlayingItemInPlayer(nowPlayingItem)
+  const playerTemplate = new NowPlayingTemplate({})
+  CarPlay.pushTemplate(playerTemplate)
+  CarPlay.enableNowPlaying(true)
+}
+
 export const showRootView = (podcasts: Podcast[], historyItems: any[] ) => {   
     const tabBarTemplate = new TabBarTemplate({
         templates: [subscribedPodcastsList(podcasts), historyItemsList(historyItems)],
