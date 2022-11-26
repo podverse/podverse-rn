@@ -73,7 +73,7 @@ export const showCarPlayerForEpisode = async (episode: Episode, podcast: Podcast
 }
   
   
-export const showRootView = (podcasts: any[], historyItems: any[] ) => {   
+export const showRootView = (podcasts: Podcast[], historyItems: any[] ) => {   
     const tabBarTemplate = new TabBarTemplate({
         templates: [subscribedPodcastsList(podcasts), historyItemsList(historyItems)],
         onTemplateSelect(e: any) {
