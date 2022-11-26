@@ -11,6 +11,7 @@ import TrackPlayer from 'react-native-track-player'
 import { setGlobal, getGlobal } from 'reactn'
 import { isOnMinimumAllowedVersion } from './src/services/versioning'
 import { UpdateRequiredOverlay, OverlayAlert, ImageFullView } from './src/components'
+import { pvIsTablet } from './src/lib/deviceDetection'
 import { refreshDownloads } from './src/lib/downloader'
 import { PV } from './src/resources'
 import { determineFontScaleMode } from './src/resources/Fonts'
@@ -42,6 +43,10 @@ class App extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
+
+    if (!pvIsTablet()) {
+      Orientation.lockToPortrait()
+    }
 
     this.state = {
       appReady: false,

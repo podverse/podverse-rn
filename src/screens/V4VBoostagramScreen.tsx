@@ -237,7 +237,8 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
       // localAppBoostAmount,
       localBoostAmount
     } = this.state
-    const { session } = this.global
+    const { screen, session } = this.global
+    const { screenWidth } = screen
     const { v4v } = session
     const { boostagramMessage, previousTransactionErrors } = v4v
     const boostagramItem = this._convertToBoostagramItem()
@@ -395,7 +396,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
           <ConfettiCannon
             count={200}
             explosionSpeed={500}
-            origin={{ x: Dimensions.get('screen').width, y: explosionOrigin }}
+            origin={{ x: screenWidth, y: explosionOrigin }}
             autoStart={false}
             ref={(ref) => (this.explosion = ref)}
             fadeOut
