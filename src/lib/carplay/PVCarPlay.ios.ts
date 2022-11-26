@@ -1,7 +1,8 @@
+import { Episode, Podcast } from 'podverse-shared';
 import { CarPlay, ListTemplate, NowPlayingTemplate, TabBarTemplate } from 'react-native-carplay';
-import { getEpisodesForPodcast, loadNowPlayingItem } from './helpers';
+import { getEpisodesForPodcast, loadEpisodeInPlayer } from './helpers';
 
-const subscribedPodcastsList = (podcasts: any[]) => {
+const subscribedPodcastsList = (podcasts: Podcast[]) => {
     const subscribedList = new ListTemplate({
         sections: [
           {
@@ -9,7 +10,7 @@ const subscribedPodcastsList = (podcasts: any[]) => {
             items: podcasts.map((podcast) => {
                 return {
                     text: podcast.title || "Undefined", 
-                    imgUrl:podcast.shrunkImageUrl || podcast.imageUrl || null
+                    imgUrl: podcast.shrunkImageUrl || podcast.imageUrl || null
                 }}),
           },
         ],
@@ -18,14 +19,12 @@ const subscribedPodcastsList = (podcasts: any[]) => {
         onItemSelect: async (item) => {
             const podcast = podcasts[item.index]
             const [episodes] = await getEpisodesForPodcast(podcast)
-            showEpisodesList(podcast.title, episodes)
+            showEpisodesList(podcast, episodes)
         }
     });
 
     return subscribedList
 }
-
-
 
 const historyItemsList = (historyItems: any[]) => {
     const subscribedList = new ListTemplate({
@@ -42,14 +41,16 @@ const historyItemsList = (historyItems: any[]) => {
     return subscribedList
 }
 
-const showEpisodesList = (podcastTitle: string, episodes: any[]) => {
+const showEpisodesList = (podcast: Podcast, episodes: Episode[]) => {
     const episodesList = new ListTemplate({
         sections: [
           {
-            header: podcastTitle,
+            header: podcast.title || "Untitled Podcast",
             items: episodes.map((episode) => {
-                const imgUrl =  episode.shrunkImageUrl || episode.imageUrl || 
-                                episode.podcast?.shrunkImageUrl || episode.podcast?.imageUrl || null
+                const imgUrl =  episode.imageUrl
+                  || podcast.shrunkImageUrl
+                  || podcast.imageUrl
+                  || null
                 return {
                     text: episode.title || "Untitled Episode",
                     imgUrl
@@ -57,15 +58,15 @@ const showEpisodesList = (podcastTitle: string, episodes: any[]) => {
           },
         ],
         onItemSelect: async ({index}) => {
-            return showCarPlayerForItem(episodes[index])
+            return showCarPlayerForEpisode(episodes[index], podcast)
         }
     });
 
     CarPlay.pushTemplate(episodesList)
 }
 
-export const showCarPlayerForItem = async (nowPlayingItem:any) => {
-    await loadNowPlayingItem(nowPlayingItem)
+export const showCarPlayerForEpisode = async (episode: Episode, podcast: Podcast) => {
+    await loadEpisodeInPlayer(episode, podcast)
     const playerTemplate = new NowPlayingTemplate({})
     CarPlay.pushTemplate(playerTemplate)
     CarPlay.enableNowPlaying(true)
