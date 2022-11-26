@@ -353,7 +353,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.setGlobal({
       screen: {
         orientation: isPortrait() ? 'portrait' : 'landscape',
-        screenWidth: Dimensions.get('screen').width
+        screenWidth: Dimensions.get('window').width
       }      
     })
     refreshChaptersWidth()

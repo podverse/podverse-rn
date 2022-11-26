@@ -12,7 +12,8 @@ const initialTheme: InitialState = {
   deviceType,
   screen: {
     orientation: isPortrait() ? 'portrait' : 'landscape',
-    screenWidth: Dimensions.get('screen').width
+    // We actually need the *window* width not screen to handle iPad split view...
+    screenWidth: Dimensions.get('window').width
   },
   globalTheme: {},
   fontScale: 1,
