@@ -5,7 +5,7 @@ import { getEpisodes } from '../../services/episode';
 import { playerTogglePlay } from '../../services/player';
 import { getHistoryItemIndexInfoForEpisode } from '../../services/userHistoryItem';
 
-export const getEpisodesForPodcast = (podcast: any): Promise<any[]> => {
+export const getEpisodesForPodcast = (podcast: Podcast): Promise<any[]> => {
     return getEpisodes({podcastId: podcast.id, maxResults: true, sort: "most-recent"})
 }
 
