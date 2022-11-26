@@ -14,7 +14,8 @@ export const notificationSubscribe = async (podcastId: string) => {
     body: {
       podcastId
     },
-    ...(bearerToken ? { opts: { credentials: 'include' } } : {})
+    ...(bearerToken ? { opts: { credentials: 'include' } } : {}),
+    shouldShowAuthAlert: true
   })
 
   return response && response.data
@@ -33,7 +34,8 @@ export const notificationUnsubscribe = async (podcastId: string) => {
     body: {
       podcastId
     },
-    ...(bearerToken ? { opts: { credentials: 'include' } } : {})
+    ...(bearerToken ? { opts: { credentials: 'include' } } : {}),
+    shouldShowAuthAlert: true
   })
 
   return response && response.data
