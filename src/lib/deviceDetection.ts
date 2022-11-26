@@ -24,6 +24,6 @@ export const pvIsTablet = () => {
 // }
 
 export const isPortrait = () => {
-  const dim = Dimensions.get('screen')
+  const dim = Dimensions.get('window')
   return dim.height >= dim.width
 }

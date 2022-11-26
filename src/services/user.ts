@@ -80,7 +80,8 @@ const toggleSubscribeToUserOnServer = async (id: string) => {
   const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: `/user/toggle-subscribe/${id}`,
-    headers: { Authorization: bearerToken }
+    headers: { Authorization: bearerToken },
+    shouldShowAuthAlert: true
   })
 
   return response && response.data

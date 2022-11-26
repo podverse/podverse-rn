@@ -463,7 +463,8 @@ export const addManyAddByRSSPodcastFeedUrlsOnServer = async (addByRSSPodcastFeed
       Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
-    body: { addByRSSPodcastFeedUrls }
+    body: { addByRSSPodcastFeedUrls },
+    shouldShowAuthAlert: true
   })
 
   return response && response.data
@@ -478,7 +479,8 @@ export const addAddByRSSPodcastFeedUrlOnServer = async (addByRSSPodcastFeedUrl: 
       Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
-    body: { addByRSSPodcastFeedUrl }
+    body: { addByRSSPodcastFeedUrl },
+    shouldShowAuthAlert: true
   })
 
   return response && response.data
@@ -518,7 +520,8 @@ const removeAddByRSSPodcastFeedUrlOnServer = async (addByRSSPodcastFeedUrl: stri
       Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
-    body: { addByRSSPodcastFeedUrl }
+    body: { addByRSSPodcastFeedUrl },
+    shouldShowAuthAlert: true
   })
 
   return response && response.data

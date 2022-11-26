@@ -12,7 +12,8 @@ export const createMediaRef = async (data: any) => {
       'Content-Type': 'application/json'
     },
     body: data,
-    ...(bearerToken ? { opts: { credentials: 'include' } } : {})
+    ...(bearerToken ? { opts: { credentials: 'include' } } : {}),
+    shouldShowAuthAlert: true
   })
 
   return response && response.data
@@ -24,7 +25,8 @@ export const deleteMediaRef = async (id: string) => {
     endpoint: `/mediaRef/${id}`,
     method: 'DELETE',
     headers: { Authorization: bearerToken },
-    opts: { credentials: 'include' }
+    opts: { credentials: 'include' },
+    shouldShowAuthAlert: true
   })
 
   return response && response.data
@@ -82,7 +84,8 @@ export const updateMediaRef = async (data: any) => {
       'Content-Type': 'application/json'
     },
     body: data,
-    opts: { credentials: 'include' }
+    opts: { credentials: 'include' },
+    shouldShowAuthAlert: true
   })
 
   return response && response.data
