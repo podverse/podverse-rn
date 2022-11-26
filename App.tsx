@@ -91,8 +91,8 @@ class App extends Component<Props, State> {
   onConnect = () => {
     // Do things now that carplay is connected
     const { subscribedPodcasts = [], session } = getGlobal()
-    const { historyItems = [] } = session.userInfo
-    showRootView(subscribedPodcasts, historyItems)
+    const { historyItems = [], queueItems = [] } = session.userInfo
+    showRootView(subscribedPodcasts, historyItems, queueItems)
   }
 
   onDisconnect = () => {

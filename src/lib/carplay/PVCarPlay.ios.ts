@@ -1,8 +1,13 @@
 import { Episode, Podcast } from 'podverse-shared';
 import { CarPlay, ListTemplate, NowPlayingTemplate, TabBarTemplate } from 'react-native-carplay';
+import { addCallback } from "reactn"
+import { BooleanFunction } from 'reactn/types/provider';
 import { getEpisodesForPodcast, loadEpisodeInPlayer } from './helpers';
 
-const subscribedPodcastsList = (podcasts: Podcast[]) => {
+
+let queueListenerRemove: BooleanFunction | null
+
+const subscribedPodcastsListTab = (podcasts: Podcast[]) => {
     const subscribedList = new ListTemplate({
         sections: [
           {
@@ -15,7 +20,7 @@ const subscribedPodcastsList = (podcasts: Podcast[]) => {
           },
         ],
         title: 'Podcasts',
-        tabSystemImg:"list.star",
+        tabSystemImg:"music.note.list",
         onItemSelect: async (item) => {
             const podcast = podcasts[item.index]
             const [episodes] = await getEpisodesForPodcast(podcast)
@@ -26,7 +31,7 @@ const subscribedPodcastsList = (podcasts: Podcast[]) => {
     return subscribedList
 }
 
-const historyItemsList = (historyItems: any[]) => {
+const historyItemsListTab = (historyItems: any[]) => {
     const subscribedList = new ListTemplate({
         sections: [
           {
@@ -39,6 +44,32 @@ const historyItemsList = (historyItems: any[]) => {
     });
 
     return subscribedList
+}
+
+const queueItemsListTab = (queueItems: any[]) => {
+    const queueList = new ListTemplate({
+        sections: [
+          {
+            header: '',
+            items: queueItems.map((queueItem) => {return {text: queueItem?.episodeTitle || "Undefined"}}),
+          },
+        ],
+        title: 'Queue',
+        tabSystemImg:"list.bullet"
+    });
+
+    queueListenerRemove = addCallback((global) => {
+        const {session} = global
+        const updatedItems = session?.userInfo?.queueItems || []
+        queueList.updateSections([
+            {
+              header: '',
+              items: updatedItems.map((queueItem) => {return {text: queueItem?.episodeTitle || "Undefined"}}),
+            },
+          ])
+    })
+
+    return queueList
 }
 
 const showEpisodesList = (podcast: Podcast, episodes: Episode[]) => {
@@ -73,9 +104,13 @@ export const showCarPlayerForEpisode = async (episode: Episode, podcast: Podcast
 }
   
   
-export const showRootView = (podcasts: Podcast[], historyItems: any[] ) => {   
+export const showRootView = (podcasts: Podcast[], historyItems: any[], queueItems: any[] ) => {   
     const tabBarTemplate = new TabBarTemplate({
-        templates: [subscribedPodcastsList(podcasts), historyItemsList(historyItems)],
+        templates: [
+            subscribedPodcastsListTab(podcasts), 
+            historyItemsListTab(historyItems), 
+            queueItemsListTab(queueItems)
+        ],
         onTemplateSelect(e: any) {
             console.log('selected', e);
         },
@@ -90,6 +125,10 @@ export const registerCarModule = (onConnect, onDisconnect) => {
 }
 
 export const unregisterCarModule = (onConnect, onDisconnect) => {
+    if(queueListenerRemove) {
+        queueListenerRemove()
+    }
+
     CarPlay.unregisterOnConnect(onConnect);
     CarPlay.unregisterOnDisconnect(onDisconnect);
 }
