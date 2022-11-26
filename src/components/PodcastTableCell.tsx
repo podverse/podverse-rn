@@ -84,7 +84,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       styles.textWrapper,
       {
         maxWidth:
-          Dimensions.get('screen').width -
+          Dimensions.get('window').width -
           (PV.Table.cells.podcast.image.width + PV.Table.cells.podcast.image.margin * 2) -
           10
       }
