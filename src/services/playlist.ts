@@ -18,7 +18,8 @@ export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: st
       'Content-Type': 'application/json'
     },
     body: data,
-    opts: { credentials: 'include' }
+    opts: { credentials: 'include' },
+    shouldShowAuthAlert: true
   })
 
   return response && response.data
@@ -34,7 +35,8 @@ export const createPlaylist = async (data: any) => {
       'Content-Type': 'application/json'
     },
     body: data,
-    opts: { credentials: 'include' }
+    opts: { credentials: 'include' },
+    shouldShowAuthAlert: true
   })
 
   return response && response.data
@@ -46,7 +48,8 @@ export const deletePlaylistOnServer = async (id: string) => {
     endpoint: `/playlist/${id}`,
     method: 'DELETE',
     headers: { Authorization: bearerToken },
-    opts: { credentials: 'include' }
+    opts: { credentials: 'include' },
+    shouldShowAuthAlert: true
   })
 
   return response && response.data
@@ -102,7 +105,8 @@ const toggleSubscribeToPlaylistOnServer = async (id: string) => {
   const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: `/playlist/toggle-subscribe/${id}`,
-    headers: { Authorization: bearerToken }
+    headers: { Authorization: bearerToken },
+    shouldShowAuthAlert: true
   })
 
   return response && response.data
@@ -118,7 +122,8 @@ export const updatePlaylist = async (data: any) => {
       'Content-Type': 'application/json'
     },
     body: data,
-    opts: { credentials: 'include' }
+    opts: { credentials: 'include' },
+    shouldShowAuthAlert: true
   })
 
   return response && response.data
