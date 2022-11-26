@@ -35,7 +35,8 @@ export const fcmDeviceCreate = async (fcmToken: string) => {
     body: {
       fcmToken
     },
-    ...(bearerToken ? { opts: { credentials: 'include' } } : {})
+    ...(bearerToken ? { opts: { credentials: 'include' } } : {}),
+    shouldShowAuthAlert: true
   })
 
   await fcmTokenSaveLocally(fcmToken)
@@ -56,7 +57,8 @@ export const fcmDeviceDelete = async (fcmToken: string) => {
     body: {
       fcmToken
     },
-    ...(bearerToken ? { opts: { credentials: 'include' } } : {})
+    ...(bearerToken ? { opts: { credentials: 'include' } } : {}),
+    shouldShowAuthAlert: true
   })
 
   return response && response.data
