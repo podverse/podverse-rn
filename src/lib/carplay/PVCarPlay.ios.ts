@@ -51,6 +51,7 @@ const podcastsListTab = (subscribedPodcasts: Podcast[]) => {
     title: translate('Podcasts'),
     tabSystemImg: 'music.note.list',
     onItemSelect: async (item) => {
+      const { subscribedPodcasts } = getGlobal()
       const podcast = subscribedPodcasts[item.index]
       const [episodes] = await getEpisodesForPodcast(podcast)
       showEpisodesList(podcast, episodes)
@@ -91,9 +92,15 @@ const showEpisodesList = (podcast: Podcast, episodes: Episode[]) => {
           //   || podcast.shrunkImageUrl
           //   || podcast.imageUrl
           //   || null
+
+          const pubDate =
+            (episode?.liveItem?.start && readableDate(episode.liveItem.start))
+            || (episode.pubDate && readableDate(episode.pubDate))
+            || ''
+
           return {
             text: episode.title || translate('Untitled Episode'),
-            detailText: (episode.pubDate && readableDate(episode.pubDate)) || ''
+            detailText: pubDate
           }}),
       },
     ],
