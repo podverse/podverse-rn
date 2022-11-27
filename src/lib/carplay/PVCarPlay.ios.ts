@@ -4,6 +4,7 @@ import { getGlobal } from 'reactn'
 import { PV } from '../../resources';
 import PVEventEmitter from '../../services/eventEmitter'
 import { getHistoryItems } from '../../state/actions/userHistoryItem';
+import { translate } from '../i18n';
 import { getEpisodesForPodcast, loadEpisodeInPlayer, loadNowPlayingItemInPlayer } from './helpers';
 
 /* Constants */
@@ -16,7 +17,7 @@ const stateUpdateTimeout = 10000
 export const registerCarModule = (onConnect, onDisconnect) => {
   CarPlay.registerOnConnect(onConnect);
   CarPlay.registerOnDisconnect(onDisconnect);
-  
+
   PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleQueueUpdateTwice)
 }
 
@@ -43,51 +44,51 @@ export const showRootView = (podcasts: Podcast[], historyItems: any[], queueItem
 /* Podcasts Tab */
 
 const podcastsListTab = (podcasts: Podcast[]) => {
-    const subscribedList = new ListTemplate({
-        sections: [
-          {
-            header: 'Subscribed',
-            items: podcasts.map((podcast) => {
-                return {
-                    text: podcast.title || "Undefined", 
-                    imgUrl: podcast.shrunkImageUrl || podcast.imageUrl || null
-                }}),
-          },
-        ],
-        title: 'Podcasts',
-        tabSystemImg:"music.note.list",
-        onItemSelect: async (item) => {
-          const podcast = podcasts[item.index]
-          const [episodes] = await getEpisodesForPodcast(podcast)
-          showEpisodesList(podcast, episodes)
-        }
-    });
+  const subscribedList = new ListTemplate({
+    sections: [
+      {
+        header: translate('Subscribed'),
+        items: podcasts.map((podcast) => {
+          return {
+            text: podcast.title || translate('Untitled Podcast'), 
+            imgUrl: podcast.shrunkImageUrl || podcast.imageUrl || null
+          }}),
+      },
+    ],
+    title: translate('Podcasts'),
+    tabSystemImg:"music.note.list",
+    onItemSelect: async (item) => {
+      const podcast = podcasts[item.index]
+      const [episodes] = await getEpisodesForPodcast(podcast)
+      showEpisodesList(podcast, episodes)
+    }
+  });
 
-    return subscribedList
+  return subscribedList
 }
 
 /* Podcast Episodes Tab */
 
 const showEpisodesList = (podcast: Podcast, episodes: Episode[]) => {
-    const episodesList = new ListTemplate({
-        sections: [
-          {
-            header: podcast.title || "Untitled Podcast",
-            items: episodes.map((episode) => {
-                const imgUrl =  episode.imageUrl
-                  || podcast.shrunkImageUrl
-                  || podcast.imageUrl
-                  || null
-                return {
-                    text: episode.title || "Untitled Episode",
-                    imgUrl
-                }}),
-          },
-        ],
-        onItemSelect: ({index}) => showCarPlayerForEpisode(episodes[index], podcast)
-    });
+  const episodesList = new ListTemplate({
+    sections: [
+      {
+        header: podcast.title || translate('Untitled Podcast'),
+        items: episodes.map((episode) => {
+          const imgUrl =  episode.imageUrl
+            || podcast.shrunkImageUrl
+            || podcast.imageUrl
+            || null
+          return {
+            text: episode.title || translate('Untitled Episode'),
+            imgUrl
+          }}),
+      },
+    ],
+    onItemSelect: ({index}) => showCarPlayerForEpisode(episodes[index], podcast)
+  });
 
-    CarPlay.pushTemplate(episodesList)
+  CarPlay.pushTemplate(episodesList)
 }
 
 /* Queue Tab */
@@ -102,7 +103,7 @@ const queueItemsListTab = (queueItems: NowPlayingItem[]) => {
         items: queueItems.map((queueItem) => createCarPlayNowPlayingItem(queueItem)),
       },
     ],
-    title: 'Queue',
+    title: translate('Queue'),
     tabSystemImg:"list.bullet",
     onItemSelect: async (item) => {
       const { session } = getGlobal()
@@ -141,11 +142,11 @@ const historyItemsListTab = (historyItems: NowPlayingItem[]) => {
   historyList = new ListTemplate({
     sections: [
       {
-        header: 'Recently Played',
-        items: historyItems.map((historyItem) => createCarPlayNowPlayingItem(historyItem)),
+        header: translate('Recently Played'),
+        items: historyItems.map((historyItem) => createCarPlayNowPlayingItem(historyItem))
       }
     ],
-    title: 'History',
+    title: translate('History'),
     tabSystemImg:"timer",
     onItemSelect: async (item) => {
       const { session } = getGlobal()
@@ -203,15 +204,15 @@ const pushPlayerTemplate = () => {
   const playerTemplate = new NowPlayingTemplate(nowPlayingTemplateConfig)
   CarPlay.pushTemplate(playerTemplate)
   CarPlay.enableNowPlaying(true)
-  
+
   setTimeout(refreshHistory, stateUpdateTimeout)
 }
 
 const createCarPlayNowPlayingItem = (item: NowPlayingItem) => {
   const imgUrl = item?.episodeImageUrl || item?.podcastShrunkImageUrl || item?.podcastImageUrl || null
   return {
-    text: item?.episodeTitle || 'Untitled Episode',
-    detailText: item?.podcastTitle || 'Untitled Podcast',
+    text: item?.episodeTitle || translate('Untitled Episode'),
+    detailText: item?.podcastTitle || translate('Untitled Podcast'),
     imgUrl
   }
 }
