@@ -13,6 +13,7 @@ import { isOnMinimumAllowedVersion } from './src/services/versioning'
 import { UpdateRequiredOverlay, OverlayAlert, ImageFullView } from './src/components'
 import { pvIsTablet } from './src/lib/deviceDetection'
 import { refreshDownloads } from './src/lib/downloader'
+import PVEventEmitter from './src/services/eventEmitter'
 import { PV } from './src/resources'
 import { determineFontScaleMode } from './src/resources/Fonts'
 import { GlobalTheme } from './src/resources/Interfaces'
@@ -23,7 +24,13 @@ import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 import { hasValidDownloadingConnection } from './src/lib/network'
 import { migrateCredentialsIfNeeded } from './src/lib/secutity'
-import { registerCarModule, unregisterCarModule, showRootView } from './src/lib/carplay/PVCarPlay.ios'
+import {
+  handleCarPlayPodcastsUpdate,
+  handleCarPlayQueueUpdateTwice,
+  registerCarModule,
+  showRootView,
+  unregisterCarModule
+} from './src/lib/carplay/PVCarPlay.ios'
 
 LogBox.ignoreLogs(['EventEmitter.removeListener', "Require cycle"])
 
@@ -93,10 +100,14 @@ class App extends Component<Props, State> {
     const { subscribedPodcasts = [], session } = getGlobal()
     const { historyItems = [], queueItems = [] } = session.userInfo
     showRootView(subscribedPodcasts, historyItems, queueItems)
+    PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdateTwice)
+    PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
   }
 
   onDisconnect = () => {
     // Do things now that carplay is disconnected
+    PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdateTwice)
+    PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
   }
 
   handleNetworkChange = () => {

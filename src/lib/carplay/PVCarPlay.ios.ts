@@ -1,8 +1,6 @@
 import { Episode, NowPlayingItem, Podcast } from 'podverse-shared';
 import { CarPlay, ListTemplate, NowPlayingTemplate, TabBarTemplate } from 'react-native-carplay';
 import { getGlobal } from 'reactn'
-import { PV } from '../../resources';
-import PVEventEmitter from '../../services/eventEmitter'
 import { getHistoryItems } from '../../state/actions/userHistoryItem';
 import { translate } from '../i18n';
 import { readableDate } from '../utility';
@@ -18,17 +16,11 @@ const stateUpdateTimeout = 10000
 export const registerCarModule = (onConnect, onDisconnect) => {
   CarPlay.registerOnConnect(onConnect);
   CarPlay.registerOnDisconnect(onDisconnect);
-
-  PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleQueueUpdateTwice)
-  PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING, handlePodcastsUpdate)
 }
 
 export const unregisterCarModule = (onConnect, onDisconnect) => { 
   CarPlay.unregisterOnConnect(onConnect);
   CarPlay.unregisterOnDisconnect(onDisconnect);
-
-  PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, handleQueueUpdateTwice)
-  PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING, handlePodcastsUpdate)
 }
 
 /* Root View */
@@ -68,11 +60,9 @@ const podcastsListTab = (subscribedPodcasts: Podcast[]) => {
   return podcastsList
 }
 
-const handlePodcastsUpdate = () => {
-  console.log('handlePodcastsUpdate')
+export const handleCarPlayPodcastsUpdate = () => {
   if (podcastsList) {
     const { subscribedPodcasts } = getGlobal()
-    console.log('subscribedPodcasts', subscribedPodcasts)
     podcastsList.updateSections([
       {
         header: translate('Subscribed'),
@@ -151,7 +141,7 @@ const handleQueueUpdate = () => {
   }
 }
 
-const handleQueueUpdateTwice = () => {
+export const handleCarPlayQueueUpdateTwice = () => {
   handleQueueUpdate()
   setTimeout(handleQueueUpdate, stateUpdateTimeout)
 }
@@ -181,7 +171,7 @@ const historyItemsListTab = (historyItems: NowPlayingItem[]) => {
   return historyList
 }
 
-const handleHistoryUpdate = () => {
+export const handleHistoryUpdate = () => {
   if (historyList) {
     const { session } = getGlobal()
     const updatedItems = session?.userInfo?.historyItems || []
