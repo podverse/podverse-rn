@@ -3,11 +3,28 @@ import { checkIfNowPlayingItem, convertNowPlayingItemToEpisode,
 import {getGlobal} from "reactn"
 import { playerLoadNowPlayingItem } from '../../state/actions/player';
 import { getEpisodes } from '../../services/episode';
+import { getEpisodesAndLiveItems } from '../../services/liveItem';
 import { playerTogglePlay } from '../../services/player';
 import { getHistoryItemIndexInfoForEpisode } from '../../services/userHistoryItem';
 
-export const getEpisodesForPodcast = (podcast: Podcast): Promise<any[]> => {
+export const getEpisodesForPodcast = async (podcast: Podcast): Promise<any[]> => {
+  const liveEnabledPodcastStatuses = ['pending', 'live', 'ended']
+  if (liveEnabledPodcastStatuses.includes(podcast.latestLiveItemStatus)) {
+    const results = await getEpisodesAndLiveItems(
+      {
+        podcastId: podcast.id,
+        maxResults: true,
+        page: 1,
+        sort: 'most-recent'
+      },
+      podcast.id
+    )
+  
+    const { combinedEpisodes } = results
+    return combinedEpisodes
+  } else {
     return getEpisodes({podcastId: podcast.id, maxResults: true, sort: "most-recent"})
+  }
 }
 
 export const loadEpisodeInPlayer = async (episode: Episode, podcast: Podcast) => {
