@@ -5,6 +5,7 @@ import { PV } from '../../resources';
 import PVEventEmitter from '../../services/eventEmitter'
 import { getHistoryItems } from '../../state/actions/userHistoryItem';
 import { translate } from '../i18n';
+import { readableDate } from '../utility';
 import { getEpisodesForPodcast, loadEpisodeInPlayer, loadNowPlayingItemInPlayer } from './helpers';
 
 /* Constants */
@@ -32,7 +33,7 @@ export const unregisterCarModule = (onConnect, onDisconnect) => {
 
 export const showRootView = (podcasts: Podcast[], historyItems: any[], queueItems: any[]) => {
   const tabBarTemplate = new TabBarTemplate({
-    templates: [podcastsListTab(podcasts), historyItemsListTab(historyItems), queueItemsListTab(queueItems)],
+    templates: [podcastsListTab(podcasts), queueItemsListTab(queueItems), historyItemsListTab(historyItems)],
     onTemplateSelect(e: any) {
       console.log('selected', e)
     }
@@ -75,13 +76,13 @@ const showEpisodesList = (podcast: Podcast, episodes: Episode[]) => {
       {
         header: podcast.title || translate('Untitled Podcast'),
         items: episodes.map((episode) => {
-          const imgUrl =  episode.imageUrl
-            || podcast.shrunkImageUrl
-            || podcast.imageUrl
-            || null
+          // const imgUrl =  episode.imageUrl
+          //   || podcast.shrunkImageUrl
+          //   || podcast.imageUrl
+          //   || null
           return {
             text: episode.title || translate('Untitled Episode'),
-            imgUrl
+            detailText: (episode.pubDate && readableDate(episode.pubDate)) || ''
           }}),
       },
     ],
@@ -100,7 +101,7 @@ const queueItemsListTab = (queueItems: NowPlayingItem[]) => {
     sections: [
       {
         header: '',
-        items: queueItems.map((queueItem) => createCarPlayNowPlayingItem(queueItem)),
+        items: queueItems.map((queueItem) => createCarPlayNPIListItem(queueItem)),
       },
     ],
     title: translate('Queue'),
@@ -123,7 +124,7 @@ const handleQueueUpdate = () => {
     queueList.updateSections([
       {
         header: '',
-        items: updatedItems.map((queueItem) => createCarPlayNowPlayingItem(queueItem))
+        items: updatedItems.map((queueItem) => createCarPlayNPIListItem(queueItem))
       }
     ])
   }
@@ -143,7 +144,7 @@ const historyItemsListTab = (historyItems: NowPlayingItem[]) => {
     sections: [
       {
         header: translate('Recently Played'),
-        items: historyItems.map((historyItem) => createCarPlayNowPlayingItem(historyItem))
+        items: historyItems.map((historyItem) => createCarPlayNPIListItem(historyItem))
       }
     ],
     title: translate('History'),
@@ -166,7 +167,7 @@ const handleHistoryUpdate = () => {
     historyList.updateSections([
       {
         header: '',
-        items: updatedItems.map((historyItem) => createCarPlayNowPlayingItem(historyItem))
+        items: updatedItems.map((historyItem) => createCarPlayNPIListItem(historyItem))
       }
     ])
   }
@@ -208,7 +209,7 @@ const pushPlayerTemplate = () => {
   setTimeout(refreshHistory, stateUpdateTimeout)
 }
 
-const createCarPlayNowPlayingItem = (item: NowPlayingItem) => {
+const createCarPlayNPIListItem = (item: NowPlayingItem) => {
   const imgUrl = item?.episodeImageUrl || item?.podcastShrunkImageUrl || item?.podcastImageUrl || null
   return {
     text: item?.episodeTitle || translate('Untitled Episode'),
