@@ -1,4 +1,5 @@
-import { checkIfNowPlayingItem, convertNowPlayingItemToEpisode, convertToNowPlayingItem, Episode, NowPlayingItem, Podcast } from 'podverse-shared';
+import { checkIfNowPlayingItem, convertNowPlayingItemToEpisode,
+  convertToNowPlayingItem, Episode, NowPlayingItem, Podcast } from 'podverse-shared';
 import {getGlobal} from "reactn"
 import { playerLoadNowPlayingItem } from '../../state/actions/player';
 import { getEpisodes } from '../../services/episode';
