@@ -20,6 +20,7 @@ export const registerCarModule = (onConnect, onDisconnect) => {
   CarPlay.registerOnDisconnect(onDisconnect);
 
   PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleQueueUpdateTwice)
+  PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING, handlePodcastsUpdate)
 }
 
 export const unregisterCarModule = (onConnect, onDisconnect) => { 
@@ -27,13 +28,14 @@ export const unregisterCarModule = (onConnect, onDisconnect) => {
   CarPlay.unregisterOnDisconnect(onDisconnect);
 
   PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, handleQueueUpdateTwice)
+  PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING, handlePodcastsUpdate)
 }
 
 /* Root View */
 
-export const showRootView = (podcasts: Podcast[], historyItems: any[], queueItems: any[]) => {
+export const showRootView = (subscribedPodcasts: Podcast[], historyItems: any[], queueItems: any[]) => {
   const tabBarTemplate = new TabBarTemplate({
-    templates: [podcastsListTab(podcasts), queueItemsListTab(queueItems), historyItemsListTab(historyItems)],
+    templates: [podcastsListTab(subscribedPodcasts), queueItemsListTab(queueItems), historyItemsListTab(historyItems)],
     onTemplateSelect(e: any) {
       console.log('selected', e)
     }
@@ -44,28 +46,47 @@ export const showRootView = (podcasts: Podcast[], historyItems: any[], queueItem
 
 /* Podcasts Tab */
 
-const podcastsListTab = (podcasts: Podcast[]) => {
-  const subscribedList = new ListTemplate({
+let podcastsList: ListTemplate
+
+const podcastsListTab = (subscribedPodcasts: Podcast[]) => {
+  podcastsList = new ListTemplate({
     sections: [
       {
         header: translate('Subscribed'),
-        items: podcasts.map((podcast) => {
-          return {
-            text: podcast.title || translate('Untitled Podcast'), 
-            imgUrl: podcast.shrunkImageUrl || podcast.imageUrl || null
-          }}),
-      },
+        items: subscribedPodcasts.map((podcast) => createCarPlayPodcastListItem(podcast))
+      }
     ],
     title: translate('Podcasts'),
-    tabSystemImg:"music.note.list",
+    tabSystemImg: 'music.note.list',
     onItemSelect: async (item) => {
-      const podcast = podcasts[item.index]
+      const podcast = subscribedPodcasts[item.index]
       const [episodes] = await getEpisodesForPodcast(podcast)
       showEpisodesList(podcast, episodes)
     }
-  });
+  })
 
-  return subscribedList
+  return podcastsList
+}
+
+const handlePodcastsUpdate = () => {
+  console.log('handlePodcastsUpdate')
+  if (podcastsList) {
+    const { subscribedPodcasts } = getGlobal()
+    console.log('subscribedPodcasts', subscribedPodcasts)
+    podcastsList.updateSections([
+      {
+        header: translate('Subscribed'),
+        items: subscribedPodcasts.map((podcast) => createCarPlayPodcastListItem(podcast))
+      }
+    ])
+  }
+}
+
+const createCarPlayPodcastListItem = (podcast: Podcast) => {
+  return {
+    text: podcast.title || translate('Untitled Podcast'),
+    imgUrl: podcast.shrunkImageUrl || podcast.imageUrl || null
+  }
 }
 
 /* Podcast Episodes Tab */
