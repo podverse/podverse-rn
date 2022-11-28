@@ -985,7 +985,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
                     'ARIA HINT - set the maximum number of downloaded episodes to save from this podcast on your device'
                   )},${translate(
                     // eslint-disable-next-line max-len
-                    'Limit the number of downloaded episodes from this podcast on your device. Once the download limit is exceeded the oldest episode will be automatically deleted.'
+                    'Limit the number of downloaded epiosdes explanation'
                   )}`}
                   accessibilityLabel={`${translate('Download limit max')} ${
                     !!downloadedEpisodeLimit ? downloadedEpisodeLimit : ''
@@ -994,10 +994,10 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
                   selectedNumber={downloadedEpisodeLimit}
                   subText={translate(
                     // eslint-disable-next-line max-len
-                    'Limit the number of downloaded episodes from this podcast on your device. Once the download limit is exceeded the oldest episode will be automatically deleted.'
+                    'Limit the number of downloaded epiosdes explanation'
                   )}
                   testID={`${testIDPrefix}_downloaded_episode_limit_count`}
-                  text={translate('Download limit max')}
+                  text={translate('Limit')}
                 />
               </View>
             )}

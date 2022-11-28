@@ -15,7 +15,6 @@ type Props = {
 
 const testIDPrefix = 'media_player_carousel_viewer'
 
-const screenHeight = Dimensions.get('screen').width
 export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
   constructor(props) {
     super(props)
@@ -60,7 +59,8 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
 
   render() {
     const { handlePressClipInfo, navigation, width } = this.props
-    const { currentChapter, player, screenPlayer, screenReaderEnabled } = this.global
+    const { currentChapter, player, screen, screenPlayer, screenReaderEnabled } = this.global
+    const { screenWidth } = screen
     const { isLoading } = screenPlayer
 
     // nowPlayingItem will be undefined when loading from a deep link
@@ -119,7 +119,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       : [styles.outerWrapper, { padding: 10 }, { width }]
 
     const imageWrapperStyle =
-      screenHeight < PV.Dimensions.smallScreen.height
+      screenWidth < PV.Dimensions.smallScreen.height
         ? [styles.carouselImageWrapper, { width: width * 0.9 }, { height: '50%' }]
         : [styles.carouselImageWrapper, { width: width * 0.9 }]
 

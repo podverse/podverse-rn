@@ -1,14 +1,20 @@
-import { isTablet } from 'react-native-device-info'
+import { Dimensions } from 'react-native'
+import { isPortrait, pvIsTablet } from '../lib/deviceDetection'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { InitialState } from '../resources/Interfaces'
 import { v4vSettingsDefault } from './actions/v4v/v4v'
 
-const deviceType = isTablet() ? 'tablet' : 'mobile'
+const deviceType = pvIsTablet() ? 'tablet' : 'mobile'
 
 const initialTheme: InitialState = {
   isInMaintenanceMode: false,
   deviceType,
+  screen: {
+    orientation: isPortrait() ? 'portrait' : 'landscape',
+    // We actually need the *window* width not screen to handle iPad split view...
+    screenWidth: Dimensions.get('window').width
+  },
   globalTheme: {},
   fontScale: 1,
   fontScaleMode: null,

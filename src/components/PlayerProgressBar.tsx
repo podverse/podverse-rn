@@ -109,6 +109,8 @@ export function PlayerProgressBar(props: Props) {
   const { position } = useProgress()
   const { duration } = useProgress()
   const [player] = useGlobal('player')
+  const [screen] = useGlobal('screen')
+  const { screenWidth } = screen
   const { videoDuration, videoPosition } = player.videoInfo
 
   const backgroundColorInterpolator = localState.clipColorAnimation.interpolate({
@@ -130,7 +132,7 @@ export function PlayerProgressBar(props: Props) {
   const outerPosition = slidingPositionOverride || position || videoPosition || 0
   const newProgressValue = parentScopeDuration > 0 ? outerPosition / parentScopeDuration : 0
 
-  const sliderWidth = Dimensions.get('screen').width - sliderStyles.wrapper.marginHorizontal * 2
+  const sliderWidth = screenWidth - sliderStyles.wrapper.marginHorizontal * 2
   const clipStartTimePosition = getMediaRefStartPosition(clipStartTime, sliderWidth, parentScopeDuration)
 
   let clipWidthBar = sliderWidth - clipStartTimePosition

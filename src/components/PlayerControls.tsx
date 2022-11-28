@@ -277,42 +277,44 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </View>
         </View>
         <View style={styles.playerControlsBottomRow}>
-          <PressableWithOpacity
-            accessibilityHint={translate('ARIA HINT - go to the sleep timer screen')}
-            accessibilityLabel={translate('Sleep Timer')}
-            accessibilityRole='button'
-            hitSlop={hitSlop}
-            onPress={this._navToStopWatchScreen}>
-            <View style={styles.playerControlsBottomButton}>
-              <Icon name='moon' size={20} solid testID={`${testIDPrefix}_sleep_timer`} />
-            </View>
-          </PressableWithOpacity>
-          {!liveItem && !hidePlaybackSpeedButton && (
+          <View style={styles.playerControlsBottomRowInner}>
             <PressableWithOpacity
-              accessibilityHint={translate('ARIA HINT - current playback speed')}
-              accessibilityLabel={`${playbackRate}X`}
+              accessibilityHint={translate('ARIA HINT - go to the sleep timer screen')}
+              accessibilityLabel={translate('Sleep Timer')}
               accessibilityRole='button'
               hitSlop={hitSlop}
-              onPress={this._adjustSpeed}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                style={[styles.playerControlsBottomButton, styles.playerControlsBottomRowText]}
-                testID={`${testIDPrefix}_playback_rate`}>
-                {`${playbackRate}X`}
-              </Text>
+              onPress={this._navToStopWatchScreen}>
+              <View style={styles.playerControlsBottomButton}>
+                <Icon name='moon' size={20} solid testID={`${testIDPrefix}_sleep_timer`} />
+              </View>
             </PressableWithOpacity>
-          )}
-          {!!liveItem && <PlayerLiveButton />}
-          <PressableWithOpacity
-            accessibilityHint={translate('ARIA HINT - show more player screen options')}
-            accessibilityLabel={translate('More player options')}
-            accessibilityRole='button'
-            hitSlop={hitSlop}
-            onPress={this._showPlayerMoreActionSheet}>
-            <View accessible={false} style={styles.playerControlsBottomButton}>
-              <Icon name='ellipsis-h' size={24} testID={`${testIDPrefix}_more`} />
-            </View>
-          </PressableWithOpacity>
+            {!liveItem && !hidePlaybackSpeedButton && (
+              <PressableWithOpacity
+                accessibilityHint={translate('ARIA HINT - current playback speed')}
+                accessibilityLabel={`${playbackRate}X`}
+                accessibilityRole='button'
+                hitSlop={hitSlop}
+                onPress={this._adjustSpeed}>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  style={[styles.playerControlsBottomButton, styles.playerControlsBottomRowText]}
+                  testID={`${testIDPrefix}_playback_rate`}>
+                  {`${playbackRate}X`}
+                </Text>
+              </PressableWithOpacity>
+            )}
+            {!!liveItem && <PlayerLiveButton />}
+            <PressableWithOpacity
+              accessibilityHint={translate('ARIA HINT - show more player screen options')}
+              accessibilityLabel={translate('More player options')}
+              accessibilityRole='button'
+              hitSlop={hitSlop}
+              onPress={this._showPlayerMoreActionSheet}>
+              <View accessible={false} style={styles.playerControlsBottomButton}>
+                <Icon name='ellipsis-h' size={24} testID={`${testIDPrefix}_more`} />
+              </View>
+            </PressableWithOpacity>
+          </View>
         </View>
         <PlayerMoreActionSheet
           handleDismiss={this._hidePlayerMoreActionSheet}
@@ -335,23 +337,33 @@ const styles = StyleSheet.create({
   playerControlsBottomRow: {
     alignItems: 'center',
     flexDirection: 'row',
+    justifyContent: 'center',
     minHeight: PV.Player.styles.bottomRow.height,
-    justifyContent: 'space-evenly',
     marginHorizontal: 15,
     marginTop: 10
+  },
+  playerControlsBottomRowInner: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    maxWidth: PV.Player.playerControlsMaxWidth
   },
   playerControlsBottomRowText: {
     fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.bold
   },
   playerControlsMiddleRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
     marginTop: 2
   },
   playerControlsMiddleRowTop: {
-    alignItems: 'center',
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    marginTop: 2
+    marginTop: 2,
+    maxWidth: PV.Player.playerControlsMaxWidth
   },
   progressWrapper: {
     marginTop: 5

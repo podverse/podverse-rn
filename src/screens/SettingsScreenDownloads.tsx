@@ -427,6 +427,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
                 value={!!autoDeleteEpisodeOnEnd}
               />
             </View>
+            <Divider style={core.itemWrapper} />
             <View style={core.itemWrapper}>
               <SwitchWithText
                 accessibilityLabel={translate('Limit the number of downloaded episodes for each podcast by default')}
@@ -436,21 +437,23 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
                 value={!!downloadedEpisodeLimitDefault}
               />
             </View>
-            <View style={core.itemWrapper}>
-              <NumberSelectorWithText
-                // eslint-disable-next-line max-len
-                accessibilityHint={translate(
-                  'ARIA HINT - set the maximum number of downloaded episodes to save from each podcast on your device'
-                )}
-                // eslint-disable-next-line max-len
-                accessibilityLabel={`${translate('Default downloaded episode limit for each podcast')}`}
-                handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
-                handleSubmitEditing={this._handleSetGlobalDownloadedEpisodeLimitCount}
-                selectedNumber={downloadedEpisodeLimitCount}
-                testID={`${testIDPrefix}_default_downloaded_episode_limit`}
-                text={translate('Default downloaded episode limit for each podcast')}
-              />
-            </View>
+            {!!downloadedEpisodeLimitDefault && (
+              <View style={core.itemWrapper}>
+                <NumberSelectorWithText
+                  // eslint-disable-next-line max-len
+                  accessibilityHint={translate(
+                    'ARIA HINT - set the maximum number of downloaded episodes to save from each podcast on your device'
+                  )}
+                  // eslint-disable-next-line max-len
+                  accessibilityLabel={`${translate('Default downloaded episode limit for each podcast')}`}
+                  handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
+                  handleOnBlur={this._handleSetGlobalDownloadedEpisodeLimitCount}
+                  selectedNumber={downloadedEpisodeLimitCount}
+                  testID={`${testIDPrefix}_default_downloaded_episode_limit`}
+                  text={translate('Limit')}
+                />
+              </View>
+            )}
             <Divider />
             <Button
               accessibilityLabel={translate('Delete Downloaded Episodes')}
