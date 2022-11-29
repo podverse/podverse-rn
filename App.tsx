@@ -30,7 +30,7 @@ import {
   registerCarModule,
   showRootView,
   unregisterCarModule
-} from './src/lib/carplay/PVCarPlay.ios'
+} from './src/lib/carplay/PVCarPlay'
 
 LogBox.ignoreLogs(['EventEmitter.removeListener', "Require cycle"])
 
