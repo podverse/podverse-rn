@@ -1,0 +1,61 @@
+diff --git a/node_modules/react-native-carplay/ios/RNCarPlay.m b/node_modules/react-native-carplay/ios/RNCarPlay.m
+index 65a329c..b5f2a52 100644
+--- a/node_modules/react-native-carplay/ios/RNCarPlay.m
++++ b/node_modules/react-native-carplay/ios/RNCarPlay.m
+@@ -1,6 +1,7 @@
+ #import "RNCarPlay.h"
+ #import <React/RCTConvert.h>
+ #import <React/RCTRootView.h>
++#import <MediaPlayer/MediaPlayer.h>
+ 
+ @implementation RNCarPlay
+ 
+@@ -176,6 +177,8 @@ - (UIImage *)imageWithSize:(UIImage *)image convertToSize:(CGSize)size {
+         CPVoiceControlTemplate *voiceTemplate = [[CPVoiceControlTemplate alloc] initWithVoiceControlStates: [self parseVoiceControlStates:config[@"voiceControlStates"]]];
+         template = voiceTemplate;
+     } else if ([type isEqualToString:@"nowplaying"]) {
++        MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
++        
+         CPNowPlayingTemplate *nowPlayingTemplate = [CPNowPlayingTemplate sharedTemplate];
+         [nowPlayingTemplate setAlbumArtistButtonEnabled:[RCTConvert BOOL:config[@"albumArtistButton"]]];
+         [nowPlayingTemplate setUpNextTitle:[RCTConvert NSString:config[@"upNextTitle"]]];
+@@ -710,6 +713,14 @@ - (void) applyConfigForMapTemplate:(CPMapTemplate*)mapTemplate templateId:(NSStr
+     for (NSDictionary *tpl in tpls) {
+         CPTemplate *templ = [store findTemplateById:tpl[@"id"]];
+         // @todo UITabSystemItem
++        if(tpl[@"config"][@"title"]) {
++            templ.tabTitle = tpl[@"config"][@"title"];
++        }
++        
++        if(tpl[@"config"][@"tabSystemImg"]) {
++            templ.tabImage = [UIImage systemImageNamed:tpl[@"config"][@"tabSystemImg"]];
++        }
++        
+         [templates addObject:templ];
+     }
+     return templates;
+diff --git a/node_modules/react-native-carplay/lib/templates/NowPlayingTemplate.js b/node_modules/react-native-carplay/lib/templates/NowPlayingTemplate.js
+index 88bbaaa..a27ae0c 100644
+--- a/node_modules/react-native-carplay/lib/templates/NowPlayingTemplate.js
++++ b/node_modules/react-native-carplay/lib/templates/NowPlayingTemplate.js
+@@ -3,8 +3,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.NowPlayingTemplate = void 0;
+ const Template_1 = require("./Template");
+ class NowPlayingTemplate extends Template_1.Template {
++    constructor(config) {
++        super(config);
++        this.config = config;
++        
++    }
++
+     get type() {
+         return 'nowplaying';
+     }
++
++    get eventMap() {
++        return {
++            backButtonPressed: 'onBackButtonPressed',
++        };
++    }
+ }
+ exports.NowPlayingTemplate = NowPlayingTemplate;

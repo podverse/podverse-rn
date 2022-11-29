@@ -647,6 +647,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     this._setDownloadedDataIfOffline()
     downloadedEpisodeDeleteMarked()
+
+    /* This event signals to CarPlay to refresh views after the app initializes. */
+    setTimeout(() => PVEventEmitter.emit(PV.Events.APP_FINISHED_INITALIZING), 1000)
+    
     trackPageView('/podcasts', 'Podcasts Screen')
   }
 

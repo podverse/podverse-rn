@@ -19,6 +19,8 @@
 		DAB68C2C9B15F2537F9F4CC2 /* libPods-ImageNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C0814BA1B75E055EBB7DFFF1 /* libPods-ImageNotification.a */; };
 		DD6EFB43667B49708823C8E8 /* RNPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CDF56DAEB5F43889C2C479C /* RNPlaceholder.swift */; };
 		E58770308C43465B815B53A7 /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 817D31662D5647DEACDF2C26 /* AppCenter-Config.plist */; };
+		E72D0A972925BFCA00F01834 /* PhoneScene.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D0A962925BFCA00F01834 /* PhoneScene.m */; };
+		E72D0A9A2925C23700F01834 /* CarScene.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D0A992925C23700F01834 /* CarScene.m */; };
 		E7484F482796840300919ABB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E7484F472796840300919ABB /* GoogleService-Info.plist */; };
 		E7484F6427968AAC00919ABB /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = E7484F6327968AAC00919ABB /* NotificationService.m */; };
 		E7484F6827968AAC00919ABB /* ImageNotification.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = E7484F6027968AAC00919ABB /* ImageNotification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -97,6 +99,10 @@
 		D3F62FFA794D44A8A4EB0CE6 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		D92A2341BE976B8564CECD40 /* Pods-ImageNotification.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ImageNotification.release.xcconfig"; path = "Pods/Target Support Files/Pods-ImageNotification/Pods-ImageNotification.release.xcconfig"; sourceTree = "<group>"; };
 		E184364CC80B40F0BCAEDF24 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		E72D0A952925BFCA00F01834 /* PhoneScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhoneScene.h; sourceTree = "<group>"; };
+		E72D0A962925BFCA00F01834 /* PhoneScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhoneScene.m; sourceTree = "<group>"; };
+		E72D0A982925C23700F01834 /* CarScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CarScene.h; sourceTree = "<group>"; };
+		E72D0A992925C23700F01834 /* CarScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CarScene.m; sourceTree = "<group>"; };
 		E7484F472796840300919ABB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E7484F6027968AAC00919ABB /* ImageNotification.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ImageNotification.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7484F6227968AAC00919ABB /* NotificationService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationService.h; sourceTree = "<group>"; };
@@ -156,6 +162,10 @@
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
+				E72D0A952925BFCA00F01834 /* PhoneScene.h */,
+				E72D0A962925BFCA00F01834 /* PhoneScene.m */,
+				E72D0A982925C23700F01834 /* CarScene.h */,
+				E72D0A992925C23700F01834 /* CarScene.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
@@ -540,6 +550,8 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				E72D0A9A2925C23700F01834 /* CarScene.m in Sources */,
+				E72D0A972925BFCA00F01834 /* PhoneScene.m in Sources */,
 				DD6EFB43667B49708823C8E8 /* RNPlaceholder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -582,7 +594,7 @@
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = podverse/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 4.7.1;
 				OTHER_LDFLAGS = (
@@ -622,7 +634,7 @@
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = podverse/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 4.7.1;
 				OTHER_LDFLAGS = (
@@ -767,7 +779,7 @@
 				INFOPLIST_FILE = ImageNotification/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ImageNotification;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Facebook. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -803,7 +815,7 @@
 				INFOPLIST_FILE = ImageNotification/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ImageNotification;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Facebook. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
