@@ -651,7 +651,6 @@
     "All": "Alle",
     "1 hour 30 minutes": "1 Stunde 30 Minuten",
     "How To": "So wird es gemacht",
-    "Download limit max": "Maximum an Downloads",
     "Translators": "Übersetzer",
     "hour": "Stunde",
     "minute": "Minute",
@@ -746,5 +745,7 @@
     "Maintenance mode message": "Unsere Server sind wegen Wartungsarbeiten außer Betrieb. Die App wird nur im Offline-Modus funktionieren, bis das Update abgeschlossen ist.",
     "Your profile page is public": "Ihr Profil ist öffentlich.",
     "Join our Matrix space": "Treten Sie unserem Matrix-Raum bei",
-    "Tutorials": "Anleitungen"
+    "Tutorials": "Anleitungen",
+    "Verify email title": "E-Mail geprüft",
+    "Verify email succeeded": "Ihre E-Mail Adresse wurde verifiziert. Sie sollten sich jetzt anmelden können."
 }
