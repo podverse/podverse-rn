@@ -26,7 +26,7 @@ import { hasValidDownloadingConnection } from './src/lib/network'
 import { migrateCredentialsIfNeeded } from './src/lib/secutity'
 import {
   handleCarPlayPodcastsUpdate,
-  handleCarPlayQueueUpdateTwice,
+  handleCarPlayQueueUpdate,
   registerCarModule,
   showRootView,
   unregisterCarModule
@@ -100,13 +100,13 @@ class App extends Component<Props, State> {
     const { subscribedPodcasts = [], session } = getGlobal()
     const { historyItems = [], queueItems = [] } = session.userInfo
     showRootView(subscribedPodcasts, historyItems, queueItems)
-    PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdateTwice)
+    PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdate)
     PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
   }
 
   onDisconnect = () => {
     // Do things now that carplay is disconnected
-    PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdateTwice)
+    PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdate)
     PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
   }
 

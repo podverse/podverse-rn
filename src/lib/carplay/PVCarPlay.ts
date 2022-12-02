@@ -3,13 +3,15 @@ import { CarPlay, ListTemplate, NowPlayingTemplate, TabBarTemplate } from 'react
 import { getGlobal } from 'reactn'
 import { getHistoryItems } from '../../state/actions/userHistoryItem';
 import { translate } from '../i18n';
+import { downloadImageFile, getSavedImageUri } from '../storage';
 import { readableDate } from '../utility';
 import { getEpisodesForPodcast, loadEpisodeInPlayer, loadNowPlayingItemInPlayer } from './helpers';
 
-/* Constants */
-
-// This timeout is a work-around for asynchronous state loading issues in background tabs.
-const stateUpdateTimeout = 10000
+type CarPlayListItem = {
+  text: string
+  detailText?: string
+  imgUrl: string | null
+}
 
 /* Initialize */
 
@@ -25,9 +27,13 @@ export const unregisterCarModule = (onConnect, onDisconnect) => {
 
 /* Root View */
 
-export const showRootView = (subscribedPodcasts: Podcast[], historyItems: any[], queueItems: any[]) => {
+export const showRootView = async (subscribedPodcasts: Podcast[], historyItems: any[], queueItems: any[]) => {
+  const pListTab = await podcastsListTab(subscribedPodcasts)
+  const qListTab = await queueItemsListTab(queueItems)
+  const hListTab = await historyItemsListTab(historyItems)
+
   const tabBarTemplate = new TabBarTemplate({
-    templates: [podcastsListTab(subscribedPodcasts), queueItemsListTab(queueItems), historyItemsListTab(historyItems)],
+    templates: [pListTab, qListTab, hListTab],
     onTemplateSelect(e: any) {
       console.log('selected', e)
     }
@@ -40,12 +46,14 @@ export const showRootView = (subscribedPodcasts: Podcast[], historyItems: any[],
 
 let podcastsList: ListTemplate
 
-const podcastsListTab = (subscribedPodcasts: Podcast[]) => {
+const podcastsListTab = async (subscribedPodcasts: Podcast[]) => {
+  const listItems = await generatePodcastListItems(subscribedPodcasts)
+
   podcastsList = new ListTemplate({
     sections: [
       {
         header: translate('Subscribed'),
-        items: subscribedPodcasts.map((podcast) => createCarPlayPodcastListItem(podcast))
+        items: listItems
       }
     ],
     title: translate('Podcasts'),
@@ -61,22 +69,37 @@ const podcastsListTab = (subscribedPodcasts: Podcast[]) => {
   return podcastsList
 }
 
-export const handleCarPlayPodcastsUpdate = () => {
+export const handleCarPlayPodcastsUpdate = async () => {
   if (podcastsList) {
     const { subscribedPodcasts } = getGlobal()
+    const listItems = await generatePodcastListItems(subscribedPodcasts)
+
     podcastsList.updateSections([
       {
         header: translate('Subscribed'),
-        items: subscribedPodcasts.map((podcast) => createCarPlayPodcastListItem(podcast))
+        items: listItems
       }
     ])
   }
 }
 
-const createCarPlayPodcastListItem = (podcast: Podcast) => {
+const generatePodcastListItems = async (subscribedPodcasts: Podcast[]) => {
+  const listItems: CarPlayListItem[] = []
+
+  for (const podcast of subscribedPodcasts) {
+    const listItem = await createCarPlayPodcastListItem(podcast)
+    listItems.push(listItem)
+  }
+
+  return listItems
+}
+
+const createCarPlayPodcastListItem = async (podcast: Podcast) => {
+  const imgUrl = await getDownloadedImageUrl(podcast?.shrunkImageUrl || podcast?.imageUrl)
+
   return {
     text: podcast.title || translate('Untitled Podcast'),
-    imgUrl: podcast.shrunkImageUrl || podcast.imageUrl || null
+    imgUrl
   }
 }
 
@@ -114,12 +137,14 @@ const showEpisodesList = (podcast: Podcast, episodes: Episode[]) => {
 
 let queueList: ListTemplate 
 
-const queueItemsListTab = (queueItems: NowPlayingItem[]) => {
+const queueItemsListTab = async (queueItems: NowPlayingItem[]) => {
+  const listItems = await generateNPIListItems(queueItems)
+
   queueList = new ListTemplate({
     sections: [
       {
         header: '',
-        items: queueItems.map((queueItem) => createCarPlayNPIListItem(queueItem)),
+        items: listItems
       },
     ],
     title: translate('Queue'),
@@ -135,34 +160,32 @@ const queueItemsListTab = (queueItems: NowPlayingItem[]) => {
   return queueList
 }
 
-const handleQueueUpdate = () => {
+export const handleCarPlayQueueUpdate = async () => {
   if (queueList) {
     const { session } = getGlobal()
     const updatedItems = session?.userInfo?.queueItems || []
+    const listItems = await generateNPIListItems(updatedItems)
     queueList.updateSections([
       {
         header: '',
-        items: updatedItems.map((queueItem) => createCarPlayNPIListItem(queueItem))
+        items: listItems
       }
     ])
   }
-}
-
-export const handleCarPlayQueueUpdateTwice = () => {
-  handleQueueUpdate()
-  setTimeout(handleQueueUpdate, stateUpdateTimeout)
 }
 
 /* History Tab */
 
 let historyList: ListTemplate
 
-const historyItemsListTab = (historyItems: NowPlayingItem[]) => {
+const historyItemsListTab = async (historyItems: NowPlayingItem[]) => {
+  const listItems = await generateNPIListItems(historyItems)
+
   historyList = new ListTemplate({
     sections: [
       {
         header: translate('Recently Played'),
-        items: historyItems.map((historyItem) => createCarPlayNPIListItem(historyItem))
+        items: listItems
       }
     ],
     title: translate('History'),
@@ -178,14 +201,15 @@ const historyItemsListTab = (historyItems: NowPlayingItem[]) => {
   return historyList
 }
 
-export const handleHistoryUpdate = () => {
+export const handleCarPlayHistoryUpdate = async () => {
   if (historyList) {
     const { session } = getGlobal()
     const updatedItems = session?.userInfo?.historyItems || []
+    const listItems = await generateNPIListItems(updatedItems)
     historyList.updateSections([
       {
         header: '',
-        items: updatedItems.map((historyItem) => createCarPlayNPIListItem(historyItem))
+        items: listItems
       }
     ])
   }
@@ -196,7 +220,7 @@ const refreshHistory = () => {
     const page = 1
     const existingItems: any[] = []
     await getHistoryItems(page, existingItems)
-    handleHistoryUpdate()
+    handleCarPlayHistoryUpdate()
   })()
 }
 
@@ -204,8 +228,8 @@ const refreshHistory = () => {
 
 const nowPlayingTemplateConfig = {
   onWillDisappear: () => {
-    handleQueueUpdate()
-    handleHistoryUpdate()
+    handleCarPlayQueueUpdate()
+    handleCarPlayHistoryUpdate()
   }
 }
 
@@ -224,14 +248,50 @@ const pushPlayerTemplate = () => {
   CarPlay.pushTemplate(playerTemplate)
   CarPlay.enableNowPlaying(true)
 
-  setTimeout(refreshHistory, stateUpdateTimeout)
+  refreshHistory()
 }
 
-const createCarPlayNPIListItem = (item: NowPlayingItem) => {
-  const imgUrl = item?.episodeImageUrl || item?.podcastShrunkImageUrl || item?.podcastImageUrl || null
+const generateNPIListItems = async (nowPlayingItems: NowPlayingItem[]) => {
+  const listItems: CarPlayListItem[] = []
+
+  for (const nowPlayingItem of nowPlayingItems) {
+    const listItem = await createCarPlayNPIListItem(nowPlayingItem)
+    listItems.push(listItem)
+  }
+
+  return listItems
+}
+
+const createCarPlayNPIListItem = async (item: NowPlayingItem) => {
+  const imgUrl = await getDownloadedImageUrl(
+    item?.episodeImageUrl || item?.podcastShrunkImageUrl || item?.podcastImageUrl
+  )
+
   return {
     text: item?.episodeTitle || translate('Untitled Episode'),
     detailText: item?.podcastTitle || translate('Untitled Podcast'),
     imgUrl
+  } as CarPlayListItem
+}
+
+/* Image Helpers */
+
+const getDownloadedImageUrl = async (origImageUrl?: string | null) => {
+  let finalImageUrl = null
+  if (origImageUrl) {
+    try {
+      const savedImageResults = await getSavedImageUri(origImageUrl)
+      finalImageUrl = savedImageResults.exists ? `file://${savedImageResults.imageUrl}` : origImageUrl
+    } catch (error) {
+      finalImageUrl = origImageUrl
+
+      // If there was an error loading the image, then download the image file
+      // in the background so it can load from downloaded storage next time.
+      downloadImageFile(finalImageUrl)
+
+      console.log('carPlayListItems error:', error)
+    }
   }
+
+  return finalImageUrl
 }
