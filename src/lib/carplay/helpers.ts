@@ -27,8 +27,11 @@ export const getEpisodesForPodcast = async (podcast: Podcast): Promise<any[]> =>
     
       const { combinedEpisodes } = results
       return combinedEpisodes
+    } else if (podcast.addByRSSPodcastFeedUrl) {
+      const episodes = podcast.episodes || []
+      return [episodes]
     } else {
-      return getEpisodes({podcastId: podcast.id, maxResults: true, sort: "most-recent"})
+      return getEpisodes({ podcastId: podcast.id, maxResults: true, sort: 'most-recent' })
     }
   }
 }
