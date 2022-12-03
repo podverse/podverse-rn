@@ -185,6 +185,8 @@
   "ARIA LABEL - Queue Last": "Enqueue Last",
   "ARIA LABEL - Queue Next": "Enqueue as next",
   "Audio livestreams": "Audio livestreams",
+  "Auth invalid message": "Your login session has expired. Please log in to continue using Premium features.",
+  "Auth invalid title": "Logged out",
   "Auto": "Auto",
   "Auto download by default on subscribe": "Turn on auto-downloading for a podcast when you subscribe to it.",
   "Auto Downloading Off": "Auto-downloading off",

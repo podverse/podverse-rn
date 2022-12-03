@@ -66,6 +66,11 @@ export const Alerts = {
   BUTTONS: {
     OK: [{ text: translate('OK') }]
   },
+  AUTH_INVALID: {
+    message: translate('Auth invalid message'),
+    title: translate('Auth invalid title'),
+    buttons: [{ text: translate('OK') }]
+  },
   GO_TO_LOGIN_BUTTONS: (navigation: any) => [
     { text: translate('OK') },
     {
