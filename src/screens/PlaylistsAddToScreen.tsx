@@ -189,7 +189,6 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
               <FlatList
                 data={myPlaylists}
                 dataTotalCount={myPlaylists.length}
-                disableLeftSwipe
                 extraData={myPlaylists}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
                 keyExtractor={(item: any, index: number) => `myPlaylists_${index}`}

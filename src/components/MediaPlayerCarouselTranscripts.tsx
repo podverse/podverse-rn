@@ -244,7 +244,6 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
             contentContainerStyle={styles.contentContainerStyle}
             data={parsedTranscript}
             dataTotalCount={parsedTranscript.length}
-            disableLeftSwipe
             getItemLayout={(_: any, index: number) => {
               return { length: 80, offset: 80 * index, index }
             }}

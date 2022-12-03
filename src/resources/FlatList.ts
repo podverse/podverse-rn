@@ -14,5 +14,11 @@ export const FlatList = {
   },
   ListHeaderHiddenSearchBar: {
     contentOffset: { x: 0, y: 67 }
+  },
+  hiddenItems: {
+    rightOpenValue: {
+      oneButton: -120,
+      twoButtons: -220
+    }
   }
 }
