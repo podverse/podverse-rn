@@ -281,7 +281,6 @@ export class FilterScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view} testID={`${testIDPrefix}_view`}>
         <FlatList
-          disableLeftSwipe
           disableNoResultsMessage
           keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.value || item?.id)}
           renderSectionHeader={({ section }) => (
