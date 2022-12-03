@@ -748,5 +748,8 @@
     "Join our Matrix space": "Ta del i vårt Matrix-rom",
     "Importing Feeds": "Importering av informasonskanaler",
     "Verify email title": "E-post bekreftet",
-    "Verify email succeeded": "E-postadressen din har blitt bekreftet. Du kan nå logge inn."
+    "Verify email succeeded": "E-postadressen din har blitt bekreftet. Du kan nå logge inn.",
+    "Recently Played": "Nylig spilt",
+    "Limit": "Grense",
+    "Limit the number of downloaded epiosdes explanation": "Begrens antall nedlastede episoder fra dette nettradioopptaket på enheten. Etter at grensen er overskredet vil eldste episode automatisk slettes."
 }
