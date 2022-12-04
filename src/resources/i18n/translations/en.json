@@ -262,7 +262,7 @@
   "Custom RSS feeds to parse in parallel": "Custom RSS feeds to parse in parallel",
   "Custom RSS feeds to parse in parallel helper text": "Parsing more than three feeds at once may cause issues on some devices.",
   "Custom web domain": "Web domain",
-  "Custom web domain subtext": "These allow choice of app data server.",
+  "Custom web domain subtext": "Allows using different servers to fetch app data.",
   "Dark Mode": "Dark",
   "Data Settings": "Data Settings",
   "Limit the number of downloaded episodes for each podcast by default": "Number of episodes to keep.",
