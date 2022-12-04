@@ -1059,11 +1059,11 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
             <Divider style={styles.divider} />
             <Button
               accessibilityHint={translate('ARIA HINT - delete all the episodes you have downloaded for this podcast')}
-              accessibilityLabel={translate('Clear new episode indicators')}
+              accessibilityLabel={translate('Mark episodes as seen')}
               onPress={this._handleClearNewEpisodeIndicators}
               wrapperStyles={styles.settingsClearNewEpisodeIndicators}
               testID={`${testIDPrefix}_clear_new_episode_indicators`}
-              text={translate('Clear new episode indicators')}
+              text={translate('Mark episodes as seen')}
             />
             <Button
               accessibilityHint={translate('ARIA HINT - delete all the episodes you have downloaded for this podcast')}
@@ -1083,7 +1083,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
                 disableNoResultsMessage={isLoadingMore}
-                disableLeftSwipe={viewType !== PV.Filters._downloadedKey}
                 extraData={flatListData}
                 isLoadingMore={isLoadingMore}
                 isRefreshing={isRefreshing}

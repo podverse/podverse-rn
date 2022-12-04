@@ -181,6 +181,17 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.skyLight,
     color: PV.Colors.white
   },
+  swipeRowBackMultiple: {
+    backgroundColor: PV.Colors.ink
+  },
+  swipeRowBackButtonDanger: {
+    backgroundColor: PV.Colors.redLighter,
+    color: PV.Colors.black
+  },
+  swipeRowBackButtonPrimary: {
+    backgroundColor: PV.Colors.skyLight,
+    color: PV.Colors.black
+  },
   tabbar: {
     backgroundColor: PV.Colors.ink,
     borderTopWidth: 1,
@@ -432,6 +443,17 @@ export const lightTheme = StyleSheet.create({
     color: PV.Colors.black
   },
   swipeRowBack: {
+    backgroundColor: PV.Colors.skyLight,
+    color: PV.Colors.black
+  },
+  swipeRowBackMultiple: {
+    backgroundColor: PV.Colors.ink
+  },
+  swipeRowBackButtonDanger: {
+    backgroundColor: PV.Colors.redLighter,
+    color: PV.Colors.black
+  },
+  swipeRowBackButtonPrimary: {
     backgroundColor: PV.Colors.skyLight,
     color: PV.Colors.black
   },

@@ -81,7 +81,7 @@ export class SettingsScreenHistory extends React.Component<Props, State> {
               accessibilityLabel={translate('ARIA HINT - clear the new episode indicators for all podcasts')}
               onPress={this._handleClearAllNewEpisodeNotifications}
               testID={`${testIDPrefix}_clear_all_new_episode_indicators`}
-              text={translate('Clear new episode indicators')}
+              text={translate('Mark episodes as seen')}
               wrapperStyles={[core.button, styles.clearAllNewEpisodeIndicators]}
             />
             <Button

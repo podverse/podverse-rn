@@ -256,7 +256,6 @@ export class SearchScreen extends React.Component<Props, State> {
           <FlatList
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
-            disableLeftSwipe
             extraData={flatListData}
             handleNoResultsBottomAction={!!Config.CURATOR_EMAIL ? this._navToRequestPodcastEmail : null}
             handleNoResultsMiddleAction={this._handleAddPodcastByRSSURLNavigation}

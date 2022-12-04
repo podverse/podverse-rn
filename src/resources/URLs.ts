@@ -6,12 +6,17 @@ const protocol = 'https://'
 const domain = Config.WEB_DOMAIN || 'stage.podverse.fm'
 const root = protocol + domain
 
+// Visit https://github.com/podverse/podverse-rn/issues/1464 for an explanation of the redirect.
+const redirectRoot = `${protocol}r.${domain}`
+
 // const apiDefaultBaseUrl = 'http://localhost:1234/api/v1'
 const apiDefaultBaseUrl = Config.API_DOMAIN || 'https://api.stage.podverse.fm/api/v1'
 const webDefaultBaseUrl = root
+const webDefaultRedirectBaseUrl = redirectRoot
 
 const webPaths = {
   clip: `/clip/`,
+  contribute: `/contribute`,
   episode: `/episode/`,
   playlist: `/playlist/`,
   podcast: `/podcast/`,
@@ -56,15 +61,23 @@ export const URLs = {
     },
     webClientUrl: Config.URL_XMPP_WEB_CLIENT
   },
-  web: async () => {
+  web: async (useRedirectDomain?: boolean) => {
     const [isEnabled, baseUrlOverride] = await Promise.all([
       AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED),
       AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN)
     ])
-    const base = isEnabled && baseUrlOverride ? baseUrlOverride : webDefaultBaseUrl
+    
+    let base = webDefaultBaseUrl
+    if (isEnabled && baseUrlOverride) {
+      base = baseUrlOverride
+    } else if (useRedirectDomain) {
+      base = webDefaultRedirectBaseUrl
+    }
+
     return {
       baseUrl: base,
       clip: `${base}${webPaths.clip}`,
+      contribute: `${base}${webPaths.contribute}`,
       episode: `${base}${webPaths.episode}`,
       playlist: `${base}${webPaths.playlist}`,
       podcast: `${base}${webPaths.podcast}`,
