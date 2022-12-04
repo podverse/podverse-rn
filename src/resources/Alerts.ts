@@ -41,17 +41,17 @@ export const Alerts = {
     const type = item.clipId ? translate('Clip') : translate('Episode')
 
     return {
-      message: `${translate('Do you want to resume ')} ${item?.podcastTitle} - ${title}?`,
+      message: `${item?.podcastTitle} - ${title}?`,
       title: `${translate('Recent ')}${type}`,
       buttons: [
         {
-          text: translate('No'),
+          text: translate('Cancel'),
           onPress: () => {
             callback?.()
           }
         },
         {
-          text: translate('Yes'),
+          text: translate('Resume'),
           onPress: async () => {
             const shouldPlay = false
             const forceUpdateOrderDate = false
