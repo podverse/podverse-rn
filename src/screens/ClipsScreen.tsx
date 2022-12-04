@@ -473,7 +473,6 @@ export class ClipsScreen extends React.Component<Props, State> {
           <FlatList
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
-            disableLeftSwipe
             extraData={flatListData}
             handleNoResultsTopAction={this._handleSearchNavigation}
             isLoadingMore={isLoadingMore}

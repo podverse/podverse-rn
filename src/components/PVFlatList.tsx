@@ -45,6 +45,7 @@ type Props = {
   renderHiddenItem?: any
   renderSectionHeader?: any
   renderItem: any
+  rightOpenValue?: number,
   sections?: any
   showNoInternetConnectionMessage?: boolean
   stickySectionHeadersEnabled?: boolean
@@ -93,6 +94,7 @@ export const PVFlatList = (props: Props) => {
     renderHiddenItem,
     renderItem,
     renderSectionHeader,
+    rightOpenValue = PV.FlatList.hiddenItems.rightOpenValue.oneButton,
     sections,
     showNoInternetConnectionMessage,
     stickySectionHeadersEnabled,
@@ -206,7 +208,7 @@ export const PVFlatList = (props: Props) => {
           renderHiddenItem={renderHiddenItem || _renderHiddenItem}
           renderSectionHeader={renderSectionHeader}
           renderItem={renderItem}
-          rightOpenValue={-120}
+          rightOpenValue={rightOpenValue}
           sections={sections}
           stickySectionHeadersEnabled={!!stickySectionHeadersEnabled}
           style={[

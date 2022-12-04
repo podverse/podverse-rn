@@ -17,9 +17,11 @@ import {
   PurchaseListener,
   SearchBar,
   SwipeRowBack,
+  SwipeRowBackMultipleButtons,
   TableSectionSelectors,
   View
 } from '../components'
+import { SwipeRowBackButton } from '../components/SwipeRowBackMultipleButtons'
 import { isPortrait } from '../lib/deviceDetection'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
@@ -50,7 +52,7 @@ import { initAutoQueue } from '../state/actions/autoQueue'
 import { downloadedEpisodeDeleteMarked, initDownloads, removeDownloadedPodcast,
   updateDownloadedPodcasts } from '../state/actions/downloads'
 import { v4vAlbyHandleConnect } from '../state/actions/v4v/providers/alby'
-import { handleUpdateNewEpisodesCount, syncNewEpisodesCountWithHistory } from '../state/actions/newEpisodesCount'
+import { clearEpisodesCountForPodcast, handleUpdateNewEpisodesCount, syncNewEpisodesCountWithHistory } from '../state/actions/newEpisodesCount'
 import {
   initializePlayerSettings,
   initializePlayer,
@@ -647,6 +649,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     this._setDownloadedDataIfOffline()
     downloadedEpisodeDeleteMarked()
+
+    /* This event signals to CarPlay to refresh views after the app initializes. */
+    setTimeout(() => PVEventEmitter.emit(PV.Events.APP_FINISHED_INITALIZING), 1000)
+    
     trackPageView('/podcasts', 'Podcasts Screen')
   }
 
@@ -911,16 +917,38 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleClearNewEpisodeIndicators = (podcast: any) => {
+    if (podcast?.id || podcast?.addByRSSPodcastFeedUrl) {
+      clearEpisodesCountForPodcast(podcast.addByRSSPodcastFeedUrl || podcast.id)
+    }
+  }
+
   _renderHiddenItem = ({ item, index }, rowMap) => {
-    const { queryFrom } = this.state
-    const buttonText = queryFrom === PV.Filters._downloadedKey ? translate('Delete') : translate('Unsubscribe')
+    const { isUnsubscribing, queryFrom } = this.state
+    const buttonText: string = queryFrom === PV.Filters._downloadedKey ? translate('Delete') : translate('Unsubscribe')
+
+    const buttons: SwipeRowBackButton[] = [
+      {
+        text: translate('Mark as Seen'),
+        type: 'primary',
+        onPress: () => {
+          this._handleClearNewEpisodeIndicators(item)
+          const rowId = safeKeyExtractor(testIDPrefix, index, item?.id)
+          rowMap[rowId]?.closeRow()
+        }
+      },
+      {
+        text: buttonText,
+        type: 'danger',
+        onPress: () => this._handleHiddenItemPress(item.id, item.addByRSSPodcastFeedUrl),
+        isLoading: isUnsubscribing
+      }
+    ]
 
     return (
-      <SwipeRowBack
-        isLoading={this.state.isUnsubscribing}
-        onPress={() => this._handleHiddenItemPress(item.id, item.addByRSSPodcastFeedUrl, rowMap)}
+      <SwipeRowBackMultipleButtons
+        buttons={buttons}
         testID={`${testIDPrefix}_podcast_item_${index}`}
-        text={buttonText}
       />
     )
   }
@@ -1150,6 +1178,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             onRefresh={this._onRefresh}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderPodcastItem}
+            rightOpenValue={PV.FlatList.hiddenItems.rightOpenValue.twoButtons}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             testID={testIDPrefix}
             gridView={podcastsGridViewEnabled}

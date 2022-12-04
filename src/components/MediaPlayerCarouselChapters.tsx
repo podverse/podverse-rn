@@ -246,7 +246,6 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
           <FlatList
             data={currentChapters}
             dataTotalCount={currentChapters.length}
-            disableLeftSwipe
             extraData={currentChapters}
             getItemLayout={this._getItemLayout}
             isLoadingMore={isLoadingMore}

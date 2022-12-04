@@ -44,6 +44,9 @@ export interface GlobalTheme {
   playerText?: any
   selectorText?: any
   swipeRowBack?: any
+  swipeRowBackMultiple?: any
+  swipeRowBackButtonDanger?: any
+  swipeRowBackButtonPrimary?: any
   tabbar?: any
   tabbarItem?: any
   tableCellTextPrimary?: any

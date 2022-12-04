@@ -139,45 +139,63 @@ export const getAuthenticatedUserInfoLocally = async () => {
 }
 
 export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) => {
-  const response = await request({
-    endpoint: '/auth/get-authenticated-user-info',
-    method: 'POST',
-    headers: {
-      Authorization: bearerToken,
-      'Content-Type': 'application/json'
+  try {
+    const response = await request({
+      endpoint: '/auth/get-authenticated-user-info',
+      method: 'POST',
+      headers: {
+        Authorization: bearerToken,
+        'Content-Type': 'application/json'
+      }
+    })
+
+    const data = (response && response.data) || {}
+    const { addByRSSPodcastFeedUrls, subscribedPodcastIds = [] } = data
+    const page = 1
+
+    const [{ userHistoryItems, userHistoryItemsCount }, queueItems] = await Promise.all([
+      getHistoryItems(page),
+      getQueueItems()
+    ])
+    // getHistoryItemsIndex must be called after getHistoryItems finishes.
+    const historyItemsIndex = await getHistoryItemsIndex()
+
+    // Add history and queue properities to response to be added to the global state
+    data.historyItems = userHistoryItems
+    data.historyItemsCount = userHistoryItemsCount
+    data.historyItemsIndex = historyItemsIndex
+    data.historyQueryPage = page
+    data.queueItems = queueItems
+
+    const localFCMSaved = await fcmTokenGetLocally()
+    data.notificationsEnabled = !!localFCMSaved
+
+    if (Array.isArray(addByRSSPodcastFeedUrls)) {
+      await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS, JSON.stringify(addByRSSPodcastFeedUrls))
     }
-  })
 
-  const data = (response && response.data) || {}
-  const { addByRSSPodcastFeedUrls, subscribedPodcastIds = [] } = data
-  const page = 1
+    if (Array.isArray(subscribedPodcastIds)) {
+      await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
+    }
 
-  const [{ userHistoryItems, userHistoryItemsCount }, queueItems] = await Promise.all([
-    getHistoryItems(page),
-    getQueueItems()
-  ])
-  // getHistoryItemsIndex must be called after getHistoryItems finishes.
-  const historyItemsIndex = await getHistoryItemsIndex()
+    return [data, true]
+  } catch (error) {
+    /*  
+      If the bearerToken is saved locally, but a 401 is returned from the server,
+      then assume the bearerToken has somehow become invalid, and notify the user
+      that something went wrong, and log them out of their account.
+    */
+    if (error?.response?.status === 401) {
+      Alert.alert(
+        PV.Alerts.AUTH_INVALID.title,
+        PV.Alerts.AUTH_INVALID.message,
+        PV.Alerts.AUTH_INVALID.buttons
+      )
+      await logoutUser()
+    }
 
-  // Add history and queue properities to response to be added to the global state
-  data.historyItems = userHistoryItems
-  data.historyItemsCount = userHistoryItemsCount
-  data.historyItemsIndex = historyItemsIndex
-  data.historyQueryPage = page
-  data.queueItems = queueItems
-
-  const localFCMSaved = await fcmTokenGetLocally()
-  data.notificationsEnabled = !!localFCMSaved
-
-  if (Array.isArray(addByRSSPodcastFeedUrls)) {
-    await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS, JSON.stringify(addByRSSPodcastFeedUrls))
+    throw error
   }
-
-  if (Array.isArray(subscribedPodcastIds)) {
-    await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
-  }
-
-  return [data, true]
 }
 
 export const login = async (email: string, password: string) => {

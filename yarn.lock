@@ -3509,9 +3509,9 @@ decamelize@^1.1.1, decamelize@^1.2.0:
   integrity sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=
 
 decode-uri-component@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
-  integrity sha1-6zkTMzRYd1y4TNGh+uBiEGu4dUU=
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.2.tgz#e69dbe25d37941171dd540e024c444cd5188e1e9"
+  integrity sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==
 
 dedent@^0.7.0:
   version "0.7.0"
@@ -8456,6 +8456,13 @@ react-native-background-timer@2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/react-native-background-timer/-/react-native-background-timer-2.4.0.tgz#b659fdc8ce8ddbed04fbb296e2ec9f4ad8e1659f"
   integrity sha512-00DphusbzXUuJDP+SSRe7FJczFWzrCErr+2TdRxYfbQjpDaRk3rXw8nhlQXI5U6KthquEQOrCRMq2F2hi/HKLg==
+
+react-native-carplay@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-carplay/-/react-native-carplay-2.1.0.tgz#13be2647ec226413c8b8c3a2ebe7971f0725cdd0"
+  integrity sha512-vB8pCyw3vY+GDHDBwOJ/wwiZkHLb845Vjhs7+Y69iszhWGOU7ZSGiyJMjG6FpooUXc4i94CCOAJTNuT7nEnKyQ==
+  dependencies:
+    traverse "^0.6.6"
 
 react-native-cheerio@1.0.0-rc.4:
   version "1.0.0-rc.4"
