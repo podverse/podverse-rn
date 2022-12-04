@@ -265,7 +265,7 @@
   "Custom web domain subtext": "These allow choice of app data server.",
   "Dark Mode": "Dark",
   "Data Settings": "Data Settings",
-  "Default downloaded episode limit for each podcast": "Limit",
+  "Limit the number of downloaded episodes for each podcast by default": "Number of episodes to keep.",
   "Delete": "Delete",
   "DELETE": "Delete",
   "Delete Account": "Delete account",
