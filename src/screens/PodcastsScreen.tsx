@@ -948,7 +948,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     return (
       <SwipeRowBackMultipleButtons
         buttons={buttons}
-        testID={`${testIDPrefix}_podcast_item_${index}`}
+        testID={`${testIDPrefix}_podcast_item_hidden_${index}`}
       />
     )
   }
