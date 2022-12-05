@@ -1,5 +1,7 @@
 import { Episode, NowPlayingItem, Podcast } from 'podverse-shared';
 import { CarPlay, ListTemplate, NowPlayingTemplate, TabBarTemplate } from 'react-native-carplay';
+import { ListItem } from 'react-native-carplay/lib/interfaces/ListItem';
+import { TemplateConfig } from 'react-native-carplay/lib/templates/Template';
 import { getGlobal } from 'reactn'
 import { getHistoryItems } from '../../state/actions/userHistoryItem';
 import { translate } from '../i18n';
@@ -7,11 +9,6 @@ import { downloadImageFile, getSavedImageUri } from '../storage';
 import { readableDate } from '../utility';
 import { getEpisodesForPodcast, loadEpisodeInPlayer, loadNowPlayingItemInPlayer } from './helpers';
 
-type CarPlayListItem = {
-  text: string
-  detailText?: string
-  imgUrl: string | null
-}
 
 /* Initialize */
 
@@ -35,7 +32,13 @@ export const showRootView = async (subscribedPodcasts: Podcast[], historyItems: 
   const tabBarTemplate = new TabBarTemplate({
     templates: [pListTab, qListTab, hListTab],
     onTemplateSelect(e: any) {
-      console.log('selected', e)
+      if(e.config.title === "Podcasts") {
+        handleCarPlayPodcastsUpdate()
+      } else if (e.config.title === "Queue") {
+        handleCarPlayQueueUpdate()
+      } else if (e.config.title === "History") {
+        refreshHistory()
+      }
     }
   })
 
@@ -84,7 +87,7 @@ export const handleCarPlayPodcastsUpdate = async () => {
 }
 
 const generatePodcastListItems = async (subscribedPodcasts: Podcast[]) => {
-  const listItems: CarPlayListItem[] = []
+  const listItems: ListItem[] = []
 
   for (const podcast of subscribedPodcasts) {
     const listItem = await createCarPlayPodcastListItem(podcast)
@@ -226,12 +229,13 @@ const refreshHistory = () => {
 
 /* Player Helpers */
 
-const nowPlayingTemplateConfig = {
+const nowPlayingTemplateConfig = (id:string) : TemplateConfig => ({
+  id,
   onWillDisappear: () => {
     handleCarPlayQueueUpdate()
     handleCarPlayHistoryUpdate()
-  }
-}
+  }}
+)
 
 export const showCarPlayerForEpisode = async (episode: Episode, podcast: Podcast) => {
   await loadEpisodeInPlayer(episode, podcast)
@@ -244,7 +248,7 @@ export const showCarPlayerForNowPlayingItem = async (nowPlayingItem: NowPlayingI
 }
 
 const pushPlayerTemplate = () => {
-  const playerTemplate = new NowPlayingTemplate(nowPlayingTemplateConfig)
+  const playerTemplate = new NowPlayingTemplate(nowPlayingTemplateConfig("podverse.NowPlayingTemplate"))
   CarPlay.pushTemplate(playerTemplate)
   CarPlay.enableNowPlaying(true)
 
@@ -252,7 +256,7 @@ const pushPlayerTemplate = () => {
 }
 
 const generateNPIListItems = async (nowPlayingItems: NowPlayingItem[]) => {
-  const listItems: CarPlayListItem[] = []
+  const listItems: ListItem[] = []
 
   for (const nowPlayingItem of nowPlayingItems) {
     const listItem = await createCarPlayNPIListItem(nowPlayingItem)
@@ -271,7 +275,7 @@ const createCarPlayNPIListItem = async (item: NowPlayingItem) => {
     text: item?.episodeTitle || translate('Untitled Episode'),
     detailText: item?.podcastTitle || translate('Untitled Podcast'),
     imgUrl
-  } as CarPlayListItem
+  } as ListItem
 }
 
 /* Image Helpers */
