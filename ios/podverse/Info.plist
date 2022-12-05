@@ -2,36 +2,36 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>UIApplicationSceneManifest</key>
-  <dict>
-    <key>UIApplicationSupportsMultipleScenes</key>
-    <true/>
-    <key>UISceneConfigurations</key>
-    <dict>
-      <key>CPTemplateApplicationSceneSessionRoleApplication</key>
-      <array>
-        <dict>
-          <key>UISceneClassName</key>
-          <string>CPTemplateApplicationScene</string>
-          <key>UISceneConfigurationName</key>
-          <string>CarPlay</string>
-          <key>UISceneDelegateClassName</key>
-          <string>$(PRODUCT_MODULE_NAME).CarSceneDelegate</string>
-        </dict>
-      </array>
-      <key>UIWindowSceneSessionRoleApplication</key>
-      <array>
-        <dict>
-          <key>UISceneClassName</key>
-          <string>UIWindowScene</string>
-          <key>UISceneConfigurationName</key>
-          <string>Phone</string>
-          <key>UISceneDelegateClassName</key>
-          <string>$(PRODUCT_MODULE_NAME).PhoneSceneDelegate</string>
-        </dict>
-      </array>
-    </dict>
-  </dict>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<true/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>CPTemplateApplicationSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>CPTemplateApplicationScene</string>
+					<key>UISceneConfigurationName</key>
+					<string>CarPlay</string>
+					<key>UISceneDelegateClassName</key>
+					<string>CarSceneDelegate</string>
+				</dict>
+			</array>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
+					<key>UISceneConfigurationName</key>
+					<string>Phone</string>
+					<key>UISceneDelegateClassName</key>
+					<string>PhoneSceneDelegate</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>

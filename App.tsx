@@ -85,14 +85,13 @@ class App extends Component<Props, State> {
 
     
   
-    // registerCarModule(this.onConnect, this.onDisconnect)
-    
+    registerCarModule(this.onConnect, this.onDisconnect)
   }
 
   componentWillUnmount() {
     this.unsubscribeNetListener && this.unsubscribeNetListener()
 
-    // unregisterCarModule(this.onConnect, this.onDisconnect);
+    unregisterCarModule(this.onConnect, this.onDisconnect);
   }
 
   onConnect = () => {
