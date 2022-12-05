@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-carplay/ios/RNCarPlay.m b/node_modules/react-native-carplay/ios/RNCarPlay.m
-index 65a329c..b5f2a52 100644
+index 65a329c..24bcef5 100644
 --- a/node_modules/react-native-carplay/ios/RNCarPlay.m
 +++ b/node_modules/react-native-carplay/ios/RNCarPlay.m
 @@ -1,6 +1,7 @@
@@ -10,7 +10,7 @@ index 65a329c..b5f2a52 100644
  
  @implementation RNCarPlay
  
-@@ -176,6 +177,8 @@ - (UIImage *)imageWithSize:(UIImage *)image convertToSize:(CGSize)size {
+@@ -176,14 +177,18 @@ - (UIImage *)imageWithSize:(UIImage *)image convertToSize:(CGSize)size {
          CPVoiceControlTemplate *voiceTemplate = [[CPVoiceControlTemplate alloc] initWithVoiceControlStates: [self parseVoiceControlStates:config[@"voiceControlStates"]]];
          template = voiceTemplate;
      } else if ([type isEqualToString:@"nowplaying"]) {
@@ -19,7 +19,17 @@ index 65a329c..b5f2a52 100644
          CPNowPlayingTemplate *nowPlayingTemplate = [CPNowPlayingTemplate sharedTemplate];
          [nowPlayingTemplate setAlbumArtistButtonEnabled:[RCTConvert BOOL:config[@"albumArtistButton"]]];
          [nowPlayingTemplate setUpNextTitle:[RCTConvert NSString:config[@"upNextTitle"]]];
-@@ -710,6 +713,14 @@ - (void) applyConfigForMapTemplate:(CPMapTemplate*)mapTemplate templateId:(NSStr
+         [nowPlayingTemplate setUpNextButtonEnabled:[RCTConvert BOOL:config[@"upNextButton"]]];
++        
+         template = nowPlayingTemplate;
+     } else if ([type isEqualToString:@"tabbar"]) {
+         CPTabBarTemplate *tabBarTemplate = [[CPTabBarTemplate alloc] initWithTemplates:[self parseTemplatesFrom:config]];
+         tabBarTemplate.delegate = self;
++
+         template = tabBarTemplate;
+     } else if ([type isEqualToString:@"contact"]) {
+         CPContact *contact = [[CPContact alloc] init];
+@@ -710,6 +715,14 @@ - (void) applyConfigForMapTemplate:(CPMapTemplate*)mapTemplate templateId:(NSStr
      for (NSDictionary *tpl in tpls) {
          CPTemplate *templ = [store findTemplateById:tpl[@"id"]];
          // @todo UITabSystemItem
@@ -34,6 +44,17 @@ index 65a329c..b5f2a52 100644
          [templates addObject:templ];
      }
      return templates;
+@@ -997,6 +1010,10 @@ - (void)sendTemplateEventWithName:(CPTemplate *)template name:(NSString*)name {
+ 
+ - (void)sendTemplateEventWithName:(CPTemplate *)template name:(NSString*)name json:(NSDictionary*)json {
+     NSMutableDictionary *body = [[NSMutableDictionary alloc] initWithDictionary:json];
++    if ([template isKindOfClass:CPNowPlayingTemplate.class]) {
++        [template setUserInfo:@{@"templateId": @"podverse.NowPlayingTemplate"}];
++    }
++    
+     NSDictionary *userInfo = [template userInfo];
+     [body setObject:[userInfo objectForKey:@"templateId"] forKey:@"templateId"];
+     [self sendEventWithName:name body:body];
 diff --git a/node_modules/react-native-carplay/lib/templates/NowPlayingTemplate.js b/node_modules/react-native-carplay/lib/templates/NowPlayingTemplate.js
 index 88bbaaa..a27ae0c 100644
 --- a/node_modules/react-native-carplay/lib/templates/NowPlayingTemplate.js
