@@ -73,7 +73,6 @@
     "react-native": "0.66.5",
     "react-native-background-downloader": "2.3.4",
     "react-native-background-timer": "2.4.0",
-    "react-native-carplay": "^2.1.0",
     "react-native-cheerio": "1.0.0-rc.4",
     "react-native-confetti-cannon": "1.5.2",
     "react-native-config": "1.4.3",
