@@ -1,5 +1,7 @@
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
+import { PV } from '../../resources'
+import PVEventEmitter from '../../services/eventEmitter'
 import {
   addQueueItemLast as addQueueItemLastService,
   addQueueItemNext as addQueueItemNextService,
@@ -24,6 +26,8 @@ export const addQueueItemLast = async (queueItem: NowPlayingItem) => {
     }
   })
 
+  PVEventEmitter.emit(PV.Events.QUEUE_HAS_UPDATED)
+
   return results
 }
 
@@ -40,6 +44,8 @@ export const addQueueItemNext = async (queueItem: NowPlayingItem) => {
       }
     }
   })
+
+  PVEventEmitter.emit(PV.Events.QUEUE_HAS_UPDATED)
 
   return results
 }
@@ -75,6 +81,8 @@ export const removeQueueItem = async (queueItem: NowPlayingItem) => {
       }
     }
   })
+
+  PVEventEmitter.emit(PV.Events.QUEUE_HAS_UPDATED)
 
   return results
 }

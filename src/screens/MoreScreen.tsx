@@ -189,7 +189,8 @@ export class MoreScreen extends React.Component<Props, State> {
     } else if (item.key === _exportOpml) {
       exportSubscribedPodcastsAsOPML()
     } else if (item.key === _tutorialsKey) {
-      const urls = await PV.URLs.web()
+      const useRedirectDomain = true
+      const urls = await PV.URLs.web(useRedirectDomain)
       const { tutorials } = urls
       this._handleFollowLink(tutorials)
     } else {

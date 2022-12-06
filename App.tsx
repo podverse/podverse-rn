@@ -23,6 +23,13 @@ import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 import { hasValidDownloadingConnection } from './src/lib/network'
 import { migrateCredentialsIfNeeded } from './src/lib/secutity'
+// import {
+//   handleCarPlayPodcastsUpdate,
+//   handleCarPlayQueueUpdate,
+//   registerCarModule,
+//   showRootView,
+//   unregisterCarModule
+// } from './src/lib/carplay/PVCarPlay'
 
 LogBox.ignoreLogs(['EventEmitter.removeListener', "Require cycle"])
 
@@ -74,11 +81,32 @@ class App extends Component<Props, State> {
       console.log('migrateCredentialsIfNeeded error:', error)
     }
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
+
+    
+  
+    // registerCarModule(this.onConnect, this.onDisconnect)
   }
 
   componentWillUnmount() {
     this.unsubscribeNetListener && this.unsubscribeNetListener()
+
+    // unregisterCarModule(this.onConnect, this.onDisconnect);
   }
+
+  // onConnect = () => {
+  //   // Do things now that carplay is connected
+  //   const { subscribedPodcasts = [], session } = getGlobal()
+  //   const { historyItems = [], queueItems = [] } = session.userInfo
+  //   showRootView(subscribedPodcasts, historyItems, queueItems)
+  //   PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdate)
+  //   PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
+  // }
+
+  // onDisconnect = () => {
+  //   // Do things now that carplay is disconnected
+  //   PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdate)
+  //   PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
+  // }
 
   handleNetworkChange = () => {
     (async () => {

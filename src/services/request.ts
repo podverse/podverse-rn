@@ -17,9 +17,13 @@ export type PVRequest = {
   method?: string
   opts?: any
   timeout?: any
+  shouldShowAuthAlert?: boolean
 }
 
-export const request = async (req: PVRequest, customUrl?: string) => {
+export const request = async (
+  req: PVRequest,
+  customUrl?: string
+) => {
   const {
     basicAuth = {},
     endpoint = '',
@@ -28,7 +32,8 @@ export const request = async (req: PVRequest, customUrl?: string) => {
     body,
     method = 'GET',
     opts = {},
-    timeout = 30000
+    timeout = 30000,
+    shouldShowAuthAlert = false
   } = req
 
   const queryString = Object.keys(query)
@@ -72,7 +77,11 @@ export const request = async (req: PVRequest, customUrl?: string) => {
     ) {
       PVEventEmitter.emit(PV.Events.SERVER_MAINTENANCE_MODE)
       return
-    } else if (error.response && error.response.code === PV.ResponseErrorCodes.PREMIUM_MEMBERSHIP_REQUIRED) {
+    } else if (
+      shouldShowAuthAlert
+      && error.response
+      && error.response?.data?.code === PV.ResponseErrorCodes.PREMIUM_MEMBERSHIP_REQUIRED
+    ) {
       Alert.alert(
         PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.title,
         PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.message,

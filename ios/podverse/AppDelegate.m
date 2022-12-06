@@ -19,7 +19,8 @@
 
 #import "Orientation.h"
 #import <Firebase.h>
-
+//#import "CarScene.h"
+#import "PhoneScene.h"
 
 @implementation AppDelegate
 
@@ -29,22 +30,10 @@
   [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];  // Initialize AppCenter analytics
   [AppCenterReactNativeCrashes registerWithAutomaticProcessing];  // Initialize AppCenter crashes
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
-  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+  self.rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"podverse"
                                             initialProperties:nil];
-
-  UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
-  UIViewController *rootViewController = [storyboard instantiateInitialViewController];
-  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  
-  UIView *loadingView = rootViewController.view;
-  rootView.loadingView = loadingView;
-  rootView.backgroundColor = [[UIColor alloc] initWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:1];
-  
-  rootViewController.view = rootView;
-  
-  self.window.rootViewController = rootViewController;
-  [self.window makeKeyAndVisible];
+  self.rootView.backgroundColor = [[UIColor alloc] initWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:1];
   
   [FIRApp configure];
   return YES;
@@ -78,6 +67,22 @@
 
 - (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
   return [Orientation getOrientation];
+}
+
+- (UISceneConfiguration *)application:(UIApplication *)application configurationForConnectingSceneSession:(UISceneSession *)connectingSceneSession options:(UISceneConnectionOptions *)options {
+//   if([[connectingSceneSession role] isEqualToString:@"CPTemplateApplicationSceneSessionRoleApplication"]) {
+//     UISceneConfiguration *scene = [[UISceneConfiguration alloc] initWithName:@"CarPlay" sessionRole:connectingSceneSession.role];
+//     [scene setDelegateClass:CarSceneDelegate.class]; //TODO
+//     return scene;
+//   } else {
+    UISceneConfiguration *scene = [[UISceneConfiguration alloc] initWithName:@"Phone" sessionRole:connectingSceneSession.role];
+    [scene setDelegateClass:PhoneSceneDelegate.class]; //TODO
+    return scene;
+//   }
+}
+
+- (void)application:(UIApplication *)application didDiscardSceneSessions:(NSSet<UISceneSession *> *)sceneSessions {
+  
 }
 
 @end

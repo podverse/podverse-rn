@@ -92,7 +92,7 @@ export class SettingsScreenAccount extends React.Component<Props, State> {
     const { userInfo } = session
     const { deleteAccountDialogConfirmed, deleteAccountDialogText, showDeleteAccountDialog } = this.state
 
-    const privacyText = !!session?.userInfo?.isPublic
+    const privacyText = !session?.userInfo?.isPublic
       ? translate('Your profile page is hidden')
       : translate('Your profile page is public')
 

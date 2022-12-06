@@ -579,6 +579,6 @@ export const v4vDeleteProviderFromStorage = async (providerKey: 'alby') => {
 }
 
 export const v4vGetActiveValueTag = (valueTags: ValueTag[], type?: 'lightning', method?: 'keysend') => {
-  if (!type || !method) return null
+  if (!type || !method || !Array.isArray(valueTags)) return null
   return valueTags.find((valueTag) => valueTag.type === type && valueTag.method === method)
 }

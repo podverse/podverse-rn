@@ -285,7 +285,8 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
   const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: `/podcast/toggle-subscribe/${id}`,
-    headers: { Authorization: bearerToken }
+    headers: { Authorization: bearerToken },
+    shouldShowAuthAlert: true
   })
 
   return response && response.data

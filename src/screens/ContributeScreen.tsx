@@ -35,8 +35,11 @@ export class ContributeScreen extends React.Component<Props> {
     this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
   }
 
-  showYourSupport = () => {
-    this.handleFollowLink('https://podverse.fm/contribute')
+  showYourSupport = async () => {
+    const useRedirectDomain = true
+    const urls = await PV.URLs.web(useRedirectDomain)
+    const { contribute } = urls
+    this.handleFollowLink(contribute)
   }
 
   joinOurDiscordServer = () => {
