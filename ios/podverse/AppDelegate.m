@@ -29,12 +29,7 @@
   [AppCenterReactNative register];  // Initialize AppCenter
   [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];  // Initialize AppCenter analytics
   [AppCenterReactNativeCrashes registerWithAutomaticProcessing];  // Initialize AppCenter crashes
-  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
-  self.rootView = [[RCTRootView alloc] initWithBridge:bridge
-                                                   moduleName:@"podverse"
-                                            initialProperties:nil];
-  self.rootView.backgroundColor = [[UIColor alloc] initWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:1];
-  
+ 
   [FIRApp configure];
   return YES;
 }

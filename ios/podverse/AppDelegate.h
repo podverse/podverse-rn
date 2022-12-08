@@ -14,5 +14,6 @@
 
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) RCTRootView* rootView;
+@property (nonatomic, strong) RCTBridge *bridge;
 
 @end
