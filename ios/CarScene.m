@@ -15,7 +15,7 @@
 - (void)templateApplicationScene:(CPTemplateApplicationScene *)templateApplicationScene didConnectInterfaceController:(CPInterfaceController *)interfaceController {
   AppDelegate *applicationDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
   if(applicationDelegate.bridge == nil) {
-    UIViewController *rootViewController = [UIViewController new];
+//    UIViewController *rootViewController = [UIViewController new];
     
     applicationDelegate.bridge = [[RCTBridge alloc] initWithDelegate:applicationDelegate launchOptions:@{}];
     applicationDelegate.rootView = [[RCTRootView alloc] initWithBridge:applicationDelegate.bridge
