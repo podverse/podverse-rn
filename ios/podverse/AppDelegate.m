@@ -19,7 +19,7 @@
 
 #import "Orientation.h"
 #import <Firebase.h>
-//#import "CarScene.h"
+#import "CarScene.h"
 #import "PhoneScene.h"
 
 @implementation AppDelegate
@@ -65,15 +65,15 @@
 }
 
 - (UISceneConfiguration *)application:(UIApplication *)application configurationForConnectingSceneSession:(UISceneSession *)connectingSceneSession options:(UISceneConnectionOptions *)options {
-//   if([[connectingSceneSession role] isEqualToString:@"CPTemplateApplicationSceneSessionRoleApplication"]) {
-//     UISceneConfiguration *scene = [[UISceneConfiguration alloc] initWithName:@"CarPlay" sessionRole:connectingSceneSession.role];
-//     [scene setDelegateClass:CarSceneDelegate.class]; //TODO
-//     return scene;
-//   } else {
+  if([[connectingSceneSession role] isEqualToString:@"CPTemplateApplicationSceneSessionRoleApplication"]) {
+    UISceneConfiguration *scene = [[UISceneConfiguration alloc] initWithName:@"CarPlay" sessionRole:connectingSceneSession.role];
+    [scene setDelegateClass:CarSceneDelegate.class]; //TODO
+    return scene;
+  } else {
     UISceneConfiguration *scene = [[UISceneConfiguration alloc] initWithName:@"Phone" sessionRole:connectingSceneSession.role];
     [scene setDelegateClass:PhoneSceneDelegate.class]; //TODO
     return scene;
-//   }
+  }
 }
 
 - (void)application:(UIApplication *)application didDiscardSceneSessions:(NSSet<UISceneSession *> *)sceneSessions {

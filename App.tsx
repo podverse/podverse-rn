@@ -8,7 +8,7 @@ import { getFontScale } from 'react-native-device-info'
 import Orientation from 'react-native-orientation-locker'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
-import { setGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { isOnMinimumAllowedVersion } from './src/services/versioning'
 import { UpdateRequiredOverlay, OverlayAlert, ImageFullView } from './src/components'
 import { pvIsTablet } from './src/lib/deviceDetection'
@@ -18,18 +18,19 @@ import { determineFontScaleMode } from './src/resources/Fonts'
 import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
 import { downloadCategoriesList } from './src/services/category'
+import PVEventEmitter from './src/services/eventEmitter'
 import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 import { hasValidDownloadingConnection } from './src/lib/network'
 import { migrateCredentialsIfNeeded } from './src/lib/secutity'
-// import {
-//   handleCarPlayPodcastsUpdate,
-//   handleCarPlayQueueUpdate,
-//   registerCarModule,
-//   showRootView,
-//   unregisterCarModule
-// } from './src/lib/carplay/PVCarPlay'
+import {
+  handleCarPlayPodcastsUpdate,
+  handleCarPlayQueueUpdate,
+  registerCarModule,
+  showRootView,
+  unregisterCarModule
+} from './src/lib/carplay/PVCarPlay'
 
 LogBox.ignoreLogs(['EventEmitter.removeListener', "Require cycle"])
 
@@ -63,6 +64,9 @@ class App extends Component<Props, State> {
   }
 
   async componentDidMount() {
+
+    console.log('App component did mount!!!')
+
     TrackPlayer.registerPlaybackService(() => require('./src/services/playerAudioEvents'))
     StatusBar.setBarStyle('light-content')
     Platform.OS === 'android' && StatusBar.setBackgroundColor(PV.Colors.ink, true)
@@ -84,29 +88,29 @@ class App extends Component<Props, State> {
 
     
   
-    // registerCarModule(this.onConnect, this.onDisconnect)
+    registerCarModule(this.onConnect, this.onDisconnect)
   }
 
   componentWillUnmount() {
     this.unsubscribeNetListener && this.unsubscribeNetListener()
 
-    // unregisterCarModule(this.onConnect, this.onDisconnect);
+    unregisterCarModule(this.onConnect, this.onDisconnect);
   }
 
-  // onConnect = () => {
-  //   // Do things now that carplay is connected
-  //   const { subscribedPodcasts = [], session } = getGlobal()
-  //   const { historyItems = [], queueItems = [] } = session.userInfo
-  //   showRootView(subscribedPodcasts, historyItems, queueItems)
-  //   PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdate)
-  //   PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
-  // }
+  onConnect = () => {
+    // Do things now that carplay is connected
+    const { subscribedPodcasts = [], session } = getGlobal()
+    const { historyItems = [], queueItems = [] } = session.userInfo
+    showRootView(subscribedPodcasts, historyItems, queueItems)
+    PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdate)
+    PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
+  }
 
-  // onDisconnect = () => {
-  //   // Do things now that carplay is disconnected
-  //   PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdate)
-  //   PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
-  // }
+  onDisconnect = () => {
+    // Do things now that carplay is disconnected
+    PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdate)
+    PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
+  }
 
   handleNetworkChange = () => {
     (async () => {

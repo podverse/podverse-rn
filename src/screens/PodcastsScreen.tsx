@@ -179,6 +179,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    console.log('PodcastsScreen did mount!!!')
     const { navigation } = this.props
 
     this.props.navigation.setParams({
