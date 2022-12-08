@@ -20,9 +20,9 @@
     applicationDelegate.rootView = [[RCTRootView alloc] initWithBridge:applicationDelegate.bridge
                                                             moduleName:@"podverse"
                                                      initialProperties:nil];
-    applicationDelegate.rootView.backgroundColor = [[UIColor alloc] initWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:1];
-    
   }
+  
+  applicationDelegate.rootView.backgroundColor = [[UIColor alloc] initWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:1];
   
   rootViewController.view = applicationDelegate.rootView;
   applicationDelegate.window = [[UIWindow alloc] initWithWindowScene:(UIWindowScene *)scene];
