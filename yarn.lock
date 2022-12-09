@@ -8457,6 +8457,13 @@ react-native-background-timer@2.4.0:
   resolved "https://registry.yarnpkg.com/react-native-background-timer/-/react-native-background-timer-2.4.0.tgz#b659fdc8ce8ddbed04fbb296e2ec9f4ad8e1659f"
   integrity sha512-00DphusbzXUuJDP+SSRe7FJczFWzrCErr+2TdRxYfbQjpDaRk3rXw8nhlQXI5U6KthquEQOrCRMq2F2hi/HKLg==
 
+react-native-carplay@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-carplay/-/react-native-carplay-2.1.0.tgz#13be2647ec226413c8b8c3a2ebe7971f0725cdd0"
+  integrity sha512-vB8pCyw3vY+GDHDBwOJ/wwiZkHLb845Vjhs7+Y69iszhWGOU7ZSGiyJMjG6FpooUXc4i94CCOAJTNuT7nEnKyQ==
+  dependencies:
+    traverse "^0.6.6"
+
 react-native-cheerio@1.0.0-rc.4:
   version "1.0.0-rc.4"
   resolved "https://registry.yarnpkg.com/react-native-cheerio/-/react-native-cheerio-1.0.0-rc.4.tgz#bab0c1fe5888bbd69481d9b928d58b525f18f3b1"
