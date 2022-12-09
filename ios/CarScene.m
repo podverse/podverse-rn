@@ -11,20 +11,17 @@
 #import <RNCarPlay.h>
 
 @implementation CarSceneDelegate
-
-- (void)templateApplicationScene:(CPTemplateApplicationScene *)templateApplicationScene didConnectInterfaceController:(CPInterfaceController *)interfaceController {
-  AppDelegate *applicationDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-  if(applicationDelegate.bridge == nil) {
-//    UIViewController *rootViewController = [UIViewController new];
-    
-    applicationDelegate.bridge = [[RCTBridge alloc] initWithDelegate:applicationDelegate launchOptions:@{}];
-    applicationDelegate.rootView = [[RCTRootView alloc] initWithBridge:applicationDelegate.bridge
-                                                            moduleName:@"podverse"
-                                                     initialProperties:nil];
-  }
+ - (void)templateApplicationScene:(CPTemplateApplicationScene *)templateApplicationScene didConnectInterfaceController:(CPInterfaceController *)interfaceController {
+   AppDelegate *applicationDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+   if(applicationDelegate.bridge == nil) {
+     applicationDelegate.bridge = [[RCTBridge alloc] initWithDelegate:applicationDelegate launchOptions:@{}];
+     applicationDelegate.rootView = [[RCTRootView alloc] initWithBridge:applicationDelegate.bridge
+                                                             moduleName:@"podverse"
+                                                      initialProperties:nil];
+   }
   
-  [RNCarPlay connectWithInterfaceController:interfaceController window:templateApplicationScene.carWindow];
-}
+   [RNCarPlay connectWithInterfaceController:interfaceController window:templateApplicationScene.carWindow];
+ }
 
 - (void)templateApplicationScene:(CPTemplateApplicationScene *)templateApplicationScene didDisconnectInterfaceController:(CPInterfaceController *)interfaceController {
   [RNCarPlay disconnect];

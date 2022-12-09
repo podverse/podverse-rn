@@ -3,6 +3,7 @@ import messaging from '@react-native-firebase/messaging'
 import debounce from 'lodash/debounce'
 import { convertToNowPlayingItem, createEmailLinkUrl } from 'podverse-shared'
 import { Alert, AppState, Dimensions, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
+import { CarPlay } from 'react-native-carplay'
 import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
 import { endConnection as iapEndConnection, initConnection as iapInitConnection } from 'react-native-iap'
@@ -179,12 +180,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    console.log('PodcastsScreen did mount!!!')
     const { navigation } = this.props
 
     this.props.navigation.setParams({
       _screenTitle: getScreenTitle()
     })
+
+    if (CarPlay.connected) {
+      CarPlay.bridge.checkForConnection()
+    }
 
     iapInitConnection()
 

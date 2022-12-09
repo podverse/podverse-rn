@@ -64,9 +64,6 @@ class App extends Component<Props, State> {
   }
 
   async componentDidMount() {
-
-    console.log('App component did mount!!!')
-
     TrackPlayer.registerPlaybackService(() => require('./src/services/playerAudioEvents'))
     StatusBar.setBarStyle('light-content')
     Platform.OS === 'android' && StatusBar.setBackgroundColor(PV.Colors.ink, true)
