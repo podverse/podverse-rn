@@ -225,7 +225,7 @@ export const PVFlatList = (props: Props) => {
           maxToRenderPerBatch={10} // default 10
           removeClippedSubviews // default false
           updateCellsBatchingPeriod={100} // default 50
-          windowSize={6} // default 21
+          windowSize={7} // default 21
         />
       )}
       {shouldShowNoResultsFoundMessage && (
