@@ -20,6 +20,8 @@ export const handleAutoDownloadEpisodesAddByRSSPodcasts = async () => {
 }
 
 export const handleAutoDownloadEpisodes = async (dateISOString: string) => {
+  // SLOW JS -5
+  // now it's telling me 0 :/
   await handleAutoDownloadEpisodesAddByRSSPodcasts()
 
   const autoDownloadSettingsString = await AsyncStorage.getItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS)
