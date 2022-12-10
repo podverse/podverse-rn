@@ -4,6 +4,7 @@ import { ListItem } from 'react-native-carplay/lib/interfaces/ListItem';
 import { TemplateConfig } from 'react-native-carplay/lib/templates/Template';
 import { getGlobal } from 'reactn'
 import { getHistoryItems } from '../../state/actions/userHistoryItem';
+import { errorLogger } from '../debug';
 import { translate } from '../i18n';
 import { downloadImageFile, getSavedImageUri } from '../storage';
 import { readableDate } from '../utility';
@@ -293,7 +294,7 @@ const getDownloadedImageUrl = async (origImageUrl?: string | null) => {
       // in the background so it can load from downloaded storage next time.
       downloadImageFile(finalImageUrl)
 
-      console.log('carPlayListItems error:', error)
+      errorLogger('carPlayListItems error:', error)
     }
   }
 

@@ -1,4 +1,5 @@
 import { getVersion } from 'react-native-device-info'
+import { errorLogger } from '../lib/debug'
 import { hasValidNetworkConnection } from '../lib/network'
 import { request } from './request'
 const semver = require('semver')
@@ -27,8 +28,8 @@ export const isOnMinimumAllowedVersion = async () => {
     }
 
     return true
-  } catch (err) {
-    console.log('Error getting Version: ', err)
+  } catch (error) {
+    errorLogger('Error getting Version: ', error)
     return true
   }
 }

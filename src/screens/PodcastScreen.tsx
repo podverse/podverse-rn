@@ -30,6 +30,7 @@ import {
   Text,
   View
 } from '../components'
+import { errorLogger } from '../lib/debug'
 import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
@@ -348,7 +349,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
               }
             )
           } catch (error) {
-            console.log('_initializePageData', error)
+            errorLogger('PodcastScreen _initializePageData', error)
             this.setState(
               {
                 ...newState,
@@ -841,7 +842,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
               showSettings: false
             })
           } catch (error) {
-            console.log('_handleSavePodcastByRSSURL', error)
+            errorLogger('PodcastScreen _handleSavePodcastCredentials', error)
             this.setState({
               isLoadingMore: false,
               showSettings: false
@@ -1265,7 +1266,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
       newState.selectedFilterLabel = await getSelectedFilterLabel(viewType)
     } catch (error) {
-      console.log('PodcastScreen queryData error:', error)
+      errorLogger('PodcastScreen queryData error:', error)
     }
     this.shouldLoad = true
 

@@ -7,6 +7,7 @@ import { parseString } from 'react-native-xml2js'
 import DocumentPicker from 'react-native-document-picker'
 import RNFS from 'react-native-fs'
 import { Divider, TableSectionSelectors, Text, View, ActivityIndicator, TableCell } from '../components'
+import { errorLogger } from '../lib/debug'
 import { translate } from '../lib/i18n'
 import { getMembershipStatus } from '../lib/membership'
 import { exportSubscribedPodcastsAsOPML } from '../lib/opmlExport'
@@ -156,7 +157,7 @@ export class MoreScreen extends React.Component<Props, State> {
               this.props.navigation.navigate(PV.RouteNames.PodcastsScreen)
             })
           } catch (error) {
-            console.log('Error parsing podcast: ', error)
+            errorLogger('Error parsing podcast: ', error)
             this.setState({ isLoading: false })
           }
         })
@@ -165,7 +166,7 @@ export class MoreScreen extends React.Component<Props, State> {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
       } else {
-        console.log('Error parsing podcast: ', err)
+        errorLogger('Error parsing podcast: ', err)
         Alert.alert('Error', 'There was an issue with the opml file import.', err.message)
       }
     }

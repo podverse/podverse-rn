@@ -7,6 +7,7 @@ import {
   purchaseUpdatedListener
 } from 'react-native-iap'
 import React from 'reactn'
+import { errorLogger } from '../lib/debug'
 import { PV } from '../resources'
 import { androidHandleStatusCheck } from '../state/actions/purchase.android'
 import { iosHandlePurchaseStatusCheck } from '../state/actions/purchase.ios'
@@ -47,7 +48,7 @@ export class PurchaseListener extends React.Component<Props> {
     this.purchaseUpdateSubscription = purchaseUpdatedListener(processPurchase)
 
     this.purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
-      console.log('purchaseErrorListener', error)
+      errorLogger('purchaseErrorListener', error)
     })
   }
 

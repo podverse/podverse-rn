@@ -17,6 +17,7 @@ import {
   TableSectionSelectors,
   View
 } from '../components'
+import { errorLogger } from '../lib/debug'
 import { downloadEpisode } from '../lib/downloader'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
@@ -728,7 +729,7 @@ export class ProfileScreen extends React.Component<Props, State> {
 
       newState.selectedFilterLabel = await getSelectedFilterLabel(viewType)
     } catch (error) {
-      console.log('ProfileScreen queryData error:', error)
+      errorLogger('ProfileScreen queryData error:', error)
     }
 
     this.shouldLoad = true

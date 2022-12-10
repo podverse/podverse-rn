@@ -13,6 +13,7 @@ import {
   TableSectionSelectors,
   View
 } from '../components'
+import { errorLogger } from '../lib/debug'
 import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
@@ -620,7 +621,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         newState.flatListDataTotalCount = results[1]
       }
     } catch (error) {
-      console.log('ClipsScreen queryData error:', error)
+      errorLogger('ClipsScreen queryData error:', error)
     }
     newState.flatListData = this.cleanFlatListData(newState.flatListData)
 

@@ -2,6 +2,7 @@
 import { Alert, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, Button, ComparisonTable, Text, View } from '../components'
+import { errorLogger } from '../lib/debug'
 import { translate } from '../lib/i18n'
 import {
   checkIfExpiredMembership,
@@ -61,7 +62,7 @@ export class MembershipScreen extends React.Component<Props, State> {
         try {
           await buy1YearPremium()
         } catch (error) {
-          console.log(error)
+          errorLogger('MembershipScreen handleRenewPress', error)
           // If attempting to renew, but a recent previous purchase did not complete successfully,
           // then do not buy a new product, and instead navigate to the PurchasingScreen
           // and attempt to check and update the status of the cached purchase.

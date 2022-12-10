@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { getAuthorityFeedUrlFromArray, Podcast } from 'podverse-shared'
 import { getGlobal } from 'reactn'
+import { errorLogger } from '../lib/debug'
 import { setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedPodcast, removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { hasValidNetworkConnection } from '../lib/network'
@@ -113,7 +114,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], sort
       subscribedPodcasts = await combineWithAddByRSSPodcasts(sort)
       return [subscribedPodcasts, subscribedPodcasts.length]
     } catch (error) {
-      console.log(error)
+      errorLogger(error)
       const combinedPodcasts = await combineWithAddByRSSPodcasts(sort)
       return [combinedPodcasts, combinedPodcasts.length]
     }

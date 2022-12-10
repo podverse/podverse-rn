@@ -28,6 +28,7 @@ import {
   TimeInput,
   View
 } from '../components'
+import { errorLogger } from '../lib/debug'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { requestAppStoreReview } from '../lib/reviews'
@@ -347,7 +348,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                         url
                       })
                     } catch (error) {
-                      console.log(error)
+                      errorLogger('MakeClipScreen saveMediaRef Share onPress', error)
                     }
                     navigation.goBack(null)
                   }
@@ -360,7 +361,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
           if (error.response) {
             Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, error.response.data.message, PV.Alerts.BUTTONS.OK)
           }
-          console.log(error)
+          errorLogger('MakeClipScreen saveMediaRef', error)
         }
         this.setState({ isSaving: false })
       })()

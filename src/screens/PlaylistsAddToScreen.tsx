@@ -12,6 +12,7 @@ import {
   PlaylistTableCell,
   View
 } from '../components'
+import { errorLogger } from '../lib/debug'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
@@ -154,7 +155,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
               }
             )
           } catch (error) {
-            console.log(error)
+            errorLogger('PlaylistsAddToScreen _renderPlaylistItem error', error)
             this.setState({ isSavingId: '' })
           }
         }}

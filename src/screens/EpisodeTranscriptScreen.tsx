@@ -2,6 +2,7 @@ import { TranscriptRow } from 'podverse-shared'
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, MediaPlayerCarouselTranscripts, View } from '../components'
+import { errorLogger } from '../lib/debug'
 import { translate } from '../lib/i18n'
 import { getParsedTranscript } from '../lib/transcriptHelpers'
 import { trackPageView } from '../services/tracking'
@@ -41,7 +42,7 @@ export class EpisodeTranscriptScreen extends React.Component<Props, State> {
       try {
         parsedTranscript = await getParsedTranscript(episode.transcript[0].url, episode.transcript[0].type)
       } catch (error) {
-        console.log('TranscriptScreen componentDidMount error:', error)
+        errorLogger('TranscriptScreen componentDidMount error:', error)
       }
     }
     this.setState({ isLoading: false, parsedTranscript })

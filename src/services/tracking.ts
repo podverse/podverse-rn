@@ -2,6 +2,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Platform } from 'react-native'
 import { getTrackingStatus, requestTrackingPermission } from 'react-native-tracking-transparency'
+import { errorLogger } from '../lib/debug'
 import { PV } from '../resources'
 import { matomoTrackPageView } from './matomo'
 
@@ -63,7 +64,7 @@ export const trackPageView = async (path: string, title: string, titleToEncode?:
       const finalTitle = `${title}${titleToEncode ? encodeURIComponent(titleToEncode) : ''}`
       await matomoTrackPageView(path, finalTitle)
     } catch (error) {
-      console.log('trackPageView error', error)
+      errorLogger('trackPageView error', error)
     }
   }
 }
@@ -106,6 +107,6 @@ export const trackPlayerScreenPageView = (item: any) => {
       )
     }
   } catch (error) {
-    console.log('trackPlayerScreenPageView error', error)
+    errorLogger('trackPlayerScreenPageView error', error)
   }
 }

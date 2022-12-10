@@ -3,6 +3,7 @@ import { Alert, Linking } from 'react-native'
 import Config from 'react-native-config'
 import messaging from '@react-native-firebase/messaging'
 import { darkTheme } from '../styles'
+import { errorLogger } from '../lib/debug'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { saveOrUpdateFCMDevice } from '../services/fcmDevices'
@@ -55,7 +56,7 @@ export class NavNotificationsIcon extends React.Component<Props, State> {
           this.requestPermissionsInSettings()
         }
       } catch (err) {
-        console.log('onEnableNotifications error: ', err)
+        errorLogger('onEnableNotifications error: ', err)
       }
       this.setState({ isLoading: false })
     }
@@ -70,7 +71,7 @@ export class NavNotificationsIcon extends React.Component<Props, State> {
       await getAuthUserInfo()
       onNotificationSelectionChanged({ isEnabled: false })
     } catch (err) {
-      console.log('onDisableNotifications error: ', err)
+      errorLogger('onDisableNotifications error: ', err)
     }
     this.setState({ isLoading: false })
   }
