@@ -1,7 +1,7 @@
 import { KeyboardAvoidingView, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, NavDismissIcon, PressableWithOpacity, Text, TextInput, View } from '../components'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { PV } from '../resources'

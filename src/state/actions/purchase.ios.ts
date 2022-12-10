@@ -1,6 +1,6 @@
 import { Purchase } from 'react-native-iap'
 import { setGlobal } from 'reactn'
-import { errorLogger } from '../../lib/debug'
+import { errorLogger } from '../../lib/logger'
 import { iosHandlePurchaseStatusCheck as iosHandlePurchaseStatusCheckService } from '../../services/purchase.ios'
 import { getAuthUserInfo } from './auth'
 import { handleStatusSuccessful, purchaseLoading, showPurchaseSomethingWentWrongError } from './purchaseShared'

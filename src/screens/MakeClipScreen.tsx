@@ -28,7 +28,7 @@ import {
   TimeInput,
   View
 } from '../components'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { requestAppStoreReview } from '../lib/reviews'

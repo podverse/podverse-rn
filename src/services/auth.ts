@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Alert, Linking } from 'react-native'
 import * as RNKeychain from 'react-native-keychain'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'

@@ -1,6 +1,6 @@
 import { finishTransaction, Purchase } from 'react-native-iap'
 import { setGlobal } from 'reactn'
-import { errorLogger } from '../../lib/debug'
+import { errorLogger } from '../../lib/logger'
 import { androidHandleStatusCheck as androidHandleStatusCheckService } from '../../services/purchase.android'
 import { getAuthUserInfo } from './auth'
 import {

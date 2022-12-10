@@ -3,7 +3,7 @@ import { checkIfVideoFileOrVideoLiveType, NowPlayingItem } from 'podverse-shared
 import TrackPlayer, { Capability, IOSCategoryMode, PitchAlgorithm, State, Track } from 'react-native-track-player'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../lib/downloader'
 import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'

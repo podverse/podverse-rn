@@ -23,7 +23,7 @@ import {
   View
 } from '../components'
 import { SwipeRowBackButton } from '../components/SwipeRowBackMultipleButtons'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { isPortrait } from '../lib/deviceDetection'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'

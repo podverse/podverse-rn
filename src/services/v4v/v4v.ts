@@ -3,7 +3,7 @@ import { Funding, NowPlayingItem, ValueRecipient, ValueRecipientNormalized,
   ValueTag, ValueTransaction } from 'podverse-shared'
 import { Config } from 'react-native-config'
 import * as RNKeychain from 'react-native-keychain'
-import { errorLogger } from '../../lib/debug'
+import { errorLogger } from '../../lib/logger'
 import { translate } from '../../lib/i18n'
 import { createSatoshiStreamStats } from '../../lib/satoshiStream'
 import { credentialsPlaceholderUsername } from '../../lib/secutity'

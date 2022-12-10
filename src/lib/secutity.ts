@@ -2,7 +2,7 @@ import { Platform } from 'react-native'
 import * as RNKeychain from 'react-native-keychain'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { PV } from '../resources'
-import { errorLogger } from './debug'
+import { errorLogger } from './logger'
 
 export const credentialsPlaceholderUsername = 'username'
 

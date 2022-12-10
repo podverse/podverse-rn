@@ -13,7 +13,7 @@ import {
   TableSectionSelectors,
   View
 } from '../components'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'

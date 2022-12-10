@@ -30,7 +30,7 @@ import {
   Text,
   View
 } from '../components'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'

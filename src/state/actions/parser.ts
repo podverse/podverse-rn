@@ -1,6 +1,6 @@
 import { Alert } from 'react-native'
 import { setGlobal } from 'reactn'
-import { errorLogger } from '../../lib/debug'
+import { errorLogger } from '../../lib/logger'
 import { PV } from '../../resources'
 import { checkIfLoggedIn } from '../../services/auth'
 import PVEventEmitter from '../../services/eventEmitter'

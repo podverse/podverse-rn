@@ -12,7 +12,7 @@ import {
   PlaylistTableCell,
   View
 } from '../components'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'

@@ -7,7 +7,7 @@ import {
   NowPlayingItem
 } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
-import { errorLogger } from '../../lib/debug'
+import { errorLogger } from '../../lib/logger'
 import { getParsedTranscript } from '../../lib/transcriptHelpers'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'

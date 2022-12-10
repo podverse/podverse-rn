@@ -5,7 +5,7 @@ import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { sortPodcastArrayAlphabetically } from '../services/podcast'
 import { clearNowPlayingItem, getNowPlayingItem } from '../services/userNowPlayingItem'
-import { errorLogger } from './debug'
+import { errorLogger } from './logger'
 import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
 import { BackgroundDownloader, deleteDownloadedEpisode } from './downloader'
 

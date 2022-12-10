@@ -7,7 +7,7 @@ import {
   purchaseUpdatedListener
 } from 'react-native-iap'
 import React from 'reactn'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { androidHandleStatusCheck } from '../state/actions/purchase.android'
 import { iosHandlePurchaseStatusCheck } from '../state/actions/purchase.ios'

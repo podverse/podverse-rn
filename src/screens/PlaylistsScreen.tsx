@@ -10,7 +10,7 @@ import {
   TableSectionSelectors,
   View
 } from '../components'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor } from '../lib/utility'

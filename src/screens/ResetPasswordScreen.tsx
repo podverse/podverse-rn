@@ -9,7 +9,7 @@ import { Alert, Dimensions, Keyboard, Platform, StyleSheet, EmitterSubscription 
 import React from 'reactn'
 import { NavigationStackScreenProps } from 'react-navigation-stack'
 import { Button, NavDismissIcon, PasswordValidationInfo, ScrollView, TextInput } from '../components'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { resetPassword } from '../services/auth'

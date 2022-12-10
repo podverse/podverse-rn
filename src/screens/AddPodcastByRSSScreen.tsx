@@ -14,7 +14,7 @@ import {
   TextLink,
   View
 } from '../components'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { getAuthorityFeedUrlFromArray, Podcast } from 'podverse-shared'
 import { getGlobal } from 'reactn'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedPodcast, removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { hasValidNetworkConnection } from '../lib/network'

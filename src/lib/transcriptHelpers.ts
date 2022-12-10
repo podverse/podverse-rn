@@ -1,6 +1,6 @@
 import { parseTranscriptFile, TranscriptRow, TranscriptType } from 'podverse-shared'
 import { request } from '../services/request'
-import { errorLogger } from './debug'
+import { errorLogger } from './logger'
 
 export const getParsedTranscript = async (transcriptUrl: string, transcriptType: TranscriptType) => {
   let parsedTranscript = [] as TranscriptRow[]

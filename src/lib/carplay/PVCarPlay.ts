@@ -4,7 +4,7 @@ import { ListItem } from 'react-native-carplay/lib/interfaces/ListItem';
 import { TemplateConfig } from 'react-native-carplay/lib/templates/Template';
 import { getGlobal } from 'reactn'
 import { getHistoryItems } from '../../state/actions/userHistoryItem';
-import { errorLogger } from '../debug';
+import { errorLogger } from '../logger';
 import { translate } from '../i18n';
 import { downloadImageFile, getSavedImageUri } from '../storage';
 import { readableDate } from '../utility';

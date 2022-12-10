@@ -1,5 +1,5 @@
 import { getGlobal, setGlobal } from 'reactn'
-import { errorLogger } from '../../lib/debug'
+import { errorLogger } from '../../lib/logger'
 import {
   clearEpisodesCount as clearEpisodesCountService,
   clearEpisodesCountForPodcast as clearEpisodesCountForPodcastService,

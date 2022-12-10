@@ -5,7 +5,7 @@ import {
   convertToNowPlayingItem,
   NowPlayingItem
 } from 'podverse-shared'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'

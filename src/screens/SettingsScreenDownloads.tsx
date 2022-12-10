@@ -15,7 +15,7 @@ import {
   SwitchWithText,
   View
 } from '../components'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import {
   setDownloadedEpisodeLimitGlobalCount,
   setDownloadedEpisodeLimitGlobalDefault,

@@ -1,4 +1,4 @@
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { hasValidNetworkConnection } from '../lib/network'
 import { request } from './request'
 

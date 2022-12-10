@@ -2,7 +2,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { checkIfVideoFileOrVideoLiveType, NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
-import { errorLogger } from '../../lib/debug'
+import { errorLogger } from '../../lib/logger'
 import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../../lib/downloader'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'

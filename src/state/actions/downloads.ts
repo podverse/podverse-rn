@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import type { PodcastMedium } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
-import { errorLogger } from '../../lib/debug'
+import { errorLogger } from '../../lib/logger'
 import {
   getDownloadedEpisodeIds as getDownloadedEpisodeIdsService,
   getDownloadedPodcastEpisodeCounts as getDownloadedPodcastEpisodeCountsService,

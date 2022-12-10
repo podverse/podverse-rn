@@ -13,7 +13,7 @@ import {
   SortableList,
   View
 } from '../components'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'

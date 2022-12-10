@@ -4,7 +4,7 @@ import { Alert } from 'react-native'
 import Config from 'react-native-config'
 import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import {
   navigateToEpisodeScreenWithItem,

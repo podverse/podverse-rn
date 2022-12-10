@@ -1,7 +1,7 @@
 import { PVComment, SocialInteraction, SocialInteractionKeys } from 'podverse-shared'
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { getEpisodeProxyActivityPub, getEpisodeProxyTwitter } from '../services/comment'
 import { PV } from '../resources'

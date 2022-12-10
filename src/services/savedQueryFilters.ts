@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 
 export const getSavedQueryPodcastsScreenSort = async () => {

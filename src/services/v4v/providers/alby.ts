@@ -6,7 +6,7 @@ import { Alert } from 'react-native'
 import { _v4v_env_ } from '../v4v'
 import { pkceGenerateRandomString, pkceGenerateCodeChallenge } from '../../pkce'
 import { PVRequest, request } from "../../request"
-import { errorLogger } from '../../../lib/debug'
+import { errorLogger } from '../../../lib/logger'
 import { credentialsPlaceholderUsername } from '../../../lib/secutity'
 import { PV } from '../../../resources'
 import { v4vDisconnectProvider } from '../../../state/actions/v4v/v4v'

@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { Platform } from 'react-native'
 import { State } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
-import { debugLogger, errorLogger } from '../lib/debug'
+import { debugLogger, errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { downloadedEpisodeMarkForDeletion } from '../state/actions/downloads'
 import {

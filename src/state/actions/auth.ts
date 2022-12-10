@@ -1,7 +1,7 @@
 import { Alert } from 'react-native'
 import {resetInternetCredentials} from "react-native-keychain"
 import { getGlobal, setGlobal } from 'reactn'
-import { errorLogger } from '../../lib/debug'
+import { errorLogger } from '../../lib/logger'
 import { shouldShowMembershipAlert } from '../../lib/membership'
 import { safelyUnwrapNestedVariable } from '../../lib/utility'
 import { PV } from '../../resources'

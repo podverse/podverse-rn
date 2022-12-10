@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { convertToNowPlayingItem, Episode, NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { getEpisodesSincePubDate } from './episode'
 import { addQueueItemLast, addQueueItemNext } from './queue'

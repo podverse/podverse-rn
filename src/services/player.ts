@@ -6,7 +6,7 @@ import {
 } from 'podverse-shared'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import {
   videoCheckIfStateIsBuffering,

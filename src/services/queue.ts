@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from 'podverse-shared'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
 import { playerSyncPlayerWithQueue } from './player'

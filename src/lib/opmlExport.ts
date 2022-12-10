@@ -7,7 +7,7 @@ import { Platform } from 'react-native'
 import Share, { Options } from 'react-native-share'
 import RNFS from 'react-native-fs'
 import { getSubscribedPodcasts } from '../state/actions/podcast'
-import { errorLogger } from './debug'
+import { errorLogger } from './logger'
 
 export const exportSubscribedPodcastsAsOPML = async () => {
   const subscribedPodcasts = await getSubscribedPodcasts()

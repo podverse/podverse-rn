@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'

@@ -10,7 +10,7 @@ import {
   V4VWalletInfo,
   V4VWalletSettings
 } from '../components'
-import { errorLogger } from '../lib/debug'
+import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { _albyKey } from '../resources/V4V'
 import PVEventEmitter from '../services/eventEmitter'
