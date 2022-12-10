@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { convertToNowPlayingItem, Episode, NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
+import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { getEpisodesSincePubDate } from './episode'
 import { addQueueItemLast, addQueueItemNext } from './queue'
@@ -15,7 +16,7 @@ export const getAutoQueueSettings = async () => {
     const itemsString = await AsyncStorage.getItem(PV.Keys.AUTO_QUEUE_SETTINGS)
     return itemsString ? JSON.parse(itemsString) : {}
   } catch (error) {
-    console.log('getAutoQueueSettings error', error)
+    errorLogger('getAutoQueueSettings error', error)
     return {}
   }
 }
@@ -110,7 +111,7 @@ export const getAutoQueueDownloadsOn = async () => {
     const booleanString = await AsyncStorage.getItem(PV.Keys.AUTO_QUEUE_DOWNLOADS_ON)
     return booleanString === 'true'
   } catch (error) {
-    console.log('getAutoQueueDownloadsOn error', error)
+    errorLogger('getAutoQueueDownloadsOn error', error)
     return false
   }
 }
@@ -123,6 +124,6 @@ export const setAutoQueueDownloadsOn = async (autoQueueDownloadsOn: boolean) => 
       await AsyncStorage.removeItem(PV.Keys.AUTO_QUEUE_DOWNLOADS_ON)
     }
   } catch (error) {
-    console.log('setAutoQueueDownloadsOn error', error)
+    errorLogger('setAutoQueueDownloadsOn error', error)
   }
 }

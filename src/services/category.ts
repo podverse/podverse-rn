@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { request } from './request'
 
@@ -25,7 +26,7 @@ export const downloadCategoriesList = async () => {
     }
     await AsyncStorage.setItem('CATEGORIES_LIST', JSON.stringify(categories[0]))
   } catch (err) {
-    console.log('Category download error: ', err)
+    errorLogger('Category download error: ', err)
   }
 }
 
@@ -56,8 +57,8 @@ const getCategoryItems = async () => {
       })
     }
     return categoryItems
-  } catch (err) {
-    console.log('Bottom Selection Bar error: ', err)
+  } catch (error) {
+    errorLogger('Bottom Selection Bar error: ', error)
   }
 }
 

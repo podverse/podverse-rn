@@ -1,3 +1,4 @@
+import { errorLogger } from '../lib/logger'
 import { hasValidNetworkConnection } from '../lib/network'
 import { request } from './request'
 
@@ -62,7 +63,7 @@ export const getEpisodesSincePubDate = async (sincePubDate: string, podcastIds: 
       result = response[0]
     }
   } catch (error) {
-    console.log('getEpisodesSincePubDate', error)
+    errorLogger('getEpisodesSincePubDate', error)
   }
 
   return result

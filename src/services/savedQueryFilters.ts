@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 
 export const getSavedQueryPodcastsScreenSort = async () => {
@@ -6,7 +7,7 @@ export const getSavedQueryPodcastsScreenSort = async () => {
   try {
     savedQuery = await AsyncStorage.getItem(PV.Keys.SAVED_QUERY_PODCASTS_SCREEN_SORT)
   } catch (error) {
-    console.log('getSavedQueryPodcastsScreenSort error', error)
+    errorLogger('getSavedQueryPodcastsScreenSort error', error)
   }
   return savedQuery
 }
@@ -19,7 +20,7 @@ export const setSavedQueryPodcastsScreenSort = async (sort: string | null) => {
       await AsyncStorage.removeItem(PV.Keys.SAVED_QUERY_PODCASTS_SCREEN_SORT)
     }
   } catch (error) {
-    console.log('setSavedQueryPodcastsScreenSort error', error)
+    errorLogger('setSavedQueryPodcastsScreenSort error', error)
   }
 }
 
@@ -31,7 +32,7 @@ export const getSavedQueryEpisodesScreen = async () => {
       savedQuery = JSON.parse(savedQuery)
     }
   } catch (error) {
-    console.log('getSavedQueryEpisodesScreen error', error)
+    errorLogger('getSavedQueryEpisodesScreen error', error)
   }
   return savedQuery
 }
@@ -55,6 +56,6 @@ export const setSavedQueryEpisodesScreen = async (
       await AsyncStorage.removeItem(PV.Keys.SAVED_QUERY_EPISODES_SCREEN)
     }
   } catch (error) {
-    console.log('setSavedQueryEpisodesScreen error', error)
+    errorLogger('setSavedQueryEpisodesScreen error', error)
   }
 }

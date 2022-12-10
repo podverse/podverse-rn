@@ -1,6 +1,7 @@
 import { Alert } from 'react-native'
 import {resetInternetCredentials} from "react-native-keychain"
 import { getGlobal, setGlobal } from 'reactn'
+import { errorLogger } from '../../lib/logger'
 import { shouldShowMembershipAlert } from '../../lib/membership'
 import { safelyUnwrapNestedVariable } from '../../lib/utility'
 import { PV } from '../../resources'
@@ -59,7 +60,7 @@ export const getAuthUserInfo = async (callback?: () => void) => {
     return isLoggedIn
   } catch (error) {
     try {
-      console.log('getAuthUserInfo action', error)
+      errorLogger('getAuthUserInfo action', error)
       const isLoggedIn = await getAuthenticatedUserInfoLocally()
       return isLoggedIn
     } catch (error) {
@@ -126,7 +127,7 @@ export const askToSyncWithNowPlayingItem = async (callback?: any) => {
     }
     callback?.()
   } catch (error) {
-    console.log('askToSyncWithNowPlayingItem error', error)
+    errorLogger('askToSyncWithNowPlayingItem error', error)
   }
 }
 
@@ -178,7 +179,7 @@ export const loginUser = async (credentials: Credentials) => {
           }
           askToSyncLocalPodcastsWithServer(localUserInfo, serverUserInfo, callback)
         } catch (error) {
-          console.log('loginUser setGlobal callback error:', error)
+          errorLogger('loginUser setGlobal callback error:', error)
         }
       }
     )
@@ -239,7 +240,7 @@ export const logoutUser = async () => {
     await resetInternetCredentials(PV.Keys.BEARER_TOKEN)    
     await getAuthUserInfo()
   } catch (error) {
-    console.log(error)
+    errorLogger(error)
     Alert.alert('Error', error.message, PV.Alerts.BUTTONS.OK)
   }
 }

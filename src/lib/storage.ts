@@ -4,6 +4,7 @@ import RNFS, { DownloadFileOptions } from 'react-native-fs'
 import Share, { ShareOptions } from 'react-native-share'
 import { PV } from '../resources'
 import { getBearerToken } from '../services/auth'
+import { errorLogger } from './logger'
 import { downloadCustomFileNameId } from './hash'
 import { hasValidNetworkConnection } from './network'
 import { getAppUserAgent } from './utility'
@@ -23,7 +24,7 @@ export const deleteImageCache = async () => {
       await RNFS.unlink(podverseImagesPath)
     }
   } catch (error) {
-    console.log('deleteImageCache', error)
+    errorLogger('deleteImageCache', error)
   }
 }
 
@@ -60,7 +61,7 @@ export const downloadMyUserDataFile = async () => {
     await Share.open(options)
     await RNFS.unlink(filePath)
   } catch (error) {
-    console.log('downloadMyUserDataFile error', error)
+    errorLogger('downloadMyUserDataFile error', error)
   }
 }
 
@@ -89,7 +90,7 @@ export const downloadImageFile = async (uri: string) => {
 
     await RNFS.downloadFile(downloadOptions).promise
   } catch (error) {
-    console.log('downloadImageFile error:', error)
+    errorLogger('downloadImageFile error:', error)
   }
 }
 
@@ -101,7 +102,7 @@ export const getSavedImageUri = async (uri: string) => {
   try {
     fileExists = await RNFS.exists(filePath)
   } catch (error) {
-    console.log('getSavedImageUri error', error)
+    errorLogger('getSavedImageUri error', error)
   }
 
   if (fileExists) {

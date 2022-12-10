@@ -4,6 +4,7 @@ import pLimit from 'p-limit'
 import { checkIfContainsStringMatch, isValidDate } from 'podverse-shared'
 import * as RNKeychain from 'react-native-keychain'
 import { getGlobal } from 'reactn'
+import { debugLogger, errorLogger } from '../lib/logger'
 import { downloadEpisode } from '../lib/downloader'
 import { downloadCustomFileNameId } from '../lib/hash'
 import { credentialsPlaceholderUsername } from '../lib/secutity'
@@ -135,7 +136,7 @@ export const getAddByRSSPodcastsLocally = async () => {
     const itemsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCASTS)
     return itemsString ? JSON.parse(itemsString) : []
   } catch (error) {
-    console.log('getAddByRSSPodcastsLocally', error)
+    errorLogger('getAddByRSSPodcastsLocally', error)
     return []
   }
 }
@@ -145,7 +146,7 @@ export const getAddByRSSPodcastFeedUrlsLocally = async () => {
     const itemsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS)
     return itemsString ? JSON.parse(itemsString) : []
   } catch (error) {
-    console.log('getAddByRSSPodcastFeedUrlsLocally', error)
+    errorLogger('getAddByRSSPodcastFeedUrlsLocally', error)
     return []
   }
 }
@@ -190,7 +191,7 @@ export const parseAllAddByRSSPodcasts = async () => {
           parsedPodcasts.push(parsedPodcast)
         }
       } catch (error) {
-        console.log('parseAllAddByRSSPodcasts url', url, error)
+        errorLogger('parseAllAddByRSSPodcasts url', url, error)
       }
     })
   })
@@ -311,7 +312,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
       })
     } catch (error) {
       if (feedUrl?.startsWith('http://')) {
-        console.log('retry parse using a secure protocol')
+        debugLogger('retry parse using a secure protocol')
         result = await podcastFeedParser.getPodcastFromURL({
           url: feedUrl.replace('http://', 'https://'),
           headers: {
@@ -435,7 +436,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
 
     return podcast
   } catch (error) {
-    console.log('parseAddByRSSPodcast error', feedUrl, error)
+    errorLogger('parseAddByRSSPodcast error', feedUrl, error)
     const previouslySavedPodcast = await getAddByRSSPodcastLocally(feedUrl)
     return previouslySavedPodcast
   }

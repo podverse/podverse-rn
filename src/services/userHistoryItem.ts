@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { unionBy } from 'lodash'
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
+import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
@@ -259,7 +260,7 @@ const getHistoryItemsFromServer = async (page: number) => {
       opts: { credentials: 'include' }
     })
   } catch (error) {
-    console.log('getHistoryItemsFromServer error', error)
+    errorLogger('getHistoryItemsFromServer error', error)
   }
 
   const { userHistoryItems, userHistoryItemsCount } = response.data
@@ -354,7 +355,7 @@ const getHistoryItemsIndexFromServer = async () => {
       }
     })) as any
   } catch (error) {
-    console.log('getHistoryItemsIndexFromServer error', error)
+    errorLogger('getHistoryItemsIndexFromServer error', error)
   }
 
   const { userHistoryItems: serverMetaHistoryItems } = response.data

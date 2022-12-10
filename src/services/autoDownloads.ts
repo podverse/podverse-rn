@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { errorLogger } from '../lib/logger'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
@@ -19,6 +20,8 @@ export const handleAutoDownloadEpisodesAddByRSSPodcasts = async () => {
 }
 
 export const handleAutoDownloadEpisodes = async (dateISOString: string) => {
+  // SLOW JS -5
+  // now it's telling me 0 :/
   await handleAutoDownloadEpisodesAddByRSSPodcasts()
 
   const autoDownloadSettingsString = await AsyncStorage.getItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS)
@@ -53,7 +56,7 @@ export const getAutoDownloadSettings = async () => {
     const itemsString = await AsyncStorage.getItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS)
     return itemsString ? JSON.parse(itemsString) : {}
   } catch (error) {
-    console.log('getAutoDownloadSettings error', error)
+    errorLogger('getAutoDownloadSettings error', error)
     return {}
   }
 }

@@ -3,6 +3,7 @@ import { Funding, NowPlayingItem, ValueRecipient, ValueRecipientNormalized,
   ValueTag, ValueTransaction } from 'podverse-shared'
 import { Config } from 'react-native-config'
 import * as RNKeychain from 'react-native-keychain'
+import { errorLogger } from '../../lib/logger'
 import { translate } from '../../lib/i18n'
 import { createSatoshiStreamStats } from '../../lib/satoshiStream'
 import { credentialsPlaceholderUsername } from '../../lib/secutity'
@@ -61,7 +62,7 @@ export const v4vGetProvidersConnected = async () => {
       accessData = JSON.parse(creds.password)
     }
   } catch (error) {
-    console.log('v4vGetProvidersConnected error:', error)
+    errorLogger('v4vGetProvidersConnected error:', error)
   }
 
   return accessData
@@ -75,7 +76,7 @@ export const v4vSetProvidersConnected = async (connected: V4VProviderConnectedSt
       JSON.stringify(connected)
     )
   } catch (error) {
-    console.log('v4vSetProvidersEnabled error:', error)
+    errorLogger('v4vSetProvidersEnabled error:', error)
   }
 }
 
@@ -89,7 +90,7 @@ export const v4vGetSettings = async () => {
       await v4vSetSettings(settingsData)
     }
   } catch (error) {
-    console.log('v4vGetSettings error:', error)
+    errorLogger('v4vGetSettings error:', error)
   }
 
   return settingsData
@@ -103,7 +104,7 @@ export const v4vSetSettings = async (settings: V4VSettings) => {
       JSON.stringify(settings)
     )
   } catch (error) {
-    console.log('v4vSetSettings error:', error)
+    errorLogger('v4vSetSettings error:', error)
   }
 }
 
@@ -376,7 +377,7 @@ const getValueTransactionQueue = async () => {
     const transactionQueueString = await AsyncStorage.getItem(PV.V4V.VALUE_TRANSACTION_QUEUE)
     return transactionQueueString ? JSON.parse(transactionQueueString) : []
   } catch (err) {
-    console.log('getStreamingValueTransactionQueue error:', err)
+    errorLogger('getStreamingValueTransactionQueue error:', err)
     await clearValueTransactionQueue()
   }
 }
@@ -423,7 +424,7 @@ const bundleValueTransactionQueue = async () => {
 
     return transactionsToSend
   } catch (err) {
-    console.log('bundleValueTransactionQueue error:', err)
+    errorLogger('bundleValueTransactionQueue error:', err)
     await clearValueTransactionQueue()
     return []
   }
@@ -482,7 +483,7 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
 
     await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
   } catch (err) {
-    console.log('saveStreamingValueTransactionsToTransactionQueue error:', err)
+    errorLogger('saveStreamingValueTransactionsToTransactionQueue error:', err)
     await clearValueTransactionQueue()
   }
 }
@@ -491,7 +492,7 @@ const saveTransactionQueue = async (transactionQueue: ValueTransaction[]) => {
   try {
     await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
   } catch (error) {
-    console.log('saveTransactionQueue error', error)
+    errorLogger('saveTransactionQueue error', error)
     await clearValueTransactionQueue()
   }
 }
@@ -511,7 +512,7 @@ export const v4vGetSenderInfo = async () => {
       senderInfo = JSON.parse(senderInfoString)
     }
   } catch (error) {
-    console.log('v4vGetSenderInfo error', error)
+    errorLogger('v4vGetSenderInfo error', error)
   }
 
   return senderInfo
@@ -521,7 +522,7 @@ export const v4vSetSenderInfo = async (senderInfo: V4VSenderInfo) => {
   try {
     await AsyncStorage.setItem(PV.Keys.V4V_SENDER_INFO, JSON.stringify(senderInfo))
   } catch (error) {
-    console.log('v4vSetSenderInfo error', error)
+    errorLogger('v4vSetSenderInfo error', error)
   }
 }
 

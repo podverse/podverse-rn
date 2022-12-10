@@ -5,6 +5,7 @@ import {
   convertToNowPlayingItem,
   NowPlayingItem
 } from 'podverse-shared'
+import { errorLogger } from '../lib/logger'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
@@ -36,7 +37,7 @@ export const getNowPlayingItemLocally = async () => {
     // confirm a valid object is found in storage before returning
     return parsedObject.clipId || parsedObject.episodeId ? parsedObject : null
   } catch (error) {
-    console.log('getNowPlayingItemLocally', error)
+    errorLogger('getNowPlayingItemLocally', error)
     return null
   }
 }
@@ -63,7 +64,7 @@ export const getNowPlayingItemOnServer = async () => {
 
     item = convertToNowPlayingItem(mediaRef || episode, null, null, userPlaybackPosition || 0) || {}
   } catch (error) {
-    console.log('Error in getNowPlayingItemOnServer: ', error)
+    errorLogger('Error in getNowPlayingItemOnServer: ', error)
     item = null
   }
 
@@ -111,7 +112,7 @@ export const clearNowPlayingItemLocally = async () => {
   try {
     await AsyncStorage.removeItem(PV.Keys.NOW_PLAYING_ITEM)
   } catch (error) {
-    console.log('clearNowPlayingItemLocally', error)
+    errorLogger('clearNowPlayingItemLocally', error)
   }
 }
 

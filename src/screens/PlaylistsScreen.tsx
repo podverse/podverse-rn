@@ -10,6 +10,7 @@ import {
   TableSectionSelectors,
   View
 } from '../components'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor } from '../lib/utility'
@@ -254,7 +255,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
       const sections = this.generatePlaylistsSections()
       newState.sections = sections
     } catch (error) {
-      console.log('PlaylistsScreen _queryData', error)
+      errorLogger('PlaylistsScreen _queryData error', error)
       newState.sections = []
     }
     return newState

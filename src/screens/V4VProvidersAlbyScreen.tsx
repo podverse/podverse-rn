@@ -10,6 +10,7 @@ import {
   V4VWalletInfo,
   V4VWalletSettings
 } from '../components'
+import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { _albyKey } from '../resources/V4V'
 import PVEventEmitter from '../services/eventEmitter'
@@ -71,7 +72,7 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
         callback()
       }
     } catch (error) {
-      console.log('_handleInitialize error', error)
+      errorLogger('_handleInitialize error', error)
       callback()
     }
   }

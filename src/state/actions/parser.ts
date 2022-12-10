@@ -1,5 +1,6 @@
 import { Alert } from 'react-native'
 import { setGlobal } from 'reactn'
+import { errorLogger } from '../../lib/logger'
 import { PV } from '../../resources'
 import { checkIfLoggedIn } from '../../services/auth'
 import PVEventEmitter from '../../services/eventEmitter'
@@ -78,7 +79,7 @@ export const addAddByRSSPodcasts = async (urls: string[]) => {
     
     PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
   } catch (error) {
-    console.log('addAddByRSSPodcasts', error)
+    errorLogger('addAddByRSSPodcasts', error)
     Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
   }
 }
@@ -96,11 +97,11 @@ export const addAddByRSSPodcast = async (feedUrl: string, skipBadParse = false) 
   } catch (error) {
     if (skipBadParse) {
       // Log error but don't do anything
-      console.log('Manual skip of parsing error. Error reason: ', error)
+      errorLogger('Manual skip of parsing error. Error reason: ', error)
     } else if (error.message === '401') {
       PVEventEmitter.emit(PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, { feedUrl })
     } else {
-      console.log('addAddByRSSPodcast', error)
+      errorLogger('addAddByRSSPodcast', error)
       Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
     }
   }
@@ -121,7 +122,7 @@ export const addAddByRSSPodcastWithCredentials = async (feedUrl: string, credent
     if (error.message === '401') {
       Alert.alert(PV.Alerts.LOGIN_INVALID.title, PV.Alerts.LOGIN_INVALID.message, PV.Alerts.BUTTONS.OK)
     } else {
-      console.log('addAddByRSSPodcastWithCredentials', error)
+      errorLogger('addAddByRSSPodcastWithCredentials', error)
       Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
     }
   }
@@ -137,7 +138,7 @@ export const removeAddByRSSPodcast = async (feedUrl: string) => {
     await handleAddOrRemoveByRSSPodcast(feedUrl, shouldAdd)
     PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
   } catch (error) {
-    console.log('addAddByRSSPodcast remove', error)
+    errorLogger('addAddByRSSPodcast remove', error)
     throw error
   }
 }

@@ -3,6 +3,7 @@ import { Modal, StyleSheet } from 'react-native'
 import React from 'reactn'
 import Orientation from 'react-native-orientation-locker'
 import Video from 'react-native-video-controls'
+import { errorLogger } from '../lib/logger'
 import { pvIsTablet } from '../lib/deviceDetection'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
@@ -103,7 +104,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
         }
       }
     } catch (error) {
-      console.log('_handleGoToLiveCurrentTime error', error)
+      errorLogger('_handleGoToLiveCurrentTime error', error)
     }
   }
 
@@ -155,7 +156,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
                   }
                 )
               } catch (error) {
-                console.log('PVVideo _handleNewItemShouldLoad error', error)
+                errorLogger('PVVideo _handleNewItemShouldLoad error', error)
               }
             })()
           }
@@ -356,7 +357,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
         }}
         onEnterFullscreen={this._enableFullscreen}
         // onError={(error) => {
-        //   console.log('PVVideo onError', error)
+        //   errorLogger('PVVideo onError', error)
         // }}
         onLoad={(payload: any) => {
           const { duration } = payload
