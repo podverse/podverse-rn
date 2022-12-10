@@ -115,6 +115,8 @@ type State = {
 const testIDPrefix = 'podcasts_screen'
 
 let isInitialLoad = true
+const horizontalRowHeight = 94
+const dividerHeight = 1
 
 const getScreenTitle = () => {
   const { appMode } = getGlobal()
@@ -583,6 +585,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           }
 
           // V4V PROVIDERS:
+          // NOTE: HandleConnect is in two places due to iOS webview issue.
+          // https://github.com/react-native-webview/react-native-webview/issues/2681
           else if (v4vAlbyCheckConnectDeepLink(domain) && urlParams?.code) {
             await v4vAlbyHandleConnect(navigation, urlParams.code)
           }
@@ -935,6 +939,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     const buttons: SwipeRowBackButton[] = [
       {
+        key: 'mark_as_seen',
         text: translate('Mark as Seen'),
         type: 'primary',
         onPress: () => {
@@ -944,6 +949,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         }
       },
       {
+        key: 'unsubscribe',
         text: buttonText,
         type: 'danger',
         onPress: () => this._handleHiddenItemPress(item.id, item.addByRSSPodcastFeedUrl),
@@ -1166,6 +1172,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
             }
             disableNoResultsMessage={!isInitialLoadFinished}
             extraData={flatListData}
+            getItemLayout={(_: any, index: number) => ({
+              length: horizontalRowHeight + dividerHeight,
+              offset: (horizontalRowHeight + dividerHeight) * index,
+              index
+            })}
+            gridView={podcastsGridViewEnabled}
             handleNoResultsTopAction={!!Config.CURATOR_EMAIL ? this._navToRequestPodcastEmail : null}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
             isLoadingMore={isLoadingMore}
@@ -1181,14 +1193,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
             noResultsTopActionText={!!Config.CURATOR_EMAIL && searchBarText ? translate('Request Podcast') : ''}
             noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - send us an email to request a podcast')}
             onEndReached={this._onEndReached}
+            onGridItemSelected={this._onPodcastItemSelected}
             onRefresh={this._onRefresh}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderPodcastItem}
             rightOpenValue={PV.FlatList.hiddenItems.rightOpenValue.twoButtons}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             testID={testIDPrefix}
-            gridView={podcastsGridViewEnabled}
-            onGridItemSelected={this._onPodcastItemSelected}
           />
         </RNView>
         <Dialog.Container accessible visible={showDataSettingsConfirmDialog}>
