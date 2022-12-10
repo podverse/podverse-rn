@@ -13,6 +13,7 @@ import {
   TableSectionSelectors,
   View
 } from '../components'
+import { errorLogger } from '../lib/logger'
 import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
@@ -722,7 +723,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       this.shouldLoad = true
       return newState
     } catch (error) {
-      console.log(error)
+      errorLogger('EpisodesScreen _queryData error', error)
       this.shouldLoad = true
       return newState
     }

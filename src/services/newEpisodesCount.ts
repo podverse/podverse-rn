@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { getGlobal } from 'reactn'
+import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { getEpisodesSincePubDate } from './episode'
 import { getHistoryItemsIndex } from './userHistoryItem'
@@ -109,7 +110,7 @@ export const clearEpisodesCountForPodcast = async (podcastId: string) => {
 
     await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA_2, JSON.stringify(newEpisodesCount))
   } catch (error) {
-    console.log('clearEpisodesCountForPodcast error', error)
+    errorLogger('clearEpisodesCountForPodcast error', error)
   }
   return newEpisodesCount
 }
@@ -124,7 +125,7 @@ export const clearEpisodesCountForPodcastEpisode = async (podcastId: string, epi
 
     await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA_2, JSON.stringify(newEpisodesCount))
   } catch (error) {
-    console.log('clearEpisodesCountForPodcast error', error)
+    errorLogger('clearEpisodesCountForPodcast error', error)
   }
   return newEpisodesCount
 }

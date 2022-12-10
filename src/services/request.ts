@@ -68,9 +68,6 @@ export const request = async (
 
     return response
   } catch (error) {
-    console.log('error message:', error.message)
-    console.log('error response:', error.response)
-
     if (
       error?.response?.status === PV.ResponseErrorCodes.SERVER_MAINTENANCE_MODE &&
       error.response.data?.isInMaintenanceMode

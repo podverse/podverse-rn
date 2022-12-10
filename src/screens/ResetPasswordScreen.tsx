@@ -9,6 +9,7 @@ import { Alert, Dimensions, Keyboard, Platform, StyleSheet, EmitterSubscription 
 import React from 'reactn'
 import { NavigationStackScreenProps } from 'react-navigation-stack'
 import { Button, NavDismissIcon, PasswordValidationInfo, ScrollView, TextInput } from '../components'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { resetPassword } from '../services/auth'
@@ -120,7 +121,7 @@ export class ResetPasswordScreen extends React.Component<Props, State> {
           ])
         })
         .catch((error) => {
-          console.log('Reset pass error: ', error)
+          errorLogger('Reset pass error: ', error)
           Alert.alert(
             translate('Reset Password Failed'),
             translate('Something went wrong when resetting your password'),

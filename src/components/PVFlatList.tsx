@@ -163,6 +163,7 @@ export const PVFlatList = (props: Props) => {
           disableLeftSwipe={disableLeftSwipe}
           disableRightSwipe
           extraData={extraData}
+          getItemLayout={getItemLayout}
           ItemSeparatorComponent={ItemSeparatorComponent}
           keyExtractor={keyExtractor}
           onScrollBeginDrag={onScrollBeginDrag}
@@ -192,6 +193,7 @@ export const PVFlatList = (props: Props) => {
             return null
           }}
           ListHeaderComponent={ListHeaderComponent}
+          listViewRef={listRef}
           onEndReached={onEndReached}
           onEndReachedThreshold={onEndReachedThreshold}
           {...(onRefresh
@@ -218,8 +220,7 @@ export const PVFlatList = (props: Props) => {
           ]}
           useFlatList={!useSectionList}
           useSectionList={useSectionList}
-          listViewRef={listRef}
-          getItemLayout={getItemLayout}
+          {...PV.FlatList.optimizationProps}
         />
       )}
       {shouldShowNoResultsFoundMessage && (

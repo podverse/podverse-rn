@@ -2,6 +2,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { checkIfVideoFileOrVideoLiveType, NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
+import { errorLogger } from '../../lib/logger'
 import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../../lib/downloader'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
@@ -86,7 +87,7 @@ export const videoGetCurrentLoadedTrackId = () => {
       currentTrackId = nowPlayingItem.clipId || nowPlayingItem.episodeId
     }
   } catch (error) {
-    console.log('videoGetCurrentLoadedTrackId error', error)
+    errorLogger('videoGetCurrentLoadedTrackId error', error)
   }
   return currentTrackId
 }

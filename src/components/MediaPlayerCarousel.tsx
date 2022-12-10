@@ -192,7 +192,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
     let itemCount = 2
     if (hasChapters) itemCount++
-    if (hasClips) itemCount++
+    // if (hasClips) itemCount++
     if (hasComments) itemCount++
     if (hasTranscript) itemCount++
     if (hasChat) itemCount++
@@ -433,9 +433,9 @@ const mediaPlayerCarouselComponents = (
           {accessibilityItemSelectedValue === _chaptersKey && hasChapters && (
             <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />
           )}
-          {accessibilityItemSelectedValue === _clipsKey && hasClips && (
+          {/* {accessibilityItemSelectedValue === _clipsKey && hasClips && (
             <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
-          )}
+          )} */}
           {accessibilityItemSelectedValue === _commentsKey && hasComments && (
             <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />
           )}
@@ -455,7 +455,7 @@ const mediaPlayerCarouselComponents = (
           />
           <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
           {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
-          {hasClips && <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />}
+          {/* {hasClips && <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />} */}
           {hasComments && <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />}
           {hasTranscript && (
             <MediaPlayerCarouselTranscripts isNowPlaying parsedTranscript={parsedTranscript} width={screenWidth} />

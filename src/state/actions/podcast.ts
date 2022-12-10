@@ -1,5 +1,6 @@
 import { checkIfContainsStringMatch } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
+import { errorLogger } from '../../lib/logger'
 import { safelyUnwrapNestedVariable } from '../../lib/utility'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
@@ -99,7 +100,7 @@ export const toggleSubscribeToPodcast = async (id: string) => {
           }
         )
       } catch (error) {
-        console.log('toggleSubscribeToPodcast action', error)
+        errorLogger('toggleSubscribeToPodcast action', error)
         reject()
       }
     })()

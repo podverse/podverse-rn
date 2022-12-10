@@ -1,5 +1,6 @@
 import { Purchase } from 'react-native-iap'
 import { setGlobal } from 'reactn'
+import { errorLogger } from '../../lib/logger'
 import { iosHandlePurchaseStatusCheck as iosHandlePurchaseStatusCheckService } from '../../services/purchase.ios'
 import { getAuthUserInfo } from './auth'
 import { handleStatusSuccessful, purchaseLoading, showPurchaseSomethingWentWrongError } from './purchaseShared'
@@ -19,7 +20,7 @@ export const iosHandlePurchaseStatusCheck = async (purchase: Purchase) => {
     await iosHandlePurchaseStatusCheckService(purchase)
     await iosHandleStatusSuccessful()
   } catch (error) {
-    console.log('iosHandlePurchaseStatusCheck error', error)
+    errorLogger('iosHandlePurchaseStatusCheck error', error)
     showPurchaseSomethingWentWrongError()
   }
 }

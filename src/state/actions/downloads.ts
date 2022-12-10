@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import type { PodcastMedium } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
-import { getEpisodes } from '../../services/episode'
+import { errorLogger } from '../../lib/logger'
 import {
   getDownloadedEpisodeIds as getDownloadedEpisodeIdsService,
   getDownloadedPodcastEpisodeCounts as getDownloadedPodcastEpisodeCountsService,
@@ -23,6 +23,7 @@ import {
   getAutoDownloadSettings as getAutoDownloadSettingsService,
   updateAutoDownloadSettings as updateAutoDownloadSettingsService
 } from '../../services/autoDownloads'
+import { getEpisodes } from '../../services/episode'
 import { getPodcastCredentials, parseAddByRSSPodcast } from '../../services/parser'
 import { clearNowPlayingItem } from '../../services/userNowPlayingItem'
 
@@ -403,7 +404,7 @@ export const downloadedEpisodeMarkForDeletion = async (episodeId: string) => {
     }
     await AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION, JSON.stringify(markedForDeletion))
   } catch (error) {
-    console.log('downloadedEpisodeMarkForDeletion error', error, episodeId)
+    errorLogger('downloadedEpisodeMarkForDeletion error', error, episodeId)
   }
 }
 
@@ -415,7 +416,7 @@ export const downloadedEpisodeDeleteMarked = async () => {
       await removeDownloadedPodcastEpisode(episodeId)
     }
   } catch (error) {
-    console.log('downloadedEpisodeDeleteMarked error', error)
+    errorLogger('downloadedEpisodeDeleteMarked error', error)
   }
   await AsyncStorage.removeItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION)
 }

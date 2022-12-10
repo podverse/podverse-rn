@@ -22,6 +22,7 @@ import {
   SafeAreaView,
   View
 } from '../components'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { prefixClipLabel, safelyUnwrapNestedVariable } from '../lib/utility'
@@ -145,8 +146,8 @@ export class PlayerScreen extends React.Component<Props> {
 
       await playerUpdateUserPlaybackPosition(skipSetNowPlaying, shouldAwait)
       await getHistoryItems(1, [])
-    } catch (e) {
-      console.log('PlayerScreen componentWillUnmount error', e)
+    } catch (error) {
+      errorLogger('PlayerScreen componentWillUnmount error', error)
     }
   }
 
@@ -267,7 +268,7 @@ export class PlayerScreen extends React.Component<Props> {
         url
       })
     } catch (error) {
-      console.log(error)
+      errorLogger('PlayerScreen handleShare error', error)
     }
     this._dismissShareActionSheet()
   }

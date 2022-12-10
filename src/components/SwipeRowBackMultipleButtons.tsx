@@ -5,6 +5,7 @@ import { PV } from '../resources'
 import { ActivityIndicator, PressableWithOpacity, View } from '.'
 
 export type SwipeRowBackButton = {
+  key: string
   text: string
   type: 'primary' | 'danger'
   onPress: any
@@ -34,6 +35,7 @@ export const SwipeRowBackMultipleButtons = (props: Props) => {
       const node = (
         <PressableWithOpacity
           accessible={false}
+          key={`${testID}_swipe_row_back_${button.key}`.prependTestId()}
           importantForAccessibility='no'
           onPress={button.onPress}
           style={style}

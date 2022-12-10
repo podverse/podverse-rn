@@ -1,6 +1,7 @@
 import { KeyboardAvoidingView, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, NavDismissIcon, PressableWithOpacity, Text, TextInput, View } from '../components'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { PV } from '../resources'
@@ -74,7 +75,7 @@ export class AddPodcastByRSSAuthScreen extends React.Component<Props, State> {
             navigateToPodcastScreenWithItem(navigation, podcast)
           }
         } catch (error) {
-          console.log('_handleSavePodcastByRSSURL', error)
+          errorLogger('_handleSavePodcastByRSSURL', error)
           this.setState({ isLoading: false })
         }
       })()

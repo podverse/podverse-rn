@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { generateQueryParams } from 'podverse-shared'
 import Config from 'react-native-config'
+import { errorLogger } from '../lib/logger'
 import { hasValidNetworkConnection } from '../lib/network'
 import { getAppUserAgent } from '../lib/utility'
 
@@ -36,6 +37,6 @@ export const matomoTrackPageView = async (path: string, title: string) => {
       }
     })
   } catch (error) {
-    console.log('matomoTrackPageView error', error)
+    errorLogger('matomoTrackPageView error', error)
   }
 }

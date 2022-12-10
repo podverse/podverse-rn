@@ -1,6 +1,7 @@
 import { PVComment, SocialInteraction, SocialInteractionKeys } from 'podverse-shared'
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { getEpisodeProxyActivityPub, getEpisodeProxyTwitter } from '../services/comment'
 import { PV } from '../resources'
@@ -58,7 +59,7 @@ export class MediaPlayerCarouselComments extends React.PureComponent<Props, Stat
                 isLoading: false
               })
             } catch (error) {
-              console.log('MediaPlayerCarouselComments activityPub error', error)
+              errorLogger('MediaPlayerCarouselComments activityPub error', error)
               this.setState({ isLoading: false })
             }
           })()
@@ -74,7 +75,7 @@ export class MediaPlayerCarouselComments extends React.PureComponent<Props, Stat
                 isLoading: false
               })
             } catch (error) {
-              console.log('MediaPlayerCarouselComments twitter error', error)
+              errorLogger('MediaPlayerCarouselComments twitter error', error)
               this.setState({ isLoading: false })
             }
           })()

@@ -3,6 +3,7 @@ import { checkIfVideoFileOrVideoLiveType, NowPlayingItem } from 'podverse-shared
 import TrackPlayer, { Capability, IOSCategoryMode, PitchAlgorithm, State, Track } from 'react-native-track-player'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
+import { errorLogger } from '../lib/logger'
 import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../lib/downloader'
 import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
@@ -31,7 +32,7 @@ export const PVAudioPlayer = TrackPlayer
 //       throw new Error('PVAudioPlayer Service not running')
 //     }
 //   } catch (err) {
-//     console.log(err.message)
+//     errorLogger(err.message)
 //     return defaultReturn
 //   }
 
@@ -128,7 +129,7 @@ export const audioGetCurrentLoadedTrackId = async () => {
     const trackIndex = await PVAudioPlayer.getCurrentTrack()
     currentTrackId = await audioGetLoadedTrackIdByIndex(trackIndex)
   } catch (error) {
-    console.log('audioGetCurrentLoadedTrackId error', error)
+    errorLogger('audioGetCurrentLoadedTrackId error', error)
   }
   return currentTrackId
 }
@@ -212,7 +213,7 @@ export const audioSyncPlayerWithQueue = async () => {
     const tracks = await audioCreateTracks(pvQueueItems)
     await PVAudioPlayer.add(tracks)
   } catch (error) {
-    console.log('audioSyncPlayerWithQueue error:', error)
+    errorLogger('audioSyncPlayerWithQueue error:', error)
   }
 }
 
@@ -233,7 +234,7 @@ export const audioUpdateCurrentTrack = async (trackTitle?: string, artworkUrl?: 
       }
     }
   } catch (error) {
-    console.log('audioUpdateCurrentTrack error:', error)
+    errorLogger('audioUpdateCurrentTrack error:', error)
   }
 }
 
@@ -323,7 +324,7 @@ export const audioMovePlayerItemToNewPosition = async (id: string, newIndex: num
         await PVAudioPlayer.add([track], newIndex)
       }
     } catch (error) {
-      console.log('movePlayerItemToNewPosition error:', error)
+      errorLogger('movePlayerItemToNewPosition error:', error)
     }
   }
 }
@@ -479,7 +480,7 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
       }
     }
   } catch (error) {
-    console.log('Initializing player error: ', error)
+    errorLogger('Initializing player error: ', error)
   }
 
   return item

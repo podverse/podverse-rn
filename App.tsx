@@ -23,7 +23,6 @@ import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 import { hasValidDownloadingConnection } from './src/lib/network'
-import { migrateCredentialsIfNeeded } from './src/lib/secutity'
 import {
   handleCarPlayPodcastsUpdate,
   handleCarPlayQueueUpdate,
@@ -76,11 +75,7 @@ class App extends Component<Props, State> {
     }
 
     await this.setupGlobalState(globalTheme)
-    try {
-      await migrateCredentialsIfNeeded()
-    } catch (error) {
-      console.log('migrateCredentialsIfNeeded error:', error)
-    }
+
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
 
     

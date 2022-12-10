@@ -4,6 +4,7 @@ import { Alert } from 'react-native'
 import Config from 'react-native-config'
 import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import {
   navigateToEpisodeScreenWithItem,
@@ -249,7 +250,7 @@ const mediaMoreButtons = (
             url
           })
         } catch (error) {
-          console.log(error)
+          errorLogger(error)
         }
         await handleDismiss()
       }

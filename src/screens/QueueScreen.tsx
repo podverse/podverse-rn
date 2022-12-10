@@ -13,6 +13,7 @@ import {
   SortableList,
   View
 } from '../components'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
@@ -353,7 +354,7 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
         await audioMovePlayerItemToNewPosition(item.clipId || item.episodeId, to)
       }
     } catch (error) {
-      console.log('QueueScreen - _onReleaseRow - ', error)
+      errorLogger('QueueScreen - _onReleaseRow - _onDragEnd', error)
     }
   }
 
