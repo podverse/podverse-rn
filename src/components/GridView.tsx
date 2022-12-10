@@ -45,6 +45,11 @@ export class GridView extends React.PureComponent<Props> {
     }
     const { columns, imageThumbnailStyles } = getImageThumbnailInfo()
 
+    const _keyExtractor = (item, index) => {
+      const id = item?.id
+      return safeKeyExtractor('gridview_item', index, id)
+    }
+
     return (
       <FlatList
         {...this.props}
@@ -78,10 +83,7 @@ export class GridView extends React.PureComponent<Props> {
           )
         }}
         numColumns={columns}
-        keyExtractor={(item, index) => {
-          const id = item?.id
-          return safeKeyExtractor('gridview_item', index, id)
-        }}
+        keyExtractor={_keyExtractor}
         style={shouldShowResults ? [] : styles.noResultsView}
         {...PV.FlatList.optimizationPropsFaster}
       />
