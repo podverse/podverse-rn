@@ -16,8 +16,8 @@ import {
   ClipTableCell,
   Divider,
   FlatList,
-  ScrollView,
-  TableSectionSelectors
+  TableSectionSelectors,
+  View
 } from './'
 
 type Props = {
@@ -228,7 +228,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     const testID = getTestID()
 
     return (
-      <ScrollView fillSpace style={[styles.wrapper, { width }]} transparent>
+      <View fillSpace style={[styles.wrapper, { width }]} transparent>
         <TableSectionSelectors
           customButtons={
             !screenReaderEnabled ? (
@@ -277,7 +277,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
           showModal={showMoreActionSheet}
           testID={`${testID}_more`}
         />
-      </ScrollView>
+      </View>
     )
   }
 

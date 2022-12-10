@@ -11,7 +11,7 @@ import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, ScrollView, TableSectionSelectors } from './'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from './'
 
 type Props = {
   navigation?: any
@@ -297,7 +297,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     const testID = getTestID()
 
     return (
-      <ScrollView fillSpace style={[styles.wrapper, { width }]} transparent>
+      <View fillSpace style={[styles.wrapper, { width }]} transparent>
         <TableSectionSelectors
           filterScreenTitle={translate('Clips')}
           handleSelectFromItem={this._selectQueryFrom}
@@ -360,7 +360,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
             testID={`${getTestID}_delete_clip_delete`.prependTestId()}
           />
         </Dialog.Container>
-      </ScrollView>
+      </View>
     )
   }
 
