@@ -1,6 +1,7 @@
 import { Podcast } from 'podverse-shared'
 import React from 'reactn'
 import { StyleSheet, FlatList } from 'react-native'
+import { safeKeyExtractor } from '../lib/utility'
 import { FastImage, PressableWithOpacity } from './'
 
 type Props = {
@@ -76,7 +77,10 @@ export class GridView extends React.PureComponent<Props> {
           )
         }}
         numColumns={columns}
-        keyExtractor={(_, index) => index.toString()}
+        keyExtractor={(item, index) => {
+          const id = item?.id
+          return safeKeyExtractor('gridview_item', index, id)
+        }}
         style={shouldShowResults ? [] : styles.noResultsView}
       />
     )
