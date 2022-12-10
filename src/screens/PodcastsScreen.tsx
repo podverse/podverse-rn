@@ -17,7 +17,6 @@ import {
   PodcastTableCell,
   PurchaseListener,
   SearchBar,
-  SwipeRowBack,
   SwipeRowBackMultipleButtons,
   TableSectionSelectors,
   View

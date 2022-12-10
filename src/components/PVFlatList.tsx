@@ -220,12 +220,7 @@ export const PVFlatList = (props: Props) => {
           ]}
           useFlatList={!useSectionList}
           useSectionList={useSectionList}
-          // performance optimizations
-          initialNumToRender={10} // default 10
-          maxToRenderPerBatch={10} // default 10
-          removeClippedSubviews // default false
-          updateCellsBatchingPeriod={100} // default 50
-          windowSize={7} // default 21
+          {...PV.FlatList.optimizationProps}
         />
       )}
       {shouldShowNoResultsFoundMessage && (
