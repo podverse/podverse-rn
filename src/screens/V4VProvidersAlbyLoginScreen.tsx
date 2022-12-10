@@ -1,3 +1,4 @@
+import qs from 'qs'
 import { StyleSheet } from 'react-native'
 import { WebView } from 'react-native-webview'
 import React from 'reactn'
@@ -38,8 +39,25 @@ export class V4VProvidersAlbyLoginScreen extends React.Component<Props, State> {
     trackPageView('/value-for-value/providers/alby/login', 'Value for Value - Providers - Alby - Login')
   }
 
+  _onShouldStartLoadWithRequest = (request: any) => {
+    // This is mostly duplicated in PodcastsScreen deep links.
+    const route = request.url.replace(/.*?:\/\//g, '')
+    const splitPath = route.split('/')
+    const domain = splitPath[0] ? splitPath[0] : ''
+    const urlParams: { code?: string } = qs.parse(splitPath[splitPath.length - 1].split('?')[1])
+
+    // NOTE: HandleConnect is in two places due to iOS webview issue.
+    // https://github.com/react-native-webview/react-native-webview/issues/2681
+    if (v4vAlbyCheckConnectDeepLink(domain) && urlParams?.code) {
+      v4vAlbyHandleConnect(this.props.navigation, urlParams.code)
+    } else {
+      return true
+    }
+
+    return false
+  }
+
   render() {
-    const { navigation } = this.props
     const { url } = this.state
 
     return (
@@ -47,33 +65,7 @@ export class V4VProvidersAlbyLoginScreen extends React.Component<Props, State> {
         <WebView
           dataDetectorTypes={['link']}
           originWhitelist={['https://', PV.DeepLinks.prefix]}
-          onShouldStartLoadWithRequest={(request) => {
-            // This is mostly duplicated in PodcastsScreen deep links.
-            const route = request.url.replace(/.*?:\/\//g, '')
-            const splitPath = route.split('/')
-            const domain = splitPath[0] ? splitPath[0] : ''
-            const urlParamsString = splitPath[splitPath.length - 1].split('?')[1]
-            const urlParams: any = {}
-            if (urlParamsString) {
-              const urlParamsArr = urlParamsString.split('&')
-              if (urlParamsArr.length) {
-                urlParamsArr.forEach((param) => {
-                  const [key, value] = param.split('=')
-                  urlParams[key] = value
-                })
-              }
-            }
-
-            // NOTE: HandleConnect is in two places due to iOS webview issue.
-            // https://github.com/react-native-webview/react-native-webview/issues/2681
-            if (v4vAlbyCheckConnectDeepLink(domain) && urlParams?.code) {
-              v4vAlbyHandleConnect(navigation, urlParams.code)
-            } else {
-              return true
-            }
-
-            return false
-          }}
+          onShouldStartLoadWithRequest={this._onShouldStartLoadWithRequest}
           source={{ uri: url }}
         />
       </View>

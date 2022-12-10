@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import messaging from '@react-native-firebase/messaging'
 import debounce from 'lodash/debounce'
 import { convertToNowPlayingItem, createEmailLinkUrl } from 'podverse-shared'
+import qs from 'qs'
 import { Alert, AppState, Dimensions, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
 import { CarPlay } from 'react-native-carplay'
 import Config from 'react-native-config'
@@ -53,7 +54,11 @@ import { initAutoQueue } from '../state/actions/autoQueue'
 import { downloadedEpisodeDeleteMarked, initDownloads, removeDownloadedPodcast,
   updateDownloadedPodcasts } from '../state/actions/downloads'
 import { v4vAlbyHandleConnect } from '../state/actions/v4v/providers/alby'
-import { clearEpisodesCountForPodcast, handleUpdateNewEpisodesCount, syncNewEpisodesCountWithHistory } from '../state/actions/newEpisodesCount'
+import {
+  clearEpisodesCountForPodcast,
+  handleUpdateNewEpisodesCount,
+  syncNewEpisodesCountWithHistory
+} from '../state/actions/newEpisodesCount'
 import {
   initializePlayerSettings,
   initializePlayer,
@@ -509,17 +514,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
           const domain = splitPath[0] ? splitPath[0] : ''
           const path = splitPath[1] ? splitPath[1] : ''
           const id = splitPath[2] ? splitPath[2] : ''
-          const urlParamsString = splitPath[splitPath.length - 1].split('?')[1]
-          const urlParams: any = {}
-          if (urlParamsString) {
-            const urlParamsArr = urlParamsString.split('&')
-            if (urlParamsArr.length) {
-              urlParamsArr.forEach((param) => {
-                const [key, value] = param.split('=')
-                urlParams[key] = value
-              })
-            }
-          }
+          const urlParams: {
+            code?: string,
+            token?: string
+          } = qs.parse(splitPath[splitPath.length - 1].split('?')[1])
 
           await this._goBackWithDelay()
           if (path.indexOf(PV.DeepLinks.VerifyEmail.path) > -1) {
