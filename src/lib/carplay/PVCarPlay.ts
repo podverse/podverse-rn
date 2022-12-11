@@ -209,7 +209,9 @@ export const handleCarPlayHistoryUpdate = async () => {
   if (historyList) {
     const { session } = getGlobal()
     const updatedItems = session?.userInfo?.historyItems || []
-    const listItems = await generateNPIListItems(updatedItems)
+    // Limit historyItems to the most recent 20 items, for performance reasons.
+    const limitedItems = updatedItems.slice(0, 20)
+    const listItems = await generateNPIListItems(limitedItems)
     historyList.updateSections([
       {
         header: '',
