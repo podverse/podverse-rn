@@ -56,7 +56,7 @@ const podcastsListTab = async (subscribedPodcasts: Podcast[]) => {
   podcastsList = new ListTemplate({
     sections: [
       {
-        header: translate('Subscribed'),
+        header: '',
         items: listItems
       }
     ],
@@ -80,7 +80,7 @@ export const handleCarPlayPodcastsUpdate = async () => {
 
     podcastsList.updateSections([
       {
-        header: translate('Subscribed'),
+        header: '',
         items: listItems
       }
     ])
