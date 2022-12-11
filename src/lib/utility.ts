@@ -186,6 +186,6 @@ export const getAndroidVersion = () => {
   return Platform.constants?.Release && parseInt(Platform.constants?.Release, 10)
 }
 
-export const getPathFromUrl = (url) => {
+export const getPathFromUrl = (url: string) => {
   return url.split(/[?#]/)[0];
 }
