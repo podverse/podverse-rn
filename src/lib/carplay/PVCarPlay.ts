@@ -13,12 +13,12 @@ import { getEpisodesForPodcast, loadEpisodeInPlayer, loadNowPlayingItemInPlayer 
 
 /* Initialize */
 
-export const registerCarModule = (onConnect, onDisconnect) => {
+export const registerCarModule = (onConnect: any, onDisconnect: any) => {
   CarPlay.registerOnConnect(onConnect);
   CarPlay.registerOnDisconnect(onDisconnect);
 }
 
-export const unregisterCarModule = (onConnect, onDisconnect) => { 
+export const unregisterCarModule = (onConnect: any, onDisconnect: any) => { 
   CarPlay.unregisterOnConnect(onConnect);
   CarPlay.unregisterOnDisconnect(onDisconnect);
 }
@@ -109,7 +109,7 @@ const createCarPlayPodcastListItem = async (podcast: Podcast) => {
   return {
     text: podcast.title || translate('Untitled Podcast'),
     imgUrl
-  }
+  } as ListItem
 }
 
 /* Podcast Episodes Tab */
