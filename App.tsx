@@ -43,6 +43,7 @@ type State = {
 setGlobal(initialState)
 
 let ignoreHandleNetworkChange = true
+let carplayEventsInitialized = false
 
 class App extends Component<Props, State> {
   unsubscribeNetListener: NetInfoSubscription | null
@@ -91,11 +92,12 @@ class App extends Component<Props, State> {
 
   onConnect = () => {
     // Do things now that carplay is connected
-    const { subscribedPodcasts = [], session } = getGlobal()
-    const { historyItems = [], queueItems = [] } = session.userInfo
-    showRootView(subscribedPodcasts, historyItems, queueItems)
-    PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdate)
-    PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
+    showRootView()
+    if (!carplayEventsInitialized) {
+      carplayEventsInitialized = true
+      PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdate)
+      PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
+    }
   }
 
   onDisconnect = () => {

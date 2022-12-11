@@ -185,3 +185,7 @@ export const removeHTMLAttributesFromString = (html: string) => {
 export const getAndroidVersion = () => {
   return Platform.constants?.Release && parseInt(Platform.constants?.Release, 10)
 }
+
+export const getPathFromUrl = (url: string) => {
+  return url.split(/[?#]/)[0];
+}

@@ -8,7 +8,7 @@ export const debugLogger = (message: string, data?: any) => {
 }
 
 export const errorLogger = (fileName: string, functionName: string, error: any) => {
-  console.error(fileName)
-  console.error(functionName)
-  console.error(error)
+  console.log(fileName)
+  console.log(functionName)
+  console.log(error)
 }
