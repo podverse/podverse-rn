@@ -269,7 +269,7 @@ const generateNPIListItems = async (nowPlayingItems: NowPlayingItem[]) => {
 
 const createCarPlayNPIListItem = async (item: NowPlayingItem) => {
   const imgUrl = await getDownloadedImageUrl(
-    item?.episodeImageUrl || item?.podcastShrunkImageUrl || item?.podcastImageUrl
+    item?.podcastShrunkImageUrl || item?.podcastImageUrl
   )
 
   return {
