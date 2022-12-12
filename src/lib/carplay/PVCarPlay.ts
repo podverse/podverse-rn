@@ -25,6 +25,8 @@ export const unregisterCarModule = (onConnect: any, onDisconnect: any) => {
 
 /* Root View */
 
+let isInitialLoad = true
+
 export const showRootView = () => {
   const pListTab = podcastsListTab()
   const qListTab = queueItemsListTab()
@@ -33,7 +35,13 @@ export const showRootView = () => {
   const tabBarTemplate = new TabBarTemplate({
     templates: [pListTab, qListTab, hListTab],
     onTemplateSelect(e: any) {
-      if (e.config.title === 'Queue') {
+      if (e.config.title === 'Podcasts') {
+        if (isInitialLoad) {
+          isInitialLoad = false
+        } else {
+          handleCarPlayPodcastsUpdate()
+        }
+      } else if (e.config.title === 'Queue') {
         handleCarPlayQueueUpdate()
       } else if (e.config.title === 'History') {
         refreshHistory()
@@ -69,7 +77,7 @@ const podcastsListTab = () => {
 
         const results = await getEpisodesForPodcast(podcast)
         episodes = results[0]
-        handleCarPlayEpisodesUpdate()
+        handleCarPlayEpisodesUpdate(podcast)
       }
     }
   })
@@ -130,13 +138,13 @@ const showEpisodesList = (podcast: Podcast) => {
   CarPlay.pushTemplate(episodesList)
 }
 
-const handleCarPlayEpisodesUpdate = () => {
+const handleCarPlayEpisodesUpdate = (podcast: Podcast) => {
   if (episodesList) {
     const listItems = generateEpisodesListItems()
 
     episodesList.updateSections([
       {
-        header: '',
+        header: podcast.title || translate('Untitled Podcast'),
         items: listItems
       }
     ])
