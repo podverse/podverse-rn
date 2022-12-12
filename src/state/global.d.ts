@@ -36,6 +36,8 @@ declare module 'reactn/default' {
       shouldShowAlert: boolean
     }
     parsedTranscript: TranscriptRow[] | null
+    clipIntervalActive: boolean
+    chapterIntervalActive: boolean
     currentChapter: any
     currentChapters: any
     currentChaptersStartTimePositions: any

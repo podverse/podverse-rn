@@ -1,14 +1,14 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
-import { getGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import BackgroundTimer from 'react-native-background-timer'
 // import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
 // import { saveStreamingValueTransactionsToTransactionQueue } from '../services/v4v/v4v'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
-import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { clearChapterPlaybackInfo, loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 // import { v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import PVEventEmitter from './eventEmitter'
 import {
@@ -143,7 +143,7 @@ const startCheckClipEndTime = async () => {
     const { clipEndTime, clipId } = nowPlayingItem
     if (clipId && clipEndTime) {
       await setClipHasEnded(false)
-      startBackgroundTimer()
+      setGlobal({ clipIntervalActive: true })
     }
   }
 }
@@ -169,7 +169,7 @@ export const stopBackgroundTimerIfShouldBeStopped = async (
   }
 
   if (checkClipEndTimeShouldStop && streamingValueShouldStop) {
-    stopBackgroundTimer()
+    setGlobal({ clipIntervalActive: false })
   }
 }
 
@@ -232,18 +232,25 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
   BACKGROUND TIMER
 */
 
-const startBackgroundTimer = () => {
-  stopBackgroundTimer()
+export const startBackgroundTimer = () => {
   BackgroundTimer.runBackgroundTimer(handleBackgroundTimerInterval, 1000)
 }
 
-const stopBackgroundTimer = () => {
-  BackgroundTimer.stopBackgroundTimer()
-}
-
 // let valueStreamingIntervalSecondCount = 1
+let chapterIntervalSecondCount = 0
 const handleBackgroundTimerInterval = () => {
-  stopCheckClipIfEndTimeReached()
+  const { chapterIntervalActive, clipIntervalActive } = getGlobal()
+  if (clipIntervalActive) {
+    stopCheckClipIfEndTimeReached()
+  }
+
+  chapterIntervalSecondCount++
+  if (chapterIntervalSecondCount >= 3) {
+    chapterIntervalSecondCount = 0
+    if (chapterIntervalActive) {
+      loadChapterPlaybackInfo()
+    }
+  }
 
   // playerGetState().then(async (playbackState) => {
   //   const globalState = getGlobal()

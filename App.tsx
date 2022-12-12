@@ -8,7 +8,7 @@ import { getFontScale } from 'react-native-device-info'
 import Orientation from 'react-native-orientation-locker'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
-import { getGlobal, setGlobal } from 'reactn'
+import { setGlobal } from 'reactn'
 import { isOnMinimumAllowedVersion } from './src/services/versioning'
 import { UpdateRequiredOverlay, OverlayAlert, ImageFullView } from './src/components'
 import { pvIsTablet } from './src/lib/deviceDetection'
@@ -19,6 +19,7 @@ import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
 import { downloadCategoriesList } from './src/services/category'
 import PVEventEmitter from './src/services/eventEmitter'
+import { startBackgroundTimer } from './src/services/playerBackgroundTimer'
 import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
@@ -65,6 +66,7 @@ class App extends Component<Props, State> {
 
   async componentDidMount() {
     TrackPlayer.registerPlaybackService(() => require('./src/services/playerAudioEvents'))
+    startBackgroundTimer()
     StatusBar.setBarStyle('light-content')
     Platform.OS === 'android' && StatusBar.setBackgroundColor(PV.Colors.ink, true)
     const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
