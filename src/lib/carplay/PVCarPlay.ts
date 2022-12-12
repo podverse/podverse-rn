@@ -58,12 +58,17 @@ const podcastsListTab = () => {
     sections: [
       {
         header: '',
-        items: loadingItems
+        items: []
       }
     ],
     title: translate('Podcasts'),
+    emptyViewTitleVariants: ["Loading..."],
     tabSystemImg: 'music.note.list',
     onItemSelect: async (item) => {
+      if(item.disabled) {
+        return
+      }
+
       if (podcastsListLoaded) {
         const { subscribedPodcasts } = getGlobal()
         const podcast = subscribedPodcasts[item.index]
@@ -84,6 +89,9 @@ export const handleCarPlayPodcastsUpdate = async () => {
     podcastsListLoaded = true
     const { subscribedPodcasts } = getGlobal()
     const listItems = await generatePodcastListItems(subscribedPodcasts)
+    if (!listItems.length) {
+      listItems.push(getEmptyCellWithTitle("No subscribed Podcasts"))
+    }
 
     podcastsList.updateSections([
       {
@@ -123,10 +131,17 @@ const showEpisodesList = (podcast: Podcast) => {
     sections: [
       {
         header: podcast.title || translate('Untitled Podcast'),
-        items: loadingItems
-      },
+        items: []
+      }
     ],
-    onItemSelect: ({index}) => showCarPlayerForEpisode(episodes[index], podcast)
+    emptyViewTitleVariants: ["Loading..."],
+    onItemSelect: async ({index, disabled}) => {
+      if(disabled) {
+        return
+      }
+      
+      await showCarPlayerForEpisode(episodes[index], podcast)
+    }
   });
 
   CarPlay.pushTemplate(episodesList)
@@ -168,12 +183,17 @@ const queueItemsListTab = () => {
     sections: [
       {
         header: '',
-        items: loadingItems
+        items: []
       }
     ],
     title: translate('Queue'),
+    emptyViewTitleVariants: ["Loading..."],
     tabSystemImg: 'list.bullet',
     onItemSelect: async (item) => {
+      if(item.disabled) {
+        return
+      }
+
       const { session } = getGlobal()
       const updatedItems = session?.userInfo?.queueItems || []
       const nowPlayingItem = updatedItems[item.index]
@@ -189,6 +209,10 @@ export const handleCarPlayQueueUpdate = async () => {
     const { session } = getGlobal()
     const updatedItems = session?.userInfo?.queueItems || []
     const listItems = await generateNPIListItems(updatedItems)
+    if (!listItems.length) {
+      listItems.push(getEmptyCellWithTitle("No items in your queue"))
+    }
+
     queueList.updateSections([
       {
         header: '',
@@ -207,12 +231,17 @@ const historyItemsListTab = () => {
     sections: [
       {
         header: '',
-        items: loadingItems
+        items: []
       }
     ],
     title: translate('History'),
+    emptyViewTitleVariants: ["Loading..."],
     tabSystemImg: 'timer',
     onItemSelect: async (item) => {
+      if(item.disabled) {
+        return
+      }
+
       const { session } = getGlobal()
       const updatedItems = session?.userInfo?.historyItems || []
       const nowPlayingItem = updatedItems[item.index]
@@ -230,6 +259,10 @@ export const handleCarPlayHistoryUpdate = async () => {
     // Limit historyItems to the most recent 20 items, for performance reasons.
     const limitedItems = updatedItems.slice(0, 20)
     const listItems = await generateNPIListItems(limitedItems)
+    if (!listItems.length) {
+      listItems.push(getEmptyCellWithTitle("No items in your history"))
+    }
+
     historyList.updateSections([
       {
         header: '',
@@ -322,9 +355,8 @@ const getDownloadedImageUrl = async (origImageUrl?: string | null) => {
 }
 
 /* Loading Cell Helper */
-const loadingItems: ListItem[] = [
-  {
-    text: translate('Loading'),
-    showsDisclosureIndicator: false // This doesn't seem to work...
-  }
-]
+const getEmptyCellWithTitle = (title: string): ListItem => ({
+    text: title,
+    showsDisclosureIndicator: false,
+    disabled: true
+})
