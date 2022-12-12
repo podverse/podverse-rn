@@ -25,8 +25,6 @@ export const unregisterCarModule = (onConnect: any, onDisconnect: any) => {
 
 /* Root View */
 
-let isInitialLoad = true
-
 export const showRootView = () => {
   const pListTab = podcastsListTab()
   const qListTab = queueItemsListTab()
@@ -36,11 +34,7 @@ export const showRootView = () => {
     templates: [pListTab, qListTab, hListTab],
     onTemplateSelect(e: any) {
       if (e.config.title === 'Podcasts') {
-        if (isInitialLoad) {
-          isInitialLoad = false
-        } else {
-          handleCarPlayPodcastsUpdate()
-        }
+        handleCarPlayPodcastsUpdate()
       } else if (e.config.title === 'Queue') {
         handleCarPlayQueueUpdate()
       } else if (e.config.title === 'History') {
