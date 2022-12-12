@@ -219,13 +219,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const episodeTitle = remoteMessage?.data?.episodeTitle
         const notificationType = remoteMessage?.data?.notificationType
         const isLiveNotification = notificationType === 'live'
-        const timeSent = remoteMessage?.data?.timeSent
-        const currentDateTime = new Date()
-        const currentDateTime60MinutesEarlier = new Date(currentDateTime)
-        currentDateTime60MinutesEarlier.setMinutes(currentDateTime.getMinutes() - 60)
-        const wasRecentlySent = timeSent && new Date(timeSent) > currentDateTime60MinutesEarlier
 
-        if (remoteMessage && podcastId && episodeId && isLiveNotification && wasRecentlySent) {
+        if (remoteMessage && podcastId && episodeId && isLiveNotification) {
           const GO_TO_LIVE_PODCAST = PV.Alerts.GO_TO_LIVE_PODCAST(
             navigation,
             podcastId,
