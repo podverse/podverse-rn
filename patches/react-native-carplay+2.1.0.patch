@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-carplay/ios/RNCarPlay.m b/node_modules/react-native-carplay/ios/RNCarPlay.m
-index 65a329c..6d7005d 100644
+index 65a329c..ba96e90 100644
 --- a/node_modules/react-native-carplay/ios/RNCarPlay.m
 +++ b/node_modules/react-native-carplay/ios/RNCarPlay.m
 @@ -1,6 +1,7 @@
@@ -20,7 +20,7 @@ index 65a329c..6d7005d 100644
          [nowPlayingTemplate setAlbumArtistButtonEnabled:[RCTConvert BOOL:config[@"albumArtistButton"]]];
          [nowPlayingTemplate setUpNextTitle:[RCTConvert NSString:config[@"upNextTitle"]]];
          [nowPlayingTemplate setUpNextButtonEnabled:[RCTConvert BOOL:config[@"upNextButton"]]];
-+        
++        center.playbackState = MPNowPlayingPlaybackStatePlaying;
          template = nowPlayingTemplate;
      } else if ([type isEqualToString:@"tabbar"]) {
          CPTabBarTemplate *tabBarTemplate = [[CPTabBarTemplate alloc] initWithTemplates:[self parseTemplatesFrom:config]];
