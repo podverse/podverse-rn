@@ -9,6 +9,7 @@ import { PV } from '../resources'
 // import { saveStreamingValueTransactionsToTransactionQueue } from '../services/v4v/v4v'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo, loadChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { handleSleepTimerCountEvent } from '../state/actions/sleepTimer'
 // import { v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import PVEventEmitter from './eventEmitter'
 import {
@@ -239,7 +240,8 @@ export const startBackgroundTimer = () => {
 // let valueStreamingIntervalSecondCount = 1
 let chapterIntervalSecondCount = 0
 const handleBackgroundTimerInterval = () => {
-  const { chapterIntervalActive, clipIntervalActive } = getGlobal()
+  const { chapterIntervalActive, clipIntervalActive, player } = getGlobal()
+  const { sleepTimer } = player
   if (clipIntervalActive) {
     stopCheckClipIfEndTimeReached()
   }
@@ -250,6 +252,10 @@ const handleBackgroundTimerInterval = () => {
     if (chapterIntervalActive) {
       loadChapterPlaybackInfo()
     }
+  }
+
+  if (sleepTimer?.isActive) {
+    handleSleepTimerCountEvent()
   }
 
   // playerGetState().then(async (playbackState) => {

@@ -5,7 +5,6 @@ import { Button, SafeAreaView, ScrollView, Text, TimePicker } from '../component
 import { translate } from '../lib/i18n'
 import { convertSecToHHMMSSAccessibilityLabel } from '../lib/utility'
 import { PV } from '../resources'
-import { sleepTimerIsRunning } from '../services/sleepTimer'
 import { trackPageView } from '../services/tracking'
 import {
   pauseSleepTimerStateUpdates,
@@ -34,13 +33,6 @@ export class SleepTimerScreen extends React.Component<Props> {
   })
 
   componentDidMount() {
-    const isActive = sleepTimerIsRunning()
-    updateSleepTimerTimeRemaining()
-
-    if (isActive) {
-      resumeSleepTimerStateUpdates()
-    }
-
     trackPageView('/sleep-timer', 'Sleep Timer Screen')
   }
 
@@ -53,9 +45,7 @@ export class SleepTimerScreen extends React.Component<Props> {
     if (isActive) {
       stopSleepTimer()
     } else {
-      const { timeRemaining } = this.global.player.sleepTimer
-      startSleepTimer(timeRemaining)
-      resumeSleepTimerStateUpdates()
+      startSleepTimer()
     }
   }
 
