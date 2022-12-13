@@ -1,5 +1,4 @@
 import { getMediaRefStartPosition, NowPlayingItem } from 'podverse-shared'
-import { Dimensions } from 'react-native'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'

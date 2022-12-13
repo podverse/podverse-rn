@@ -7,7 +7,6 @@ import { convertSecToHHMMSSAccessibilityLabel } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import {
-  pauseSleepTimerStateUpdates,
   setSleepTimerTimeRemaining,
   startSleepTimer,
   stopSleepTimer
@@ -32,10 +31,6 @@ export class SleepTimerScreen extends React.Component<Props> {
 
   componentDidMount() {
     trackPageView('/sleep-timer', 'Sleep Timer Screen')
-  }
-
-  componentWillUnmount() {
-    pauseSleepTimerStateUpdates()
   }
 
   _toggleSleepTimer = () => {

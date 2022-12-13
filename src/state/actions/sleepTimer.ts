@@ -7,14 +7,6 @@ import {
   setSleepTimerDefaultTimeRemaining
 } from '../../services/sleepTimer'
 
-export const pauseSleepTimerStateUpdates = () => {
-  const { sleepTimer } = getGlobal().player
-  setGlobal({ sleepTimer: {
-    ...sleepTimer,
-    isActive: false
-  }})
-}
-
 export const handleSleepTimerCountEvent = () => {
   const { timeRemaining } = getGlobal().player.sleepTimer
   const newTimeRemaining = timeRemaining > 0 ? timeRemaining - 1 : 0
@@ -26,27 +18,26 @@ export const handleSleepTimerCountEvent = () => {
 }
 
 const handleSleepTimerEndReached = () => {
-    pauseSleepTimerStateUpdates()
-    playerHandlePauseWithUpdate()
+  playerHandlePauseWithUpdate()
 
-    // Wait for the SleepTimer service to reset the timeRemaining
-    // to the defaultTimeRemaining before updating state.
-    setTimeout(() => {
-      (async () => {
-        const globalState = getGlobal()
-        const defaultTimeRemaining = await getSleepTimerDefaultTimeRemaining()
-        setGlobal({
-          player: {
-            ...globalState.player,
-            sleepTimer: {
-              ...globalState.player.sleepTimer,
-              isActive: false,
-              timeRemaining: defaultTimeRemaining
-            }
+  // Wait for the SleepTimer service to reset the timeRemaining
+  // to the defaultTimeRemaining before updating state.
+  setTimeout(() => {
+    (async () => {
+      const globalState = getGlobal()
+      const defaultTimeRemaining = await getSleepTimerDefaultTimeRemaining()
+      setGlobal({
+        player: {
+          ...globalState.player,
+          sleepTimer: {
+            ...globalState.player.sleepTimer,
+            isActive: false,
+            timeRemaining: defaultTimeRemaining
           }
-        })
-      })()
-    }, 1000)
+        }
+      })
+    })()
+  }, 1000)
 }
 
 export const setSleepTimerTimeRemaining = (hours: number, minutes: number, seconds: number) => {
@@ -82,7 +73,6 @@ export const startSleepTimer = () => {
 
 export const stopSleepTimer = () => {
   const globalState = getGlobal()
-  pauseSleepTimerStateUpdates()
 
   setGlobal({
     player: {
