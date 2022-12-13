@@ -182,12 +182,12 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
 
 // PVEventEmitter.on(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED, handleValueStreamingToggle)
 
-/*
-  BACKGROUND TIMER
-*/
-
 export const startBackgroundTimer = () => {
   BackgroundTimer.runBackgroundTimer(handleBackgroundTimerInterval, 1000)
+}
+
+export const stopBackgroundTimer = () => {
+  BackgroundTimer.stopBackgroundTimer()
 }
 
 // let valueStreamingIntervalSecondCount = 1
