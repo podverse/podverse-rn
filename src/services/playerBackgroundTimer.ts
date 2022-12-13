@@ -81,11 +81,7 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
 }
 
 export const syncNowPlayingItemWithTrack = () => {
-  // If the clipEndInterval is already running, stop it before the clip is
-  // reloaded in the handleSyncNowPlayingItem function.
-  const checkClipEndTimeShouldStop = true
-  const streamingValueShouldStop = false
-  stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeShouldStop, streamingValueShouldStop)
+  stopClipInterval()
 
   // The first setTimeout is an attempt to prevent the following:
   // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
@@ -133,31 +129,6 @@ export const syncNowPlayingItemWithTrack = () => {
   setTimeout(sync, 1000)
 }
 
-export const stopBackgroundTimerIfShouldBeStopped = async (
-  checkClipEndTimeShouldStop: boolean,
-  streamingValueShouldStop: boolean
-) => {
-  const globalState = getGlobal()
-  const { nowPlayingItem } = globalState.player
-
-  if (!checkClipEndTimeShouldStop && nowPlayingItem?.clipEndTime) {
-    const clipHasEnded = await getClipHasEnded()
-    if (clipHasEnded) {
-      checkClipEndTimeShouldStop = true
-    }
-  }
-
-  const { streamingValueOn } = getGlobal().session.v4v
-
-  if (!streamingValueShouldStop && !streamingValueOn) {
-    streamingValueShouldStop = true
-  }
-
-  if (checkClipEndTimeShouldStop && streamingValueShouldStop) {
-    stopClipInterval()
-  }
-}
-
 const stopCheckClipIfEndTimeReached = () => {
   (async () => {
     const globalState = getGlobal()
@@ -168,11 +139,9 @@ const stopCheckClipIfEndTimeReached = () => {
       if (clipEndTime && currentPosition > clipEndTime) {
         playerHandlePauseWithUpdate()
         await setClipHasEnded(true)
+        stopClipInterval()
       }
     }
-    const checkClipEndTimeStopped = false
-    const streamingValueStopped = false
-    stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeStopped, streamingValueStopped)
   })()
 }
 
@@ -226,6 +195,7 @@ let chapterIntervalSecondCount = 0
 const handleBackgroundTimerInterval = () => {
   const { chapterIntervalActive, clipIntervalActive, player } = getGlobal()
   const { sleepTimer } = player
+  
   if (clipIntervalActive) {
     stopCheckClipIfEndTimeReached()
   }
