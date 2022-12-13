@@ -9,10 +9,10 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { playerHandleSeekTo } from '../services/player'
 import {
-  clearChapterInterval,
   getChapterForTimeAndSetOnState,
   loadChapterPlaybackInfo,
-  startChapterInterval
+  pauseChapterInterval,
+  resumeChapterInterval
 } from '../state/actions/playerChapters'
 import { sliderStyles } from '../styles'
 import { Text } from '.'
@@ -166,14 +166,15 @@ export function PlayerProgressBar(props: Props) {
         minimumTrackTintColor={PV.Colors.skyDark}
         maximumTrackTintColor={PV.Colors.gray}
         onSlidingStart={(newProgressValue) => {
-          clearChapterInterval()
+          pauseChapterInterval()
           const slidingPositionOverride = newProgressValue * parentScopeDuration
           setLocalState({ ...localState, slidingPositionOverride })
         }}
         onSlidingComplete={async (newProgressValue) => {
           const innerPosition = newProgressValue * parentScopeDuration
           await playerHandleSeekTo(innerPosition)
-          startChapterInterval()
+          loadChapterPlaybackInfo()
+          resumeChapterInterval()
 
           /*
             Calling PVAudioPlayer.seekTo(innerPosition) in playerHandleSeekTo causes the progress bar
