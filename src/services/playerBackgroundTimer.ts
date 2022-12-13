@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
-import { getGlobal, setGlobal } from 'reactn'
+import { getGlobal } from 'reactn'
 import BackgroundTimer from 'react-native-background-timer'
 // import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
