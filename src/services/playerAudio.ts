@@ -110,7 +110,8 @@ export const audioUpdateTrackPlayerCapabilities = () => {
     // alwaysPauseOnInterruption: Platform.OS === 'ios',
     stopWithApp: true,
     backwardJumpInterval: parseInt(jumpBackwardsTime, 10),
-    forwardJumpInterval: parseInt(jumpForwardsTime, 10)
+    forwardJumpInterval: parseInt(jumpForwardsTime, 10),
+    ...(Platform.OS === 'ios' ? { progressUpdateEventInterval: 1 } : {})
   })
 }
 
