@@ -19,7 +19,6 @@ import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
 import { downloadCategoriesList } from './src/services/category'
 import PVEventEmitter from './src/services/eventEmitter'
-import { startBackgroundTimer, stopBackgroundTimer } from './src/services/playerBackgroundTimer'
 import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
@@ -67,12 +66,6 @@ class App extends Component<Props, State> {
   async componentDidMount() {
     TrackPlayer.registerPlaybackService(() => require('./src/services/playerAudioEvents'))
     
-    // stopBackgroundTimer if IS_DEV to prevent duplicate timers from hot module reloading
-    if (Config.IS_DEV) {
-      stopBackgroundTimer()
-    }
-    startBackgroundTimer()
-
     StatusBar.setBarStyle('light-content')
     Platform.OS === 'android' && StatusBar.setBackgroundColor(PV.Colors.ink, true)
     const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
