@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
-import BackgroundTimer from 'react-native-background-timer'
 // import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
@@ -182,12 +181,16 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
 
 // PVEventEmitter.on(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED, handleValueStreamingToggle)
 
+let timerInterval: any = null
+
 export const startBackgroundTimer = () => {
-  BackgroundTimer.runBackgroundTimer(handleBackgroundTimerInterval, 1000)
+  timerInterval = setInterval(handleBackgroundTimerInterval, 1000)
 }
 
 export const stopBackgroundTimer = () => {
-  BackgroundTimer.stopBackgroundTimer()
+  if (timerInterval) {
+    clearInterval(timerInterval)
+  }
 }
 
 // let valueStreamingIntervalSecondCount = 1

@@ -286,8 +286,6 @@ PODS:
     - glog
   - react-native-background-downloader (2.3.4):
     - React
-  - react-native-background-timer (2.4.0):
-    - React
   - react-native-carplay (2.1.0):
     - React
   - react-native-config (1.4.3):
@@ -481,7 +479,6 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-background-downloader (from `../node_modules/react-native-background-downloader`)
-  - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - react-native-carplay (from `../node_modules/react-native-carplay`)
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
@@ -589,8 +586,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-background-downloader:
     :path: "../node_modules/react-native-background-downloader"
-  react-native-background-timer:
-    :path: "../node_modules/react-native-background-timer"
   react-native-carplay:
     :path: "../node_modules/react-native-carplay"
   react-native-config:
@@ -715,7 +710,6 @@ SPEC CHECKSUMS:
   React-jsinspector: 953260b8580780a6e81f2a6d319a8d42fd5028d8
   React-logger: fa4ff1e9c7e115648f7c5dafb7c20822ab4f7a7e
   react-native-background-downloader: 4a034cf39a3b00fac57364984e360a4f180a5efb
-  react-native-background-timer: 029c606b3fd6dd476b153e177c518b6ade4c169f
   react-native-carplay: c95ba25269364772d115c61c4554ed476559d318
   react-native-config: 387b1ea507bc50a2059e69149dac1342b9532f58
   react-native-document-picker: b0f989906fda1c1af4257cf0c7958229defe51ac

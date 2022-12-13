@@ -1729,11 +1729,6 @@
   dependencies:
     ts-toolbelt "^6.15.1"
 
-"@types/react-native-background-timer@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@types/react-native-background-timer/-/react-native-background-timer-2.0.0.tgz#c44c57f8fbca9d9d5521fdd72a8f55232b79381e"
-  integrity sha512-y5VW82dL/ESOLg+5QQHyBdsFVA4ZklENxmOyxv8o06T+3HBG2JOSuz/CIPz1vKdB7dmWDGPZNuPosdtnp+xv2A==
-
 "@types/react-native-dialog@8.0.0":
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/@types/react-native-dialog/-/react-native-dialog-8.0.0.tgz#2532a9b76787ddb4e63fbb02fd8daf42d601e0c8"
@@ -8451,11 +8446,6 @@ react-native-background-downloader@2.3.4:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/react-native-background-downloader/-/react-native-background-downloader-2.3.4.tgz#050a94b044b0a204f1c41b9852d4d53dcefe527c"
   integrity sha512-SqAnsf3dJ/aoj2zq8zG/qVcQZxeK3Le0PsoNQ00G/q6oDho2kHNfIOxthD/00B0t384J3u2gWurwRW8idI79zg==
-
-react-native-background-timer@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/react-native-background-timer/-/react-native-background-timer-2.4.0.tgz#b659fdc8ce8ddbed04fbb296e2ec9f4ad8e1659f"
-  integrity sha512-00DphusbzXUuJDP+SSRe7FJczFWzrCErr+2TdRxYfbQjpDaRk3rXw8nhlQXI5U6KthquEQOrCRMq2F2hi/HKLg==
 
 react-native-carplay@2.1.0:
   version "2.1.0"
