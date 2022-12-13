@@ -39,7 +39,7 @@ export class SleepTimerScreen extends React.Component<Props> {
   }
 
   _toggleSleepTimer = () => {
-    this.global.player.sleepTimer.isActive ? stopSleepTimer() : startSleepTimer()
+    this.global?.player?.sleepTimer?.isActive ? stopSleepTimer() : startSleepTimer()
   }
 
   _updateSleepTimer = (hours: number, minutes: number, seconds: number) => {
