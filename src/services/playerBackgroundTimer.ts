@@ -8,7 +8,9 @@ import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
 // import { saveStreamingValueTransactionsToTransactionQueue } from '../services/v4v/v4v'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
-import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { clearChapterPlaybackInfo, loadChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { startCheckClipEndTime, stopClipInterval } from '../state/actions/playerClips'
+import { handleSleepTimerCountEvent } from '../state/actions/sleepTimer'
 // import { v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import PVEventEmitter from './eventEmitter'
 import {
@@ -79,11 +81,7 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
 }
 
 export const syncNowPlayingItemWithTrack = () => {
-  // If the clipEndInterval is already running, stop it before the clip is
-  // reloaded in the handleSyncNowPlayingItem function.
-  const checkClipEndTimeShouldStop = true
-  const streamingValueShouldStop = false
-  stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeShouldStop, streamingValueShouldStop)
+  stopClipInterval()
 
   // The first setTimeout is an attempt to prevent the following:
   // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
@@ -131,48 +129,6 @@ export const syncNowPlayingItemWithTrack = () => {
   setTimeout(sync, 1000)
 }
 
-/*
-  HANDLE CLIP END TIME INTERVAL
-*/
-
-const startCheckClipEndTime = async () => {
-  const globalState = getGlobal()
-  const { nowPlayingItem } = globalState.player
-
-  if (nowPlayingItem) {
-    const { clipEndTime, clipId } = nowPlayingItem
-    if (clipId && clipEndTime) {
-      await setClipHasEnded(false)
-      startBackgroundTimer()
-    }
-  }
-}
-
-export const stopBackgroundTimerIfShouldBeStopped = async (
-  checkClipEndTimeShouldStop: boolean,
-  streamingValueShouldStop: boolean
-) => {
-  const globalState = getGlobal()
-  const { nowPlayingItem } = globalState.player
-
-  if (!checkClipEndTimeShouldStop && nowPlayingItem?.clipEndTime) {
-    const clipHasEnded = await getClipHasEnded()
-    if (clipHasEnded) {
-      checkClipEndTimeShouldStop = true
-    }
-  }
-
-  const { streamingValueOn } = getGlobal().session.v4v
-
-  if (!streamingValueShouldStop && !streamingValueOn) {
-    streamingValueShouldStop = true
-  }
-
-  if (checkClipEndTimeShouldStop && streamingValueShouldStop) {
-    stopBackgroundTimer()
-  }
-}
-
 const stopCheckClipIfEndTimeReached = () => {
   (async () => {
     const globalState = getGlobal()
@@ -183,11 +139,9 @@ const stopCheckClipIfEndTimeReached = () => {
       if (clipEndTime && currentPosition > clipEndTime) {
         playerHandlePauseWithUpdate()
         await setClipHasEnded(true)
+        stopClipInterval()
       }
     }
-    const checkClipEndTimeStopped = false
-    const streamingValueStopped = false
-    stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeStopped, streamingValueStopped)
   })()
 }
 
@@ -228,22 +182,35 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
 
 // PVEventEmitter.on(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED, handleValueStreamingToggle)
 
-/*
-  BACKGROUND TIMER
-*/
-
-const startBackgroundTimer = () => {
-  stopBackgroundTimer()
+export const startBackgroundTimer = () => {
   BackgroundTimer.runBackgroundTimer(handleBackgroundTimerInterval, 1000)
 }
 
-const stopBackgroundTimer = () => {
+export const stopBackgroundTimer = () => {
   BackgroundTimer.stopBackgroundTimer()
 }
 
 // let valueStreamingIntervalSecondCount = 1
+let chapterIntervalSecondCount = 0
 const handleBackgroundTimerInterval = () => {
-  stopCheckClipIfEndTimeReached()
+  const { chapterIntervalActive, clipIntervalActive, player } = getGlobal()
+  const { sleepTimer } = player
+  
+  if (clipIntervalActive) {
+    stopCheckClipIfEndTimeReached()
+  }
+
+  chapterIntervalSecondCount++
+  if (chapterIntervalSecondCount >= 3) {
+    chapterIntervalSecondCount = 0
+    if (chapterIntervalActive) {
+      loadChapterPlaybackInfo()
+    }
+  }
+
+  if (sleepTimer?.isActive) {
+    handleSleepTimerCountEvent()
+  }
 
   // playerGetState().then(async (playbackState) => {
   //   const globalState = getGlobal()

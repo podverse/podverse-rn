@@ -50,10 +50,12 @@ export const loadChapterPlaybackInfo = () => {
   (async () => {
     const globalState = getGlobal()
     const { currentChapters } = globalState
-    const playerPosition = await playerGetPosition()
-    if ((playerPosition || playerPosition === 0) && Array.isArray(currentChapters) && currentChapters.length > 1) {
-      const newCurrentChapter = getChapterForTime(playerPosition)
-      setChapterOnGlobalState(newCurrentChapter)
+    if (Array.isArray(currentChapters) && currentChapters.length > 1) {
+      const playerPosition = await playerGetPosition()
+      if ((playerPosition || playerPosition === 0)) {
+        const newCurrentChapter = getChapterForTime(playerPosition)
+        setChapterOnGlobalState(newCurrentChapter)
+      }
     }
   })()
 }
@@ -184,13 +186,10 @@ export const getChapterForTimeAndSetOnState = async (time: number, haptic?: bool
   }
 }
 
-export let chapterInterval: NodeJS.Timeout
-export const clearChapterInterval = () => {
-  if (chapterInterval) {
-    clearInterval(chapterInterval)
-  }
+export const pauseChapterInterval = () => {
+  setGlobal({ chapterIntervalActive: false })
 }
-export const startChapterInterval = () => {
-  chapterInterval = setInterval(loadChapterPlaybackInfo, 3000)
+
+export const resumeChapterInterval = () => {
+  setGlobal({ chapterIntervalActive: true })
 }
-startChapterInterval()
