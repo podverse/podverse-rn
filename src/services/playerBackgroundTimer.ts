@@ -205,7 +205,7 @@ export const stopBackgroundTimer = () => {
 
 // let valueStreamingIntervalSecondCount = 1
 let chapterIntervalSecondCount = 0
-const handleBackgroundTimerInterval = () => {
+export const handleBackgroundTimerInterval = () => {
   const { chapterIntervalActive, clipIntervalActive, player } = getGlobal()
   const { sleepTimer } = player
   
