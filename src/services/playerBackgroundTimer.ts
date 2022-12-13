@@ -9,6 +9,7 @@ import { PV } from '../resources'
 // import { saveStreamingValueTransactionsToTransactionQueue } from '../services/v4v/v4v'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo, loadChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { startClipInterval, stopClipInterval } from '../state/actions/playerClips'
 import { handleSleepTimerCountEvent } from '../state/actions/sleepTimer'
 // import { v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import PVEventEmitter from './eventEmitter'
@@ -144,7 +145,7 @@ const startCheckClipEndTime = async () => {
     const { clipEndTime, clipId } = nowPlayingItem
     if (clipId && clipEndTime) {
       await setClipHasEnded(false)
-      setGlobal({ clipIntervalActive: true })
+      startClipInterval()
     }
   }
 }
@@ -170,7 +171,7 @@ export const stopBackgroundTimerIfShouldBeStopped = async (
   }
 
   if (checkClipEndTimeShouldStop && streamingValueShouldStop) {
-    setGlobal({ clipIntervalActive: false })
+    stopClipInterval()
   }
 }
 
