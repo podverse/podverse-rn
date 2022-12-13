@@ -86,9 +86,16 @@ const podcastsListTab = () => {
 
 export const handleCarPlayPodcastsUpdate = async () => {
   if (podcastsList) {
-    podcastsListLoaded = true
+    podcastsList.updateSections([
+      {
+        items: []
+      }
+    ])
+
     const { subscribedPodcasts } = getGlobal()
     const listItems = await generatePodcastListItems(subscribedPodcasts)
+    podcastsListLoaded = true
+    
     if (!listItems.length) {
       listItems.push(getEmptyCellWithTitle("No subscribed Podcasts"))
     }
@@ -206,6 +213,12 @@ const queueItemsListTab = () => {
 
 export const handleCarPlayQueueUpdate = async () => {
   if (queueList) {
+    queueList.updateSections([
+      {
+        items: []
+      }
+    ])
+
     const { session } = getGlobal()
     const updatedItems = session?.userInfo?.queueItems || []
     const listItems = await generateNPIListItems(updatedItems)
@@ -215,7 +228,6 @@ export const handleCarPlayQueueUpdate = async () => {
 
     queueList.updateSections([
       {
-        header: '',
         items: listItems
       }
     ])
@@ -254,6 +266,12 @@ const historyItemsListTab = () => {
 
 export const handleCarPlayHistoryUpdate = async () => {
   if (historyList) {
+    historyList.updateSections([
+      {
+        items: []
+      }
+    ])
+
     const { session } = getGlobal()
     const updatedItems = session?.userInfo?.historyItems || []
     // Limit historyItems to the most recent 20 items, for performance reasons.
@@ -265,7 +283,6 @@ export const handleCarPlayHistoryUpdate = async () => {
 
     historyList.updateSections([
       {
-        header: '',
         items: listItems
       }
     ])
