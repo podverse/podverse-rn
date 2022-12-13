@@ -9,7 +9,7 @@ import { PV } from '../resources'
 // import { saveStreamingValueTransactionsToTransactionQueue } from '../services/v4v/v4v'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo, loadChapterPlaybackInfo } from '../state/actions/playerChapters'
-import { startClipInterval, stopClipInterval } from '../state/actions/playerClips'
+import { startCheckClipEndTime, stopClipInterval } from '../state/actions/playerClips'
 import { handleSleepTimerCountEvent } from '../state/actions/sleepTimer'
 // import { v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import PVEventEmitter from './eventEmitter'
@@ -131,23 +131,6 @@ export const syncNowPlayingItemWithTrack = () => {
   }
 
   setTimeout(sync, 1000)
-}
-
-/*
-  HANDLE CLIP END TIME INTERVAL
-*/
-
-const startCheckClipEndTime = async () => {
-  const globalState = getGlobal()
-  const { nowPlayingItem } = globalState.player
-
-  if (nowPlayingItem) {
-    const { clipEndTime, clipId } = nowPlayingItem
-    if (clipId && clipEndTime) {
-      await setClipHasEnded(false)
-      startClipInterval()
-    }
-  }
 }
 
 export const stopBackgroundTimerIfShouldBeStopped = async (
