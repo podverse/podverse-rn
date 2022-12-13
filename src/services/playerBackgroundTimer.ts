@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
-import BackgroundTimer from 'react-native-background-timer'
 // import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
@@ -26,6 +25,7 @@ import {
 import { getNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './userNowPlayingItem'
 import { removeQueueItem } from './queue'
 import { addOrUpdateHistoryItem } from './userHistoryItem'
+import { Platform } from 'react-native'
 
 const debouncedSetPlaybackPosition = debounce(playerSetPositionWhenDurationIsAvailable, 1000, {
   leading: true,
@@ -182,17 +182,30 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
 
 // PVEventEmitter.on(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED, handleValueStreamingToggle)
 
+let timerInterval: any = null
+
 export const startBackgroundTimer = () => {
-  BackgroundTimer.runBackgroundTimer(handleBackgroundTimerInterval, 1000)
+  // TODO: The playback-progress-updated is not yet available in our
+  // v2 patch of the react-native-track-player java files.
+  // I tried to copy the playback-progress-updated event handling from
+  // react-native-track-player v3 code like I did with the swift file,
+  // but the v3 Android code looks very different than v2,
+  // and v3 is written in Kotlin, and I don't know how to translate that to java :[
+  // https://github.com/doublesymmetry/react-native-track-player/search?q=PLAYBACK_PROGRESS_UPDATED&type=code
+  if (Platform.OS === 'android') {
+    timerInterval = setInterval(handleBackgroundTimerInterval, 1000)
+  }
 }
 
 export const stopBackgroundTimer = () => {
-  BackgroundTimer.stopBackgroundTimer()
+  if (timerInterval) {
+    clearInterval(timerInterval)
+  }
 }
 
 // let valueStreamingIntervalSecondCount = 1
 let chapterIntervalSecondCount = 0
-const handleBackgroundTimerInterval = () => {
+export const handleBackgroundTimerInterval = () => {
   const { chapterIntervalActive, clipIntervalActive, player } = getGlobal()
   const { sleepTimer } = player
   

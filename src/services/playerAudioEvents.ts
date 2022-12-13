@@ -31,7 +31,7 @@ import {
   audioGetLoadedTrackIdByIndex,
   audioGetTrackDuration
 } from './playerAudio'
-import { syncNowPlayingItemWithTrack } from './playerBackgroundTimer'
+import { handleBackgroundTimerInterval, syncNowPlayingItemWithTrack } from './playerBackgroundTimer'
 import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
 import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
 
@@ -294,5 +294,10 @@ module.exports = async () => {
         }
       }
     })()
+  })
+
+  PVAudioPlayer.addEventListener('playback-progress-updated', (x: any) => {
+    debugLogger('playback-progress-updated', x)
+    handleBackgroundTimerInterval()
   })
 }
