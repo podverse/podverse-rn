@@ -8,11 +8,9 @@ import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import {
   pauseSleepTimerStateUpdates,
-  resumeSleepTimerStateUpdates,
   setSleepTimerTimeRemaining,
   startSleepTimer,
-  stopSleepTimer,
-  updateSleepTimerTimeRemaining
+  stopSleepTimer
 } from '../state/actions/sleepTimer'
 
 type Props = {
@@ -41,12 +39,7 @@ export class SleepTimerScreen extends React.Component<Props> {
   }
 
   _toggleSleepTimer = () => {
-    const { isActive } = this.global.player.sleepTimer
-    if (isActive) {
-      stopSleepTimer()
-    } else {
-      startSleepTimer()
-    }
+    this.global.player.sleepTimer.isActive ? stopSleepTimer() : startSleepTimer()
   }
 
   _updateSleepTimer = (hours: number, minutes: number, seconds: number) => {
