@@ -25,6 +25,7 @@ import {
 import { getNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './userNowPlayingItem'
 import { removeQueueItem } from './queue'
 import { addOrUpdateHistoryItem } from './userHistoryItem'
+import { Platform } from 'react-native'
 
 const debouncedSetPlaybackPosition = debounce(playerSetPositionWhenDurationIsAvailable, 1000, {
   leading: true,
@@ -184,7 +185,16 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
 let timerInterval: any = null
 
 export const startBackgroundTimer = () => {
-  timerInterval = setInterval(handleBackgroundTimerInterval, 1000)
+  // TODO: The playback-progress-updated is not yet available in our
+  // v2 patch of the react-native-track-player java files.
+  // I tried to copy the playback-progress-updated event handling from
+  // react-native-track-player v3 code like I did with the swift file,
+  // but the v3 Android code looks very different than v2,
+  // and v3 is written in Kotlin, and I don't know how to translate that to java :[
+  // https://github.com/doublesymmetry/react-native-track-player/search?q=PLAYBACK_PROGRESS_UPDATED&type=code
+  if (Platform.OS === 'android') {
+    timerInterval = setInterval(handleBackgroundTimerInterval, 1000)
+  }
 }
 
 export const stopBackgroundTimer = () => {
