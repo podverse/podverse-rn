@@ -5,6 +5,7 @@ import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { sortPodcastArrayAlphabetically } from '../services/podcast'
 import { clearNowPlayingItem, getNowPlayingItem } from '../services/userNowPlayingItem'
+import { errorLogger } from './logger'
 import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
 import { BackgroundDownloader, deleteDownloadedEpisode } from './downloader'
 
@@ -202,7 +203,7 @@ export const removeDownloadedPodcastsFromInternalStorage = async () => {
       try {
         await deleteDownloadedEpisode(episode)
       } catch (error) {
-        console.log('Error deleting episode: ', episode.id)
+        errorLogger('Error deleting episode: ', episode.id)
       }
     }
   }
@@ -227,7 +228,7 @@ export const moveDownloadedPodcastsToExternalStorage = async () => {
           await RNFS.moveFile(source, dest)
         }
       } catch (error) {
-        console.log('Error moving episode: ', episode.id)
+        errorLogger('Error moving episode: ', episode.id)
       }
     }
   }

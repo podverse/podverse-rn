@@ -69,7 +69,7 @@
 //           addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
 //         })
 //       } catch (error) {
-//         console.log(error)
+//         errorLogger(error)
 //         Alert.alert(translate('QR Code Error'), error.message || error, [
 //           {
 //             text: translate('OK'),

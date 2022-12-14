@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Alert, Linking } from 'react-native'
 import * as RNKeychain from 'react-native-keychain'
+import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
@@ -101,7 +102,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
   try {
     queueItems = await getQueueItems()
   } catch (error) {
-    console.log('getAuthenticatedUserInfoLocally error', error)
+    errorLogger('getAuthenticatedUserInfoLocally error', error)
   }
 
   try {
@@ -303,7 +304,7 @@ export const verifyEmail = async (token: string) => {
       ok = true
     }
   } catch (error) {
-    console.log('verifyEmail', error)
+    errorLogger('verifyEmail', error)
   }
   return ok
 }

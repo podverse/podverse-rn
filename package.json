@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.8.0",
+  "version": "4.9.0",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -72,7 +72,7 @@
     "react": "17.0.1",
     "react-native": "0.66.5",
     "react-native-background-downloader": "2.3.4",
-    "react-native-background-timer": "2.4.0",
+    "react-native-carplay": "2.1.0",
     "react-native-cheerio": "1.0.0-rc.4",
     "react-native-confetti-cannon": "1.5.2",
     "react-native-config": "1.4.3",
@@ -109,7 +109,7 @@
     "react-native-vector-icons": "8.1.0",
     "react-native-video": "^5.2.0",
     "react-native-video-controls": "^2.8.1",
-    "react-native-webview": "11.13.0",
+    "react-native-webview": "11.26.0",
     "react-native-xml2js": "1.0.3",
     "react-navigation": "4.4.4",
     "react-navigation-stack": "2.10.4",
@@ -133,7 +133,6 @@
     "@types/lodash.memoize": "4.1.2",
     "@types/react": "17.0.1",
     "@types/react-native": "0.64.2",
-    "@types/react-native-background-timer": "2.0.0",
     "@types/react-native-dialog": "8.0.0",
     "@types/react-native-share": "3.3.3",
     "@types/react-native-vector-icons": "6.4.8",

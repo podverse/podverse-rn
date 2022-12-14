@@ -7,6 +7,7 @@ import { Platform } from 'react-native'
 import Share, { Options } from 'react-native-share'
 import RNFS from 'react-native-fs'
 import { getSubscribedPodcasts } from '../state/actions/podcast'
+import { errorLogger } from './logger'
 
 export const exportSubscribedPodcastsAsOPML = async () => {
   const subscribedPodcasts = await getSubscribedPodcasts()
@@ -33,7 +34,7 @@ const downloadOPMLExport = async (xmlData: string) => {
     await Share.open(options)
     await RNFS.unlink(path)
   } catch (err) {
-    console.log('Download opml error: ', err.message)
+    errorLogger('Download opml error: ', err.message)
   }
 }
 

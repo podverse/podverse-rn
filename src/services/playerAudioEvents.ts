@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { Platform } from 'react-native'
 import { State } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
+import { debugLogger, errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { downloadedEpisodeMarkForDeletion } from '../state/actions/downloads'
 import {
@@ -30,7 +31,7 @@ import {
   audioGetLoadedTrackIdByIndex,
   audioGetTrackDuration
 } from './playerAudio'
-import { syncNowPlayingItemWithTrack } from './playerBackgroundTimer'
+import { handleBackgroundTimerInterval, syncNowPlayingItemWithTrack } from './playerBackgroundTimer'
 import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
 import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
 
@@ -108,15 +109,15 @@ export const audioHandleTrackEnded = (x: any) => {
 
 // eslint-disable-next-line @typescript-eslint/require-await
 module.exports = async () => {
-  PVAudioPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
+  PVAudioPlayer.addEventListener('playback-error', (x) => errorLogger('playback error', x))
 
   PVAudioPlayer.addEventListener('playback-metadata-received', (x) => {
-    console.log('playback-metadata-received', x)
+    debugLogger('playback-metadata-received', x)
   })
 
   PVAudioPlayer.addEventListener('playback-track-changed', (x: any) => {
     (async () => {
-      console.log('playback-track-changed', x)
+      debugLogger('playback-track-changed', x)
 
       const shouldSkip = await AsyncStorage.getItem(PV.Events.PLAYER_VIDEO_IS_LOADING)
       if (!shouldSkip) {
@@ -129,7 +130,7 @@ module.exports = async () => {
   // NOTE: PVAudioPlayer.reset will call the playback-queue-ended event on Android!!!
   PVAudioPlayer.addEventListener('playback-queue-ended', (x) => {
     (async () => {
-      console.log('playback-queue-ended', x)
+      debugLogger('playback-queue-ended', x)
 
       const shouldSkip = await AsyncStorage.getItem(PV.Events.PLAYER_VIDEO_IS_LOADING)
       if (!shouldSkip) {
@@ -140,7 +141,7 @@ module.exports = async () => {
 
   PVAudioPlayer.addEventListener('playback-state', (x) => {
     (async () => {
-      console.log('playback-state', x)
+      debugLogger('playback-state', x)
 
       PVEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
@@ -194,7 +195,7 @@ module.exports = async () => {
   })
 
   PVAudioPlayer.addEventListener('playback-error', (x: any) => {
-    console.log('playback-error', x)
+    errorLogger('playback-error', x)
     // TODO: post error to our logs!
     PVEventEmitter.emit(PV.Events.PLAYER_PLAYBACK_ERROR)
   })
@@ -266,7 +267,7 @@ module.exports = async () => {
   let wasPausedByDuck = false
   PVAudioPlayer.addEventListener('remote-duck', (x: any) => {
     (async () => {
-      console.log('remote-duck', x)
+      debugLogger('remote-duck', x)
       const { paused, permanent } = x
       const currentState = await audioGetState()
       const isPlaying = audioCheckIfIsPlaying(currentState)
@@ -293,5 +294,10 @@ module.exports = async () => {
         }
       }
     })()
+  })
+
+  PVAudioPlayer.addEventListener('playback-progress-updated', (x: any) => {
+    debugLogger('playback-progress-updated', x)
+    handleBackgroundTimerInterval()
   })
 }

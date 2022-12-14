@@ -46,6 +46,8 @@ const initialTheme: InitialState = {
     shouldShowAlert: false
   },
   parsedTranscript: null,
+  clipIntervalActive: false,
+  chapterIntervalActive: true,
   currentChapter: null,
   currentChapters: [],
   currentChaptersStartTimePositions: [],

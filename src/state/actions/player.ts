@@ -7,6 +7,7 @@ import {
   NowPlayingItem
 } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
+import { errorLogger } from '../../lib/logger'
 import { getParsedTranscript } from '../../lib/transcriptHelpers'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
@@ -287,7 +288,7 @@ const enrichParsedTranscript = (item: NowPlayingItem) => {
           await getParsedTranscript(item.episodeTranscript[0].url, item.episodeTranscript[0].type)
         setGlobal({ parsedTranscript })
       } catch (error) {
-        console.log('playerLoadNowPlayingItem transcript parsing error', error)
+        errorLogger('playerLoadNowPlayingItem transcript parsing error', error)
       }
     })
   } else {

@@ -1,4 +1,5 @@
 import { getGlobal, setGlobal } from 'reactn'
+import { errorLogger } from '../../lib/logger'
 import {
   clearEpisodesCount as clearEpisodesCountService,
   clearEpisodesCountForPodcast as clearEpisodesCountForPodcastService,
@@ -87,6 +88,6 @@ export const syncNewEpisodesCountWithHistory = async () => {
     // After updated in storage, then update the global state
     getNewEpisodesCount()
   } catch (error) {
-    console.log('syncNewEpisodesCountWithHistory error', error)
+    errorLogger('syncNewEpisodesCountWithHistory error', error)
   }
 }

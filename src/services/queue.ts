@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from 'podverse-shared'
+import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
 import { playerSyncPlayerWithQueue } from './player'
@@ -183,7 +184,7 @@ const getQueueItemsFromServer = async () => {
       opts: { credentials: 'include' }
     })
   } catch (error) {
-    console.log('getQueueItemsFromServer error', error)
+    errorLogger('getQueueItemsFromServer error', error)
   }
 
   const userQueueItems = response && response.data && response.data.userQueueItems

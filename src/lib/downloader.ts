@@ -12,11 +12,12 @@ import { getPodcastCredentialsHeader } from '../services/parser'
 import { getPodcastFeedUrlAuthority } from '../services/podcast'
 import { getSecureUrl } from '../services/tools'
 import * as DownloadState from '../state/actions/downloads'
+import { debugLogger, errorLogger } from './logger'
 import { addDownloadedPodcastEpisode, getDownloadedPodcasts } from './downloadedPodcast'
+import { downloadCustomFileNameId } from './hash'
 import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode } from './downloadingEpisode'
 import { hasValidDownloadingConnection } from './network'
 import { getAppUserAgent, safelyUnwrapNestedVariable } from './utility'
-import { downloadCustomFileNameId } from './hash'
 import { downloadImageFile } from './storage'
 
 export const BackgroundDownloader = () => {
@@ -98,7 +99,7 @@ export const downloadEpisode = async (
   const shouldDownload = await hasValidDownloadingConnection()
 
   if (!shouldDownload) {
-    console.log('downloadEpisode: Does not have a valid downloading connection')
+    debugLogger('downloadEpisode: Does not have a valid downloading connection')
     return
   }
 
@@ -154,8 +155,8 @@ export const downloadEpisode = async (
       if (secureUrlInfo?.secureUrl) {
         downloadUrl = secureUrlInfo.secureUrl
       }
-    } catch (err) {
-      console.log('Secure url not found for http mediaUrl. Info: ', err)
+    } catch (error) {
+      errorLogger('Secure url not found for http mediaUrl. Info: ', error)
     }
   } else if (downloadUrl.indexOf('http://') >= 0) {
     /*
@@ -223,7 +224,7 @@ export const downloadEpisode = async (
               await FileSystem.cp(origDestination, newFileUri)
             }
           } catch (error) {
-            console.log('done error', error)
+            errorLogger('done error', error)
           }
         }
 
@@ -241,7 +242,7 @@ export const downloadEpisode = async (
       })
       .error((error: string) => {
         DownloadState.updateDownloadError(episode.id)
-        console.log('Download canceled due to error: ', error)
+        errorLogger('Download canceled due to error: ', error)
       })
   }, timeout)
 }
@@ -262,7 +263,7 @@ export const deleteDownloadedEpisode = async (episode: Episode) => {
     }
     return true
   } catch (error) {
-    console.log('deleteDownloadedEpisode', error)
+    errorLogger('deleteDownloadedEpisode', error)
     return false
   }
 }

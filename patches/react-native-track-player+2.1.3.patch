@@ -11,6 +11,95 @@ index a241d94..99e7b6b 100644
      implementation "androidx.localbroadcastmanager:localbroadcastmanager:1.1.0-alpha01"
      implementation "com.github.bumptech.glide:glide:4.7.1"
  }
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/results.bin b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/results.bin
+new file mode 100644
+index 0000000..5ff383e
+--- /dev/null
++++ b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/results.bin
+@@ -0,0 +1 @@
++o/debug
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/doublesymmetry/trackplayer/BuildConfig.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/doublesymmetry/trackplayer/BuildConfig.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/BuildConfig.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/BuildConfig.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/TrackPlayer.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/TrackPlayer.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/module/MusicEvents.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/module/MusicEvents.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/module/MusicModule.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/module/MusicModule.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/MusicBinder.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/MusicBinder.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/MusicManager$1.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/MusicManager$1.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/MusicManager.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/MusicManager.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/MusicService.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/MusicService.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/Utils.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/Utils.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/metadata/ButtonEvents.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/metadata/ButtonEvents.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager$1.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager$1.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager$2.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager$2.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager$3.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager$3.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/models/NowPlayingMetadata.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/models/NowPlayingMetadata.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/models/Track$1.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/models/Track$1.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/models/Track$2.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/models/Track$2.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/models/Track.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/models/Track.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/models/TrackMetadata.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/models/TrackMetadata.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/models/TrackType.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/models/TrackType.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/player/ExoPlayback.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/player/ExoPlayback.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/player/LocalPlayback.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/player/LocalPlayback.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/player/SourceMetadata.dex b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/debug/com/guichaguri/trackplayer/service/player/SourceMetadata.dex
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/desugar_graph.bin b/node_modules/react-native-track-player/android/build/.transforms/479a78902862dc0a8489b5ce96982ab8/transformed/desugar_graph.bin
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/.transforms/bd46a68caa57a2cce6558850e7789a11/results.bin b/node_modules/react-native-track-player/android/build/.transforms/bd46a68caa57a2cce6558850e7789a11/results.bin
+new file mode 100644
+index 0000000..1ed65e0
+--- /dev/null
++++ b/node_modules/react-native-track-player/android/build/.transforms/bd46a68caa57a2cce6558850e7789a11/results.bin
+@@ -0,0 +1 @@
++i/
 diff --git a/node_modules/react-native-track-player/android/build/.transforms/d607075085597dd06cba990e00418ef1/results.bin b/node_modules/react-native-track-player/android/build/.transforms/d607075085597dd06cba990e00418ef1/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -30,7 +119,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-track-player/android/build/.transforms/e9bd883bc088a065ffa86d4c4f52f378/transformed/classes/classes.dex b/node_modules/react-native-track-player/android/build/.transforms/e9bd883bc088a065ffa86d4c4f52f378/transformed/classes/classes.dex
 new file mode 100644
-index 0000000..c696e30
+index 0000000..d2e1fb2
 Binary files /dev/null and b/node_modules/react-native-track-player/android/build/.transforms/e9bd883bc088a065ffa86d4c4f52f378/transformed/classes/classes.dex differ
 diff --git a/node_modules/react-native-track-player/android/build/generated/source/buildConfig/debug/com/doublesymmetry/trackplayer/BuildConfig.java b/node_modules/react-native-track-player/android/build/generated/source/buildConfig/debug/com/guichaguri/trackplayer/BuildConfig.java
 similarity index 62%
@@ -118,7 +207,7 @@ index d8560bd..d8f70c0 100644
  aarMetadataVersion=1.0
 +minCompileSdk=1
 diff --git a/node_modules/react-native-track-player/android/build/intermediates/compile_library_classes_jar/debug/classes.jar b/node_modules/react-native-track-player/android/build/intermediates/compile_library_classes_jar/debug/classes.jar
-index 6d9eca3..afaa7ff 100644
+index 6d9eca3..1ab9781 100644
 Binary files a/node_modules/react-native-track-player/android/build/intermediates/compile_library_classes_jar/debug/classes.jar and b/node_modules/react-native-track-player/android/build/intermediates/compile_library_classes_jar/debug/classes.jar differ
 diff --git a/node_modules/react-native-track-player/android/build/intermediates/compile_r_class_jar/debug/R.jar b/node_modules/react-native-track-player/android/build/intermediates/compile_r_class_jar/debug/R.jar
 index f8c9584..a129b45 100644
@@ -1239,7 +1328,7 @@ index 6d480e2..71d2dbd 100644
 +<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/main/assets"/><source path="/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/build/intermediates/shader_assets/debug/out"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/debug/assets"/></dataSet></merger>
 \ No newline at end of file
 diff --git a/node_modules/react-native-track-player/android/build/intermediates/incremental/packageDebugResources/compile-file-map.properties b/node_modules/react-native-track-player/android/build/intermediates/incremental/packageDebugResources/compile-file-map.properties
-index 659b839..151947f 100644
+index 659b839..96aca35 100644
 --- a/node_modules/react-native-track-player/android/build/intermediates/incremental/packageDebugResources/compile-file-map.properties
 +++ b/node_modules/react-native-track-player/android/build/intermediates/incremental/packageDebugResources/compile-file-map.properties
 @@ -1,11 +1,36 @@
@@ -1254,7 +1343,7 @@ index 659b839..151947f 100644
 -/Users/dcvz/Github/react-native-track-player/example/node_modules/react-native-track-player/android/src/main/res/drawable-xhdpi/forward.png=/Users/dcvz/Github/react-native-track-player/example/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-xhdpi-v4/forward.png
 -/Users/dcvz/Github/react-native-track-player/example/node_modules/react-native-track-player/android/src/main/res/drawable-xxhdpi/rewind.png=/Users/dcvz/Github/react-native-track-player/example/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-xxhdpi-v4/rewind.png
 -/Users/dcvz/Github/react-native-track-player/example/node_modules/react-native-track-player/android/src/main/res/drawable-xxxhdpi/rewind.png=/Users/dcvz/Github/react-native-track-player/example/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-xxxhdpi-v4/rewind.png
-+#Sun Nov 06 20:34:15 CST 2022
++#Tue Dec 13 14:28:37 CST 2022
 +/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/main/res/drawable-hdpi/rewind.png=/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-hdpi-v4/rewind.png
 +/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/main/res/drawable-xxhdpi/previous.png=/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-xxhdpi-v4/previous.png
 +/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/main/res/drawable-mdpi/forward.png=/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-mdpi-v4/forward.png
@@ -1310,7 +1399,7 @@ index 0000000..558a504
 Binary files /dev/null and b/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/TrackPlayer.class differ
 diff --git a/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/module/MusicEvents.class b/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/module/MusicEvents.class
 new file mode 100644
-index 0000000..61d1c81
+index 0000000..556f598
 Binary files /dev/null and b/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/module/MusicEvents.class differ
 diff --git a/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/module/MusicModule.class b/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/module/MusicModule.class
 new file mode 100644
@@ -1342,11 +1431,19 @@ index 0000000..f838029
 Binary files /dev/null and b/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/metadata/ButtonEvents.class differ
 diff --git a/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/metadata/MetadataManager$1.class b/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/metadata/MetadataManager$1.class
 new file mode 100644
-index 0000000..f7a8ba0
+index 0000000..a06e19a
 Binary files /dev/null and b/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/metadata/MetadataManager$1.class differ
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/metadata/MetadataManager$2.class b/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/metadata/MetadataManager$2.class
+new file mode 100644
+index 0000000..0a6d35c
+Binary files /dev/null and b/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/metadata/MetadataManager$2.class differ
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/metadata/MetadataManager$3.class b/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/metadata/MetadataManager$3.class
+new file mode 100644
+index 0000000..8d9e25f
+Binary files /dev/null and b/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/metadata/MetadataManager$3.class differ
 diff --git a/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/metadata/MetadataManager.class b/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/metadata/MetadataManager.class
 new file mode 100644
-index 0000000..047456e
+index 0000000..f3e2cb0
 Binary files /dev/null and b/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/metadata/MetadataManager.class differ
 diff --git a/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/models/NowPlayingMetadata.class b/node_modules/react-native-track-player/android/build/intermediates/javac/debug/classes/com/guichaguri/trackplayer/service/models/NowPlayingMetadata.class
 new file mode 100644
@@ -1683,8 +1780,80 @@ diff --git a/node_modules/react-native-track-player/android/build/intermediates/
 new file mode 100644
 index 0000000..5239336
 Binary files /dev/null and b/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-xxxhdpi-v4/stop.png differ
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/doublesymmetry/trackplayer/BuildConfig.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/doublesymmetry/trackplayer/BuildConfig.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/BuildConfig.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/BuildConfig.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/TrackPlayer.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/TrackPlayer.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/module/MusicEvents.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/module/MusicEvents.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/module/MusicModule.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/module/MusicModule.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/MusicBinder.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/MusicBinder.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/MusicManager$1.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/MusicManager$1.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/MusicManager.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/MusicManager.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/MusicService.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/MusicService.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/Utils.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/Utils.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/metadata/ButtonEvents.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/metadata/ButtonEvents.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager$1.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager$1.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager$2.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager$2.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager$3.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager$3.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/metadata/MetadataManager.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/models/NowPlayingMetadata.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/models/NowPlayingMetadata.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/models/Track$1.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/models/Track$1.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/models/Track$2.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/models/Track$2.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/models/Track.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/models/Track.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/models/TrackMetadata.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/models/TrackMetadata.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/models/TrackType.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/models/TrackType.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/player/ExoPlayback.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/player/ExoPlayback.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/player/LocalPlayback.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/player/LocalPlayback.class
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/player/SourceMetadata.class b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_dir/debug/com/guichaguri/trackplayer/service/player/SourceMetadata.class
+new file mode 100644
+index 0000000..e69de29
 diff --git a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_jar/debug/classes.jar b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_jar/debug/classes.jar
-index c0d3f99..c436c70 100644
+index c0d3f99..499c389 100644
 Binary files a/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_jar/debug/classes.jar and b/node_modules/react-native-track-player/android/build/intermediates/runtime_library_classes_jar/debug/classes.jar differ
 diff --git a/node_modules/react-native-track-player/android/build/intermediates/symbol_list_with_package_name/debug/package-aware-r.txt b/node_modules/react-native-track-player/android/build/intermediates/symbol_list_with_package_name/debug/package-aware-r.txt
 index 7f0c20b..e4b44e3 100644
@@ -2591,13 +2760,60 @@ index f082031..e6328a8 100644
 +		INJECTED from /Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/main/AndroidManifest.xml
 diff --git a/node_modules/react-native-track-player/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin b/node_modules/react-native-track-player/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin
 new file mode 100644
-index 0000000..9366b6a
+index 0000000..ba5e842
 Binary files /dev/null and b/node_modules/react-native-track-player/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin differ
+diff --git a/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/module/MusicEvents.java b/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/module/MusicEvents.java
+index 95db8b0..c314780 100644
+--- a/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/module/MusicEvents.java
++++ b/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/module/MusicEvents.java
+@@ -34,6 +34,7 @@ public class MusicEvents extends BroadcastReceiver {
+     public static final String PLAYBACK_TRACK_CHANGED = "playback-track-changed";
+     public static final String PLAYBACK_QUEUE_ENDED = "playback-queue-ended";
+     public static final String PLAYBACK_METADATA = "playback-metadata-received";
++    public static final String PLAYBACK_PROGRESS_UPDATED = "playback-progress-updated";
+     public static final String PLAYBACK_ERROR = "playback-error";
+ 
+     private final ReactContext reactContext;
 diff --git a/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/service/metadata/MetadataManager.java b/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/service/metadata/MetadataManager.java
-index 42dc212..f654b06 100644
+index 42dc212..9227b2d 100644
 --- a/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/service/metadata/MetadataManager.java
 +++ b/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/service/metadata/MetadataManager.java
-@@ -81,7 +81,12 @@ public class MetadataManager {
+@@ -27,6 +27,7 @@ import com.facebook.react.views.imagehelper.ResourceDrawableIdHelper;
+ import com.guichaguri.trackplayer.R;
+ import com.guichaguri.trackplayer.service.MusicManager;
+ import com.guichaguri.trackplayer.service.MusicService;
++import com.guichaguri.trackplayer.module.MusicEvents;
+ import com.guichaguri.trackplayer.service.Utils;
+ import com.guichaguri.trackplayer.service.models.Track;
+ import com.guichaguri.trackplayer.service.models.TrackMetadata;
+@@ -34,6 +35,12 @@ import com.guichaguri.trackplayer.service.player.ExoPlayback;
+ import java.util.ArrayList;
+ import java.util.List;
+ 
++import java.util.Timer;
++import java.util.TimerTask;
++import java.util.Calendar;
++import android.os.Handler;
++import android.os.Looper;
++
+ /**
+  * @author Guichaguri
+  */
+@@ -51,6 +58,13 @@ public class MetadataManager {
+     private SimpleTarget<Bitmap> artworkTarget;
+     private NotificationCompat.Builder builder;
+ 
++    Timer timer = new Timer();
++    private boolean timerHasStarted = false;
++    private String POSITION_KEY = "position";
++    private String DURATION_KEY = "duration";
++    private String BUFFERED_POSITION_KEY = "buffer";
++    private String TRACK_KEY = "track";
++
+     private Action previousAction, rewindAction, playAction, pauseAction, stopAction, forwardAction, nextAction;
+ 
+     public MetadataManager(MusicService service, MusicManager manager) {
+@@ -81,7 +95,12 @@ public class MetadataManager {
          openApp.setAction(Intent.ACTION_VIEW);
          openApp.setData(Uri.parse("trackplayer://notification.click"));
  
@@ -2611,6 +2827,59 @@ index 42dc212..f654b06 100644
  
          builder.setSmallIcon(R.drawable.play);
          builder.setCategory(NotificationCompat.CATEGORY_TRANSPORT);
+@@ -154,6 +173,52 @@ public class MetadataManager {
+         session.setRatingType(ratingType);
+ 
+         updateNotification();
++
++        // NOTE: This timer / progress / playback-progress-updated logic
++        // is inspired by react-native-track-player v3
++        // https://github.com/doublesymmetry/react-native-track-player/blob/e742959cc1d697d69daeade39830155bce2ccde7/android/src/main/java/com/doublesymmetry/trackplayer/service/MusicService.kt#L521
++        if (timerHasStarted) {
++            timer.cancel();
++            timer.purge();
++        }
++        int timeLimit = 1000;
++        timer.schedule(new TimerTask() {
++            @Override
++            public void run() {
++                progressUpdateEventFlow(timeLimit);
++            }
++        }, 0, timeLimit);
++        timerHasStarted = true;
++    }
++
++    private void progressUpdateEventFlow(int interval) {
++        new Handler(Looper.getMainLooper()).post(new Runnable () {
++            @Override
++            public void run () {
++                ExoPlayback playback = manager.getPlayback();
++                int state = playback.getState();
++                boolean playing = Utils.isPlaying(state);
++                if (playing) {
++                    progressUpdateEvent();
++                    Bundle bundle = progressUpdateEvent();
++                    service.emit(MusicEvents.PLAYBACK_PROGRESS_UPDATED, bundle);
++                }
++            }
++        });
++    }
++
++    private Bundle progressUpdateEvent() {
++        Bundle bundle = new Bundle();
++        long duration = manager.getPlayback().getDuration();
++        long position = manager.getPlayback().getPosition();
++        long bufferedPosition = manager.getPlayback().getBufferedPosition();
++        int currentIndex = manager.getPlayback().getCurrentTrackIndex();
++        bundle.putDouble(POSITION_KEY, position / 1000);
++        bundle.putDouble(DURATION_KEY, duration / 1000);
++        bundle.putDouble(BUFFERED_POSITION_KEY, bufferedPosition / 1000);
++        bundle.putInt(TRACK_KEY, currentIndex);
++
++        return bundle;
+     }
+ 
+     public int getRatingType() {
 diff --git a/node_modules/react-native-track-player/ios/RNTrackPlayer/Models/Track.swift b/node_modules/react-native-track-player/ios/RNTrackPlayer/Models/Track.swift
 index 1e131c7..c895d91 100644
 --- a/node_modules/react-native-track-player/ios/RNTrackPlayer/Models/Track.swift
@@ -2653,3 +2922,100 @@ index 1e131c7..c895d91 100644
      }
      
  }
+diff --git a/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayer.swift b/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayer.swift
+index 300bd85..d41568f 100644
+--- a/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayer.swift
++++ b/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayer.swift
+@@ -17,6 +17,7 @@ public class RNTrackPlayer: RCTEventEmitter {
+ 
+     private var hasInitialized = false
+     private let player = QueuedAudioPlayer()
++    private var shouldEmitProgressEvent: Bool = false
+ 
+     // MARK: - Lifecycle Methods
+ 
+@@ -28,6 +29,7 @@ public class RNTrackPlayer: RCTEventEmitter {
+         player.event.stateChange.addListener(self, handleAudioPlayerStateChange)
+         player.event.fail.addListener(self, handleAudioPlayerFailed)
+         player.event.queueIndex.addListener(self, handleAudioPlayerQueueIndexChange)
++        player.event.secondElapse.addListener(self, handleAudioPlayerSecondElapse)
+     }
+ 
+     deinit {
+@@ -90,6 +92,7 @@ public class RNTrackPlayer: RCTEventEmitter {
+             "playback-error",
+             "playback-track-changed",
+             "playback-metadata-received",
++            "playback-progress-updated",
+ 
+             "remote-stop",
+             "remote-pause",
+@@ -318,9 +321,20 @@ public class RNTrackPlayer: RCTEventEmitter {
+                                           bookmarkOptions: options["bookmarkOptions"] as? [String: Any])
+         }
+ 
++        configureProgressUpdateEvent(
++            interval: ((options["progressUpdateEventInterval"] as? NSNumber) ?? 0).doubleValue
++        )
++
+         resolve(NSNull())
+     }
+ 
++    private func configureProgressUpdateEvent(interval: Double) {
++        shouldEmitProgressEvent = interval > 0
++        self.player.timeEventFrequency = shouldEmitProgressEvent
++            ? .custom(time: CMTime(seconds: interval, preferredTimescale: 1))
++            : .everySecond
++    }
++
+     @objc(add:before:resolver:rejecter:)
+     public func add(trackDicts: [[String: Any]], before trackIndex: NSNumber, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+@@ -665,4 +679,23 @@ public class RNTrackPlayer: RCTEventEmitter {
+ 
+         sendEvent(withName: "playback-track-changed", body: dictionary)
+     }
++
++    func handleAudioPlayerSecondElapse(seconds: Double) {
++        // because you cannot prevent the `event.secondElapse` from firing
++        // do not emit an event if `progressUpdateEventInterval` is nil
++        // additionally, there are certain instances in which this event is emitted
++        // _after_ a manipulation to the queu causing no currentItem to exist (see reset)
++        // in which case we shouldn't emit anything or we'll get an exception.
++        if !shouldEmitProgressEvent || player.currentItem == nil { return }
++
++        sendEvent(
++            withName: "playback-progress-updated",
++            body: [
++                "position": player.currentTime,
++                "duration": player.duration,
++                "buffered": player.bufferedPosition,
++                "track": player.currentIndex,
++            ]
++        )
++    }
+ }
+diff --git a/node_modules/react-native-track-player/lib/interfaces.d.ts b/node_modules/react-native-track-player/lib/interfaces.d.ts
+index a504ae2..b2c4023 100644
+--- a/node_modules/react-native-track-player/lib/interfaces.d.ts
++++ b/node_modules/react-native-track-player/lib/interfaces.d.ts
+@@ -133,6 +133,7 @@ export declare enum Event {
+     PlaybackQueueEnded = "playback-queue-ended",
+     PlaybackTrackChanged = "playback-track-changed",
+     PlaybackMetadataReceived = "playback-metadata-received",
++    PlaybackProgressUpdated = "playback-progress-updated",
+     RemotePlay = "remote-play",
+     RemotePlayId = "remote-play-id",
+     RemotePlaySearch = "remote-play-search",
+diff --git a/node_modules/react-native-track-player/lib/interfaces.js b/node_modules/react-native-track-player/lib/interfaces.js
+index a62623d..9ad7c55 100644
+--- a/node_modules/react-native-track-player/lib/interfaces.js
++++ b/node_modules/react-native-track-player/lib/interfaces.js
+@@ -68,6 +68,7 @@ var Event;
+     Event["PlaybackQueueEnded"] = "playback-queue-ended";
+     Event["PlaybackTrackChanged"] = "playback-track-changed";
+     Event["PlaybackMetadataReceived"] = "playback-metadata-received";
++    Event["PlaybackProgressUpdated"] = "playback-progress-updated";
+     Event["RemotePlay"] = "remote-play";
+     Event["RemotePlayId"] = "remote-play-id";
+     Event["RemotePlaySearch"] = "remote-play-search";

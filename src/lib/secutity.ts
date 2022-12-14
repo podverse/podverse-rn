@@ -2,6 +2,7 @@ import { Platform } from 'react-native'
 import * as RNKeychain from 'react-native-keychain'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { PV } from '../resources'
+import { errorLogger } from './logger'
 
 export const credentialsPlaceholderUsername = 'username'
 
@@ -16,8 +17,8 @@ export const migrateCredentialsIfNeeded = async () => {
     try {
       await RNKeychain.setInternetCredentials(PV.Keys.BEARER_TOKEN, 'Bearer', existingLoginCreds)
       await RNSecureKeyStore.remove(PV.Keys.BEARER_TOKEN)
-    } catch (err) {
-      console.log('Login creds migration error: ', err)
+    } catch (error) {
+      errorLogger('Login creds migration error: ', error)
     }
   }
 
@@ -29,8 +30,8 @@ export const migrateCredentialsIfNeeded = async () => {
         allPodcastCredentialsString
       )
       await RNSecureKeyStore.remove(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS)
-    } catch (err) {
-      console.log('Podcasts creds migration error: ', err)
+    } catch (error) {
+      errorLogger('Podcasts creds migration error: ', error)
     }
   }
 }

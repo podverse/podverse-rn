@@ -15,6 +15,7 @@ import {
   SwitchWithText,
   View
 } from '../components'
+import { errorLogger } from '../lib/logger'
 import {
   setDownloadedEpisodeLimitGlobalCount,
   setDownloadedEpisodeLimitGlobalDefault,
@@ -187,7 +188,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
               try {
                 await moveDownloadedPodcastsToExternalStorage()
               } catch (err) {
-                console.log('Ext Storage Move Error: ', err.message)
+                errorLogger('SettingsScreenDownloads Ext Storage Move Error: ', err.message)
               }
               resolve(true)
             }
@@ -199,7 +200,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
                 await removeDownloadedPodcastsFromInternalStorage()
                 await DownloadState.updateDownloadedPodcasts()
               } catch (err) {
-                console.log('Ext Storage Deletion Error: ', err.message)
+                errorLogger('Ext Storage Deletion Error: ', err.message)
               }
               resolve(true)
             }
@@ -224,7 +225,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
                   await removeAllDownloadedPodcasts()
                   await DownloadState.updateDownloadedPodcasts()
                 } catch (err) {
-                  console.log('Ext Storage Deletion Error: ', err.message)
+                  errorLogger('Ext Storage Deletion Error: ', err.message)
                 }
                 await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
                 this.setState({ customDownloadLocation: null })
@@ -291,7 +292,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
             }
           }
         } catch (err) {
-          console.log(err)
+          errorLogger(err)
           await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
           this.setState({ customDownloadLocation: null })
         }

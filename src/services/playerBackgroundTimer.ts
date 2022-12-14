@@ -2,13 +2,14 @@ import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
-import BackgroundTimer from 'react-native-background-timer'
 // import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
 // import { saveStreamingValueTransactionsToTransactionQueue } from '../services/v4v/v4v'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
-import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { clearChapterPlaybackInfo, loadChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { startCheckClipEndTime, stopClipInterval } from '../state/actions/playerClips'
+import { handleSleepTimerCountEvent } from '../state/actions/sleepTimer'
 // import { v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import PVEventEmitter from './eventEmitter'
 import {
@@ -24,6 +25,7 @@ import {
 import { getNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './userNowPlayingItem'
 import { removeQueueItem } from './queue'
 import { addOrUpdateHistoryItem } from './userHistoryItem'
+import { Platform } from 'react-native'
 
 const debouncedSetPlaybackPosition = debounce(playerSetPositionWhenDurationIsAvailable, 1000, {
   leading: true,
@@ -79,11 +81,7 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
 }
 
 export const syncNowPlayingItemWithTrack = () => {
-  // If the clipEndInterval is already running, stop it before the clip is
-  // reloaded in the handleSyncNowPlayingItem function.
-  const checkClipEndTimeShouldStop = true
-  const streamingValueShouldStop = false
-  stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeShouldStop, streamingValueShouldStop)
+  stopClipInterval()
 
   // The first setTimeout is an attempt to prevent the following:
   // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
@@ -131,48 +129,6 @@ export const syncNowPlayingItemWithTrack = () => {
   setTimeout(sync, 1000)
 }
 
-/*
-  HANDLE CLIP END TIME INTERVAL
-*/
-
-const startCheckClipEndTime = async () => {
-  const globalState = getGlobal()
-  const { nowPlayingItem } = globalState.player
-
-  if (nowPlayingItem) {
-    const { clipEndTime, clipId } = nowPlayingItem
-    if (clipId && clipEndTime) {
-      await setClipHasEnded(false)
-      startBackgroundTimer()
-    }
-  }
-}
-
-export const stopBackgroundTimerIfShouldBeStopped = async (
-  checkClipEndTimeShouldStop: boolean,
-  streamingValueShouldStop: boolean
-) => {
-  const globalState = getGlobal()
-  const { nowPlayingItem } = globalState.player
-
-  if (!checkClipEndTimeShouldStop && nowPlayingItem?.clipEndTime) {
-    const clipHasEnded = await getClipHasEnded()
-    if (clipHasEnded) {
-      checkClipEndTimeShouldStop = true
-    }
-  }
-
-  const { streamingValueOn } = getGlobal().session.v4v
-
-  if (!streamingValueShouldStop && !streamingValueOn) {
-    streamingValueShouldStop = true
-  }
-
-  if (checkClipEndTimeShouldStop && streamingValueShouldStop) {
-    stopBackgroundTimer()
-  }
-}
-
 const stopCheckClipIfEndTimeReached = () => {
   (async () => {
     const globalState = getGlobal()
@@ -183,11 +139,9 @@ const stopCheckClipIfEndTimeReached = () => {
       if (clipEndTime && currentPosition > clipEndTime) {
         playerHandlePauseWithUpdate()
         await setClipHasEnded(true)
+        stopClipInterval()
       }
     }
-    const checkClipEndTimeStopped = false
-    const streamingValueStopped = false
-    stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeStopped, streamingValueStopped)
   })()
 }
 
@@ -228,22 +182,48 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
 
 // PVEventEmitter.on(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED, handleValueStreamingToggle)
 
-/*
-  BACKGROUND TIMER
-*/
+// let timerInterval: any = null
 
-const startBackgroundTimer = () => {
-  stopBackgroundTimer()
-  BackgroundTimer.runBackgroundTimer(handleBackgroundTimerInterval, 1000)
-}
+// export const startBackgroundTimer = () => {
+//   // TODO: The playback-progress-updated is not yet available in our
+//   // v2 patch of the react-native-track-player java files.
+//   // I tried to copy the playback-progress-updated event handling from
+//   // react-native-track-player v3 code like I did with the swift file,
+//   // but the v3 Android code looks very different than v2,
+//   // and v3 is written in Kotlin, and I don't know how to translate that to java :[
+//   // https://github.com/doublesymmetry/react-native-track-player/search?q=PLAYBACK_PROGRESS_UPDATED&type=code
+//   if (Platform.OS === 'android') {
+//     timerInterval = setInterval(handleBackgroundTimerInterval, 1000)
+//   }
+// }
 
-const stopBackgroundTimer = () => {
-  BackgroundTimer.stopBackgroundTimer()
-}
+// export const stopBackgroundTimer = () => {
+//   if (timerInterval) {
+//     clearInterval(timerInterval)
+//   }
+// }
 
 // let valueStreamingIntervalSecondCount = 1
-const handleBackgroundTimerInterval = () => {
-  stopCheckClipIfEndTimeReached()
+let chapterIntervalSecondCount = 0
+export const handleBackgroundTimerInterval = () => {
+  const { chapterIntervalActive, clipIntervalActive, player } = getGlobal()
+  const { sleepTimer } = player
+  
+  if (clipIntervalActive) {
+    stopCheckClipIfEndTimeReached()
+  }
+
+  chapterIntervalSecondCount++
+  if (chapterIntervalSecondCount >= 3) {
+    chapterIntervalSecondCount = 0
+    if (chapterIntervalActive) {
+      loadChapterPlaybackInfo()
+    }
+  }
+
+  if (sleepTimer?.isActive) {
+    handleSleepTimerCountEvent()
+  }
 
   // playerGetState().then(async (playbackState) => {
   //   const globalState = getGlobal()

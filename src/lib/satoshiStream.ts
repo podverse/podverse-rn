@@ -23,8 +23,9 @@ export const createSatoshiStreamStats = (
   customKey: string,
   customValue: string
 ) => {
-  const podcast = podcastTitle || translate('Untitled Podcast')
-  const episode = episodeTitle || translate('Untitled Episode')
+  /* TLV records have a limit */
+  const podcast = (podcastTitle || translate('Untitled Podcast')).substring(0, 60)
+  const episode = (episodeTitle || translate('Untitled Episode')).substring(0, 60)
   const podcastIndexId = (podcastIndexPodcastId && parseInt(podcastIndexPodcastId, 10)) || null
   const ts = parseInt(currentPlaybackPosition, 10)
 
@@ -44,6 +45,7 @@ export const createSatoshiStreamStats = (
       app_name: Config.USER_AGENT_PREFIX,
       name,
       sender_name: senderName
+      // 7629169 "message" added elsewhere in app-logic
     },
     '7629175': podcastIndexId,
     ...(customKey ? { [customKey]: customValue } : {})

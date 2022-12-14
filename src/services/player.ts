@@ -6,6 +6,7 @@ import {
 } from 'podverse-shared'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
+import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import {
   videoCheckIfStateIsBuffering,
@@ -207,7 +208,7 @@ export const playerUpdateUserPlaybackPosition = async (skipSetNowPlaying?: boole
       await saveOrResetCurrentlyPlayingItemInHistory(!!shouldAwait, currentNowPlayingItem, !!skipSetNowPlaying)
     }
   } catch (error) {
-    console.log('playerUpdateUserPlaybackPosition error', error)
+    errorLogger('playerUpdateUserPlaybackPosition error', error)
   }
 }
 
@@ -236,7 +237,7 @@ export const playerLoadNowPlayingItem = async (
       await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
     }
   } catch (error) {
-    console.log('playerLoadNowPlayingItem service error', error)
+    errorLogger('playerLoadNowPlayingItem service error', error)
   }
 }
 
@@ -501,7 +502,7 @@ export const setRemoteSkipButtonsTimeJumpOverride = async (bool: boolean) => {
       await AsyncStorage.removeItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP)
     }
   } catch (error) {
-    console.log('setRemoteSkipButtonsTimeJumpOverride', error)
+    errorLogger('setRemoteSkipButtonsTimeJumpOverride', error)
   }
 }
 

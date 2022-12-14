@@ -126,6 +126,8 @@ export interface InitialState {
     shouldShowAlert: boolean
   }
   parsedTranscript: TranscriptRow[] | null
+  clipIntervalActive: boolean
+  chapterIntervalActive: boolean
   currentChapter: any
   currentChapters: any
   currentChaptersStartTimePositions: any

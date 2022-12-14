@@ -2,6 +2,7 @@ import React from 'react'
 import Config from 'react-native-config'
 import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
+import { errorLogger } from '../lib/logger'
 import { GlobalTheme } from '../../src/resources/Interfaces'
 import { darkTheme } from '../../src/styles'
 import { translate } from '../lib/i18n'
@@ -63,7 +64,7 @@ export const NavShareIcon = (props: Props) => {
         url
       })
     } catch (error) {
-      console.log('error', error)
+      errorLogger('error', error)
     }
   }
 
