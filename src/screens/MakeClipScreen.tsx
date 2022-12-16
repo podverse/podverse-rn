@@ -47,6 +47,8 @@ import { trackPageView } from '../services/tracking'
 import { playerTogglePlay, playerSetNowPlayingItem, playerSetPlaybackSpeed } from '../state/actions/player'
 import { core, darkTheme, iconStyles, playerStyles } from '../styles'
 
+const _fileName = 'src\screens\MakeClipScreen.tsx'
+
 type Props = {
   navigation?: any
 }
@@ -348,7 +350,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                         url
                       })
                     } catch (error) {
-                      errorLogger('MakeClipScreen saveMediaRef Share onPress', error)
+                      errorLogger(_fileName, 'saveMediaRef Share onPress', error)
                     }
                     navigation.goBack(null)
                   }
@@ -361,7 +363,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
           if (error.response) {
             Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, error.response.data.message, PV.Alerts.BUTTONS.OK)
           }
-          errorLogger('MakeClipScreen saveMediaRef', error)
+          errorLogger(_fileName, 'saveMediaRef', error)
         }
         this.setState({ isSaving: false })
       })()

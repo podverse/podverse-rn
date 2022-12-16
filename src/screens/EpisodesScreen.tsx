@@ -32,6 +32,8 @@ import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { core } from '../styles'
 import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
 
+const _fileName = 'src\screens\EpisodesScreen.tsx'
+
 type Props = {
   navigation?: any
 }
@@ -723,7 +725,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       this.shouldLoad = true
       return newState
     } catch (error) {
-      errorLogger('EpisodesScreen _queryData error', error)
+      errorLogger(_fileName, '_queryData', error)
       this.shouldLoad = true
       return newState
     }

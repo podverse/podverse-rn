@@ -16,6 +16,8 @@ type Props = {
   navigation: any
 }
 
+const _fileName = 'src\components\PurchaseListener.tsx'
+
 export class PurchaseListener extends React.Component<Props> {
   purchaseUpdateSubscription = null as any
   purchaseErrorSubscription = null as any
@@ -48,7 +50,7 @@ export class PurchaseListener extends React.Component<Props> {
     this.purchaseUpdateSubscription = purchaseUpdatedListener(processPurchase)
 
     this.purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
-      errorLogger('purchaseErrorListener', error)
+      errorLogger(_fileName, 'processPurchase', error)
     })
   }
 

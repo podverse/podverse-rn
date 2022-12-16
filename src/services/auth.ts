@@ -11,6 +11,8 @@ import { getQueueItems } from './queue'
 import { request } from './request'
 import { getHistoryItems, getHistoryItemsIndex, getHistoryItemsIndexLocally } from './userHistoryItem'
 
+const _fileName = 'src\services\auth.ts'
+
 export const getBearerToken = async () => {
   let bearerToken = ''
   try {
@@ -102,7 +104,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
   try {
     queueItems = await getQueueItems()
   } catch (error) {
-    errorLogger('getAuthenticatedUserInfoLocally error', error)
+    errorLogger(_fileName, 'getAuthenticatedUserInfoLocally', error)
   }
 
   try {
@@ -304,7 +306,7 @@ export const verifyEmail = async (token: string) => {
       ok = true
     }
   } catch (error) {
-    errorLogger('verifyEmail', error)
+    errorLogger(_fileName, 'verifyEmail', error)
   }
   return ok
 }
