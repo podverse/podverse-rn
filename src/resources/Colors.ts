@@ -38,8 +38,8 @@ export const Colors = {
   skyLight: '#74A8DC',
   skyDark: '#6394C6',
   brandBlueLight: '#3D9DFE',
-  brandBlueLightOpaque: 'rgba(61, 157, 254, 0.5)',
   brandBlueDark: '#1E80E3',
+  brandBlueDarker: '#1f4f7f',
   velvet: '#0F1235',
   ink: '#010318'
 }
