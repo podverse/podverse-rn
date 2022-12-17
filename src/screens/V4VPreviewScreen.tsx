@@ -41,7 +41,10 @@ export class V4VPreviewScreen extends React.Component<Props> {
             {translate('value_tag_preview_boost')}
           </Text>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.lg} style={styles.text}>
-            {translate('value_tag_preview_stream')}
+            {translate('value_tag_preview_boostagram')}
+          </Text>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.lg} style={styles.text}>
+            {translate('value_tag_preview_streaming')}
           </Text>
           <Image
             source={require('../resources/images/crypto_exmpl_1.jpg')}
