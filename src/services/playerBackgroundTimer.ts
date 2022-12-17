@@ -1,22 +1,17 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
-import { getGlobal, setGlobal } from 'reactn'
-import { translate } from '../lib/i18n'
+import { getGlobal } from 'reactn'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
-import { processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../services/v4v/v4v'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo, loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { startCheckClipEndTime, stopClipInterval } from '../state/actions/playerClips'
 import { handleSleepTimerCountEvent } from '../state/actions/sleepTimer'
-import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import PVEventEmitter from './eventEmitter'
 import {
-  playerCheckIfStateIsPlaying,
   playerGetCurrentLoadedTrackId,
   playerGetPosition,
-  playerGetState,
   playerHandlePauseWithUpdate,
   playerSetPositionWhenDurationIsAvailable,
   setClipHasEnded
@@ -24,6 +19,7 @@ import {
 import { getNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './userNowPlayingItem'
 import { removeQueueItem } from './queue'
 import { addOrUpdateHistoryItem } from './userHistoryItem'
+import { handleValueStreamingTimerIncrement } from './v4v/v4vStreaming'
 
 const debouncedSetPlaybackPosition = debounce(playerSetPositionWhenDurationIsAvailable, 1000, {
   leading: true,
@@ -146,65 +142,11 @@ const stopCheckClipIfEndTimeReached = () => {
 const debouncedHandlePlayerClipLoaded = debounce(startCheckClipEndTime, 1000)
 PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLoaded)
 
-const handleValueStreamingTimerIncrement = () => {
-  const globalState = getGlobal()
-  const { streamingValueOn } = globalState.session.v4v
-
-  if (streamingValueOn) {
-    playerGetState().then(async (playbackState) => {
-      if (playerCheckIfStateIsPlaying(playbackState)) {
-        valueStreamingIntervalSecondCount++
-
-        if (valueStreamingIntervalSecondCount && valueStreamingIntervalSecondCount % 60 === 0) {
-          await handleValueStreamingMinutePassed()
-        }
-      }
-
-      if (valueStreamingIntervalSecondCount === 600) {
-        valueStreamingIntervalSecondCount = 1
-
-        const { errors, transactions, totalAmount } = await processValueTransactionQueue()
-        if (transactions.length > 0 && totalAmount > 0) {
-          setGlobal({
-            bannerInfo: {
-              show: true,
-              description: translate('Streaming Value Sent'),
-              errors,
-              transactions,
-              totalAmount
-            }
-          })
-        }
-      }
-    })
-  }
-}
-
-const handleValueStreamingMinutePassed = async () => {
-  const globalState = getGlobal()
-  const { nowPlayingItem } = globalState.player
-  
-  const valueTags = nowPlayingItem.episodeValue || nowPlayingItem.podcastValue || []
-  
-  const { activeProviderSettings } = v4vGetActiveProviderInfo(valueTags)
-  const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(nowPlayingItem))
-  const { streamingAmount } = activeProviderSettings || {}
-
-  if (Array.isArray(valueTags) && valueTags.length > 0 && streamingAmount && activeProvider?.key) {
-    await saveStreamingValueTransactionsToTransactionQueue(
-      valueTags,
-      nowPlayingItem,
-      streamingAmount,
-      activeProvider.key
-    )
-  }
-}
-
-let valueStreamingIntervalSecondCount = 1
 let chapterIntervalSecondCount = 0
 export const handleBackgroundTimerInterval = () => {
-  const { chapterIntervalActive, clipIntervalActive, player } = getGlobal()
+  const { chapterIntervalActive, clipIntervalActive, player, session } = getGlobal()
   const { sleepTimer } = player
+  const { v4v } = session
   
   if (clipIntervalActive) {
     stopCheckClipIfEndTimeReached()
@@ -222,5 +164,7 @@ export const handleBackgroundTimerInterval = () => {
     handleSleepTimerCountEvent()
   }
 
-  handleValueStreamingTimerIncrement()
+  if (v4v?.streamingValueOn) {
+    handleValueStreamingTimerIncrement()
+  }
 }

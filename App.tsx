@@ -19,6 +19,7 @@ import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
 import { downloadCategoriesList } from './src/services/category'
 import PVEventEmitter from './src/services/eventEmitter'
+import { v4vClearTransactionQueue } from './src/services/v4v/v4v'
 import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
@@ -77,6 +78,10 @@ class App extends Component<Props, State> {
     }
 
     await this.setupGlobalState(globalTheme)
+
+    // Clear V4V transaction queue every time the app launches
+    // so leftover streaming value isn't unexpectedly sent.
+    await v4vClearTransactionQueue()
 
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
 
