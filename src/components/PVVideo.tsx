@@ -17,6 +17,7 @@ import {
 } from '../services/player'
 import { addOrUpdateHistoryItem } from '../services/userHistoryItem'
 import { getNowPlayingItemFromLocalStorage } from '../services/userNowPlayingItem'
+import { handleValueStreamingTimerIncrement } from '../services/v4v/v4vStreaming'
 import {
   videoCheckIfStateIsPlaying,
   videoGetDownloadedFileInfo,
@@ -391,6 +392,8 @@ export class PVVideo extends React.PureComponent<Props, State> {
           if (!disableOnProgress) {
             const { currentTime } = payload
             videoStateUpdatePosition(currentTime)
+            const isVideo = true
+            handleValueStreamingTimerIncrement(isVideo)
           }
         }}
         // onReadyForDisplay={}

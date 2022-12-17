@@ -23,6 +23,9 @@ const testIDPrefix = 'v4v_providers_screen'
 
 const _sectionConnectedKey = 'sectionConnected'
 const _sectionSetupKey = 'sectionSetup'
+const _sectionInfoKey = "sectionInfo"
+
+const _infoStreamingSats = 'infoStreamingSats'
 
 export class V4VProvidersScreen extends React.Component<Props, State> {
   state = {
@@ -63,9 +66,21 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
     })
   }
 
+  _infoOptions = () => {
+    return [
+      {
+        title: translate('value_tag_streaming_sats'),
+        key: _infoStreamingSats,
+        routeName: PV.RouteNames.V4VInfoStreamingSatsScreen
+      }
+    ]
+  }
+
   _handleV4VProviderOnPress = (item: V4VProviderListItem) => {
     if (item.key === _albyKey) {
       this.props.navigation.navigate(PV.RouteNames.V4VProvidersAlbyScreen)
+    } else {
+      this.props.navigation.navigate(item.routeName)
     }
   }
 
@@ -121,10 +136,63 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
     )
   }
 
-  render() {
+  _renderSectionHeader = ({ section }) => {
     const { globalTheme } = this.global
+    const helperText =
+      section.key === _sectionConnectedKey
+        ? translate('V4V Providers connected explanation')
+        : translate('V4V Providers setup explanation')
+
+    const headerTextStyle =
+      section.key === _sectionConnectedKey ? globalTheme.headerTextSuccess : globalTheme.headerText
+    const hasHelperText = [_sectionConnectedKey, _sectionSetupKey].includes(section.key)
+
+    return (
+      <>
+        <TableSectionSelectors
+          disableFilter
+          includePadding
+          selectedFilterLabel={section.title}
+          textStyle={[headerTextStyle, core.sectionHeaderText]}
+        />
+        {
+          hasHelperText && (
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              style={[table.sectionExplanationText, globalTheme.tableCellTextPrimary]}>
+              {helperText}
+            </Text>
+          )
+        }
+        <Divider />
+      </>
+    )
+  }
+
+  _renderItem = ({ item, index, section }) => {
+    const { globalTheme } = this.global
+    const showIndex = [_sectionConnectedKey, _sectionSetupKey].includes(section.key)
+    const title = showIndex ? `${index + 1}. ${item.title}` : item.title
+
+    return (
+      <TableCell
+        includeDivider
+        onPress={() => this._handleV4VProviderOnPress(item)}
+        testIDPrefix={`${testIDPrefix}_${item.key}`}
+        testIDSuffix=''>
+        <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          style={[table.cellTextLarge, globalTheme.tableCellTextPrimary]}>
+          {title}
+        </Text>
+      </TableCell>
+    )
+  }
+
+  render() {
     const connectedOptions = this._connectedOptions()
     const setupOptions = this._setupOptions()
+    const infoOptions = this._infoOptions()
 
     const sections = []
     if (connectedOptions.length > 0) {
@@ -134,51 +202,15 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
       sections.push({ key: _sectionSetupKey, title: translate('Available'), data: setupOptions })
     }
 
+    sections.push({ key: _sectionInfoKey, title: translate('About'), data: infoOptions })
+
     return (
       <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
-          renderItem={({ item, index }) => {
-            return (
-              <TableCell
-                includeDivider
-                onPress={() => this._handleV4VProviderOnPress(item)}
-                testIDPrefix={`${testIDPrefix}_${item.key}`}
-                testIDSuffix=''>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={[table.cellTextLarge, globalTheme.tableCellTextPrimary]}>
-                  {`${index + 1}. ${item.title}`}
-                </Text>
-              </TableCell>
-            )
-          }}
+          renderItem={this._renderItem}
           ListHeaderComponent={this._generateListHeaderComponent()}
-          renderSectionHeader={({ section }) => {
-            const helperText =
-              section.key === _sectionConnectedKey
-                ? translate('V4V Providers connected explanation')
-                : translate('V4V Providers setup explanation')
-
-            const headerTextStyle =
-              section.key === _sectionConnectedKey ? globalTheme.headerTextSuccess : globalTheme.headerText
-            return (
-              <>
-                <TableSectionSelectors
-                  disableFilter
-                  includePadding
-                  selectedFilterLabel={section.title}
-                  textStyle={[headerTextStyle, core.sectionHeaderText]}
-                />
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  style={[table.sectionExplanationText, globalTheme.tableCellTextPrimary]}>
-                  {helperText}
-                </Text>
-                <Divider />
-              </>
-            )
-          }}
+          renderSectionHeader={this._renderSectionHeader}
           sections={sections}
           stickySectionHeadersEnabled={false}
         />

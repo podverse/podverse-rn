@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   card: {
     position: 'absolute',
     width: '100%',
-    top: 0,
+    top: -3,
     paddingHorizontal: 10,
     backgroundColor: PV.Colors.velvet,
     borderBottomWidth: 2,
