@@ -69,7 +69,7 @@ import {
   V4VProvidersScreen,
   V4VProvidersAlbyScreen,
   V4VProvidersAlbyLoginScreen,
-  WebPageScreen,
+  WebPageScreen
 } from './screens'
 import { darkTheme } from './styles'
 import { PodcastInfoScreen } from './screens/PodcastInfoScreen'
