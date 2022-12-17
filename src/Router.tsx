@@ -64,11 +64,12 @@ import {
   TrackingConsentScreen,
   V4VBoostagramScreen,
   V4VConsentScreen,
+  V4VInfoStreamingSatsScreen,
   V4VPreviewScreen,
   V4VProvidersScreen,
   V4VProvidersAlbyScreen,
   V4VProvidersAlbyLoginScreen,
-  WebPageScreen
+  WebPageScreen,
 } from './screens'
 import { darkTheme } from './styles'
 import { PodcastInfoScreen } from './screens/PodcastInfoScreen'
@@ -235,7 +236,8 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
     [PV.RouteNames.FAQScreen]: FAQScreen,
     [PV.RouteNames.V4VProvidersScreen]: V4VProvidersScreen,
-    [PV.RouteNames.V4VProvidersAlbyScreen]: V4VProvidersAlbyScreen
+    [PV.RouteNames.V4VProvidersAlbyScreen]: V4VProvidersAlbyScreen,
+    [PV.RouteNames.V4VInfoStreamingSatsScreen]: V4VInfoStreamingSatsScreen
   },
   {
     defaultNavigationOptions,
