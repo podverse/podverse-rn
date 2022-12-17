@@ -31,6 +31,7 @@ import {
   showRootView,
   unregisterCarModule
 } from './src/lib/carplay/PVCarPlay'
+import { gestureHandlerRootHOC, GestureHandlerRootView } from 'react-native-gesture-handler'
 
 LogBox.ignoreLogs(['EventEmitter.removeListener', "Require cycle"])
 
@@ -183,14 +184,16 @@ class App extends Component<Props, State> {
     }
 
     return this.state.appReady ? (
-      <SafeAreaProvider initialMetrics={initialWindowMetrics} style={wrapperStyle}>
-        <View style={{ flex: 1 }}>
-          <Router />
-          <OverlayAlert />
-        </View>
-        <ImageFullView />
-        <BoostDropdownBanner />
-      </SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider initialMetrics={initialWindowMetrics} style={wrapperStyle}>
+          <View style={{ flex: 1 }}>
+            <Router />
+            <OverlayAlert />
+          </View>
+          <ImageFullView />
+          <BoostDropdownBanner />
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     ) : (
       this._renderIntersitial()
     )

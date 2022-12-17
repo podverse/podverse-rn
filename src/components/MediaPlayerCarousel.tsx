@@ -1,11 +1,11 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { checkIfHasSupportedCommentTag, Episode, TranscriptRow } from 'podverse-shared'
 import { PV } from '../resources'
 import { translate } from '../lib/i18n'
-import { audioCheckIfIsPlaying } from '../services/playerAudio'
+import { playerCheckIfStateIsPlaying } from '../services/player'
 import { v4vGetPluralCurrencyUnitPerMinute } from '../services/v4v/v4v'
 import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import { toggleValueStreaming } from '../state/actions/valueTag'
@@ -154,7 +154,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { streamingAmount } = activeProviderSettings || {}
     const { streamingValueOn } = session.v4v
 
-    const isPlaying = audioCheckIfIsPlaying(playbackState)
+    const isPlaying = playerCheckIfStateIsPlaying(playbackState)
 
     let itemCount = 2
     if (hasChapters) itemCount++
@@ -171,6 +171,12 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const streamingButtonSubTextStyles = streamingValueOn
       ? [styles.boostButtonSubText]
       : [styles.boostButtonSubText]
+
+    const streamingIndicatorStyles = Platform.OS === 'ios'
+      ? [styles.streamingIndicator, styles.streamingIndicatorIOS]
+      : [styles.streamingIndicator, styles.streamingIndicatorAndroid]
+
+    const streamingIndicatorSize = Platform.OS === 'ios' ? 15 : 20
 
     const hasValueInfo = nowPlayingItem?.episodeValue?.length > 0 || nowPlayingItem?.podcastValue?.length > 0
 
@@ -250,7 +256,10 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                   </Text>
                 </View>
                 {streamingValueOn && isPlaying && (
-                  <ActivityIndicator size={15} styles={styles.streamingIndicator} testID={testIDPrefix} />
+                  <ActivityIndicator 
+                    size={streamingIndicatorSize} 
+                    styles={streamingIndicatorStyles} 
+                    testID={testIDPrefix} />
                 )}
               </PressableWithOpacity>
               <PressableWithOpacity
@@ -441,7 +450,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   streamingIndicator: {
-    position: 'absolute',
+    position: 'absolute'
+  },
+  streamingIndicatorAndroid: {
+    right: -34,
+    top: -10
+  },
+  streamingIndicatorIOS: {
     right: -34,
     top: -7
   },
