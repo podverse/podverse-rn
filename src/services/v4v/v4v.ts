@@ -541,7 +541,7 @@ export const v4vGetPluralCurrencyUnit = (unit: 'sat') => {
 }
 
 export const v4vGetPluralCurrencyUnitPerMinute = (unit: 'sat') => {
-  return `${v4vGetPluralCurrencyUnit(unit)} ${translate('per minute')}`
+  return `${v4vGetPluralCurrencyUnit(unit)}${translate('per minute')}`
 }
 
 export const v4vGetProviderListItems = () => {

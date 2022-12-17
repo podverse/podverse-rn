@@ -1,23 +1,22 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
-import { getGlobal } from 'reactn'
-// import { translate } from '../lib/i18n'
+import { getGlobal, setGlobal } from 'reactn'
+import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
-// import { saveStreamingValueTransactionsToTransactionQueue } from '../services/v4v/v4v'
+import { processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../services/v4v/v4v'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo, loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { startCheckClipEndTime, stopClipInterval } from '../state/actions/playerClips'
 import { handleSleepTimerCountEvent } from '../state/actions/sleepTimer'
-// import { v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
+import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import PVEventEmitter from './eventEmitter'
 import {
-  getClipHasEnded,
-  // playerCheckIfStateIsPlaying,
+  playerCheckIfStateIsPlaying,
   playerGetCurrentLoadedTrackId,
   playerGetPosition,
-  // playerGetState,
+  playerGetState,
   playerHandlePauseWithUpdate,
   playerSetPositionWhenDurationIsAvailable,
   setClipHasEnded
@@ -25,7 +24,6 @@ import {
 import { getNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './userNowPlayingItem'
 import { removeQueueItem } from './queue'
 import { addOrUpdateHistoryItem } from './userHistoryItem'
-import { Platform } from 'react-native'
 
 const debouncedSetPlaybackPosition = debounce(playerSetPositionWhenDurationIsAvailable, 1000, {
   leading: true,
@@ -146,64 +144,63 @@ const stopCheckClipIfEndTimeReached = () => {
 }
 
 const debouncedHandlePlayerClipLoaded = debounce(startCheckClipEndTime, 1000)
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLoaded)
 
-/*
-  HANDLE VALUE STREAMING TOGGLE
-*/
+const handleValueStreamingTimerIncrement = () => {
+  const globalState = getGlobal()
+  const { streamingValueOn } = globalState.session.v4v
 
-// const handleValueStreamingToggle = () => {
-//   const globalState = getGlobal()
-//   const { streamingValueOn } = globalState.session.v4v
+  if (streamingValueOn) {
+    playerGetState().then(async (playbackState) => {
+      if (playerCheckIfStateIsPlaying(playbackState)) {
+        valueStreamingIntervalSecondCount++
 
-//   if (streamingValueOn) {
-//     startBackgroundTimer()
-//   } else {
-//     const checkClipEndTimeShouldStop = false
-//     const streamingValueShouldStop = true
-//     stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeShouldStop, streamingValueShouldStop)
-//   }
-// }
+        if (valueStreamingIntervalSecondCount && valueStreamingIntervalSecondCount % 60 === 0) {
+          await handleValueStreamingMinutePassed()
+        }
+      }
 
-// const handleValueStreamingMinutePassed = async () => {
-//   const globalState = getGlobal()
-//   const { nowPlayingItem } = globalState.player
+      if (valueStreamingIntervalSecondCount === 600) {
+        valueStreamingIntervalSecondCount = 1
 
-//   const valueTags = nowPlayingItem.episodeValue || nowPlayingItem.podcastValue || []
+        const { errors, transactions, totalAmount } = await processValueTransactionQueue()
+        if (transactions.length > 0 && totalAmount > 0) {
+          setGlobal({
+            bannerInfo: {
+              show: true,
+              description: translate('Streaming Value Sent'),
+              errors,
+              transactions,
+              totalAmount
+            }
+          })
+        }
+      }
+    })
+  }
+}
 
-//   const { activeProviderSettings } = v4vGetActiveProviderInfo(valueTags)
-//   const { streamingAmount } = activeProviderSettings || {}
+const handleValueStreamingMinutePassed = async () => {
+  const globalState = getGlobal()
+  const { nowPlayingItem } = globalState.player
+  
+  const valueTags = nowPlayingItem.episodeValue || nowPlayingItem.podcastValue || []
+  
+  const { activeProviderSettings } = v4vGetActiveProviderInfo(valueTags)
+  const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(nowPlayingItem))
+  const { streamingAmount } = activeProviderSettings || {}
 
-//   if (Array.isArray(valueTags) && valueTags.length > 0 && streamingAmount) {
-//     await saveStreamingValueTransactionsToTransactionQueue(valueTags, nowPlayingItem, streamingAmount)
-//   }
-// }
+  if (Array.isArray(valueTags) && valueTags.length > 0 && streamingAmount && activeProvider?.key) {
+    await saveStreamingValueTransactionsToTransactionQueue(
+      valueTags,
+      nowPlayingItem,
+      streamingAmount,
+      activeProvider.key
+    )
+  }
+}
 
-// PVEventEmitter.on(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED, handleValueStreamingToggle)
-
-// let timerInterval: any = null
-
-// export const startBackgroundTimer = () => {
-//   // TODO: The playback-progress-updated is not yet available in our
-//   // v2 patch of the react-native-track-player java files.
-//   // I tried to copy the playback-progress-updated event handling from
-//   // react-native-track-player v3 code like I did with the swift file,
-//   // but the v3 Android code looks very different than v2,
-//   // and v3 is written in Kotlin, and I don't know how to translate that to java :[
-//   // https://github.com/doublesymmetry/react-native-track-player/search?q=PLAYBACK_PROGRESS_UPDATED&type=code
-//   if (Platform.OS === 'android') {
-//     timerInterval = setInterval(handleBackgroundTimerInterval, 1000)
-//   }
-// }
-
-// export const stopBackgroundTimer = () => {
-//   if (timerInterval) {
-//     clearInterval(timerInterval)
-//   }
-// }
-
-// let valueStreamingIntervalSecondCount = 1
+let valueStreamingIntervalSecondCount = 1
 let chapterIntervalSecondCount = 0
 export const handleBackgroundTimerInterval = () => {
   const { chapterIntervalActive, clipIntervalActive, player } = getGlobal()
@@ -225,35 +222,5 @@ export const handleBackgroundTimerInterval = () => {
     handleSleepTimerCountEvent()
   }
 
-  // playerGetState().then(async (playbackState) => {
-  //   const globalState = getGlobal()
-  //   const { streamingValueOn } = globalState.session.v4v
-
-  //   if (streamingValueOn) {
-  //     if (playerCheckIfStateIsPlaying(playbackState)) {
-  //       valueStreamingIntervalSecondCount++
-
-  //       if (valueStreamingIntervalSecondCount && valueStreamingIntervalSecondCount % 60 === 0) {
-  //         await handleValueStreamingMinutePassed()
-  //       }
-  //     }
-
-  //     if (valueStreamingIntervalSecondCount === 600) {
-  //       valueStreamingIntervalSecondCount = 1
-
-  //       const { errors, transactions, totalAmount } = await processValueTransactionQueue()
-  //       if (transactions.length > 0 && totalAmount > 0) {
-  //         setGlobal({
-  //           bannerInfo: {
-  //             show: true,
-  //             description: translate('Streaming Value Sent'),
-  //             errors,
-  //             transactions,
-  //             totalAmount
-  //           }
-  //         })
-  //       }
-  //     }
-  //   }
-  // })
+  handleValueStreamingTimerIncrement()
 }
