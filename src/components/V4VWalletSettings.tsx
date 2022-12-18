@@ -64,7 +64,7 @@ export class V4VWalletSettings extends React.Component<Props, State> {
   render() {
     const { provider, testID } = this.props
     const { method, type } = provider
-    const { localBoostAmount } = this.state
+    const { localBoostAmount, localStreamingAmount } = this.state
     const { session } = this.global
     const typeMethodKey = v4vGetTypeMethodKey(type, method)
     const typeMethodSettings = session.v4v.settings.typeMethod[typeMethodKey]
@@ -72,7 +72,7 @@ export class V4VWalletSettings extends React.Component<Props, State> {
     if (!typeMethodSettings) return null
 
     const boostAmountText = `${translate('Boost Amount')} (${v4vGetPluralCurrencyUnit(provider.unit)})`
-    // const streamingAmountText = `${translate('Streaming Amount')} (${v4vGetPluralCurrencyUnit(provider.unit)})`
+    const streamingAmountText = `${translate('Streaming Amount')} (${v4vGetPluralCurrencyUnit(provider.unit)})`
 
     return (
       <View>
@@ -100,7 +100,7 @@ export class V4VWalletSettings extends React.Component<Props, State> {
             value={`${localBoostAmount}`}
             wrapperStyle={styles.textInputWrapper}
           />
-          {/* <TextInput
+          <TextInput
             alwaysShowEyebrow
             eyebrowTitle={streamingAmountText}
             keyboardType='numeric'
@@ -125,7 +125,7 @@ export class V4VWalletSettings extends React.Component<Props, State> {
             testID={`${testID}_streaming_amount_text_input`}
             value={`${localStreamingAmount}`}
             wrapperStyle={styles.textInputWrapper}
-          /> */}
+          />
         </View>
         {/* <View style={styles.sectionWrapper}>
           <Text style={core.headerText}>{translate('App')}</Text>

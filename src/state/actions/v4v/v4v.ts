@@ -61,7 +61,7 @@ export const v4vSettingsDefault = {
       streamingAmount: 10,
       appBoostAmount: 50,
       appStreamingAmount: 1,
-      boostagramCharLimit: 300
+      boostagramCharLimit: 400
     }
   }
 }

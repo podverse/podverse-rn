@@ -1,7 +1,5 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { translate } from '../../lib/i18n'
-import { PV } from '../../resources'
-import PVEventEmitter from '../../services/eventEmitter'
 import { processValueTransactionQueue } from '../../services/v4v/v4v'
 
 let valueTransactionProcessorInterval = null
@@ -60,9 +58,6 @@ export const toggleValueStreaming = () => {
           streamingValueOn: !streamingValueOn
         }
       }
-    },
-    () => {
-      PVEventEmitter.emit(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED)
     }
   )
 }
