@@ -1,9 +1,9 @@
-import { addParameterToURL, convertUrlToSecureHTTPS, encodeSpacesInString } from 'podverse-shared'
+import { addParameterToURL, convertUrlToSecureHTTPS, encodeSpacesInString, getExtensionFromUrl } from 'podverse-shared'
 import { Modal, StyleSheet } from 'react-native'
 import React from 'reactn'
 import Orientation from 'react-native-orientation-locker'
 import Video from 'react-native-video-controls'
-import { errorLogger } from '../lib/logger'
+import { debugLogger, errorLogger } from '../lib/logger'
 import { pvIsTablet } from '../lib/deviceDetection'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
@@ -341,6 +341,10 @@ export class PVVideo extends React.PureComponent<Props, State> {
     nowPlayingItem = nowPlayingItem || {}
 
     const finalUri = encodeSpacesInString(convertUrlToSecureHTTPS(uri || '').trim())
+    const fileExtension = getExtensionFromUrl(finalUri)?.substring(1)
+    const isHLS = fileExtension === 'm3u8';
+
+    console.log('hello!', finalUri, isHLS)
 
     const pvVideo = finalUri ? (
       <Video
@@ -357,9 +361,9 @@ export class PVVideo extends React.PureComponent<Props, State> {
           this._handlePause()
         }}
         onEnterFullscreen={this._enableFullscreen}
-        // onError={(error) => {
-        //   errorLogger('PVVideo onError', error)
-        // }}
+        onError={(error) => {
+          debugLogger('PVVideo onError', error)
+        }}
         onLoad={(payload: any) => {
           const { duration } = payload
           videoStateUpdateDuration(duration)
@@ -409,7 +413,8 @@ export class PVVideo extends React.PureComponent<Props, State> {
           headers: {
             'User-Agent': userAgent,
             ...(Authorization ? { Authorization } : {})
-          }
+          },
+          ...(isHLS ? { type: 'm3u8' } : {})
         }}
         style={styles.videoMini}
       />

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { checkIfVideoFileOrVideoLiveType, NowPlayingItem } from 'podverse-shared'
+import { checkIfVideoFileOrVideoLiveType, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
 import TrackPlayer, { Capability, IOSCategoryMode, PitchAlgorithm, State, Track } from 'react-native-track-player'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
@@ -275,6 +275,10 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
       getDownloadedFilePath(episodeId, episodeMediaUrl, isAddByRSSPodcast)
     ])
 
+    const fileExtension = getExtensionFromUrl(episodeMediaUrl)?.substring(1)
+    const isHLS = fileExtension === 'm3u8'
+    const type = isHLS ? 'hls' : 'default'
+
     if (isDownloadedFile) {
       track = {
         id,
@@ -283,7 +287,8 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
         artist: podcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
         userAgent: getAppUserAgent(),
-        pitchAlgorithm: PitchAlgorithm.Voice
+        pitchAlgorithm: PitchAlgorithm.Voice,
+        type
       }
     } else {
       const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
@@ -300,7 +305,8 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
         headers: {
           ...(Authorization ? { Authorization } : {}),
           'User-Agent': getAppUserAgent()
-        }
+        },
+        type
       }
     }
   }

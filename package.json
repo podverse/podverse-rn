@@ -107,7 +107,7 @@
     "react-native-track-player": "2.1.3",
     "react-native-tracking-transparency": "0.1.1",
     "react-native-vector-icons": "8.1.0",
-    "react-native-video": "^5.2.0",
+    "react-native-video": "6.0.0-alpha.4",
     "react-native-video-controls": "^2.8.1",
     "react-native-webview": "11.26.0",
     "react-native-xml2js": "1.0.3",
