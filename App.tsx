@@ -8,7 +8,7 @@ import { getFontScale } from 'react-native-device-info'
 import Orientation from 'react-native-orientation-locker'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
-import { setGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { isOnMinimumAllowedVersion } from './src/services/versioning'
 import { UpdateRequiredOverlay, OverlayAlert, ImageFullView, BoostDropdownBanner } from './src/components'
 import { pvIsTablet } from './src/lib/deviceDetection'
@@ -86,8 +86,6 @@ class App extends Component<Props, State> {
 
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
 
-    
-  
     registerCarModule(this.onConnect, this.onDisconnect)
   }
 
@@ -103,14 +101,23 @@ class App extends Component<Props, State> {
     if (!carplayEventsInitialized) {
       carplayEventsInitialized = true
       PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdate)
-      PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
+      PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY, handleCarPlayPodcastsUpdate)
+
+      /*
+        This code is intended to correct a race condition when the mobile app is already initialized,
+        then CarPlay is connected later.
+      */
+      const { subscribedPodcasts } = getGlobal()
+      if (subscribedPodcasts?.length > 0) {
+        handleCarPlayPodcastsUpdate()
+      }
     }
   }
 
   onDisconnect = () => {
     // Do things now that carplay is disconnected
     PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdate)
-    PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
+    PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY, handleCarPlayPodcastsUpdate)
   }
 
   handleNetworkChange = () => {

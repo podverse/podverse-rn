@@ -93,7 +93,7 @@ const podcastsListTab = () => {
 
 export const handleCarPlayPodcastsUpdate = async () => {
   if (podcastsList) {
-    // isInitialLoad waits for the APP_FINISHED_INITALIZING event to be fired
+    // isInitialLoad waits for the APP_FINISHED_INITALIZING_FOR_CARPLAY event to be fired
     // one time before allowing items to load.
     const shouldLoad = !isInitialLoad
     isInitialLoad = false
@@ -371,7 +371,6 @@ const pushPlayerTemplate = () => {
   const playerTemplate = new NowPlayingTemplate(nowPlayingTemplateConfig("podverse.NowPlayingTemplate"))
   CarPlay.pushTemplate(playerTemplate)
   CarPlay.enableNowPlaying(true)
-
   refreshHistory()
 }
 
