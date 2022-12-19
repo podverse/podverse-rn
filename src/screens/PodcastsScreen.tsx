@@ -120,7 +120,7 @@ type State = {
 
 const testIDPrefix = 'podcasts_screen'
 
-let isInitialLoad = true
+export let isInitialLoadPodcastsScreen = true
 const horizontalRowHeight = 94
 const dividerHeight = 1
 
@@ -290,7 +290,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         this._initializeScreenData()
       }
     } catch (error) {
-      isInitialLoad = false
+      isInitialLoadPodcastsScreen = false
       this.setState({
         isLoadingMore: false
       })
@@ -396,7 +396,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     (async () => {
       await playerUpdateUserPlaybackPosition()
 
-      if (nextAppState === 'active' && !isInitialLoad) {
+      if (nextAppState === 'active' && !isInitialLoadPodcastsScreen) {
         const { nowPlayingItem: lastItem } = this.global.player
         const currentItem = await getNowPlayingItemLocally()
 
@@ -656,7 +656,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     downloadedEpisodeDeleteMarked()
 
     /* This event signals to CarPlay to refresh views after the app initializes. */
-    setTimeout(() => PVEventEmitter.emit(PV.Events.APP_FINISHED_INITALIZING), 1000)
+    setTimeout(() => PVEventEmitter.emit(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY), 1000)
     
     trackPageView('/podcasts', 'Podcasts Screen')
   }
@@ -719,7 +719,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const selectedFilterLabel = await getSelectedFilterLabel(selectedKey)
     const selectedSortLabel = getSelectedSortLabel(sort)
 
-    isInitialLoad = false
+    isInitialLoadPodcastsScreen = false
 
     this.setState(
       {
