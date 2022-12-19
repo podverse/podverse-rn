@@ -5,10 +5,11 @@ import React, { Component } from 'react'
 import { Image, LogBox, Platform, StatusBar, View } from 'react-native'
 import Config from 'react-native-config'
 import { getFontScale } from 'react-native-device-info'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import Orientation from 'react-native-orientation-locker'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
-import { getGlobal, setGlobal } from 'reactn'
+import { setGlobal } from 'reactn'
 import { isOnMinimumAllowedVersion } from './src/services/versioning'
 import { UpdateRequiredOverlay, OverlayAlert, ImageFullView, BoostDropdownBanner } from './src/components'
 import { pvIsTablet } from './src/lib/deviceDetection'
@@ -31,7 +32,7 @@ import {
   showRootView,
   unregisterCarModule
 } from './src/lib/carplay/PVCarPlay'
-import { gestureHandlerRootHOC, GestureHandlerRootView } from 'react-native-gesture-handler'
+import { isInitialLoadPodcastsScreen } from './src/screens/PodcastsScreen'
 
 LogBox.ignoreLogs(['EventEmitter.removeListener', "Require cycle"])
 
@@ -107,8 +108,7 @@ class App extends Component<Props, State> {
         This code is intended to correct a race condition when the mobile app is already initialized,
         then CarPlay is connected later.
       */
-      const { subscribedPodcasts } = getGlobal()
-      if (subscribedPodcasts?.length > 0) {
+      if (!isInitialLoadPodcastsScreen) {
         handleCarPlayPodcastsUpdate()
       }
     }
