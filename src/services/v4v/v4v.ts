@@ -385,7 +385,33 @@ const getValueTransactionQueue = async () => {
 }
 
 const clearValueTransactionQueue = async () => {
-  await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify([]))
+  try {
+    await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify([]))
+  } catch (error) {
+    errorLogger('clearValueTransactionQueue error:', error)
+  }
+}
+
+export const setStreamingValueOn = async (bool: boolean) => {
+  try {
+    if (bool) {
+      await AsyncStorage.setItem(PV.V4V.STREAMING_SATS_ON, 'TRUE')
+    } else {
+      await AsyncStorage.removeItem(PV.V4V.STREAMING_SATS_ON)
+    }
+  } catch (error) {
+    errorLogger('setStreamingValueOn error:', error)
+  }
+}
+
+export const getStreamingValueOn = async () => {
+  let val: string | null = ''
+  try {
+    val = await AsyncStorage.getItem(PV.V4V.STREAMING_SATS_ON)
+  } catch (error) {
+    errorLogger('getStreamingValueOn error:', error)
+  }
+  return val
 }
 
 /*

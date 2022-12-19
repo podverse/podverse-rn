@@ -110,9 +110,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     this.scrollToActiveIndex(1, animated)
   }
 
-  _toggleSatStreaming = () => {
+  _toggleSatStreaming = async () => {
     ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
-    toggleValueStreaming()
+    await toggleValueStreaming()
   }
 
   _handleAccessibilitySelectChange = (selectedKey: string) => {

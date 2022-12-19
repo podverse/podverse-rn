@@ -1,6 +1,6 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { translate } from '../../lib/i18n'
-import { processValueTransactionQueue } from '../../services/v4v/v4v'
+import { processValueTransactionQueue, setStreamingValueOn } from '../../services/v4v/v4v'
 
 let valueTransactionProcessorInterval = null
 
@@ -43,11 +43,14 @@ const createValueTransactionProcessorInterval = () => {
   }, 1000 * 60 * 10)
 }
 
-export const toggleValueStreaming = () => {
+export const toggleValueStreaming = async () => {
   const globalState = getGlobal()
   const { session } = globalState
   const { v4v } = session
   const { streamingValueOn } = v4v
+  const newVal = !streamingValueOn
+
+  await setStreamingValueOn(newVal)
 
   setGlobal(
     {
@@ -55,9 +58,27 @@ export const toggleValueStreaming = () => {
         ...session,
         v4v: {
           ...v4v,
-          streamingValueOn: !streamingValueOn
+          streamingValueOn: newVal
         }
       }
     }
   )
+}
+
+export const setValueStreaming = async (bool: boolean) => {
+  const globalState = getGlobal()
+  const { session } = globalState
+  const { v4v } = session
+
+  await setStreamingValueOn(bool)
+
+  setGlobal({
+    session: {
+      ...session,
+      v4v: {
+        ...v4v,
+        streamingValueOn: bool
+      }
+    }
+  })
 }
