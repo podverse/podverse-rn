@@ -46,8 +46,8 @@ const handleValueStreamingMinutePassed = async () => {
 
   valueStreamingAccumulatorSecondCount = 0
 
-  // Send batch of streaming value from queue every 5 minutes
-  const shouldProcessQueue = valueStreamingProcessQueueSecondCount >= 600
+  // Send batch of streaming value from queue every 1 minutes
+  const shouldProcessQueue = valueStreamingProcessQueueSecondCount >= 60
   if (shouldProcessQueue) {
     valueStreamingProcessQueueSecondCount = 0
   }
@@ -64,7 +64,7 @@ const handleValueStreamingMinutePassed = async () => {
   return shouldProcessQueue
 }
 
-export const handleValueStreamingTimerIncrement = (isVideo?: boolean) => {
+export const handleValueStreamingTimerIncrement = (isVideo?: boolean) => {  
   const globalState = getGlobal()
   const { streamingValueOn } = globalState.session.v4v
   if (streamingValueOn) {

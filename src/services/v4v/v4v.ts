@@ -413,7 +413,7 @@ const bundleValueTransactionQueue = async () => {
     const remainderTransactions: ValueTransaction[] = []
     const transactionsToSend: ValueTransaction[] = []
     for (const transaction of bundledTransactionQueue) {
-      if (transaction.normalizedValueRecipient.amount < 10) {
+      if (transaction.normalizedValueRecipient.amount <= 5) {
         remainderTransactions.push(transaction)
       } else {
         transaction.normalizedValueRecipient.amount = Math.floor(transaction.normalizedValueRecipient.amount)
