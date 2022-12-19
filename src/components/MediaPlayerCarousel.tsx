@@ -436,14 +436,16 @@ const styles = StyleSheet.create({
     maxWidth: '50%'
   },
   boostButtonMainText: {
-    fontSize: PV.Fonts.sizes.sm
+    fontSize: PV.Fonts.sizes.sm,
+    backgroundColor: 'transparent'
   },
   boostagramButtonMainText: {
     fontSize: PV.Fonts.sizes.sm,
     marginRight: 8
   },
   boostButtonSubText: {
-    fontSize: PV.Fonts.sizes.xs
+    fontSize: PV.Fonts.sizes.xs,
+    backgroundColor: 'transparent'
   },
   maxWidthWrapper: {
     alignItems: 'center',
