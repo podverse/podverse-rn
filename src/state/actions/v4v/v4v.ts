@@ -4,6 +4,7 @@ import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../../resources'
 import {
   BoostagramItem,
+  getStreamingValueOn,
   v4vDeleteProviderFromStorage,
   v4vGetProvidersConnected,
   v4vGetSenderInfo,
@@ -14,6 +15,7 @@ import {
   v4vSetSettings
 } from '../../../services/v4v/v4v'
 import { playerUpdatePlayerState } from '../player'
+import { setValueStreaming } from '../valueTag'
 
 export type V4VProviderConnectedState = {
   key: string
@@ -476,6 +478,12 @@ export const v4vClearBoostagramMessage = () => {
       }
     }
   })
+}
+
+/* Streaming Sats helpers */
+export const v4vInitializeStreamingValue = async () => {
+  const streamingValueOn = await getStreamingValueOn()
+  setValueStreaming(!!streamingValueOn)
 }
 
 /* Misc helpers */

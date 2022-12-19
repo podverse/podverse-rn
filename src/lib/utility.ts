@@ -13,7 +13,7 @@ import 'moment/locale/pt'
 import 'moment/locale/ru'
 import 'moment/locale/sv'
 import 'moment/locale/tr'
-import { convertSecToHHMMSS } from 'podverse-shared'
+import { convertSecToHHMMSS, decodeHTMLString, removeHTMLFromString } from 'podverse-shared'
 import { Platform } from 'react-native'
 import Config from 'react-native-config'
 import { PV } from '../resources'
@@ -188,4 +188,10 @@ export const getAndroidVersion = () => {
 
 export const getPathFromUrl = (url: string) => {
   return url.split(/[?#]/)[0];
+}
+
+export const removeAndDecodeHTMLInString = (text: string) => {
+  text = removeHTMLFromString(text)
+  text = decodeHTMLString(text)
+  return text?.trim() || ''
 }

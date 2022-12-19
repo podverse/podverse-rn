@@ -2,7 +2,7 @@ import { decodeHTMLString, getTimeLabelText, removeHTMLFromString } from 'podver
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { generateEpisodeAccessibilityText, readableDate } from '../lib/utility'
+import { generateEpisodeAccessibilityText, readableDate, removeAndDecodeHTMLInString } from '../lib/utility'
 import { PV } from '../resources'
 import { images } from '../styles'
 import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
@@ -50,9 +50,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const podcastTitle = podcast.title || translate('Untitled Podcast')
     let summaryText = subtitle && subtitle !== title ? subtitle : description
-    summaryText = removeHTMLFromString(summaryText)
-    summaryText = decodeHTMLString(summaryText)
-    summaryText = summaryText?.trim() || ''
+    summaryText = removeAndDecodeHTMLInString(summaryText)
 
     let finalPubDate = pubDate
     if (liveItem?.start) {

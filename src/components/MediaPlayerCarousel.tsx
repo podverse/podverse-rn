@@ -110,9 +110,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     this.scrollToActiveIndex(1, animated)
   }
 
-  _toggleSatStreaming = () => {
+  _toggleSatStreaming = async () => {
     ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
-    toggleValueStreaming()
+    await toggleValueStreaming()
   }
 
   _handleAccessibilitySelectChange = (selectedKey: string) => {
@@ -436,14 +436,16 @@ const styles = StyleSheet.create({
     maxWidth: '50%'
   },
   boostButtonMainText: {
-    fontSize: PV.Fonts.sizes.sm
+    fontSize: PV.Fonts.sizes.sm,
+    backgroundColor: 'transparent'
   },
   boostagramButtonMainText: {
     fontSize: PV.Fonts.sizes.sm,
     marginRight: 8
   },
   boostButtonSubText: {
-    fontSize: PV.Fonts.sizes.xs
+    fontSize: PV.Fonts.sizes.xs,
+    backgroundColor: 'transparent'
   },
   maxWidthWrapper: {
     alignItems: 'center',
