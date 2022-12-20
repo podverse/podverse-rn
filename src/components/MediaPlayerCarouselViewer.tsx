@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.xxl
   },
   imageBorder: {
-    borderColor: PV.Colors.skyDark,
+    borderColor: PV.Colors.brandBlueDarker,
     borderWidth: 5
   },
   podcastTitle: {

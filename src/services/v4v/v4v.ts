@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Funding, NowPlayingItem, ValueRecipient, ValueRecipientNormalized,
   ValueTag, ValueTransaction } from 'podverse-shared'
-import { Config } from 'react-native-config'
 import * as RNKeychain from 'react-native-keychain'
 import { errorLogger } from '../../lib/logger'
 import { translate } from '../../lib/i18n'
@@ -9,6 +8,7 @@ import { createSatoshiStreamStats } from '../../lib/satoshiStream'
 import { credentialsPlaceholderUsername } from '../../lib/secutity'
 import { PV } from '../../resources'
 import { V4VProviderListItem } from '../../resources/V4V'
+import PVEventEmitter from '../../services/eventEmitter'
 import {
   getBoostagramItemValueTags,
   v4vAddPreviousTransactionError,
@@ -366,6 +366,8 @@ export const processValueTransactionQueue = async () => {
     }
   }
 
+  PVEventEmitter.emit(PV.Events.V4V_VALUE_SENT)
+
   return {
     totalAmount,
     transactions: bundledValueTransactionsToProcess
@@ -383,7 +385,33 @@ const getValueTransactionQueue = async () => {
 }
 
 const clearValueTransactionQueue = async () => {
-  await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify([]))
+  try {
+    await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify([]))
+  } catch (error) {
+    errorLogger('clearValueTransactionQueue error:', error)
+  }
+}
+
+export const setStreamingValueOn = async (bool: boolean) => {
+  try {
+    if (bool) {
+      await AsyncStorage.setItem(PV.V4V.STREAMING_SATS_ON, 'TRUE')
+    } else {
+      await AsyncStorage.removeItem(PV.V4V.STREAMING_SATS_ON)
+    }
+  } catch (error) {
+    errorLogger('setStreamingValueOn error:', error)
+  }
+}
+
+export const getStreamingValueOn = async () => {
+  let val: string | null = ''
+  try {
+    val = await AsyncStorage.getItem(PV.V4V.STREAMING_SATS_ON)
+  } catch (error) {
+    errorLogger('getStreamingValueOn error:', error)
+  }
+  return val
 }
 
 /*
@@ -411,7 +439,7 @@ const bundleValueTransactionQueue = async () => {
     const remainderTransactions: ValueTransaction[] = []
     const transactionsToSend: ValueTransaction[] = []
     for (const transaction of bundledTransactionQueue) {
-      if (transaction.normalizedValueRecipient.amount < 10) {
+      if (transaction.normalizedValueRecipient.amount <= 5) {
         remainderTransactions.push(transaction)
       } else {
         transaction.normalizedValueRecipient.amount = Math.floor(transaction.normalizedValueRecipient.amount)
@@ -497,7 +525,9 @@ const saveTransactionQueue = async (transactionQueue: ValueTransaction[]) => {
   }
 }
 
-
+export const v4vClearTransactionQueue = async () => {
+  await saveTransactionQueue([])
+}
 
 /* V4V senderInfo helpers  */
 
@@ -541,7 +571,7 @@ export const v4vGetPluralCurrencyUnit = (unit: 'sat') => {
 }
 
 export const v4vGetPluralCurrencyUnitPerMinute = (unit: 'sat') => {
-  return `${v4vGetPluralCurrencyUnit(unit)} ${translate('per minute')}`
+  return `${v4vGetPluralCurrencyUnit(unit)}${translate('per minute')}`
 }
 
 export const v4vGetProviderListItems = () => {

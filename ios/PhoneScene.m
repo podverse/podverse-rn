@@ -8,15 +8,22 @@
 
 #import "PhoneScene.h"
 #import "AppDelegate.h"
+#import "React/RCTLinkingManager.h"
 
 
 @implementation PhoneSceneDelegate
 
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
+  NSUserActivity *userActivity = [connectionOptions.userActivities allObjects].firstObject;
+  NSMutableDictionary *launchOptions = [@{} mutableCopy];
+  if(userActivity.webpageURL != nil) {
+    launchOptions[UIApplicationLaunchOptionsURLKey] = userActivity.webpageURL;
+  }
+  
   AppDelegate *applicationDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
   UIViewController *rootViewController = [UIViewController new];
   if(applicationDelegate.bridge == nil) {
-    applicationDelegate.bridge = [[RCTBridge alloc] initWithDelegate:applicationDelegate launchOptions:@{}];
+    applicationDelegate.bridge = [[RCTBridge alloc] initWithDelegate:applicationDelegate launchOptions:launchOptions];
     applicationDelegate.rootView = [[RCTRootView alloc] initWithBridge:applicationDelegate.bridge
                                                             moduleName:@"podverse"
                                                      initialProperties:nil];
@@ -28,6 +35,12 @@
   applicationDelegate.window = [[UIWindow alloc] initWithWindowScene:(UIWindowScene *)scene];
   applicationDelegate.window.rootViewController = rootViewController;
   [applicationDelegate.window makeKeyAndVisible];
+}
+
+-(void)scene:(UIScene *)scene continueUserActivity:(nonnull NSUserActivity *)userActivity{
+  if(userActivity.webpageURL != nil) {
+    [RCTLinkingManager application:[UIApplication sharedApplication] openURL:userActivity.webpageURL options:userActivity.userInfo];
+  }
 }
 
 @end

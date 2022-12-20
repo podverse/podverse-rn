@@ -1,13 +1,12 @@
-import { Dimensions, StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
-import ConfettiCannon from 'react-native-confetti-cannon'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { checkIfHasSupportedCommentTag, Episode, TranscriptRow } from 'podverse-shared'
 import { PV } from '../resources'
 import { translate } from '../lib/i18n'
-import { audioCheckIfIsPlaying } from '../services/playerAudio'
-import { sendBoost, v4vGetPluralCurrencyUnit } from '../services/v4v/v4v'
+import { playerCheckIfStateIsPlaying } from '../services/player'
+import { v4vGetPluralCurrencyUnitPerMinute } from '../services/v4v/v4v'
 import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import { toggleValueStreaming } from '../state/actions/valueTag'
 import { MediaPlayerCarouselComments } from './MediaPlayerCarouselComments'
@@ -17,7 +16,6 @@ import {
   Icon,
   MediaPlayerCarouselChapters,
   MediaPlayerCarouselChatRoom,
-  MediaPlayerCarouselClips,
   MediaPlayerCarouselShowNotes,
   MediaPlayerCarouselTranscripts,
   MediaPlayerCarouselViewer,
@@ -37,7 +35,6 @@ type State = {
   activeIndex: number
   boostIsSending: boolean
   boostWasSent: boolean
-  explosionOrigin: number
 }
 
 const testIDPrefix = 'media_player_carousel'
@@ -46,7 +43,6 @@ const _nowPlayingInfoKey = '_nowPlayingInfoKey'
 const _episodeSummaryKey = '_episodeSummaryKey'
 const _chaptersKey = '_chaptersKey'
 const _chatRoomKey = '_chatRoomKey'
-const _clipsKey = '_clipsKey'
 const _commentsKey = '_commentsKey'
 const _transcriptKey = '_transcriptKey'
 
@@ -57,10 +53,6 @@ const accessibilityNowPlayingInfo = {
 
 const checkIfHasChapters = (episode: Episode) => {
   return !!episode?.chaptersUrl
-}
-
-const checkIfHasClips = (episode: Episode, addByRSSPodcastFeedUrl?: string) => {
-  return episode && !episode.liveItem && !addByRSSPodcastFeedUrl
 }
 
 const checkIfHasTranscript = (parsedTranscript: any) => {
@@ -75,7 +67,6 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   carousel: any
   scrollView: any
   handlePressClipInfo: any
-  explosion: ConfettiCannon | null
 
   constructor(props) {
     super(props)
@@ -84,8 +75,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       accessibilityItemSelected: accessibilityNowPlayingInfo,
       activeIndex: 0,
       boostIsSending: false,
-      boostWasSent: false,
-      explosionOrigin: 0
+      boostWasSent: false
     }
   }
 
@@ -120,42 +110,19 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     this.scrollToActiveIndex(1, animated)
   }
 
-  _attemptBoost = () => {
+  _toggleSatStreaming = async () => {
     ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
-    this.setState({ boostIsSending: true }, () => {
-      (async () => {
-        const { nowPlayingItem } = this.global.player
-        await sendBoost(nowPlayingItem)
-        this.setState(
-          {
-            boostIsSending: false,
-            boostWasSent: true
-          },
-          () => {
-            this.explosion && this.explosion.start()
-            setTimeout(() => {
-              this.setState({ boostWasSent: false })
-            }, 4000)
-          }
-        )
-      })()
-    })
-  }
-
-  _toggleSatStreaming = () => {
-    ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
-    toggleValueStreaming()
+    await toggleValueStreaming()
   }
 
   _handleAccessibilitySelectChange = (selectedKey: string) => {
     const { parsedTranscript, player } = this.global
-    const { episode, nowPlayingItem } = player
+    const { episode } = player
     const hasChapters = checkIfHasChapters(episode)
-    const hasClips = checkIfHasClips(episode, nowPlayingItem?.addByRSSPodcastFeedUrl)
     const hasComments = !!checkIfHasSupportedCommentTag(episode)
     const hasTranscript = checkIfHasTranscript(parsedTranscript)
     const hasChat = checkIfHasChat(episode)
-    const items = accessibilitySelectorItems(hasChapters, hasComments, hasTranscript, hasChat, hasClips)
+    const items = accessibilitySelectorItems(hasChapters, hasComments, hasTranscript, hasChat)
     const accessibilityItemSelected = items.find((x) => x.value === selectedKey)
     this.setState({ accessibilityItemSelected })
   }
@@ -172,12 +139,11 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { accessibilityItemSelected, activeIndex, boostIsSending, boostWasSent, explosionOrigin } = this.state
+    const { accessibilityItemSelected, activeIndex } = this.state
     const { parsedTranscript, player, screen, screenReaderEnabled, session } = this.global
     const { episode, nowPlayingItem, playbackState } = player
     const { screenWidth } = screen
     const hasChapters = checkIfHasChapters(episode)
-    const hasClips = checkIfHasClips(episode, nowPlayingItem?.addByRSSPodcastFeedUrl)
     const hasComments = !!checkIfHasSupportedCommentTag(episode)
     const hasTranscript = checkIfHasTranscript(parsedTranscript)
     const hasChat = checkIfHasChat(episode)
@@ -185,29 +151,32 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { activeProvider, activeProviderSettings } = v4vGetActiveProviderInfo(
       getBoostagramItemValueTags(nowPlayingItem)
     )
-    const { boostAmount, streamingAmount } = activeProviderSettings || {}
+    const { streamingAmount } = activeProviderSettings || {}
     const { streamingValueOn } = session.v4v
 
-    const isPlaying = audioCheckIfIsPlaying(playbackState)
+    const isPlaying = playerCheckIfStateIsPlaying(playbackState)
 
     let itemCount = 2
     if (hasChapters) itemCount++
-    // if (hasClips) itemCount++
     if (hasComments) itemCount++
     if (hasTranscript) itemCount++
     if (hasChat) itemCount++
 
     const satStreamText = streamingValueOn ? translate('Stream On') : translate('Stream Off')
 
-    const boostText = boostWasSent ? translate('Boost Sent').toUpperCase() : translate('Boost').toUpperCase()
-
     const streamingButtonMainTextStyles = streamingValueOn
-      ? [styles.boostButtonMainText, { color: PV.Colors.green }]
+      ? [styles.boostButtonMainText, { fontWeight: '500'}]
       : [styles.boostButtonMainText]
 
     const streamingButtonSubTextStyles = streamingValueOn
-      ? [styles.boostButtonSubText, { color: PV.Colors.green }]
+      ? [styles.boostButtonSubText]
       : [styles.boostButtonSubText]
+
+    const streamingIndicatorStyles = Platform.OS === 'ios'
+      ? [styles.streamingIndicator, styles.streamingIndicatorIOS]
+      : [styles.streamingIndicator, styles.streamingIndicatorAndroid]
+
+    const streamingIndicatorSize = Platform.OS === 'ios' ? 15 : 20
 
     const hasValueInfo = nowPlayingItem?.episodeValue?.length > 0 || nowPlayingItem?.podcastValue?.length > 0
 
@@ -217,7 +186,6 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       navigation,
       hasChapters,
       hasChat,
-      hasClips,
       hasComments,
       hasTranscript,
       screenReaderEnabled,
@@ -231,7 +199,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           <>
             <DropdownButtonSelect
               accessibilityHint={translate('ARIA HINT - This is the now playing info selector')}
-              items={accessibilitySelectorItems(hasChapters, hasComments, hasTranscript, hasChat, hasClips)}
+              items={accessibilitySelectorItems(hasChapters, hasComments, hasTranscript, hasChat)}
               label={accessibilityItemSelected?.label}
               onValueChange={this._handleAccessibilitySelectChange}
               placeholder={placeholderItem}
@@ -275,41 +243,23 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
         {!!activeProvider && hasValueInfo && (
           <View style={styles.maxWidthWrapper}>
             <View style={styles.boostButtonsContainer}>
-              {/* <PressableWithOpacity
+              <PressableWithOpacity
                 onPress={this._toggleSatStreaming}
                 style={styles.boostButton}
                 testID={'stream_button'.prependTestId()}>
-                <Text style={streamingButtonMainTextStyles} testID='stream_button_text_1'>
-                  {satStreamText.toUpperCase()}
-                </Text>
-                <Text style={streamingButtonSubTextStyles} testID='stream_button_text_2'>
-                  {`${streamingAmount} ${v4vGetPluralCurrencyUnitPerMinute(activeProvider.unit)}`}
-                </Text>
+                <View style={styles.boostButtonColumn}>
+                  <Text style={streamingButtonMainTextStyles} testID='stream_button_text_1'>
+                    {satStreamText.toUpperCase()}
+                  </Text>
+                  <Text style={streamingButtonSubTextStyles} testID='stream_button_text_2'>
+                    {`${streamingAmount} ${v4vGetPluralCurrencyUnitPerMinute(activeProvider.unit)}`}
+                  </Text>
+                </View>
                 {streamingValueOn && isPlaying && (
-                  <ActivityIndicator size={15} styles={{ position: 'absolute', right: 20 }} testID={testIDPrefix} />
-                )}
-              </PressableWithOpacity> */}
-              <PressableWithOpacity
-                disabled={boostIsSending || boostWasSent}
-                onLayout={(event) => {
-                  this.setState({ explosionOrigin: event.nativeEvent.layout.y })
-                }}
-                onPress={this._attemptBoost}
-                style={styles.boostButton}
-                testID={'boost_button'.prependTestId()}>
-                {boostIsSending ? (
-                  <ActivityIndicator testID={testIDPrefix} />
-                ) : (
-                  <>
-                    <Text style={styles.boostButtonMainText} testID='boost_button_text_1'>
-                      {boostText}
-                    </Text>
-                    {!boostWasSent && (
-                      <Text style={styles.boostButtonSubText} testID='Boost Button_text_2'>
-                        {`${boostAmount} ${v4vGetPluralCurrencyUnit(activeProvider.unit)}`}
-                      </Text>
-                    )}
-                  </>
+                  <ActivityIndicator 
+                    size={streamingIndicatorSize} 
+                    styles={streamingIndicatorStyles} 
+                    testID={testIDPrefix} />
                 )}
               </PressableWithOpacity>
               <PressableWithOpacity
@@ -330,16 +280,6 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
             </View>
           </View>
         )}
-        {
-          <ConfettiCannon
-            count={200}
-            explosionSpeed={500}
-            origin={{ x: screenWidth, y: explosionOrigin }}
-            autoStart={false}
-            ref={(ref) => (this.explosion = ref)}
-            fadeOut
-          />
-        }
       </View>
     )
   }
@@ -354,8 +294,7 @@ const accessibilitySelectorItems = (
   hasChapters: boolean,
   hasComments: boolean,
   hasTranscript: boolean,
-  hasChat: boolean,
-  hasClips: boolean
+  hasChat: boolean
 ) => {
   const items = [
     accessibilityNowPlayingInfo,
@@ -369,13 +308,6 @@ const accessibilitySelectorItems = (
     items.push({
       label: translate('Chapters'),
       value: _chaptersKey
-    })
-  }
-
-  if (hasClips) {
-    items.push({
-      label: translate('Clips'),
-      value: _clipsKey
     })
   }
 
@@ -409,7 +341,6 @@ const mediaPlayerCarouselComponents = (
   navigation: any,
   hasChapters: boolean,
   hasChat: boolean,
-  hasClips: boolean,
   hasComments: boolean,
   hasTranscript: boolean,
   screenReaderEnabled: boolean,
@@ -433,9 +364,6 @@ const mediaPlayerCarouselComponents = (
           {accessibilityItemSelectedValue === _chaptersKey && hasChapters && (
             <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />
           )}
-          {/* {accessibilityItemSelectedValue === _clipsKey && hasClips && (
-            <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
-          )} */}
           {accessibilityItemSelectedValue === _commentsKey && hasComments && (
             <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />
           )}
@@ -455,7 +383,6 @@ const mediaPlayerCarouselComponents = (
           />
           <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
           {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
-          {/* {hasClips && <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />} */}
           {hasComments && <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />}
           {hasTranscript && (
             <MediaPlayerCarouselTranscripts isNowPlaying parsedTranscript={parsedTranscript} width={screenWidth} />
@@ -485,9 +412,15 @@ const styles = StyleSheet.create({
     backgroundColor: PV.Colors.velvet,
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
     borderColor: PV.Colors.brandBlueLight,
     borderWidth: 2,
-    maxWidth: '50%'
+    maxWidth: '50%',
+    position: 'relative'
+  },
+  boostButtonColumn: {
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   boostagramButton: {
     flex: 1,
@@ -503,18 +436,31 @@ const styles = StyleSheet.create({
     maxWidth: '50%'
   },
   boostButtonMainText: {
-    fontSize: PV.Fonts.sizes.sm
+    fontSize: PV.Fonts.sizes.sm,
+    backgroundColor: 'transparent'
   },
   boostagramButtonMainText: {
     fontSize: PV.Fonts.sizes.sm,
     marginRight: 8
   },
   boostButtonSubText: {
-    fontSize: PV.Fonts.sizes.xs
+    fontSize: PV.Fonts.sizes.xs,
+    backgroundColor: 'transparent'
   },
   maxWidthWrapper: {
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  streamingIndicator: {
+    position: 'absolute'
+  },
+  streamingIndicatorAndroid: {
+    right: -34,
+    top: -10
+  },
+  streamingIndicatorIOS: {
+    right: -34,
+    top: -7
   },
   wrapper: {
     flex: 1
