@@ -88,7 +88,6 @@ import {
   v4vInitializeShowLightningIcon,
   v4vInitializeStreamingValue
 } from '../state/actions/v4v/v4v'
-import { initializeValueProcessor } from '../state/actions/valueTag'
 import { core } from '../styles'
 
 type Props = {
@@ -649,8 +648,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       initializePlayer(),
       initializePlayerSettings()
     ])
-
-    initializeValueProcessor()
 
     this._setDownloadedDataIfOffline()
     downloadedEpisodeDeleteMarked()

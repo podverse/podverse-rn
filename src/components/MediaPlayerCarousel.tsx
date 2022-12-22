@@ -420,7 +420,8 @@ const styles = StyleSheet.create({
   },
   boostButtonColumn: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: 'transparent'
   },
   boostagramButton: {
     flex: 1,

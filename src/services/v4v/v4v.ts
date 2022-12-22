@@ -477,7 +477,19 @@ const combineTransactionAmounts = (
 
 const getMatchingValueTransactionIndex = (valueTransaction: ValueTransaction, valueTransactions: ValueTransaction[]) =>
   valueTransactions.findIndex((x: ValueTransaction) => {
-    return x.normalizedValueRecipient.address === valueTransaction.normalizedValueRecipient.address
+    if (valueTransaction.normalizedValueRecipient.customKey && valueTransaction.normalizedValueRecipient.customValue) {
+      return (
+        x.normalizedValueRecipient.customKey === valueTransaction.normalizedValueRecipient.customKey
+        && x.normalizedValueRecipient.customValue === valueTransaction.normalizedValueRecipient.customValue
+        && x.normalizedValueRecipient.address === valueTransaction.normalizedValueRecipient.address
+      ) 
+    } else {
+      return (
+        x.normalizedValueRecipient.address === valueTransaction.normalizedValueRecipient.address
+        && !x.normalizedValueRecipient.customKey
+        && !x.normalizedValueRecipient.customValue
+      )
+    }
   })
 
 export const saveStreamingValueTransactionsToTransactionQueue = async (
@@ -612,4 +624,10 @@ export const v4vDeleteProviderFromStorage = async (providerKey: 'alby') => {
 export const v4vGetActiveValueTag = (valueTags: ValueTag[], type?: 'lightning', method?: 'keysend') => {
   if (!type || !method || !Array.isArray(valueTags)) return null
   return valueTags.find((valueTag) => valueTag.type === type && valueTag.method === method)
+}
+
+export const extractV4VValueTags = (episodeValue?: ValueTag[], podcastValue?: ValueTag[]) => {
+  return (episodeValue?.length && episodeValue)
+    || (podcastValue?.length && podcastValue)
+    || []
 }
