@@ -613,3 +613,9 @@ export const v4vGetActiveValueTag = (valueTags: ValueTag[], type?: 'lightning', 
   if (!type || !method || !Array.isArray(valueTags)) return null
   return valueTags.find((valueTag) => valueTag.type === type && valueTag.method === method)
 }
+
+export const extractV4VValueTags = (episodeValue?: ValueTag[], podcastValue?: ValueTag[]) => {
+  return (episodeValue?.length && episodeValue)
+    || (podcastValue?.length && podcastValue)
+    || []
+}
