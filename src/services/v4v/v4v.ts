@@ -479,9 +479,9 @@ const getMatchingValueTransactionIndex = (valueTransaction: ValueTransaction, va
   valueTransactions.findIndex((x: ValueTransaction) => {
     if (valueTransaction.normalizedValueRecipient.customKey && valueTransaction.normalizedValueRecipient.customValue) {
       return (
-        x.normalizedValueRecipient.customKey === valueTransaction.normalizedValueRecipient.customKey &&
-        x.normalizedValueRecipient.customValue === valueTransaction.normalizedValueRecipient.customValue &&
-        x.normalizedValueRecipient.address === valueTransaction.normalizedValueRecipient.address
+        x.normalizedValueRecipient.customKey === valueTransaction.normalizedValueRecipient.customKey
+        && x.normalizedValueRecipient.customValue === valueTransaction.normalizedValueRecipient.customValue
+        && x.normalizedValueRecipient.address === valueTransaction.normalizedValueRecipient.address
       ) 
     } else {
       return (
