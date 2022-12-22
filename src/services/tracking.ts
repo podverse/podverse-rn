@@ -6,6 +6,8 @@ import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { matomoTrackPageView } from './matomo'
 
+const _fileName = "src\services\tracking.ts"
+
 export const getTrackingConsentAcknowledged = () => {
   return new Promise((res, rej) => {
     setTimeout(() => {
@@ -64,7 +66,7 @@ export const trackPageView = async (path: string, title: string, titleToEncode?:
       const finalTitle = `${title}${titleToEncode ? encodeURIComponent(titleToEncode) : ''}`
       await matomoTrackPageView(path, finalTitle)
     } catch (error) {
-      errorLogger('trackPageView error', error)
+      errorLogger(_fileName, 'trackPageView', error)
     }
   }
 }
@@ -107,6 +109,6 @@ export const trackPlayerScreenPageView = (item: any) => {
       )
     }
   } catch (error) {
-    errorLogger('trackPlayerScreenPageView error', error)
+    errorLogger(_fileName, 'trackPlayerScreenPageView', error)
   }
 }

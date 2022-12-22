@@ -5,15 +5,11 @@ import { Button, SafeAreaView, ScrollView, Text, TimePicker } from '../component
 import { translate } from '../lib/i18n'
 import { convertSecToHHMMSSAccessibilityLabel } from '../lib/utility'
 import { PV } from '../resources'
-import { sleepTimerIsRunning } from '../services/sleepTimer'
 import { trackPageView } from '../services/tracking'
 import {
-  pauseSleepTimerStateUpdates,
-  resumeSleepTimerStateUpdates,
   setSleepTimerTimeRemaining,
   startSleepTimer,
-  stopSleepTimer,
-  updateSleepTimerTimeRemaining
+  stopSleepTimer
 } from '../state/actions/sleepTimer'
 
 type Props = {
@@ -34,29 +30,11 @@ export class SleepTimerScreen extends React.Component<Props> {
   })
 
   componentDidMount() {
-    const isActive = sleepTimerIsRunning()
-    updateSleepTimerTimeRemaining()
-
-    if (isActive) {
-      resumeSleepTimerStateUpdates()
-    }
-
     trackPageView('/sleep-timer', 'Sleep Timer Screen')
   }
 
-  componentWillUnmount() {
-    pauseSleepTimerStateUpdates()
-  }
-
   _toggleSleepTimer = () => {
-    const { isActive } = this.global.player.sleepTimer
-    if (isActive) {
-      stopSleepTimer()
-    } else {
-      const { timeRemaining } = this.global.player.sleepTimer
-      startSleepTimer(timeRemaining)
-      resumeSleepTimerStateUpdates()
-    }
+    this.global?.player?.sleepTimer?.isActive ? stopSleepTimer() : startSleepTimer()
   }
 
   _updateSleepTimer = (hours: number, minutes: number, seconds: number) => {

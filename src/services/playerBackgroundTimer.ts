@@ -2,21 +2,16 @@ import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
-import BackgroundTimer from 'react-native-background-timer'
-// import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
-// import { saveStreamingValueTransactionsToTransactionQueue } from '../services/v4v/v4v'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
-import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
-// import { v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
+import { clearChapterPlaybackInfo, loadChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { startCheckClipEndTime, stopClipInterval } from '../state/actions/playerClips'
+import { handleSleepTimerCountEvent } from '../state/actions/sleepTimer'
 import PVEventEmitter from './eventEmitter'
 import {
-  getClipHasEnded,
-  // playerCheckIfStateIsPlaying,
   playerGetCurrentLoadedTrackId,
   playerGetPosition,
-  // playerGetState,
   playerHandlePauseWithUpdate,
   playerSetPositionWhenDurationIsAvailable,
   setClipHasEnded
@@ -24,6 +19,7 @@ import {
 import { getNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './userNowPlayingItem'
 import { removeQueueItem } from './queue'
 import { addOrUpdateHistoryItem } from './userHistoryItem'
+import { handleValueStreamingTimerIncrement } from './v4v/v4vStreaming'
 
 const debouncedSetPlaybackPosition = debounce(playerSetPositionWhenDurationIsAvailable, 1000, {
   leading: true,
@@ -79,11 +75,7 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
 }
 
 export const syncNowPlayingItemWithTrack = () => {
-  // If the clipEndInterval is already running, stop it before the clip is
-  // reloaded in the handleSyncNowPlayingItem function.
-  const checkClipEndTimeShouldStop = true
-  const streamingValueShouldStop = false
-  stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeShouldStop, streamingValueShouldStop)
+  stopClipInterval()
 
   // The first setTimeout is an attempt to prevent the following:
   // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
@@ -131,48 +123,6 @@ export const syncNowPlayingItemWithTrack = () => {
   setTimeout(sync, 1000)
 }
 
-/*
-  HANDLE CLIP END TIME INTERVAL
-*/
-
-const startCheckClipEndTime = async () => {
-  const globalState = getGlobal()
-  const { nowPlayingItem } = globalState.player
-
-  if (nowPlayingItem) {
-    const { clipEndTime, clipId } = nowPlayingItem
-    if (clipId && clipEndTime) {
-      await setClipHasEnded(false)
-      startBackgroundTimer()
-    }
-  }
-}
-
-export const stopBackgroundTimerIfShouldBeStopped = async (
-  checkClipEndTimeShouldStop: boolean,
-  streamingValueShouldStop: boolean
-) => {
-  const globalState = getGlobal()
-  const { nowPlayingItem } = globalState.player
-
-  if (!checkClipEndTimeShouldStop && nowPlayingItem?.clipEndTime) {
-    const clipHasEnded = await getClipHasEnded()
-    if (clipHasEnded) {
-      checkClipEndTimeShouldStop = true
-    }
-  }
-
-  const { streamingValueOn } = getGlobal().session.v4v
-
-  if (!streamingValueShouldStop && !streamingValueOn) {
-    streamingValueShouldStop = true
-  }
-
-  if (checkClipEndTimeShouldStop && streamingValueShouldStop) {
-    stopBackgroundTimer()
-  }
-}
-
 const stopCheckClipIfEndTimeReached = () => {
   (async () => {
     const globalState = getGlobal()
@@ -183,97 +133,38 @@ const stopCheckClipIfEndTimeReached = () => {
       if (clipEndTime && currentPosition > clipEndTime) {
         playerHandlePauseWithUpdate()
         await setClipHasEnded(true)
+        stopClipInterval()
       }
     }
-    const checkClipEndTimeStopped = false
-    const streamingValueStopped = false
-    stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeStopped, streamingValueStopped)
   })()
 }
 
 const debouncedHandlePlayerClipLoaded = debounce(startCheckClipEndTime, 1000)
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLoaded)
 
-/*
-  HANDLE VALUE STREAMING TOGGLE
-*/
+let chapterIntervalSecondCount = 0
+export const handleBackgroundTimerInterval = () => {
+  const { chapterIntervalActive, clipIntervalActive, player, session } = getGlobal()
+  const { sleepTimer } = player
+  const { v4v } = session
+  
+  if (clipIntervalActive) {
+    stopCheckClipIfEndTimeReached()
+  }
 
-// const handleValueStreamingToggle = () => {
-//   const globalState = getGlobal()
-//   const { streamingValueOn } = globalState.session.v4v
+  chapterIntervalSecondCount++
+  if (chapterIntervalSecondCount >= 3) {
+    chapterIntervalSecondCount = 0
+    if (chapterIntervalActive) {
+      loadChapterPlaybackInfo()
+    }
+  }
 
-//   if (streamingValueOn) {
-//     startBackgroundTimer()
-//   } else {
-//     const checkClipEndTimeShouldStop = false
-//     const streamingValueShouldStop = true
-//     stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeShouldStop, streamingValueShouldStop)
-//   }
-// }
+  if (sleepTimer?.isActive) {
+    handleSleepTimerCountEvent()
+  }
 
-// const handleValueStreamingMinutePassed = async () => {
-//   const globalState = getGlobal()
-//   const { nowPlayingItem } = globalState.player
-
-//   const valueTags = nowPlayingItem.episodeValue || nowPlayingItem.podcastValue || []
-
-//   const { activeProviderSettings } = v4vGetActiveProviderInfo(valueTags)
-//   const { streamingAmount } = activeProviderSettings || {}
-
-//   if (Array.isArray(valueTags) && valueTags.length > 0 && streamingAmount) {
-//     await saveStreamingValueTransactionsToTransactionQueue(valueTags, nowPlayingItem, streamingAmount)
-//   }
-// }
-
-// PVEventEmitter.on(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED, handleValueStreamingToggle)
-
-/*
-  BACKGROUND TIMER
-*/
-
-const startBackgroundTimer = () => {
-  stopBackgroundTimer()
-  BackgroundTimer.runBackgroundTimer(handleBackgroundTimerInterval, 1000)
-}
-
-const stopBackgroundTimer = () => {
-  BackgroundTimer.stopBackgroundTimer()
-}
-
-// let valueStreamingIntervalSecondCount = 1
-const handleBackgroundTimerInterval = () => {
-  stopCheckClipIfEndTimeReached()
-
-  // playerGetState().then(async (playbackState) => {
-  //   const globalState = getGlobal()
-  //   const { streamingValueOn } = globalState.session.v4v
-
-  //   if (streamingValueOn) {
-  //     if (playerCheckIfStateIsPlaying(playbackState)) {
-  //       valueStreamingIntervalSecondCount++
-
-  //       if (valueStreamingIntervalSecondCount && valueStreamingIntervalSecondCount % 60 === 0) {
-  //         await handleValueStreamingMinutePassed()
-  //       }
-  //     }
-
-  //     if (valueStreamingIntervalSecondCount === 600) {
-  //       valueStreamingIntervalSecondCount = 1
-
-  //       const { errors, transactions, totalAmount } = await processValueTransactionQueue()
-  //       if (transactions.length > 0 && totalAmount > 0) {
-  //         setGlobal({
-  //           bannerInfo: {
-  //             show: true,
-  //             description: translate('Streaming Value Sent'),
-  //             errors,
-  //             transactions,
-  //             totalAmount
-  //           }
-  //         })
-  //       }
-  //     }
-  //   }
-  // })
+  if (v4v?.streamingValueOn) {
+    handleValueStreamingTimerIncrement()
+  }
 }

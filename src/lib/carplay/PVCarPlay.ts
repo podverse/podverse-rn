@@ -1,8 +1,9 @@
-import { Episode, NowPlayingItem, Podcast } from 'podverse-shared';
+import { convertNowPlayingItemToEpisode, Episode, NowPlayingItem, Podcast } from 'podverse-shared';
 import { CarPlay, ListTemplate, NowPlayingTemplate, TabBarTemplate } from 'react-native-carplay';
 import { ListItem } from 'react-native-carplay/lib/interfaces/ListItem';
 import { TemplateConfig } from 'react-native-carplay/lib/templates/Template';
 import { getGlobal } from 'reactn'
+import { getNowPlayingItem } from '../../services/userNowPlayingItem';
 import { getHistoryItems } from '../../state/actions/userHistoryItem';
 import { errorLogger } from '../logger';
 import { translate } from '../i18n';
@@ -11,6 +12,7 @@ import { readableDate } from '../utility';
 import { getEpisodesForPodcast, loadEpisodeInPlayer, loadNowPlayingItemInPlayer } from './helpers';
 
 const _fileName = 'src\lib\carplay\PVCarPlay.ts'
+let isInitialLoad = true
 
 /* Initialize */
 
@@ -34,9 +36,7 @@ export const showRootView = () => {
   const tabBarTemplate = new TabBarTemplate({
     templates: [pListTab, qListTab, hListTab],
     onTemplateSelect(e: any) {
-      if (e.config.title === 'Podcasts') {
-        handleCarPlayPodcastsUpdate()
-      } else if (e.config.title === 'Queue') {
+      if (e.config.title === 'Queue') {
         handleCarPlayQueueUpdate()
       } else if (e.config.title === 'History') {
         refreshHistory()
@@ -51,6 +51,7 @@ export const showRootView = () => {
 
 let podcastsList: ListTemplate
 let podcastsListLoaded = false
+let nowPlayingItem: NowPlayingItem | null = null
 
 let episodes: any[] = []
 
@@ -59,20 +60,31 @@ const podcastsListTab = () => {
     sections: [
       {
         header: '',
-        items: loadingItems
+        items: []
       }
     ],
     title: translate('Podcasts'),
+    emptyViewTitleVariants: ["Loading..."],
     tabSystemImg: 'music.note.list',
+    onWillAppear: () => {
+      if (!isInitialLoad) {
+        handleCarPlayPodcastsUpdate()
+      }
+    },
     onItemSelect: async (item) => {
-      if (podcastsListLoaded) {
-        const { subscribedPodcasts } = getGlobal()
-        const podcast = subscribedPodcasts[item.index]
-        showEpisodesList(podcast)
+      if(item.disabled) {
+        return
+      }
 
-        const results = await getEpisodesForPodcast(podcast)
-        episodes = results[0]
-        handleCarPlayEpisodesUpdate(podcast)
+      if (podcastsListLoaded) {
+        if (nowPlayingItem && item.index === 0) {
+          const episode = convertNowPlayingItemToEpisode(nowPlayingItem)
+          await showCarPlayerForEpisode(episode, episode?.podcast)
+        } else if (nowPlayingItem && item.index > 0) {
+          await handlePodcastsListOnSelect(item.index - 1)
+        } else {
+          await handlePodcastsListOnSelect(item.index)
+        }
       }
     }
   })
@@ -82,17 +94,59 @@ const podcastsListTab = () => {
 
 export const handleCarPlayPodcastsUpdate = async () => {
   if (podcastsList) {
-    podcastsListLoaded = true
-    const { subscribedPodcasts } = getGlobal()
-    const listItems = await generatePodcastListItems(subscribedPodcasts)
+    // isInitialLoad waits for the APP_FINISHED_INITALIZING_FOR_CARPLAY event to be fired
+    // one time before allowing items to load.
+    const shouldLoad = !isInitialLoad
+    isInitialLoad = false
 
     podcastsList.updateSections([
       {
-        header: '',
-        items: listItems
+        items: []
       }
     ])
+
+    const { subscribedPodcasts } = getGlobal()
+    const sectionItems = []
+    nowPlayingItem = await getNowPlayingItem()
+    const podcastsListItems = await generatePodcastListItems(subscribedPodcasts)
+    podcastsListLoaded = true
+    
+    if (!podcastsListItems.length && shouldLoad) {
+      podcastsListItems.push(getEmptyCellWithTitle('No subscribed Podcasts'))
+    }
+
+    if (nowPlayingItem) {
+      const nowPlayingListItems = await generateNowPlayingListItems(nowPlayingItem)
+      sectionItems.push({
+        header: translate('Now Playing'),
+        items: nowPlayingListItems
+      })
+    }
+
+    sectionItems.push({
+      header: translate('Podcasts'),
+      items: podcastsListItems
+    })
+
+    podcastsList.updateSections(sectionItems)
   }
+}
+
+const generateNowPlayingListItems = async (nowPlayingItem: NowPlayingItem) => {
+  const pubDate =
+    (nowPlayingItem?.liveItem?.start && readableDate(nowPlayingItem.liveItem.start)) ||
+    (nowPlayingItem.episodePubDate && readableDate(nowPlayingItem.episodePubDate)) ||
+    ''
+
+  const imgUrl = await getDownloadedImageUrl(nowPlayingItem?.podcastShrunkImageUrl || nowPlayingItem?.podcastImageUrl)
+
+  return [
+    {
+      text: nowPlayingItem.episodeTitle || translate('Untitled Episode'),
+      detailText: pubDate,
+      ...(imgUrl ? { imgUrl } : {})
+    }
+  ]
 }
 
 const generatePodcastListItems = async (subscribedPodcasts: Podcast[]) => {
@@ -115,6 +169,16 @@ const createCarPlayPodcastListItem = async (podcast: Podcast) => {
   } as ListItem
 }
 
+const handlePodcastsListOnSelect = async (index: number) => {
+  const { subscribedPodcasts } = getGlobal()
+  const podcast = subscribedPodcasts[index]
+  showEpisodesList(podcast)
+
+  const results = await getEpisodesForPodcast(podcast)
+  episodes = results[0]
+  handleCarPlayEpisodesUpdate(podcast)
+}
+
 /* Podcast Episodes Tab */
 
 let episodesList: ListTemplate
@@ -124,10 +188,17 @@ const showEpisodesList = (podcast: Podcast) => {
     sections: [
       {
         header: podcast.title || translate('Untitled Podcast'),
-        items: loadingItems
-      },
+        items: []
+      }
     ],
-    onItemSelect: ({index}) => showCarPlayerForEpisode(episodes[index], podcast)
+    emptyViewTitleVariants: ["Loading..."],
+    onItemSelect: async ({index, disabled}) => {
+      if(disabled) {
+        return
+      }
+      
+      await showCarPlayerForEpisode(episodes[index], podcast)
+    }
   });
 
   CarPlay.pushTemplate(episodesList)
@@ -169,12 +240,17 @@ const queueItemsListTab = () => {
     sections: [
       {
         header: '',
-        items: loadingItems
+        items: []
       }
     ],
     title: translate('Queue'),
+    emptyViewTitleVariants: ["Loading..."],
     tabSystemImg: 'list.bullet',
     onItemSelect: async (item) => {
+      if(item.disabled) {
+        return
+      }
+
       const { session } = getGlobal()
       const updatedItems = session?.userInfo?.queueItems || []
       const nowPlayingItem = updatedItems[item.index]
@@ -187,12 +263,21 @@ const queueItemsListTab = () => {
 
 export const handleCarPlayQueueUpdate = async () => {
   if (queueList) {
+    queueList.updateSections([
+      {
+        items: []
+      }
+    ])
+
     const { session } = getGlobal()
     const updatedItems = session?.userInfo?.queueItems || []
     const listItems = await generateNPIListItems(updatedItems)
+    if (!listItems.length) {
+      listItems.push(getEmptyCellWithTitle("No items in your queue"))
+    }
+
     queueList.updateSections([
       {
-        header: '',
         items: listItems
       }
     ])
@@ -208,12 +293,17 @@ const historyItemsListTab = () => {
     sections: [
       {
         header: '',
-        items: loadingItems
+        items: []
       }
     ],
     title: translate('History'),
+    emptyViewTitleVariants: ["Loading..."],
     tabSystemImg: 'timer',
     onItemSelect: async (item) => {
+      if(item.disabled) {
+        return
+      }
+
       const { session } = getGlobal()
       const updatedItems = session?.userInfo?.historyItems || []
       const nowPlayingItem = updatedItems[item.index]
@@ -226,14 +316,23 @@ const historyItemsListTab = () => {
 
 export const handleCarPlayHistoryUpdate = async () => {
   if (historyList) {
+    historyList.updateSections([
+      {
+        items: []
+      }
+    ])
+
     const { session } = getGlobal()
     const updatedItems = session?.userInfo?.historyItems || []
     // Limit historyItems to the most recent 20 items, for performance reasons.
     const limitedItems = updatedItems.slice(0, 20)
     const listItems = await generateNPIListItems(limitedItems)
+    if (!listItems.length) {
+      listItems.push(getEmptyCellWithTitle("No items in your history"))
+    }
+
     historyList.updateSections([
       {
-        header: '',
         items: listItems
       }
     ])
@@ -273,7 +372,6 @@ const pushPlayerTemplate = () => {
   const playerTemplate = new NowPlayingTemplate(nowPlayingTemplateConfig("podverse.NowPlayingTemplate"))
   CarPlay.pushTemplate(playerTemplate)
   CarPlay.enableNowPlaying(true)
-
   refreshHistory()
 }
 
@@ -323,9 +421,8 @@ const getDownloadedImageUrl = async (origImageUrl?: string | null) => {
 }
 
 /* Loading Cell Helper */
-const loadingItems: ListItem[] = [
-  {
-    text: translate('Loading'),
-    showsDisclosureIndicator: false // This doesn't seem to work...
-  }
-]
+const getEmptyCellWithTitle = (title: string): ListItem => ({
+    text: title,
+    showsDisclosureIndicator: false,
+    disabled: true
+})

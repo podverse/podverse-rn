@@ -19,6 +19,8 @@ import { request } from './request'
   navigates the user too quickly to the PodcastScreen, before the network connection
   has finished being detected.
 */
+const _fileName = "src\services\podcast.ts"
+
 export const getPodcast = async (id: string, forceRequest?: boolean) => {
   const isConnected = await hasValidNetworkConnection()
   if (forceRequest || isConnected) {
@@ -114,7 +116,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], sort
       subscribedPodcasts = await combineWithAddByRSSPodcasts(sort)
       return [subscribedPodcasts, subscribedPodcasts.length]
     } catch (error) {
-      errorLogger(error)
+      errorLogger(_fileName, "getSubscribedPodcasts", error)
       const combinedPodcasts = await combineWithAddByRSSPodcasts(sort)
       return [combinedPodcasts, combinedPodcasts.length]
     }

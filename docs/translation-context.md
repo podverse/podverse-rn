@@ -16,9 +16,9 @@ The Podverse dev team will regularly update this document with context as we're 
 
 ## Base language text with extra context
 
-`"3 months free": "3 months free"`
+`"3 months free": "3 months free trial"`
 
-The use of the word "free" here means "3 months at no charge" or "3 months at no cost". It means the user will receive a 3 month free trial period when they sign up for Podverse premium.
+The use of the word "free trial" here means "3 months at no charge" or "3 months at no cost". It means the user will receive a 3 month free trial period when they sign up for Podverse premium.
 
 ---
 

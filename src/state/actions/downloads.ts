@@ -27,6 +27,8 @@ import { getEpisodes } from '../../services/episode'
 import { getPodcastCredentials, parseAddByRSSPodcast } from '../../services/parser'
 import { clearNowPlayingItem } from '../../services/userNowPlayingItem'
 
+const _fileName = 'src\state\actions\downloads.ts'
+
 // The DownloadTaskState should have the same episode and podcast properties as a NowPlayingItem,
 // or playing the download directly from the DownloadsScreen will not work.
 export type DownloadTaskState = {
@@ -404,7 +406,7 @@ export const downloadedEpisodeMarkForDeletion = async (episodeId: string) => {
     }
     await AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION, JSON.stringify(markedForDeletion))
   } catch (error) {
-    errorLogger('downloadedEpisodeMarkForDeletion error', error, episodeId)
+    errorLogger(_fileName, 'downloadedEpisodeMarkForDeletion', error, episodeId)
   }
 }
 
@@ -416,7 +418,7 @@ export const downloadedEpisodeDeleteMarked = async () => {
       await removeDownloadedPodcastEpisode(episodeId)
     }
   } catch (error) {
-    errorLogger('downloadedEpisodeDeleteMarked error', error)
+    errorLogger(_fileName, 'downloadedEpisodeDeleteMarked', error)
   }
   await AsyncStorage.removeItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION)
 }

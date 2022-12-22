@@ -1,58 +1,48 @@
+import { convertHoursMinutesSecondsToSeconds } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
+import { PV } from '../../resources'
+import { playerHandlePauseWithUpdate } from '../../services/player'
 import {
-  getSleepTimerTimeRemaining as getSleepTimerTimeRemainingService,
-  handleSleepTimerReachedEnd as handleSleepTimerReachedEndService,
-  setSleepTimerTimeRemaining as setSleepTimerTimeRemainingService,
-  sleepTimerIsRunning,
-  startSleepTimer as startSleepTimerService,
-  stopSleepTimer as stopSleepTimerService
+  getSleepTimerDefaultTimeRemaining, 
+  setSleepTimerDefaultTimeRemaining
 } from '../../services/sleepTimer'
 
-let sleepTimerInterval = null as any
-
-export const handleSleepTimerReachedEnd = () => {
-  handleSleepTimerReachedEndService()
-}
-
-export const pauseSleepTimerStateUpdates = () => {
-  if (sleepTimerInterval) {
-    clearInterval(sleepTimerInterval)
-    sleepTimerInterval = null
+export const handleSleepTimerCountEvent = () => {
+  const { timeRemaining } = getGlobal().player.sleepTimer
+  const newTimeRemaining = timeRemaining > 0 ? timeRemaining - 1 : 0
+  updateSleepTimerTimeRemaining(newTimeRemaining)
+  
+  if (timeRemaining <= 0) {
+    handleSleepTimerEndReached()
   }
 }
 
-export const resumeSleepTimerStateUpdates = () => {
-  pauseSleepTimerStateUpdates()
+const handleSleepTimerEndReached = () => {
+  playerHandlePauseWithUpdate()
 
-  sleepTimerInterval = setInterval(() => {
-    updateSleepTimerTimeRemaining()
-    const timeRemaining = getSleepTimerTimeRemainingService()
-    if (timeRemaining <= 1) {
-      pauseSleepTimerStateUpdates()
-
-      // Wait for the SleepTimer service to reset the timeRemaining to the defaultTimeRemaining
-      // before updating state.
-      setTimeout(() => {
-        const globalState = getGlobal()
-        const defaultTimeRemaining = getSleepTimerTimeRemainingService()
-        setGlobal({
-          player: {
-            ...globalState.player,
-            sleepTimer: {
-              ...globalState.player.sleepTimer,
-              isActive: false,
-              timeRemaining: defaultTimeRemaining
-            }
+  // Wait for the SleepTimer service to reset the timeRemaining
+  // to the defaultTimeRemaining before updating state.
+  setTimeout(() => {
+    (async () => {
+      const globalState = getGlobal()
+      const defaultTimeRemaining = await getSleepTimerDefaultTimeRemaining()
+      setGlobal({
+        player: {
+          ...globalState.player,
+          sleepTimer: {
+            ...globalState.player.sleepTimer,
+            isActive: false,
+            timeRemaining: defaultTimeRemaining
           }
-        })
-      }, 1000)
-    }
+        }
+      })
+    })()
   }, 1000)
 }
 
 export const setSleepTimerTimeRemaining = (hours: number, minutes: number, seconds: number) => {
   const globalState = getGlobal()
-  const timeRemaining = setSleepTimerTimeRemainingService(hours, minutes, seconds)
+  const timeRemaining = convertHoursMinutesSecondsToSeconds(hours, minutes, seconds)
 
   setGlobal({
     player: {
@@ -65,10 +55,10 @@ export const setSleepTimerTimeRemaining = (hours: number, minutes: number, secon
   })
 }
 
-export const startSleepTimer = (seconds: number) => {
+export const startSleepTimer = () => {
   const globalState = getGlobal()
-  startSleepTimerService(seconds)
-  resumeSleepTimerStateUpdates()
+  const { timeRemaining } = getGlobal().player.sleepTimer
+  setSleepTimerDefaultTimeRemaining(timeRemaining || PV.Player.defaultSleepTimerInSeconds)
 
   setGlobal({
     player: {
@@ -83,8 +73,6 @@ export const startSleepTimer = (seconds: number) => {
 
 export const stopSleepTimer = () => {
   const globalState = getGlobal()
-  stopSleepTimerService()
-  pauseSleepTimerStateUpdates()
 
   setGlobal({
     player: {
@@ -97,17 +85,15 @@ export const stopSleepTimer = () => {
   })
 }
 
-export const updateSleepTimerTimeRemaining = () => {
+export const updateSleepTimerTimeRemaining = (seconds: number) => {
   const globalState = getGlobal()
-  const timeRemaining = getSleepTimerTimeRemainingService()
 
   setGlobal({
     player: {
       ...globalState.player,
       sleepTimer: {
         ...globalState.player.sleepTimer,
-        timeRemaining,
-        isActive: sleepTimerIsRunning()
+        timeRemaining: seconds
       }
     }
   })

@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Funding, NowPlayingItem, ValueRecipient, ValueRecipientNormalized,
   ValueTag, ValueTransaction } from 'podverse-shared'
-import { Config } from 'react-native-config'
 import * as RNKeychain from 'react-native-keychain'
 import { errorLogger } from '../../lib/logger'
 import { translate } from '../../lib/i18n'
@@ -9,6 +8,7 @@ import { createSatoshiStreamStats } from '../../lib/satoshiStream'
 import { credentialsPlaceholderUsername } from '../../lib/secutity'
 import { PV } from '../../resources'
 import { V4VProviderListItem } from '../../resources/V4V'
+import PVEventEmitter from '../../services/eventEmitter'
 import {
   getBoostagramItemValueTags,
   v4vAddPreviousTransactionError,
@@ -21,6 +21,8 @@ import {
   v4vSettingsDefault
 } from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
+
+const _fileName = 'src\services\v4v\v4v.ts'
 
 export type BoostagramItem = {
   episodeFunding?: Funding[]
@@ -62,7 +64,7 @@ export const v4vGetProvidersConnected = async () => {
       accessData = JSON.parse(creds.password)
     }
   } catch (error) {
-    errorLogger('v4vGetProvidersConnected error:', error)
+    errorLogger(_fileName, 'v4vGetProvidersConnected error:', error)
   }
 
   return accessData
@@ -76,7 +78,7 @@ export const v4vSetProvidersConnected = async (connected: V4VProviderConnectedSt
       JSON.stringify(connected)
     )
   } catch (error) {
-    errorLogger('v4vSetProvidersEnabled error:', error)
+    errorLogger(_fileName, 'v4vSetProvidersEnabled error:', error)
   }
 }
 
@@ -90,7 +92,7 @@ export const v4vGetSettings = async () => {
       await v4vSetSettings(settingsData)
     }
   } catch (error) {
-    errorLogger('v4vGetSettings error:', error)
+    errorLogger(_fileName, 'v4vGetSettings error:', error)
   }
 
   return settingsData
@@ -104,7 +106,7 @@ export const v4vSetSettings = async (settings: V4VSettings) => {
       JSON.stringify(settings)
     )
   } catch (error) {
-    errorLogger('v4vSetSettings error:', error)
+    errorLogger(_fileName, 'v4vSetSettings error:', error)
   }
 }
 
@@ -366,6 +368,8 @@ export const processValueTransactionQueue = async () => {
     }
   }
 
+  PVEventEmitter.emit(PV.Events.V4V_VALUE_SENT)
+
   return {
     totalAmount,
     transactions: bundledValueTransactionsToProcess
@@ -377,13 +381,39 @@ const getValueTransactionQueue = async () => {
     const transactionQueueString = await AsyncStorage.getItem(PV.V4V.VALUE_TRANSACTION_QUEUE)
     return transactionQueueString ? JSON.parse(transactionQueueString) : []
   } catch (err) {
-    errorLogger('getStreamingValueTransactionQueue error:', err)
+    errorLogger(_fileName, 'getStreamingValueTransactionQueue error:', err)
     await clearValueTransactionQueue()
   }
 }
 
 const clearValueTransactionQueue = async () => {
-  await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify([]))
+  try {
+    await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify([]))
+  } catch (error) {
+    errorLogger(_fileName, 'clearValueTransactionQueue error:', error)
+  }
+}
+
+export const setStreamingValueOn = async (bool: boolean) => {
+  try {
+    if (bool) {
+      await AsyncStorage.setItem(PV.V4V.STREAMING_SATS_ON, 'TRUE')
+    } else {
+      await AsyncStorage.removeItem(PV.V4V.STREAMING_SATS_ON)
+    }
+  } catch (error) {
+    errorLogger(_fileName, 'setStreamingValueOn error:', error)
+  }
+}
+
+export const getStreamingValueOn = async () => {
+  let val: string | null = ''
+  try {
+    val = await AsyncStorage.getItem(PV.V4V.STREAMING_SATS_ON)
+  } catch (error) {
+    errorLogger(_fileName, 'getStreamingValueOn error:', error)
+  }
+  return val
 }
 
 /*
@@ -411,7 +441,7 @@ const bundleValueTransactionQueue = async () => {
     const remainderTransactions: ValueTransaction[] = []
     const transactionsToSend: ValueTransaction[] = []
     for (const transaction of bundledTransactionQueue) {
-      if (transaction.normalizedValueRecipient.amount < 10) {
+      if (transaction.normalizedValueRecipient.amount <= 5) {
         remainderTransactions.push(transaction)
       } else {
         transaction.normalizedValueRecipient.amount = Math.floor(transaction.normalizedValueRecipient.amount)
@@ -424,7 +454,7 @@ const bundleValueTransactionQueue = async () => {
 
     return transactionsToSend
   } catch (err) {
-    errorLogger('bundleValueTransactionQueue error:', err)
+    errorLogger(_fileName, 'bundleValueTransactionQueue error:', err)
     await clearValueTransactionQueue()
     return []
   }
@@ -483,7 +513,7 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
 
     await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
   } catch (err) {
-    errorLogger('saveStreamingValueTransactionsToTransactionQueue error:', err)
+    errorLogger(_fileName, 'saveStreamingValueTransactionsToTransactionQueue error:', err)
     await clearValueTransactionQueue()
   }
 }
@@ -492,12 +522,14 @@ const saveTransactionQueue = async (transactionQueue: ValueTransaction[]) => {
   try {
     await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
   } catch (error) {
-    errorLogger('saveTransactionQueue error', error)
+    errorLogger(_fileName, 'saveTransactionQueue error', error)
     await clearValueTransactionQueue()
   }
 }
 
-
+export const v4vClearTransactionQueue = async () => {
+  await saveTransactionQueue([])
+}
 
 /* V4V senderInfo helpers  */
 
@@ -512,7 +544,7 @@ export const v4vGetSenderInfo = async () => {
       senderInfo = JSON.parse(senderInfoString)
     }
   } catch (error) {
-    errorLogger('v4vGetSenderInfo error', error)
+    errorLogger(_fileName, 'v4vGetSenderInfo error', error)
   }
 
   return senderInfo
@@ -522,7 +554,7 @@ export const v4vSetSenderInfo = async (senderInfo: V4VSenderInfo) => {
   try {
     await AsyncStorage.setItem(PV.Keys.V4V_SENDER_INFO, JSON.stringify(senderInfo))
   } catch (error) {
-    errorLogger('v4vSetSenderInfo error', error)
+    errorLogger(_fileName, 'v4vSetSenderInfo error', error)
   }
 }
 
@@ -541,7 +573,7 @@ export const v4vGetPluralCurrencyUnit = (unit: 'sat') => {
 }
 
 export const v4vGetPluralCurrencyUnitPerMinute = (unit: 'sat') => {
-  return `${v4vGetPluralCurrencyUnit(unit)} ${translate('per minute')}`
+  return `${v4vGetPluralCurrencyUnit(unit)}${translate('per minute')}`
 }
 
 export const v4vGetProviderListItems = () => {

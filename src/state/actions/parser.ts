@@ -17,6 +17,8 @@ import { findPodcastsByFeedUrls, getSubscribedPodcastsLocally,
 import { getAuthUserInfo } from './auth'
 import { getSubscribedPodcasts } from './podcast'
 
+const _fileName = 'src\state\actions\parser.ts'
+
 const handleAddOrRemoveByRSSPodcast = async (feedUrl: string, shouldAdd: boolean, credentials?: string) => {
   if (shouldAdd) {
     const podcast = await parseAddByRSSPodcast(feedUrl, credentials)
@@ -79,7 +81,7 @@ export const addAddByRSSPodcasts = async (urls: string[]) => {
     
     PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
   } catch (error) {
-    errorLogger('addAddByRSSPodcasts', error)
+    errorLogger(_fileName, 'addAddByRSSPodcasts', error)
     Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
   }
 }
@@ -97,11 +99,11 @@ export const addAddByRSSPodcast = async (feedUrl: string, skipBadParse = false) 
   } catch (error) {
     if (skipBadParse) {
       // Log error but don't do anything
-      errorLogger('Manual skip of parsing error. Error reason: ', error)
+      errorLogger(_fileName, 'Manual skip of parsing error. Error reason: ', error)
     } else if (error.message === '401') {
       PVEventEmitter.emit(PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, { feedUrl })
     } else {
-      errorLogger('addAddByRSSPodcast', error)
+      errorLogger(_fileName, 'addAddByRSSPodcast', error)
       Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
     }
   }
@@ -122,7 +124,7 @@ export const addAddByRSSPodcastWithCredentials = async (feedUrl: string, credent
     if (error.message === '401') {
       Alert.alert(PV.Alerts.LOGIN_INVALID.title, PV.Alerts.LOGIN_INVALID.message, PV.Alerts.BUTTONS.OK)
     } else {
-      errorLogger('addAddByRSSPodcastWithCredentials', error)
+      errorLogger(_fileName, 'addAddByRSSPodcastWithCredentials', error)
       Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
     }
   }
@@ -138,7 +140,7 @@ export const removeAddByRSSPodcast = async (feedUrl: string) => {
     await handleAddOrRemoveByRSSPodcast(feedUrl, shouldAdd)
     PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
   } catch (error) {
-    errorLogger('addAddByRSSPodcast remove', error)
+    errorLogger(_fileName, 'addAddByRSSPodcast remove', error)
     throw error
   }
 }

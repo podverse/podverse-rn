@@ -10,6 +10,7 @@ type V4VType = {
   ACTION_STREAMING: 'ACTION_STREAMING'
   ALLOWED_PROVIDERS_LIST: string[]
   VALUE_TRANSACTION_QUEUE: string
+  STREAMING_SATS_ON: 'STREAMING_SATS_ON'
   providers: {
     [key: string]: V4VTypeProvider
   }
@@ -52,6 +53,7 @@ export const V4V: V4VType = {
   ACTION_STREAMING: 'ACTION_STREAMING',
   ALLOWED_PROVIDERS_LIST: Config.V4V_ALLOWED_PROVIDERS_LIST?.toLowerCase().split(',') || [],
   VALUE_TRANSACTION_QUEUE: 'VALUE_TRANSACTION_QUEUE',
+  STREAMING_SATS_ON: 'STREAMING_SATS_ON',
   providers: {
     alby: {
       title: 'Alby',
