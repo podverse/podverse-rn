@@ -18,6 +18,7 @@ import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import {
   convertValueTagIntoValueTransactions,
+  extractV4VValueTags,
   MINIMUM_BOOST_PAYMENT,
   MINIMUM_STREAMING_PAYMENT,
   v4vGetActiveValueTag,
@@ -72,7 +73,7 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
     const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(nowPlayingItem))
 
     const { episodeValue, podcastValue } = nowPlayingItem
-    const valueTags = (episodeValue?.length && episodeValue) || (podcastValue?.length && podcastValue)
+    const valueTags = extractV4VValueTags(episodeValue, podcastValue)
     const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
 
     if (activeValueTag && activeProvider) {
