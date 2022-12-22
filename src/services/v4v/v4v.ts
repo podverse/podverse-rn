@@ -477,7 +477,19 @@ const combineTransactionAmounts = (
 
 const getMatchingValueTransactionIndex = (valueTransaction: ValueTransaction, valueTransactions: ValueTransaction[]) =>
   valueTransactions.findIndex((x: ValueTransaction) => {
-    return x.normalizedValueRecipient.address === valueTransaction.normalizedValueRecipient.address
+    if (valueTransaction.normalizedValueRecipient.customKey && valueTransaction.normalizedValueRecipient.customValue) {
+      return (
+        x.normalizedValueRecipient.customKey === valueTransaction.normalizedValueRecipient.customKey &&
+        x.normalizedValueRecipient.customValue === valueTransaction.normalizedValueRecipient.customValue &&
+        x.normalizedValueRecipient.address === valueTransaction.normalizedValueRecipient.address
+      ) 
+    } else {
+      return (
+        x.normalizedValueRecipient.address === valueTransaction.normalizedValueRecipient.address
+        && !x.normalizedValueRecipient.customKey
+        && !x.normalizedValueRecipient.customValue
+      )
+    }
   })
 
 export const saveStreamingValueTransactionsToTransactionQueue = async (
