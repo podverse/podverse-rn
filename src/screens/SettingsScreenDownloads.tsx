@@ -36,6 +36,8 @@ import * as DownloadState from '../state/actions/downloads'
 import { core } from '../styles'
 import { cellNetworkSupported } from '../lib/network'
 
+const _fileName = 'src/screens/SettingsScreenDownloads.tsx'
+
 type Props = {
   navigation: any
 }
@@ -188,7 +190,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
               try {
                 await moveDownloadedPodcastsToExternalStorage()
               } catch (err) {
-                errorLogger('SettingsScreenDownloads Ext Storage Move Error: ', err.message)
+                errorLogger(_fileName, 'Ext Storage Move', err.message)
               }
               resolve(true)
             }
@@ -200,7 +202,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
                 await removeDownloadedPodcastsFromInternalStorage()
                 await DownloadState.updateDownloadedPodcasts()
               } catch (err) {
-                errorLogger('Ext Storage Deletion Error: ', err.message)
+                errorLogger(_fileName, 'Ext Storage Deletion', err.message)
               }
               resolve(true)
             }
@@ -225,7 +227,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
                   await removeAllDownloadedPodcasts()
                   await DownloadState.updateDownloadedPodcasts()
                 } catch (err) {
-                  errorLogger('Ext Storage Deletion Error: ', err.message)
+                  errorLogger(_fileName, '_handleToggleExternalStorage delete', err.message)
                 }
                 await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
                 this.setState({ customDownloadLocation: null })
@@ -292,7 +294,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
             }
           }
         } catch (err) {
-          errorLogger(err)
+          errorLogger(_fileName, 'final catch', err)
           await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
           this.setState({ customDownloadLocation: null })
         }

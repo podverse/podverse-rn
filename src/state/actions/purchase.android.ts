@@ -20,6 +20,8 @@ export const androidHandlePurchaseLoading = (purchase: Purchase) => {
   setGlobal(loadingState)
 }
 
+const _fileName = 'src/state/actions/purchase.android.ts'
+
 export const androidHandleStatusCheck = async (purchase: Purchase) => {
   try {
     androidHandlePurchaseLoading(purchase)
@@ -44,7 +46,7 @@ export const androidHandleStatusCheck = async (purchase: Purchase) => {
       }
     }
   } catch (error) {
-    errorLogger('androidHandleStatusCheck error', error)
+    errorLogger(_fileName, 'androidHandleStatusCheck', error)
     showPurchaseSomethingWentWrongError()
   }
 }

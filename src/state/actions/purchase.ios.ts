@@ -5,6 +5,8 @@ import { iosHandlePurchaseStatusCheck as iosHandlePurchaseStatusCheckService } f
 import { getAuthUserInfo } from './auth'
 import { handleStatusSuccessful, purchaseLoading, showPurchaseSomethingWentWrongError } from './purchaseShared'
 
+const _fileName = 'src/state/actions/purchase.ios.ts'
+
 export const iosHandlePurchaseLoading = (purchase: Purchase) => {
   const { productId, transactionId, transactionReceipt } = purchase
   const loadingState = purchaseLoading()
@@ -20,7 +22,7 @@ export const iosHandlePurchaseStatusCheck = async (purchase: Purchase) => {
     await iosHandlePurchaseStatusCheckService(purchase)
     await iosHandleStatusSuccessful()
   } catch (error) {
-    errorLogger('iosHandlePurchaseStatusCheck error', error)
+    errorLogger(_fileName, 'iosHandlePurchaseStatusCheck', error)
     showPurchaseSomethingWentWrongError()
   }
 }

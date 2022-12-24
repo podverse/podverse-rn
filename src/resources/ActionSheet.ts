@@ -20,6 +20,8 @@ import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
 import { toggleMarkAsPlayed } from '../state/actions/userHistoryItem'
 import { PV } from './PV'
 
+const _fileName = 'src/resources/ActionSheet.ts'
+
 const mediaMoreButtons = (
   item: any = {},
   navigation: any,
@@ -250,7 +252,7 @@ const mediaMoreButtons = (
             url
           })
         } catch (error) {
-          errorLogger(error)
+          errorLogger(_fileName, 'if (!Config.DISABLE_SHARE)', error)
         }
         await handleDismiss()
       }

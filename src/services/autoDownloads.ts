@@ -6,6 +6,8 @@ import { PV } from '../resources'
 import { getEpisodesSincePubDate } from './episode'
 import { parseAllAddByRSSPodcasts } from './parser'
 
+const _fileName = 'src/services/autoDownloads.ts'
+
 export const getAutoDownloadsLastRefreshDate = async () => {
   const dateStr = await AsyncStorage.getItem(PV.Keys.AUTODOWNLOADS_LAST_REFRESHED)
   const dateISOString = !!dateStr ? new Date(dateStr).toISOString() : new Date().toISOString()
@@ -56,7 +58,7 @@ export const getAutoDownloadSettings = async () => {
     const itemsString = await AsyncStorage.getItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS)
     return itemsString ? JSON.parse(itemsString) : {}
   } catch (error) {
-    errorLogger('getAutoDownloadSettings error', error)
+    errorLogger(_fileName, 'getAutoDownloadSettings', error)
     return {}
   }
 }

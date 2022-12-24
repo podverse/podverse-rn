@@ -90,6 +90,8 @@ import {
 } from '../state/actions/v4v/v4v'
 import { core } from '../styles'
 
+const _fileName = 'src/screens/PodcastsScreen.tsx'
+
 type Props = {
   navigation?: any
 }
@@ -293,7 +295,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       this.setState({
         isLoadingMore: false
       })
-      errorLogger('PodcastsScreen componentDidMount init error', error)
+      errorLogger(_fileName, 'componentDidMount init', error)
 
       Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
     }
@@ -489,7 +491,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
         handleNavigateToPlayerScreen(navigation)
       } catch (error) {
-        errorLogger('PodcastsScreen _handleDeepLinkClip', error)
+        errorLogger(_fileName, '_handleDeepLinkClip', error)
       }
     }
   }
@@ -632,7 +634,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           isLoggedIn = await getAuthUserInfo()
           if (isLoggedIn) await askToSyncWithNowPlayingItem(this._initializeScreenDataPart2)
         } catch (error) {
-          errorLogger('PodcastsScreen initializeScreenData getAuthUserInfo', error)
+          errorLogger(_fileName, 'initializeScreenData getAuthUserInfo', error)
           // If getAuthUserInfo fails, continue with the networkless version of the app
         }
         if (!isLoggedIn) this._initializeScreenDataPart2()
@@ -983,7 +985,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           // const row = rowMap[selectedId] || rowMap[addByRSSPodcastFeedUrl]
           // row.closeRow()
         } catch (error) {
-          errorLogger('PodcastsScreen _handleHiddenItemPress', error)
+          errorLogger(_fileName, '_handleHiddenItemPress', error)
         }
         this.setState({ isUnsubscribing: false })
       })()
@@ -1233,7 +1235,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await handleAutoDownloadEpisodes(dateISOString)
         await handleAutoQueueEpisodes(dateISOString)
       } catch (error) {
-        errorLogger('PodcastsScreen _querySubscribedPodcasts auto download error:', error)
+        errorLogger(_fileName, '_querySubscribedPodcasts auto download', error)
       }
       await AsyncStorage.setItem(PV.Keys.AUTODOWNLOADS_LAST_REFRESHED, new Date().toISOString())
     }
@@ -1394,7 +1396,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.flatListDataTotalCount = results[1]
       }
     } catch (error) {
-      errorLogger('PodcastsScreen _queryData error', error)
+      errorLogger(_fileName, '_queryData error', error)
     }
 
     if (shouldCleanFlatListData) {

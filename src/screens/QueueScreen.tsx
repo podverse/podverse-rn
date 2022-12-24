@@ -27,6 +27,8 @@ import { getHistoryItems, removeHistoryItem } from '../state/actions/userHistory
 import { core } from '../styles'
 import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
 
+const _fileName = 'src/screens/QueueScreen.tsx'
+
 type Props = {
   navigation?: any
 }
@@ -354,7 +356,7 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
         await audioMovePlayerItemToNewPosition(item.clipId || item.episodeId, to)
       }
     } catch (error) {
-      errorLogger('QueueScreen - _onReleaseRow - _onDragEnd', error)
+      errorLogger(_fileName, '_onReleaseRow - _onDragEnd', error)
     }
   }
 

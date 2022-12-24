@@ -18,6 +18,7 @@ type State = {
 }
 
 const testIDPrefix = 'media_player_carousel_comments'
+const _fileName = 'src/components/MediaPlayerCarouselComments.tsx'
 
 export class MediaPlayerCarouselComments extends React.PureComponent<Props, State> {
   constructor(props) {
@@ -59,7 +60,7 @@ export class MediaPlayerCarouselComments extends React.PureComponent<Props, Stat
                 isLoading: false
               })
             } catch (error) {
-              errorLogger('MediaPlayerCarouselComments activityPub error', error)
+              errorLogger(_fileName, 'componentDidMount', error)
               this.setState({ isLoading: false })
             }
           })()
@@ -75,7 +76,7 @@ export class MediaPlayerCarouselComments extends React.PureComponent<Props, Stat
                 isLoading: false
               })
             } catch (error) {
-              errorLogger('MediaPlayerCarouselComments twitter error', error)
+              errorLogger(_fileName, 'componentDidMount', error)
               this.setState({ isLoading: false })
             }
           })()

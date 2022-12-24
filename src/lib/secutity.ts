@@ -4,6 +4,8 @@ import RNSecureKeyStore from 'react-native-secure-key-store'
 import { PV } from '../resources'
 import { errorLogger } from './logger'
 
+const _fileName = 'src/lib/secutity.ts'
+
 export const credentialsPlaceholderUsername = 'username'
 
 export const migrateCredentialsIfNeeded = async () => {
@@ -18,7 +20,7 @@ export const migrateCredentialsIfNeeded = async () => {
       await RNKeychain.setInternetCredentials(PV.Keys.BEARER_TOKEN, 'Bearer', existingLoginCreds)
       await RNSecureKeyStore.remove(PV.Keys.BEARER_TOKEN)
     } catch (error) {
-      errorLogger('Login creds migration error: ', error)
+      errorLogger(_fileName, 'existingLoginCreds', error)
     }
   }
 
@@ -31,7 +33,7 @@ export const migrateCredentialsIfNeeded = async () => {
       )
       await RNSecureKeyStore.remove(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS)
     } catch (error) {
-      errorLogger('Podcasts creds migration error: ', error)
+      errorLogger(_fileName, 'hasExistingPodcastCreds', error)
     }
   }
 }

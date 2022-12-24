@@ -36,6 +36,8 @@ import { clearChapterPlaybackInfo, getChapterNext, getChapterPrevious, loadChapt
 import { videoInitializePlayer, videoStateClearVideoInfo,
   videoStateSetVideoInfo } from './playerVideo'
 
+const _fileName = 'src/state/actions/player.ts'
+
 export const initializePlayer = async () => {
   const item = await getNowPlayingItemLocally()
   if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
@@ -288,7 +290,7 @@ const enrichParsedTranscript = (item: NowPlayingItem) => {
           await getParsedTranscript(item.episodeTranscript[0].url, item.episodeTranscript[0].type)
         setGlobal({ parsedTranscript })
       } catch (error) {
-        errorLogger('playerLoadNowPlayingItem transcript parsing error', error)
+        errorLogger(_fileName, 'playerLoadNowPlayingItem transcript parsing', error)
       }
     })
   } else {

@@ -11,6 +11,7 @@ import { downloadImageFile, getSavedImageUri } from '../storage';
 import { readableDate } from '../utility';
 import { getEpisodesForPodcast, loadEpisodeInPlayer, loadNowPlayingItemInPlayer } from './helpers';
 
+const _fileName = 'src/lib/carplay/PVCarPlay.ts'
 let isInitialLoad = true
 
 /* Initialize */
@@ -412,7 +413,7 @@ const getDownloadedImageUrl = async (origImageUrl?: string | null) => {
       // in the background so it can load from downloaded storage next time.
       downloadImageFile(finalImageUrl)
 
-      errorLogger('carPlayListItems error:', error)
+      errorLogger(_fileName, 'carPlayListItems', error)
     }
   }
 

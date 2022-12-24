@@ -61,6 +61,8 @@ import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
 
+const _fileName = 'src/screens/PodcastScreen.tsx'
+
 type Props = {
   navigation?: any
 }
@@ -349,7 +351,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
               }
             )
           } catch (error) {
-            errorLogger('PodcastScreen _initializePageData', error)
+            errorLogger(_fileName, '_initializePageData', error)
             this.setState(
               {
                 ...newState,
@@ -842,7 +844,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
               showSettings: false
             })
           } catch (error) {
-            errorLogger('PodcastScreen _handleSavePodcastCredentials', error)
+            errorLogger(_fileName, '_handleSavePodcastCredentials', error)
             this.setState({
               isLoadingMore: false,
               showSettings: false
@@ -1266,7 +1268,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
       newState.selectedFilterLabel = await getSelectedFilterLabel(viewType)
     } catch (error) {
-      errorLogger('PodcastScreen queryData error:', error)
+      errorLogger(_fileName, 'queryData', error)
     }
     this.shouldLoad = true
 
