@@ -7,7 +7,7 @@ import { translate } from '../lib/i18n'
 import { getParsedTranscript } from '../lib/transcriptHelpers'
 import { trackPageView } from '../services/tracking'
 
-const _fileName = 'src\screens\EpisodeTranscriptScreen.tsx'
+const _fileName = 'src/screens/EpisodeTranscriptScreen.tsx'
 
 type Props = {
   navigation: any

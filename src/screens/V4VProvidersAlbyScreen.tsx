@@ -19,7 +19,7 @@ import { v4vAlbyGetAccessToken } from '../services/v4v/providers/alby'
 import { v4vGetConnectedProvider, v4vRefreshProviderWalletInfo } from '../state/actions/v4v/v4v'
 import { v4vAlbyGetAccountInfo } from '../state/actions/v4v/providers/alby'
 
-const _fileName = 'src\screens\V4VProvidersAlbyScreen.tsx'
+const _fileName = 'src/screens/V4VProvidersAlbyScreen.tsx'
 
 type Props = {
   navigation: any

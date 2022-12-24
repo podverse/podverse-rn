@@ -36,7 +36,7 @@ import { clearChapterPlaybackInfo, getChapterNext, getChapterPrevious, loadChapt
 import { videoInitializePlayer, videoStateClearVideoInfo,
   videoStateSetVideoInfo } from './playerVideo'
 
-const _fileName = 'src\state\actions\player.ts'
+const _fileName = 'src/state/actions/player.ts'
 
 export const initializePlayer = async () => {
   const item = await getNowPlayingItemLocally()

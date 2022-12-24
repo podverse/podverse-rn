@@ -11,7 +11,7 @@ import { downloadImageFile, getSavedImageUri } from '../storage';
 import { readableDate } from '../utility';
 import { getEpisodesForPodcast, loadEpisodeInPlayer, loadNowPlayingItemInPlayer } from './helpers';
 
-const _fileName = 'src\lib\carplay\PVCarPlay.ts'
+const _fileName = 'src/lib/carplay/PVCarPlay.ts'
 let isInitialLoad = true
 
 /* Initialize */

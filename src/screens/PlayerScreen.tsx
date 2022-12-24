@@ -35,7 +35,7 @@ import { loadChaptersForEpisode } from '../state/actions/playerChapters'
 import { getHistoryItems } from '../state/actions/userHistoryItem'
 import { core, navHeader } from '../styles'
 
-const _fileName = 'src\screens\PlayerScreen.tsx'
+const _fileName = 'src/screens/PlayerScreen.tsx'
 
 type Props = {
   navigation?: any

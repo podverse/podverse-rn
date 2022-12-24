@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 
-const _fileName = 'src\services\customLaunchScreen.ts'
+const _fileName = 'src/services/customLaunchScreen.ts'
 
 export const getCustomLaunchScreenKey = async () => {
   let customLaunchScreen = PV.RouteNames.PodcastsScreen

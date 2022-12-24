@@ -3,7 +3,7 @@ import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { request } from './request'
 
-const _fileName = 'src\services\category.ts'
+const _fileName = 'src/services/category.ts'
 
 export const getTopLevelCategories = async () => {
   const response = await request({

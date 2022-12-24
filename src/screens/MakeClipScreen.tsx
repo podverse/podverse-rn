@@ -47,7 +47,7 @@ import { trackPageView } from '../services/tracking'
 import { playerTogglePlay, playerSetNowPlayingItem, playerSetPlaybackSpeed } from '../state/actions/player'
 import { core, darkTheme, iconStyles, playerStyles } from '../styles'
 
-const _fileName = 'src\screens\MakeClipScreen.tsx'
+const _fileName = 'src/screens/MakeClipScreen.tsx'
 
 type Props = {
   navigation?: any

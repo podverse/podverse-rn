@@ -9,7 +9,7 @@ import { errorLogger } from './logger'
 import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
 import { BackgroundDownloader, deleteDownloadedEpisode } from './downloader'
 
-const _fileName = 'src\lib\downloadedPodcast.ts'
+const _fileName = 'src/lib/downloadedPodcast.ts'
 export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) => {
   delete episode.podcast
   let downloadedPodcasts = await getDownloadedPodcasts()

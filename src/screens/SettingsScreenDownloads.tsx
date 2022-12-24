@@ -36,7 +36,7 @@ import * as DownloadState from '../state/actions/downloads'
 import { core } from '../styles'
 import { cellNetworkSupported } from '../lib/network'
 
-const _fileName = 'src\screens\SettingsScreenDownloads.tsx'
+const _fileName = 'src/screens/SettingsScreenDownloads.tsx'
 
 type Props = {
   navigation: any

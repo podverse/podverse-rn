@@ -9,7 +9,7 @@ import { getAddByRSSPodcastLocally } from '../services/parser'
 import { addAddByRSSPodcastWithCredentials } from '../state/actions/parser'
 import { core } from '../styles'
 
-const _fileName = 'src\screens\AddPodcastByRSSAuthScreen.tsx'
+const _fileName = 'src/screens/AddPodcastByRSSAuthScreen.tsx'
 
 type Props = {
   navigation: any

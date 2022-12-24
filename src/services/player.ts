@@ -52,7 +52,7 @@ import {
 import { addOrUpdateHistoryItem, saveOrResetCurrentlyPlayingItemInHistory } from './userHistoryItem'
 import { getNowPlayingItem, getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
 
-const _fileName = 'src\services\player.ts'
+const _fileName = 'src/services/player.ts'
 
 export const getClipHasEnded = async () => {
   const clipHasEnded = await AsyncStorage.getItem(PV.Keys.CLIP_HAS_ENDED)

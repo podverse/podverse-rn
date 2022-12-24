@@ -28,7 +28,7 @@ import { getLoggedInUserMediaRefs } from '../services/user'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { core } from '../styles'
 
-const _fileName = 'src\screens\ClipsScreen.tsx'
+const _fileName = 'src/screens/ClipsScreen.tsx'
 
 type Props = {
   navigation?: any

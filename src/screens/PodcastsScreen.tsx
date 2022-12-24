@@ -90,7 +90,7 @@ import {
 } from '../state/actions/v4v/v4v'
 import { core } from '../styles'
 
-const _fileName = 'src\screens\PodcastsScreen.tsx'
+const _fileName = 'src/screens/PodcastsScreen.tsx'
 
 type Props = {
   navigation?: any

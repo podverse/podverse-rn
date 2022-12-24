@@ -6,7 +6,7 @@ import { PV } from '../resources'
 import { getEpisodesSincePubDate } from './episode'
 import { parseAllAddByRSSPodcasts } from './parser'
 
-const _fileName = 'src\services\autoDownloads.ts'
+const _fileName = 'src/services/autoDownloads.ts'
 
 export const getAutoDownloadsLastRefreshDate = async () => {
   const dateStr = await AsyncStorage.getItem(PV.Keys.AUTODOWNLOADS_LAST_REFRESHED)

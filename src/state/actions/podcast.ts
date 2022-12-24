@@ -17,7 +17,7 @@ import {
 } from '../../services/podcast'
 import { updateDownloadedPodcasts } from './downloads'
 
-const _fileName = 'src\state\actions\podcast.ts'
+const _fileName = 'src/state/actions/podcast.ts'
 
 const handleCombineWithAddByRSSPodcasts = async (searchTitle?: string, sort?: string | null) => {
   const { appMode } = getGlobal()

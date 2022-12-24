@@ -7,7 +7,7 @@ import { getEpisodesSincePubDate } from './episode'
 import { addQueueItemLast, addQueueItemNext } from './queue'
 import { getNowPlayingItem } from './userNowPlayingItem'
 
-const _fileName = 'src\services\autoQueue.ts'
+const _fileName = 'src/services/autoQueue.ts'
 
 export type AutoQueueSettingsPosition = 'next' | 'last'
 

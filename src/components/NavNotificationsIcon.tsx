@@ -21,7 +21,7 @@ type State = {
   isLoading: boolean
 }
 
-const _fileName = 'src\components\NavNotificationsIcon.tsx'
+const _fileName = 'src/components/NavNotificationsIcon.tsx'
 
 export class NavNotificationsIcon extends React.Component<Props, State> {
   constructor(props: Props) {

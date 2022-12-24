@@ -16,7 +16,7 @@ import { downloadedEpisodeMarkForDeletion } from './downloads'
 import { playerLoadNowPlayingItem, playerUpdatePlaybackState, playerUpdatePlayerState } from './player'
 import { updateHistoryItemsIndex } from './userHistoryItem'
 
-const _fileName = 'src\state\actions\playerVideo.ts'
+const _fileName = 'src/state/actions/playerVideo.ts'
 
 export const videoInitializePlayer = async (item: NowPlayingItem) => {
   if (item && checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {

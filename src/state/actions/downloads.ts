@@ -27,7 +27,7 @@ import { getEpisodes } from '../../services/episode'
 import { getPodcastCredentials, parseAddByRSSPodcast } from '../../services/parser'
 import { clearNowPlayingItem } from '../../services/userNowPlayingItem'
 
-const _fileName = 'src\state\actions\downloads.ts'
+const _fileName = 'src/state/actions/downloads.ts'
 
 // The DownloadTaskState should have the same episode and podcast properties as a NowPlayingItem,
 // or playing the download directly from the DownloadsScreen will not work.

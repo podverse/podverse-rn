@@ -27,7 +27,7 @@ import { getHistoryItems, removeHistoryItem } from '../state/actions/userHistory
 import { core } from '../styles'
 import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
 
-const _fileName = 'src\screens\QueueScreen.tsx'
+const _fileName = 'src/screens/QueueScreen.tsx'
 
 type Props = {
   navigation?: any

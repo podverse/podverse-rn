@@ -29,7 +29,7 @@ const albyRequest = (requestOptions: PVRequest, url: string) => {
   )
 }
 
-const _fileName = 'src\services\v4v\providers\alby.ts'
+const _fileName = 'src/services/v4v/providers\alby.ts'
 
 /* Storage helpers */
 

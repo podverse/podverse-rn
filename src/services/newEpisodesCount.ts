@@ -5,7 +5,7 @@ import { PV } from '../resources'
 import { getEpisodesSincePubDate } from './episode'
 import { getHistoryItemsIndex } from './userHistoryItem'
 
-const _fileName = 'src\services\newEpisodesCount.ts'
+const _fileName = 'src/services/newEpisodesCount.ts'
 
 export const getNewEpisodeCountLastRefreshDate = async () => {
   const dateStr = await AsyncStorage.getItem(PV.Keys.NEW_EPISODE_COUNT_LAST_REFRESHED)

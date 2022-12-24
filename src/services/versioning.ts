@@ -4,7 +4,7 @@ import { hasValidNetworkConnection } from '../lib/network'
 import { request } from './request'
 const semver = require('semver')
 
-const _fileName = 'src\services\versioning.ts'
+const _fileName = 'src/services/versioning.ts'
 
 export const isOnMinimumAllowedVersion = async () => {
   try {

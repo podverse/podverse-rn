@@ -17,7 +17,7 @@ import { logoutUser } from '../state/actions/auth'
 import { core, getMembershipTextStyle, table } from '../styles'
 import { addAddByRSSPodcasts } from '../state/actions/parser'
 
-const _fileName = 'src\screens\MoreScreen.tsx'
+const _fileName = 'src/screens/MoreScreen.tsx'
 
 type Props = {
   navigation?: any

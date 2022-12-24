@@ -1,7 +1,7 @@
 import Config from 'react-native-config'
 import { errorLogger } from './logger'
 
-const _fileName = 'src\lib\crashManager.ts'
+const _fileName = 'src/lib/crashManager.ts'
 
 export const trackCrashEvent = (info: { [key: string]: string }) => {
   if (!Config.DISABLE_CRASH_LOGS) {

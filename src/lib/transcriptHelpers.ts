@@ -2,7 +2,7 @@ import { parseTranscriptFile, TranscriptRow, TranscriptType } from 'podverse-sha
 import { request } from '../services/request'
 import { errorLogger } from './logger'
 
-const _fileName = 'src\lib\transcriptHelpers.ts'
+const _fileName = 'src/lib/transcriptHelpers.ts'
 
 export const getParsedTranscript = async (transcriptUrl: string, transcriptType: TranscriptType) => {
   let parsedTranscript = [] as TranscriptRow[]

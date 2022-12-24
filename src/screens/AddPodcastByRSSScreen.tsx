@@ -21,7 +21,7 @@ import { getAddByRSSPodcastLocally } from '../services/parser'
 import { trackPageView } from '../services/tracking'
 import { addAddByRSSPodcast, addAddByRSSPodcastWithCredentials } from '../state/actions/parser'
 
-const _fileName = 'src\screens\AddPodcastByRSSScreen.tsx'
+const _fileName = 'src/screens/AddPodcastByRSSScreen.tsx'
 
 type Props = {
   navigation: any

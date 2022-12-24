@@ -20,7 +20,7 @@ export const androidHandlePurchaseLoading = (purchase: Purchase) => {
   setGlobal(loadingState)
 }
 
-const _fileName = 'src\state\actions\purchase.android.ts'
+const _fileName = 'src/state/actions/purchase.android.ts'
 
 export const androidHandleStatusCheck = async (purchase: Purchase) => {
   try {

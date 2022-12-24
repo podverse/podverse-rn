@@ -10,7 +10,7 @@ import { playerGetDuration, playerGetPosition } from './player'
 import { request } from './request'
 import { setNowPlayingItem } from './userNowPlayingItem'
 
-const _fileName = 'src\services\userHistoryItem.ts'
+const _fileName = 'src/services/userHistoryItem.ts'
 
 export const addOrUpdateHistoryItem = async (
   item: NowPlayingItem,

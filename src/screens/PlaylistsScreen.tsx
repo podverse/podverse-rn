@@ -20,7 +20,7 @@ import { trackPageView } from '../services/tracking'
 import { deletePlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { getLoggedInUserPlaylistsCombined } from '../state/actions/user'
 
-const _fileName = 'src\screens\PlaylistsScreen.tsx'
+const _fileName = 'src/screens/PlaylistsScreen.tsx'
 
 type Props = {
   navigation?: any

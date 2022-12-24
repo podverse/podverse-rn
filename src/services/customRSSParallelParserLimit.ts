@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 
-const _fileName = 'src\services\customRSSParallelParserLimit.ts'
+const _fileName = 'src/services/customRSSParallelParserLimit.ts'
 
 export const getCustomRSSParallelParserLimit = async () => {
   let customRSSParallelParserLimit = PV.CustomRSS.parallelParserDefaultLimit

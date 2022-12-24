@@ -6,7 +6,7 @@ import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { matomoTrackPageView } from './matomo'
 
-const _fileName = "src\services\tracking.ts"
+const _fileName = "src/services/tracking.ts"
 
 export const getTrackingConsentAcknowledged = () => {
   return new Promise((res, rej) => {

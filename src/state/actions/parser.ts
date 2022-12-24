@@ -17,7 +17,7 @@ import { findPodcastsByFeedUrls, getSubscribedPodcastsLocally,
 import { getAuthUserInfo } from './auth'
 import { getSubscribedPodcasts } from './podcast'
 
-const _fileName = 'src\state\actions\parser.ts'
+const _fileName = 'src/state/actions/parser.ts'
 
 const handleAddOrRemoveByRSSPodcast = async (feedUrl: string, shouldAdd: boolean, credentials?: string) => {
   if (shouldAdd) {

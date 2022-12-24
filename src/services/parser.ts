@@ -17,7 +17,7 @@ import { getNewEpisodeCountCustomRSSLastRefreshDate } from './newEpisodesCount'
 import { combineWithAddByRSSPodcasts } from './podcast'
 import { request } from './request'
 const podcastFeedParser = require('@podverse/podcast-feed-parser')
-const _fileName = 'src\services\parser.ts'
+const _fileName = 'src/services/parser.ts'
 
 /*
 addByRSSPodcasts: [addByRSSPodcast]

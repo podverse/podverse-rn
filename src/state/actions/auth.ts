@@ -24,7 +24,7 @@ import { getNowPlayingItemLocally,
 import { addAddByRSSPodcast, addAddByRSSPodcastWithCredentials } from './parser'
 import { combineWithAddByRSSPodcasts, getSubscribedPodcasts } from './podcast'
 
-const _fileName = 'src\state\actions\auth.ts'
+const _fileName = 'src/state/actions/auth.ts'
 
 export type Credentials = {
   addByRSSPodcastFeedUrls?: []

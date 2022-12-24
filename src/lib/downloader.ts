@@ -20,7 +20,7 @@ import { hasValidDownloadingConnection } from './network'
 import { getAppUserAgent, safelyUnwrapNestedVariable } from './utility'
 import { downloadImageFile } from './storage'
 
-const _fileName = 'src\lib\downloader.ts'
+const _fileName = 'src/lib/downloader.ts'
 
 export const BackgroundDownloader = () => {
   const userAgent = getAppUserAgent()

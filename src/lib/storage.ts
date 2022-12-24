@@ -10,7 +10,7 @@ import { hasValidNetworkConnection } from './network'
 import { getAppUserAgent } from './utility'
 
 const podverseImagesPath = RNFS.DocumentDirectoryPath + '/podverse_images/'
-const _fileName = 'src\lib\storage.ts'
+const _fileName = 'src/lib/storage.ts'
 
 /*
   Limit attempts to re-download an image that may already be in cache

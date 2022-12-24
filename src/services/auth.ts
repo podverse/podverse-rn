@@ -11,7 +11,7 @@ import { getQueueItems } from './queue'
 import { request } from './request'
 import { getHistoryItems, getHistoryItemsIndex, getHistoryItemsIndexLocally } from './userHistoryItem'
 
-const _fileName = 'src\services\auth.ts'
+const _fileName = 'src/services/auth.ts'
 
 export const getBearerToken = async () => {
   let bearerToken = ''

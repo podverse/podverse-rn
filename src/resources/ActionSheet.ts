@@ -20,7 +20,7 @@ import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
 import { toggleMarkAsPlayed } from '../state/actions/userHistoryItem'
 import { PV } from './PV'
 
-const _fileName = 'src\resources\ActionSheet.ts'
+const _fileName = 'src/resources/ActionSheet.ts'
 
 const mediaMoreButtons = (
   item: any = {},

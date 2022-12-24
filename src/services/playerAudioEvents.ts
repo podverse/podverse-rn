@@ -35,7 +35,7 @@ import { handleBackgroundTimerInterval, syncNowPlayingItemWithTrack } from './pl
 import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
 import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
 
-const _fileName = 'src\services\playerAudioEvents.ts'
+const _fileName = 'src/services/playerAudioEvents.ts'
 
 export const audioResetHistoryItem = async (x: any) => {
   const { position, track } = x

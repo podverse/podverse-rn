@@ -13,7 +13,7 @@ import { getQueueItemsLocally } from './queue'
 import { request } from './request'
 import { getHistoryItemsLocally } from './userHistoryItem'
 
-const _fileName = 'src\services\userNowPlayingItem.ts'
+const _fileName = 'src/services/userNowPlayingItem.ts'
 
 export const getNowPlayingItem = async () => {
   const useServerData = await checkIfShouldUseServerData()

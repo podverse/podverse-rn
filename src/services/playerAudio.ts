@@ -23,7 +23,7 @@ declare module 'react-native-track-player' {
   export function getTrackPosition(): Promise<number>
 }
 
-const _fileName = 'src\services\playerAudio.ts'
+const _fileName = 'src/services/playerAudio.ts'
 
 export const PVAudioPlayer = TrackPlayer
 

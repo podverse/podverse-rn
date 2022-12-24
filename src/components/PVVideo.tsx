@@ -47,7 +47,7 @@ type State = {
 }
 
 let lastNowPlayingItemUri = ''
-const _fileName = 'src\components\PVVideo.tsx'
+const _fileName = 'src/components/PVVideo.tsx'
 export class PVVideo extends React.PureComponent<Props, State> {
   videoRef: any | null = null
   willFocusListener: any

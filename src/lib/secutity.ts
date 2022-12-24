@@ -4,7 +4,7 @@ import RNSecureKeyStore from 'react-native-secure-key-store'
 import { PV } from '../resources'
 import { errorLogger } from './logger'
 
-const _fileName = 'src\lib\secutity.ts'
+const _fileName = 'src/lib/secutity.ts'
 
 export const credentialsPlaceholderUsername = 'username'
 

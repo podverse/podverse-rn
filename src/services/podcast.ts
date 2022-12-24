@@ -19,7 +19,7 @@ import { request } from './request'
   navigates the user too quickly to the PodcastScreen, before the network connection
   has finished being detected.
 */
-const _fileName = "src\services\podcast.ts"
+const _fileName = "src/services/podcast.ts"
 
 export const getPodcast = async (id: string, forceRequest?: boolean) => {
   const isConnected = await hasValidNetworkConnection()

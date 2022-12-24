@@ -18,7 +18,7 @@ type State = {
 }
 
 const testIDPrefix = 'media_player_carousel_comments'
-const _fileName = 'src\components\MediaPlayerCarouselComments.tsx'
+const _fileName = 'src/components/MediaPlayerCarouselComments.tsx'
 
 export class MediaPlayerCarouselComments extends React.PureComponent<Props, State> {
   constructor(props) {

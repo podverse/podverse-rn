@@ -5,7 +5,7 @@ import { errorLogger } from '../lib/logger'
 import { hasValidNetworkConnection } from '../lib/network'
 import { getAppUserAgent } from '../lib/utility'
 
-const _fileName = 'src\services\matomo.ts'
+const _fileName = 'src/services/matomo.ts'
 
 const collectEndpoint = `${Config.MATOMO_BASE_URL}${Config.MATOMO_ENDPOINT_PATH}`
 

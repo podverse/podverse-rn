@@ -32,7 +32,7 @@ import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { core } from '../styles'
 import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
 
-const _fileName = 'src\screens\EpisodesScreen.tsx'
+const _fileName = 'src/screens/EpisodesScreen.tsx'
 
 type Props = {
   navigation?: any

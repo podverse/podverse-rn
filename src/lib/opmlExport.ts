@@ -9,7 +9,7 @@ import RNFS from 'react-native-fs'
 import { getSubscribedPodcasts } from '../state/actions/podcast'
 import { errorLogger } from './logger'
 
-const _fileName = 'src\lib\opmlExport.ts'
+const _fileName = 'src/lib/opmlExport.ts'
 
 export const exportSubscribedPodcastsAsOPML = async () => {
   const subscribedPodcasts = await getSubscribedPodcasts()

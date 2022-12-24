@@ -61,7 +61,7 @@ import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
 
-const _fileName = 'src\screens\PodcastScreen.tsx'
+const _fileName = 'src/screens/PodcastScreen.tsx'
 
 type Props = {
   navigation?: any

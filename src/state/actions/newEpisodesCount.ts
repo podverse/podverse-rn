@@ -11,7 +11,7 @@ import {
 } from '../../services/newEpisodesCount'
 import { getHistoryItemsIndex } from '../../services/userHistoryItem'
 
-const _fileName = 'src\state\actions\newEpisodesCount.ts'
+const _fileName = 'src/state/actions/newEpisodesCount.ts'
 
 export const getNewEpisodesCount = async () => {
   const newEpisodesCount = await getNewEpisodesCountService()

@@ -6,7 +6,7 @@ import { checkIfShouldUseServerData, getBearerToken } from './auth'
 import { playerSyncPlayerWithQueue } from './player'
 import { request } from './request'
 
-const _fileName = "src\services\queue.ts"
+const _fileName = "src/services/queue.ts"
 
 export const addQueueItemLast = async (item: NowPlayingItem) => {
   const useServerData = await checkIfShouldUseServerData()

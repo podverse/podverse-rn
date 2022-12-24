@@ -19,7 +19,7 @@ import { androidHandleStatusCheck } from '../state/actions/purchase.android'
 import { iosHandlePurchaseStatusCheck } from '../state/actions/purchase.ios'
 import { getMembershipTextStyle } from '../styles'
 
-const _fileName = 'src\screens\MembershipScreen.tsx'
+const _fileName = 'src/screens/MembershipScreen.tsx'
 
 type Props = {
   navigation?: any

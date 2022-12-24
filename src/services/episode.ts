@@ -2,7 +2,7 @@ import { errorLogger } from '../lib/logger'
 import { hasValidNetworkConnection } from '../lib/network'
 import { request } from './request'
 
-const _fileName = 'src\services\episode.ts'
+const _fileName = 'src/services/episode.ts'
 
 export const getEpisodes = async (query: any = {}) => {
   const searchTitle = query.searchTitle ? encodeURIComponent(query.searchTitle) : ''

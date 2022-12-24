@@ -22,7 +22,7 @@ import {
 } from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
 
-const _fileName = 'src\services\v4v\v4v.ts'
+const _fileName = 'src/services/v4v/v4v.ts'
 
 export type BoostagramItem = {
   episodeFunding?: Funding[]

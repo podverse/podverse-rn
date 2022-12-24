@@ -16,7 +16,7 @@ type Props = {
   navigation: any
 }
 
-const _fileName = 'src\components\PurchaseListener.tsx'
+const _fileName = 'src/components/PurchaseListener.tsx'
 
 export class PurchaseListener extends React.Component<Props> {
   purchaseUpdateSubscription = null as any

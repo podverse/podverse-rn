@@ -39,7 +39,7 @@ import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { getPublicUser, toggleSubscribeToUser } from '../state/actions/user'
 import { core } from '../styles'
 
-const _fileName = 'src\screens\ProfileScreen.tsx'
+const _fileName = 'src/screens/ProfileScreen.tsx'
 
 type Props = {
   navigation?: any
