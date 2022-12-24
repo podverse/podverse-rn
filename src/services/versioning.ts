@@ -4,6 +4,8 @@ import { hasValidNetworkConnection } from '../lib/network'
 import { request } from './request'
 const semver = require('semver')
 
+const _fileName = 'src/services/versioning.ts'
+
 export const isOnMinimumAllowedVersion = async () => {
   try {
     const isConnected = await hasValidNetworkConnection()
@@ -29,7 +31,7 @@ export const isOnMinimumAllowedVersion = async () => {
 
     return true
   } catch (error) {
-    errorLogger('Error getting Version: ', error)
+    errorLogger(_fileName, 'Error getting Version: ', error)
     return true
   }
 }

@@ -5,11 +5,11 @@ import React, { Component } from 'react'
 import { Image, LogBox, Platform, StatusBar, View } from 'react-native'
 import Config from 'react-native-config'
 import { getFontScale } from 'react-native-device-info'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import Orientation from 'react-native-orientation-locker'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
-import { isOnMinimumAllowedVersion } from './src/services/versioning'
 import { UpdateRequiredOverlay, OverlayAlert, ImageFullView, BoostDropdownBanner } from './src/components'
 import { pvIsTablet } from './src/lib/deviceDetection'
 import { refreshDownloads } from './src/lib/downloader'
@@ -17,9 +17,12 @@ import { PV } from './src/resources'
 import { determineFontScaleMode } from './src/resources/Fonts'
 import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
+import { isInitialLoadPodcastsScreen } from './src/screens/PodcastsScreen'
 import { downloadCategoriesList } from './src/services/category'
 import PVEventEmitter from './src/services/eventEmitter'
+import { playerHandlePauseWithUpdate } from './src/services/player'
 import { v4vClearTransactionQueue } from './src/services/v4v/v4v'
+import { isOnMinimumAllowedVersion } from './src/services/versioning'
 import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
@@ -31,7 +34,6 @@ import {
   showRootView,
   unregisterCarModule
 } from './src/lib/carplay/PVCarPlay'
-import { gestureHandlerRootHOC, GestureHandlerRootView } from 'react-native-gesture-handler'
 
 LogBox.ignoreLogs(['EventEmitter.removeListener', "Require cycle"])
 
@@ -86,8 +88,6 @@ class App extends Component<Props, State> {
 
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
 
-    
-  
     registerCarModule(this.onConnect, this.onDisconnect)
   }
 
@@ -103,14 +103,24 @@ class App extends Component<Props, State> {
     if (!carplayEventsInitialized) {
       carplayEventsInitialized = true
       PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdate)
-      PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
+      PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY, handleCarPlayPodcastsUpdate)
+
+      /*
+        This code is intended to correct a race condition when the mobile app is already initialized,
+        then CarPlay is connected later.
+      */
+      if (!isInitialLoadPodcastsScreen) {
+        handleCarPlayPodcastsUpdate()
+      }
     }
   }
 
   onDisconnect = () => {
+    playerHandlePauseWithUpdate()
+
     // Do things now that carplay is disconnected
     PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, handleCarPlayQueueUpdate)
-    PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING, handleCarPlayPodcastsUpdate)
+    PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY, handleCarPlayPodcastsUpdate)
   }
 
   handleNetworkChange = () => {

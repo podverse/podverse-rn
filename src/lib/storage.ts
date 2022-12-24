@@ -10,6 +10,7 @@ import { hasValidNetworkConnection } from './network'
 import { getAppUserAgent } from './utility'
 
 const podverseImagesPath = RNFS.DocumentDirectoryPath + '/podverse_images/'
+const _fileName = 'src/lib/storage.ts'
 
 /*
   Limit attempts to re-download an image that may already be in cache
@@ -24,7 +25,7 @@ export const deleteImageCache = async () => {
       await RNFS.unlink(podverseImagesPath)
     }
   } catch (error) {
-    errorLogger('deleteImageCache', error)
+    errorLogger(_fileName, 'deleteImageCache', error)
   }
 }
 
@@ -61,7 +62,7 @@ export const downloadMyUserDataFile = async () => {
     await Share.open(options)
     await RNFS.unlink(filePath)
   } catch (error) {
-    errorLogger('downloadMyUserDataFile error', error)
+    errorLogger(_fileName, 'downloadMyUserDataFile', error)
   }
 }
 
@@ -90,7 +91,7 @@ export const downloadImageFile = async (uri: string) => {
 
     await RNFS.downloadFile(downloadOptions).promise
   } catch (error) {
-    errorLogger('downloadImageFile error:', error)
+    errorLogger(_fileName, 'downloadImageFile', error)
   }
 }
 
@@ -102,7 +103,7 @@ export const getSavedImageUri = async (uri: string) => {
   try {
     fileExists = await RNFS.exists(filePath)
   } catch (error) {
-    errorLogger('getSavedImageUri error', error)
+    errorLogger(_fileName, 'getSavedImageUri', error)
   }
 
   if (fileExists) {

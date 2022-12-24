@@ -17,6 +17,8 @@ import {
 } from '../../services/podcast'
 import { updateDownloadedPodcasts } from './downloads'
 
+const _fileName = 'src/state/actions/podcast.ts'
+
 const handleCombineWithAddByRSSPodcasts = async (searchTitle?: string, sort?: string | null) => {
   const { appMode } = getGlobal()
   const videoOnlyMode = appMode === PV.AppMode.videos
@@ -100,7 +102,7 @@ export const toggleSubscribeToPodcast = async (id: string) => {
           }
         )
       } catch (error) {
-        errorLogger('toggleSubscribeToPodcast action', error)
+        errorLogger(_fileName, 'toggleSubscribeToPodcast action', error)
         reject()
       }
     })()

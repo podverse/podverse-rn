@@ -1,7 +1,8 @@
 import { Platform } from 'react-native'
 import { getGlobal, setGlobal } from 'reactn'
 import { translate } from '../../lib/i18n'
-import { processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../../services/v4v/v4v'
+import { extractV4VValueTags, 
+  processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../../services/v4v/v4v'
 import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../../state/actions/v4v/v4v'
 import {
   getPlaybackSpeed,
@@ -38,7 +39,7 @@ const handleValueStreamingMinutePassed = async () => {
   const globalState = getGlobal()
   const { nowPlayingItem } = globalState.player
 
-  const valueTags = nowPlayingItem.episodeValue || nowPlayingItem.podcastValue || []
+  const valueTags = extractV4VValueTags(nowPlayingItem?.episodeValue, nowPlayingItem?.podcastValue)
 
   const { activeProviderSettings } = v4vGetActiveProviderInfo(valueTags)
   const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(nowPlayingItem))
@@ -46,8 +47,8 @@ const handleValueStreamingMinutePassed = async () => {
 
   valueStreamingAccumulatorSecondCount = 0
 
-  // Send batch of streaming value from queue every 5 minutes
-  const shouldProcessQueue = valueStreamingProcessQueueSecondCount >= 600
+  // Send batch of streaming value from queue every 1 minutes
+  const shouldProcessQueue = valueStreamingProcessQueueSecondCount >= 60
   if (shouldProcessQueue) {
     valueStreamingProcessQueueSecondCount = 0
   }
@@ -64,7 +65,7 @@ const handleValueStreamingMinutePassed = async () => {
   return shouldProcessQueue
 }
 
-export const handleValueStreamingTimerIncrement = (isVideo?: boolean) => {
+export const handleValueStreamingTimerIncrement = (isVideo?: boolean) => {  
   const globalState = getGlobal()
   const { streamingValueOn } = globalState.session.v4v
   if (streamingValueOn) {

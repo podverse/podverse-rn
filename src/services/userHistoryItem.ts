@@ -10,6 +10,8 @@ import { playerGetDuration, playerGetPosition } from './player'
 import { request } from './request'
 import { setNowPlayingItem } from './userNowPlayingItem'
 
+const _fileName = 'src/services/userHistoryItem.ts'
+
 export const addOrUpdateHistoryItem = async (
   item: NowPlayingItem,
   playbackPosition: number,
@@ -260,7 +262,7 @@ const getHistoryItemsFromServer = async (page: number) => {
       opts: { credentials: 'include' }
     })
   } catch (error) {
-    errorLogger('getHistoryItemsFromServer error', error)
+    errorLogger(_fileName, 'getHistoryItemsFromServer', error)
   }
 
   const { userHistoryItems, userHistoryItemsCount } = response.data
@@ -355,7 +357,7 @@ const getHistoryItemsIndexFromServer = async () => {
       }
     })) as any
   } catch (error) {
-    errorLogger('getHistoryItemsIndexFromServer error', error)
+    errorLogger(_fileName, 'getHistoryItemsIndexFromServer', error)
   }
 
   const { userHistoryItems: serverMetaHistoryItems } = response.data

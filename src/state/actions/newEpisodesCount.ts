@@ -11,6 +11,8 @@ import {
 } from '../../services/newEpisodesCount'
 import { getHistoryItemsIndex } from '../../services/userHistoryItem'
 
+const _fileName = 'src/state/actions/newEpisodesCount.ts'
+
 export const getNewEpisodesCount = async () => {
   const newEpisodesCount = await getNewEpisodesCountService()
   setGlobal({ newEpisodesCount })
@@ -88,6 +90,6 @@ export const syncNewEpisodesCountWithHistory = async () => {
     // After updated in storage, then update the global state
     getNewEpisodesCount()
   } catch (error) {
-    errorLogger('syncNewEpisodesCountWithHistory error', error)
+    errorLogger(_fileName, 'syncNewEpisodesCountWithHistory', error)
   }
 }

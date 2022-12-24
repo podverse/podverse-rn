@@ -1,6 +1,8 @@
 import Config from 'react-native-config'
 import { errorLogger } from './logger'
 
+const _fileName = 'src/lib/crashManager.ts'
+
 export const trackCrashEvent = (info: { [key: string]: string }) => {
   if (!Config.DISABLE_CRASH_LOGS) {
     import('appcenter-analytics')
@@ -8,7 +10,7 @@ export const trackCrashEvent = (info: { [key: string]: string }) => {
         Analytics.trackEvent('Javascript Crash', info)
       })
       .catch((error) => {
-        errorLogger('App Center Analytics library not loaded: ', error)
+        errorLogger(_fileName, 'App Center Analytics library not loaded: ', error)
       })
   }
 }

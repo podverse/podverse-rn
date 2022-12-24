@@ -29,6 +29,8 @@ const albyRequest = (requestOptions: PVRequest, url: string) => {
   )
 }
 
+const _fileName = 'src/services/v4v/providers\alby.ts'
+
 /* Storage helpers */
 
 export const v4vAlbySaveNewCodeVerifier = async () => {
@@ -41,7 +43,7 @@ export const v4vAlbySaveNewCodeVerifier = async () => {
       codeVerifier
     )
   } catch (error) {
-    errorLogger('v4vAlbyRequestAccessToken error:', error)
+    errorLogger(_fileName, 'v4vAlbyRequestAccessToken error:', error)
   }
   return codeVerifier
 }
@@ -57,7 +59,7 @@ export const v4vAlbyGetAndRemoveCodeVerifier = async () => {
 
     await v4vAlbyRemoveCodeVerifier()
   } catch (error) {
-    errorLogger('v4vAlbyGetOrGenerateCodeVerifier error:', error)
+    errorLogger(_fileName, 'v4vAlbyGetOrGenerateCodeVerifier error:', error)
   }
 
   return codeVerifier
@@ -71,7 +73,7 @@ const v4vAlbyGetAccessData = async () => {
       accessData = JSON.parse(creds.password)
     }
   } catch (error) {
-    errorLogger('v4vAlbyGetAccessData error:', error)
+    errorLogger(_fileName, 'v4vAlbyGetAccessData error:', error)
   }
 
   return accessData
@@ -81,7 +83,7 @@ export const v4vAlbyRemoveAccessData = async () => {
   try {
     await RNKeychain.resetInternetCredentials(PV.Keys.V4V_PROVIDERS_ALBY_ACCESS_DATA)
   } catch (error) {
-    errorLogger('v4vAlbyRemoveAccessData error:', error)
+    errorLogger(_fileName, 'v4vAlbyRemoveAccessData error:', error)
   }
 }
 
@@ -89,7 +91,7 @@ export const v4vAlbyRemoveCodeVerifier = async () => {
   try {
     await RNKeychain.resetInternetCredentials(PV.Keys.V4V_PROVIDERS_ALBY_CODE_VERIFIER)
   } catch (error) {
-    errorLogger('v4vAlbyRemoveCodeVerifier error:', error)
+    errorLogger(_fileName, 'v4vAlbyRemoveCodeVerifier error:', error)
   }
 }
 
@@ -173,7 +175,7 @@ export const v4vAlbyRequestAccessToken = async (code: string) => {
         JSON.stringify(data)
       )
     } catch (error) {
-      errorLogger('v4vAlbyRequestAccessToken error:', error)
+      errorLogger(_fileName, 'v4vAlbyRequestAccessToken error:', error)
       await RNKeychain.resetInternetCredentials(PV.Keys.V4V_PROVIDERS_ALBY_ACCESS_DATA)
     }
   }
@@ -214,7 +216,7 @@ export const v4vAlbyRefreshAccessToken = async () => {
       throw new Error("Something went wrong with your Alby refresh token. Please reconnect your Alby wallet.")
     }
   } catch (error) {
-    errorLogger('v4vAlbyRefreshAccessToken error:', error)
+    errorLogger(_fileName, 'v4vAlbyRefreshAccessToken error:', error)
     const statusNumber = error?.response?.status || 0
 
     if (statusNumber.toString().startsWith('4')) {

@@ -9,6 +9,8 @@ import { getAddByRSSPodcastLocally } from '../services/parser'
 import { addAddByRSSPodcastWithCredentials } from '../state/actions/parser'
 import { core } from '../styles'
 
+const _fileName = 'src/screens/AddPodcastByRSSAuthScreen.tsx'
+
 type Props = {
   navigation: any
 }
@@ -75,7 +77,7 @@ export class AddPodcastByRSSAuthScreen extends React.Component<Props, State> {
             navigateToPodcastScreenWithItem(navigation, podcast)
           }
         } catch (error) {
-          errorLogger('_handleSavePodcastByRSSURL', error)
+          errorLogger(_fileName, '_handleSavePodcastByRSSURL', error)
           this.setState({ isLoading: false })
         }
       })()

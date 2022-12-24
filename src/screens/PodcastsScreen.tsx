@@ -85,10 +85,12 @@ import {
   v4vInitializeConnectedProviders,
   v4vInitializeSenderInfo,
   v4vInitializeSettings,
-  v4vInitializeShowLightningIcon
+  v4vInitializeShowLightningIcon,
+  v4vInitializeStreamingValue
 } from '../state/actions/v4v/v4v'
-import { initializeValueProcessor } from '../state/actions/valueTag'
 import { core } from '../styles'
+
+const _fileName = 'src/screens/PodcastsScreen.tsx'
 
 type Props = {
   navigation?: any
@@ -119,7 +121,7 @@ type State = {
 
 const testIDPrefix = 'podcasts_screen'
 
-let isInitialLoad = true
+export let isInitialLoadPodcastsScreen = true
 const horizontalRowHeight = 94
 const dividerHeight = 1
 
@@ -289,11 +291,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
         this._initializeScreenData()
       }
     } catch (error) {
-      isInitialLoad = false
+      isInitialLoadPodcastsScreen = false
       this.setState({
         isLoadingMore: false
       })
-      errorLogger('PodcastsScreen componentDidMount init error', error)
+      errorLogger(_fileName, 'componentDidMount init', error)
 
       Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
     }
@@ -395,7 +397,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     (async () => {
       await playerUpdateUserPlaybackPosition()
 
-      if (nextAppState === 'active' && !isInitialLoad) {
+      if (nextAppState === 'active' && !isInitialLoadPodcastsScreen) {
         const { nowPlayingItem: lastItem } = this.global.player
         const currentItem = await getNowPlayingItemLocally()
 
@@ -489,7 +491,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
         handleNavigateToPlayerScreen(navigation)
       } catch (error) {
-        errorLogger('PodcastsScreen _handleDeepLinkClip', error)
+        errorLogger(_fileName, '_handleDeepLinkClip', error)
       }
     }
   }
@@ -606,6 +608,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     await v4vInitializeSettings()
     await v4vInitializeConnectedProviders()
     await v4vInitializeSenderInfo()
+    await v4vInitializeStreamingValue()
 
     // Load the AsyncStorage authenticatedUser and subscribed podcasts immediately,
     // before getting the latest from server and parsing the addByPodcastFeedUrls in getAuthUserInfo.
@@ -631,7 +634,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           isLoggedIn = await getAuthUserInfo()
           if (isLoggedIn) await askToSyncWithNowPlayingItem(this._initializeScreenDataPart2)
         } catch (error) {
-          errorLogger('PodcastsScreen initializeScreenData getAuthUserInfo', error)
+          errorLogger(_fileName, 'initializeScreenData getAuthUserInfo', error)
           // If getAuthUserInfo fails, continue with the networkless version of the app
         }
         if (!isLoggedIn) this._initializeScreenDataPart2()
@@ -648,13 +651,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
       initializePlayerSettings()
     ])
 
-    initializeValueProcessor()
-
     this._setDownloadedDataIfOffline()
     downloadedEpisodeDeleteMarked()
 
     /* This event signals to CarPlay to refresh views after the app initializes. */
-    setTimeout(() => PVEventEmitter.emit(PV.Events.APP_FINISHED_INITALIZING), 1000)
+    setTimeout(() => PVEventEmitter.emit(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY), 1000)
     
     trackPageView('/podcasts', 'Podcasts Screen')
   }
@@ -717,7 +718,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const selectedFilterLabel = await getSelectedFilterLabel(selectedKey)
     const selectedSortLabel = getSelectedSortLabel(sort)
 
-    isInitialLoad = false
+    isInitialLoadPodcastsScreen = false
 
     this.setState(
       {
@@ -984,7 +985,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           // const row = rowMap[selectedId] || rowMap[addByRSSPodcastFeedUrl]
           // row.closeRow()
         } catch (error) {
-          errorLogger('PodcastsScreen _handleHiddenItemPress', error)
+          errorLogger(_fileName, '_handleHiddenItemPress', error)
         }
         this.setState({ isUnsubscribing: false })
       })()
@@ -1234,7 +1235,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await handleAutoDownloadEpisodes(dateISOString)
         await handleAutoQueueEpisodes(dateISOString)
       } catch (error) {
-        errorLogger('PodcastsScreen _querySubscribedPodcasts auto download error:', error)
+        errorLogger(_fileName, '_querySubscribedPodcasts auto download', error)
       }
       await AsyncStorage.setItem(PV.Keys.AUTODOWNLOADS_LAST_REFRESHED, new Date().toISOString())
     }
@@ -1395,7 +1396,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.flatListDataTotalCount = results[1]
       }
     } catch (error) {
-      errorLogger('PodcastsScreen _queryData error', error)
+      errorLogger(_fileName, '_queryData error', error)
     }
 
     if (shouldCleanFlatListData) {

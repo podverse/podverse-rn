@@ -4,7 +4,7 @@ import {getGlobal} from "reactn"
 import { playerLoadNowPlayingItem } from '../../state/actions/player';
 import { getEpisodes } from '../../services/episode';
 import { getEpisodesAndLiveItems } from '../../services/liveItem';
-import { playerTogglePlay } from '../../services/player';
+import { playerHandlePlayWithUpdate, playerTogglePlay } from '../../services/player';
 import { getHistoryItemIndexInfoForEpisode } from '../../services/userHistoryItem';
 import { hasValidNetworkConnection } from '../network';
 
@@ -52,7 +52,7 @@ export const loadEpisodeInPlayer = async (episode: Episode, podcast: Podcast) =>
     const {player: {nowPlayingItem}} = getGlobal()
     const isNowPlayingItem = checkIfNowPlayingItem(episode, nowPlayingItem)
     if (isNowPlayingItem) {
-        await playerTogglePlay()
+        playerHandlePlayWithUpdate()
     } else {
         const { userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(episode?.id)
         const newNowPlayingItem = convertToNowPlayingItem(episode, null, podcast, userPlaybackPosition)

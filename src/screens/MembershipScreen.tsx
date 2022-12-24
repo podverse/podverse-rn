@@ -19,6 +19,8 @@ import { androidHandleStatusCheck } from '../state/actions/purchase.android'
 import { iosHandlePurchaseStatusCheck } from '../state/actions/purchase.ios'
 import { getMembershipTextStyle } from '../styles'
 
+const _fileName = 'src/screens/MembershipScreen.tsx'
+
 type Props = {
   navigation?: any
 }
@@ -62,7 +64,7 @@ export class MembershipScreen extends React.Component<Props, State> {
         try {
           await buy1YearPremium()
         } catch (error) {
-          errorLogger('MembershipScreen handleRenewPress', error)
+          errorLogger(_fileName, 'handleRenewPress', error)
           // If attempting to renew, but a recent previous purchase did not complete successfully,
           // then do not buy a new product, and instead navigate to the PurchasingScreen
           // and attempt to check and update the status of the cached purchase.
