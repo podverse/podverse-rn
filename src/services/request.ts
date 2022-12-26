@@ -18,6 +18,8 @@ export type PVRequest = {
   opts?: any
   timeout?: any
   shouldShowAuthAlert?: boolean
+  timeoutLong?: boolean,
+  timeoutLongest?: boolean
 }
 
 export const request = async (
@@ -32,10 +34,18 @@ export const request = async (
     body,
     method = 'GET',
     opts = {},
-    timeout = 30000,
-    shouldShowAuthAlert = false
+    shouldShowAuthAlert = false,
+    timeoutLong = false,
+    timeoutLongest = false
   } = req
 
+  let { timeout = 30000 } = req
+  if (timeoutLong) {
+    timeout = 60000
+  } else if (timeoutLongest) {
+    timeout = 120000
+  }
+  
   const queryString = Object.keys(query)
     .map((key) => {
       return `${key}=${query[key]}`
