@@ -161,7 +161,7 @@ export const initDownloads = async () => {
   })
 }
 
-export const updateAutoDownloadSettings = (podcastId: string, autoDownloadOn: boolean) => {
+export const updateAutoDownloadSettings = (podcastId: string, autoDownloadOn: boolean, skipDownloadOnce = false) => {
   const { autoDownloadSettings } = getGlobal()
   autoDownloadSettings[podcastId] = autoDownloadOn
 
@@ -172,7 +172,7 @@ export const updateAutoDownloadSettings = (podcastId: string, autoDownloadOn: bo
     async () => {
       const newAutoDownloadSettings = await updateAutoDownloadSettingsService(podcastId)
       setGlobal({ autoDownloadSettings: newAutoDownloadSettings }, async () => {
-        if(autoDownloadOn) {
+        if(autoDownloadOn && !skipDownloadOnce) {
           const [serverEpisodes, episodesCount] = await getEpisodes({ 
             sort:"most-recent", 
             podcastId, 
