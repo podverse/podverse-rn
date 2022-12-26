@@ -25,6 +25,7 @@ import {
 } from '../../services/autoDownloads'
 import { getEpisodes } from '../../services/episode'
 import { getPodcastCredentials, parseAddByRSSPodcast } from '../../services/parser'
+import { getHistoryItemIndexInfoForEpisode } from '../../services/userHistoryItem'
 import { clearNowPlayingItem } from '../../services/userNowPlayingItem'
 
 const _fileName = 'src/state/actions/downloads.ts'
@@ -179,7 +180,11 @@ export const updateAutoDownloadSettings = (podcastId: string, autoDownloadOn: bo
           })
           
           if(episodesCount) {
-            downloadEpisode(serverEpisodes[0], serverEpisodes[0].podcast)
+            const latestEpisode = serverEpisodes[0]
+            const historyItem = getHistoryItemIndexInfoForEpisode(latestEpisode.id)
+            if (!historyItem?.completed) {
+              downloadEpisode(latestEpisode, latestEpisode.podcast)
+            }
           }
         }
       })
