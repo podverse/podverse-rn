@@ -39,6 +39,8 @@ import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { getPublicUser, toggleSubscribeToUser } from '../state/actions/user'
 import { core } from '../styles'
 
+const _fileName = 'src/screens/ProfileScreen.tsx'
+
 type Props = {
   navigation?: any
 }
@@ -729,7 +731,7 @@ export class ProfileScreen extends React.Component<Props, State> {
 
       newState.selectedFilterLabel = await getSelectedFilterLabel(viewType)
     } catch (error) {
-      errorLogger('ProfileScreen queryData error:', error)
+      errorLogger(_fileName, 'queryData', error)
     }
 
     this.shouldLoad = true

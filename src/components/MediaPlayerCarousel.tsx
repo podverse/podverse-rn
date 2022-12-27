@@ -165,16 +165,15 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const satStreamText = streamingValueOn ? translate('Stream On') : translate('Stream Off')
 
     const streamingButtonMainTextStyles = streamingValueOn
-      ? [styles.boostButtonMainText, { fontWeight: '500'}]
+      ? [styles.boostButtonMainText, { fontWeight: '500' }]
       : [styles.boostButtonMainText]
 
-    const streamingButtonSubTextStyles = streamingValueOn
-      ? [styles.boostButtonSubText]
-      : [styles.boostButtonSubText]
+    const streamingButtonSubTextStyles = streamingValueOn ? [styles.boostButtonSubText] : [styles.boostButtonSubText]
 
-    const streamingIndicatorStyles = Platform.OS === 'ios'
-      ? [styles.streamingIndicator, styles.streamingIndicatorIOS]
-      : [styles.streamingIndicator, styles.streamingIndicatorAndroid]
+    const streamingIndicatorStyles =
+      Platform.OS === 'ios'
+        ? [styles.streamingIndicator, styles.streamingIndicatorIOS]
+        : [styles.streamingIndicator, styles.streamingIndicatorAndroid]
 
     const streamingIndicatorSize = Platform.OS === 'ios' ? 15 : 20
 
@@ -256,10 +255,11 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                   </Text>
                 </View>
                 {streamingValueOn && isPlaying && (
-                  <ActivityIndicator 
-                    size={streamingIndicatorSize} 
-                    styles={streamingIndicatorStyles} 
-                    testID={testIDPrefix} />
+                  <ActivityIndicator
+                    size={streamingIndicatorSize}
+                    styles={streamingIndicatorStyles}
+                    testID={testIDPrefix}
+                  />
                 )}
               </PressableWithOpacity>
               <PressableWithOpacity

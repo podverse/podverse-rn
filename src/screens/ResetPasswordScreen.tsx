@@ -14,6 +14,8 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { resetPassword } from '../services/auth'
 
+const _fileName = 'src/screens/ResetPasswordScreen.tsx'
+
 type Props = {
   navigation?: any
   screenType?: string
@@ -121,7 +123,7 @@ export class ResetPasswordScreen extends React.Component<Props, State> {
           ])
         })
         .catch((error) => {
-          errorLogger('Reset pass error: ', error)
+          errorLogger(_fileName, 'Reset pass', error)
           Alert.alert(
             translate('Reset Password Failed'),
             translate('Something went wrong when resetting your password'),

@@ -19,7 +19,7 @@ export class GridView extends React.PureComponent<Props> {
     const isTablet = deviceType === 'tablet'
     const isLandscapeMode = orientation === 'landscape'
     const isTabletLandscape = isTablet && isLandscapeMode
-    
+
     const getImageThumbnailInfo = () => {
       let imageThumbnailStyle = styles.imageThumbnailMobile
       let columns = 3
@@ -33,21 +33,55 @@ export class GridView extends React.PureComponent<Props> {
 
       // subtract 2 so the device doesn't round up to a size that
       // cuts off the end of the last item in the grid.
+      const imageThumbnailHeight = screenWidth / columns - 2
       const imageThumbnailDimensions = {
-        height: screenWidth / columns - 2,
-        width: screenWidth / columns - 2
+        height: imageThumbnailHeight,
+        width: imageThumbnailHeight
       }
 
       return {
         columns,
-        imageThumbnailStyles: [imageThumbnailStyle, imageThumbnailDimensions]
+        imageThumbnailStyles: [imageThumbnailStyle, imageThumbnailDimensions],
+        imageThumbnailHeight
       }
     }
-    const { columns, imageThumbnailStyles } = getImageThumbnailInfo()
+    const { columns, imageThumbnailHeight, imageThumbnailStyles } = getImageThumbnailInfo()
 
     const _keyExtractor = (item, index) => {
       const id = item?.id
       return safeKeyExtractor('gridview_item', index, id)
+    }
+
+    const _getItemLayout = (_: any, index: number) => {
+      return {
+        length: imageThumbnailHeight,
+        offset: imageThumbnailHeight * index,
+        index
+      }
+    }
+
+    const _renderItem = ({ item }: { item: Podcast }) => {
+      const id = item?.id
+      const newContentCount = newEpisodesCount?.[id]?.count || 0
+      return (
+        <PressableWithOpacity
+          onPress={() => {
+            this.props.onItemSelected?.(item)
+          }}
+          style={styles.cellbutton}>
+          <FastImage
+            isAddByRSSPodcast={!!item?.addByRSSPodcastFeedUrl}
+            isTabletGridView={isTablet}
+            newContentCount={newContentCount}
+            placeholderLabel={item?.title || ''}
+            resizeMode='cover'
+            showLiveIndicator={item?.latestLiveItemStatus === 'live'}
+            source={item?.shrunkImageUrl || item?.imageUrl || ''}
+            styles={imageThumbnailStyles}
+            valueTags={item.value}
+          />
+        </PressableWithOpacity>
+      )
     }
 
     return (
@@ -59,29 +93,8 @@ export class GridView extends React.PureComponent<Props> {
         data={this.props.data}
         onEndReachedThreshold={0.3}
         refreshing={this.props.isRefreshing}
-        renderItem={({ item }: { item: Podcast }) => {
-          const id = item?.id
-          const newContentCount = newEpisodesCount?.[id]?.count || 0
-          return (
-            <PressableWithOpacity
-              onPress={() => {
-                this.props.onItemSelected?.(item)
-              }}
-              style={styles.cellbutton}>
-              <FastImage
-                isAddByRSSPodcast={!!item?.addByRSSPodcastFeedUrl}
-                isTabletGridView={isTablet}
-                newContentCount={newContentCount}
-                placeholderLabel={item?.title || ''}
-                resizeMode='cover'
-                showLiveIndicator={item?.latestLiveItemStatus === 'live'}
-                source={item?.shrunkImageUrl || item?.imageUrl || ''}
-                styles={imageThumbnailStyles}
-                valueTags={item.value}
-              />
-            </PressableWithOpacity>
-          )
-        }}
+        getItemLayout={_getItemLayout}
+        renderItem={_renderItem}
         numColumns={columns}
         keyExtractor={_keyExtractor}
         style={shouldShowResults ? [] : styles.noResultsView}
@@ -98,11 +111,11 @@ const styles = StyleSheet.create({
   },
   imageThumbnailMobile: {
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   imageThumbnailTabletLandscape: {
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   imageThumbnailTabletPortrait: {
     justifyContent: 'center',

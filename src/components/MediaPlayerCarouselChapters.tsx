@@ -228,7 +228,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     const testID = getTestID()
 
     return (
-      <View fillSpace style={[styles.wrapper, { width }]} transparent>
+      <View style={[styles.wrapper, { width }]} transparent>
         <TableSectionSelectors
           customButtons={
             !screenReaderEnabled ? (

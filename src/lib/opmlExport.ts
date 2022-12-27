@@ -9,6 +9,8 @@ import RNFS from 'react-native-fs'
 import { getSubscribedPodcasts } from '../state/actions/podcast'
 import { errorLogger } from './logger'
 
+const _fileName = 'src/lib/opmlExport.ts'
+
 export const exportSubscribedPodcastsAsOPML = async () => {
   const subscribedPodcasts = await getSubscribedPodcasts()
   const blob = opmlExport(subscribedPodcasts)
@@ -34,7 +36,7 @@ const downloadOPMLExport = async (xmlData: string) => {
     await Share.open(options)
     await RNFS.unlink(path)
   } catch (err) {
-    errorLogger('Download opml error: ', err.message)
+    errorLogger(_fileName, 'downloadOPMLExport', err.message)
   }
 }
 
@@ -51,6 +53,11 @@ const opmlExport = (podcastList: any) => {
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&apos;')
   }
+
+  function escapeUrlEntities(url: string) {
+    return url.replace(/&/g, '&amp;')
+  }
+
   // need to fix podcast.url below
   function jsonToXML(json: any[]) {
     const filteredPodcasts = json.filter(
@@ -70,8 +77,9 @@ ${filteredPodcasts
   .map(
     (podcast: any) =>
       // eslint-disable-next-line max-len
-      `    <outline text="${escapeEntities(podcast.title)}" type="rss" xmlUrl="${podcast.addByRSSPodcastFeedUrl ||
-        podcast.feedUrls[0].url}"/>`
+      `    <outline text="${escapeEntities(podcast.title)}" type="rss" xmlUrl="${escapeUrlEntities(
+        podcast.addByRSSPodcastFeedUrl || podcast.feedUrls[0].url
+      )}"/>`
   )
   .join('\n')}
   </body>

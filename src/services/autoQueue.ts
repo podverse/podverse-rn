@@ -7,6 +7,8 @@ import { getEpisodesSincePubDate } from './episode'
 import { addQueueItemLast, addQueueItemNext } from './queue'
 import { getNowPlayingItem } from './userNowPlayingItem'
 
+const _fileName = 'src/services/autoQueue.ts'
+
 export type AutoQueueSettingsPosition = 'next' | 'last'
 
 /* Auto queue new episdoes helpers */
@@ -16,7 +18,7 @@ export const getAutoQueueSettings = async () => {
     const itemsString = await AsyncStorage.getItem(PV.Keys.AUTO_QUEUE_SETTINGS)
     return itemsString ? JSON.parse(itemsString) : {}
   } catch (error) {
-    errorLogger('getAutoQueueSettings error', error)
+    errorLogger(_fileName, 'getAutoQueueSettings', error)
     return {}
   }
 }
@@ -111,7 +113,7 @@ export const getAutoQueueDownloadsOn = async () => {
     const booleanString = await AsyncStorage.getItem(PV.Keys.AUTO_QUEUE_DOWNLOADS_ON)
     return booleanString === 'true'
   } catch (error) {
-    errorLogger('getAutoQueueDownloadsOn error', error)
+    errorLogger(_fileName, 'getAutoQueueDownloadsOn', error)
     return false
   }
 }
@@ -124,6 +126,6 @@ export const setAutoQueueDownloadsOn = async (autoQueueDownloadsOn: boolean) => 
       await AsyncStorage.removeItem(PV.Keys.AUTO_QUEUE_DOWNLOADS_ON)
     }
   } catch (error) {
-    errorLogger('setAutoQueueDownloadsOn error', error)
+    errorLogger(_fileName, 'setAutoQueueDownloadsOn', error)
   }
 }

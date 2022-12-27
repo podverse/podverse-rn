@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce'
 import { convertSecToHHMMSS, getMediaRefStartPosition } from 'podverse-shared'
 import { useState } from 'react'
-import { Animated, Dimensions, StyleSheet, View } from 'react-native'
+import { Animated, StyleSheet, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import React, { getGlobal, useGlobal } from 'reactn'
 import { useProgress } from 'react-native-track-player'

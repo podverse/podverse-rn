@@ -25,7 +25,10 @@ import {
 } from '../../services/autoDownloads'
 import { getEpisodes } from '../../services/episode'
 import { getPodcastCredentials, parseAddByRSSPodcast } from '../../services/parser'
+import { getHistoryItemIndexInfoForEpisode } from '../../services/userHistoryItem'
 import { clearNowPlayingItem } from '../../services/userNowPlayingItem'
+
+const _fileName = 'src/state/actions/downloads.ts'
 
 // The DownloadTaskState should have the same episode and podcast properties as a NowPlayingItem,
 // or playing the download directly from the DownloadsScreen will not work.
@@ -158,7 +161,7 @@ export const initDownloads = async () => {
   })
 }
 
-export const updateAutoDownloadSettings = (podcastId: string, autoDownloadOn: boolean) => {
+export const updateAutoDownloadSettings = (podcastId: string, autoDownloadOn: boolean, skipDownloadOnce = false) => {
   const { autoDownloadSettings } = getGlobal()
   autoDownloadSettings[podcastId] = autoDownloadOn
 
@@ -169,7 +172,7 @@ export const updateAutoDownloadSettings = (podcastId: string, autoDownloadOn: bo
     async () => {
       const newAutoDownloadSettings = await updateAutoDownloadSettingsService(podcastId)
       setGlobal({ autoDownloadSettings: newAutoDownloadSettings }, async () => {
-        if(autoDownloadOn) {
+        if(autoDownloadOn && !skipDownloadOnce) {
           const [serverEpisodes, episodesCount] = await getEpisodes({ 
             sort:"most-recent", 
             podcastId, 
@@ -177,7 +180,11 @@ export const updateAutoDownloadSettings = (podcastId: string, autoDownloadOn: bo
           })
           
           if(episodesCount) {
-            downloadEpisode(serverEpisodes[0], serverEpisodes[0].podcast)
+            const latestEpisode = serverEpisodes[0]
+            const historyItem = getHistoryItemIndexInfoForEpisode(latestEpisode.id)
+            if (!historyItem?.completed) {
+              downloadEpisode(latestEpisode, latestEpisode.podcast)
+            }
           }
         }
       })
@@ -404,7 +411,7 @@ export const downloadedEpisodeMarkForDeletion = async (episodeId: string) => {
     }
     await AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION, JSON.stringify(markedForDeletion))
   } catch (error) {
-    errorLogger('downloadedEpisodeMarkForDeletion error', error, episodeId)
+    errorLogger(_fileName, 'downloadedEpisodeMarkForDeletion', error, episodeId)
   }
 }
 
@@ -416,7 +423,7 @@ export const downloadedEpisodeDeleteMarked = async () => {
       await removeDownloadedPodcastEpisode(episodeId)
     }
   } catch (error) {
-    errorLogger('downloadedEpisodeDeleteMarked error', error)
+    errorLogger(_fileName, 'downloadedEpisodeDeleteMarked', error)
   }
   await AsyncStorage.removeItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION)
 }

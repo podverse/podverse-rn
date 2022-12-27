@@ -2,6 +2,8 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 
+const _fileName = 'src/services/customRSSParallelParserLimit.ts'
+
 export const getCustomRSSParallelParserLimit = async () => {
   let customRSSParallelParserLimit = PV.CustomRSS.parallelParserDefaultLimit
   try {
@@ -13,7 +15,7 @@ export const getCustomRSSParallelParserLimit = async () => {
       }
     }
   } catch (error) {
-    errorLogger('getCustomRSSParallelParserLimit error', error)
+    errorLogger(_fileName, 'getCustomRSSParallelParserLimit', error)
   }
   return customRSSParallelParserLimit
 }
@@ -23,7 +25,7 @@ export const setCustomRSSParallelParserLimit = async (limit: number) => {
     limit = limit <= 0 || isNaN(limit) ? PV.CustomRSS.parallelParserDefaultLimit : limit
     await AsyncStorage.setItem(PV.Keys.CUSTOM_RSS_PARALLEL_PARSER_LIMIT, limit.toString())
   } catch (error) {
-    errorLogger('setCustomRSSParallelParserLimit error', error)
+    errorLogger(_fileName, 'setCustomRSSParallelParserLimit', error)
   }
 
   return limit

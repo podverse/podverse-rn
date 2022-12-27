@@ -297,7 +297,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     const testID = getTestID()
 
     return (
-      <View fillSpace style={[styles.wrapper, { width }]} transparent>
+      <View style={[styles.wrapper, { width }]} transparent>
         <TableSectionSelectors
           filterScreenTitle={translate('Clips')}
           handleSelectFromItem={this._selectQueryFrom}

@@ -5,6 +5,8 @@ import { PV } from '../resources'
 import { getEpisodesSincePubDate } from './episode'
 import { getHistoryItemsIndex } from './userHistoryItem'
 
+const _fileName = 'src/services/newEpisodesCount.ts'
+
 export const getNewEpisodeCountLastRefreshDate = async () => {
   const dateStr = await AsyncStorage.getItem(PV.Keys.NEW_EPISODE_COUNT_LAST_REFRESHED)
 
@@ -84,7 +86,7 @@ export const handleUpdateNewEpisodesCount = async () => {
       if (!podcastId || !episodeId) continue
 
       // Don't add to newEpisodesCount if item is already in historyItemsIndex.
-      if (historyItemsIndex?.episodes?.[episodeId]) continue 
+      if (historyItemsIndex?.episodes?.[episodeId]) continue
 
       updatedNewEpisodesCount = updateNewEpisodesCountEpisode(updatedNewEpisodesCount, episodeId, podcastId)
     }
@@ -110,7 +112,7 @@ export const clearEpisodesCountForPodcast = async (podcastId: string) => {
 
     await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA_2, JSON.stringify(newEpisodesCount))
   } catch (error) {
-    errorLogger('clearEpisodesCountForPodcast error', error)
+    errorLogger(_fileName, 'clearEpisodesCountForPodcast', error)
   }
   return newEpisodesCount
 }
@@ -125,7 +127,7 @@ export const clearEpisodesCountForPodcastEpisode = async (podcastId: string, epi
 
     await AsyncStorage.setItem(PV.Keys.NEW_EPISODES_COUNT_DATA_2, JSON.stringify(newEpisodesCount))
   } catch (error) {
-    errorLogger('clearEpisodesCountForPodcast error', error)
+    errorLogger(_fileName, 'clearEpisodesCountForPodcast', error)
   }
   return newEpisodesCount
 }

@@ -23,7 +23,7 @@ const testIDPrefix = 'v4v_providers_screen'
 
 const _sectionConnectedKey = 'sectionConnected'
 const _sectionSetupKey = 'sectionSetup'
-const _sectionInfoKey = "sectionInfo"
+const _sectionInfoKey = 'sectionInfo'
 
 const _infoStreamingSats = 'infoStreamingSats'
 
@@ -155,15 +155,13 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
           selectedFilterLabel={section.title}
           textStyle={[headerTextStyle, core.sectionHeaderText]}
         />
-        {
-          hasHelperText && (
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-              style={[table.sectionExplanationText, globalTheme.tableCellTextPrimary]}>
-              {helperText}
-            </Text>
-          )
-        }
+        {hasHelperText && (
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+            style={[table.sectionExplanationText, globalTheme.tableCellTextPrimary]}>
+            {helperText}
+          </Text>
+        )}
         <Divider />
       </>
     )

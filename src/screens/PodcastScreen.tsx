@@ -61,6 +61,8 @@ import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
 
+const _fileName = 'src/screens/PodcastScreen.tsx'
+
 type Props = {
   navigation?: any
 }
@@ -285,6 +287,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
   componentWillUnmount() {
     super.componentWillUnmount()
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.removeListener(PV.Events.PODCAST_START_PODCAST_FROM_TIME_SET, this.refreshStartPodcastFromTime)
     PVEventEmitter.removeListener(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
   }
@@ -349,7 +352,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
               }
             )
           } catch (error) {
-            errorLogger('PodcastScreen _initializePageData', error)
+            errorLogger(_fileName, '_initializePageData', error)
             this.setState(
               {
                 ...newState,
@@ -842,7 +845,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
               showSettings: false
             })
           } catch (error) {
-            errorLogger('PodcastScreen _handleSavePodcastCredentials', error)
+            errorLogger(_fileName, '_handleSavePodcastCredentials', error)
             this.setState({
               isLoadingMore: false,
               showSettings: false
@@ -1087,8 +1090,9 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
                 extraData={flatListData}
                 isLoadingMore={isLoadingMore}
                 isRefreshing={isRefreshing}
-                keyExtractor={(item: any, index: number) => 
-                  safeKeyExtractor(testIDPrefix, index, item?.id, !!item?.addedByRSS)}
+                keyExtractor={(item: any, index: number) =>
+                  safeKeyExtractor(testIDPrefix, index, item?.id, !!item?.addedByRSS)
+                }
                 ListHeaderComponent={this._ListHeaderComponent}
                 noResultsMessage={noResultsMessage}
                 onEndReached={this._onEndReached}
@@ -1266,7 +1270,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
       newState.selectedFilterLabel = await getSelectedFilterLabel(viewType)
     } catch (error) {
-      errorLogger('PodcastScreen queryData error:', error)
+      errorLogger(_fileName, 'queryData', error)
     }
     this.shouldLoad = true
 

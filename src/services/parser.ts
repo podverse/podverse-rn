@@ -17,6 +17,7 @@ import { getNewEpisodeCountCustomRSSLastRefreshDate } from './newEpisodesCount'
 import { combineWithAddByRSSPodcasts } from './podcast'
 import { request } from './request'
 const podcastFeedParser = require('@podverse/podcast-feed-parser')
+const _fileName = 'src/services/parser.ts'
 
 /*
 addByRSSPodcasts: [addByRSSPodcast]
@@ -136,7 +137,7 @@ export const getAddByRSSPodcastsLocally = async () => {
     const itemsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCASTS)
     return itemsString ? JSON.parse(itemsString) : []
   } catch (error) {
-    errorLogger('getAddByRSSPodcastsLocally', error)
+    errorLogger(_fileName, 'getAddByRSSPodcastsLocally', error)
     return []
   }
 }
@@ -146,7 +147,7 @@ export const getAddByRSSPodcastFeedUrlsLocally = async () => {
     const itemsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS)
     return itemsString ? JSON.parse(itemsString) : []
   } catch (error) {
-    errorLogger('getAddByRSSPodcastFeedUrlsLocally', error)
+    errorLogger(_fileName, 'getAddByRSSPodcastFeedUrlsLocally', error)
     return []
   }
 }
@@ -191,7 +192,7 @@ export const parseAllAddByRSSPodcasts = async () => {
           parsedPodcasts.push(parsedPodcast)
         }
       } catch (error) {
-        errorLogger('parseAllAddByRSSPodcasts url', url, error)
+        errorLogger(_fileName, 'parseAllAddByRSSPodcasts url', url, error)
       }
     })
   })
@@ -436,7 +437,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
 
     return podcast
   } catch (error) {
-    errorLogger('parseAddByRSSPodcast error', feedUrl, error)
+    errorLogger(_fileName, 'parseAddByRSSPodcast', feedUrl, error)
     const previouslySavedPodcast = await getAddByRSSPodcastLocally(feedUrl)
     return previouslySavedPodcast
   }
@@ -465,7 +466,8 @@ export const addManyAddByRSSPodcastFeedUrlsOnServer = async (addByRSSPodcastFeed
       'Content-Type': 'application/json'
     },
     body: { addByRSSPodcastFeedUrls },
-    shouldShowAuthAlert: true
+    shouldShowAuthAlert: true,
+    timeoutLongest: true
   })
 
   return response && response.data

@@ -11,6 +11,8 @@ import { getQueueItems } from './queue'
 import { request } from './request'
 import { getHistoryItems, getHistoryItemsIndex, getHistoryItemsIndexLocally } from './userHistoryItem'
 
+const _fileName = 'src/services/auth.ts'
+
 export const getBearerToken = async () => {
   let bearerToken = ''
   try {
@@ -102,7 +104,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
   try {
     queueItems = await getQueueItems()
   } catch (error) {
-    errorLogger('getAuthenticatedUserInfoLocally error', error)
+    errorLogger(_fileName, 'getAuthenticatedUserInfoLocally', error)
   }
 
   try {
@@ -187,11 +189,7 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
       that something went wrong, and log them out of their account.
     */
     if (error?.response?.status === 401) {
-      Alert.alert(
-        PV.Alerts.AUTH_INVALID.title,
-        PV.Alerts.AUTH_INVALID.message,
-        PV.Alerts.AUTH_INVALID.buttons
-      )
+      Alert.alert(PV.Alerts.AUTH_INVALID.title, PV.Alerts.AUTH_INVALID.message, PV.Alerts.AUTH_INVALID.buttons)
       await logoutUser()
     }
 
@@ -299,12 +297,12 @@ export const verifyEmail = async (token: string) => {
         token
       }
     })
-    
+
     if (response?.status === 200) {
       ok = true
     }
   } catch (error) {
-    errorLogger('verifyEmail', error)
+    errorLogger(_fileName, 'verifyEmail', error)
   }
   return ok
 }

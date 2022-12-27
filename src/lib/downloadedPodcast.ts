@@ -9,6 +9,7 @@ import { errorLogger } from './logger'
 import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
 import { BackgroundDownloader, deleteDownloadedEpisode } from './downloader'
 
+const _fileName = 'src/lib/downloadedPodcast.ts'
 export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) => {
   delete episode.podcast
   let downloadedPodcasts = await getDownloadedPodcasts()
@@ -203,7 +204,7 @@ export const removeDownloadedPodcastsFromInternalStorage = async () => {
       try {
         await deleteDownloadedEpisode(episode)
       } catch (error) {
-        errorLogger('Error deleting episode: ', episode.id)
+        errorLogger(_fileName, 'removeDownloadedPodcastsFromInternalStorage', episode.id)
       }
     }
   }
@@ -228,7 +229,7 @@ export const moveDownloadedPodcastsToExternalStorage = async () => {
           await RNFS.moveFile(source, dest)
         }
       } catch (error) {
-        errorLogger('Error moving episode: ', episode.id)
+        errorLogger(_fileName, 'moveDownloadedPodcastsToExternalStorage', episode.id)
       }
     }
   }

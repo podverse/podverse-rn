@@ -23,6 +23,8 @@ declare module 'react-native-track-player' {
   export function getTrackPosition(): Promise<number>
 }
 
+const _fileName = 'src/services/playerAudio.ts'
+
 export const PVAudioPlayer = TrackPlayer
 
 // const checkServiceRunning = async (defaultReturn: any = '') => {
@@ -130,7 +132,7 @@ export const audioGetCurrentLoadedTrackId = async () => {
     const trackIndex = await PVAudioPlayer.getCurrentTrack()
     currentTrackId = await audioGetLoadedTrackIdByIndex(trackIndex)
   } catch (error) {
-    errorLogger('audioGetCurrentLoadedTrackId error', error)
+    errorLogger(_fileName, 'audioGetCurrentLoadedTrackId', error)
   }
   return currentTrackId
 }
@@ -214,7 +216,7 @@ export const audioSyncPlayerWithQueue = async () => {
     const tracks = await audioCreateTracks(pvQueueItems)
     await PVAudioPlayer.add(tracks)
   } catch (error) {
-    errorLogger('audioSyncPlayerWithQueue error:', error)
+    errorLogger(_fileName, 'audioSyncPlayerWithQueue', error)
   }
 }
 
@@ -235,7 +237,7 @@ export const audioUpdateCurrentTrack = async (trackTitle?: string, artworkUrl?: 
       }
     }
   } catch (error) {
-    errorLogger('audioUpdateCurrentTrack error:', error)
+    errorLogger(_fileName, 'audioUpdateCurrentTrack', error)
   }
 }
 
@@ -325,7 +327,7 @@ export const audioMovePlayerItemToNewPosition = async (id: string, newIndex: num
         await PVAudioPlayer.add([track], newIndex)
       }
     } catch (error) {
-      errorLogger('movePlayerItemToNewPosition error:', error)
+      errorLogger(_fileName, 'movePlayerItemToNewPosition', error)
     }
   }
 }
@@ -481,7 +483,7 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
       }
     }
   } catch (error) {
-    errorLogger('Initializing player error: ', error)
+    errorLogger(_fileName, 'Initializing player', error)
   }
 
   return item
