@@ -1,15 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { checkIfVideoFileOrVideoLiveType } from 'podverse-shared'
-import {
-  Alert,
-  Modal,
-  Pressable,
-  StyleSheet,
-  View as RNView,
-  Image,
-  ImageSourcePropType,
-  Dimensions
-} from 'react-native'
+import { Alert, Modal, Pressable, StyleSheet, View as RNView, Image, ImageSourcePropType } from 'react-native'
 import Share from 'react-native-share'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
@@ -822,11 +813,11 @@ const styles = StyleSheet.create({
   },
   contentContainerInner: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'center'
     // maxWidth: inputsWrapperMaxWidth
   },
   playerOuterWrapper: {
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   dropdownButtonSelectWrapper: {
     marginTop: 16

@@ -66,7 +66,7 @@ export const URLs = {
       AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED),
       AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN)
     ])
-    
+
     let base = webDefaultBaseUrl
     if (isEnabled && baseUrlOverride) {
       base = baseUrlOverride

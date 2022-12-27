@@ -1,4 +1,4 @@
-import { decodeHTMLString, getTimeLabelText, removeHTMLFromString } from 'podverse-shared'
+import { getTimeLabelText } from 'podverse-shared'
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'

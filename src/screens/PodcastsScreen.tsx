@@ -49,11 +49,14 @@ import { getPodcast, getPodcasts } from '../services/podcast'
 import { getSavedQueryPodcastsScreenSort, setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
 import { getNowPlayingItem, getNowPlayingItemLocally } from '../services/userNowPlayingItem'
-import { v4vClearTransactionQueue } from '../services/v4v/v4v'
 import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
 import { initAutoQueue } from '../state/actions/autoQueue'
-import { downloadedEpisodeDeleteMarked, initDownloads, removeDownloadedPodcast,
-  updateDownloadedPodcasts } from '../state/actions/downloads'
+import {
+  downloadedEpisodeDeleteMarked,
+  initDownloads,
+  removeDownloadedPodcast,
+  updateDownloadedPodcasts
+} from '../state/actions/downloads'
 import { v4vAlbyHandleConnect } from '../state/actions/v4v/providers/alby'
 import {
   clearEpisodesCountForPodcast,
@@ -251,7 +254,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       }, 300)
     })
 
-    Dimensions.addEventListener('change', this._handleOrientationChange)    
+    Dimensions.addEventListener('change', this._handleOrientationChange)
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
     PVEventEmitter.on(PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, this._handleNavigateToAddPodcastByRSSAuthScreen)
@@ -366,7 +369,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       screen: {
         orientation: isPortrait() ? 'portrait' : 'landscape',
         screenWidth: Dimensions.get('window').width
-      }      
+      }
     })
     refreshChaptersWidth()
   }
@@ -503,9 +506,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
     try {
       if (url) {
         if (url.endsWith('xml') || url.endsWith('opml')) {
-            await getAuthUserInfo(() => {
-              navigate(PV.RouteNames.MoreScreen, { opmlUri: url })
-            })
+          await getAuthUserInfo(() => {
+            navigate(PV.RouteNames.MoreScreen, { opmlUri: url })
+          })
         } else {
           const route = url.replace(/.*?:\/\//g, '')
           const splitPath = route.split('/')
@@ -513,7 +516,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           const path = splitPath[1] ? splitPath[1] : ''
           const id = splitPath[2] ? splitPath[2] : ''
           const urlParams: {
-            code?: string,
+            code?: string
             token?: string
           } = qs.parse(splitPath[splitPath.length - 1].split('?')[1])
 
@@ -521,11 +524,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           if (path.indexOf(PV.DeepLinks.VerifyEmail.path) > -1) {
             const ok = await verifyEmail(urlParams?.token || '')
             if (ok) {
-              Alert.alert(
-                translate('Verify email title'),
-                translate('Verify email succeeded'),
-                PV.Alerts.BUTTONS.OK
-              )
+              Alert.alert(translate('Verify email title'), translate('Verify email succeeded'), PV.Alerts.BUTTONS.OK)
             }
           } else if (path === PV.DeepLinks.Clip.pathPrefix) {
             await this._handleDeepLinkClip(id)
@@ -656,7 +655,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     /* This event signals to CarPlay to refresh views after the app initializes. */
     setTimeout(() => PVEventEmitter.emit(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY), 1000)
-    
+
     trackPageView('/podcasts', 'Podcasts Screen')
   }
 
@@ -951,12 +950,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       }
     ]
 
-    return (
-      <SwipeRowBackMultipleButtons
-        buttons={buttons}
-        testID={`${testIDPrefix}_podcast_item_hidden_${index}`}
-      />
-    )
+    return <SwipeRowBackMultipleButtons buttons={buttons} testID={`${testIDPrefix}_podcast_item_hidden_${index}`} />
   }
 
   _handleHiddenItemPress = async (selectedId, addByRSSPodcastFeedUrl) => {

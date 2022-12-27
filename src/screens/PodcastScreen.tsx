@@ -287,6 +287,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
   componentWillUnmount() {
     super.componentWillUnmount()
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.removeListener(PV.Events.PODCAST_START_PODCAST_FROM_TIME_SET, this.refreshStartPodcastFromTime)
     PVEventEmitter.removeListener(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
   }
@@ -1089,8 +1090,9 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
                 extraData={flatListData}
                 isLoadingMore={isLoadingMore}
                 isRefreshing={isRefreshing}
-                keyExtractor={(item: any, index: number) => 
-                  safeKeyExtractor(testIDPrefix, index, item?.id, !!item?.addedByRSS)}
+                keyExtractor={(item: any, index: number) =>
+                  safeKeyExtractor(testIDPrefix, index, item?.id, !!item?.addedByRSS)
+                }
                 ListHeaderComponent={this._ListHeaderComponent}
                 noResultsMessage={noResultsMessage}
                 onEndReached={this._onEndReached}
