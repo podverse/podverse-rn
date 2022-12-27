@@ -37,9 +37,6 @@ export class V4VInfoStreamingSatsScreen extends React.Component<Props> {
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.lg} style={styles.text}>
             {translate('value_tag_info_streaming_sats_text_3')}
           </Text>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.lg} style={styles.text}>
-            {translate('value_tag_info_streaming_sats_text_4')}
-          </Text>
         </ScrollView>
       </SafeAreaView>
     )
