@@ -466,7 +466,8 @@ export const addManyAddByRSSPodcastFeedUrlsOnServer = async (addByRSSPodcastFeed
       'Content-Type': 'application/json'
     },
     body: { addByRSSPodcastFeedUrls },
-    shouldShowAuthAlert: true
+    shouldShowAuthAlert: true,
+    timeoutLongest: true
   })
 
   return response && response.data

@@ -66,8 +66,6 @@ type State = {
   shouldClearClipInfo: boolean
 }
 
-const inputsWrapperMaxWidth = PV.Player.playerControlsMaxWidth - 250
-
 const testIDPrefix = 'make_clip_screen'
 
 export class MakeClipScreen extends React.Component<Props, State> {

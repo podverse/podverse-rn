@@ -11,6 +11,7 @@ import { errorLogger } from '../../lib/logger'
 import { getParsedTranscript } from '../../lib/transcriptHelpers'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
+import { checkIfLiveItemIsLive } from '../../services/liveItem'
 import {
   playerHandlePlayWithUpdate,
   playerLoadNowPlayingItem as playerLoadNowPlayingItemService,
@@ -21,6 +22,7 @@ import {
   playerGetDuration,
   getRemoteSkipButtonsTimeJumpOverride
 } from '../../services/player'
+import { getNextFromQueue } from '../../services/queue'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 import { trackPlayerScreenPageView } from '../../services/tracking'
 import {
@@ -39,7 +41,26 @@ import { videoInitializePlayer, videoStateClearVideoInfo,
 const _fileName = 'src/state/actions/player.ts'
 
 export const initializePlayer = async () => {
-  const item = await getNowPlayingItemLocally()
+  let item = await getNowPlayingItemLocally()
+  const isLiveItem = !!item?.liveItem
+
+  if (isLiveItem && item?.episodeId) {
+    const isLive = await checkIfLiveItemIsLive(item.episodeId)
+    if (!isLive) {
+      item = null
+      await playerClearNowPlayingItem()
+    }
+
+    if (!item) {
+      const nextItem = await getNextFromQueue()
+      if (nextItem) {
+        item = nextItem
+      } else {
+        return
+      }
+    }
+  }
+
   if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
     videoInitializePlayer(item)
   } else if (!checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {

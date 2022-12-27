@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { Alert } from 'react-native'
 import { setGlobal } from 'reactn'
 import { errorLogger } from '../../lib/logger'
@@ -10,7 +11,8 @@ import {
   getAddByRSSPodcastFeedUrlsLocally,
   getAddByRSSPodcastsLocally,
   parseAddByRSSPodcast,
-  removeAddByRSSPodcast as removeAddByRSSPodcastService
+  removeAddByRSSPodcast as removeAddByRSSPodcastService,
+  parseAllAddByRSSPodcasts
 } from '../../services/parser'
 import { findPodcastsByFeedUrls, getSubscribedPodcastsLocally,
   sortPodcastArrayAlphabetically, subscribeToPodcastIfNotAlready } from '../../services/podcast'
@@ -58,8 +60,11 @@ const addManyAddByRSSPodcastFeedUrlsLocally = async (urls: string[]) => {
   const { foundPodcastIds, notFoundFeedUrls } = await findPodcastsByFeedUrls(urls)
   const alreadySubscribedPodcasts = await getSubscribedPodcasts()
   const alreadyAddByRSSPodcasts = await getAddByRSSPodcastsLocally()
+  
+  /* Bypass autodownloading so episodes are not autodownloaded during import process. */  
+  const skipDownloadOnce = true
   for (const foundPodcastId of foundPodcastIds) {
-    await subscribeToPodcastIfNotAlready(alreadySubscribedPodcasts, foundPodcastId)
+    await subscribeToPodcastIfNotAlready(alreadySubscribedPodcasts, foundPodcastId, skipDownloadOnce)
   }
   for (const notFoundFeedUrl of notFoundFeedUrls) {
     const skipBadParse = true
@@ -77,6 +82,8 @@ export const addAddByRSSPodcasts = async (urls: string[]) => {
     }
 
     await getAuthUserInfo()
+    await getSubscribedPodcasts()
+    await parseAllAddByRSSPodcasts()
     await getSubscribedPodcasts()
     
     PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)

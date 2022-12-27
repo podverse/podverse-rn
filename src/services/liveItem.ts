@@ -1,5 +1,6 @@
 import { LiveItem } from 'podverse-shared'
-import { getEpisodes } from './episode'
+import { hasValidNetworkConnection } from '../lib/network'
+import { getEpisode, getEpisodes } from './episode'
 import { request } from './request'
 
 export const getPublicLiveItemsByPodcastId = async (podcastId: string) => {
@@ -50,4 +51,16 @@ export const getEpisodesAndLiveItems = async (query: any, podcastId: string) => 
     combinedEpisodes: [combinedEpisodesData, combinedCount],
     scheduledLiveItems
   }
+}
+
+export const checkIfLiveItemIsLive = async (episodeId: string) => {
+  let isLive = false
+  const hasInternetConnection = await hasValidNetworkConnection()
+  if (hasInternetConnection) {
+    const episode = await getEpisode(episodeId)
+    if (episode?.liveItem?.status === 'live') {
+      isLive = true
+    }
+  }
+  return isLive
 }

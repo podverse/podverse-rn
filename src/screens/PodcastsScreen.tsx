@@ -1109,6 +1109,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
   }
 
+  _getItemLayout = (_: any, index: number) => {
+    return {
+      length: horizontalRowHeight + dividerHeight,
+      offset: (horizontalRowHeight + dividerHeight) * index,
+      index
+    }
+  }
+
   render() {
     const { navigation } = this.props
     const {
@@ -1166,11 +1174,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             }
             disableNoResultsMessage={!isInitialLoadFinished}
             extraData={flatListData}
-            getItemLayout={(_: any, index: number) => ({
-              length: horizontalRowHeight + dividerHeight,
-              offset: (horizontalRowHeight + dividerHeight) * index,
-              index
-            })}
+            getItemLayout={this._getItemLayout}
             gridView={podcastsGridViewEnabled}
             handleNoResultsTopAction={!!Config.CURATOR_EMAIL ? this._navToRequestPodcastEmail : null}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
