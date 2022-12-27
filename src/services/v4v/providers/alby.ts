@@ -1,4 +1,4 @@
-import { SatoshiStreamStats } from 'podverse-shared'
+import { SatoshiStreamStats, ValueTransaction } from 'podverse-shared'
 import qs from 'qs'
 import * as RNKeychain from 'react-native-keychain'
 import { getGlobal } from 'reactn'
@@ -306,36 +306,81 @@ export const v4vAlbyGetAccountSummary = async () => {
   return data
 }
 
-export const v4vAlbySendKeysendPayment = async (
-  amount: number, destination: string, customRecords: SatoshiStreamStats, includeMessage?: boolean) => {
+type AlbyKeySend = {
+  amount: number
+  destination: string
+  customRecords: any
+}
+
+// Right now Podverse only supports Alby keysend payments.
+// If another LN service is supported, we may want to create and
+// format responses into our own type.
+export type AlbyMultiKeySendResponse = {
+  keysends: [
+    {
+      error?: {
+        code: number
+        error: boolean
+        message: string
+      }
+      keysend: {
+        amount: number
+        description: string
+        description_hash: string
+        destination: string
+        fee: number
+        payment_hash: string
+        payment_preimage: string
+      }
+    }
+  ]
+}
+
+// https://guides.getalby.com/alby-wallet-api/reference/api-reference/payments#multi-keysend-payment
+export const v4vAlbySendKeysendPayments = async (
+  transactions: ValueTransaction[], includeMessage?: boolean) => {
   
+  let finalTransactions = transactions
   if (includeMessage) {
     const { boostagramMessage } = getGlobal().session.v4v
-    customRecords[7629169].message = boostagramMessage
+    if (boostagramMessage) {
+      finalTransactions = []
+      for (const transaction of transactions) {
+        transaction.satoshiStreamStats[7629169].message = boostagramMessage
+        finalTransactions.push(transaction)
+      }
+    }
+  }
+  
+  const keysends: AlbyKeySend[] = []
+  
+  for (const transaction of transactions) {
+    // This Alby endpoint requires a stringified version of all customRecords values
+    const stringified7629169 = JSON.stringify(transaction.satoshiStreamStats[7629169])
+    const customRecordsKeys = Object.keys(transaction.satoshiStreamStats)
+  
+    const formattedCustomRecords = {}
+    for (const key of customRecordsKeys) {
+      formattedCustomRecords[key] =
+        key === '7629169' ? stringified7629169 : transaction.satoshiStreamStats[key]?.toString() || ''
+    }
+
+    keysends.push({
+      amount: transaction.normalizedValueRecipient.amount,
+      destination: transaction.normalizedValueRecipient.address,
+      customRecords: formattedCustomRecords
+    })
   }
 
-  // This Alby endpoint requires a stringified version of all customRecords values
-  const stringified7629169 = JSON.stringify(customRecords[7629169])
-  const customRecordsKeys = Object.keys(customRecords)
+  const body = { keysends }
 
-  const formattedCustomRecords = {}
-  for (const key of customRecordsKeys) {
-    formattedCustomRecords[key] = key === '7629169' ? stringified7629169 : customRecords[key]?.toString() || ''
-  }
-
-  const body = {
-    amount,
-    destination,
-    customRecords: formattedCustomRecords
-  }
-
-  const data = await v4vAlbyAPIRequest({
+  const response = (await v4vAlbyAPIRequest({
     method: 'POST',
-    path: '/payments/keysend',
+    path: '/payments/keysend/multi',
     body
-  })
+  })) as AlbyMultiKeySendResponse
 
-  return data
+  return response
 }
 
 /* Misc helpers */

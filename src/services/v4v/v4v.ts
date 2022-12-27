@@ -21,6 +21,7 @@ import {
   v4vSettingsDefault
 } from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
+import { AlbyMultiKeySendResponse } from './providers/alby'
 
 const _fileName = 'src/services/v4v/v4v.ts'
 
@@ -259,7 +260,73 @@ const convertValueTagIntoValueTransaction = async (
   }
 }
 
+const processSendValueTransactions = async (
+  valueTransactions: ValueTransaction[],
+  type: 'boost' | 'streaming',
+  includeMessage?: boolean
+) => {
+  let totalAmountPaid = 0
+  try {
+    const response = await sendValueTransactions(
+      valueTransactions,
+      'alby',
+      includeMessage
+    )
+
+    const keysendData = response?.keysends
+    
+    if (keysendData) {
+      for (const data of keysendData) {
+        if (data?.error) {
+          const displayedErrorMessage = data.error.message
+          const { keysend } = data
+          v4vAddPreviousTransactionError(
+            type,
+            keysend.destination,
+            displayedErrorMessage,
+            // TODO: customKey / customValue is not available yet in Alby reponse data
+            // valueTransaction.normalizedValueRecipient.customKey,
+            // valueTransaction.normalizedValueRecipient.customValue
+          )
+        } else {
+          totalAmountPaid += data.keysend.amount
+        }
+      }
+    }
+  } catch (error) {
+    const displayedErrorMessage = error.response?.data?.message
+      ? `${error.message} – ${error.response?.data?.message}`
+      : error.message
+    errorLogger(_fileName, 'processSendValueTransactions error:', displayedErrorMessage)
+
+    const failedKeysends = error?.response?.data?.keysends || []
+    if (failedKeysends?.length) {
+      for (const failedKeysend of failedKeysends) {
+        if (failedKeysend?.error?.error) {
+          v4vAddPreviousTransactionError(
+            type,
+            failedKeysend.keysend.destination,
+            failedKeysend.error.message
+            // TODO: customKey
+            // TODO: customValue
+          )
+        }
+      }
+    } else {
+      v4vAddPreviousTransactionError(
+        type,
+        // TODO: how to handle generic "batch-error" rendering?
+        'batch-error',
+        displayedErrorMessage
+      )
+    }
+  }
+
+  return totalAmountPaid
+}
+
 export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMessage?: boolean) => {
+  const action = 'boost'
   const valueTags =
     (item?.episodeValue?.length && item?.episodeValue) ||
     (item?.podcastValue?.length && item?.podcastValue)
@@ -274,15 +341,12 @@ export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMe
 
   v4vClearPreviousTransactionErrors()
 
-  const action = 'boost'
-
   const { activeProvider, activeProviderSettings } =
     v4vGetActiveProviderInfo(getBoostagramItemValueTags(item))
   const { boostAmount = 0 } = activeProviderSettings || {}
 
   if (!activeProvider?.key) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
-  let totalAmountPaid = 0
   const roundDownBoostTransactions = true
   const valueTransactions = await convertValueTagIntoValueTransactions(
     valueTag,
@@ -295,31 +359,7 @@ export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMe
     activeProvider.key
   )
 
-  const processSendValueTransaction = async (valueTransaction: ValueTransaction) => {
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    try {
-      const succesful = await sendValueTransaction(valueTransaction, includeMessage)
-      if (succesful) {
-        totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
-      }
-    } catch (error) {
-      const displayedErrorMessage = error.response?.data?.message
-        ? `${error.message} – ${error.response?.data?.message}`
-        : error.message
-
-      v4vAddPreviousTransactionError(
-        'boost',
-        valueTransaction.normalizedValueRecipient.address,
-        displayedErrorMessage,
-        valueTransaction.normalizedValueRecipient.customKey,
-        valueTransaction.normalizedValueRecipient.customValue
-      )
-    }
-  }
-
-  for (const valueTransaction of valueTransactions) {
-    await processSendValueTransaction(valueTransaction)
-  }
+  const totalAmountPaid = await processSendValueTransactions(valueTransactions, action, includeMessage)
 
   // Run refresh wallet data in the background after transactions complete.
   v4vRefreshProviderWalletInfo(activeProvider?.key)
@@ -327,51 +367,44 @@ export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMe
   return { transactions: valueTransactions, totalAmountPaid }
 }
 
-const sendValueTransaction = async (valueTransaction: ValueTransaction, includeMessage?: boolean) => {
+const sendValueTransactions = async (
+  valueTransactions: ValueTransaction[],
+  providerKey: 'alby',
+  includeMessage?: boolean
+) => {
+  if (valueTransactions.length === 0) return
+  let response: AlbyMultiKeySendResponse | null = null
 
-  if (!valueTransaction.normalizedValueRecipient.amount) return
-
-  if (valueTransaction?.providerKey) {
+  if (providerKey) {
     // Use require here to prevent circular dependencies issues.
-    if (valueTransaction.providerKey === 'alby') {
-      const { normalizedValueRecipient, satoshiStreamStats } = valueTransaction
-      const { v4vAlbySendKeysendPayment } = require('./providers/alby')
-      await v4vAlbySendKeysendPayment(
-        normalizedValueRecipient.amount,
-        normalizedValueRecipient.address,
-        satoshiStreamStats,
+    if (providerKey === 'alby') {
+      const { v4vAlbySendKeysendPayments } = require('./providers/alby')
+      response = await v4vAlbySendKeysendPayments(
+        valueTransactions,
         includeMessage
       )
     }
   }
 
-  return true
+  return response
 }
 
 export const processValueTransactionQueue = async () => {
+  const action = 'streaming'
   const bundledValueTransactionsToProcess = await bundleValueTransactionQueue()
 
-  let totalAmount = 0
+  // Hardcoding to Alby until another service is added.
+  const albyValueTransactionsToProcess = bundledValueTransactionsToProcess.filter(
+    (transaction: ValueTransaction) => transaction.providerKey === 'alby'
+  )
 
-  for (const transaction of bundledValueTransactionsToProcess) {
-    try {
-      await sendValueTransaction(transaction)
-      totalAmount = totalAmount + transaction.normalizedValueRecipient.amount
-    } catch (error) {
-      v4vAddPreviousTransactionError(
-        'streaming',
-        transaction.normalizedValueRecipient.address,
-        error.message,
-        transaction.normalizedValueRecipient.customKey,
-        transaction.normalizedValueRecipient.customValue
-      )
-    }
-  }
+  const includeMessage = false
+  const totalAmountPaid = await sendValueTransactions(albyValueTransactionsToProcess, action, includeMessage)
 
   PVEventEmitter.emit(PV.Events.V4V_VALUE_SENT)
 
   return {
-    totalAmount,
+    totalAmount: totalAmountPaid,
     transactions: bundledValueTransactionsToProcess
   }
 }
