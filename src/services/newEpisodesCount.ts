@@ -86,7 +86,7 @@ export const handleUpdateNewEpisodesCount = async () => {
       if (!podcastId || !episodeId) continue
 
       // Don't add to newEpisodesCount if item is already in historyItemsIndex.
-      if (historyItemsIndex?.episodes?.[episodeId]) continue 
+      if (historyItemsIndex?.episodes?.[episodeId]) continue
 
       updatedNewEpisodesCount = updateNewEpisodesCountEpisode(updatedNewEpisodesCount, episodeId, podcastId)
     }

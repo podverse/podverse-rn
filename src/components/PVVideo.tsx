@@ -106,7 +106,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
         }
       }
     } catch (error) {
-      errorLogger(_fileName,'_handleGoToLiveCurrentTime', error)
+      errorLogger(_fileName, '_handleGoToLiveCurrentTime', error)
     }
   }
 
@@ -216,7 +216,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
   _disableFullscreen = () => {
     this._handleScreenChange()
-    
+
     if (!pvIsTablet()) {
       Orientation.lockToPortrait()
     }

@@ -84,7 +84,7 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
   _handleConnectedEvent = () => {
     this._handleInitialize()
   }
-  
+
   _handleWalletRefresh = () => {
     v4vRefreshProviderWalletInfo('alby')
   }

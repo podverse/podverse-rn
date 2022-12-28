@@ -1,5 +1,5 @@
 import { checkIfVideoFileOrVideoLiveType, convertNowPlayingItemToEpisode } from 'podverse-shared'
-import { Alert, Dimensions, Linking, Pressable, StyleSheet, View as RNView } from 'react-native'
+import { Alert, Linking, Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { navigateBackToRoot, navigateToPodcastScreenWithItem } from '../lib/navigate'

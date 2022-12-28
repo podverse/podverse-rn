@@ -189,11 +189,7 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
       that something went wrong, and log them out of their account.
     */
     if (error?.response?.status === 401) {
-      Alert.alert(
-        PV.Alerts.AUTH_INVALID.title,
-        PV.Alerts.AUTH_INVALID.message,
-        PV.Alerts.AUTH_INVALID.buttons
-      )
+      Alert.alert(PV.Alerts.AUTH_INVALID.title, PV.Alerts.AUTH_INVALID.message, PV.Alerts.AUTH_INVALID.buttons)
       await logoutUser()
     }
 
@@ -301,7 +297,7 @@ export const verifyEmail = async (token: string) => {
         token
       }
     })
-    
+
     if (response?.status === 200) {
       ok = true
     }

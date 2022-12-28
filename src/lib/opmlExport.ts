@@ -53,6 +53,11 @@ const opmlExport = (podcastList: any) => {
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&apos;')
   }
+
+  function escapeUrlEntities(url: string) {
+    return url.replace(/&/g, '&amp;')
+  }
+
   // need to fix podcast.url below
   function jsonToXML(json: any[]) {
     const filteredPodcasts = json.filter(
@@ -72,8 +77,9 @@ ${filteredPodcasts
   .map(
     (podcast: any) =>
       // eslint-disable-next-line max-len
-      `    <outline text="${escapeEntities(podcast.title)}" type="rss" xmlUrl="${podcast.addByRSSPodcastFeedUrl ||
-        podcast.feedUrls[0].url}"/>`
+      `    <outline text="${escapeEntities(podcast.title)}" type="rss" xmlUrl="${escapeUrlEntities(
+        podcast.addByRSSPodcastFeedUrl || podcast.feedUrls[0].url
+      )}"/>`
   )
   .join('\n')}
   </body>
