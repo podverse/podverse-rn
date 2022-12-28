@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { checkIfVideoFileOrVideoLiveType, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
-import TrackPlayer, { Capability, IOSCategoryMode, PitchAlgorithm, State, Track } from 'react-native-track-player'
+import TrackPlayer, { AppKilledPlaybackBehavior, Capability, IOSCategoryMode, PitchAlgorithm, RepeatMode,
+  State, Track } from 'react-native-track-player'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
@@ -78,6 +79,8 @@ PVAudioPlayer.setupPlayer({
   audioUpdateTrackPlayerCapabilities()
 })
 
+PVAudioPlayer.setRepeatMode(RepeatMode.Off)
+
 export const audioUpdateTrackPlayerCapabilities = () => {
   const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
 
@@ -105,15 +108,12 @@ export const audioUpdateTrackPlayerCapabilities = () => {
       Capability.Play,
       Capability.SeekTo
     ],
-    /*
-      See alwaysPauseOnInterruption comment in the playerAudioEvents file
-      for an explanation why we are enabling it on iOS only.
-    */
-    // alwaysPauseOnInterruption: Platform.OS === 'ios',
-    stopWithApp: true,
     backwardJumpInterval: parseInt(jumpBackwardsTime, 10),
     forwardJumpInterval: parseInt(jumpForwardsTime, 10),
-    ...(Platform.OS === 'ios' ? { progressUpdateEventInterval: 1 } : {})
+    progressUpdateEventInterval: 1,
+    android: {
+      appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
+    }
   })
 }
 
