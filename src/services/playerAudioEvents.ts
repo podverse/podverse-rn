@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Platform } from 'react-native'
-import { State } from 'react-native-track-player'
+import { Event, State } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
 import { debugLogger, errorLogger } from '../lib/logger'
 import { PV } from '../resources'
@@ -111,13 +111,11 @@ export const audioHandleTrackEnded = (x: any) => {
 
 // eslint-disable-next-line @typescript-eslint/require-await
 module.exports = async () => {
-  PVAudioPlayer.addEventListener('playback-error', (x) => errorLogger(_fileName, 'playback error', x))
-
-  PVAudioPlayer.addEventListener('playback-metadata-received', (x) => {
+  PVAudioPlayer.addEventListener(Event.PlaybackMetadataReceived, (x) => {
     debugLogger('playback-metadata-received', x)
   })
 
-  PVAudioPlayer.addEventListener('playback-track-changed', (x: any) => {
+  PVAudioPlayer.addEventListener(Event.PlaybackTrackChanged, (x: any) => {
     (async () => {
       debugLogger('playback-track-changed', x)
 
@@ -130,7 +128,7 @@ module.exports = async () => {
   })
 
   // NOTE: PVAudioPlayer.reset will call the playback-queue-ended event on Android!!!
-  PVAudioPlayer.addEventListener('playback-queue-ended', (x) => {
+  PVAudioPlayer.addEventListener(Event.PlaybackQueueEnded, (x) => {
     (async () => {
       debugLogger('playback-queue-ended', x)
 
@@ -141,7 +139,7 @@ module.exports = async () => {
     })()
   })
 
-  PVAudioPlayer.addEventListener('playback-state', (x) => {
+  PVAudioPlayer.addEventListener(Event.PlaybackState, (x) => {
     (async () => {
       debugLogger('playback-state', x)
 
@@ -196,42 +194,42 @@ module.exports = async () => {
     })()
   })
 
-  PVAudioPlayer.addEventListener('playback-error', (x: any) => {
+  PVAudioPlayer.addEventListener(Event.PlaybackError, (x: any) => {
     errorLogger(_fileName, 'playback-error', x)
     // TODO: post error to our logs!
     PVEventEmitter.emit(PV.Events.PLAYER_PLAYBACK_ERROR)
   })
 
-  PVAudioPlayer.addEventListener('remote-jump-backward', () => {
+  PVAudioPlayer.addEventListener(Event.RemoteJumpBackward, () => {
     const { jumpBackwardsTime } = getGlobal()
     audioJumpBackward(jumpBackwardsTime)
   })
 
-  PVAudioPlayer.addEventListener('remote-jump-forward', () => {
+  PVAudioPlayer.addEventListener(Event.RemoteJumpForward, () => {
     const { jumpForwardsTime } = getGlobal()
     audioJumpForward(jumpForwardsTime)
   })
 
-  PVAudioPlayer.addEventListener('remote-pause', () => {
+  PVAudioPlayer.addEventListener(Event.RemotePause, () => {
     audioHandlePauseWithUpdate()
   })
 
-  PVAudioPlayer.addEventListener('remote-play', () => {
+  PVAudioPlayer.addEventListener(Event.RemotePlay, () => {
     audioHandlePlayWithUpdate()
   })
 
-  PVAudioPlayer.addEventListener('remote-seek', (data) => {
+  PVAudioPlayer.addEventListener(Event.RemoteSeek, (data) => {
     if (data.position || data.position >= 0) {
       audioHandleSeekToWithUpdate(data.position)
     }
   })
 
-  PVAudioPlayer.addEventListener('remote-stop', () => {
+  PVAudioPlayer.addEventListener(Event.RemoteStop, () => {
     audioHandlePauseWithUpdate()
   })
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  PVAudioPlayer.addEventListener('remote-previous', async () => {
+  PVAudioPlayer.addEventListener(Event.RemotePrevious, async () => {
     const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
     if (remoteSkipButtonsAreTimeJumps) {
       const { jumpBackwardsTime } = getGlobal()
@@ -242,7 +240,7 @@ module.exports = async () => {
   })
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  PVAudioPlayer.addEventListener('remote-next', async () => {
+  PVAudioPlayer.addEventListener(Event.RemoteNext, async () => {
     const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
     if (remoteSkipButtonsAreTimeJumps) {
       const { jumpForwardsTime } = getGlobal()
@@ -267,7 +265,7 @@ module.exports = async () => {
     https://github.com/DoubleSymmetry/react-native-track-player/issues/1009
   */
   let wasPausedByDuck = false
-  PVAudioPlayer.addEventListener('remote-duck', (x: any) => {
+  PVAudioPlayer.addEventListener(Event.RemoteDuck, (x: any) => {
     (async () => {
       debugLogger('remote-duck', x)
       const { paused, permanent } = x
@@ -298,7 +296,7 @@ module.exports = async () => {
     })()
   })
 
-  PVAudioPlayer.addEventListener('playback-progress-updated', (x: any) => {
+  PVAudioPlayer.addEventListener(Event.PlaybackProgressUpdated, (x: any) => {
     debugLogger('playback-progress-updated', x)
     handleBackgroundTimerInterval()
   })
