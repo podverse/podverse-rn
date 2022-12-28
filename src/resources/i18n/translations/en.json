@@ -760,5 +760,6 @@
   "Your purchase was successful You may close this window": "Thank you. You may close this window.",
   "Your queue is empty": "Your queue is empty",
   "Your membership will not auto-renew": "Your membership will not auto-renew",
-  "You are not being charged during your free trial": "You are not being charged during your free trial, and your membership will not auto-renew."
+  "You are not being charged during your free trial": "You are not being charged during your free trial, and your membership will not auto-renew.",
+  "You will not be charged for signing up for your free trial": "You will not be charged for signing up for your free trial. You would only be charged if you decide to manually renew."
 }
