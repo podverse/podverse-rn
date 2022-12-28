@@ -392,12 +392,21 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _handleAppStateChange = (nextAppState: any) => {
     (async () => {
-      await playerUpdateUserPlaybackPosition()
+      const { nowPlayingItem: lastItem } = this.global.player
+      const currentItem = await getNowPlayingItemLocally()
+      /*
+        Only call playerUpdateUserPlaybackPosition if there is a nowPlayingItem.
+        This is a workaround because we can't clear the currently loaded
+        item from the queue with react-native-track-player, and when
+        playerUpdateUserPlaybackPosition is called it will re-assign the
+        item as the nowPlayingItem...and that is a problem when
+        playback-queue-ended should remove the nowPlayingItem from state and storage.
+      */
+      if (!!lastItem || !!currentItem) {
+        await playerUpdateUserPlaybackPosition()
+      }
 
       if (nextAppState === 'active' && !isInitialLoadPodcastsScreen) {
-        const { nowPlayingItem: lastItem } = this.global.player
-        const currentItem = await getNowPlayingItemLocally()
-
         if (Platform.OS === 'ios') {
           checkIfTrackingIsEnabled()
         }

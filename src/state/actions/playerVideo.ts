@@ -226,7 +226,7 @@ export const videoLoadNowPlayingItem = async (
   previousNowPlayingItem?: NowPlayingItem | null
 ) => {
   const { clipId: previousClipId, episodeId: previousEpisodeId } = previousNowPlayingItem || {}
-  await AsyncStorage.setItem(PV.Events.PLAYER_VIDEO_IS_LOADING, 'TRUE')
+  await AsyncStorage.setItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING, 'TRUE')
   await PVAudioPlayer.reset()
 
   const historyItemsIndex = await getHistoryItemsIndexLocally()
@@ -256,7 +256,7 @@ export const videoLoadNowPlayingItem = async (
      events triggered by PVAudioPlayer.reset() finishes */
   setTimeout(() => {
     (async () => {
-      await AsyncStorage.removeItem(PV.Events.PLAYER_VIDEO_IS_LOADING)
+      await AsyncStorage.removeItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
       if (shouldPlay) {
         playerUpdatePlaybackState(PV.Player.videoInfo.videoPlaybackState.playing)
       }

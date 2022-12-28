@@ -6,6 +6,7 @@ import { debugLogger, errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { downloadedEpisodeMarkForDeletion } from '../state/actions/downloads'
 import {
+  playerClearNowPlayingItem,
   playerPlayNextChapterOrQueueItem,
   playerPlayPreviousChapterOrReturnToBeginningOfTrack
 } from '../state/actions/player'
@@ -81,24 +82,19 @@ const syncDurationWithMetaData = async () => {
   }
 }
 
-export const audioHandleQueueEnded = async (x: any) => {
-  const preventHandleQueueEnded = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
-  /*
-    The app is calling PVAudioPlayer.reset() on iOS only in playerLoadNowPlayingItem
-    because .reset() is the only way to clear out the current item from the queue,
-    but .reset() results in the playback-queue-ended event in firing.
-    We don't want the playback-queue-ended event handling logic below to happen
-    during playerLoadNowPlayingItem, so to work around this, I am setting temporary
-    AsyncStorage state so we can know when a queue has actually ended or
-    when the event is the result of .reset() called within playerLoadNowPlayingItem.
+export const audioHandleQueueEnded = (x: any) => {
+  /* TODO:
+    There is a race condition between our logic with playback-track-changed
+    and playback-queue-ended. Both events are called when the last item from the queue
+    reaches the end...and playback-track-changed will cause the nowPlayingItem be assigned
+    to state and storage during syncNowPlayingItemWithTrack.
+    I'm working around this right now by using a setTimeout before handling the queue ended logic.
   */
-  if (!preventHandleQueueEnded) {
-    setTimeout(() => {
-      (async () => {
-        await audioResetHistoryItem(x)
-      })()
-    }, 0)
-  }
+  setTimeout(() => {
+    (async () => {
+      await playerClearNowPlayingItem()
+    })()
+  }, 10000)
 }
 
 export const audioHandleTrackEnded = (x: any) => {
@@ -118,9 +114,8 @@ module.exports = async () => {
   PVAudioPlayer.addEventListener(Event.PlaybackTrackChanged, (x: any) => {
     (async () => {
       debugLogger('playback-track-changed', x)
-
-      const shouldSkip = await AsyncStorage.getItem(PV.Events.PLAYER_VIDEO_IS_LOADING)
-      if (!shouldSkip) {
+      const prevent = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
+      if (!prevent) {
         syncNowPlayingItemWithTrack()
         audioHandleTrackEnded(x)
       }
@@ -131,9 +126,8 @@ module.exports = async () => {
   PVAudioPlayer.addEventListener(Event.PlaybackQueueEnded, (x) => {
     (async () => {
       debugLogger('playback-queue-ended', x)
-
-      const shouldSkip = await AsyncStorage.getItem(PV.Events.PLAYER_VIDEO_IS_LOADING)
-      if (!shouldSkip) {
+      const prevent = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
+      if (!prevent) {
         audioHandleQueueEnded(x)
       }
     })()

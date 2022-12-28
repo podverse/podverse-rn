@@ -64,12 +64,16 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   // because if we use the currentPosition, then it will be a time position
   // less than 00:01, because there is a delay before debouncedSetPlaybackPosition
   // adjusts the timestamp to the correct position.
-  const currentPosition = await playerGetPosition()
-  addOrUpdateHistoryItem(
-    currentNowPlayingItem,
-    currentNowPlayingItem.userPlaybackPosition || currentPosition,
-    currentNowPlayingItem.episodeDuration
-  )
+  
+  // TODO: handle updating historyItem from background in a different way
+
+  // const currentPosition = await playerGetPosition()
+  console.log('handleSyncNowPlayingItem')
+  // addOrUpdateHistoryItem(
+  //   currentNowPlayingItem,
+  //   currentNowPlayingItem.userPlaybackPosition || currentPosition,
+  //   currentNowPlayingItem.episodeDuration
+  // )
 
   handleEnrichingPlayerState(currentNowPlayingItem)
 }

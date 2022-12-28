@@ -170,26 +170,15 @@ export const audioLoadNowPlayingItem = async (
 
   addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
 
-  if (Platform.OS === 'ios') {
-    await AsyncStorage.setItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED, 'true')
-    await PVAudioPlayer.reset()
+  const currentId = await audioGetCurrentLoadedTrackId()
+  if (currentId) {
+    PVAudioPlayer.removeUpcomingTracks()
     const track = (await audioCreateTrack(item)) as Track
     await PVAudioPlayer.add(track)
-    await AsyncStorage.removeItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
-    await audioSyncPlayerWithQueue()
+    await PVAudioPlayer.skipToNext()
   } else {
-    const currentId = await audioGetCurrentLoadedTrackId()
-    if (currentId) {
-      PVAudioPlayer.removeUpcomingTracks()
-      const track = (await audioCreateTrack(item)) as Track
-      await PVAudioPlayer.add(track)
-      await PVAudioPlayer.skipToNext()
-      await audioSyncPlayerWithQueue()
-    } else {
-      const track = (await audioCreateTrack(item)) as Track
-      await PVAudioPlayer.add(track)
-      await audioSyncPlayerWithQueue()
-    }
+    const track = (await audioCreateTrack(item)) as Track
+    await PVAudioPlayer.add(track)
   }
 
   if (shouldPlay) {
@@ -360,10 +349,6 @@ export const audioTogglePlay = async () => {
   }
 }
 
-export const audioHandleStop = () => {
-  PVAudioPlayer.stop()
-}
-
 export const audioHandlePlay = () => {
   PVAudioPlayer.play()
 
@@ -473,15 +458,14 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
     let filteredItems = [] as any
 
     if (item && !checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
-      /* Use the item from history to make sure we have the same
+      /* TODO: fix this
+         Use the item from history to make sure we have the same
          userPlaybackPosition that was last saved from other devices. */
       if (!item.clipId && item.episodeId) {
         await updateHistoryItemsIndex()
         item = await getNowPlayingItemFromLocalStorage(item.episodeId)
       }
-
       filteredItems = filterItemFromQueueItems(queueItems, item)
-      filteredItems.unshift(item)
 
       if (filteredItems.length > 0) {
         const tracks = await audioCreateTracks(filteredItems)

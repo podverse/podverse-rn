@@ -8,6 +8,15 @@ import {
   playerUpdateTrackPlayerCapabilities
 } from '../../services/player'
 import { checkIfTrackingIsEnabled } from '../../services/tracking'
+import { v4vClearTransactionQueue } from '../../services/v4v/v4v'
+
+export const settingsRunEveryStartup = async () => {
+  await AsyncStorage.removeItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
+
+  // Clear V4V transaction queue every time the app launches
+  // so leftover streaming value isn't unexpectedly sent.
+  await v4vClearTransactionQueue()
+}
 
 export const initializeSettings = async () => {
   const [
