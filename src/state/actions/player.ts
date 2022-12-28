@@ -67,7 +67,10 @@ export const initializePlayer = async () => {
     audioInitializePlayerQueue(item)
   }
 
-  handleEnrichingPlayerState(item)
+  if (item) {
+    handleEnrichingPlayerState(item)
+    showMiniPlayer()
+  }
 }
 
 const clearEnrichedPodcastDataIfNewEpisode =
