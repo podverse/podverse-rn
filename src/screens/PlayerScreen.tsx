@@ -291,9 +291,9 @@ export class PlayerScreen extends React.Component<Props> {
     const mediaRefId = mediaRef?.id || null
     const chapterId = currentChapter?.id || null
     const customRSSPodcastLink =
-      nowPlayingItem.addByRSSPodcastFeedUrl && nowPlayingItem.podcastLinkUrl ? nowPlayingItem.podcastLinkUrl : null
+      nowPlayingItem?.addByRSSPodcastFeedUrl && nowPlayingItem.podcastLinkUrl ? nowPlayingItem.podcastLinkUrl : null
     const customRSSEpisodeLink =
-      nowPlayingItem.addByRSSPodcastFeedUrl && nowPlayingItem.episodeLinkUrl ? nowPlayingItem.episodeLinkUrl : null
+      nowPlayingItem?.addByRSSPodcastFeedUrl && nowPlayingItem.episodeLinkUrl ? nowPlayingItem.episodeLinkUrl : null
 
     if (episode?.description) {
       episode.description = replaceLinebreaksWithBrTags(episode.description)
