@@ -462,8 +462,19 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
          Use the item from history to make sure we have the same
          userPlaybackPosition that was last saved from other devices. */
       if (!item.clipId && item.episodeId) {
+        /* 
+          updateHistoryItemsIndex will also update the result of
+          getNowPlayingItemFromLocalStorage
+        */
         await updateHistoryItemsIndex()
-        item = await getNowPlayingItemFromLocalStorage(item.episodeId)
+        
+        /*
+          Get the localStorageItem with the new userPlaybackPosition from updateHistoryItemsIndex
+        */
+        const localStorageItem = await getNowPlayingItemFromLocalStorage(item.episodeId)
+        if (!!localStorageItem) {
+          item = localStorageItem
+        }
       }
       filteredItems = filterItemFromQueueItems(queueItems, item)
 

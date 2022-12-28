@@ -118,6 +118,7 @@ export class PlayerScreen extends React.Component<Props> {
 
   async componentDidMount() {
     PVEventEmitter.on(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED, this._handleRefreshNavigationHeader)
+    PVEventEmitter.on(PV.Events.PLAYER_DISMISS, this.props.navigation.dismiss)
 
     this.props.navigation.setParams({
       _getEpisodeId: this._getEpisodeId,
@@ -140,6 +141,7 @@ export class PlayerScreen extends React.Component<Props> {
 
   async componentWillUnmount() {
     PVEventEmitter.removeListener(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED, this._handleRefreshNavigationHeader)
+    PVEventEmitter.removeListener(PV.Events.PLAYER_DISMISS, this.props.navigation.dismiss)
 
     try {
       clearTempMediaRef()

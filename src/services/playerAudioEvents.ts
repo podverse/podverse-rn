@@ -54,7 +54,7 @@ export const audioResetHistoryItem = async (x: any) => {
         }
 
         const forceUpdateOrderDate = false
-        const skipSetNowPlaying = false
+        const skipSetNowPlaying = true
         const completed = true
         await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate, skipSetNowPlaying, completed)
       }
@@ -92,9 +92,10 @@ export const audioHandleQueueEnded = (x: any) => {
   */
   setTimeout(() => {
     (async () => {
+      PVEventEmitter.emit(PV.Events.PLAYER_DISMISS)
       await playerClearNowPlayingItem()
     })()
-  }, 10000)
+  }, 0)
 }
 
 export const audioHandleTrackEnded = (x: any) => {
@@ -111,24 +112,35 @@ module.exports = async () => {
     debugLogger('playback-metadata-received', x)
   })
 
+  /*
+    playback-track-changed always gets called when playback-queue-ended.
+    As a result, if we use both events, there will be a race-condition with our
+    playback-track-changed and playback-queue-ended handling. To work around this,
+    I am determining if the "queue ended" event that we care about has happened
+    from within the playback-track-changed event listener.
+  */ 
+  PVAudioPlayer.addEventListener(Event.PlaybackQueueEnded, (x) => {
+    debugLogger('playback-queue-ended', x)
+    AsyncStorage.setItem(PV.Events.PLAYER_AUDIO_QUEUE_ENDED, 'TRUE')
+  })
+
   PVAudioPlayer.addEventListener(Event.PlaybackTrackChanged, (x: any) => {
     (async () => {
       debugLogger('playback-track-changed', x)
       const prevent = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
       if (!prevent) {
-        syncNowPlayingItemWithTrack()
-        audioHandleTrackEnded(x)
-      }
-    })()
-  })
-
-  // NOTE: PVAudioPlayer.reset will call the playback-queue-ended event on Android!!!
-  PVAudioPlayer.addEventListener(Event.PlaybackQueueEnded, (x) => {
-    (async () => {
-      debugLogger('playback-queue-ended', x)
-      const prevent = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
-      if (!prevent) {
-        audioHandleQueueEnded(x)
+        const callback = async () => {
+          const queueEnded = await AsyncStorage.getItem(PV.Events.PLAYER_AUDIO_QUEUE_ENDED)
+          /* audioHandleQueueEnded will handle removing the nowPlayingItem */
+          if (!!queueEnded) {
+            await AsyncStorage.removeItem(PV.Events.PLAYER_AUDIO_QUEUE_ENDED)
+            audioHandleQueueEnded(x)
+          } 
+          /* audioHandleTrackEnded will reset the completed episode playbackPosition to 0 */
+          audioHandleTrackEnded(x)
+          
+        }
+        syncNowPlayingItemWithTrack(callback)
       }
     })()
   })
@@ -291,7 +303,7 @@ module.exports = async () => {
   })
 
   PVAudioPlayer.addEventListener(Event.PlaybackProgressUpdated, (x: any) => {
-    debugLogger('playback-progress-updated', x)
+    // debugLogger('playback-progress-updated', x)
     handleBackgroundTimerInterval()
   })
 }

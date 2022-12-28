@@ -18,15 +18,19 @@ import {
 } from './player'
 import { getNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './userNowPlayingItem'
 import { removeQueueItem } from './queue'
-import { addOrUpdateHistoryItem } from './userHistoryItem'
 import { handleValueStreamingTimerIncrement } from './v4v/v4vStreaming'
+import { addOrUpdateHistoryItem } from './userHistoryItem'
 
 const debouncedSetPlaybackPosition = debounce(playerSetPositionWhenDurationIsAvailable, 1000, {
   leading: true,
   trailing: false
 })
 
-const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem) => {
+const handleSyncNowPlayingItem = async (
+  trackId: string,
+  currentNowPlayingItem: NowPlayingItem,
+  callback?: any
+) => {
   if (!currentNowPlayingItem) return
 
   await clearChapterPlaybackInfo(currentNowPlayingItem)
@@ -57,28 +61,26 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
 
   PVEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
 
+  handleEnrichingPlayerState(currentNowPlayingItem)
+
   // Call addOrUpdateHistoryItem to make sure the current item is saved as the userNowPlayingItem.
-  // I think this is necessary when the next episode plays from the background queue
-  // outside of the usual loadPlayerItem process.
+  // This is needed when the next episode plays from the background queue
+  // outside of user-invoked loadPlayerItem functions.
   // Also, keep the currentNowPlayingItem.userPlaybackPosition if available,
   // because if we use the currentPosition, then it will be a time position
   // less than 00:01, because there is a delay before debouncedSetPlaybackPosition
   // adjusts the timestamp to the correct position.
-  
-  // TODO: handle updating historyItem from background in a different way
+  const currentPosition = await playerGetPosition()
+  await addOrUpdateHistoryItem(
+    currentNowPlayingItem,
+    currentNowPlayingItem.userPlaybackPosition || currentPosition,
+    currentNowPlayingItem.episodeDuration
+  )
 
-  // const currentPosition = await playerGetPosition()
-  console.log('handleSyncNowPlayingItem')
-  // addOrUpdateHistoryItem(
-  //   currentNowPlayingItem,
-  //   currentNowPlayingItem.userPlaybackPosition || currentPosition,
-  //   currentNowPlayingItem.episodeDuration
-  // )
-
-  handleEnrichingPlayerState(currentNowPlayingItem)
+  callback?.()
 }
 
-export const syncNowPlayingItemWithTrack = () => {
+export const syncNowPlayingItemWithTrack = (callback?: any) => {
   stopClipInterval()
 
   // The first setTimeout is an attempt to prevent the following:
@@ -89,7 +91,7 @@ export const syncNowPlayingItemWithTrack = () => {
   // before playing from the clip start. Hopefully we can iron this out sometime...
   // - The second timeout is called in case something was out of sync previously from getCurrentTrack
   // or getNowPlayingItemFromLocalStorage...
-  function sync() {
+  function sync(callback?: any) {
     (async () => {
       playerUpdatePlaybackState()
       await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
@@ -115,7 +117,11 @@ export const syncNowPlayingItemWithTrack = () => {
           )
           if (currentNowPlayingItem && retryInterval) {
             clearInterval(retryInterval)
-            await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
+            await handleSyncNowPlayingItem(
+              currentTrackId,
+              currentNowPlayingItem,
+              callback
+            )
             await removeQueueItem(currentNowPlayingItem)
             PVEventEmitter.emit(PV.Events.QUEUE_HAS_UPDATED)
           }
@@ -124,7 +130,7 @@ export const syncNowPlayingItemWithTrack = () => {
     })()
   }
 
-  setTimeout(sync, 1000)
+  setTimeout(() => sync(callback), 1000)
 }
 
 const stopCheckClipIfEndTimeReached = () => {
