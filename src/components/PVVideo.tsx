@@ -392,7 +392,14 @@ export class PVVideo extends React.PureComponent<Props, State> {
         }}
         onProgress={(payload: any) => {
           const { disableOnProgress } = this.state
-          if (!disableOnProgress) {
+          /* 
+            This is some kind of race condition where disableOnProgress can be undefined
+            for a tick while navigating between MiniPlayer and the PlayerScreen.
+            In the case of undefined, we should set disableOnProgress to true,
+            so a state update with an invalid position does not happen.
+          */
+          // eslint-disable-next-line @typescript-eslint/tslint/config
+          if (!disableOnProgress && typeof disableOnProgress !== 'undefined') {
             const { currentTime } = payload
             videoStateUpdatePosition(currentTime)
             const isVideo = true

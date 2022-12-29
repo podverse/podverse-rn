@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { Platform } from 'react-native'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import { getCustomRSSParallelParserLimit } from '../../services/customRSSParallelParserLimit'
@@ -7,6 +8,7 @@ import {
   setPlayerJumpForwards as setPlayerJumpForwardsService,
   playerUpdateTrackPlayerCapabilities
 } from '../../services/player'
+import { audioIsLoaded, PVAudioPlayer } from '../../services/playerAudio'
 import { checkIfTrackingIsEnabled } from '../../services/tracking'
 import { v4vClearTransactionQueue } from '../../services/v4v/v4v'
 
@@ -16,6 +18,12 @@ export const settingsRunEveryStartup = async () => {
   // Clear V4V transaction queue every time the app launches
   // so leftover streaming value isn't unexpectedly sent.
   await v4vClearTransactionQueue()
+  
+  
+  await PVAudioPlayer.reset()
+  // if (Platform.OS === 'android') {
+  //   await PVAudioPlayer.reset()
+  // }
 }
 
 export const initializeSettings = async () => {
