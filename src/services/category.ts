@@ -3,6 +3,8 @@ import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { request } from './request'
 
+const _fileName = 'src/services/category.ts'
+
 export const getTopLevelCategories = async () => {
   const response = await request({
     endpoint: '/category',
@@ -26,7 +28,7 @@ export const downloadCategoriesList = async () => {
     }
     await AsyncStorage.setItem('CATEGORIES_LIST', JSON.stringify(categories[0]))
   } catch (err) {
-    errorLogger('Category download error: ', err)
+    errorLogger(_fileName, 'Category download', err)
   }
 }
 
@@ -58,7 +60,7 @@ const getCategoryItems = async () => {
     }
     return categoryItems
   } catch (error) {
-    errorLogger('Bottom Selection Bar error: ', error)
+    errorLogger(_fileName, 'Bottom Selection Bar: ', error)
   }
 }
 

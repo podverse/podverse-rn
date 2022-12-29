@@ -19,6 +19,8 @@ import { request } from './request'
   navigates the user too quickly to the PodcastScreen, before the network connection
   has finished being detected.
 */
+const _fileName = 'src/services/podcast.ts'
+
 export const getPodcast = async (id: string, forceRequest?: boolean) => {
   const isConnected = await hasValidNetworkConnection()
   if (forceRequest || isConnected) {
@@ -114,7 +116,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], sort
       subscribedPodcasts = await combineWithAddByRSSPodcasts(sort)
       return [subscribedPodcasts, subscribedPodcasts.length]
     } catch (error) {
-      errorLogger(error)
+      errorLogger(_fileName, 'getSubscribedPodcasts', error)
       const combinedPodcasts = await combineWithAddByRSSPodcasts(sort)
       return [combinedPodcasts, combinedPodcasts.length]
     }
@@ -184,17 +186,21 @@ export const searchPodcasts = async (title?: string, author?: string) => {
   return response && response.data
 }
 
-export const subscribeToPodcastIfNotAlready = async (alreadySubscribedPodcasts: any, podcastId: string) => {
+export const subscribeToPodcastIfNotAlready = async (
+  alreadySubscribedPodcasts: any,
+  podcastId: string,
+  skipDownloadOnce = false
+) => {
   if (
     Array.isArray(alreadySubscribedPodcasts) &&
     !alreadySubscribedPodcasts.some((alreadySubscribedPodcast) => alreadySubscribedPodcast.id === podcastId)
   ) {
     const skipRequestReview = true
-    await toggleSubscribeToPodcast(podcastId, skipRequestReview)
+    await toggleSubscribeToPodcast(podcastId, skipRequestReview, skipDownloadOnce)
   }
 }
 
-export const toggleSubscribeToPodcast = async (id: string, skipRequestReview = false) => {
+export const toggleSubscribeToPodcast = async (id: string, skipRequestReview = false, skipDownloadOnce = false) => {
   const [isLoggedIn, itemsString, addByRSSPodcastsString, globalDownloadedEpisodeLimitDefault] = await Promise.all([
     checkIfLoggedIn(),
     AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS),
@@ -249,7 +255,7 @@ export const toggleSubscribeToPodcast = async (id: string, skipRequestReview = f
     const autoDownloadByDefault = await AsyncStorage.getItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT)
     if (!!autoDownloadByDefault) {
       const autoDownloadOn = true
-      updateAutoDownloadSettings(id, autoDownloadOn)
+      updateAutoDownloadSettings(id, autoDownloadOn, skipDownloadOnce)
     }
   }
 

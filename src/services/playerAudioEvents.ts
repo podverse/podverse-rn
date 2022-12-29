@@ -35,6 +35,8 @@ import { handleBackgroundTimerInterval, syncNowPlayingItemWithTrack } from './pl
 import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
 import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
 
+const _fileName = 'src/services/playerAudioEvents.ts'
+
 export const audioResetHistoryItem = async (x: any) => {
   const { position, track } = x
   const loadedTrackId = await audioGetLoadedTrackIdByIndex(track)
@@ -109,7 +111,7 @@ export const audioHandleTrackEnded = (x: any) => {
 
 // eslint-disable-next-line @typescript-eslint/require-await
 module.exports = async () => {
-  PVAudioPlayer.addEventListener('playback-error', (x) => errorLogger('playback error', x))
+  PVAudioPlayer.addEventListener('playback-error', (x) => errorLogger(_fileName, 'playback error', x))
 
   PVAudioPlayer.addEventListener('playback-metadata-received', (x) => {
     debugLogger('playback-metadata-received', x)
@@ -195,7 +197,7 @@ module.exports = async () => {
   })
 
   PVAudioPlayer.addEventListener('playback-error', (x: any) => {
-    errorLogger('playback-error', x)
+    errorLogger(_fileName, 'playback-error', x)
     // TODO: post error to our logs!
     PVEventEmitter.emit(PV.Events.PLAYER_PLAYBACK_ERROR)
   })

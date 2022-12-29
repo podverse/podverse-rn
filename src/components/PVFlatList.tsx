@@ -45,7 +45,7 @@ type Props = {
   renderHiddenItem?: any
   renderSectionHeader?: any
   renderItem: any
-  rightOpenValue?: number,
+  rightOpenValue?: number
   sections?: any
   showNoInternetConnectionMessage?: boolean
   stickySectionHeadersEnabled?: boolean

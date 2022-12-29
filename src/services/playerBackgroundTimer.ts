@@ -140,6 +140,7 @@ const stopCheckClipIfEndTimeReached = () => {
 }
 
 const debouncedHandlePlayerClipLoaded = debounce(startCheckClipEndTime, 1000)
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLoaded)
 
 let chapterIntervalSecondCount = 0
@@ -147,7 +148,7 @@ export const handleBackgroundTimerInterval = () => {
   const { chapterIntervalActive, clipIntervalActive, player, session } = getGlobal()
   const { sleepTimer } = player
   const { v4v } = session
-  
+
   if (clipIntervalActive) {
     stopCheckClipIfEndTimeReached()
   }

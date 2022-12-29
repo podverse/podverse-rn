@@ -16,6 +16,8 @@ import { downloadedEpisodeMarkForDeletion } from './downloads'
 import { playerLoadNowPlayingItem, playerUpdatePlaybackState, playerUpdatePlayerState } from './player'
 import { updateHistoryItemsIndex } from './userHistoryItem'
 
+const _fileName = 'src/state/actions/playerVideo.ts'
+
 export const videoInitializePlayer = async (item: NowPlayingItem) => {
   if (item && checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
     /* Use the item from history to make sure we have the same
@@ -87,7 +89,7 @@ export const videoGetCurrentLoadedTrackId = () => {
       currentTrackId = nowPlayingItem.clipId || nowPlayingItem.episodeId
     }
   } catch (error) {
-    errorLogger('videoGetCurrentLoadedTrackId error', error)
+    errorLogger(_fileName, 'videoGetCurrentLoadedTrackId', error)
   }
   return currentTrackId
 }

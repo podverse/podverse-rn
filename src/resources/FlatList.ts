@@ -1,5 +1,3 @@
-import { Platform } from "react-native"
-
 const _endOfResultsKey = 'endOfResults'
 const _searchBarKey = 'searchBar'
 const _isLoadingMoreKey = 'isLoadingMore'
@@ -36,5 +34,5 @@ export const FlatList = {
     removeClippedSubviews: true, // default false
     updateCellsBatchingPeriod: 100, // default 50
     windowSize: 5 // default 21
-  },
+  }
 }

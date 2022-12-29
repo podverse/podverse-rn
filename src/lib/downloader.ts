@@ -20,6 +20,8 @@ import { hasValidDownloadingConnection } from './network'
 import { getAppUserAgent, safelyUnwrapNestedVariable } from './utility'
 import { downloadImageFile } from './storage'
 
+const _fileName = 'src/lib/downloader.ts'
+
 export const BackgroundDownloader = () => {
   const userAgent = getAppUserAgent()
   RNBackgroundDownloader.setHeaders({
@@ -156,7 +158,7 @@ export const downloadEpisode = async (
         downloadUrl = secureUrlInfo.secureUrl
       }
     } catch (error) {
-      errorLogger('Secure url not found for http mediaUrl. Info: ', error)
+      errorLogger(_fileName, 'Secure url not found for http mediaUrl. Info: ', error)
     }
   } else if (downloadUrl.indexOf('http://') >= 0) {
     /*
@@ -224,7 +226,7 @@ export const downloadEpisode = async (
               await FileSystem.cp(origDestination, newFileUri)
             }
           } catch (error) {
-            errorLogger('done error', error)
+            errorLogger(_fileName, 'done error', error)
           }
         }
 
@@ -242,7 +244,7 @@ export const downloadEpisode = async (
       })
       .error((error: string) => {
         DownloadState.updateDownloadError(episode.id)
-        errorLogger('Download canceled due to error: ', error)
+        errorLogger(_fileName, 'Download canceled', error)
       })
   }, timeout)
 }
@@ -263,7 +265,7 @@ export const deleteDownloadedEpisode = async (episode: Episode) => {
     }
     return true
   } catch (error) {
-    errorLogger('deleteDownloadedEpisode', error)
+    errorLogger(_fileName, 'deleteDownloadedEpisode', error)
     return false
   }
 }

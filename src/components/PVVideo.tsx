@@ -47,6 +47,7 @@ type State = {
 }
 
 let lastNowPlayingItemUri = ''
+const _fileName = 'src/components/PVVideo.tsx'
 export class PVVideo extends React.PureComponent<Props, State> {
   videoRef: any | null = null
   willFocusListener: any
@@ -105,7 +106,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
         }
       }
     } catch (error) {
-      errorLogger('_handleGoToLiveCurrentTime error', error)
+      errorLogger(_fileName, '_handleGoToLiveCurrentTime', error)
     }
   }
 
@@ -215,7 +216,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
   _disableFullscreen = () => {
     this._handleScreenChange()
-    
+
     if (!pvIsTablet()) {
       Orientation.lockToPortrait()
     }

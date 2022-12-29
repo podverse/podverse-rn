@@ -22,6 +22,8 @@ import {
 } from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
 
+const _fileName = 'src/services/v4v/v4v.ts'
+
 export type BoostagramItem = {
   episodeFunding?: Funding[]
   episodePubDate?: Date
@@ -62,7 +64,7 @@ export const v4vGetProvidersConnected = async () => {
       accessData = JSON.parse(creds.password)
     }
   } catch (error) {
-    errorLogger('v4vGetProvidersConnected error:', error)
+    errorLogger(_fileName, 'v4vGetProvidersConnected error:', error)
   }
 
   return accessData
@@ -76,7 +78,7 @@ export const v4vSetProvidersConnected = async (connected: V4VProviderConnectedSt
       JSON.stringify(connected)
     )
   } catch (error) {
-    errorLogger('v4vSetProvidersEnabled error:', error)
+    errorLogger(_fileName, 'v4vSetProvidersEnabled error:', error)
   }
 }
 
@@ -90,7 +92,7 @@ export const v4vGetSettings = async () => {
       await v4vSetSettings(settingsData)
     }
   } catch (error) {
-    errorLogger('v4vGetSettings error:', error)
+    errorLogger(_fileName, 'v4vGetSettings error:', error)
   }
 
   return settingsData
@@ -104,7 +106,7 @@ export const v4vSetSettings = async (settings: V4VSettings) => {
       JSON.stringify(settings)
     )
   } catch (error) {
-    errorLogger('v4vSetSettings error:', error)
+    errorLogger(_fileName, 'v4vSetSettings error:', error)
   }
 }
 
@@ -379,7 +381,7 @@ const getValueTransactionQueue = async () => {
     const transactionQueueString = await AsyncStorage.getItem(PV.V4V.VALUE_TRANSACTION_QUEUE)
     return transactionQueueString ? JSON.parse(transactionQueueString) : []
   } catch (err) {
-    errorLogger('getStreamingValueTransactionQueue error:', err)
+    errorLogger(_fileName, 'getStreamingValueTransactionQueue error:', err)
     await clearValueTransactionQueue()
   }
 }
@@ -388,7 +390,7 @@ const clearValueTransactionQueue = async () => {
   try {
     await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify([]))
   } catch (error) {
-    errorLogger('clearValueTransactionQueue error:', error)
+    errorLogger(_fileName, 'clearValueTransactionQueue error:', error)
   }
 }
 
@@ -400,7 +402,7 @@ export const setStreamingValueOn = async (bool: boolean) => {
       await AsyncStorage.removeItem(PV.V4V.STREAMING_SATS_ON)
     }
   } catch (error) {
-    errorLogger('setStreamingValueOn error:', error)
+    errorLogger(_fileName, 'setStreamingValueOn error:', error)
   }
 }
 
@@ -409,7 +411,7 @@ export const getStreamingValueOn = async () => {
   try {
     val = await AsyncStorage.getItem(PV.V4V.STREAMING_SATS_ON)
   } catch (error) {
-    errorLogger('getStreamingValueOn error:', error)
+    errorLogger(_fileName, 'getStreamingValueOn error:', error)
   }
   return val
 }
@@ -452,7 +454,7 @@ const bundleValueTransactionQueue = async () => {
 
     return transactionsToSend
   } catch (err) {
-    errorLogger('bundleValueTransactionQueue error:', err)
+    errorLogger(_fileName, 'bundleValueTransactionQueue error:', err)
     await clearValueTransactionQueue()
     return []
   }
@@ -523,7 +525,7 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
 
     await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
   } catch (err) {
-    errorLogger('saveStreamingValueTransactionsToTransactionQueue error:', err)
+    errorLogger(_fileName, 'saveStreamingValueTransactionsToTransactionQueue error:', err)
     await clearValueTransactionQueue()
   }
 }
@@ -532,7 +534,7 @@ const saveTransactionQueue = async (transactionQueue: ValueTransaction[]) => {
   try {
     await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
   } catch (error) {
-    errorLogger('saveTransactionQueue error', error)
+    errorLogger(_fileName, 'saveTransactionQueue error', error)
     await clearValueTransactionQueue()
   }
 }
@@ -554,7 +556,7 @@ export const v4vGetSenderInfo = async () => {
       senderInfo = JSON.parse(senderInfoString)
     }
   } catch (error) {
-    errorLogger('v4vGetSenderInfo error', error)
+    errorLogger(_fileName, 'v4vGetSenderInfo error', error)
   }
 
   return senderInfo
@@ -564,7 +566,7 @@ export const v4vSetSenderInfo = async (senderInfo: V4VSenderInfo) => {
   try {
     await AsyncStorage.setItem(PV.Keys.V4V_SENDER_INFO, JSON.stringify(senderInfo))
   } catch (error) {
-    errorLogger('v4vSetSenderInfo error', error)
+    errorLogger(_fileName, 'v4vSetSenderInfo error', error)
   }
 }
 
