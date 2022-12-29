@@ -129,7 +129,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
               <View style={[styles.player, globalTheme.player]}>
                 {!!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
                   <View style={styles.image}>
-                    {/* <PVVideo isMiniPlayer navigation={navigation} /> */}
+                    <PVVideo isMiniPlayer navigation={navigation} />
                   </View>
                 )}
                 {!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
