@@ -1,4 +1,4 @@
-import { addParameterToURL, convertUrlToSecureHTTPS, encodeSpacesInString, getExtensionFromUrl } from 'podverse-shared'
+import { addParameterToURL, convertUrlToSecureHTTPS, encodeSpacesInString } from 'podverse-shared'
 import { Modal, StyleSheet } from 'react-native'
 import React from 'reactn'
 import Orientation from 'react-native-orientation-locker'
@@ -39,11 +39,12 @@ type State = {
   Authorization?: string
   destroyPlayer: boolean
   disableOnProgress?: boolean
+  fileType?: 'hls' | 'other'
+  finalUri?: string
   isDownloadedFile: boolean
   isFullscreen: boolean
   isReadyToPlay: boolean
   transitionPlaybackState?: any // remember what the playback state was between navigations
-  uri?: string
 }
 
 let lastNowPlayingItemUri = ''
@@ -98,11 +99,11 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
   _handleGoToLiveCurrentTime = () => {
     try {
-      const { uri } = this.state
-      if (uri) {
-        const refreshUri = addParameterToURL(uri, `forceRefresh=${Date.now()}`)
+      const { finalUri } = this.state
+      if (finalUri) {
+        const refreshUri = addParameterToURL(finalUri, `forceRefresh=${Date.now()}`)
         if (refreshUri) {
-          this.setState({ uri: refreshUri })
+          this.setState({ finalUri: refreshUri })
         }
       }
     } catch (error) {
@@ -137,19 +138,22 @@ export class PVVideo extends React.PureComponent<Props, State> {
                 let { nowPlayingItem } = player
                 // nowPlayingItem will be undefined when loading from a deep link
                 nowPlayingItem = nowPlayingItem || {}
-                let uri = nowPlayingItem.episodeMediaUrl
+                const uri = nowPlayingItem.episodeMediaUrl
+                let finalUri = encodeSpacesInString(convertUrlToSecureHTTPS(uri || '').trim())
 
-                const { Authorization, filePath, isDownloadedFile } = await videoGetDownloadedFileInfo(nowPlayingItem)
+                const { Authorization, filePath,
+                  fileType, isDownloadedFile } = await videoGetDownloadedFileInfo(nowPlayingItem)
 
                 if (isDownloadedFile && filePath) {
-                  uri = filePath
+                  finalUri = filePath
                 }
 
                 this.setState(
                   {
                     Authorization,
-                    isDownloadedFile,
-                    uri
+                    fileType,
+                    finalUri,
+                    isDownloadedFile
                   },
                   () => {
                     if (setClipTime && nowPlayingItem.clipId) {
@@ -333,19 +337,13 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
   render() {
     const { disableFullscreen, isMiniPlayer } = this.props
-    const { Authorization, destroyPlayer, isFullscreen, isReadyToPlay, uri } = this.state
+    const { Authorization, destroyPlayer, fileType, finalUri, isFullscreen, isReadyToPlay } = this.state
     const { player, userAgent } = this.global
     const { playbackState } = player
 
     // nowPlayingItem will be undefined when loading from a deep link
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
-
-    const finalUri = encodeSpacesInString(convertUrlToSecureHTTPS(uri || '').trim())
-    const fileExtension = getExtensionFromUrl(finalUri)?.substring(1)
-    const isHLS = fileExtension === 'm3u8';
-
-    console.log('hello!', finalUri, isHLS)
 
     const pvVideo = finalUri ? (
       <Video
@@ -415,7 +413,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
             'User-Agent': userAgent,
             ...(Authorization ? { Authorization } : {})
           },
-          ...(isHLS ? { type: 'm3u8' } : {})
+          ...(fileType === 'hls' ? { type: 'm3u8' } : {})
         }}
         style={styles.videoMini}
       />
