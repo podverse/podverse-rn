@@ -15,15 +15,19 @@ import { v4vClearTransactionQueue } from '../../services/v4v/v4v'
 export const settingsRunEveryStartup = async () => {
   await AsyncStorage.removeItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
 
-  // Clear V4V transaction queue every time the app launches
-  // so leftover streaming value isn't unexpectedly sent.
+  /*
+    Clear V4V transaction queue every time the app launches
+    so leftover streaming value isn't unexpectedly sent.
+  */
   await v4vClearTransactionQueue()
   
-  
-  await PVAudioPlayer.reset()
-  // if (Platform.OS === 'android') {
-  //   await PVAudioPlayer.reset()
-  // }
+  /*
+    On Android, player queue items will persist between app restarts.
+    Calling .reset here clears the queue before continuing to load the app.
+  */
+  if (Platform.OS === 'android') {
+    await PVAudioPlayer.reset()
+  }
 }
 
 export const initializeSettings = async () => {
