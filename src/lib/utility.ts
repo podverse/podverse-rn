@@ -187,7 +187,7 @@ export const getAndroidVersion = () => {
 }
 
 export const getPathFromUrl = (url: string) => {
-  return url.split(/[?#]/)[0];
+  return url.split(/[?#]/)[0]
 }
 
 export const removeAndDecodeHTMLInString = (text: string) => {

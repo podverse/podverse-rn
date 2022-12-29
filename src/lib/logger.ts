@@ -1,4 +1,4 @@
-import { Config } from "react-native-config";
+import { Config } from 'react-native-config'
 
 export const debugLogger = (message: string, data?: any) => {
   if (!!Config.IS_DEV) {

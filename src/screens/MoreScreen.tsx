@@ -42,15 +42,15 @@ export class MoreScreen extends React.Component<Props, State> {
 
   componentDidMount() {
     trackPageView('/more', 'More Screen')
-    const {opmlUri} = this.props.navigation?.state?.params || {}
-    
+    const { opmlUri } = this.props.navigation?.state?.params || {}
+
     if (opmlUri) {
       this._importOpml(this.props.navigation.state.params.opmlUri)
     }
   }
 
   componentDidUpdate(prevProps: Readonly<Props>): void {
-    const {opmlUri} = this.props.navigation?.state?.params || {}
+    const { opmlUri } = this.props.navigation?.state?.params || {}
 
     if (opmlUri && opmlUri !== prevProps.navigation?.state?.params?.opmlUri) {
       this._importOpml(this.props.navigation.state.params.opmlUri)

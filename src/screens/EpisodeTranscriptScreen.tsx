@@ -23,7 +23,7 @@ const testIDPrefix = 'episode_transcript_screen'
 export class EpisodeTranscriptScreen extends React.Component<Props, State> {
   shouldLoad: boolean
 
-  constructor(props: Props) {
+  constructor() {
     super()
 
     this.state = {

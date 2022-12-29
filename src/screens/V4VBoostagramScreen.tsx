@@ -1,6 +1,6 @@
 import debounce from 'lodash/debounce'
 import { ValueTransaction } from 'podverse-shared'
-import { Dimensions, Keyboard, StyleSheet } from 'react-native'
+import { Keyboard, StyleSheet } from 'react-native'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import React from 'reactn'

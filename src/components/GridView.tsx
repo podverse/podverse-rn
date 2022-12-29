@@ -19,7 +19,7 @@ export class GridView extends React.PureComponent<Props> {
     const isTablet = deviceType === 'tablet'
     const isLandscapeMode = orientation === 'landscape'
     const isTabletLandscape = isTablet && isLandscapeMode
-    
+
     const getImageThumbnailInfo = () => {
       let imageThumbnailStyle = styles.imageThumbnailMobile
       let columns = 3
@@ -111,11 +111,11 @@ const styles = StyleSheet.create({
   },
   imageThumbnailMobile: {
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   imageThumbnailTabletLandscape: {
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   imageThumbnailTabletPortrait: {
     justifyContent: 'center',

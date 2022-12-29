@@ -1,9 +1,9 @@
-import { Dimensions } from "react-native"
-import { isTablet } from "react-native-device-info"
+import { Dimensions } from 'react-native'
+import { isTablet } from 'react-native-device-info'
 
 export const pvIsTablet = () => {
   return isTablet()
-  
+
   // f-droid only
   // return isTabletBasedOnRatio()
 }

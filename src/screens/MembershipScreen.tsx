@@ -211,6 +211,12 @@ export class MembershipScreen extends React.Component<Props, State> {
                 wrapperStyles={styles.button}
               />
             </View>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              style={styles.explainText}
+              testID={`${testIDPrefix}_renew_explanation_sign_up`}>
+              {translate('You will not be charged for signing up for your free trial')}
+            </Text>
           </View>
         )}
       </View>
