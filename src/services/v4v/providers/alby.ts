@@ -332,10 +332,7 @@ export type AlbyKeysendResponse = {
     description_hash: string
     destination: string
     fee: number
-    custom_records?: {
-      custom_key?: string
-      custom_value?: string
-    }
+    custom_records?: any
     payment_hash: string
     payment_preimage: string
   }
