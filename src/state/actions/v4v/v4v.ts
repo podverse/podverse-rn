@@ -15,7 +15,6 @@ import {
   v4vSetSettings
 } from '../../../services/v4v/v4v'
 import { playerUpdatePlayerState } from '../player'
-import { setValueStreaming } from '../valueTag'
 
 export type V4VProviderConnectedState = {
   key: string
