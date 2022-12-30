@@ -420,7 +420,7 @@ export const processValueTransactionQueue = async () => {
   )
 
   const includeMessage = false
-  const totalAmountPaid = await sendValueTransactions(albyValueTransactionsToProcess, action, includeMessage)
+  const totalAmountPaid = await processSendValueTransactions(albyValueTransactionsToProcess, action, includeMessage)
 
   PVEventEmitter.emit(PV.Events.V4V_VALUE_SENT)
 
