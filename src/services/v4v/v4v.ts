@@ -257,9 +257,7 @@ const convertValueTagIntoValueTransaction = async (
     normalizedValueRecipient,
     satoshiStreamStats,
     type,
-    providerKey,
-    customRecordsCustomKey: normalizedValueRecipient.customKey || '',
-    customRecordsCustomValue: normalizedValueRecipient.customValue || ''
+    providerKey
   }
 }
 
