@@ -18,7 +18,8 @@ export const getDefaultSortForFilter = (options: any) => {
       if (selectedFilterItemKey === PV.Filters._subscribedKey) {
         newSelectedSortItemKey = newSelectedSortItemKey
       } else if (selectedFilterItemKey === PV.Filters._downloadedKey) {
-        newSelectedSortItemKey = PV.Filters._mostRecentKey
+        newSelectedSortItemKey =
+          newSelectedSortItemKey === PV.Filters._oldestKey ? newSelectedSortItemKey : PV.Filters._mostRecentKey
       } else if (selectedFilterItemKey === PV.Filters._allPodcastsKey) {
         newSelectedSortItemKey =
           newSelectedSortItemKey === PV.Filters._mostRecentKey ? PV.Filters._topPastWeek : newSelectedSortItemKey
@@ -188,24 +189,32 @@ export const generateSections = (options: any) => {
       break
     case PV.RouteNames.EpisodesScreen:
       if (selectedFilterItemKey === PV.Filters._subscribedKey) {
-        sortItems = sortItems.filter((item) => PV.FilterOptions.screenFilters.EpisodesScreen.sort.includes(item.value))
+        sortItems = sortItems.filter(
+          (item) =>
+            PV.FilterOptions.screenFilters.EpisodesScreen.sort.includes(item.value) &&
+            item.value !== PV.Filters._oldestKey
+        )
       } else if (selectedFilterItemKey === PV.Filters._downloadedKey) {
         newSelectedCategoryItemKey = ''
         newSelectedCategorySubItemKey = ''
-        sortItems = sortItems.filter((item) => item.value === PV.Filters._mostRecentKey)
+        sortItems = sortItems.filter(
+          (item) => item.value === PV.Filters._mostRecentKey || item.value === PV.Filters._oldestKey
+        )
       } else if (selectedFilterItemKey === PV.Filters._allPodcastsKey) {
         newSelectedCategoryItemKey = ''
         newSelectedCategorySubItemKey = ''
         sortItems = sortItems.filter(
           (item) =>
             PV.FilterOptions.screenFilters.EpisodesScreen.sort.includes(item.value) &&
-            item.value !== PV.Filters._mostRecentKey
+            item.value !== PV.Filters._mostRecentKey &&
+            item.value !== PV.Filters._oldestKey
         )
       } else if (selectedFilterItemKey === PV.Filters._categoryKey) {
         sortItems = sortItems.filter(
           (item) =>
             PV.FilterOptions.screenFilters.EpisodesScreen.sort.includes(item.value) &&
-            item.value !== PV.Filters._mostRecentKey
+            item.value !== PV.Filters._mostRecentKey &&
+            item.value !== PV.Filters._oldestKey
         )
       }
 
