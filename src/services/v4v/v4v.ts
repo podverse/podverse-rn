@@ -425,7 +425,7 @@ export const processValueTransactionQueue = async () => {
   PVEventEmitter.emit(PV.Events.V4V_VALUE_SENT)
 
   return {
-    totalAmount: totalAmountPaid,
+    totalAmountPaid,
     transactions: bundledValueTransactionsToProcess
   }
 }
