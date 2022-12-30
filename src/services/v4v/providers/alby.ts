@@ -1,4 +1,4 @@
-import { SatoshiStreamStats, ValueTransaction } from 'podverse-shared'
+import { ValueTransaction } from 'podverse-shared'
 import qs from 'qs'
 import * as RNKeychain from 'react-native-keychain'
 import { getGlobal } from 'reactn'
@@ -309,31 +309,41 @@ export const v4vAlbyGetAccountSummary = async () => {
 type AlbyKeySend = {
   amount: number
   destination: string
-  customRecords: any
+  custom_records: any
+}
+
+export type KeysendCustomKeyValueAddress = {
+  customKey?: string
+  customValue?: string
 }
 
 // Right now Podverse only supports Alby keysend payments.
 // If another LN service is supported, we may want to create and
 // format responses into our own type.
-export type AlbyMultiKeySendResponse = {
-  keysends: [
-    {
-      error?: {
-        code: number
-        error: boolean
-        message: string
-      }
-      keysend: {
-        amount: number
-        description: string
-        description_hash: string
-        destination: string
-        fee: number
-        payment_hash: string
-        payment_preimage: string
-      }
+export type AlbyKeysendResponse = {
+  error?: {
+    code: number
+    error: boolean
+    message: string
+  }
+  keysend: {
+    amount: number
+    description: string
+    description_hash: string
+    destination: string
+    fee: number
+    custom_records?: {
+      custom_key?: string
+      custom_value?: string
     }
-  ]
+    payment_hash: string
+    payment_preimage: string
+  }
+}
+
+export type AlbyMultiKeySendResponse = {
+  keysends: AlbyKeysendResponse[]
+  customKeyValueAddresses: KeysendCustomKeyValueAddress[]
 }
 
 // https://guides.getalby.com/alby-wallet-api/reference/api-reference/payments#multi-keysend-payment
@@ -353,6 +363,7 @@ export const v4vAlbySendKeysendPayments = async (
   }
   
   const keysends: AlbyKeySend[] = []
+  const customKeyValueAddresses: KeysendCustomKeyValueAddress[] = []
   
   for (const transaction of transactions) {
     // This Alby endpoint requires a stringified version of all customRecords values
@@ -368,19 +379,35 @@ export const v4vAlbySendKeysendPayments = async (
     keysends.push({
       amount: transaction.normalizedValueRecipient.amount,
       destination: transaction.normalizedValueRecipient.address,
-      customRecords: formattedCustomRecords
+      custom_records: formattedCustomRecords
     })
+
+    if (transaction.normalizedValueRecipient.customKey
+      && transaction.normalizedValueRecipient.customValue) {
+      customKeyValueAddresses.push({
+        customKey: transaction.normalizedValueRecipient.customKey,
+        customValue: transaction.normalizedValueRecipient.customValue
+      })
+    }
   }
 
   const body = { keysends }
 
-  const response = (await v4vAlbyAPIRequest({
-    method: 'POST',
-    path: '/payments/keysend/multi',
-    body
-  })) as AlbyMultiKeySendResponse
+  try {
+    const response = (await v4vAlbyAPIRequest({
+      method: 'POST',
+      path: '/payments/keysend/multi',
+      body
+    })) as AlbyMultiKeySendResponse
+    response.customKeyValueAddresses = customKeyValueAddresses
+    return response
+  } catch (error) {
+    if (typeof error.response.data === 'object') {
+      error.response.data.customKeyValueAddresses = customKeyValueAddresses
+    }
+    throw error
+  }
 
-  return response
 }
 
 /* Misc helpers */

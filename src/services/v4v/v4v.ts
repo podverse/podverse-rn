@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Funding, NowPlayingItem, ValueRecipient, ValueRecipientNormalized,
   ValueTag, ValueTransaction } from 'podverse-shared'
+  import { Alert } from 'react-native'
 import * as RNKeychain from 'react-native-keychain'
 import { errorLogger } from '../../lib/logger'
 import { translate } from '../../lib/i18n'
@@ -21,7 +22,7 @@ import {
   v4vSettingsDefault
 } from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
-import { AlbyMultiKeySendResponse } from './providers/alby'
+import { AlbyKeysendResponse, AlbyMultiKeySendResponse, KeysendCustomKeyValueAddress } from './providers/alby'
 
 const _fileName = 'src/services/v4v/v4v.ts'
 
@@ -256,8 +257,41 @@ const convertValueTagIntoValueTransaction = async (
     normalizedValueRecipient,
     satoshiStreamStats,
     type,
-    providerKey
+    providerKey,
+    customRecordsCustomKey: normalizedValueRecipient.customKey || '',
+    customRecordsCustomValue: normalizedValueRecipient.customValue || ''
   }
+}
+
+const processSendValueTransactionError = (
+  failedKeysendResponse: AlbyKeysendResponse,
+  customKeyValueAddresses: KeysendCustomKeyValueAddress[],
+  type: 'boost' | 'streaming'
+) => {
+  let customKey
+  let customValue
+
+  for (const customKeyValueAddress of customKeyValueAddresses) {
+    if (
+      customKeyValueAddress.customKey &&
+      customKeyValueAddress.customValue &&
+      failedKeysendResponse.keysend.custom_records &&
+      failedKeysendResponse.keysend.custom_records[customKeyValueAddress.customKey] &&
+      failedKeysendResponse.keysend.custom_records[customKeyValueAddress.customKey] ===
+        customKeyValueAddress.customValue
+    ) {
+      customKey = customKeyValueAddress.customKey
+      customValue = customKeyValueAddress.customValue
+    }
+  }
+
+  v4vAddPreviousTransactionError(
+    type,
+    failedKeysendResponse.keysend.destination,
+    failedKeysendResponse.error?.message || '',
+    customKey,
+    customValue
+  )
 }
 
 const processSendValueTransactions = async (
@@ -273,23 +307,19 @@ const processSendValueTransactions = async (
       includeMessage
     )
 
-    const keysendData = response?.keysends
-    
-    if (keysendData) {
-      for (const data of keysendData) {
-        if (data?.error) {
-          const displayedErrorMessage = data.error.message
-          const { keysend } = data
-          v4vAddPreviousTransactionError(
-            type,
-            keysend.destination,
-            displayedErrorMessage,
-            // TODO: customKey / customValue is not available yet in Alby reponse data
-            // valueTransaction.normalizedValueRecipient.customKey,
-            // valueTransaction.normalizedValueRecipient.customValue
+    const keysendsData = response?.keysends
+    const customKeyValueAddresses = response?.customKeyValueAddresses || []
+
+    if (keysendsData) {
+      for (const keysendData of keysendsData) {
+        if (keysendData?.error) {
+          processSendValueTransactionError(
+            keysendData,
+            customKeyValueAddresses,
+            type
           )
         } else {
-          totalAmountPaid += data.keysend.amount
+          totalAmountPaid += keysendData.keysend.amount
         }
       }
     }
@@ -303,22 +333,15 @@ const processSendValueTransactions = async (
     if (failedKeysends?.length) {
       for (const failedKeysend of failedKeysends) {
         if (failedKeysend?.error?.error) {
-          v4vAddPreviousTransactionError(
-            type,
-            failedKeysend.keysend.destination,
-            failedKeysend.error.message
-            // TODO: customKey
-            // TODO: customValue
+          processSendValueTransactionError(
+            failedKeysend,
+            error.response.data.customKeyValueAddresses,
+            type
           )
         }
       }
     } else {
-      v4vAddPreviousTransactionError(
-        type,
-        // TODO: how to handle generic "batch-error" rendering?
-        'batch-error',
-        displayedErrorMessage
-      )
+      Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, displayedErrorMessage, PV.Alerts.BUTTONS.OK)
     }
   }
 
