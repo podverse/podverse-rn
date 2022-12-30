@@ -77,7 +77,8 @@ export const getDownloadedPodcastEpisodeCounts = async () => {
 export const getDownloadedEpisodes = async (
   searchPodcastTitle?: string,
   searchEpisodeTitle?: string,
-  hasVideo?: boolean
+  hasVideo?: boolean,
+  sort?: string
 ) => {
   const finalEpisodes = []
   const downloadedPodcasts = await getDownloadedPodcasts(searchPodcastTitle, hasVideo)
@@ -91,7 +92,11 @@ export const getDownloadedEpisodes = async (
     }
   }
 
-  finalEpisodes.sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))
+  if (sort === PV.Filters._oldestKey) {
+    finalEpisodes.sort((a: any, b: any) => new Date(a.pubDate) - new Date(b.pubDate))
+  } else {
+    finalEpisodes.sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))
+  }
   return finalEpisodes
 }
 
