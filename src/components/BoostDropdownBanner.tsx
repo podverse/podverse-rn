@@ -9,13 +9,7 @@ import {
   UIManager,
   LayoutAnimation
 } from 'react-native'
-import {
-  Directions,
-  ScrollView,
-  GestureDetector,
-  Gesture,
-  gestureHandlerRootHOC
-} from 'react-native-gesture-handler'
+import { Directions, ScrollView, GestureDetector, Gesture, gestureHandlerRootHOC } from 'react-native-gesture-handler'
 import { ValueTransaction } from 'podverse-shared'
 import { PV } from '../resources'
 import { BannerInfoError } from '../resources/Interfaces'
@@ -80,7 +74,7 @@ export const BoostDropdownBanner = () => {
     return { message: error.error.message, address: error.details.address }
   })
 
-  return gestureHandlerRootHOC(() => (
+  const GestureContentWrapper = gestureHandlerRootHOC(() => (
     <GestureDetector
       gesture={Gesture.Fling()
         .direction(Directions.DOWN)
@@ -89,13 +83,7 @@ export const BoostDropdownBanner = () => {
         gesture={Gesture.Fling()
           .direction(Directions.UP)
           .onStart(closeBanner)}>
-        <AnimatedSafeArea
-          style={[
-            styles.card,
-            {
-              transform: [{ translateY: animatedValue }]
-            }
-          ]}>
+        <View>
           <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollViewContainer}
@@ -124,10 +112,22 @@ export const BoostDropdownBanner = () => {
             )}
           </View>
           <View style={styles.gestureIndicator} />
-        </AnimatedSafeArea>
+        </View>
       </GestureDetector>
     </GestureDetector>
-  ))
+  )) as React.FC
+
+  return (
+    <AnimatedSafeArea
+      style={[
+        styles.card,
+        {
+          transform: [{ translateY: animatedValue }]
+        }
+      ]}>
+      <GestureContentWrapper />
+    </AnimatedSafeArea>
+  )
 }
 
 const styles = StyleSheet.create({
