@@ -327,8 +327,9 @@ const processSendValueTransactions = async (
       : error.message
     errorLogger(_fileName, 'processSendValueTransactions error:', displayedErrorMessage)
 
+    const hasErrorResponseData = !!error.response?.data
     const failedKeysends = error?.response?.data?.keysends || []
-    if (failedKeysends?.length) {
+    if (hasErrorResponseData && failedKeysends.length > 0) {
       for (const failedKeysend of failedKeysends) {
         if (failedKeysend?.error?.error) {
           processSendValueTransactionError(
