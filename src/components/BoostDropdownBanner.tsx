@@ -9,7 +9,7 @@ import {
   UIManager,
   LayoutAnimation
 } from 'react-native'
-import { Directions, FlingGestureHandler, ScrollView, State } from 'react-native-gesture-handler'
+import { Directions, ScrollView, GestureDetector, Gesture, gestureHandlerRootHOC } from 'react-native-gesture-handler'
 import { ValueTransaction } from 'podverse-shared'
 import { PV } from '../resources'
 import { BannerInfoError } from '../resources/Interfaces'
@@ -74,28 +74,16 @@ export const BoostDropdownBanner = () => {
     return { message: error.error.message, address: error.details.address }
   })
 
-  return (
-    <FlingGestureHandler
-      direction={Directions.UP}
-      onHandlerStateChange={({ nativeEvent }) => {
-        if (nativeEvent.state === State.ACTIVE) {
-          closeBanner()
-        }
-      }}>
-      <FlingGestureHandler
-        direction={Directions.DOWN}
-        onHandlerStateChange={({ nativeEvent }) => {
-          if (nativeEvent.state === State.ACTIVE) {
-            expandBanner()
-          }
-        }}>
-        <AnimatedSafeArea
-          style={[
-            styles.card,
-            {
-              transform: [{ translateY: animatedValue }]
-            }
-          ]}>
+  const GestureContentWrapper = gestureHandlerRootHOC(() => (
+    <GestureDetector
+      gesture={Gesture.Fling()
+        .direction(Directions.DOWN)
+        .onStart(expandBanner)}>
+      <GestureDetector
+        gesture={Gesture.Fling()
+          .direction(Directions.UP)
+          .onStart(closeBanner)}>
+        <View>
           <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollViewContainer}
@@ -124,9 +112,21 @@ export const BoostDropdownBanner = () => {
             )}
           </View>
           <View style={styles.gestureIndicator} />
-        </AnimatedSafeArea>
-      </FlingGestureHandler>
-    </FlingGestureHandler>
+        </View>
+      </GestureDetector>
+    </GestureDetector>
+  )) as React.FC
+
+  return (
+    <AnimatedSafeArea
+      style={[
+        styles.card,
+        {
+          transform: [{ translateY: animatedValue }]
+        }
+      ]}>
+      <GestureContentWrapper />
+    </AnimatedSafeArea>
   )
 }
 

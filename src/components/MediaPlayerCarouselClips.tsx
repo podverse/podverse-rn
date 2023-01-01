@@ -1,6 +1,5 @@
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { Alert, StyleSheet } from 'react-native'
-import Dialog from 'react-native-dialog'
 import React, { setGlobal } from 'reactn'
 import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFromLabel, getSelectedSortLabel } from '../lib/filters'
@@ -11,7 +10,7 @@ import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from './'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, PVDialog, TableSectionSelectors, View } from './'
 
 type Props = {
   navigation?: any
@@ -346,20 +345,28 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
           showModal={showMoreActionSheet}
           testID={`${testID}_more`}
         />
-        <Dialog.Container visible={showDeleteConfirmDialog}>
-          <Dialog.Title>{translate('Delete Clip')}</Dialog.Title>
-          <Dialog.Description>{translate('Are you sure')}</Dialog.Description>
-          <Dialog.Button
-            label={translate('Cancel')}
-            onPress={this._cancelDeleteMediaRef}
-            testID={`${getTestID()}_delete_clip_cancel`.prependTestId()}
-          />
-          <Dialog.Button
-            label={translate('Delete')}
-            onPress={this._deleteMediaRef}
-            testID={`${getTestID}_delete_clip_delete`.prependTestId()}
-          />
-        </Dialog.Container>
+        <PVDialog
+          buttonProps={[
+            {
+              label: translate('Cancel'),
+              onPress: this._cancelDeleteMediaRef,
+              testID: `${getTestID()}_delete_clip_cancel`.prependTestId()
+            },
+            {
+              label: translate('Delete'),
+              onPress: this._deleteMediaRef,
+              testID: `${getTestID}_delete_clip_delete`.prependTestId()
+            }
+          ]}
+          descriptionProps={[
+            {
+              children: translate('Are you sure'),
+              testID: `${getTestID}_delete_clip_description`.prependTestId()
+            }
+          ]}
+          title={translate('Delete Clip')}
+          visible={showDeleteConfirmDialog}
+        />
       </View>
     )
   }

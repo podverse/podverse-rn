@@ -2,7 +2,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
 import { StyleSheet, PermissionsAndroid, Platform, Alert, Linking } from 'react-native'
-import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import RNFS from 'react-native-fs'
 import * as ScopedStorage from 'react-native-scoped-storage'
@@ -11,6 +10,7 @@ import {
   Button,
   Divider,
   NumberSelectorWithText,
+  PVDialog,
   ScrollView,
   SwitchWithText,
   View
@@ -465,50 +465,54 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
               text={translate('Delete Downloaded Episodes')}
               wrapperStyles={core.buttonWithMarginTop}
             />
-            <Dialog.Container visible={showSetAllDownloadDialog}>
-              <Dialog.Title>{translate('Global Update')}</Dialog.Title>
-              <Dialog.Description>
-                {translate('Do you want to update the download limit for all of your currently subscribed podcasts')}
-              </Dialog.Description>
-              <Dialog.Button
-                label={translate('No')}
-                onPress={this._handleToggleSetAllDownloadDialog}
-                {...(testIDPrefix
-                  ? { testID: `${testIDPrefix}_dialog_update_download_limit_no_button`.prependTestId() }
-                  : {})}
-              />
-              <Dialog.Button
-                label={translate('Yes')}
-                onPress={
-                  showSetAllDownloadDialogIsCount
+            <PVDialog
+              buttonProps={[
+                {
+                  label: translate('No'),
+                  onPress: this._handleToggleSetAllDownloadDialog,
+                  testID: `${testIDPrefix}_dialog_update_download_limit_no_button`.prependTestId()
+                },
+                {
+                  label: translate('Yes'),
+                  onPress: showSetAllDownloadDialogIsCount
                     ? this._handleUpdateAllDownloadedEpiosdeLimitCount
-                    : this._handleUpdateAllDownloadedEpiosdeLimitDefault
+                    : this._handleUpdateAllDownloadedEpiosdeLimitDefault,
+                  testID: `${testIDPrefix}_dialog_update_download_limit_yes_button`.prependTestId()
                 }
-                {...(testIDPrefix
-                  ? { testID: `${testIDPrefix}_dialog_update_download_limit_yes_button`.prependTestId() }
-                  : {})}
-              />
-            </Dialog.Container>
-            <Dialog.Container visible={showDeleteDownloadedEpisodesDialog}>
-              <Dialog.Title>{translate('Delete All Downloaded Episodes')}</Dialog.Title>
-              <Dialog.Description>
-                {translate('Are you sure you want to delete all of your downloaded episodes')}
-              </Dialog.Description>
-              <Dialog.Button
-                label={translate('No')}
-                onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
-                {...(testIDPrefix
-                  ? { testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_no`.prependTestId() }
-                  : {})}
-              />
-              <Dialog.Button
-                label={translate('Yes')}
-                onPress={this._handleDeleteDownloadedEpisodes}
-                {...(testIDPrefix
-                  ? { testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_yes`.prependTestId() }
-                  : {})}
-              />
-            </Dialog.Container>
+              ]}
+              descriptionProps={[
+                {
+                  children: translate(
+                    'Do you want to update the download limit for all of your currently subscribed podcasts'
+                  ),
+                  testID: `${testIDPrefix}_dialog_update_download_limit_description`.prependTestId()
+                }
+              ]}
+              title={translate('Global Update')}
+              visible={showSetAllDownloadDialog}
+            />
+            <PVDialog
+              buttonProps={[
+                {
+                  label: translate('No'),
+                  onPress: this._handleToggleDeleteDownloadedEpisodesDialog,
+                  testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_no`.prependTestId()
+                },
+                {
+                  label: translate('Yes'),
+                  onPress: this._handleDeleteDownloadedEpisodes,
+                  testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_yes`.prependTestId()
+                }
+              ]}
+              descriptionProps={[
+                {
+                  children: translate('Are you sure you want to delete all of your downloaded episodes'),
+                  testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_description`.prependTestId()
+                }
+              ]}
+              title={translate('Delete All Downloaded Episodes')}
+              visible={showDeleteDownloadedEpisodesDialog}
+            />
           </>
         )}
       </ScrollView>
