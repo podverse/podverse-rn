@@ -58,7 +58,7 @@ export const PVDialog = (props: Props) => {
     return <Dialog.Button
       accessibilityRole='button'
       bold={!!props.bold}
-      color={props.color ? props.color : textColor}
+      color={!!props.color ? props.color : textColor}
       disabled={!!props.disabled}
       key={props.testID}
       label={props.label}
