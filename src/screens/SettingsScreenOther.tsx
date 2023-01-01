@@ -2,7 +2,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet } from 'react-native'
 import Config from 'react-native-config'
-import Dialog from 'react-native-dialog'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import {
@@ -11,6 +10,7 @@ import {
   Divider,
   Icon,
   NumberSelectorWithText,
+  PVDialog,
   ScrollView,
   SwitchWithText,
   Text,
@@ -243,20 +243,28 @@ export class SettingsScreenOther extends React.Component<Props, State> {
               text={translate('Delete cache')}
               wrapperStyles={core.buttonWithMarginTop}
             />
-            <Dialog.Container visible={showDeleteCacheDialog}>
-              <Dialog.Title>{translate('Delete cache')}</Dialog.Title>
-              <Dialog.Description>{translate('Are you sure you want to delete the cache')}</Dialog.Description>
-              <Dialog.Button
-                label={translate('No')}
-                onPress={this._handleToggleDeleteCacheDialog}
-                {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_cache_no`.prependTestId() } : {})}
-              />
-              <Dialog.Button
-                label={translate('Yes')}
-                onPress={this._handleDeleteCache}
-                {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_cache_yes`.prependTestId() } : {})}
-              />
-            </Dialog.Container>
+            <PVDialog
+              buttonProps={[
+                {
+                  label: translate('No'),
+                  onPress: this._handleToggleDeleteCacheDialog,
+                  testID: `${testIDPrefix}_dialog_delete_cache_no`.prependTestId()
+                },
+                {
+                  label: translate('Yes'),
+                  onPress: this._handleDeleteCache,
+                  testID: `${testIDPrefix}_dialog_delete_cache_yes`.prependTestId()
+                }
+              ]}
+              descriptionProps={[
+                {
+                  children: translate('Are you sure you want to delete the cache'),
+                  testID: `${testIDPrefix}_dialog_delete_cache_description`.prependTestId()
+                }
+              ]}
+              title={translate('Delete cache')}
+              visible={showDeleteCacheDialog}
+            />
           </>
         )}
       </ScrollView>

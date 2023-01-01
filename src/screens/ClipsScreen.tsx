@@ -1,7 +1,6 @@
 import debounce from 'lodash/debounce'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { Alert } from 'react-native'
-import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
   ActionSheet,
@@ -9,6 +8,7 @@ import {
   ClipTableCell,
   Divider,
   FlatList,
+  PVDialog,
   SearchBar,
   TableSectionSelectors,
   View
@@ -515,20 +515,28 @@ export class ClipsScreen extends React.Component<Props, State> {
           showModal={showActionSheet}
           testID={testIDPrefix}
         />
-        <Dialog.Container visible={showDeleteConfirmDialog}>
-          <Dialog.Title>{translate('Delete Clip')}</Dialog.Title>
-          <Dialog.Description>{translate('Are you sure')}</Dialog.Description>
-          <Dialog.Button
-            label={translate('Cancel')}
-            onPress={this._cancelDeleteMediaRef}
-            testID={`${testIDPrefix}_delete_clip_cancel`.prependTestId()}
-          />
-          <Dialog.Button
-            label={translate('Delete')}
-            onPress={this._deleteMediaRef}
-            testID={`${testIDPrefix}_delete_clip_delete`.prependTestId()}
-          />
-        </Dialog.Container>
+        <PVDialog
+          buttonProps={[
+            {
+              label: translate('Cancel'),
+              onPress: this._cancelDeleteMediaRef,
+              testID: `${testIDPrefix}_delete_clip_cancel`.prependTestId()
+            },
+            {
+              label: translate('Delete'),
+              onPress: this._deleteMediaRef,
+              testID: `${testIDPrefix}_delete_clip_delete`.prependTestId()
+            }
+          ]}
+          descriptionProps={[
+            {
+              children: translate('Are you sure'),
+              testID: `${testIDPrefix}_delete_clip_description`.prependTestId()
+            }
+          ]}
+          title={translate('Delete Clip')}
+          visible={showDeleteConfirmDialog}
+        />
       </View>
     )
   }

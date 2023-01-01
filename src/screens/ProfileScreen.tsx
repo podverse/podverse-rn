@@ -1,6 +1,5 @@
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem, isOdd } from 'podverse-shared'
 import { Alert, StyleSheet, View as RNView } from 'react-native'
-import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { setGlobal } from 'reactn'
 import {
@@ -14,6 +13,7 @@ import {
   PlaylistTableCell,
   PodcastTableCell,
   ProfileTableHeader,
+  PVDialog,
   TableSectionSelectors,
   View
 } from '../components'
@@ -584,20 +584,28 @@ export class ProfileScreen extends React.Component<Props, State> {
               showModal={showActionSheet}
               testID={testIDPrefix}
             />
-            <Dialog.Container visible={showDeleteConfirmDialog}>
-              <Dialog.Title>Delete Clip</Dialog.Title>
-              <Dialog.Description>Are you sure?</Dialog.Description>
-              <Dialog.Button
-                label={translate('Cancel')}
-                onPress={this._cancelDeleteMediaRef}
-                testID={'dialog_delete_clip_cancel'.prependTestId()}
-              />
-              <Dialog.Button
-                label={translate('Delete')}
-                onPress={this._deleteMediaRef}
-                testID={'dialog_delete_clip_delete'.prependTestId()}
-              />
-            </Dialog.Container>
+            <PVDialog
+              buttonProps={[
+                {
+                  label: translate('Cancel'),
+                  onPress: this._cancelDeleteMediaRef,
+                  testID: 'dialog_delete_clip_cancel'.prependTestId()
+                },
+                {
+                  label: translate('Delete'),
+                  onPress: this._deleteMediaRef,
+                  testID: 'dialog_delete_clip_delete'.prependTestId()
+                }
+              ]}
+              descriptionProps={[
+                {
+                  children: translate('Are you sure'),
+                  testID: 'dialog_delete_clip_description'.prependTestId()
+                }
+              ]}
+              title={translate('Delete Clip')}
+              visible={showDeleteConfirmDialog}
+            />
           </View>
         )}
       </View>
