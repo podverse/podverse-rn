@@ -52,6 +52,8 @@ import {
 import { addOrUpdateHistoryItem, saveOrResetCurrentlyPlayingItemInHistory } from './userHistoryItem'
 import { getNowPlayingItem, getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
 
+const _fileName = 'src/services/player.ts'
+
 export const getClipHasEnded = async () => {
   const clipHasEnded = await AsyncStorage.getItem(PV.Keys.CLIP_HAS_ENDED)
   return clipHasEnded === 'true'
@@ -208,7 +210,7 @@ export const playerUpdateUserPlaybackPosition = async (skipSetNowPlaying?: boole
       await saveOrResetCurrentlyPlayingItemInHistory(!!shouldAwait, currentNowPlayingItem, !!skipSetNowPlaying)
     }
   } catch (error) {
-    errorLogger('playerUpdateUserPlaybackPosition error', error)
+    errorLogger(_fileName, 'playerUpdateUserPlaybackPosition', error)
   }
 }
 
@@ -237,7 +239,7 @@ export const playerLoadNowPlayingItem = async (
       await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
     }
   } catch (error) {
-    errorLogger('playerLoadNowPlayingItem service error', error)
+    errorLogger(_fileName, 'playerLoadNowPlayingItem service', error)
   }
 }
 
@@ -502,7 +504,7 @@ export const setRemoteSkipButtonsTimeJumpOverride = async (bool: boolean) => {
       await AsyncStorage.removeItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP)
     }
   } catch (error) {
-    errorLogger('setRemoteSkipButtonsTimeJumpOverride', error)
+    errorLogger(_fileName, 'setRemoteSkipButtonsTimeJumpOverride', error)
   }
 }
 

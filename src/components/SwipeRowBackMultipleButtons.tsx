@@ -23,7 +23,7 @@ export const SwipeRowBackMultipleButtons = (props: Props) => {
 
   const generateButtons = () => {
     const nodes: any[] = []
-    
+
     for (const button of buttons) {
       const style = [s.swipeRowBackButton]
       if (button.type === 'danger') {
@@ -54,12 +54,7 @@ export const SwipeRowBackMultipleButtons = (props: Props) => {
     return nodes
   }
 
-  return (
-    <View
-      style={[s.swipeRowBack, globalTheme.swipeRowBackMultiple]}>
-      {generateButtons()}
-    </View>
-  )
+  return <View style={[s.swipeRowBack, globalTheme.swipeRowBackMultiple]}>{generateButtons()}</View>
 }
 
 const s = StyleSheet.create({

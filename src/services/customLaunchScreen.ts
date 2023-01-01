@@ -2,6 +2,8 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 
+const _fileName = 'src/services/customLaunchScreen.ts'
+
 export const getCustomLaunchScreenKey = async () => {
   let customLaunchScreen = PV.RouteNames.PodcastsScreen
 
@@ -11,7 +13,7 @@ export const getCustomLaunchScreenKey = async () => {
       customLaunchScreen = savedLaunchScreen
     }
   } catch (error) {
-    errorLogger('getCustomLaunchScreenKey error', error)
+    errorLogger(_fileName, 'getCustomLaunchScreenKey', error)
   }
   return customLaunchScreen
 }
@@ -24,6 +26,6 @@ export const setCustomLaunchScreenKey = async (customLaunchScreen: string) => {
       await AsyncStorage.removeItem(PV.Keys.CUSTOM_LAUNCH_SCREEN)
     }
   } catch (error) {
-    errorLogger('setCustomLaunchScreenKey error', error)
+    errorLogger(_fileName, 'setCustomLaunchScreenKey', error)
   }
 }

@@ -23,6 +23,8 @@ type Props = {
   urlPath?: string
 }
 
+const _fileName = 'src/components/NavNotificationsIcon.tsx'
+
 export const NavShareIcon = (props: Props) => {
   if (Config.DISABLE_SHARE) return null
 
@@ -64,7 +66,7 @@ export const NavShareIcon = (props: Props) => {
         url
       })
     } catch (error) {
-      errorLogger('error', error)
+      errorLogger(_fileName, 'NavShareIcon', error)
     }
   }
 

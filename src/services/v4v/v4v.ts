@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Funding, NowPlayingItem, ValueRecipient, ValueRecipientNormalized,
   ValueTag, ValueTransaction } from 'podverse-shared'
+  import { Alert } from 'react-native'
 import * as RNKeychain from 'react-native-keychain'
 import { errorLogger } from '../../lib/logger'
 import { translate } from '../../lib/i18n'
@@ -21,6 +22,9 @@ import {
   v4vSettingsDefault
 } from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
+import { AlbyKeysendResponse, AlbyMultiKeySendResponse, KeysendCustomKeyValueAddress } from './providers/alby'
+
+const _fileName = 'src/services/v4v/v4v.ts'
 
 export type BoostagramItem = {
   episodeFunding?: Funding[]
@@ -62,7 +66,7 @@ export const v4vGetProvidersConnected = async () => {
       accessData = JSON.parse(creds.password)
     }
   } catch (error) {
-    errorLogger('v4vGetProvidersConnected error:', error)
+    errorLogger(_fileName, 'v4vGetProvidersConnected error:', error)
   }
 
   return accessData
@@ -76,7 +80,7 @@ export const v4vSetProvidersConnected = async (connected: V4VProviderConnectedSt
       JSON.stringify(connected)
     )
   } catch (error) {
-    errorLogger('v4vSetProvidersEnabled error:', error)
+    errorLogger(_fileName, 'v4vSetProvidersEnabled error:', error)
   }
 }
 
@@ -90,7 +94,7 @@ export const v4vGetSettings = async () => {
       await v4vSetSettings(settingsData)
     }
   } catch (error) {
-    errorLogger('v4vGetSettings error:', error)
+    errorLogger(_fileName, 'v4vGetSettings error:', error)
   }
 
   return settingsData
@@ -104,7 +108,7 @@ export const v4vSetSettings = async (settings: V4VSettings) => {
       JSON.stringify(settings)
     )
   } catch (error) {
-    errorLogger('v4vSetSettings error:', error)
+    errorLogger(_fileName, 'v4vSetSettings error:', error)
   }
 }
 
@@ -257,7 +261,94 @@ const convertValueTagIntoValueTransaction = async (
   }
 }
 
+const processSendValueTransactionError = (
+  failedKeysendResponse: AlbyKeysendResponse,
+  customKeyValueAddresses: KeysendCustomKeyValueAddress[],
+  type: 'boost' | 'streaming'
+) => {
+  let customKey
+  let customValue
+
+  for (const customKeyValueAddress of customKeyValueAddresses) {
+    if (
+      customKeyValueAddress.customKey &&
+      customKeyValueAddress.customValue &&
+      failedKeysendResponse.keysend.custom_records &&
+      failedKeysendResponse.keysend.custom_records[customKeyValueAddress.customKey] &&
+      failedKeysendResponse.keysend.custom_records[customKeyValueAddress.customKey] ===
+        customKeyValueAddress.customValue
+    ) {
+      customKey = customKeyValueAddress.customKey
+      customValue = customKeyValueAddress.customValue
+    }
+  }
+
+  v4vAddPreviousTransactionError(
+    type,
+    failedKeysendResponse.keysend.destination,
+    failedKeysendResponse.error?.message || '',
+    customKey,
+    customValue
+  )
+}
+
+const processSendValueTransactions = async (
+  valueTransactions: ValueTransaction[],
+  type: 'boost' | 'streaming',
+  includeMessage?: boolean
+) => {
+  let totalAmountPaid = 0
+  try {
+    const response = await sendValueTransactions(
+      valueTransactions,
+      'alby',
+      includeMessage
+    )
+
+    const keysendsData = response?.keysends
+    const customKeyValueAddresses = response?.customKeyValueAddresses || []
+
+    if (keysendsData) {
+      for (const keysendData of keysendsData) {
+        if (keysendData?.error) {
+          processSendValueTransactionError(
+            keysendData,
+            customKeyValueAddresses,
+            type
+          )
+        } else {
+          totalAmountPaid += keysendData.keysend.amount
+        }
+      }
+    }
+  } catch (error) {
+    const displayedErrorMessage = error.response?.data?.message
+      ? `${error.message} – ${error.response?.data?.message}`
+      : error.message
+    errorLogger(_fileName, 'processSendValueTransactions error:', displayedErrorMessage)
+
+    const hasErrorResponseData = !!error.response?.data
+    const failedKeysends = error?.response?.data?.keysends || []
+    if (hasErrorResponseData && failedKeysends.length > 0) {
+      for (const failedKeysend of failedKeysends) {
+        if (failedKeysend?.error?.error) {
+          processSendValueTransactionError(
+            failedKeysend,
+            error.response.data.customKeyValueAddresses,
+            type
+          )
+        }
+      }
+    } else {
+      Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, displayedErrorMessage, PV.Alerts.BUTTONS.OK)
+    }
+  }
+
+  return totalAmountPaid
+}
+
 export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMessage?: boolean) => {
+  const action = 'boost'
   const valueTags =
     (item?.episodeValue?.length && item?.episodeValue) ||
     (item?.podcastValue?.length && item?.podcastValue)
@@ -272,15 +363,12 @@ export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMe
 
   v4vClearPreviousTransactionErrors()
 
-  const action = 'boost'
-
   const { activeProvider, activeProviderSettings } =
     v4vGetActiveProviderInfo(getBoostagramItemValueTags(item))
   const { boostAmount = 0 } = activeProviderSettings || {}
 
   if (!activeProvider?.key) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
-  let totalAmountPaid = 0
   const roundDownBoostTransactions = true
   const valueTransactions = await convertValueTagIntoValueTransactions(
     valueTag,
@@ -293,31 +381,7 @@ export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMe
     activeProvider.key
   )
 
-  const processSendValueTransaction = async (valueTransaction: ValueTransaction) => {
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    try {
-      const succesful = await sendValueTransaction(valueTransaction, includeMessage)
-      if (succesful) {
-        totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
-      }
-    } catch (error) {
-      const displayedErrorMessage = error.response?.data?.message
-        ? `${error.message} – ${error.response?.data?.message}`
-        : error.message
-
-      v4vAddPreviousTransactionError(
-        'boost',
-        valueTransaction.normalizedValueRecipient.address,
-        displayedErrorMessage,
-        valueTransaction.normalizedValueRecipient.customKey,
-        valueTransaction.normalizedValueRecipient.customValue
-      )
-    }
-  }
-
-  for (const valueTransaction of valueTransactions) {
-    await processSendValueTransaction(valueTransaction)
-  }
+  const totalAmountPaid = await processSendValueTransactions(valueTransactions, action, includeMessage)
 
   // Run refresh wallet data in the background after transactions complete.
   v4vRefreshProviderWalletInfo(activeProvider?.key)
@@ -325,51 +389,44 @@ export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMe
   return { transactions: valueTransactions, totalAmountPaid }
 }
 
-const sendValueTransaction = async (valueTransaction: ValueTransaction, includeMessage?: boolean) => {
+const sendValueTransactions = async (
+  valueTransactions: ValueTransaction[],
+  providerKey: 'alby',
+  includeMessage?: boolean
+) => {
+  if (valueTransactions.length === 0) return
+  let response: AlbyMultiKeySendResponse | null = null
 
-  if (!valueTransaction.normalizedValueRecipient.amount) return
-
-  if (valueTransaction?.providerKey) {
+  if (providerKey) {
     // Use require here to prevent circular dependencies issues.
-    if (valueTransaction.providerKey === 'alby') {
-      const { normalizedValueRecipient, satoshiStreamStats } = valueTransaction
-      const { v4vAlbySendKeysendPayment } = require('./providers/alby')
-      await v4vAlbySendKeysendPayment(
-        normalizedValueRecipient.amount,
-        normalizedValueRecipient.address,
-        satoshiStreamStats,
+    if (providerKey === 'alby') {
+      const { v4vAlbySendKeysendPayments } = require('./providers/alby')
+      response = await v4vAlbySendKeysendPayments(
+        valueTransactions,
         includeMessage
       )
     }
   }
 
-  return true
+  return response
 }
 
 export const processValueTransactionQueue = async () => {
+  const action = 'streaming'
   const bundledValueTransactionsToProcess = await bundleValueTransactionQueue()
 
-  let totalAmount = 0
+  // Hardcoding to Alby until another service is added.
+  const albyValueTransactionsToProcess = bundledValueTransactionsToProcess.filter(
+    (transaction: ValueTransaction) => transaction.providerKey === 'alby'
+  )
 
-  for (const transaction of bundledValueTransactionsToProcess) {
-    try {
-      await sendValueTransaction(transaction)
-      totalAmount = totalAmount + transaction.normalizedValueRecipient.amount
-    } catch (error) {
-      v4vAddPreviousTransactionError(
-        'streaming',
-        transaction.normalizedValueRecipient.address,
-        error.message,
-        transaction.normalizedValueRecipient.customKey,
-        transaction.normalizedValueRecipient.customValue
-      )
-    }
-  }
+  const includeMessage = false
+  const totalAmountPaid = await processSendValueTransactions(albyValueTransactionsToProcess, action, includeMessage)
 
   PVEventEmitter.emit(PV.Events.V4V_VALUE_SENT)
 
   return {
-    totalAmount,
+    totalAmountPaid,
     transactions: bundledValueTransactionsToProcess
   }
 }
@@ -379,7 +436,7 @@ const getValueTransactionQueue = async () => {
     const transactionQueueString = await AsyncStorage.getItem(PV.V4V.VALUE_TRANSACTION_QUEUE)
     return transactionQueueString ? JSON.parse(transactionQueueString) : []
   } catch (err) {
-    errorLogger('getStreamingValueTransactionQueue error:', err)
+    errorLogger(_fileName, 'getStreamingValueTransactionQueue error:', err)
     await clearValueTransactionQueue()
   }
 }
@@ -388,7 +445,7 @@ const clearValueTransactionQueue = async () => {
   try {
     await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify([]))
   } catch (error) {
-    errorLogger('clearValueTransactionQueue error:', error)
+    errorLogger(_fileName, 'clearValueTransactionQueue error:', error)
   }
 }
 
@@ -400,7 +457,7 @@ export const setStreamingValueOn = async (bool: boolean) => {
       await AsyncStorage.removeItem(PV.V4V.STREAMING_SATS_ON)
     }
   } catch (error) {
-    errorLogger('setStreamingValueOn error:', error)
+    errorLogger(_fileName, 'setStreamingValueOn error:', error)
   }
 }
 
@@ -409,7 +466,7 @@ export const getStreamingValueOn = async () => {
   try {
     val = await AsyncStorage.getItem(PV.V4V.STREAMING_SATS_ON)
   } catch (error) {
-    errorLogger('getStreamingValueOn error:', error)
+    errorLogger(_fileName, 'getStreamingValueOn error:', error)
   }
   return val
 }
@@ -452,7 +509,7 @@ const bundleValueTransactionQueue = async () => {
 
     return transactionsToSend
   } catch (err) {
-    errorLogger('bundleValueTransactionQueue error:', err)
+    errorLogger(_fileName, 'bundleValueTransactionQueue error:', err)
     await clearValueTransactionQueue()
     return []
   }
@@ -523,7 +580,7 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
 
     await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
   } catch (err) {
-    errorLogger('saveStreamingValueTransactionsToTransactionQueue error:', err)
+    errorLogger(_fileName, 'saveStreamingValueTransactionsToTransactionQueue error:', err)
     await clearValueTransactionQueue()
   }
 }
@@ -532,7 +589,7 @@ const saveTransactionQueue = async (transactionQueue: ValueTransaction[]) => {
   try {
     await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
   } catch (error) {
-    errorLogger('saveTransactionQueue error', error)
+    errorLogger(_fileName, 'saveTransactionQueue error', error)
     await clearValueTransactionQueue()
   }
 }
@@ -554,7 +611,7 @@ export const v4vGetSenderInfo = async () => {
       senderInfo = JSON.parse(senderInfoString)
     }
   } catch (error) {
-    errorLogger('v4vGetSenderInfo error', error)
+    errorLogger(_fileName, 'v4vGetSenderInfo error', error)
   }
 
   return senderInfo
@@ -564,7 +621,7 @@ export const v4vSetSenderInfo = async (senderInfo: V4VSenderInfo) => {
   try {
     await AsyncStorage.setItem(PV.Keys.V4V_SENDER_INFO, JSON.stringify(senderInfo))
   } catch (error) {
-    errorLogger('v4vSetSenderInfo error', error)
+    errorLogger(_fileName, 'v4vSetSenderInfo error', error)
   }
 }
 

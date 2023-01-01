@@ -6,6 +6,8 @@ import { checkIfShouldUseServerData, getBearerToken } from './auth'
 import { playerSyncPlayerWithQueue } from './player'
 import { request } from './request'
 
+const _fileName = 'src/services/queue.ts'
+
 export const addQueueItemLast = async (item: NowPlayingItem) => {
   const useServerData = await checkIfShouldUseServerData()
   const results = useServerData ? await addQueueItemLastOnServer(item) : await addQueueItemLastLocally(item)
@@ -184,7 +186,7 @@ const getQueueItemsFromServer = async () => {
       opts: { credentials: 'include' }
     })
   } catch (error) {
-    errorLogger('getQueueItemsFromServer error', error)
+    errorLogger(_fileName, 'getQueueItemsFromServer', error)
   }
 
   const userQueueItems = response && response.data && response.data.userQueueItems

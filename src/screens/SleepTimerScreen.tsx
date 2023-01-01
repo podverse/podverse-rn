@@ -6,11 +6,7 @@ import { translate } from '../lib/i18n'
 import { convertSecToHHMMSSAccessibilityLabel } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
-import {
-  setSleepTimerTimeRemaining,
-  startSleepTimer,
-  stopSleepTimer
-} from '../state/actions/sleepTimer'
+import { setSleepTimerTimeRemaining, startSleepTimer, stopSleepTimer } from '../state/actions/sleepTimer'
 
 type Props = {
   navigation?: any

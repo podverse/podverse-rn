@@ -44,7 +44,7 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
                 customValue &&
                 trs.customKey === customKey &&
                 trs.customValue === customValue &&
-                trs.address === trs.address) ||
+                trs.address === address) ||
               ((!customKey || !customValue) && trs.address === address)
             )
           })

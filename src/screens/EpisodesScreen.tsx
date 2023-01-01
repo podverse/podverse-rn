@@ -32,6 +32,8 @@ import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { core } from '../styles'
 import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
 
+const _fileName = 'src/screens/EpisodesScreen.tsx'
+
 type Props = {
   navigation?: any
 }
@@ -671,7 +673,15 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
         newState.flatListDataTotalCount = results[1]
       } else if (isDownloadedSelected) {
         const podcastSearchTitle = ''
-        const downloadedEpisodes = await getDownloadedEpisodes(podcastSearchTitle, searchTitle, hasVideo)
+        const downloadedSort = PV.FilterOptions.screenFilters.EpisodesScreen.sort.some((option) => option === filterKey)
+          ? filterKey
+          : querySort
+        const downloadedEpisodes = await getDownloadedEpisodes(
+          podcastSearchTitle,
+          searchTitle,
+          hasVideo,
+          downloadedSort
+        )
         newState.flatListData = [...downloadedEpisodes]
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = downloadedEpisodes.length
@@ -723,7 +733,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       this.shouldLoad = true
       return newState
     } catch (error) {
-      errorLogger('EpisodesScreen _queryData error', error)
+      errorLogger(_fileName, '_queryData', error)
       this.shouldLoad = true
       return newState
     }

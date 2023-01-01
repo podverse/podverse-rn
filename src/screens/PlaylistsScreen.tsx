@@ -20,6 +20,8 @@ import { trackPageView } from '../services/tracking'
 import { deletePlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { getLoggedInUserPlaylistsCombined } from '../state/actions/user'
 
+const _fileName = 'src/screens/PlaylistsScreen.tsx'
+
 type Props = {
   navigation?: any
 }
@@ -255,7 +257,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
       const sections = this.generatePlaylistsSections()
       newState.sections = sections
     } catch (error) {
-      errorLogger('PlaylistsScreen _queryData error', error)
+      errorLogger(_fileName, '_queryData', error)
       newState.sections = []
     }
     return newState

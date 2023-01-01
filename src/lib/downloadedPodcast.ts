@@ -9,6 +9,7 @@ import { errorLogger } from './logger'
 import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
 import { BackgroundDownloader, deleteDownloadedEpisode } from './downloader'
 
+const _fileName = 'src/lib/downloadedPodcast.ts'
 export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) => {
   delete episode.podcast
   let downloadedPodcasts = await getDownloadedPodcasts()
@@ -76,7 +77,8 @@ export const getDownloadedPodcastEpisodeCounts = async () => {
 export const getDownloadedEpisodes = async (
   searchPodcastTitle?: string,
   searchEpisodeTitle?: string,
-  hasVideo?: boolean
+  hasVideo?: boolean,
+  sort?: string
 ) => {
   const finalEpisodes = []
   const downloadedPodcasts = await getDownloadedPodcasts(searchPodcastTitle, hasVideo)
@@ -90,7 +92,11 @@ export const getDownloadedEpisodes = async (
     }
   }
 
-  finalEpisodes.sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))
+  if (sort === PV.Filters._oldestKey) {
+    finalEpisodes.sort((a: any, b: any) => new Date(a.pubDate) - new Date(b.pubDate))
+  } else {
+    finalEpisodes.sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))
+  }
   return finalEpisodes
 }
 
@@ -203,7 +209,7 @@ export const removeDownloadedPodcastsFromInternalStorage = async () => {
       try {
         await deleteDownloadedEpisode(episode)
       } catch (error) {
-        errorLogger('Error deleting episode: ', episode.id)
+        errorLogger(_fileName, 'removeDownloadedPodcastsFromInternalStorage', episode.id)
       }
     }
   }
@@ -228,7 +234,7 @@ export const moveDownloadedPodcastsToExternalStorage = async () => {
           await RNFS.moveFile(source, dest)
         }
       } catch (error) {
-        errorLogger('Error moving episode: ', episode.id)
+        errorLogger(_fileName, 'moveDownloadedPodcastsToExternalStorage', episode.id)
       }
     }
   }

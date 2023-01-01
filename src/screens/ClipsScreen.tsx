@@ -28,6 +28,8 @@ import { getLoggedInUserMediaRefs } from '../services/user'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { core } from '../styles'
 
+const _fileName = 'src/screens/ClipsScreen.tsx'
+
 type Props = {
   navigation?: any
 }
@@ -621,7 +623,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         newState.flatListDataTotalCount = results[1]
       }
     } catch (error) {
-      errorLogger('ClipsScreen queryData error:', error)
+      errorLogger(_fileName, 'queryData', error)
     }
     newState.flatListData = this.cleanFlatListData(newState.flatListData)
 

@@ -15,7 +15,6 @@ import {
   v4vSetSettings
 } from '../../../services/v4v/v4v'
 import { playerUpdatePlayerState } from '../player'
-import { setValueStreaming } from '../valueTag'
 
 export type V4VProviderConnectedState = {
   key: string
@@ -68,9 +67,33 @@ export const v4vSettingsDefault = {
   }
 }
 
+export const v4vInitialize = async () => {
+  const globalState = getGlobal()
+  const showLightningIcons = await AsyncStorage.getItem(PV.Keys.V4V_SHOW_LIGHTNING_ICONS)
+  const savedSettings = await v4vGetSettings()
+  const savedProviders = await v4vInitializeConnectedProviders()
+  const savedSenderInfo = await v4vGetSenderInfo()
+  const streamingValueOn = await getStreamingValueOn()
+  
+  setGlobal({
+    session: {
+      ...globalState.session,
+      v4v: {
+        ...globalState.session.v4v,
+        showLightningIcons,
+        settings: savedSettings,
+        providers: {
+          ...globalState.session.v4v.providers,
+          connected: savedProviders
+        },
+        senderInfo: savedSenderInfo,
+        streamingValueOn: !!streamingValueOn
+      }
+    }
+  })
+}
 
-
-/* Terms Accepted helpers */
+/* Lightning Icon helpers */
 
 export const v4vInitializeShowLightningIcon = async () => {
   const showLightningIcons = await AsyncStorage.getItem(PV.Keys.V4V_SHOW_LIGHTNING_ICONS)
@@ -100,12 +123,6 @@ export const v4vSetShowLightningIcons = async (showLightningIcons: boolean) => {
 }
 
 /* V4VSettings helpers */
-
-export const v4vInitializeSettings = async () => {
-  const globalState = getGlobal()
-  const savedSettings = await v4vGetSettings()
-  await v4vUpdateSettings(globalState, savedSettings)
-}
 
 const v4vUpdateSettings = async (globalState: any, newSettings: V4VSettings) => {
   await v4vSetSettings(newSettings)
@@ -206,7 +223,6 @@ export const v4vUpdateTypeMethodSettingsAppStreamingAmount = async (
 /* Connected Provider helpers */
 
 export const v4vInitializeConnectedProviders = async () => {
-  const globalState = getGlobal()
   const savedProviders = await v4vGetProvidersConnected()
   
   for (const savedProvider of savedProviders) {
@@ -217,18 +233,7 @@ export const v4vInitializeConnectedProviders = async () => {
     })()
   }
 
-  setGlobal({
-    session: {
-      ...globalState.session,
-      v4v: {
-        ...globalState.session.v4v,
-        providers: {
-          ...globalState.session.v4v.providers,
-          connected: savedProviders
-        }
-      }
-    }
-  })
+  return savedProviders
 }
 
 export const v4vGetConnectedProvider = (connectedProviders: V4VProviderConnectedState[], key: string) => {
@@ -416,21 +421,6 @@ export const v4vClearPreviousTransactionErrors = () => {
 
 /* V4VSenderInfo helpers */
 
-export const v4vInitializeSenderInfo = async () => {
-  const globalState = getGlobal()
-  const savedSenderInfo = await v4vGetSenderInfo()
-
-  setGlobal({
-    session: {
-      ...globalState.session,
-      v4v: {
-        ...globalState.session.v4v,
-        senderInfo: savedSenderInfo
-      }
-    }
-  })
-}
-
 export const v4vUpdateSenderInfoName = async (newName: string) => {
   const globalState = getGlobal()
 
@@ -478,12 +468,6 @@ export const v4vClearBoostagramMessage = () => {
       }
     }
   })
-}
-
-/* Streaming Sats helpers */
-export const v4vInitializeStreamingValue = async () => {
-  const streamingValueOn = await getStreamingValueOn()
-  setValueStreaming(!!streamingValueOn)
 }
 
 /* Misc helpers */

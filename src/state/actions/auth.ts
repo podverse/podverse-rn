@@ -24,6 +24,8 @@ import { getNowPlayingItemLocally,
 import { addAddByRSSPodcast, addAddByRSSPodcastWithCredentials } from './parser'
 import { combineWithAddByRSSPodcasts, getSubscribedPodcasts } from './podcast'
 
+const _fileName = 'src/state/actions/auth.ts'
+
 export type Credentials = {
   addByRSSPodcastFeedUrls?: []
   email: string
@@ -60,7 +62,7 @@ export const getAuthUserInfo = async (callback?: () => void) => {
     return isLoggedIn
   } catch (error) {
     try {
-      errorLogger('getAuthUserInfo action', error)
+      errorLogger(_fileName, 'getAuthUserInfo action', error)
       const isLoggedIn = await getAuthenticatedUserInfoLocally()
       return isLoggedIn
     } catch (error) {
@@ -127,7 +129,7 @@ export const askToSyncWithNowPlayingItem = async (callback?: any) => {
     }
     callback?.()
   } catch (error) {
-    errorLogger('askToSyncWithNowPlayingItem error', error)
+    errorLogger(_fileName, 'askToSyncWithNowPlayingItem error', error)
   }
 }
 
@@ -179,7 +181,7 @@ export const loginUser = async (credentials: Credentials) => {
           }
           askToSyncLocalPodcastsWithServer(localUserInfo, serverUserInfo, callback)
         } catch (error) {
-          errorLogger('loginUser setGlobal callback error:', error)
+          errorLogger(_fileName, 'loginUser setGlobal callback error:', error)
         }
       }
     )
@@ -240,7 +242,7 @@ export const logoutUser = async () => {
     await resetInternetCredentials(PV.Keys.BEARER_TOKEN)    
     await getAuthUserInfo()
   } catch (error) {
-    errorLogger(error)
+    errorLogger(_fileName, "logoutUser", error)
     Alert.alert('Error', error.message, PV.Alerts.BUTTONS.OK)
   }
 }

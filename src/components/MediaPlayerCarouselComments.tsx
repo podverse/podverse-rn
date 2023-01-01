@@ -18,6 +18,7 @@ type State = {
 }
 
 const testIDPrefix = 'media_player_carousel_comments'
+const _fileName = 'src/components/MediaPlayerCarouselComments.tsx'
 
 export class MediaPlayerCarouselComments extends React.PureComponent<Props, State> {
   constructor(props) {
@@ -59,7 +60,7 @@ export class MediaPlayerCarouselComments extends React.PureComponent<Props, Stat
                 isLoading: false
               })
             } catch (error) {
-              errorLogger('MediaPlayerCarouselComments activityPub error', error)
+              errorLogger(_fileName, 'componentDidMount', error)
               this.setState({ isLoading: false })
             }
           })()
@@ -75,7 +76,7 @@ export class MediaPlayerCarouselComments extends React.PureComponent<Props, Stat
                 isLoading: false
               })
             } catch (error) {
-              errorLogger('MediaPlayerCarouselComments twitter error', error)
+              errorLogger(_fileName, 'componentDidMount', error)
               this.setState({ isLoading: false })
             }
           })()
@@ -89,25 +90,27 @@ export class MediaPlayerCarouselComments extends React.PureComponent<Props, Stat
     const { commentNodes, isLoading } = this.state
 
     return (
-      <ScrollView contentContainerStyle={styles.wrapperContainer} style={[styles.wrapper, { width }]} transparent>
-        <View style={styles.commentsWrapper} testID={`${testIDPrefix}_comments_view`} transparent>
-          <TableSectionSelectors disableFilter includePadding selectedFilterLabel={translate('Comments')} />
-          {isLoading && (
-            <ActivityIndicator
-              accessibilityLabel={translate('Comments are loading')}
-              fillSpace
-              testID={`${testIDPrefix}_comments_are_loading`}
-            />
-          )}
-          {!isLoading && commentNodes}
-          {!isLoading && !commentNodes && (
-            <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
-              <Text style={styles.noResultsFound} testID={`${testIDPrefix}_no_results_found`}>
-                {translate('No comments found')}
-              </Text>
-            </View>
-          )}
-        </View>
+      <ScrollView
+        contentContainerStyle={styles.wrapperContainer}
+        style={[styles.wrapper, { width }]}
+        testID={`${testIDPrefix}_comments_view`}
+        transparent>
+        <TableSectionSelectors disableFilter includePadding selectedFilterLabel={translate('Comments')} />
+        {isLoading && (
+          <ActivityIndicator
+            accessibilityLabel={translate('Comments are loading')}
+            fillSpace
+            testID={`${testIDPrefix}_comments_are_loading`}
+          />
+        )}
+        {!isLoading && commentNodes}
+        {!isLoading && !commentNodes && (
+          <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
+            <Text style={styles.noResultsFound} testID={`${testIDPrefix}_no_results_found`}>
+              {translate('No comments found')}
+            </Text>
+          </View>
+        )}
       </ScrollView>
     )
   }
@@ -142,8 +145,11 @@ const styles = StyleSheet.create({
     marginTop: -8,
     textAlign: 'center'
   },
-  wrapper: {},
-  wrapperContainer: {
+  wrapper: {
     flex: 1
+  },
+  wrapperContainer: {
+    flexGrow: 1,
+    paddingHorizontal: 8
   }
 })

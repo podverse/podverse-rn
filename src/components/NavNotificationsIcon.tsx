@@ -21,6 +21,8 @@ type State = {
   isLoading: boolean
 }
 
+const _fileName = 'src/components/NavNotificationsIcon.tsx'
+
 export class NavNotificationsIcon extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
@@ -56,7 +58,7 @@ export class NavNotificationsIcon extends React.Component<Props, State> {
           this.requestPermissionsInSettings()
         }
       } catch (err) {
-        errorLogger('onEnableNotifications error: ', err)
+        errorLogger(_fileName, 'onEnableNotifications', err)
       }
       this.setState({ isLoading: false })
     }
@@ -71,7 +73,7 @@ export class NavNotificationsIcon extends React.Component<Props, State> {
       await getAuthUserInfo()
       onNotificationSelectionChanged({ isEnabled: false })
     } catch (err) {
-      errorLogger('onDisableNotifications error: ', err)
+      errorLogger(_fileName, 'onDisableNotifications', err)
     }
     this.setState({ isLoading: false })
   }
