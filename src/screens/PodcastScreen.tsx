@@ -8,7 +8,6 @@ import {
 } from 'podverse-shared'
 import { Platform, StyleSheet, View as RNView } from 'react-native'
 import { Config } from 'react-native-config'
-import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
 import {
@@ -28,7 +27,8 @@ import {
   SwitchWithText,
   TableSectionSelectors,
   Text,
-  View
+  View,
+  PVDialog
 } from '../components'
 import { errorLogger } from '../lib/logger'
 import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
@@ -1120,22 +1120,28 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
             />
           </View>
         )}
-        <Dialog.Container visible={showDeleteDownloadedEpisodesDialog}>
-          <Dialog.Title>{translate('Delete Downloaded Episodes')}</Dialog.Title>
-          <Dialog.Description>
-            {translate('Are you sure you want to delete all of your downloaded episodes from this podcast')}
-          </Dialog.Description>
-          <Dialog.Button
-            label={translate('No')}
-            onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
-            testID={'dialog_delete_downloaded_episodes_no'.prependTestId()}
-          />
-          <Dialog.Button
-            label={translate('Yes')}
-            onPress={this._handleDeleteDownloadedEpisodes}
-            testID={'dialog_delete_downloaded_episodes_yes'.prependTestId()}
-          />
-        </Dialog.Container>
+        <PVDialog
+          buttonProps={[
+            {
+              label: translate('No'),
+              onPress: this._handleToggleDeleteDownloadedEpisodesDialog,
+              testID: 'dialog_delete_downloaded_episodes_no'.prependTestId()
+            },
+            {
+              label: translate('Yes'),
+              onPress: this._handleDeleteDownloadedEpisodes,
+              testID: 'dialog_delete_downloaded_episodes_yes'.prependTestId()
+            }
+          ]}
+          descriptionProps={[
+            {
+              children: translate('Are you sure you want to delete all of your downloaded episodes from this podcast'),
+              testID: 'dialog_delete_downloaded_episodes_description'.prependTestId()
+            }
+          ]}
+          title={translate('Delete Downloaded Episodes')}
+          visible={showDeleteDownloadedEpisodesDialog}
+        />
       </View>
     )
   }

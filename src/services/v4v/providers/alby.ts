@@ -260,7 +260,7 @@ export const v4vAlbyAPIRequest = async ({ body, method, path }: AlbyAPIRequest, 
         method,
         headers: { Authorization: providerBearerToken },
         body,
-        timeout: 30000
+        timeout: 60000
       },
       `${albyApiPath}${path}`
     )
@@ -399,8 +399,8 @@ export const v4vAlbySendKeysendPayments = async (
     response.customKeyValueAddresses = customKeyValueAddresses
     return response
   } catch (error) {
-    if (typeof error.response.data === 'object') {
-      error.response.data.customKeyValueAddresses = customKeyValueAddresses
+    if (typeof error?.response?.data === 'object') {
+      error.response.data.customKeyValueAddresses = customKeyValueAddresses || []
     }
     throw error
   }
