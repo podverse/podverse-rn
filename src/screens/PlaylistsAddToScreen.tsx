@@ -1,6 +1,5 @@
 import { isOdd } from 'podverse-shared'
 import { Alert, StyleSheet, View as RNView } from 'react-native'
-import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
   ActivityIndicator,
@@ -10,6 +9,7 @@ import {
   NavDismissIcon,
   NavHeaderButtonText,
   PlaylistTableCell,
+  PVDialog,
   View
 } from '../components'
 import { errorLogger } from '../lib/logger'
@@ -199,27 +199,30 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
                 renderItem={this._renderPlaylistItem}
               />
             )}
-            <Dialog.Container visible={showNewPlaylistDialog}>
-              <Dialog.Title accessibilityRole='header'>{translate('New Playlist')}</Dialog.Title>
-              <Dialog.Input
-                onChangeText={this._handleNewPlaylistTextChange}
-                placeholder={translate('title of playlist')}
-                testID={'new_playlist_title_input'.prependTestId()}
-                value={newPlaylistTitle}
-              />
-              <Dialog.Button
-                accessibilityRole='button'
-                label={translate('Cancel')}
-                onPress={this._handleNewPlaylistDismiss}
-                testID={'new_playlist_title_cancel'.prependTestId()}
-              />
-              <Dialog.Button
-                accessibilityRole='button'
-                label={translate('Save')}
-                onPress={this._saveNewPlaylist}
-                testID={'new_playlist_title_save'.prependTestId()}
-              />
-            </Dialog.Container>
+            <PVDialog
+              buttonProps={[
+                {
+                  label: translate('Cancel'),
+                  onPress: this._handleNewPlaylistDismiss,
+                  testID: 'new_playlist_title_cancel'.prependTestId()
+                },
+                {
+                  label: translate('Save'),
+                  onPress: this._saveNewPlaylist,
+                  testID: 'new_playlist_title_save'.prependTestId()
+                }
+              ]}
+              inputProps={[
+                {
+                  onChangeText: this._handleNewPlaylistTextChange,
+                  placeholder: translate('title of playlist'),
+                  testID: 'new_playlist_title_input'.prependTestId(),
+                  value: newPlaylistTitle || ''
+                }
+              ]}
+              title={translate('New Playlist')}
+              visible={showNewPlaylistDialog}
+            />
           </View>
         )}
       </View>

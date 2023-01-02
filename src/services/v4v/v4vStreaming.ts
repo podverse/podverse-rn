@@ -80,15 +80,15 @@ export const handleValueStreamingTimerIncrement = (isVideo?: boolean) => {
       }
 
       if (shouldProcessQueue) {
-        const { errors, transactions, totalAmount } = await processValueTransactionQueue()
-        if (transactions.length > 0 && totalAmount > 0) {
+        const { errors, transactions, totalAmountPaid } = await processValueTransactionQueue()
+        if (transactions.length > 0 && totalAmountPaid > 0) {
           setGlobal({
             bannerInfo: {
               show: true,
               description: translate('Streaming Value Sent'),
               errors,
               transactions,
-              totalAmount
+              totalAmount: totalAmountPaid
             }
           })
         }

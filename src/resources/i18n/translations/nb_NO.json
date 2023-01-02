@@ -755,5 +755,10 @@
     "Resume": "Fortsett",
     "value_tag_preview_boostagram": "Et påskjønnelsesgram legger også til en offentlig melding",
     "value_tag_preview_streaming": "Strøm sender en donasjon for hver minutt du lytter.",
-    "Loading": "Laster inn …"
+    "Loading": "Laster inn …",
+    "value_tag_info_streaming_sats_text_1": "En kø over overføringer til mottagere skaperen setter opp.",
+    "value_tag_info_streaming_sats_text_2": "Hvert minutt med avspilling sender mottagere sine Sats, såfremt det er 5 eller flere.",
+    "value_tag_info_streaming_sats_title": "Strømming av Sats",
+    "value_tag_streaming_sats": "Strømming av Sats",
+    "value_tag_info_streaming_sats_text_3": "(Lukking og gjenåpning av programmer tømmer køen.)"
 }

@@ -2,7 +2,7 @@
 import { Alert, StyleSheet } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
-import { Button, Divider, Icon, ScrollView, Text, View } from '../components'
+import { Button, Divider, Icon, PVDialog, ScrollView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { getMembershipExpiration } from '../lib/membership'
 import { downloadMyUserDataFile } from '../lib/storage'
@@ -165,30 +165,43 @@ export class SettingsScreenAccount extends React.Component<Props, State> {
           text={translate('Delete Account')}
           wrapperStyles={core.button}
         />
-        <Dialog.Container visible={showDeleteAccountDialog}>
-          <Dialog.Title>{translate('Delete Account')}</Dialog.Title>
-          <Dialog.Description>{translate('Are you sure you want to delete your account')}</Dialog.Description>
-          <Dialog.Description>{translate('Type DELETE in the input below to confirm')}</Dialog.Description>
-          <Dialog.Input
-            onChangeText={this._handleDeleteAccountDialogTextChange}
-            placeholder=''
-            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_input`.prependTestId() } : {})}
-            value={deleteAccountDialogText}
-          />
-          <Dialog.Button
-            label={translate('Cancel')}
-            onPress={this._handleToggleDeleteAccountDialog}
-            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_cancel`.prependTestId() } : {})}
-          />
-          <Dialog.Button
-            bold={deleteAccountDialogConfirmed}
-            color={deleteAccountDialogConfirmed ? PV.Colors.redDarker : PV.Colors.grayDark}
-            disabled={!deleteAccountDialogConfirmed}
-            label={translate('Delete')}
-            onPress={this._handleDeleteAccount}
-            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_delete`.prependTestId() } : {})}
-          />
-        </Dialog.Container>
+        <PVDialog
+          buttonProps={[
+            {
+              label: translate('Cancel'),
+              onPress: this._handleToggleDeleteAccountDialog,
+              testID: `${testIDPrefix}_dialog_delete_account_cancel`.prependTestId()
+            },
+            {
+              bold: deleteAccountDialogConfirmed,
+              color: deleteAccountDialogConfirmed ? PV.Colors.redDarker : PV.Colors.grayDark,
+              disabled: !deleteAccountDialogConfirmed,
+              label: translate('Delete'),
+              onPress: this._handleDeleteAccount,
+              testID: `${testIDPrefix}_dialog_delete_account_delete`.prependTestId()
+            }
+          ]}
+          descriptionProps={[
+            {
+              children: translate('Are you sure you want to delete your account'),
+              testID: `${testIDPrefix}_dialog_delete_account_description_1`.prependTestId()
+            },
+            {
+              children: translate('Type DELETE in the input below to confirm'),
+              testID: `${testIDPrefix}_dialog_delete_account_description_2`.prependTestId()
+            }
+          ]}
+          inputProps={[
+            {
+              onChangeText: this._handleDeleteAccountDialogTextChange,
+              placeholder: '',
+              testID: `${testIDPrefix}_dialog_delete_account_input`.prependTestId(),
+              value: deleteAccountDialogText
+            }
+          ]}
+          title={translate('Delete Account')}
+          visible={showDeleteAccountDialog}
+        />
       </ScrollView>
     )
   }

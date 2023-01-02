@@ -47,6 +47,7 @@
   "Are you sure you want to delete all of your downloaded episodes from this podcast": "Delete all downloaded episodes from this podcast?",
   "Are you sure you want to delete your account": "Delete your account?",
   "Ask to sync local podcasts with server": "Save the local subscriptions to Podverse Premium so they are available on all devices?",
+  "Auto-enqueue downloaded episodes": "Auto-enqueue downloaded episodes",
   "Auto queue new episodes position": "Auto-enqueue episodes …",
   "ARIA HINT - add a podcast by its RSS feed": "Add a podcast by its RSS feed",
   "ARIA HINT - add this chapter last in your queue": "Add this chapter to your queue",
@@ -670,7 +671,7 @@
   "TermsOfServiceScreenText6": "Podverse has no responsibility for, but hosts funding links and content from third-party podcast feeds and sites with independent privacy policies.",
   "TermsOfServicesScreenText7": "Podverse only stores and uses credentials for podcasts requiring authentication in the secure storage of the device.",
   "The device does not allow Podverse to access the external storage for downloads.": "Podverse is denied access to external storage for downloads.",
-  "The email may go to your Spam folder": "The e-mail may be in you spam folder.",
+  "The email may go to your Spam folder": "The e-mail may be in your spam folder.",
   "The start time must be before the end time": "Start time must be before the end time.",
   "The start time must be greater than 0 if no end time is provided": "Start time must be above 0 if no end time is provided.",
   "Third Party Libraries": "Third-party Libraries",
@@ -760,5 +761,6 @@
   "Your purchase was successful You may close this window": "Thank you. You may close this window.",
   "Your queue is empty": "Your queue is empty",
   "Your membership will not auto-renew": "Your membership will not auto-renew",
-  "You are not being charged during your free trial": "You are not being charged during your free trial, and your membership will not auto-renew."
+  "You are not being charged during your free trial": "You are not being charged during your free trial, and your membership will not auto-renew.",
+  "You will not be charged for signing up for your free trial": "You will not be charged for signing up for your free trial. You would only be charged if you decide to manually renew."
 }

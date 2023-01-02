@@ -17,6 +17,7 @@ import {
   PlayerEvents,
   PodcastTableCell,
   PurchaseListener,
+  PVDialog,
   SearchBar,
   SwipeRowBackMultipleButtons,
   TableSectionSelectors,
@@ -1193,22 +1194,28 @@ export class PodcastsScreen extends React.Component<Props, State> {
             testID={testIDPrefix}
           />
         </RNView>
-        <Dialog.Container accessible visible={showDataSettingsConfirmDialog}>
-          <Dialog.Title>{translate('Data Settings')}</Dialog.Title>
-          <Dialog.Description>
-            {translate('Do you want to allow downloading episodes with your data plan')}
-          </Dialog.Description>
-          <Dialog.Button
-            label={translate('No Wifi Only')}
-            onPress={this._handleDataSettingsWifiOnly}
-            testID={'alert_no_wifi_only'.prependTestId()}
-          />
-          <Dialog.Button
-            label={translate('Yes Allow Data')}
-            onPress={this._handleDataSettingsAllowData}
-            testID={'alert_yes_allow_data'.prependTestId()}
-          />
-        </Dialog.Container>
+        <PVDialog
+          buttonProps={[
+            {
+              label: translate('No Wifi Only'),
+              onPress: this._handleDataSettingsWifiOnly,
+              testID: 'alert_no_wifi_only'.prependTestId()
+            },
+            {
+              label: translate('Yes Allow Data'),
+              onPress: this._handleDataSettingsAllowData,
+              testID: 'alert_yes_allow_data'.prependTestId()
+            }
+          ]}
+          descriptionProps={[
+            {
+              children: translate('Do you want to allow downloading episodes with your data plan'),
+              testID: 'alert_description_allow_data'.prependTestId()
+            }
+          ]}
+          title={translate('Data Settings')}
+          visible={showDataSettingsConfirmDialog}
+        />
         <PurchaseListener navigation={navigation} />
       </View>
     )
