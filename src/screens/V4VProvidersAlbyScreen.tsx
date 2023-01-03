@@ -5,6 +5,7 @@ import {
   Divider,
   SafeAreaView,
   ScrollView,
+  Text,
   V4VWalletAbout,
   V4VWalletConnectButtons,
   V4VWalletInfo,
@@ -99,8 +100,8 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
     const { session } = this.global
     const { connected } = session.v4v.providers
     const provider = v4vGetConnectedProvider(connected, _albyKey)
-
     const isConnected = !!provider
+    const fiatBalanceText = provider?.fiat_balance_text
 
     return (
       <SafeAreaView style={styles.content} testID={`${testIDPrefix}_view`.prependTestId()}>
@@ -124,6 +125,7 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
                 v4vKey={_albyKey}
               />
               <V4VWalletAbout testID={testIDPrefix} v4vKey={_albyKey} />
+              {!!fiatBalanceText && <Text style={styles.footnote}>{'*Satoshi to fiat conversion by Alby API'}</Text>}
             </>
           </ScrollView>
         )}
@@ -144,6 +146,11 @@ const styles = StyleSheet.create({
   },
   dividerWithMargin: {
     marginBottom: 36
+  },
+  footnote: {
+    fontSize: PV.Fonts.sizes.sm,
+    marginTop: 16,
+    textAlign: 'center'
   },
   scrollView: {
     flex: 1

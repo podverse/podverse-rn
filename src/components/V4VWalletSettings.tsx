@@ -8,6 +8,8 @@ import {
   MINIMUM_BOOST_PAYMENT,
   MINIMUM_STREAMING_PAYMENT,
   v4vGetPluralCurrencyUnit,
+  v4vGetSatoshisInFormattedFiatValue,
+  v4vGetTextInputLabel,
   v4vGetTypeMethodKey
 } from '../services/v4v/v4v'
 import {
@@ -27,10 +29,10 @@ type Props = {
 }
 
 type State = {
-  localBoostAmount: string
-  localStreamingAmount: string
-  localAppBoostAmount: string
-  localAppStreamingAmount: string
+  localBoostAmount: number
+  localStreamingAmount: number
+  localAppBoostAmount: number
+  localAppStreamingAmount: number
 }
 
 export class V4VWalletSettings extends React.Component<Props, State> {
@@ -38,10 +40,10 @@ export class V4VWalletSettings extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      localBoostAmount: '0',
-      localStreamingAmount: '0',
-      localAppBoostAmount: '0',
-      localAppStreamingAmount: '0'
+      localBoostAmount: 0,
+      localStreamingAmount: 0,
+      localAppBoostAmount: 0,
+      localAppStreamingAmount: 0
     }
   }
 
@@ -71,8 +73,20 @@ export class V4VWalletSettings extends React.Component<Props, State> {
 
     if (!typeMethodSettings) return null
 
-    const boostAmountText = `${translate('Boost Amount')} (${v4vGetPluralCurrencyUnit(provider.unit)})`
-    const streamingAmountText = `${translate('Streaming Amount')} (${v4vGetPluralCurrencyUnit(provider.unit)})`
+    const boostAmountText = v4vGetTextInputLabel(translate('Boost Amount'), provider)
+    const streamingAmountText = v4vGetTextInputLabel(translate('Streaming Amount'), provider)
+
+    const boostFiatAmountText = v4vGetSatoshisInFormattedFiatValue({
+      btcRateInFiat: provider.fiat_rate_float,
+      satoshiAmount: localBoostAmount,
+      currency: provider.fiat_currency
+    })
+
+    const streamingFiatAmountText = v4vGetSatoshisInFormattedFiatValue({
+      btcRateInFiat: provider.fiat_rate_float,
+      satoshiAmount: localStreamingAmount,
+      currency: provider.fiat_currency
+    })
 
     return (
       <View>
@@ -89,16 +103,18 @@ export class V4VWalletSettings extends React.Component<Props, State> {
                 await v4vUpdateTypeMethodSettingsBoostAmount(this.global, type, method, Number(localBoostAmount))
               } else {
                 await v4vUpdateTypeMethodSettingsBoostAmount(this.global, type, method, MINIMUM_BOOST_PAYMENT)
-                this.setState({ localBoostAmount: MINIMUM_BOOST_PAYMENT.toString() })
+                this.setState({ localBoostAmount: MINIMUM_BOOST_PAYMENT })
               }
             }}
             onSubmitEditing={() => Keyboard.dismiss()}
-            onChangeText={(newText: string) => {
-              this.setState({ localBoostAmount: newText })
+            onChangeText={(newNumber: number) => {
+              this.setState({ localBoostAmount: newNumber })
             }}
+            outerWrapperStyle={styles.textInputWrapperOuter}
+            subText={!!boostFiatAmountText ? `${boostFiatAmountText}*` : ''}
+            subTextAlignRight
             testID={`${testID}_boost_amount_text_input`}
             value={`${localBoostAmount}`}
-            wrapperStyle={styles.textInputWrapper}
           />
           <TextInput
             alwaysShowEyebrow
@@ -115,16 +131,18 @@ export class V4VWalletSettings extends React.Component<Props, State> {
                 )
               } else {
                 await v4vUpdateTypeMethodSettingsStreamingAmount(this.global, type, method, MINIMUM_STREAMING_PAYMENT)
-                this.setState({ localStreamingAmount: MINIMUM_STREAMING_PAYMENT.toString() })
+                this.setState({ localStreamingAmount: MINIMUM_STREAMING_PAYMENT })
               }
             }}
-            onChangeText={(newText: string) => {
-              this.setState({ localStreamingAmount: newText })
+            onChangeText={(newNumber: number) => {
+              this.setState({ localStreamingAmount: newNumber })
             }}
             onSubmitEditing={() => Keyboard.dismiss()}
+            outerWrapperStyle={styles.textInputWrapperOuter}
+            subText={!!streamingFiatAmountText ? `${streamingFiatAmountText}*` : ''}
+            subTextAlignRight
             testID={`${testID}_streaming_amount_text_input`}
             value={`${localStreamingAmount}`}
-            wrapperStyle={styles.textInputWrapper}
           />
         </View>
         {/* <View style={styles.sectionWrapper}>
@@ -147,9 +165,9 @@ export class V4VWalletSettings extends React.Component<Props, State> {
             onChangeText={(newText: string) => {
               this.setState({ localAppBoostAmount: newText })
             }}
+            outerWrapperStyle={styles.textInputWrapperOuter}
             testID={`${testID}_app_boost_amount_text_input`}
             value={`${localAppBoostAmount}`}
-            wrapperStyle={styles.textInputWrapper}
           />
           <TextInput
             alwaysShowEyebrow
@@ -170,9 +188,9 @@ export class V4VWalletSettings extends React.Component<Props, State> {
               this.setState({ localAppStreamingAmount: newText })
             }}
             onSubmitEditing={() => Keyboard.dismiss()}
+            outerWrapperStyle={styles.textInputWrapperOuter}
             testID={`${testID}_app_streaming_amount_text_input`}
             value={`${localAppStreamingAmount}`}
-            wrapperStyle={styles.textInputWrapper}
           />
         </View> */}
       </View>
@@ -201,7 +219,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: PV.Fonts.sizes.xxl
   },
-  textInputWrapper: {
+  textInputWrapperOuter: {
     marginTop: 0,
     marginBottom: 24
   }

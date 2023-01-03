@@ -107,13 +107,13 @@ export const SwitchWithText = (props: Props) => {
           onBlur={inputHandleBlur}
           onChangeText={inputHandleTextChange}
           onSubmitEditing={inputHandleSubmit}
+          outerWrapperStyle={styles.textInputWrapperOuter}
           placeholder={inputPlaceholder}
           returnKeyType='done'
           style={[globalTheme.textInput, styles.textInput]}
           {...(testID ? { testID: `${testID}_text_input` } : {})}
           underlineColorAndroid='transparent'
           value={inputText}
-          wrapperStyle={styles.textInputWrapper}
         />
       )}
       {input2Show && (
@@ -127,6 +127,7 @@ export const SwitchWithText = (props: Props) => {
           onBlur={input2HandleBlur}
           onChangeText={input2HandleTextChange}
           onSubmitEditing={input2HandleSubmit}
+          outerWrapperStyle={styles.textInputWrapperOuter}
           placeholder={input2Placeholder}
           returnKeyType='done'
           secureTextEntry
@@ -134,7 +135,6 @@ export const SwitchWithText = (props: Props) => {
           {...(testID ? { testID: `${testID}_text_input_2` } : {})}
           underlineColorAndroid='transparent'
           value={input2Text}
-          wrapperStyle={styles.textInputWrapper}
         />
       )}
       {!!subText && (
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.xxl,
     justifyContent: 'center'
   },
-  textInputWrapper: {
+  textInputWrapperOuter: {
     marginTop: 24
   }
 })

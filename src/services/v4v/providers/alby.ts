@@ -3,7 +3,7 @@ import qs from 'qs'
 import * as RNKeychain from 'react-native-keychain'
 import { getGlobal } from 'reactn'
 import { Alert } from 'react-native'
-import { _v4v_env_ } from '../v4v'
+import { v4vGetSatoshisInFormattedFiatValue, _v4v_env_ } from '../v4v'
 import { pkceGenerateRandomString, pkceGenerateCodeChallenge } from '../../pkce'
 import { PVRequest, request } from "../../request"
 import { errorLogger } from '../../../lib/logger'
@@ -407,9 +407,55 @@ export const v4vAlbySendKeysendPayments = async (
 
 }
 
+/* Fiat conversion */
+// Adapted from Alby's alby-tools repository.
+// https://github.com/getAlby/alby-tools/blob/master/src/utils/fiat.ts
+
+const v4vAlbyGetBtcRateInFiat = async (currency: string): Promise<number> => {
+  const url = 'https://getalby.com/api/rates/' + currency.toLowerCase() + '.json'
+  const response = await albyRequest({
+    method: 'GET'
+  }, url)
+
+  const btcRateInFiat = response?.data?.[currency]?.rate_float
+    ? response?.data?.[currency]?.rate_float
+    : 0
+  
+  return btcRateInFiat
+}
+
+export const v4vAlbyGetSatoshiConversionData = async ({
+  satoshiAmount,
+  currency
+}: {
+  satoshiAmount: number
+  currency: string
+}) => {
+  const btcRateInFiat = await v4vAlbyGetBtcRateInFiat(currency)
+  if (btcRateInFiat) {
+    const fiatAmountText = v4vGetSatoshisInFormattedFiatValue({
+      btcRateInFiat,
+      satoshiAmount,
+      currency
+    })
+
+    return {
+      fiatAmountText,
+      btcRateInFiat
+    }
+  }
+
+  return {
+    fiatAmountText: '',
+    btcRateInFiat: 0
+  }
+}
+
+
 /* Misc helpers */
 
 export const v4vAlbyCheckConnectDeepLink = (domain: string) => {
   // Include ? to prevent matching against a different deep link path
   return domain.startsWith(`${PV.DeepLinks.providers.ALBY.oauthCallbackPath}?`)
 }
+

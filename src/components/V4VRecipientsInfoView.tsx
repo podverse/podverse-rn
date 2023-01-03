@@ -75,10 +75,10 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
         })}
         <View style={styles.recipientTableFooter}>
           <Text testID={`${testID}_boost_recipient_amount_total`} style={styles.recipientFooterText}>
-            {`${totalAmountText}: ${parsedTotalAmount}*`}
+            {`${totalAmountText}: ${parsedTotalAmount}`}
           </Text>
           <Text style={styles.disclaimerText} testID='boost_dropdown_banner_disclaimer_text'>
-            {`*${translate('Actual amount will be higher due to network fees')}`}
+            {`(${translate('Actual amount will be higher due to network fees')})`}
           </Text>
         </View>
       </View>
@@ -88,7 +88,7 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   disclaimerText: {
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.sm,
     paddingBottom: 12,
     textAlign: 'right'
   },
