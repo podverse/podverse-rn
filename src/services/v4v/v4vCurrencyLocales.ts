@@ -3,7 +3,7 @@ import { getLanguageTag } from '../../lib/i18n'
 const currencyLocales = {
   da: 'DKK',
   el: 'EUR',
-  en: 'NOK',
+  en: 'USD',
   es: 'EUR',
   fr: 'EUR',
   lt: 'EUR',
