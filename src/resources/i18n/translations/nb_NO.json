@@ -3,7 +3,7 @@
     "A-Z": "A-Å",
     "ARIA HINT - This is the membership status of your currently logged-in account": "Podverse premium-status for din innloggede konto",
     "ARIA HINT - go to the FAQ page": "Gå til O-S-S siden",
-    "18 per year after that": "n18 $ per år etter det",
+    "18 per year after that": "Forny for 18 $ per år etter det",
     "ARIA HINT - Current playback time": "Nåværende avspillingstid",
     "ARIA HINT - Error something went wrong with playing this item": "Kunne ikke spille dette.",
     "ARIA HINT - Hide podcast settings": "Skjul innstillinger for nettradioopptak",
@@ -214,7 +214,7 @@
     "Jump forwards seconds": "Sekunder å hoppe over",
     "How To": "Instruks",
     "Light Mode": "Lys",
-    "Latest episode": "Den nyeste episoden",
+    "Latest episode": "Nyeste episode",
     "Latest": "Seneste",
     "Leaving App": "Forlater …",
     "License": "Gemenfrihetslig lisens",
@@ -654,7 +654,7 @@
     "Mode": "Modus",
     "Search channels": "Søk etter kanaler …",
     "Add custom RSS feeds": "Legg til RSS-informasjonskanaler",
-    "Skip track buttons are time jumps on lockscreen and bluetooth devices": "Å klikke på knapper for å hoppe over spor på låseskjermen og blåtannsenheter hopper i avspillingen.",
+    "Skip track buttons are time jumps on lockscreen and bluetooth devices": "Tidshopp med knapper for spoling på hodesett og låseskjermen.",
     "Enable Notifications": "Merknader",
     "Enable notifications in settings message": "Gå til enhetens innstillinger og skru på merknader.",
     "Go to live podcast": "Lytt til direktesending?",
@@ -760,5 +760,8 @@
     "value_tag_info_streaming_sats_text_2": "Hvert minutt med avspilling sender mottagere sine Sats, såfremt det er 5 eller flere.",
     "value_tag_info_streaming_sats_title": "Strømming av Sats",
     "value_tag_streaming_sats": "Strømming av Sats",
-    "value_tag_info_streaming_sats_text_3": "(Lukking og gjenåpning av programmer tømmer køen.)"
+    "value_tag_info_streaming_sats_text_3": "(Lukking og gjenåpning av programmer tømmer køen.)",
+    "You will not be charged for signing up for your free trial": "Du vil ikke belastes for å registrere deg for gratisperioden, kun hvis du manuelt og aktivt fornyer.",
+    "Satoshi to fiat conversion by Alby API": "Konvertering fra Satoshi til fiat av Alby-API-et",
+    "Auto-enqueue downloaded episodes": "Kølegg nedlastede episoder"
 }
