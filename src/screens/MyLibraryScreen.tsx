@@ -1,7 +1,7 @@
 import { SectionList, View as RNView } from 'react-native'
 import { Badge } from 'react-native-elements'
 import React from 'reactn'
-import { Divider, TableCell, Text, View } from '../components'
+import { TableCell, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -79,7 +79,6 @@ export class MyLibraryScreen extends React.Component<Props, State> {
     return (
       <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <SectionList
-          ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => {
             const accessibilityLabel =
               item.key === _downloadsKey && downloadsActiveCount > 0
