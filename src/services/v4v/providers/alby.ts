@@ -417,8 +417,10 @@ const v4vAlbyGetBtcRateInFiat = async (currency: string): Promise<number> => {
     method: 'GET'
   }, url)
 
-  const btcRateInFiat = response?.data?.[currency]?.rate_float
-    ? response?.data?.[currency]?.rate_float
+  // Alby returns the currency keys in upperCase
+  const upperCaseCurrency = currency.toUpperCase()
+  const btcRateInFiat = response?.data?.[upperCaseCurrency]?.rate_float
+    ? response?.data?.[upperCaseCurrency]?.rate_float
     : 0
   
   return btcRateInFiat
@@ -431,23 +433,32 @@ export const v4vAlbyGetSatoshiConversionData = async ({
   satoshiAmount: number
   currency: string
 }) => {
-  const btcRateInFiat = await v4vAlbyGetBtcRateInFiat(currency)
+  let btcRateInFiat = 0
+  let fiatAmountText = ''
+
+  try {
+    btcRateInFiat = await v4vAlbyGetBtcRateInFiat(currency)
+  } catch (error) {
+    if (error?.response?.status === 404) {
+      try {
+        btcRateInFiat = await v4vAlbyGetBtcRateInFiat('usd')
+      } catch (error) {
+        // do nothing
+      }
+    }
+  }
+
   if (btcRateInFiat) {
-    const fiatAmountText = v4vGetSatoshisInFormattedFiatValue({
+    fiatAmountText = v4vGetSatoshisInFormattedFiatValue({
       btcRateInFiat,
       satoshiAmount,
       currency
     })
-
-    return {
-      fiatAmountText,
-      btcRateInFiat
-    }
   }
 
   return {
-    fiatAmountText: '',
-    btcRateInFiat: 0
+    fiatAmountText,
+    btcRateInFiat
   }
 }
 

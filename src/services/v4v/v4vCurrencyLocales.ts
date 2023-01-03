@@ -1,22 +1,9 @@
-import { getLanguageTag } from '../../lib/i18n'
+import * as RNLocalize from 'react-native-localize'
 
 const defaultCurrency = 'USD'
 
-const currencyLocales = {
-  da: 'DKK',
-  el: 'EUR',
-  en: defaultCurrency,
-  es: 'EUR',
-  fr: 'EUR',
-  lt: 'EUR',
-  nb: 'NOK',
-  oc: 'MAD',
-  pt: 'EUR',
-  ru: 'RUB',
-  sv: 'SEK'
-}
-
 export const v4vGetCurrencyLocale = () => {
-  const languageTag = getLanguageTag()
-  return currencyLocales[languageTag] ? currencyLocales[languageTag] : defaultCurrency
+  const currencies = RNLocalize.getCurrencies()
+  const preferredCurrency = currencies?.[0] ? currencies[0] : defaultCurrency
+  return preferredCurrency
 }
