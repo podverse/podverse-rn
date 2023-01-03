@@ -12,12 +12,14 @@ import { v4vAddOrUpdateConnectedProvider, V4VProviderConnectedState } from '../v
 
 const _fileName = 'src/state/actions/v4v/providers\alby.ts'
 
-export const v4vAlbyHandleConnect = async (navigation: any, code: string) => {
+export const v4vAlbyHandleNavigation = (navigation: any) => {
   navigation.navigate(PV.RouteNames.MoreScreen)
   navigation.navigate(PV.RouteNames.V4VProvidersScreen)
-  navigation.navigate(PV.RouteNames.V4VProvidersAlbyScreen, {
-    isLoadingWaitForEvent: true
-  })
+  navigation.navigate(PV.RouteNames.V4VProvidersAlbyScreen)
+}
+
+export const v4vAlbyHandleConnect = async (navigation: any, code: string) => {
+  v4vAlbyHandleNavigation(navigation)
 
   await v4vAlbyRequestAccessTokenService(code)
 

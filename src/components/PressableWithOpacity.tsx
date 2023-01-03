@@ -4,6 +4,7 @@ import { Pressable } from 'react-native'
 type Props = {
   children: any
   disable: boolean
+  onLongPress?: any
   onPress: any
   style?: any
 }
