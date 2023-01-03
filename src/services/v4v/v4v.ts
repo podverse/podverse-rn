@@ -693,7 +693,7 @@ export const extractV4VValueTags = (episodeValue?: ValueTag[], podcastValue?: Va
 // Adapted from Alby's alby-tools repository.
 // https://github.com/getAlby/alby-tools/blob/master/src/utils/fiat.ts
 
-const numSatsInBtc = 100_000_000
+const numSatsInBtc = 100000000 // 100 million satoshis
 
 const v4vConvertBtcFiatRateToSatoshisFiatRate = (btcRateInFiat: number) => {
   const satoshiRateInFiat = btcRateInFiat / numSatsInBtc
