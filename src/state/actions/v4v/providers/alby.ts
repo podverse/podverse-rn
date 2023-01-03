@@ -7,6 +7,7 @@ import {
   v4vAlbyGetSatoshiConversionData,
   v4vAlbyRequestAccessToken as v4vAlbyRequestAccessTokenService
 } from '../../../../services/v4v/providers/alby'
+import { v4vGetCurrencyLocale } from '../../../../services/v4v/v4vCurrencyLocales'
 import { v4vAddOrUpdateConnectedProvider, V4VProviderConnectedState } from '../v4v'
 
 const _fileName = 'src/state/actions/v4v/providers\alby.ts'
@@ -36,7 +37,7 @@ export const v4vAlbyGetAccountInfo = async (callback?: any) => {
   if (v4vData) {
     let fiat_balance_text = ''
     let fiat_rate_float = 0
-    const fiat_currency = 'USD'
+    const fiat_currency = v4vGetCurrencyLocale()
 
     try {
       if (summaryData?.balance > 0) {
