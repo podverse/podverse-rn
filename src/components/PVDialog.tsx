@@ -1,7 +1,6 @@
 import React, { getGlobal } from 'reactn'
 import Dialog from 'react-native-dialog'
 
-
 type DialogButtonProps = {
   bold?: boolean
   color?: string
@@ -37,33 +36,39 @@ export const PVDialog = (props: Props) => {
   const textColor = getGlobal().globalTheme.buttonPrimaryText
 
   const descriptions = descriptionProps.map((props: DialogDescriptionProps) => {
-    return <Dialog.Description
-      key={props.testID}
-      style={{ color: textColor }}
-      testID={props.testID}>{props.children}</Dialog.Description>
+    return (
+      <Dialog.Description key={props.testID} style={{ color: textColor }} testID={props.testID}>
+        {props.children}
+      </Dialog.Description>
+    )
   })
 
   const inputs = inputProps.map((props: DialogInputProps) => {
-    return <Dialog.Input
-      key={props.testID}
-      onChangeText={props.onChangeText}
-      placeholder={props.placeholder}
-      style={{ color: textColor }}
-      testID={props.testID}
-      value={props.value}
+    return (
+      <Dialog.Input
+        key={props.testID}
+        onChangeText={props.onChangeText}
+        placeholder={props.placeholder}
+        style={{ color: textColor }}
+        testID={props.testID}
+        value={props.value}
       />
+    )
   })
 
   const buttons = buttonProps.map((props: DialogButtonProps) => {
-    return <Dialog.Button
-      accessibilityRole='button'
-      bold={!!props.bold}
-      color={!!props.color ? props.color : textColor}
-      disabled={!!props.disabled}
-      key={props.testID}
-      label={props.label}
-      onPress={props.onPress}
-      testID={props.testID} />
+    return (
+      <Dialog.Button
+        accessibilityRole='button'
+        bold={!!props.bold}
+        color={!!props.color ? props.color : textColor}
+        disabled={!!props.disabled}
+        key={props.testID}
+        label={props.label}
+        onPress={props.onPress}
+        testID={props.testID}
+      />
+    )
   })
 
   return (

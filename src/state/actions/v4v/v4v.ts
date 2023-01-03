@@ -22,6 +22,9 @@ export type V4VProviderConnectedState = {
   balance: number
   boostagrams_count: number
   currency: 'BTC'
+  fiat_balance_text: string
+  fiat_currency: string
+  fiat_rate_float: number
   keysend_custom_key: number
   keysend_custom_value: number
   method: 'keysend'

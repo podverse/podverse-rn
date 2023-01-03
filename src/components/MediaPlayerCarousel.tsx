@@ -9,6 +9,7 @@ import { playerCheckIfStateIsPlaying } from '../services/player'
 import { v4vGetPluralCurrencyUnitPerMinute } from '../services/v4v/v4v'
 import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import { toggleValueStreaming } from '../state/actions/valueTag'
+import { v4vAlbyHandleConnect, v4vAlbyHandleNavigation } from '../state/actions/v4v/providers/alby'
 import { MediaPlayerCarouselComments } from './MediaPlayerCarouselComments'
 import {
   ActivityIndicator,
@@ -113,6 +114,12 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   _toggleSatStreaming = async () => {
     ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
     await toggleValueStreaming()
+  }
+
+  _handleSatStreamingLongPress = () => {
+    const { navigation } = this.props
+    navigation.dismiss()
+    v4vAlbyHandleNavigation(navigation)
   }
 
   _handleAccessibilitySelectChange = (selectedKey: string) => {
@@ -243,6 +250,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           <View style={styles.maxWidthWrapper}>
             <View style={styles.boostButtonsContainer}>
               <PressableWithOpacity
+                onLongPress={this._handleSatStreamingLongPress}
                 onPress={this._toggleSatStreaming}
                 style={styles.boostButton}
                 testID={'stream_button'.prependTestId()}>
