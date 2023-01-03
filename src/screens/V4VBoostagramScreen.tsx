@@ -252,11 +252,13 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
       getBoostagramItemValueTags(boostagramItem)
     )
 
-    const boostFiatAmountText = activeProvider ? v4vGetSatoshisInFormattedFiatValue({
-      btcRateInFiat: activeProvider.fiat_rate_float,
-      satoshiAmount: localBoostAmount,
-      currency: activeProvider.fiat_currency
-    }) : ''
+    const boostFiatAmountText = activeProvider
+      ? v4vGetSatoshisInFormattedFiatValue({
+          btcRateInFiat: activeProvider.fiat_rate_float,
+          satoshiAmount: localBoostAmount,
+          currency: activeProvider.fiat_currency
+        })
+      : ''
 
     const podcastTitle = boostagramItem?.podcastTitle?.trim() || translate('Untitled Podcast')
     const episodeTitle = boostagramItem?.episodeTitle?.trim()

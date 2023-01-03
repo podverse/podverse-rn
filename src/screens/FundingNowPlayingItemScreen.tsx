@@ -210,24 +210,26 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
 
     const headerAccessibilityLabel = `${podcastTitle}, ${episodeTitle}, ${pubDate}`
 
-    const boostAmountText = activeProvider?.unit
-      ? v4vGetTextInputLabel(translate('Boost Amount'), activeProvider)
-      : ''
+    const boostAmountText = activeProvider?.unit ? v4vGetTextInputLabel(translate('Boost Amount'), activeProvider) : ''
     const streamingAmountText = activeProvider?.unit
       ? v4vGetTextInputLabel(translate('Streaming Amount'), activeProvider)
       : ''
 
-    const boostFiatAmountText = activeProvider ? v4vGetSatoshisInFormattedFiatValue({
-      btcRateInFiat: activeProvider.fiat_rate_float,
-      satoshiAmount: localBoostAmount,
-      currency: activeProvider.fiat_currency
-    }) : ''
+    const boostFiatAmountText = activeProvider
+      ? v4vGetSatoshisInFormattedFiatValue({
+          btcRateInFiat: activeProvider.fiat_rate_float,
+          satoshiAmount: localBoostAmount,
+          currency: activeProvider.fiat_currency
+        })
+      : ''
 
-    const streamingFiatAmountText = activeProvider ? v4vGetSatoshisInFormattedFiatValue({
-      btcRateInFiat: activeProvider.fiat_rate_float,
-      satoshiAmount: localStreamingAmount,
-      currency: activeProvider.fiat_currency
-    }) : ''
+    const streamingFiatAmountText = activeProvider
+      ? v4vGetSatoshisInFormattedFiatValue({
+          btcRateInFiat: activeProvider.fiat_rate_float,
+          satoshiAmount: localStreamingAmount,
+          currency: activeProvider.fiat_currency
+        })
+      : ''
 
     return (
       <View style={styles.content} testID='funding_screen_view'>

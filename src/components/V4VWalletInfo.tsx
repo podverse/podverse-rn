@@ -20,9 +20,7 @@ export const V4VWalletInfo = (props: Props) => {
     <View>
       <View style={styles.topWrapper}>
         <Text style={styles.balance}>{balanceText}</Text>
-        {!!fiatBalanceText && (
-          <Text style={styles.fiatBalance}>{`${fiatBalanceText}*`}</Text>
-        )}
+        {!!fiatBalanceText && <Text style={styles.fiatBalance}>{`${fiatBalanceText}*`}</Text>}
         <Text style={styles.address}>{provider.address}</Text>
       </View>
     </View>
