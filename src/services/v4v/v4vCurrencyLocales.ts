@@ -1,9 +1,11 @@
 import { getLanguageTag } from '../../lib/i18n'
 
+const defaultCurrency = 'USD'
+
 const currencyLocales = {
   da: 'DKK',
   el: 'EUR',
-  en: 'USD',
+  en: defaultCurrency,
   es: 'EUR',
   fr: 'EUR',
   lt: 'EUR',
@@ -16,5 +18,5 @@ const currencyLocales = {
 
 export const v4vGetCurrencyLocale = () => {
   const languageTag = getLanguageTag()
-  return currencyLocales[languageTag] ? currencyLocales[languageTag] : 'USD'
+  return currencyLocales[languageTag] ? currencyLocales[languageTag] : defaultCurrency
 }
