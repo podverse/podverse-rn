@@ -90,7 +90,6 @@ export class Login extends React.Component<Props, State> {
           returnKeyType='next'
           testID={`${testIDPrefix}_email`}
           value={email}
-          wrapperStyle={core.textInputWrapper}
         />
         <TextInput
           accessibilityHint={translate('ARIA HINT - Type your password')}
@@ -108,7 +107,6 @@ export class Login extends React.Component<Props, State> {
           testID={`${testIDPrefix}_password`}
           value={password}
           underlineColorAndroid='transparent'
-          wrapperStyle={core.textInputWrapper}
         />
         <Button
           accessibilityHint={

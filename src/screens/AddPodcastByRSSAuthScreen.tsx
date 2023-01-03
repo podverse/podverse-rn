@@ -130,11 +130,11 @@ export class AddPodcastByRSSAuthScreen extends React.Component<Props, State> {
             onSubmitEditing={() => {
               this.secondTextInput.focus()
             }}
+            outerWrapperStyle={core.textInputWrapperOuter}
             placeholder={translate('Username')}
             returnKeyType='next'
             testID={`${testIDPrefix}_username`}
             value={username}
-            wrapperStyle={core.textInputWrapper}
           />
           <TextInput
             autoCapitalize='none'
@@ -145,12 +145,12 @@ export class AddPodcastByRSSAuthScreen extends React.Component<Props, State> {
             inputRef={(input) => {
               this.secondTextInput = input
             }}
+            outerWrapperStyle={core.textInputWrapperOuter}
             returnKeyType='done'
             secureTextEntry
             testID={`${testIDPrefix}_password`}
             value={password}
             underlineColorAndroid='transparent'
-            wrapperStyle={core.textInputWrapper}
           />
           <PressableWithOpacity activeOpacity={1}>
             <>

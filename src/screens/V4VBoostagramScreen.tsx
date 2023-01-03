@@ -28,6 +28,7 @@ import {
   sendBoost,
   v4vGetActiveValueTag,
   v4vGetPluralCurrencyUnit,
+  v4vGetSatoshisInFormattedFiatValue,
   v4vGetTypeMethodKey
 } from '../services/v4v/v4v'
 import {
@@ -38,7 +39,7 @@ import {
   v4vUpdateBoostagramMessage,
   v4vUpdateTypeMethodSettingsBoostAmount
 } from '../state/actions/v4v/v4v'
-import { images } from '../styles'
+import { core, images } from '../styles'
 
 type Props = any
 type State = {
@@ -47,8 +48,8 @@ type State = {
   boostWasSent: boolean
   defaultMessage: string
   explosionOrigin: number
-  localBoostAmount: string
-  localAppBoostAmount: string
+  localBoostAmount: number
+  localAppBoostAmount: number
 }
 
 const testIDPrefix = 'boostagram_screen'
@@ -64,8 +65,8 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
       boostWasSent: false,
       defaultMessage: '',
       explosionOrigin: 0,
-      localBoostAmount: '0',
-      localAppBoostAmount: '0'
+      localBoostAmount: 0,
+      localAppBoostAmount: 0
     }
   }
 
@@ -100,8 +101,8 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
       this.setState(
         {
           defaultMessage,
-          localBoostAmount: typeMethodSettings.boostAmount?.toString(),
-          localAppBoostAmount: typeMethodSettings.appBoostAmount?.toString()
+          localBoostAmount: typeMethodSettings.boostAmount,
+          localAppBoostAmount: typeMethodSettings.appBoostAmount
         },
         () => {
           this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, typeMethodSettings.boostAmount)
@@ -251,6 +252,14 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
       getBoostagramItemValueTags(boostagramItem)
     )
 
+    const boostFiatAmountText = activeProvider
+      ? v4vGetSatoshisInFormattedFiatValue({
+          btcRateInFiat: activeProvider.fiat_rate_float,
+          satoshiAmount: localBoostAmount,
+          currency: activeProvider.fiat_currency
+        })
+      : ''
+
     const podcastTitle = boostagramItem?.podcastTitle?.trim() || translate('Untitled Podcast')
     const episodeTitle = boostagramItem?.episodeTitle?.trim()
     const pubDate = readableDate(boostagramItem.episodePubDate)
@@ -310,7 +319,6 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
                       editable
                       eyebrowTitle={boostAmountLabelText}
                       keyboardType='numeric'
-                      wrapperStyle={styles.textInputWrapper}
                       onBlur={async () => {
                         const { localBoostAmount } = this.state
                         if (activeProvider) {
@@ -330,17 +338,20 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
                               method,
                               MINIMUM_BOOST_PAYMENT
                             )
-                            this.setState({ localBoostAmount: MINIMUM_BOOST_PAYMENT.toString() })
+                            this.setState({ localBoostAmount: MINIMUM_BOOST_PAYMENT })
                             this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, MINIMUM_BOOST_PAYMENT)
                           }
                         }
                       }}
                       onSubmitEditing={() => Keyboard.dismiss()}
-                      onChangeText={(newText: string) => {
-                        this.setState({ localBoostAmount: newText })
+                      onChangeText={(newNumber: number) => {
+                        this.setState({ localBoostAmount: newNumber })
                       }}
+                      outerWrapperStyle={styles.textInputWrapperOuter}
+                      subText={!!boostFiatAmountText ? `${boostFiatAmountText}*` : ''}
+                      subTextAlignRight
                       testID={`${testIDPrefix}_boost_amount_text_input`}
-                      value={localBoostAmount}
+                      value={localBoostAmount?.toString() || ''}
                     />
                   </View>
                   <View style={styles.itemWrapper}>
@@ -354,10 +365,10 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
                       onChangeText={(newText: string) => {
                         this._handleBoostagramMessageTextUpdate(newText)
                       }}
+                      outerWrapperStyle={styles.textInputWrapperOuter}
                       placeholder={translate('Message optional')}
                       style={styles.textInput}
                       testID={`${testIDPrefix}_message_text_input`}
-                      wrapperStyle={styles.textInputWrapper}
                     />
                   </View>
                   <Text style={styles.charCounter}>{`${boostagramMessageCharCount} / ${boostagramCharLimit}`}</Text>
@@ -390,6 +401,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
                   erroringTransactions={previousTransactionErrors.boost}
                 />
               </View>
+              <Text style={core.footnote}>{`*${translate('Satoshi to fiat conversion by Alby API')}`}</Text>
             </View>
           )}
         </ScrollView>
@@ -482,7 +494,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     paddingTop: 12
   },
-  textInputWrapper: {
+  textInputWrapperOuter: {
     marginVertical: 0
   },
   textLabel: {
