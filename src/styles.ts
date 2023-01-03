@@ -646,6 +646,11 @@ export const core = StyleSheet.create({
     paddingRight: 16,
     paddingVertical: 8
   },
+  footnote: {
+    fontSize: PV.Fonts.sizes.sm,
+    marginTop: 16,
+    textAlign: 'center'
+  },
   headerText: {
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.bold,

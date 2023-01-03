@@ -11,6 +11,7 @@ import {
   V4VWalletInfo,
   V4VWalletSettings
 } from '../components'
+import { translate } from '../lib/i18n'
 import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { _albyKey } from '../resources/V4V'
@@ -19,6 +20,7 @@ import { trackPageView } from '../services/tracking'
 import { v4vAlbyGetAccessToken } from '../services/v4v/providers/alby'
 import { v4vGetConnectedProvider, v4vRefreshProviderWalletInfo } from '../state/actions/v4v/v4v'
 import { v4vAlbyGetAccountInfo } from '../state/actions/v4v/providers/alby'
+import { core } from '../styles'
 
 const _fileName = 'src/screens/V4VProvidersAlbyScreen.tsx'
 
@@ -125,7 +127,9 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
                 v4vKey={_albyKey}
               />
               <V4VWalletAbout testID={testIDPrefix} v4vKey={_albyKey} />
-              {!!fiatBalanceText && <Text style={styles.footnote}>{'*Satoshi to fiat conversion by Alby API'}</Text>}
+              {!!fiatBalanceText && (
+                <Text style={core.footnote}>{`*${translate('Satoshi to fiat conversion by Alby API')}`}</Text>
+              )}
             </>
           </ScrollView>
         )}
@@ -146,11 +150,6 @@ const styles = StyleSheet.create({
   },
   dividerWithMargin: {
     marginBottom: 36
-  },
-  footnote: {
-    fontSize: PV.Fonts.sizes.sm,
-    marginTop: 16,
-    textAlign: 'center'
   },
   scrollView: {
     flex: 1

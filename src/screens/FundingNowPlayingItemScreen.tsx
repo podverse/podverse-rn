@@ -22,7 +22,6 @@ import {
   MINIMUM_BOOST_PAYMENT,
   MINIMUM_STREAMING_PAYMENT,
   v4vGetActiveValueTag,
-  v4vGetPluralCurrencyUnit,
   v4vGetSatoshisInFormattedFiatValue,
   v4vGetTextInputLabel,
   v4vGetTypeMethodKey
@@ -34,7 +33,7 @@ import {
   v4vUpdateTypeMethodSettingsBoostAmount,
   v4vUpdateTypeMethodSettingsStreamingAmount
 } from '../state/actions/v4v/v4v'
-import { images } from '../styles'
+import { core, images } from '../styles'
 
 type Props = any
 type State = {
@@ -324,7 +323,7 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
                     this.setState({ localBoostAmount: newNumber })
                   }}
                   outerWrapperStyle={styles.textInput}
-                  subText={boostFiatAmountText}
+                  subText={!!boostFiatAmountText ? `${boostFiatAmountText}*` : ''}
                   subTextAlignRight
                   testID={`${testIDPrefix}_boost_amount_text_input`}
                   value={localBoostAmount?.toString() || ''}
@@ -377,7 +376,7 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
                     this.setState({ localStreamingAmount: newNumber })
                   }}
                   outerWrapperStyle={styles.textInput}
-                  subText={streamingFiatAmountText}
+                  subText={!!streamingFiatAmountText ? `${streamingFiatAmountText}*` : ''}
                   subTextAlignRight
                   testID={`${testIDPrefix}_streaming_amount_text_input`}
                   value={localStreamingAmount?.toString() || ''}
@@ -396,6 +395,7 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
                   erroringTransactions={previousTransactionErrors.streaming}
                 />
               </View>
+              <Text style={core.footnote}>{`*${translate('Satoshi to fiat conversion by Alby API')}`}</Text>
             </View>
           )}
           {hasValueInfo && episodeLinks?.length > 0 && <Divider />}

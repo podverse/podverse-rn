@@ -39,7 +39,7 @@ import {
   v4vUpdateBoostagramMessage,
   v4vUpdateTypeMethodSettingsBoostAmount
 } from '../state/actions/v4v/v4v'
-import { images } from '../styles'
+import { core, images } from '../styles'
 
 type Props = any
 type State = {
@@ -399,6 +399,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
                   erroringTransactions={previousTransactionErrors.boost}
                 />
               </View>
+              <Text style={core.footnote}>{`*${translate('Satoshi to fiat conversion by Alby API')}`}</Text>
             </View>
           )}
         </ScrollView>
