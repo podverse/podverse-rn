@@ -26,15 +26,17 @@ type Props = {
   onChangeText?: any
   onPress?: any
   onSubmitEditing?: any
+  outerWrapperStyle?: any
   placeholder?: string
   placeholderTextColor?: string
   returnKeyType?: any
   secureTextEntry?: boolean
+  subText?: string
+  subTextAlignRight?: boolean
   style?: any
   testID: string
   underlineColorAndroid?: any
   value?: string
-  wrapperStyle?: any
 }
 
 export const PVTextInput = (props: Props) => {
@@ -57,15 +59,17 @@ export const PVTextInput = (props: Props) => {
     onChangeText,
     onPress,
     onSubmitEditing,
+    outerWrapperStyle,
     placeholder,
     placeholderTextColor,
     returnKeyType = 'default',
     secureTextEntry,
+    subText,
+    subTextAlignRight,
     style,
     underlineColorAndroid,
     testID,
-    value,
-    wrapperStyle
+    value
   } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
@@ -85,48 +89,61 @@ export const PVTextInput = (props: Props) => {
     }
   }
 
+  const textInputSubTextStyle = subTextAlignRight ? { textAlign: 'right' } : null
+
   const hasText = !!value && value.length
 
   const inputComponent = (
-    <View style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
-      {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
+    <View style={[core.textInputWrapperOuter, outerWrapperStyle]}>
+      <View style={[globalTheme.textInputWrapper, core.textInputWrapper]}>
+        {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
+          <Text
+            accessible={false}
+            importantForAccessibility='no'
+            style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]}
+            testID={`${testID}_text_input_eyebrow`}>
+            {eyebrowTitle || placeholder}
+          </Text>
+        )}
+        <TextInput
+          accessible
+          accessibilityLabel={accessibilityLabel}
+          autoCapitalize={autoCapitalize}
+          autoCompleteType={autoCompleteType}
+          autoCorrect={autoCorrect}
+          blurOnSubmit={returnKeyType === 'done'}
+          defaultValue={defaultValue}
+          editable={!!editable}
+          keyboardType={keyboardType}
+          importantForAccessibility={!onPress ? 'yes' : 'no'}
+          multiline={numberOfLines > 1}
+          numberOfLines={hasText ? numberOfLines : 1}
+          onBlur={onBlur}
+          onFocus={onFocus}
+          onChange={onChange}
+          onChangeText={onChangeText}
+          onPressIn={onPress}
+          onSubmitEditing={onSubmitEditing}
+          placeholder={placeholder}
+          placeholderTextColor={placeholderTextColor || globalTheme.placeholderText.color}
+          ref={inputRef}
+          returnKeyType={returnKeyType}
+          secureTextEntry={secureTextEntry}
+          style={[globalTheme.textInput, core.textInput, textInputStyle, style]}
+          underlineColorAndroid={underlineColorAndroid}
+          {...(testID ? { testID: `${testID}_text_input`.prependTestId() } : {})}
+          value={value}
+        />
+      </View>
+      {!!subText && (
         <Text
-          accessible={false}
-          importantForAccessibility='no'
-          style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]}
-          testID={`${testID}_text_input_eyebrow`}>
-          {eyebrowTitle || placeholder}
+          accessible
+          importantForAccessibility='yes'
+          style={[globalTheme.textInputSubText, core.textInputSubText, textInputSubTextStyle]}
+          testID={`${testID}_text_input_sub_text`}>
+          {subText}
         </Text>
       )}
-      <TextInput
-        accessible
-        accessibilityLabel={accessibilityLabel}
-        autoCapitalize={autoCapitalize}
-        autoCompleteType={autoCompleteType}
-        autoCorrect={autoCorrect}
-        blurOnSubmit={returnKeyType === 'done'}
-        defaultValue={defaultValue}
-        editable={!!editable}
-        keyboardType={keyboardType}
-        importantForAccessibility={!onPress ? 'yes' : 'no'}
-        multiline={numberOfLines > 1}
-        numberOfLines={hasText ? numberOfLines : 1}
-        onBlur={onBlur}
-        onFocus={onFocus}
-        onChange={onChange}
-        onChangeText={onChangeText}
-        onPressIn={onPress}
-        onSubmitEditing={onSubmitEditing}
-        placeholder={placeholder}
-        placeholderTextColor={placeholderTextColor || globalTheme.placeholderText.color}
-        ref={inputRef}
-        returnKeyType={returnKeyType}
-        secureTextEntry={secureTextEntry}
-        style={[globalTheme.textInput, core.textInput, textInputStyle, style]}
-        underlineColorAndroid={underlineColorAndroid}
-        {...(testID ? { testID: `${testID}_text_input`.prependTestId() } : {})}
-        value={value}
-      />
     </View>
   )
 

@@ -13,13 +13,14 @@ type Props = {
 
 export const V4VWalletInfo = (props: Props) => {
   const { provider } = props
-
   const balanceText = `${translate('Balance')}: ${provider.balance} ${v4vGetPluralCurrencyUnit(provider.unit)}`
+  const fiatBalanceText = provider.fiat_balance_text
 
   return (
     <View>
       <View style={styles.topWrapper}>
         <Text style={styles.balance}>{balanceText}</Text>
+        {!!fiatBalanceText && <Text style={styles.fiatBalance}>{`${fiatBalanceText}*`}</Text>}
         <Text style={styles.address}>{provider.address}</Text>
       </View>
     </View>
@@ -32,8 +33,13 @@ const styles = StyleSheet.create({
   },
   balance: {
     fontSize: PV.Fonts.sizes.huge,
-    fontWeight: PV.Fonts.weights.bold,
-    marginBottom: 16
+    fontWeight: PV.Fonts.weights.bold
+  },
+  fiatBalance: {
+    fontSize: PV.Fonts.sizes.xl,
+    marginBottom: 16,
+    marginTop: 4,
+    fontWeight: PV.Fonts.weights.semibold
   },
   topWrapper: {
     alignItems: 'center',

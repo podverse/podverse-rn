@@ -5,11 +5,13 @@ import {
   Divider,
   SafeAreaView,
   ScrollView,
+  Text,
   V4VWalletAbout,
   V4VWalletConnectButtons,
   V4VWalletInfo,
   V4VWalletSettings
 } from '../components'
+import { translate } from '../lib/i18n'
 import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { _albyKey } from '../resources/V4V'
@@ -18,6 +20,7 @@ import { trackPageView } from '../services/tracking'
 import { v4vAlbyGetAccessToken } from '../services/v4v/providers/alby'
 import { v4vGetConnectedProvider, v4vRefreshProviderWalletInfo } from '../state/actions/v4v/v4v'
 import { v4vAlbyGetAccountInfo } from '../state/actions/v4v/providers/alby'
+import { core } from '../styles'
 
 const _fileName = 'src/screens/V4VProvidersAlbyScreen.tsx'
 
@@ -99,8 +102,8 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
     const { session } = this.global
     const { connected } = session.v4v.providers
     const provider = v4vGetConnectedProvider(connected, _albyKey)
-
     const isConnected = !!provider
+    const fiatBalanceText = provider?.fiat_balance_text
 
     return (
       <SafeAreaView style={styles.content} testID={`${testIDPrefix}_view`.prependTestId()}>
@@ -124,6 +127,9 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
                 v4vKey={_albyKey}
               />
               <V4VWalletAbout testID={testIDPrefix} v4vKey={_albyKey} />
+              {!!fiatBalanceText && (
+                <Text style={core.footnote}>{`*${translate('Satoshi to fiat conversion by Alby API')}`}</Text>
+              )}
             </>
           </ScrollView>
         )}

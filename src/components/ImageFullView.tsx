@@ -36,7 +36,7 @@ export const ImageFullView = () => {
 
   return (
     <Modal animationType='slide' transparent visible={imageFullViewShow} onRequestClose={dismissFullScreenImage}>
-      <GestureContentWrapper/>
+      <GestureContentWrapper />
     </Modal>
   )
 }

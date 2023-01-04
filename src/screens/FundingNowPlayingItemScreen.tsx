@@ -22,7 +22,8 @@ import {
   MINIMUM_BOOST_PAYMENT,
   MINIMUM_STREAMING_PAYMENT,
   v4vGetActiveValueTag,
-  v4vGetPluralCurrencyUnit,
+  v4vGetSatoshisInFormattedFiatValue,
+  v4vGetTextInputLabel,
   v4vGetTypeMethodKey
 } from '../services/v4v/v4v'
 import {
@@ -32,16 +33,16 @@ import {
   v4vUpdateTypeMethodSettingsBoostAmount,
   v4vUpdateTypeMethodSettingsStreamingAmount
 } from '../state/actions/v4v/v4v'
-import { images } from '../styles'
+import { core, images } from '../styles'
 
 type Props = any
 type State = {
   boostTransactions: ValueTransaction[]
   streamingTransactions: ValueTransaction[]
-  localBoostAmount: string
-  localStreamingAmount: string
-  localAppBoostAmount: string
-  localAppStreamingAmount: string
+  localBoostAmount: number
+  localStreamingAmount: number
+  localAppBoostAmount: number
+  localAppStreamingAmount: number
 }
 
 const testIDPrefix = 'funding_screen'
@@ -52,10 +53,10 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
     this.state = {
       boostTransactions: [],
       streamingTransactions: [],
-      localBoostAmount: '0',
-      localStreamingAmount: '0',
-      localAppBoostAmount: '0',
-      localAppStreamingAmount: '0'
+      localBoostAmount: 0,
+      localStreamingAmount: 0,
+      localAppBoostAmount: 0,
+      localAppStreamingAmount: 0
     }
   }
 
@@ -83,10 +84,10 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
 
       this.setState(
         {
-          localBoostAmount: typeMethodSettings.boostAmount?.toString(),
-          localStreamingAmount: typeMethodSettings.streamingAmount?.toString(),
-          localAppBoostAmount: typeMethodSettings.appBoostAmount?.toString(),
-          localAppStreamingAmount: typeMethodSettings.appStreamingAmount?.toString()
+          localBoostAmount: typeMethodSettings.boostAmount,
+          localStreamingAmount: typeMethodSettings.streamingAmount,
+          localAppBoostAmount: typeMethodSettings.appBoostAmount,
+          localAppStreamingAmount: typeMethodSettings.appStreamingAmount
         },
         () => {
           Promise.all([
@@ -209,8 +210,25 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
 
     const headerAccessibilityLabel = `${podcastTitle}, ${episodeTitle}, ${pubDate}`
 
-    const boostAmountLabelText = activeProvider?.unit
-      ? `${translate('Boost Amount')} (${v4vGetPluralCurrencyUnit(activeProvider.unit)})`
+    const boostAmountText = activeProvider?.unit ? v4vGetTextInputLabel(translate('Boost Amount'), activeProvider) : ''
+    const streamingAmountText = activeProvider?.unit
+      ? v4vGetTextInputLabel(translate('Streaming Amount'), activeProvider)
+      : ''
+
+    const boostFiatAmountText = activeProvider
+      ? v4vGetSatoshisInFormattedFiatValue({
+          btcRateInFiat: activeProvider.fiat_rate_float,
+          satoshiAmount: localBoostAmount,
+          currency: activeProvider.fiat_currency
+        })
+      : ''
+
+    const streamingFiatAmountText = activeProvider
+      ? v4vGetSatoshisInFormattedFiatValue({
+          btcRateInFiat: activeProvider.fiat_rate_float,
+          satoshiAmount: localStreamingAmount,
+          currency: activeProvider.fiat_currency
+        })
       : ''
 
     return (
@@ -281,9 +299,8 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
               <View style={styles.itemWrapper}>
                 <TextInput
                   editable
-                  eyebrowTitle={boostAmountLabelText}
+                  eyebrowTitle={boostAmountText}
                   keyboardType='numeric'
-                  wrapperStyle={styles.textInput}
                   onBlur={async () => {
                     const { localBoostAmount } = this.state
                     if (activeProvider) {
@@ -298,17 +315,20 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
                         this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, Number(localBoostAmount))
                       } else {
                         await v4vUpdateTypeMethodSettingsBoostAmount(this.global, type, method, MINIMUM_BOOST_PAYMENT)
-                        this.setState({ localBoostAmount: MINIMUM_BOOST_PAYMENT.toString() })
+                        this.setState({ localBoostAmount: MINIMUM_BOOST_PAYMENT })
                         this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, MINIMUM_BOOST_PAYMENT)
                       }
                     }
                   }}
                   onSubmitEditing={() => Keyboard.dismiss()}
-                  onChangeText={(newText: string) => {
-                    this.setState({ localBoostAmount: newText })
+                  onChangeText={(newNumber: number) => {
+                    this.setState({ localBoostAmount: newNumber })
                   }}
+                  outerWrapperStyle={styles.textInput}
+                  subText={!!boostFiatAmountText ? `${boostFiatAmountText}*` : ''}
+                  subTextAlignRight
                   testID={`${testIDPrefix}_boost_amount_text_input`}
-                  value={localBoostAmount}
+                  value={localBoostAmount?.toString() || ''}
                 />
               </View>
               <View style={styles.V4VRecipientsInfoView}>
@@ -327,9 +347,8 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
               <View style={styles.itemWrapper}>
                 <TextInput
                   editable
-                  eyebrowTitle={translate('Streaming Amount for this podcast')}
+                  eyebrowTitle={streamingAmountText}
                   keyboardType='numeric'
-                  wrapperStyle={styles.textInput}
                   onBlur={async () => {
                     const { localStreamingAmount } = this.state
                     if (activeProvider) {
@@ -349,17 +368,20 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
                           method,
                           MINIMUM_STREAMING_PAYMENT
                         )
-                        this.setState({ localStreamingAmount: MINIMUM_STREAMING_PAYMENT.toString() })
+                        this.setState({ localStreamingAmount: MINIMUM_STREAMING_PAYMENT })
                         this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_STREAMING, MINIMUM_STREAMING_PAYMENT)
                       }
                     }
                   }}
                   onSubmitEditing={() => Keyboard.dismiss()}
-                  onChangeText={(newText: string) => {
-                    this.setState({ localStreamingAmount: newText })
+                  onChangeText={(newNumber: number) => {
+                    this.setState({ localStreamingAmount: newNumber })
                   }}
+                  outerWrapperStyle={styles.textInput}
+                  subText={!!streamingFiatAmountText ? `${streamingFiatAmountText}*` : ''}
+                  subTextAlignRight
                   testID={`${testIDPrefix}_streaming_amount_text_input`}
-                  value={localStreamingAmount}
+                  value={localStreamingAmount?.toString() || ''}
                 />
               </View>
               <View style={styles.V4VRecipientsInfoView}>
@@ -375,6 +397,7 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
                   erroringTransactions={previousTransactionErrors.streaming}
                 />
               </View>
+              <Text style={core.footnote}>{`*${translate('Satoshi to fiat conversion by Alby API')}`}</Text>
             </View>
           )}
           {hasValueInfo && episodeLinks?.length > 0 && <Divider />}
@@ -442,7 +465,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 12
   },
   itemWrapper: {
-    marginBottom: 8,
+    marginBottom: 0,
     marginTop: 24
   },
   podcastTitle: {

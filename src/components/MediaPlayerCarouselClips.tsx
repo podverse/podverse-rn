@@ -10,7 +10,16 @@ import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, PVDialog, TableSectionSelectors, View } from './'
+import {
+  ActionSheet,
+  ActivityIndicator,
+  ClipTableCell,
+  Divider,
+  FlatList,
+  PVDialog,
+  TableSectionSelectors,
+  View
+} from './'
 
 type Props = {
   navigation?: any

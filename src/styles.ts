@@ -238,12 +238,14 @@ export const darkTheme = StyleSheet.create({
   textInputEyeBrow: {
     color: PV.Colors.skyLight
   },
+  textInputSubText: {
+    color: PV.Colors.white
+  },
   textInputWrapper: {
     backgroundColor: PV.Colors.velvet,
     borderColor: PV.Colors.grayDarker,
     borderTopColor: PV.Colors.grayDarker, // override native styles
     borderBottomColor: PV.Colors.grayDarker, // override native style,
-    marginBottom: 24
   },
   textNowPlaying: {
     color: PV.Colors.orange
@@ -503,6 +505,9 @@ export const lightTheme = StyleSheet.create({
   textInputEyeBrow: {
     color: PV.Colors.skyDark
   },
+  textInputSubText: {
+    color: PV.Colors.black
+  },
   textInputWrapper: {
     backgroundColor: PV.Colors.grayLighter,
     borderColor: PV.Colors.grayLighter,
@@ -641,6 +646,11 @@ export const core = StyleSheet.create({
     paddingRight: 16,
     paddingVertical: 8
   },
+  footnote: {
+    fontSize: PV.Fonts.sizes.sm,
+    marginTop: 16,
+    textAlign: 'center'
+  },
   headerText: {
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.bold,
@@ -720,12 +730,19 @@ export const core = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold,
     marginBottom: 4
   },
+  textInputSubText: {
+    fontSize: PV.Fonts.sizes.sm,
+    marginTop: 8
+  },
   textInputWrapper: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    marginBottom: 16,
+    marginBottom: 0,
     marginTop: 0,
     minWidth: 76
+  },
+  textInputWrapperOuter: {
+    marginBottom: 16
   },
   view: {
     alignItems: 'center',

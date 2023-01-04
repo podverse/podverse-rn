@@ -44,16 +44,16 @@ export type BoostagramItem = {
 // export const _v4v_env_ = !!Config.IS_DEV ? 'dev' : 'prod'
 export const _v4v_env_ = 'prod'
 
-export const DEFAULT_BOOST_PAYMENT = 1000
+export const DEFAULT_BOOST_PAYMENT = 5000
 export const MINIMUM_BOOST_PAYMENT = 100
 
-export const DEFAULT_STREAMING_PAYMENT = 10
+export const DEFAULT_STREAMING_PAYMENT = 50
 export const MINIMUM_STREAMING_PAYMENT = 1
 
-export const DEFAULT_APP_BOOST_PAYMENT = 50
+export const DEFAULT_APP_BOOST_PAYMENT = 1000
 export const MINIMUM_APP_BOOST_PAYMENT = 0
 
-export const DEFAULT_APP_STREAMING_PAYMENT = 1
+export const DEFAULT_APP_STREAMING_PAYMENT = 10
 export const MINIMUM_APP_STREAMING_PAYMENT = 0
 
 /* Secure storage helpers */
@@ -687,4 +687,61 @@ export const extractV4VValueTags = (episodeValue?: ValueTag[], podcastValue?: Va
   return (episodeValue?.length && episodeValue)
     || (podcastValue?.length && podcastValue)
     || []
+}
+
+/* Fiat conversion */
+// Adapted from Alby's alby-tools repository.
+// https://github.com/getAlby/alby-tools/blob/master/src/utils/fiat.ts
+
+const numSatsInBtc = 100000000 // 100 million satoshis
+
+const v4vConvertBtcFiatRateToSatoshisFiatRate = (btcRateInFiat: number) => {
+  const satoshiRateInFiat = btcRateInFiat / numSatsInBtc
+  return satoshiRateInFiat
+}
+
+const v4vConvertSatoshiAmountToFiatAmount = ({
+  satoshiAmount,
+  satoshiRateInFiat
+}: {
+  satoshiAmount: number
+  satoshiRateInFiat: number
+}) => {
+  let fiatAmount = 0
+  if (satoshiAmount && satoshiRateInFiat) {
+    fiatAmount = satoshiRateInFiat ? Number(satoshiAmount) * satoshiRateInFiat : 0
+  }
+  return fiatAmount
+}
+
+export const v4vGetSatoshisInFormattedFiatValue = ({
+  btcRateInFiat,
+  satoshiAmount,
+  currency
+}: {
+  btcRateInFiat: number
+  satoshiAmount: number
+  currency: string
+}) => {
+  const satoshiRateInFiat = v4vConvertBtcFiatRateToSatoshisFiatRate(btcRateInFiat)
+  const fiatAmount = v4vConvertSatoshiAmountToFiatAmount({
+    satoshiAmount,
+    satoshiRateInFiat
+  })
+
+  let fiatAmountText = ''
+  if (fiatAmount > 0) {
+    fiatAmountText = fiatAmount.toLocaleString('en', {
+      style: 'currency',
+      currency
+    })
+  }
+
+  return fiatAmountText
+}
+
+/* Misc helpers */
+
+export const v4vGetTextInputLabel = (str: string, provider: V4VProviderConnectedState) => {
+  return `${str} (${v4vGetPluralCurrencyUnit(provider.unit)})`
 }
