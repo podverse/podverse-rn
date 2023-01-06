@@ -265,7 +265,11 @@ export const v4vAlbyAPIRequest = async ({ body, method, path }: AlbyAPIRequest, 
       `${albyApiPath}${path}`
     )
 
-    return response?.data
+    if (!response?.data) {
+      throw new Error('Alby request - no response error')
+    }
+
+    return response.data
   } catch (error) {
     const response = error?.response
 
