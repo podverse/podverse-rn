@@ -730,8 +730,8 @@ export const v4vGetSatoshisInFormattedFiatValue = ({
   })
 
   let fiatAmountText = ''
-  if (fiatAmount > 0) {
-    fiatAmountText = fiatAmount.toLocaleString('en', {
+  if (Number(fiatAmount) > 0) {
+    fiatAmountText = Number(fiatAmount).toLocaleString('en', {
       style: 'currency',
       currency
     })
