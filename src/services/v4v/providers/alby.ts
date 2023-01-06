@@ -396,11 +396,15 @@ export const v4vAlbySendKeysendPayments = async (
       path: '/payments/keysend/multi',
       body
     })) as AlbyMultiKeySendResponse
-    response.customKeyValueAddresses = customKeyValueAddresses
+    
+    if (response) {
+      response.customKeyValueAddresses = customKeyValueAddresses
+    }
+
     return response
   } catch (error) {
     if (typeof error?.response?.data === 'object') {
-      error.response.data.customKeyValueAddresses = customKeyValueAddresses || []
+      error.response.data.customKeyValueAddresses = customKeyValueAddresses
     }
     throw error
   }
