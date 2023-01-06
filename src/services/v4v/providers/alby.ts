@@ -404,7 +404,7 @@ export const v4vAlbySendKeysendPayments = async (
     return response
   } catch (error) {
     if (typeof error?.response?.data === 'object') {
-      error.response.data.customKeyValueAddresses = customKeyValueAddresses
+      error.response.data.customKeyValueAddresses = customKeyValueAddresses || []
     }
     throw error
   }
