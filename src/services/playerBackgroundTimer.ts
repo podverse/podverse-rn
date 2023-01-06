@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
+import { errorLogger } from '../lib/logger'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
@@ -20,6 +21,8 @@ import { getNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './u
 import { removeQueueItem } from './queue'
 import { addOrUpdateHistoryItem } from './userHistoryItem'
 import { handleValueStreamingTimerIncrement } from './v4v/v4vStreaming'
+
+const _fileName = 'src/services/playerBackgroundTimer.ts'
 
 const debouncedSetPlaybackPosition = debounce(playerSetPositionWhenDurationIsAvailable, 1000, {
   leading: true,
@@ -149,23 +152,39 @@ export const handleBackgroundTimerInterval = () => {
   const { sleepTimer } = player
   const { v4v } = session
 
-  if (clipIntervalActive) {
-    stopCheckClipIfEndTimeReached()
+  try {
+    if (clipIntervalActive) {
+      stopCheckClipIfEndTimeReached()
+    }
+  } catch (error) {
+    errorLogger(_fileName, 'handleBackgroundTimerInterval stopCheckClipIfEndTimeReached', error?.message)
   }
 
   chapterIntervalSecondCount++
-  if (chapterIntervalSecondCount >= 3) {
-    chapterIntervalSecondCount = 0
-    if (chapterIntervalActive) {
-      loadChapterPlaybackInfo()
+  try {
+    if (chapterIntervalSecondCount >= 3) {
+      chapterIntervalSecondCount = 0
+      if (chapterIntervalActive) {
+        loadChapterPlaybackInfo()
+      }
     }
+  } catch (error) {
+    errorLogger(_fileName, 'handleBackgroundTimerInterval loadChapterPlaybackInfo', error?.message)
   }
 
-  if (sleepTimer?.isActive) {
-    handleSleepTimerCountEvent()
+  try {
+    if (sleepTimer?.isActive) {
+      handleSleepTimerCountEvent()
+    }
+  } catch (error) {
+    errorLogger(_fileName, 'handleBackgroundTimerInterval handleSleepTimerCountEvent', error?.message)
   }
 
-  if (v4v?.streamingValueOn) {
-    handleValueStreamingTimerIncrement()
+  try {
+    if (v4v?.streamingValueOn) {
+      handleValueStreamingTimerIncrement()
+    }
+  } catch (error) {
+    errorLogger(_fileName, 'handleBackgroundTimerInterval handleValueStreamingTimerIncrement', error?.message)
   }
 }

@@ -265,7 +265,11 @@ export const v4vAlbyAPIRequest = async ({ body, method, path }: AlbyAPIRequest, 
       `${albyApiPath}${path}`
     )
 
-    return response?.data
+    if (!response?.data) {
+      throw new Error('Alby request - no response error')
+    }
+
+    return response.data
   } catch (error) {
     const response = error?.response
 
@@ -396,7 +400,11 @@ export const v4vAlbySendKeysendPayments = async (
       path: '/payments/keysend/multi',
       body
     })) as AlbyMultiKeySendResponse
-    response.customKeyValueAddresses = customKeyValueAddresses
+    
+    if (response) {
+      response.customKeyValueAddresses = customKeyValueAddresses
+    }
+
     return response
   } catch (error) {
     if (typeof error?.response?.data === 'object') {

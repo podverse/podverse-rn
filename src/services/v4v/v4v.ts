@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Funding, NowPlayingItem, ValueRecipient, ValueRecipientNormalized,
   ValueTag, ValueTransaction } from 'podverse-shared'
-  import { Alert } from 'react-native'
 import * as RNKeychain from 'react-native-keychain'
 import { errorLogger } from '../../lib/logger'
 import { translate } from '../../lib/i18n'
@@ -298,26 +297,29 @@ const processSendValueTransactions = async (
   includeMessage?: boolean
 ) => {
   let totalAmountPaid = 0
+  
   try {
-    const response = await sendValueTransactions(
-      valueTransactions,
-      'alby',
-      includeMessage
-    )
-
-    const keysendsData = response?.keysends
-    const customKeyValueAddresses = response?.customKeyValueAddresses || []
-
-    if (keysendsData) {
-      for (const keysendData of keysendsData) {
-        if (keysendData?.error) {
-          processSendValueTransactionError(
-            keysendData,
-            customKeyValueAddresses,
-            type
-          )
-        } else {
-          totalAmountPaid += keysendData.keysend.amount
+    if (valueTransactions?.length > 0) {
+      const response = await sendValueTransactions(
+        valueTransactions,
+        'alby',
+        includeMessage
+      )
+  
+      const keysendsData = response?.keysends
+      const customKeyValueAddresses = response?.customKeyValueAddresses || []
+  
+      if (keysendsData) {
+        for (const keysendData of keysendsData) {
+          if (keysendData?.error) {
+            processSendValueTransactionError(
+              keysendData,
+              customKeyValueAddresses,
+              type
+            )
+          } else {
+            totalAmountPaid += keysendData.keysend.amount
+          }
         }
       }
     }
@@ -339,8 +341,6 @@ const processSendValueTransactions = async (
           )
         }
       }
-    } else {
-      Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, displayedErrorMessage, PV.Alerts.BUTTONS.OK)
     }
   }
 
@@ -730,8 +730,8 @@ export const v4vGetSatoshisInFormattedFiatValue = ({
   })
 
   let fiatAmountText = ''
-  if (fiatAmount > 0) {
-    fiatAmountText = fiatAmount.toLocaleString('en', {
+  if (Number(fiatAmount) > 0) {
+    fiatAmountText = Number(fiatAmount).toLocaleString('en', {
       style: 'currency',
       currency
     })
