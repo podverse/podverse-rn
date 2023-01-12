@@ -99,6 +99,7 @@ const styles = {
     alignItems: 'center',
     flexDirection: 'row-reverse',
     justifyContent: 'space-between',
-    minHeight: PV.Table.sectionHeader.height
+    minHeight: PV.Table.sectionHeader.height,
+    paddingHorizontal: 8
   }
 }
