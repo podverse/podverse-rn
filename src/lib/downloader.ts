@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPodcastCredentialsHeader } from '../services/parser'
+import { playerCheckIfDownloadableFile } from '../services/player'
 import { getPodcastFeedUrlAuthority } from '../services/podcast'
 import { getSecureUrl } from '../services/tools'
 import * as DownloadState from '../state/actions/downloads'
@@ -102,6 +103,12 @@ export const downloadEpisode = async (
 
   if (!shouldDownload) {
     debugLogger('downloadEpisode: Does not have a valid downloading connection')
+    return
+  }
+
+  const isDownloadable = playerCheckIfDownloadableFile(episode.mediaUrl)
+  if (!isDownloadable) {
+    debugLogger('downloadEpisode: Not a valid download file type')
     return
   }
 

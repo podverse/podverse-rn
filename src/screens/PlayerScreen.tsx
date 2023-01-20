@@ -118,6 +118,7 @@ export class PlayerScreen extends React.Component<Props> {
 
   async componentDidMount() {
     PVEventEmitter.on(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED, this._handleRefreshNavigationHeader)
+    PVEventEmitter.on(PV.Events.PLAYER_DISMISS, this.props.navigation.dismiss)
 
     this.props.navigation.setParams({
       _getEpisodeId: this._getEpisodeId,
@@ -140,13 +141,16 @@ export class PlayerScreen extends React.Component<Props> {
 
   async componentWillUnmount() {
     PVEventEmitter.removeListener(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED, this._handleRefreshNavigationHeader)
+    PVEventEmitter.removeListener(PV.Events.PLAYER_DISMISS, this.props.navigation.dismiss)
 
     try {
       clearTempMediaRef()
       const skipSetNowPlaying = false
       const shouldAwait = true
-
-      await playerUpdateUserPlaybackPosition(skipSetNowPlaying, shouldAwait)
+      const { nowPlayingItem } = this.global.player
+      if (!!nowPlayingItem) {
+        await playerUpdateUserPlaybackPosition(skipSetNowPlaying, shouldAwait)
+      }
       await getHistoryItems(1, [])
     } catch (error) {
       errorLogger(_fileName, 'componentWillUnmount', error)
@@ -291,9 +295,9 @@ export class PlayerScreen extends React.Component<Props> {
     const mediaRefId = mediaRef?.id || null
     const chapterId = currentChapter?.id || null
     const customRSSPodcastLink =
-      nowPlayingItem.addByRSSPodcastFeedUrl && nowPlayingItem.podcastLinkUrl ? nowPlayingItem.podcastLinkUrl : null
+      nowPlayingItem?.addByRSSPodcastFeedUrl && nowPlayingItem.podcastLinkUrl ? nowPlayingItem.podcastLinkUrl : null
     const customRSSEpisodeLink =
-      nowPlayingItem.addByRSSPodcastFeedUrl && nowPlayingItem.episodeLinkUrl ? nowPlayingItem.episodeLinkUrl : null
+      nowPlayingItem?.addByRSSPodcastFeedUrl && nowPlayingItem.episodeLinkUrl ? nowPlayingItem.episodeLinkUrl : null
 
     if (episode?.description) {
       episode.description = replaceLinebreaksWithBrTags(episode.description)

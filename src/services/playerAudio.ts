@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { checkIfVideoFileOrVideoLiveType, NowPlayingItem } from 'podverse-shared'
-import TrackPlayer, { Capability, IOSCategoryMode, PitchAlgorithm, State, Track } from 'react-native-track-player'
+import { checkIfVideoFileOrVideoLiveType, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
+import TrackPlayer, { AppKilledPlaybackBehavior, Capability, IOSCategoryMode, PitchAlgorithm, RepeatMode,
+  State, Track } from 'react-native-track-player'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
@@ -78,6 +79,8 @@ PVAudioPlayer.setupPlayer({
   audioUpdateTrackPlayerCapabilities()
 })
 
+PVAudioPlayer.setRepeatMode(RepeatMode.Off)
+
 export const audioUpdateTrackPlayerCapabilities = () => {
   const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
 
@@ -105,21 +108,30 @@ export const audioUpdateTrackPlayerCapabilities = () => {
       Capability.Play,
       Capability.SeekTo
     ],
-    /*
-      See alwaysPauseOnInterruption comment in the playerAudioEvents file
-      for an explanation why we are enabling it on iOS only.
-    */
-    // alwaysPauseOnInterruption: Platform.OS === 'ios',
-    stopWithApp: true,
     backwardJumpInterval: parseInt(jumpBackwardsTime, 10),
     forwardJumpInterval: parseInt(jumpForwardsTime, 10),
-    ...(Platform.OS === 'ios' ? { progressUpdateEventInterval: 1 } : {})
+    progressUpdateEventInterval: 1,
+    android: {
+      appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
+    }
   })
 }
 
 export const audioIsLoaded = async () => {
   const trackIndex = await PVAudioPlayer.getCurrentTrack()
-  return Number.isInteger(trackIndex) && trackIndex >= 0
+  let currentTrackId = ''
+  let currentNowPlayingItem: NowPlayingItem | null = null
+
+  if (!!trackIndex || trackIndex === 0) {
+    const track = await PVAudioPlayer.getTrack(trackIndex)
+    currentTrackId = track?.id ? track.id : ''
+    currentNowPlayingItem = getGlobal().player?.nowPlayingItem
+    if (currentNowPlayingItem?.episodeId && currentNowPlayingItem.episodeId === currentTrackId) {
+      return true
+    }
+  }
+
+  return false
 }
 
 export const audioCheckIfIsPlaying = (playbackState: any) => {
@@ -170,26 +182,15 @@ export const audioLoadNowPlayingItem = async (
 
   addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
 
-  if (Platform.OS === 'ios') {
-    await AsyncStorage.setItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED, 'true')
-    await PVAudioPlayer.reset()
+  const currentId = await audioGetCurrentLoadedTrackId()
+  if (currentId) {
+    PVAudioPlayer.removeUpcomingTracks()
     const track = (await audioCreateTrack(item)) as Track
     await PVAudioPlayer.add(track)
-    await AsyncStorage.removeItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
-    await audioSyncPlayerWithQueue()
+    await PVAudioPlayer.skipToNext()
   } else {
-    const currentId = await audioGetCurrentLoadedTrackId()
-    if (currentId) {
-      PVAudioPlayer.removeUpcomingTracks()
-      const track = (await audioCreateTrack(item)) as Track
-      await PVAudioPlayer.add(track)
-      await PVAudioPlayer.skipToNext()
-      await audioSyncPlayerWithQueue()
-    } else {
-      const track = (await audioCreateTrack(item)) as Track
-      await PVAudioPlayer.add(track)
-      await audioSyncPlayerWithQueue()
-    }
+    const track = (await audioCreateTrack(item)) as Track
+    await PVAudioPlayer.add(track)
   }
 
   if (shouldPlay) {
@@ -277,6 +278,10 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
       getDownloadedFilePath(episodeId, episodeMediaUrl, isAddByRSSPodcast)
     ])
 
+    const fileExtension = getExtensionFromUrl(episodeMediaUrl)?.substring(1)
+    const isHLS = fileExtension === 'm3u8'
+    const type = isHLS ? 'hls' : 'default'
+
     if (isDownloadedFile) {
       track = {
         id,
@@ -285,7 +290,8 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
         artist: podcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
         userAgent: getAppUserAgent(),
-        pitchAlgorithm: PitchAlgorithm.Voice
+        pitchAlgorithm: PitchAlgorithm.Voice,
+        type
       }
     } else {
       const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
@@ -302,7 +308,8 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
         headers: {
           ...(Authorization ? { Authorization } : {}),
           'User-Agent': getAppUserAgent()
-        }
+        },
+        type
       }
     }
   }
@@ -352,10 +359,6 @@ export const audioTogglePlay = async () => {
   } else {
     audioHandlePlayWithUpdate()
   }
-}
-
-export const audioHandleStop = () => {
-  PVAudioPlayer.stop()
 }
 
 export const audioHandlePlay = () => {
@@ -467,15 +470,25 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
     let filteredItems = [] as any
 
     if (item && !checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
-      /* Use the item from history to make sure we have the same
+      /* TODO: fix this
+         Use the item from history to make sure we have the same
          userPlaybackPosition that was last saved from other devices. */
       if (!item.clipId && item.episodeId) {
+        /* 
+          updateHistoryItemsIndex will also update the result of
+          getNowPlayingItemFromLocalStorage
+        */
         await updateHistoryItemsIndex()
-        item = await getNowPlayingItemFromLocalStorage(item.episodeId)
+        
+        /*
+          Get the localStorageItem with the new userPlaybackPosition from updateHistoryItemsIndex
+        */
+        const localStorageItem = await getNowPlayingItemFromLocalStorage(item.episodeId)
+        if (!!localStorageItem) {
+          item = localStorageItem
+        }
       }
-
       filteredItems = filterItemFromQueueItems(queueItems, item)
-      filteredItems.unshift(item)
 
       if (filteredItems.length > 0) {
         const tracks = await audioCreateTracks(filteredItems)

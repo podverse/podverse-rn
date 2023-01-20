@@ -3,6 +3,7 @@ import { checkIfVideoFileOrVideoLiveType } from 'podverse-shared'
 import { Alert, Modal, Pressable, StyleSheet, View as RNView, Image, ImageSourcePropType } from 'react-native'
 import Share from 'react-native-share'
 import { NavigationStackOptions } from 'react-navigation-stack'
+import { RepeatMode } from 'react-native-track-player'
 import React from 'reactn'
 import { clearTempMediaRef, saveTempMediaRef } from '../state/actions/mediaRef'
 import {
@@ -34,6 +35,7 @@ import {
   playerPreviewEndTime,
   playerPreviewStartTime
 } from '../services/player'
+import { PVAudioPlayer } from '../services/playerAudio'
 import { trackPageView } from '../services/tracking'
 import { playerTogglePlay, playerSetNowPlayingItem, playerSetPlaybackSpeed } from '../state/actions/player'
 import { core, darkTheme, iconStyles, playerStyles } from '../styles'
@@ -116,6 +118,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
     // Prevent the temporary progressValue from sticking in the progress bar
     setTimeout(() => this.setState({ progressValue: null }), 250)
 
+    await AsyncStorage.setItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING, 'TRUE')
+    PVAudioPlayer.setRepeatMode(RepeatMode.Track)
+
     const hideHowToModal = await AsyncStorage.getItem(PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED)
 
     if (!hideHowToModal) {
@@ -167,6 +172,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   async componentWillUnmount() {
+    await AsyncStorage.removeItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
+    PVAudioPlayer.setRepeatMode(RepeatMode.Off)
+
     if (!this.props.navigation.getParam('isEditing')) {
       await saveTempMediaRef({
         startTime: this.state.startTime,
