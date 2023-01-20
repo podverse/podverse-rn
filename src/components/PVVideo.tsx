@@ -3,7 +3,7 @@ import { Modal, StyleSheet } from 'react-native'
 import React from 'reactn'
 import Orientation from 'react-native-orientation-locker'
 import Video from 'react-native-video-controls'
-import { errorLogger } from '../lib/logger'
+import { debugLogger, errorLogger } from '../lib/logger'
 import { pvIsTablet } from '../lib/deviceDetection'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
@@ -39,11 +39,12 @@ type State = {
   Authorization?: string
   destroyPlayer: boolean
   disableOnProgress?: boolean
+  fileType?: 'hls' | 'other'
+  finalUri?: string
   isDownloadedFile: boolean
   isFullscreen: boolean
   isReadyToPlay: boolean
   transitionPlaybackState?: any // remember what the playback state was between navigations
-  uri?: string
 }
 
 let lastNowPlayingItemUri = ''
@@ -98,11 +99,11 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
   _handleGoToLiveCurrentTime = () => {
     try {
-      const { uri } = this.state
-      if (uri) {
-        const refreshUri = addParameterToURL(uri, `forceRefresh=${Date.now()}`)
+      const { finalUri } = this.state
+      if (finalUri) {
+        const refreshUri = addParameterToURL(finalUri, `forceRefresh=${Date.now()}`)
         if (refreshUri) {
-          this.setState({ uri: refreshUri })
+          this.setState({ finalUri: refreshUri })
         }
       }
     } catch (error) {
@@ -137,19 +138,22 @@ export class PVVideo extends React.PureComponent<Props, State> {
                 let { nowPlayingItem } = player
                 // nowPlayingItem will be undefined when loading from a deep link
                 nowPlayingItem = nowPlayingItem || {}
-                let uri = nowPlayingItem.episodeMediaUrl
+                const uri = nowPlayingItem.episodeMediaUrl
+                let finalUri = encodeSpacesInString(convertUrlToSecureHTTPS(uri || '').trim())
 
-                const { Authorization, filePath, isDownloadedFile } = await videoGetDownloadedFileInfo(nowPlayingItem)
+                const { Authorization, filePath,
+                  fileType, isDownloadedFile } = await videoGetDownloadedFileInfo(nowPlayingItem)
 
                 if (isDownloadedFile && filePath) {
-                  uri = filePath
+                  finalUri = filePath
                 }
 
                 this.setState(
                   {
                     Authorization,
-                    isDownloadedFile,
-                    uri
+                    fileType,
+                    finalUri,
+                    isDownloadedFile
                   },
                   () => {
                     if (setClipTime && nowPlayingItem.clipId) {
@@ -333,15 +337,13 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
   render() {
     const { disableFullscreen, isMiniPlayer } = this.props
-    const { Authorization, destroyPlayer, isFullscreen, isReadyToPlay, uri } = this.state
+    const { Authorization, destroyPlayer, fileType, finalUri, isFullscreen, isReadyToPlay } = this.state
     const { player, userAgent } = this.global
     const { playbackState } = player
 
     // nowPlayingItem will be undefined when loading from a deep link
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
-
-    const finalUri = encodeSpacesInString(convertUrlToSecureHTTPS(uri || '').trim())
 
     const pvVideo = finalUri ? (
       <Video
@@ -358,9 +360,9 @@ export class PVVideo extends React.PureComponent<Props, State> {
           this._handlePause()
         }}
         onEnterFullscreen={this._enableFullscreen}
-        // onError={(error) => {
-        //   errorLogger('PVVideo onError', error)
-        // }}
+        onError={(error) => {
+          debugLogger('PVVideo onError', error)
+        }}
         onLoad={(payload: any) => {
           const { duration } = payload
           videoStateUpdateDuration(duration)
@@ -390,7 +392,14 @@ export class PVVideo extends React.PureComponent<Props, State> {
         }}
         onProgress={(payload: any) => {
           const { disableOnProgress } = this.state
-          if (!disableOnProgress) {
+          /* 
+            This is some kind of race condition where disableOnProgress can be undefined
+            for a tick while navigating between MiniPlayer and the PlayerScreen.
+            In the case of undefined, we should set disableOnProgress to true,
+            so a state update with an invalid position does not happen.
+          */
+          // eslint-disable-next-line @typescript-eslint/tslint/config
+          if (!disableOnProgress && typeof disableOnProgress !== 'undefined') {
             const { currentTime } = payload
             videoStateUpdatePosition(currentTime)
             const isVideo = true
@@ -410,7 +419,8 @@ export class PVVideo extends React.PureComponent<Props, State> {
           headers: {
             'User-Agent': userAgent,
             ...(Authorization ? { Authorization } : {})
-          }
+          },
+          ...(fileType === 'hls' ? { type: 'm3u8' } : {})
         }}
         style={styles.videoMini}
       />
