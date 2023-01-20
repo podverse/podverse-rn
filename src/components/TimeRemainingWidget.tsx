@@ -237,11 +237,11 @@ const styles = StyleSheet.create({
   playButton: {
     borderColor: PV.Colors.skyLight,
     borderWidth: 1,
-    borderRadius: 20,
+    borderRadius: 42,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 40,
-    width: 40,
+    height: 42,
+    width: 42,
     marginRight: 10,
     backgroundColor: PV.Colors.brandBlueDark + '44'
   },
