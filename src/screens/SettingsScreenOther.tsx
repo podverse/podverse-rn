@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import AsyncStorage from '@react-native-community/async-storage'
-import { StyleSheet } from 'react-native'
+import { Alert, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
@@ -10,7 +10,6 @@ import {
   Divider,
   Icon,
   NumberSelectorWithText,
-  PVDialog,
   ScrollView,
   SwitchWithText,
   Text,
@@ -37,7 +36,6 @@ type State = {
   }
   customRSSParallelParserLimit: string
   isLoading?: boolean
-  showDeleteCacheDialog?: boolean
 }
 
 const testIDPrefix = 'settings_screen_other'
@@ -53,8 +51,7 @@ export class SettingsScreenOther extends React.Component<Props, State> {
         PV.CustomLaunchScreen.defaultLaunchScreenKey
       ),
       customRSSParallelParserLimit: customRSSParallelParserLimit?.toString(),
-      isLoading: false,
-      showDeleteCacheDialog: false
+      isLoading: false
     }
   }
 
@@ -108,17 +105,15 @@ export class SettingsScreenOther extends React.Component<Props, State> {
     setCustomRSSParallelParserLimit(safeLimit)
   }
 
-  _handleToggleDeleteCacheDialog = () => {
-    this.setState({
-      showDeleteCacheDialog: !this.state.showDeleteCacheDialog
-    })
+  _handleShowDeleteCacheDialog = () => {
+    const DELETE_CACHE = PV.Alerts.DELETE_CACHE(() => this._handleDeleteCache)
+    Alert.alert(DELETE_CACHE.title, DELETE_CACHE.message, DELETE_CACHE.buttons)
   }
 
   _handleDeleteCache = () => {
     this.setState(
       {
-        isLoading: true,
-        showDeleteCacheDialog: false
+        isLoading: true
       },
       () => {
         (async () => {
@@ -137,8 +132,7 @@ export class SettingsScreenOther extends React.Component<Props, State> {
     const {
       customLaunchScreenOptionSelected,
       customRSSParallelParserLimit,
-      isLoading,
-      showDeleteCacheDialog
+      isLoading
     } = this.state
     const { censorNSFWText, globalTheme, hideCompleted, hideNewEpisodesBadges } = this.global
     const isDarkMode = globalTheme === darkTheme
@@ -238,32 +232,10 @@ export class SettingsScreenOther extends React.Component<Props, State> {
             <Divider />
             <Button
               accessibilityLabel={translate('Delete cache')}
-              onPress={this._handleToggleDeleteCacheDialog}
+              onPress={this._handleShowDeleteCacheDialog}
               testID={`${testIDPrefix}_delete_cache`}
               text={translate('Delete cache')}
               wrapperStyles={core.buttonWithMarginTop}
-            />
-            <PVDialog
-              buttonProps={[
-                {
-                  label: translate('No'),
-                  onPress: this._handleToggleDeleteCacheDialog,
-                  testID: `${testIDPrefix}_dialog_delete_cache_no`.prependTestId()
-                },
-                {
-                  label: translate('Yes'),
-                  onPress: this._handleDeleteCache,
-                  testID: `${testIDPrefix}_dialog_delete_cache_yes`.prependTestId()
-                }
-              ]}
-              descriptionProps={[
-                {
-                  children: translate('Are you sure you want to delete the cache'),
-                  testID: `${testIDPrefix}_dialog_delete_cache_description`.prependTestId()
-                }
-              ]}
-              title={translate('Delete cache')}
-              visible={showDeleteCacheDialog}
             />
           </>
         )}

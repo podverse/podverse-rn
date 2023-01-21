@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import { Alert, StyleSheet } from 'react-native'
-import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import { Button, Divider, Icon, PVDialog, ScrollView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
