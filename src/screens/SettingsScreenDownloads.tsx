@@ -140,12 +140,10 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
   }
 
   _handleShowSetAllDownloadDialog = (isCount?: boolean) => {
-   const DOWNLOAD_LIMIT_UPDATE = PV.Alerts.DOWNLOAD_LIMIT_UPDATE(() =>
-     isCount
-       ? this._handleUpdateAllDownloadedEpiosdeLimitCount
-       : this._handleUpdateAllDownloadedEpiosdeLimitDefault
-   )
-   Alert.alert(DOWNLOAD_LIMIT_UPDATE.title, DOWNLOAD_LIMIT_UPDATE.message, DOWNLOAD_LIMIT_UPDATE.buttons)
+    const DOWNLOAD_LIMIT_UPDATE = PV.Alerts.DOWNLOAD_LIMIT_UPDATE(() =>
+      isCount ? this._handleUpdateAllDownloadedEpiosdeLimitCount : this._handleUpdateAllDownloadedEpiosdeLimitDefault
+    )
+    Alert.alert(DOWNLOAD_LIMIT_UPDATE.title, DOWNLOAD_LIMIT_UPDATE.message, DOWNLOAD_LIMIT_UPDATE.buttons)
   }
 
   _handleUpdateAllDownloadedEpiosdeLimitCount = async () => {
@@ -169,7 +167,11 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
 
   _handleShowDeleteDownloadedEpisodesDialog = () => {
     const DOWNLOADED_EPISODES_DELETE = PV.Alerts.DOWNLOADED_EPISODES_DELETE(this._handleDeleteDownloadedEpisodes)
-    Alert.alert(DOWNLOADED_EPISODES_DELETE.title, DOWNLOADED_EPISODES_DELETE.message, DOWNLOADED_EPISODES_DELETE.buttons)
+    Alert.alert(
+      DOWNLOADED_EPISODES_DELETE.title,
+      DOWNLOADED_EPISODES_DELETE.message,
+      DOWNLOADED_EPISODES_DELETE.buttons
+    )
   }
 
   _askToTransferDownloads = () => {

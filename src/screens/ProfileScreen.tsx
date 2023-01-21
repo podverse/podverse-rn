@@ -377,7 +377,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           isLoading: true
         },
         () => {
-          ;(async () => {
+          (async () => {
             try {
               await deleteMediaRef(mediaRefIdToDelete)
               flatListData = flatListData.filter((x: any) => x.id !== mediaRefIdToDelete)

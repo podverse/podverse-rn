@@ -118,7 +118,8 @@ module.exports = async () => {
     playback-track-changed and playback-queue-ended handling. To work around this,
     I am determining if the "queue ended" event that we care about has happened
     from within the playback-track-changed event listener.
-  */ 
+  */
+
   PVAudioPlayer.addEventListener(Event.PlaybackQueueEnded, (x) => {
     debugLogger('playback-queue-ended', x)
     AsyncStorage.setItem(PV.Events.PLAYER_AUDIO_QUEUE_ENDED, 'TRUE')
@@ -135,10 +136,9 @@ module.exports = async () => {
           if (!!queueEnded) {
             await AsyncStorage.removeItem(PV.Events.PLAYER_AUDIO_QUEUE_ENDED)
             audioHandleQueueEnded(x)
-          } 
+          }
           /* audioHandleTrackEnded will reset the completed episode playbackPosition to 0 */
           audioHandleTrackEnded(x)
-          
         }
         syncNowPlayingItemWithTrack(callback)
       }

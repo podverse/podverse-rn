@@ -382,7 +382,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       await setTrackingConsentAcknowledged()
       this.setState({ isLoadingMore: false })
       const DOWNLOAD_DATA_SETTINGS = PV.Alerts.DOWNLOAD_DATA_SETTINGS(
-        this._handleDataSettingsWifiOnly, this._handleDataSettingsAllowData
+        this._handleDataSettingsWifiOnly,
+        this._handleDataSettingsAllowData
       )
       Alert.alert(DOWNLOAD_DATA_SETTINGS.title, DOWNLOAD_DATA_SETTINGS.message, DOWNLOAD_DATA_SETTINGS.buttons)
     }

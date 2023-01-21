@@ -87,18 +87,12 @@ export const Alerts = {
   CLIP_DELETE: (handleDelete: any) => ({
     message: translate('Are you sure'),
     title: translate('Delete Clip'),
-    buttons: [
-      { text: translate('Cancel') },
-      { text: translate('Delete'), onPress: handleDelete }
-    ]
+    buttons: [{ text: translate('Cancel') }, { text: translate('Delete'), onPress: handleDelete }]
   }),
   DELETE_CACHE: (handleDelete: any) => ({
     message: translate('Are you sure you want to delete the cache'),
     title: translate('Delete cache'),
-    buttons: [
-      { text: translate('No') },
-      { text: translate('Yes'), onPress: handleDelete }
-    ]
+    buttons: [{ text: translate('No') }, { text: translate('Yes'), onPress: handleDelete }]
   }),
   DOWNLOAD_DATA_SETTINGS: (handleWifiOnly: any, handleAllowData: any) => ({
     message: translate('Do you want to allow downloading episodes with your data plan'),
@@ -111,18 +105,12 @@ export const Alerts = {
   DOWNLOADED_EPISODES_DELETE: (handleDelete: any) => ({
     message: translate('Are you sure you want to delete all of your downloaded episodes from this podcast'),
     title: translate('Delete All Downloaded Episodes'),
-    buttons: [
-      { text: translate('No') },
-      { text: translate('Yes'), onPress: handleDelete }
-    ]
+    buttons: [{ text: translate('No') }, { text: translate('Yes'), onPress: handleDelete }]
   }),
   DOWNLOAD_LIMIT_UPDATE: (handleUpdate: any) => ({
     message: translate('Do you want to update the download limit for all of your currently subscribed podcasts'),
     title: translate('Global Update'),
-    buttons: [
-      { text: translate('No') },
-      { text: translate('Yes'), onPress: handleUpdate }
-    ]
+    buttons: [{ text: translate('No') }, { text: translate('Yes'), onPress: handleUpdate }]
   }),
   GO_TO_LOGIN_BUTTONS: (navigation: any) => [
     { text: translate('OK') },

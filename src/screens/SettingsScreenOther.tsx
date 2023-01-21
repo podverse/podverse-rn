@@ -129,11 +129,7 @@ export class SettingsScreenOther extends React.Component<Props, State> {
   }
 
   render() {
-    const {
-      customLaunchScreenOptionSelected,
-      customRSSParallelParserLimit,
-      isLoading
-    } = this.state
+    const { customLaunchScreenOptionSelected, customRSSParallelParserLimit, isLoading } = this.state
     const { censorNSFWText, globalTheme, hideCompleted, hideNewEpisodesBadges } = this.global
     const isDarkMode = globalTheme === darkTheme
 

@@ -1,7 +1,14 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { checkIfVideoFileOrVideoLiveType, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
-import TrackPlayer, { AppKilledPlaybackBehavior, Capability, IOSCategoryMode, PitchAlgorithm, RepeatMode,
-  State, Track } from 'react-native-track-player'
+import TrackPlayer, {
+  AppKilledPlaybackBehavior,
+  Capability,
+  IOSCategoryMode,
+  PitchAlgorithm,
+  RepeatMode,
+  State,
+  Track
+} from 'react-native-track-player'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
@@ -479,7 +486,7 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
           getNowPlayingItemFromLocalStorage
         */
         await updateHistoryItemsIndex()
-        
+
         /*
           Get the localStorageItem with the new userPlaybackPosition from updateHistoryItemsIndex
         */
