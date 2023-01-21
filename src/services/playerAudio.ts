@@ -126,19 +126,7 @@ export const audioUpdateTrackPlayerCapabilities = () => {
 
 export const audioIsLoaded = async () => {
   const trackIndex = await PVAudioPlayer.getCurrentTrack()
-  let currentTrackId = ''
-  let currentNowPlayingItem: NowPlayingItem | null = null
-
-  if (!!trackIndex || trackIndex === 0) {
-    const track = await PVAudioPlayer.getTrack(trackIndex)
-    currentTrackId = track?.id ? track.id : ''
-    currentNowPlayingItem = getGlobal().player?.nowPlayingItem
-    if (currentNowPlayingItem?.episodeId && currentNowPlayingItem.episodeId === currentTrackId) {
-      return true
-    }
-  }
-
-  return false
+  return Number.isInteger(trackIndex) && trackIndex >= 0
 }
 
 export const audioCheckIfIsPlaying = (playbackState: any) => {
