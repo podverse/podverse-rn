@@ -1,5 +1,7 @@
 import React, { getGlobal } from 'reactn'
 import Dialog from 'react-native-dialog'
+import { View } from 'react-native'
+import { PV } from '../resources'
 
 type DialogButtonProps = {
   bold?: boolean
@@ -33,7 +35,7 @@ type Props = {
 export const PVDialog = (props: Props) => {
   const { buttonProps, descriptionProps = [], inputProps = [], title, visible } = props
 
-  const textColor = getGlobal().globalTheme.buttonPrimaryText
+  const textColor = getGlobal().globalTheme.buttonPrimaryText.color
 
   const descriptions = descriptionProps.map((props: DialogDescriptionProps) => {
     return (
@@ -49,9 +51,11 @@ export const PVDialog = (props: Props) => {
         key={props.testID}
         onChangeText={props.onChangeText}
         placeholder={props.placeholder}
-        style={{ color: textColor }}
+        placeholderTextColor={PV.Colors.gray}
+        style={{ backgroundColor: PV.Colors.black, color: textColor }}
         testID={props.testID}
         value={props.value}
+        wrapperStyle={{ backgroundColor: PV.Colors.black }}
       />
     )
   })
@@ -72,7 +76,10 @@ export const PVDialog = (props: Props) => {
   })
 
   return (
-    <Dialog.Container visible={!!visible}>
+    <Dialog.Container
+      blurComponentIOS={<View />}
+      contentStyle={{ backgroundColor: PV.Colors.grayDarker }}
+      visible={!!visible}>
       <Dialog.Title style={{ color: textColor }}>{title}</Dialog.Title>
       {descriptions}
       {inputs}

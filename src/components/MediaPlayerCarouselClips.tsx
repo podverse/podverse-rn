@@ -10,16 +10,7 @@ import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
-import {
-  ActionSheet,
-  ActivityIndicator,
-  ClipTableCell,
-  Divider,
-  FlatList,
-  PVDialog,
-  TableSectionSelectors,
-  View
-} from './'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from './'
 
 type Props = {
   navigation?: any
@@ -185,27 +176,20 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     }
   }
 
-  _handleDeleteClip = (selectedId) => {
-    setGlobal({
-      screenPlayer: {
-        ...this.global.screenPlayer,
-        mediaRefIdToDelete: selectedId,
-        showDeleteConfirmDialog: true
-      }
-    })
+  _showClipDeleteConfirmDialog = (mediaRefIdToDelete: string) => {
+    const CLIP_DELETE = PV.Alerts.CLIP_DELETE(() => this._deleteMediaRef(mediaRefIdToDelete))
+    PV.Alerts.modalAlert(CLIP_DELETE.title, CLIP_DELETE.message, CLIP_DELETE.buttons)
   }
 
-  _deleteMediaRef = () => {
+  _deleteMediaRef = (mediaRefIdToDelete: string) => {
     const { screenPlayer } = this.global
-    const { mediaRefIdToDelete } = screenPlayer
     let { flatListData, flatListDataTotalCount } = screenPlayer
 
     if (mediaRefIdToDelete) {
       setGlobal(
         {
           screenPlayer: {
-            isLoading: true,
-            showDeleteConfirmDialog: false
+            isLoading: true
           }
         },
         () => {
@@ -229,24 +213,13 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
                 ...this.global.screenPlayer,
                 flatListData,
                 flatListDataTotalCount,
-                isLoading: false,
-                mediaRefIdToDelete: ''
+                isLoading: false
               }
             })
           })()
         }
       )
     }
-  }
-
-  _cancelDeleteMediaRef = () => {
-    setGlobal({
-      screenPlayer: {
-        ...this.global.screenPlayer,
-        mediaRefIdToDelete: '',
-        showDeleteConfirmDialog: false
-      }
-    })
   }
 
   _renderItem = ({ item, index }) => {
@@ -296,7 +269,6 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
       selectedFromLabel = translate('Episode Clips'),
       selectedItem,
       selectedSortLabel = translate('top – week'),
-      showDeleteConfirmDialog,
       showMoreActionSheet,
       showNoInternetConnectionMessage
     } = screenPlayer
@@ -346,35 +318,13 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
               {
                 handleDismiss: this._handleMoreCancelPress,
                 handleDownload: this._handleDownloadPressed,
-                handleDeleteClip: this._handleDeleteClip
+                handleDeleteClip: this._showClipDeleteConfirmDialog
               },
               'clip'
             )
           }
           showModal={showMoreActionSheet}
           testID={`${testID}_more`}
-        />
-        <PVDialog
-          buttonProps={[
-            {
-              label: translate('Cancel'),
-              onPress: this._cancelDeleteMediaRef,
-              testID: `${getTestID()}_delete_clip_cancel`.prependTestId()
-            },
-            {
-              label: translate('Delete'),
-              onPress: this._deleteMediaRef,
-              testID: `${getTestID}_delete_clip_delete`.prependTestId()
-            }
-          ]}
-          descriptionProps={[
-            {
-              children: translate('Are you sure'),
-              testID: `${getTestID}_delete_clip_description`.prependTestId()
-            }
-          ]}
-          title={translate('Delete Clip')}
-          visible={showDeleteConfirmDialog}
         />
       </View>
     )

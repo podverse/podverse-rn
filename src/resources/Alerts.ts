@@ -1,4 +1,5 @@
 import { NowPlayingItem } from 'podverse-shared'
+import { Alert, AlertButton, AlertOptions, Platform } from 'react-native'
 import { translate } from '../lib/i18n'
 import { navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
 import { sendVerificationEmail } from '../services/auth'
@@ -16,6 +17,18 @@ const _sendVerificationEmailMessage = translate(
 const _cancelText = translate('Cancel')
 
 export const Alerts = {
+  /*
+    There is an issue with Alert.alert on iOS preventing it from showing when
+    invoked from within a Modal (like our ActionSheet).
+    Using setTimeout appears to fix it, but it may not be 100% reliable...
+    https://stackoverflow.com/a/65036306/2608858
+  */
+  modalAlert: (title: string, message?: string, buttons?: AlertButton[], options?: AlertOptions) => {
+    const timeout = Platform.OS === 'ios' ? 100 : 0
+    setTimeout(() => {
+      Alert.alert(title, message, buttons, options)
+    }, timeout)
+  },
   ALBY_UNAUTHORIZED_EXPIRED: {
     message: `${translate('Alby unauthorized timeout message')}`,
     title: `${translate('Alby unauthorized timeout title')}`
@@ -71,6 +84,34 @@ export const Alerts = {
     title: translate('Auth invalid title'),
     buttons: [{ text: translate('OK') }]
   },
+  CLIP_DELETE: (handleDelete: any) => ({
+    message: translate('Are you sure'),
+    title: translate('Delete Clip'),
+    buttons: [{ text: translate('Cancel') }, { text: translate('Delete'), onPress: handleDelete }]
+  }),
+  DELETE_CACHE: (handleDelete: any) => ({
+    message: translate('Are you sure you want to delete the cache'),
+    title: translate('Delete cache'),
+    buttons: [{ text: translate('No') }, { text: translate('Yes'), onPress: handleDelete }]
+  }),
+  DOWNLOAD_DATA_SETTINGS: (handleWifiOnly: any, handleAllowData: any) => ({
+    message: translate('Do you want to allow downloading episodes with your data plan'),
+    title: translate('Data Settings'),
+    buttons: [
+      { text: translate('No Wifi Only'), onPress: handleWifiOnly },
+      { text: translate('Yes Allow Data'), onPress: handleAllowData }
+    ]
+  }),
+  DOWNLOADED_EPISODES_DELETE: (handleDelete: any) => ({
+    message: translate('Are you sure you want to delete all of your downloaded episodes from this podcast'),
+    title: translate('Delete All Downloaded Episodes'),
+    buttons: [{ text: translate('No') }, { text: translate('Yes'), onPress: handleDelete }]
+  }),
+  DOWNLOAD_LIMIT_UPDATE: (handleUpdate: any) => ({
+    message: translate('Do you want to update the download limit for all of your currently subscribed podcasts'),
+    title: translate('Global Update'),
+    buttons: [{ text: translate('No') }, { text: translate('Yes'), onPress: handleUpdate }]
+  }),
   GO_TO_LOGIN_BUTTONS: (navigation: any) => [
     { text: translate('OK') },
     {

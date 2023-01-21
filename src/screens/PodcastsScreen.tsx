@@ -6,7 +6,6 @@ import qs from 'qs'
 import { Alert, AppState, Dimensions, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
 import { CarPlay } from 'react-native-carplay'
 import Config from 'react-native-config'
-import Dialog from 'react-native-dialog'
 import { endConnection as iapEndConnection, initConnection as iapInitConnection } from 'react-native-iap'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
@@ -17,7 +16,6 @@ import {
   PlayerEvents,
   PodcastTableCell,
   PurchaseListener,
-  PVDialog,
   SearchBar,
   SwipeRowBackMultipleButtons,
   TableSectionSelectors,
@@ -110,7 +108,6 @@ type State = {
   selectedCategorySub: string | null
   selectedFilterLabel?: string | null
   selectedSortLabel?: string | null
-  showDataSettingsConfirmDialog: boolean
   showNoInternetConnectionMessage?: boolean
   tempQueryEnabled: boolean
   tempQueryFrom: string | null
@@ -165,7 +162,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       selectedCategory: null,
       selectedCategorySub: null,
       selectedFilterLabel: translate('Subscribed'),
-      showDataSettingsConfirmDialog: false,
       selectedSortLabel: translate('A-Z'),
       tempQueryEnabled: false,
       tempQueryFrom: null,
@@ -384,10 +380,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const trackingConsentAcknowledged = await AsyncStorage.getItem(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED)
     if (!trackingConsentAcknowledged) {
       await setTrackingConsentAcknowledged()
-      this.setState({
-        showDataSettingsConfirmDialog: true,
-        isLoadingMore: false
-      })
+      this.setState({ isLoadingMore: false })
+      const DOWNLOAD_DATA_SETTINGS = PV.Alerts.DOWNLOAD_DATA_SETTINGS(
+        this._handleDataSettingsWifiOnly,
+        this._handleDataSettingsAllowData
+      )
+      Alert.alert(DOWNLOAD_DATA_SETTINGS.title, DOWNLOAD_DATA_SETTINGS.message, DOWNLOAD_DATA_SETTINGS.buttons)
     }
   }
 
@@ -1069,12 +1067,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _handleDataSettingsWifiOnly = () => {
     AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
-    this.setState({ showDataSettingsConfirmDialog: false })
     this._initializeScreenData()
   }
 
   _handleDataSettingsAllowData = () => {
-    this.setState({ showDataSettingsConfirmDialog: false })
     this._initializeScreenData()
   }
 
@@ -1124,7 +1120,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       selectedCategorySub,
       selectedFilterLabel,
       selectedSortLabel,
-      showDataSettingsConfirmDialog,
       showNoInternetConnectionMessage
     } = this.state
     const { session, podcastsGridViewEnabled } = this.global
@@ -1194,28 +1189,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
             testID={testIDPrefix}
           />
         </RNView>
-        <PVDialog
-          buttonProps={[
-            {
-              label: translate('No Wifi Only'),
-              onPress: this._handleDataSettingsWifiOnly,
-              testID: 'alert_no_wifi_only'.prependTestId()
-            },
-            {
-              label: translate('Yes Allow Data'),
-              onPress: this._handleDataSettingsAllowData,
-              testID: 'alert_yes_allow_data'.prependTestId()
-            }
-          ]}
-          descriptionProps={[
-            {
-              children: translate('Do you want to allow downloading episodes with your data plan'),
-              testID: 'alert_description_allow_data'.prependTestId()
-            }
-          ]}
-          title={translate('Data Settings')}
-          visible={showDataSettingsConfirmDialog}
-        />
         <PurchaseListener navigation={navigation} />
       </View>
     )

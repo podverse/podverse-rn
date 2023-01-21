@@ -189,14 +189,12 @@ export interface InitialState {
     isLoadingMore: boolean
     isQuerying: boolean
     liveStreamWasPaused: boolean
-    mediaRefIdToDelete?: string
     queryFrom: string | null
     queryPage: number
     querySort: string | null
     selectedFromLabel?: string | null
     selectedItem?: any
     selectedSortLabel?: string | null
-    showDeleteConfirmDialog: boolean
     showFullClipInfo: boolean
     showHeaderActionSheet: boolean
     showMoreActionSheet: boolean

@@ -1,7 +1,14 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { checkIfVideoFileOrVideoLiveType, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
-import TrackPlayer, { AppKilledPlaybackBehavior, Capability, IOSCategoryMode, PitchAlgorithm, RepeatMode,
-  State, Track } from 'react-native-track-player'
+import TrackPlayer, {
+  AppKilledPlaybackBehavior,
+  Capability,
+  IOSCategoryMode,
+  PitchAlgorithm,
+  RepeatMode,
+  State,
+  Track
+} from 'react-native-track-player'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
@@ -119,19 +126,7 @@ export const audioUpdateTrackPlayerCapabilities = () => {
 
 export const audioIsLoaded = async () => {
   const trackIndex = await PVAudioPlayer.getCurrentTrack()
-  let currentTrackId = ''
-  let currentNowPlayingItem: NowPlayingItem | null = null
-
-  if (!!trackIndex || trackIndex === 0) {
-    const track = await PVAudioPlayer.getTrack(trackIndex)
-    currentTrackId = track?.id ? track.id : ''
-    currentNowPlayingItem = getGlobal().player?.nowPlayingItem
-    if (currentNowPlayingItem?.episodeId && currentNowPlayingItem.episodeId === currentTrackId) {
-      return true
-    }
-  }
-
-  return false
+  return Number.isInteger(trackIndex) && trackIndex >= 0
 }
 
 export const audioCheckIfIsPlaying = (playbackState: any) => {
@@ -479,7 +474,7 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
           getNowPlayingItemFromLocalStorage
         */
         await updateHistoryItemsIndex()
-        
+
         /*
           Get the localStorageItem with the new userPlaybackPosition from updateHistoryItemsIndex
         */
