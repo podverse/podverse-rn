@@ -8,7 +8,6 @@ import {
   ClipTableCell,
   Divider,
   FlatList,
-  PVDialog,
   SearchBar,
   TableSectionSelectors,
   View
@@ -41,7 +40,6 @@ type State = {
   isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
-  mediaRefIdToDelete?: string
   queryFrom: string | null
   queryPage: number
   querySort: string | null
@@ -52,7 +50,6 @@ type State = {
   selectedSortLabel?: string | null
   selectedItem?: any
   showActionSheet: boolean
-  showDeleteConfirmDialog?: boolean
   showNoInternetConnectionMessage?: boolean
   tempQueryEnabled: boolean
   tempQueryFrom: string | null
@@ -362,26 +359,22 @@ export class ClipsScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleDeleteClip = (selectedId) => {
-    this.setState({
-      mediaRefIdToDelete: selectedId,
-      showDeleteConfirmDialog: true
-    })
+  _showClipDeleteConfirmDialog = (mediaRefIdToDelete: string) => {
+    const CLIP_DELETE = PV.Alerts.CLIP_DELETE(() => this._deleteMediaRef(mediaRefIdToDelete))
+    PV.Alerts.modalAlert(CLIP_DELETE.title, CLIP_DELETE.message, CLIP_DELETE.buttons)
   }
 
   _handleSearchNavigation = () => {
     this.props.navigation.navigate(PV.RouteNames.SearchScreen)
   }
 
-  _deleteMediaRef = () => {
-    const { mediaRefIdToDelete } = this.state
+  _deleteMediaRef = (mediaRefIdToDelete: string) => {
     let { flatListData, flatListDataTotalCount } = this.state
 
     if (mediaRefIdToDelete) {
       this.setState(
         {
-          isLoading: true,
-          showDeleteConfirmDialog: false
+          isLoading: true
         },
         () => {
           (async () => {
@@ -401,20 +394,12 @@ export class ClipsScreen extends React.Component<Props, State> {
             this.setState({
               flatListData,
               flatListDataTotalCount,
-              isLoading: false,
-              mediaRefIdToDelete: ''
+              isLoading: false
             })
           })()
         }
       )
     }
-  }
-
-  _cancelDeleteMediaRef = () => {
-    this.setState({
-      mediaRefIdToDelete: '',
-      showDeleteConfirmDialog: false
-    })
   }
 
   _handleNavigationPress = async (selectedItem: any) => {
@@ -441,7 +426,6 @@ export class ClipsScreen extends React.Component<Props, State> {
       selectedSortLabel,
       selectedItem,
       showActionSheet,
-      showDeleteConfirmDialog,
       showNoInternetConnectionMessage
     } = this.state
     const { session } = this.global
@@ -505,7 +489,7 @@ export class ClipsScreen extends React.Component<Props, State> {
               {
                 handleDismiss: this._handleCancelPress,
                 handleDownload: this._handleDownloadPressed,
-                handleDeleteClip: this._handleDeleteClip,
+                handleDeleteClip: this._showClipDeleteConfirmDialog,
                 includeGoToPodcast: true,
                 includeGoToEpisodeInEpisodesStack: true
               },
@@ -514,28 +498,6 @@ export class ClipsScreen extends React.Component<Props, State> {
           }}
           showModal={showActionSheet}
           testID={testIDPrefix}
-        />
-        <PVDialog
-          buttonProps={[
-            {
-              label: translate('Cancel'),
-              onPress: this._cancelDeleteMediaRef,
-              testID: `${testIDPrefix}_delete_clip_cancel`.prependTestId()
-            },
-            {
-              label: translate('Delete'),
-              onPress: this._deleteMediaRef,
-              testID: `${testIDPrefix}_delete_clip_delete`.prependTestId()
-            }
-          ]}
-          descriptionProps={[
-            {
-              children: translate('Are you sure'),
-              testID: `${testIDPrefix}_delete_clip_description`.prependTestId()
-            }
-          ]}
-          title={translate('Delete Clip')}
-          visible={showDeleteConfirmDialog}
         />
       </View>
     )

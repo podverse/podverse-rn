@@ -141,8 +141,9 @@ export class PVVideo extends React.PureComponent<Props, State> {
                 const uri = nowPlayingItem.episodeMediaUrl
                 let finalUri = encodeSpacesInString(convertUrlToSecureHTTPS(uri || '').trim())
 
-                const { Authorization, filePath,
-                  fileType, isDownloadedFile } = await videoGetDownloadedFileInfo(nowPlayingItem)
+                const { Authorization, filePath, fileType, isDownloadedFile } = await videoGetDownloadedFileInfo(
+                  nowPlayingItem
+                )
 
                 if (isDownloadedFile && filePath) {
                   finalUri = filePath

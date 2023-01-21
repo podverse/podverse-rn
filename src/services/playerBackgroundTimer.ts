@@ -29,11 +29,7 @@ const debouncedSetPlaybackPosition = debounce(playerSetPositionWhenDurationIsAva
   trailing: false
 })
 
-const handleSyncNowPlayingItem = async (
-  trackId: string,
-  currentNowPlayingItem: NowPlayingItem,
-  callback?: any
-) => {
+const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem, callback?: any) => {
   if (!currentNowPlayingItem) return
 
   await clearChapterPlaybackInfo(currentNowPlayingItem)
@@ -120,11 +116,7 @@ export const syncNowPlayingItemWithTrack = (callback?: any) => {
           )
           if (currentNowPlayingItem && retryInterval) {
             clearInterval(retryInterval)
-            await handleSyncNowPlayingItem(
-              currentTrackId,
-              currentNowPlayingItem,
-              callback
-            )
+            await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem, callback)
             await removeQueueItem(currentNowPlayingItem)
             PVEventEmitter.emit(PV.Events.QUEUE_HAS_UPDATED)
           }

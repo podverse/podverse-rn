@@ -13,7 +13,6 @@ import {
   PlaylistTableCell,
   PodcastTableCell,
   ProfileTableHeader,
-  PVDialog,
   TableSectionSelectors,
   View
 } from '../components'
@@ -61,7 +60,6 @@ type State = {
   selectedSortLabel?: string | null
   selectedItem?: any
   showActionSheet: boolean
-  showDeleteConfirmDialog?: boolean
   showNoInternetConnectionMessage?: boolean
   userId?: string
   viewType: string | null
@@ -365,25 +363,24 @@ export class ProfileScreen extends React.Component<Props, State> {
     }
   }
 
-  _showDeleteConfirmDialog = () => {
-    this.setState({ showDeleteConfirmDialog: true })
+  _showClipDeleteConfirmDialog = (mediaRefIdToDelete: string) => {
+    const CLIP_DELETE = PV.Alerts.CLIP_DELETE(() => this._deleteMediaRef(mediaRefIdToDelete))
+    PV.Alerts.modalAlert(CLIP_DELETE.title, CLIP_DELETE.message, CLIP_DELETE.buttons)
   }
 
-  _deleteMediaRef = () => {
-    const { selectedItem } = this.state
+  _deleteMediaRef = (mediaRefIdToDelete: string) => {
     let { flatListData, flatListDataTotalCount } = this.state
 
-    if (selectedItem && selectedItem.clipId) {
+    if (mediaRefIdToDelete) {
       this.setState(
         {
-          isLoading: true,
-          showDeleteConfirmDialog: false
+          isLoading: true
         },
         () => {
           (async () => {
             try {
-              await deleteMediaRef(selectedItem.clipId)
-              flatListData = flatListData.filter((x: any) => x.id !== selectedItem.clipId)
+              await deleteMediaRef(mediaRefIdToDelete)
+              flatListData = flatListData.filter((x: any) => x.id !== mediaRefIdToDelete)
               flatListDataTotalCount = flatListData.length
             } catch (error) {
               if (error.response) {
@@ -403,12 +400,6 @@ export class ProfileScreen extends React.Component<Props, State> {
         }
       )
     }
-  }
-
-  _cancelDeleteMediaRef = () => {
-    this.setState({
-      showDeleteConfirmDialog: false
-    })
   }
 
   _handleNavigationPress = async (selectedItem: any) => {
@@ -478,7 +469,6 @@ export class ProfileScreen extends React.Component<Props, State> {
       selectedSortLabel,
       selectedItem,
       showActionSheet,
-      showDeleteConfirmDialog,
       showNoInternetConnectionMessage,
       userId,
       viewType
@@ -573,7 +563,7 @@ export class ProfileScreen extends React.Component<Props, State> {
                     {
                       handleDismiss: this._handleCancelPress,
                       handleDownload: this._handleDownloadPressed,
-                      handleDeleteClip: this._showDeleteConfirmDialog,
+                      handleDeleteClip: this._showClipDeleteConfirmDialog,
                       includeGoToPodcast: true,
                       includeGoToEpisodeInEpisodesStack: true
                     },
@@ -583,28 +573,6 @@ export class ProfileScreen extends React.Component<Props, State> {
               }}
               showModal={showActionSheet}
               testID={testIDPrefix}
-            />
-            <PVDialog
-              buttonProps={[
-                {
-                  label: translate('Cancel'),
-                  onPress: this._cancelDeleteMediaRef,
-                  testID: 'dialog_delete_clip_cancel'.prependTestId()
-                },
-                {
-                  label: translate('Delete'),
-                  onPress: this._deleteMediaRef,
-                  testID: 'dialog_delete_clip_delete'.prependTestId()
-                }
-              ]}
-              descriptionProps={[
-                {
-                  children: translate('Are you sure'),
-                  testID: 'dialog_delete_clip_description'.prependTestId()
-                }
-              ]}
-              title={translate('Delete Clip')}
-              visible={showDeleteConfirmDialog}
             />
           </View>
         )}

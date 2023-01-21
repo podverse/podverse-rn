@@ -10,7 +10,6 @@ import {
   Button,
   Divider,
   NumberSelectorWithText,
-  PVDialog,
   ScrollView,
   SwitchWithText,
   View
@@ -49,9 +48,6 @@ type State = {
   downloadedEpisodeLimitDefault: any
   downloadingWifiOnly?: boolean
   isLoading?: boolean
-  showDeleteDownloadedEpisodesDialog?: boolean
-  showSetAllDownloadDialog?: boolean
-  showSetAllDownloadDialogIsCount?: boolean
   customDownloadLocation?: string | null
 }
 
@@ -138,27 +134,24 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
     this.setState({ downloadedEpisodeLimitDefault: newDownloadedEpisodeLimitDefault }, () => {
       (async () => {
         await setDownloadedEpisodeLimitGlobalDefault(newDownloadedEpisodeLimitDefault)
-        this._handleToggleSetAllDownloadDialog()
         this.setGlobal({ downloadedEpisodeLimitDefault: newDownloadedEpisodeLimitDefault })
       })()
     })
   }
 
-  _handleToggleSetAllDownloadDialog = (isCount?: boolean) => {
-    this.setState({
-      showSetAllDownloadDialog: !this.state.showSetAllDownloadDialog,
-      showSetAllDownloadDialogIsCount: isCount
-    })
+  _handleShowSetAllDownloadDialog = (isCount?: boolean) => {
+    const DOWNLOAD_LIMIT_UPDATE = PV.Alerts.DOWNLOAD_LIMIT_UPDATE(() =>
+      isCount ? this._handleUpdateAllDownloadedEpiosdeLimitCount : this._handleUpdateAllDownloadedEpiosdeLimitDefault
+    )
+    Alert.alert(DOWNLOAD_LIMIT_UPDATE.title, DOWNLOAD_LIMIT_UPDATE.message, DOWNLOAD_LIMIT_UPDATE.buttons)
   }
 
   _handleUpdateAllDownloadedEpiosdeLimitCount = async () => {
     await updateAllDownloadedEpisodeLimitCounts(this.state.downloadedEpisodeLimitCount)
-    this.setState({ showSetAllDownloadDialog: false })
   }
 
   _handleUpdateAllDownloadedEpiosdeLimitDefault = async () => {
     await updateAllDownloadedEpisodeLimitDefaults(this.state.downloadedEpisodeLimitDefault)
-    this.setState({ showSetAllDownloadDialog: false })
   }
 
   _handleChangeDownloadedEpisodeLimitCountText = (value: number) => {
@@ -168,14 +161,17 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
   _handleSetGlobalDownloadedEpisodeLimitCount = async () => {
     const { downloadedEpisodeLimitCount } = this.state
     await setDownloadedEpisodeLimitGlobalCount(downloadedEpisodeLimitCount)
-    this._handleToggleSetAllDownloadDialog(true)
+    this._handleShowSetAllDownloadDialog(true)
     this.setGlobal({ downloadedEpisodeLimitCount })
   }
 
-  _handleToggleDeleteDownloadedEpisodesDialog = () => {
-    this.setState({
-      showDeleteDownloadedEpisodesDialog: !this.state.showDeleteDownloadedEpisodesDialog
-    })
+  _handleShowDeleteDownloadedEpisodesDialog = () => {
+    const DOWNLOADED_EPISODES_DELETE = PV.Alerts.DOWNLOADED_EPISODES_DELETE(this._handleDeleteDownloadedEpisodes)
+    Alert.alert(
+      DOWNLOADED_EPISODES_DELETE.title,
+      DOWNLOADED_EPISODES_DELETE.message,
+      DOWNLOADED_EPISODES_DELETE.buttons
+    )
   }
 
   _askToTransferDownloads = () => {
@@ -353,8 +349,7 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
   _handleDeleteDownloadedEpisodes = () => {
     this.setState(
       {
-        isLoading: true,
-        showDeleteDownloadedEpisodesDialog: false
+        isLoading: true
       },
       () => {
         (async () => {
@@ -378,9 +373,6 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
       downloadedEpisodeLimitDefault,
       downloadingWifiOnly,
       isLoading,
-      showDeleteDownloadedEpisodesDialog,
-      showSetAllDownloadDialog,
-      showSetAllDownloadDialogIsCount,
       customDownloadLocation
     } = this.state
 
@@ -460,58 +452,10 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
             <Divider />
             <Button
               accessibilityLabel={translate('Delete Downloaded Episodes')}
-              onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
+              onPress={this._handleShowDeleteDownloadedEpisodesDialog}
               testID={`${testIDPrefix}_delete_downloaded_episodes`}
               text={translate('Delete Downloaded Episodes')}
               wrapperStyles={core.buttonWithMarginTop}
-            />
-            <PVDialog
-              buttonProps={[
-                {
-                  label: translate('No'),
-                  onPress: this._handleToggleSetAllDownloadDialog,
-                  testID: `${testIDPrefix}_dialog_update_download_limit_no_button`.prependTestId()
-                },
-                {
-                  label: translate('Yes'),
-                  onPress: showSetAllDownloadDialogIsCount
-                    ? this._handleUpdateAllDownloadedEpiosdeLimitCount
-                    : this._handleUpdateAllDownloadedEpiosdeLimitDefault,
-                  testID: `${testIDPrefix}_dialog_update_download_limit_yes_button`.prependTestId()
-                }
-              ]}
-              descriptionProps={[
-                {
-                  children: translate(
-                    'Do you want to update the download limit for all of your currently subscribed podcasts'
-                  ),
-                  testID: `${testIDPrefix}_dialog_update_download_limit_description`.prependTestId()
-                }
-              ]}
-              title={translate('Global Update')}
-              visible={showSetAllDownloadDialog}
-            />
-            <PVDialog
-              buttonProps={[
-                {
-                  label: translate('No'),
-                  onPress: this._handleToggleDeleteDownloadedEpisodesDialog,
-                  testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_no`.prependTestId()
-                },
-                {
-                  label: translate('Yes'),
-                  onPress: this._handleDeleteDownloadedEpisodes,
-                  testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_yes`.prependTestId()
-                }
-              ]}
-              descriptionProps={[
-                {
-                  children: translate('Are you sure you want to delete all of your downloaded episodes'),
-                  testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_description`.prependTestId()
-                }
-              ]}
-              title={translate('Delete All Downloaded Episodes')}
-              visible={showDeleteDownloadedEpisodesDialog}
             />
           </>
         )}
