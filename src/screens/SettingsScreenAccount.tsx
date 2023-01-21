@@ -173,7 +173,7 @@ export class SettingsScreenAccount extends React.Component<Props, State> {
             },
             {
               bold: deleteAccountDialogConfirmed,
-              color: deleteAccountDialogConfirmed ? PV.Colors.redDarker : PV.Colors.grayDark,
+              color: deleteAccountDialogConfirmed ? PV.Colors.redLighter : PV.Colors.gray,
               disabled: !deleteAccountDialogConfirmed,
               label: translate('Delete'),
               onPress: this._handleDeleteAccount,
