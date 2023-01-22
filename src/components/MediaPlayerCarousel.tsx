@@ -9,7 +9,7 @@ import { playerCheckIfStateIsPlaying } from '../services/player'
 import { v4vGetPluralCurrencyUnitPerMinute } from '../services/v4v/v4v'
 import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import { toggleValueStreaming } from '../state/actions/valueTag'
-import { v4vAlbyHandleConnect, v4vAlbyHandleNavigation } from '../state/actions/v4v/providers/alby'
+import { v4vAlbyHandleNavigation } from '../state/actions/v4v/providers/alby'
 import { MediaPlayerCarouselComments } from './MediaPlayerCarouselComments'
 import {
   ActivityIndicator,
