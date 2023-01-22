@@ -93,6 +93,7 @@ export const audioHandleQueueEnded = (x: any) => {
   setTimeout(() => {
     (async () => {
       PVEventEmitter.emit(PV.Events.PLAYER_DISMISS)
+      await audioResetHistoryItem(x)
       await playerClearNowPlayingItem()
     })()
   }, 0)
@@ -122,7 +123,6 @@ module.exports = async () => {
 
   PVAudioPlayer.addEventListener(Event.PlaybackQueueEnded, (x) => {
     debugLogger('playback-queue-ended', x)
-    AsyncStorage.setItem(PV.Events.PLAYER_AUDIO_QUEUE_ENDED, 'TRUE')
   })
 
   PVAudioPlayer.addEventListener(Event.PlaybackTrackChanged, (x: any) => {
@@ -130,17 +130,17 @@ module.exports = async () => {
       debugLogger('playback-track-changed', x)
       const prevent = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
       if (!prevent) {
-        const callback = async () => {
-          const queueEnded = await AsyncStorage.getItem(PV.Events.PLAYER_AUDIO_QUEUE_ENDED)
-          /* audioHandleQueueEnded will handle removing the nowPlayingItem */
-          if (!!queueEnded) {
-            await AsyncStorage.removeItem(PV.Events.PLAYER_AUDIO_QUEUE_ENDED)
-            audioHandleQueueEnded(x)
-          }
-          /* audioHandleTrackEnded will reset the completed episode playbackPosition to 0 */
+        const callback = () => {
           audioHandleTrackEnded(x)
         }
-        syncNowPlayingItemWithTrack(callback)
+
+        // The nextTrack is the track that is going to play.
+        // If there is no nextTrack, then the end of the queue has been reached.
+        if (x?.nextTrack || x?.nextTrack === 0) {
+          syncNowPlayingItemWithTrack(callback)
+        } else {
+          audioHandleQueueEnded(x)
+        }
       }
     })()
   })
