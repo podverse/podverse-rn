@@ -156,6 +156,26 @@ export const audioGetLoadedTrackIdByIndex = async (trackIndex: number) => {
   return trackId
 }
 
+/*
+  I was running into a bug where removeUpcomingTracks was sometimes removing
+  the *current* track from the queue on Android. To work around this, I'm manually
+  removing the upcoming tracks (starting from the end of the queue).
+*/
+const audioRemoveUpcomingTracks = async () => {
+  const currentIndex = await PVAudioPlayer.getCurrentTrack()
+  if (currentIndex === 0 || (currentIndex && currentIndex >= 1)) {
+    const queueItems = await PVAudioPlayer.getQueue()
+    if (queueItems && queueItems.length > 1) {
+      const queueItemsCount = queueItems.length
+      const upcomingQueueItemsCount = queueItemsCount - currentIndex - 1
+      for (let i = 0; i < upcomingQueueItemsCount; i++) {
+        const adjustedIndex = queueItemsCount - i - 1
+        await PVAudioPlayer.remove(adjustedIndex)
+      }
+    }
+  }
+}
+
 export const audioLoadNowPlayingItem = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
@@ -179,10 +199,11 @@ export const audioLoadNowPlayingItem = async (
 
   const currentId = await audioGetCurrentLoadedTrackId()
   if (currentId) {
-    PVAudioPlayer.removeUpcomingTracks()
+    await audioRemoveUpcomingTracks()
     const track = (await audioCreateTrack(item)) as Track
     await PVAudioPlayer.add(track)
     await PVAudioPlayer.skipToNext()
+    audioSyncPlayerWithQueue()
   } else {
     const track = (await audioCreateTrack(item)) as Track
     await PVAudioPlayer.add(track)
@@ -208,7 +229,7 @@ export const audioLoadNowPlayingItem = async (
 export const audioSyncPlayerWithQueue = async () => {
   try {
     const pvQueueItems = await getQueueItemsLocally()
-    PVAudioPlayer.removeUpcomingTracks()
+    await audioRemoveUpcomingTracks()
     const tracks = await audioCreateTracks(pvQueueItems)
     await PVAudioPlayer.add(tracks)
   } catch (error) {
@@ -487,7 +508,7 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
 
       if (filteredItems.length > 0) {
         const tracks = await audioCreateTracks(filteredItems)
-        PVAudioPlayer.add(tracks)
+        await PVAudioPlayer.add(tracks)
       }
     }
   } catch (error) {
