@@ -98,8 +98,8 @@ export const Alerts = {
     message: translate('Do you want to allow downloading episodes with your data plan'),
     title: translate('Data Settings'),
     buttons: [
-      { text: translate('No Wifi Only'), onPress: handleWifiOnly },
-      { text: translate('Yes Allow Data'), onPress: handleAllowData }
+      { text: translate('Yes Allow Data'), onPress: handleAllowData },
+      { text: translate('No Wifi Only'), onPress: handleWifiOnly }
     ]
   }),
   DOWNLOADED_EPISODES_DELETE: (handleDelete: any) => ({
