@@ -57,7 +57,7 @@ PODS:
     - nanopb (~> 2.30908.0)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - GoogleDataTransport (9.2.0):
+  - GoogleDataTransport (9.2.1):
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
@@ -307,9 +307,9 @@ PODS:
     - React-Core
   - react-native-safe-area-context (3.3.2):
     - React-Core
-  - react-native-track-player (3.2.0-8b0cb1089409eff451fa252f2ba68b3c09f638eb):
+  - react-native-track-player (3.2.0-11137d56135ed2b47ae5f9a5713c1560e6d65f1c):
     - React-Core
-    - SwiftAudioEx (= 0.15.3)
+    - SwiftAudioEx (= 1.0.0-rc.1)
   - react-native-tracking-transparency (0.1.1):
     - React
   - react-native-video (6.0.0-alpha.4):
@@ -450,7 +450,7 @@ PODS:
     - React
   - RNVectorIcons (8.1.0):
     - React-Core
-  - SwiftAudioEx (0.15.3)
+  - SwiftAudioEx (1.0.0-rc.1)
   - toolbar-android (0.2.1):
     - React
   - Yoga (1.14.0)
@@ -696,7 +696,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: b0aeba17332ee1ee610662b4d1e02a86db82f08f
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 5337263514dd6f09803962437687240c5dc39aa4
-  GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
+  GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
@@ -723,7 +723,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: 27f287f2d191693f3b9d01a4273137fcf91c3b5d
   react-native-orientation-locker: 851f6510d8046ea2f14aa169b1e01fcd309a94ba
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
-  react-native-track-player: 1f862d41e036a27f9150bc5ce2eb04392a717b96
+  react-native-track-player: 85db4116c40a3496314e50181bc8924c207d836f
   react-native-tracking-transparency: b2029ff756f1128b1f2c7c7c7f3003bc3c950f9f
   react-native-video: b2a6434fa0cc7a5381985ca2af8f8c570f110743
   react-native-webview: 994b9f8fbb504d6314dc40d83f94f27c6831b3bf
@@ -757,7 +757,7 @@ SPEC CHECKSUMS:
   RNShare: be91a5c149585affb02c25b351bd07ba927c7006
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
-  SwiftAudioEx: 83eabba2940924fc1c0d5cb0896049921365229c
+  SwiftAudioEx: 3c15f7a8994a08b43a10ef874e236ff31166643d
   toolbar-android: 2a73856e98b750d7e71ce4644d3f41cc98211719
   Yoga: b316a990bb6d115afa1b436b5626ac7c61717d17
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
