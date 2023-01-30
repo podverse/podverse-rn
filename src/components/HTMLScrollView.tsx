@@ -40,7 +40,8 @@ export const HTMLScrollView = (props: Props) => {
   formattedHtml = removeExtraInfoFromEpisodeDescription(formattedHtml)
   formattedHtml = formattedHtml.linkifyHtml()
 
-  const shortHtml = removeHTMLFromString(html || '').substring(0, 500)
+  let shortHtml = removeHTMLFromString(html || '').substring(0, 500)
+  shortHtml = shortHtml ? `${shortHtml}…` : ''
 
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
     baseFontStyle.fontSize = fontSizeLargerScale
