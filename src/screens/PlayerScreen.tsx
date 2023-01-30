@@ -3,7 +3,7 @@ import {
   convertNowPlayingItemToMediaRef,
   replaceLinebreaksWithBrTags
 } from 'podverse-shared'
-import { StyleSheet, View as RNView } from 'react-native'
+import { InteractionManager, StyleSheet, View as RNView } from 'react-native'
 import { Config } from 'react-native-config'
 import Share from 'react-native-share'
 import { NavigationStackOptions } from 'react-navigation-stack'
@@ -116,7 +116,7 @@ export class PlayerScreen extends React.Component<Props> {
     } as NavigationStackOptions
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     PVEventEmitter.on(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED, this._handleRefreshNavigationHeader)
     PVEventEmitter.on(PV.Events.PLAYER_DISMISS, this.props.navigation.dismiss)
 
@@ -136,7 +136,10 @@ export class PlayerScreen extends React.Component<Props> {
 
     trackPageView('/player', 'Player Screen')
 
-    await this._handleUpdateFullEpisode()
+    InteractionManager.runAfterInteractions(async() => {
+      await this._handleUpdateFullEpisode()
+    })
+
   }
 
   async componentWillUnmount() {

@@ -10,7 +10,13 @@ import Orientation from 'react-native-orientation-locker'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
-import { UpdateRequiredOverlay, OverlayAlert, ImageFullView, BoostDropdownBanner } from './src/components'
+import { 
+  UpdateRequiredOverlay, 
+  OverlayAlert, 
+  ImageFullView, 
+  BoostDropdownBanner, 
+  LoadingInterstitialView 
+} from './src/components'
 import { pvIsTablet } from './src/lib/deviceDetection'
 import { refreshDownloads } from './src/lib/downloader'
 import { PV } from './src/resources'
@@ -201,6 +207,7 @@ class App extends Component<Props, State> {
           <ImageFullView />
           <BoostDropdownBanner />
         </SafeAreaProvider>
+        <LoadingInterstitialView/>
       </GestureHandlerRootView>
     ) : (
       this._renderIntersitial()
