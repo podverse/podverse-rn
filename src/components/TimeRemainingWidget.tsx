@@ -159,7 +159,7 @@ export const TimeRemainingWidget = (props: Props) => {
   const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]
 
   return (
-    <View accessbile={false} style={[styles.container, style]} transparent={transparent}>
+    <View accessible={false} style={[styles.container, style]} transparent={transparent}>
       {!hidePlayButton && (
         <PressableWithOpacity
           accessible={false}
