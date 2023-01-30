@@ -82,7 +82,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
               <HTMLScrollView
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 html={html}
-                showShortHtml={showShortHtml}
+                showShortHtml={!!hasLongHtml && showShortHtml}
                 style={styles.htmlScrollView}
               />
             </View>
@@ -120,7 +120,9 @@ const styles = StyleSheet.create({
   showMoreWrapper: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: 24,
+    marginTop: 4
   },
   showMoreTextLink: {
     fontSize: PV.Fonts.sizes.xl,
