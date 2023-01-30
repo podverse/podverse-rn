@@ -1,7 +1,7 @@
 import { checkIfNowPlayingItem, convertToNowPlayingItem } from 'podverse-shared'
 import React, { useState } from 'react'
 import { StyleSheet } from 'react-native'
-import { useGlobal } from 'reactn'
+import { getGlobal } from 'reactn'
 import { requestAppStoreReviewForEpisodePlayed } from '../lib/reviews'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
@@ -99,7 +99,7 @@ export const TimeRemainingWidget = (props: Props) => {
   } = props
   const { episode = {}, liveItem, podcast = {} } = item
   const convertedItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
-  const [player] = useGlobal('player')
+  const player = getGlobal().player
   const { nowPlayingItem, playbackState } = player
 
   const hasStartedItem = !!mediaFileDuration
