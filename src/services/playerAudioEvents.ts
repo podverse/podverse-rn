@@ -38,9 +38,7 @@ import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './u
 
 const _fileName = 'src/services/playerAudioEvents.ts'
 
-export const audioResetHistoryItem = async (x: any) => {
-  const { position, track } = x
-  const loadedTrackId = await audioGetLoadedTrackIdByIndex(track)
+const audioResetHistoryItemByTrackId = async (loadedTrackId: string, position: number) => {
   const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(loadedTrackId)
   if (metaEpisode) {
     const { mediaFileDuration } = metaEpisode
@@ -62,14 +60,30 @@ export const audioResetHistoryItem = async (x: any) => {
   }
 }
 
+export const audioResetHistoryItemActiveTrackChanged = async (x: any) => {
+  const { lastPosition, lastIndex } = x
+  const loadedTrackId = await audioGetLoadedTrackIdByIndex(lastIndex)
+  if (loadedTrackId) {
+    await audioResetHistoryItemByTrackId(loadedTrackId, lastPosition)
+  }
+}
+
+export const audioResetHistoryItemQueueEnded = async (x: any) => {
+  const { position, track } = x
+  const loadedTrackId = await audioGetLoadedTrackIdByIndex(track)
+  if (loadedTrackId) {
+    await audioResetHistoryItemByTrackId(loadedTrackId, position)
+  }
+}
+
 const syncDurationWithMetaData = async () => {
   /*
     We need to set the duration to the native player after it is available
     in order for the lock screen / notification to render a progress bar on Android.
     Not sure if it makes a difference for iOS.
   */
-  const trackIndex = await PVAudioPlayer.getCurrentTrack()
-  if (trackIndex >= 1 || trackIndex === 0) {
+  const trackIndex = await PVAudioPlayer.getActiveTrackIndex()
+  if (trackIndex || trackIndex === 0) {
     const currentTrackMetaData = await PVAudioPlayer.getTrack(trackIndex)
     const metadataDuration = currentTrackMetaData?.duration
     if (!metadataDuration) {
@@ -83,29 +97,24 @@ const syncDurationWithMetaData = async () => {
 }
 
 export const audioHandleQueueEnded = (x: any) => {
-  /* TODO:
-    There is a race condition between our logic with playback-track-changed
-    and playback-queue-ended. Both events are called when the last item from the queue
-    reaches the end...and playback-track-changed will cause the nowPlayingItem be assigned
-    to state and storage during syncNowPlayingItemWithTrack.
-    I'm working around this right now by using a setTimeout before handling the queue ended logic.
-  */
   setTimeout(() => {
     (async () => {
       PVEventEmitter.emit(PV.Events.PLAYER_DISMISS)
-      await audioResetHistoryItem(x)
+      await audioResetHistoryItemQueueEnded(x)
       await playerClearNowPlayingItem()
     })()
   }, 0)
 }
 
-export const audioHandleTrackEnded = (x: any) => {
+export const audioHandleActiveTrackChanged = (x: any) => {
   setTimeout(() => {
     (async () => {
-      await audioResetHistoryItem(x)
+      await audioResetHistoryItemActiveTrackChanged(x)
     })()
   }, 0)
 }
+
+let preventQueueEnded = false
 
 // eslint-disable-next-line @typescript-eslint/require-await
 module.exports = async () => {
@@ -114,32 +123,48 @@ module.exports = async () => {
   })
 
   /*
-    playback-track-changed always gets called when playback-queue-ended.
+    playback-active-track-changed always gets called when playback-queue-ended.
     As a result, if we use both events, there will be a race-condition with our
     playback-track-changed and playback-queue-ended handling. To work around this,
     I am determining if the "queue ended" event that we care about has happened
-    from within the playback-track-changed event listener.
+    from within the playback-active-track-changed event listener.
+    Also: there is a bug on iOS where playback-queue-ended will fire even when
+    there is a next item in the queue...but playback-queue-ended will also fire
+    correctly (without PlaybackActiveTrackChanged) when end of queue is reached.
+    Handling this with setTimeouts.
   */
-
   PVAudioPlayer.addEventListener(Event.PlaybackQueueEnded, (x) => {
     debugLogger('playback-queue-ended', x)
+    if (Platform.OS === 'ios') {
+      setTimeout(() => {
+        if (!preventQueueEnded) {
+          audioHandleQueueEnded(x)
+        }
+      }, 3000)
+    }
   })
 
-  PVAudioPlayer.addEventListener(Event.PlaybackTrackChanged, (x: any) => {
+  PVAudioPlayer.addEventListener(Event.PlaybackActiveTrackChanged, (x: any) => {
     (async () => {
-      debugLogger('playback-track-changed', x)
+      debugLogger('playback-active-track-changed', x)
       const prevent = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
       if (!prevent) {
         const callback = () => {
-          audioHandleTrackEnded(x)
+          audioHandleActiveTrackChanged(x)
         }
 
-        // The nextTrack is the track that is going to play.
-        // If there is no nextTrack, then the end of the queue has been reached.
-        if (x?.nextTrack || x?.nextTrack === 0) {
+        if (Platform.OS === 'ios') {
+          preventQueueEnded = true
+          setTimeout(() => {
+            preventQueueEnded = false
+          }, 6000)
           syncNowPlayingItemWithTrack(callback)
-        } else {
-          audioHandleQueueEnded(x)
+        } else if (Platform.OS === 'android') {
+          if (x?.index === x?.lastIndex) {
+            audioHandleQueueEnded(x)
+          } else {
+            syncNowPlayingItemWithTrack(callback)
+          }
         }
       }
     })()
