@@ -167,7 +167,6 @@ export class ClipTableCell extends React.PureComponent<Props> {
               item={item}
               itemType={itemType ? itemType : 'clip'}
               loadChapterOnPlay={loadChapterOnPlay}
-              navigation={navigation}
               testID={testID}
               timeLabel={timeLabelText}
               transparent={transparent}
