@@ -140,7 +140,6 @@ export const EpisodeTableHeader = (props: Props) => {
                 item={episode}
                 itemType='episode'
                 mediaFileDuration={mediaFileDuration}
-                navigation={navigation}
                 style={{ marginVertical: 20 }}
                 testID={testID}
                 timeLabel={timeLabel}
