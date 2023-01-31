@@ -164,19 +164,22 @@ export const audioGetLoadedTrackIdByIndex = async (trackIndex: number) => {
   removing the upcoming tracks (starting from the end of the queue).
 */
 const audioRemoveUpcomingTracks = async () => {
-  await PVAudioPlayer.removeUpcomingTracks()
-  // const currentIndex = await PVAudioPlayer.getActiveTrackIndex()
-  // if (currentIndex === 0 || (currentIndex && currentIndex >= 1)) {
-  //   const queueItems = await PVAudioPlayer.getQueue()
-  //   if (queueItems && queueItems.length > 1) {
-  //     const queueItemsCount = queueItems.length
-  //     const upcomingQueueItemsCount = queueItemsCount - currentIndex - 1
-  //     for (let i = 0; i < upcomingQueueItemsCount; i++) {
-  //       const adjustedIndex = queueItemsCount - i - 1
-  //       await PVAudioPlayer.removeUpcomingTracks()
-  //     }
-  //   }
-  // }
+  if (Platform.OS === 'ios') {
+    await PVAudioPlayer.removeUpcomingTracks()
+  } else if (Platform.OS === 'android') {
+    const currentIndex = await PVAudioPlayer.getActiveTrackIndex()
+    if (currentIndex === 0 || (currentIndex && currentIndex >= 1)) {
+      const queueItems = await PVAudioPlayer.getQueue()
+      if (queueItems && queueItems.length > 1) {
+        const queueItemsCount = queueItems.length
+        const upcomingQueueItemsCount = queueItemsCount - currentIndex - 1
+        for (let i = 0; i < upcomingQueueItemsCount; i++) {
+          const adjustedIndex = queueItemsCount - i - 1
+          await PVAudioPlayer.remove(adjustedIndex)
+        }
+      }
+    }
+  }
 }
 
 export const audioLoadNowPlayingItem = async (
