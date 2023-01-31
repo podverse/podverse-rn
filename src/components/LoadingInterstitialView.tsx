@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Animated, Easing, Image, View } from "react-native";
+import { StyleSheet, Animated, Easing, Image, View, Platform } from "react-native";
 import { PV } from '../resources';
 
 const INTERSTITIAL_LOADING_SECONDS = 6
@@ -79,19 +79,15 @@ export const LoadingInterstitialView = () => {
 
   return (
         <View style={styles.view}>
-            <Image source={PV.Images.BANNER} resizeMode='contain' />      
+            <Image source={PV.Images.BANNER} resizeMode='contain' style={styles.logoStyle} />      
             <Animated.View style={[styles.loading, { opacity }]}>
                 {animations.map((animation, index) =>
                     <Animated.View
                         key={`loading-anim-${index}`}
                         style={[
-                        {
-                            width: 20,
-                            height: 20,
-                            borderRadius: 10,
-                        },
-                        { backgroundColor: colors[index] || PV.Colors.brandBlueDarker },
-                        { transform: [{ translateY: animation }] },
+                          styles.dotStyle,
+                          { backgroundColor: colors[index] || PV.Colors.brandBlueDarker },
+                          { transform: [{ translateY: animation }] },
                         ]}
                     />
                 )}
@@ -103,15 +99,32 @@ export const LoadingInterstitialView = () => {
 const styles = StyleSheet.create({
   view: { 
     ...StyleSheet.absoluteFill,
-    backgroundColor: PV.Colors.ink, 
+    
     flex: 1, 
     alignItems: 'center', 
-    justifyContent: 'center' 
+    justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        backgroundColor: PV.Colors.black,
+      },
+      android: {
+        backgroundColor: PV.Colors.ink,
+      },
+    }),
+  },
+  logoStyle: {
+    marginTop:120 // loading animation view height + margin + dots height
+  },
+  dotStyle:{
+    width: 20,
+    height: 20,
+    borderRadius: 10,
   },
   loading: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    height:60,
     marginTop: 40,
     justifyContent: "space-between",
   },
