@@ -158,10 +158,19 @@ module.exports = async () => {
           setTimeout(() => {
             preventQueueEnded = false
           }, 6000)
-          syncNowPlayingItemWithTrack(callback)
+          // If the first item loaded in queue for the app session, then don't call the track changed callback.
+          if ((x.index || x.index === 0) && !x?.lastIndex && x?.lastIndex !== 0) {
+            syncNowPlayingItemWithTrack()
+          } else {
+            syncNowPlayingItemWithTrack(callback)
+          }
         } else if (Platform.OS === 'android') {
-          if (x?.index === x?.lastIndex) {
+          if ((x.index || x.index === 0) && x.index === x?.lastIndex) {
             audioHandleQueueEnded(x)
+          }
+          // If the first item loaded in queue for the app session, then don't call the track changed callback.
+          else if ((x.index || x.index === 0) && (!x?.lastIndex && x?.lastIndex !== 0)) {
+            syncNowPlayingItemWithTrack()
           } else {
             syncNowPlayingItemWithTrack(callback)
           }

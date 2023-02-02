@@ -542,8 +542,10 @@ export const audioGetState = async () => {
   */
   let state = result?.state
   const globalPlaybackState = getGlobal()?.player?.playbackState
-  if (state === State.Ready && globalPlaybackState) {
+  if (state === State.Ready && globalPlaybackState && globalPlaybackState !== State.Buffering) {
     state = globalPlaybackState
+  } else if (state === State.Ready) {
+    state = State.Paused
   }
 
   return state
