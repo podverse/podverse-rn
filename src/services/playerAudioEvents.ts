@@ -191,16 +191,15 @@ module.exports = async () => {
           if (Platform.OS === 'ios') {
             if (x.state === State.Paused || x.state === State.Stopped) {
               playerUpdateUserPlaybackPosition()
-            }
-
-            if (audioCheckIfIsPlaying(x.state)) {
+            } else if (audioCheckIfIsPlaying(x.state)) {
               await playerSetRateWithLatestPlaybackSpeed()
-            }
-            if (x.state === State.Ready) {
+            } else if (x.state === State.Ready) {
               syncDurationWithMetaData()
             }
           } else if (Platform.OS === 'android') {
-            if (x.state === State.Playing) {
+            if (x.state === State.Paused || x.state === State.Stopped) {
+              playerUpdateUserPlaybackPosition()
+            } else if (x.state === State.Playing) {
               const rate = await getPlaybackSpeed()
               PVAudioPlayer.setRate(rate)
             } else if (x.state === State.Ready) {
