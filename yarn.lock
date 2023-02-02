@@ -8991,10 +8991,10 @@ react-native-text-ticker@1.13.0:
   resolved "https://registry.yarnpkg.com/react-native-text-ticker/-/react-native-text-ticker-1.13.0.tgz#e96e9bd72a66e67353c12f95f17499506aee3560"
   integrity sha512-5Mh5vqZhfeIVQdXBFaUQw6I/uMyhi9ZlB/RQydqqtwoXZHEZkuz9250bfskpG0L/NkshOWHh1n2Xdlji0LxYzg==
 
-react-native-track-player@3.2.0-11137d56135ed2b47ae5f9a5713c1560e6d65f1c:
-  version "3.2.0-11137d56135ed2b47ae5f9a5713c1560e6d65f1c"
-  resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-3.2.0-11137d56135ed2b47ae5f9a5713c1560e6d65f1c.tgz#34278bf98e23462db428f54651870309045075be"
-  integrity sha512-C1VvmW4sLg68Yq/w4ASdjg4KfGI6W4YEFyIJgv8G6hAVRRyqkslY8hdTTGmIsXi6I1NOPHnh5+nb+2cEVxihew==
+react-native-track-player@3.2.0-480f64932969545fe38a261fb3867f90f514478c:
+  version "3.2.0-480f64932969545fe38a261fb3867f90f514478c"
+  resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-3.2.0-480f64932969545fe38a261fb3867f90f514478c.tgz#b0046472452228198a04d78f5129310dabd51a1e"
+  integrity sha512-A9zjpfeiFH8xSX/UFuRSD+ARPZxuM11rCN7HKfxU6R//+GX5W6mtYrmn2iaIxd/mYW8GcfDsyDe3QazU0s0xQg==
 
 react-native-tracking-transparency@0.1.1:
   version "0.1.1"

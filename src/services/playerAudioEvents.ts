@@ -200,23 +200,10 @@ module.exports = async () => {
               syncDurationWithMetaData()
             }
           } else if (Platform.OS === 'android') {
-            /*
-              state key for android
-              NOTE: ready and pause use the same number, so there is no true ready state for Android :[
-              none      0
-              stopped   1
-              paused    2
-              playing   3
-              ready     2
-              buffering 6
-              ???       8
-            */
-            const ready = 2
-            const playing = 3
-            if (x.state === playing) {
+            if (x.state === State.Playing) {
               const rate = await getPlaybackSpeed()
               PVAudioPlayer.setRate(rate)
-            } else if (x.state === ready) {
+            } else if (x.state === State.Ready) {
               syncDurationWithMetaData()
             }
           }
