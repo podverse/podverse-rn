@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-video-controls/VideoPlayer.js b/node_modules/react-native-video-controls/VideoPlayer.js
+index 7d36b4b..e300dc4 100644
+--- a/node_modules/react-native-video-controls/VideoPlayer.js
++++ b/node_modules/react-native-video-controls/VideoPlayer.js
+@@ -613,7 +613,7 @@ export default class VideoPlayer extends Component {
+    * @return {float} position of seeker handle in px based on currentTime
+    */
+   calculateSeekerPosition() {
+-    const percent = this.state.currentTime / this.state.duration;
++    const percent = this.state.duration === 0 ? 0 : this.state.currentTime / this.state.duration;
+     return this.player.seekerWidth * percent;
+   }
+ 
