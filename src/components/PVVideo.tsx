@@ -83,6 +83,8 @@ export class PVVideo extends React.PureComponent<Props, State> {
       } else {
         this._handleNewEpisodeItemShouldLoad()
       }
+    } else {
+      this._handleInitializeState()
     }
 
     this.willFocusListener = navigation.addListener('willFocus', this._handleNewEpisodeItemShouldLoad)
@@ -95,6 +97,34 @@ export class PVVideo extends React.PureComponent<Props, State> {
     PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED, this._handlePlaybackStateChange)
     PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_SEEK_TO, this._handleSeekTo)
     PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_LIVE_GO_TO_CURRENT_TIME, this._handleGoToLiveCurrentTime)
+  }
+
+  _handleInitializeState = async (callback?: any) => {
+    const { player } = this.global
+    let { nowPlayingItem } = player
+    // nowPlayingItem will be undefined when loading from a deep link
+    nowPlayingItem = nowPlayingItem || {}
+    const uri = nowPlayingItem.episodeMediaUrl
+    let finalUri = encodeSpacesInString(convertUrlToSecureHTTPS(uri || '').trim())
+
+    const { Authorization, filePath, fileType, isDownloadedFile } = await videoGetDownloadedFileInfo(
+      nowPlayingItem
+    )
+
+    if (isDownloadedFile && filePath) {
+      finalUri = filePath
+    }
+
+    this.setState({
+      Authorization,
+      fileType,
+      finalUri,
+      isDownloadedFile
+    }, () => {
+      if (callback) {
+        callback()
+      }
+    })
   }
 
   _handleGoToLiveCurrentTime = () => {
@@ -134,34 +164,15 @@ export class PVVideo extends React.PureComponent<Props, State> {
           () => {
             (async () => {
               try {
-                const { player } = this.global
-                let { nowPlayingItem } = player
-                // nowPlayingItem will be undefined when loading from a deep link
-                nowPlayingItem = nowPlayingItem || {}
-                const uri = nowPlayingItem.episodeMediaUrl
-                let finalUri = encodeSpacesInString(convertUrlToSecureHTTPS(uri || '').trim())
-
-                const { Authorization, filePath, fileType, isDownloadedFile } = await videoGetDownloadedFileInfo(
-                  nowPlayingItem
-                )
-
-                if (isDownloadedFile && filePath) {
-                  finalUri = filePath
-                }
-
-                this.setState(
-                  {
-                    Authorization,
-                    fileType,
-                    finalUri,
-                    isDownloadedFile
-                  },
-                  () => {
-                    if (setClipTime && nowPlayingItem.clipId) {
-                      syncNowPlayingItemWithTrack()
-                    }
+                this._handleInitializeState(() => {
+                  const { player } = this.global
+                  let { nowPlayingItem } = player
+                  // nowPlayingItem will be undefined when loading from a deep link
+                  nowPlayingItem = nowPlayingItem || {}
+                  if (setClipTime && nowPlayingItem.clipId) {
+                    syncNowPlayingItemWithTrack()
                   }
-                )
+                })
               } catch (error) {
                 errorLogger('PVVideo _handleNewItemShouldLoad error', error)
               }
@@ -211,8 +222,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
       )
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    lastNowPlayingItemUri = nowPlayingItem.episodeMediaUrl
+    lastNowPlayingItemUri = nowPlayingItem.episodeMediaUrl || ''
   }
 
   _handleDestroyPlayer = () => {
@@ -398,10 +408,14 @@ export class PVVideo extends React.PureComponent<Props, State> {
             for a tick while navigating between MiniPlayer and the PlayerScreen.
             In the case of undefined, we should set disableOnProgress to true,
             so a state update with an invalid position does not happen.
+            Also, re: currentTime = 0, when navigating between MiniPlayer
+            and PlayerScreen, the currentTime can sometimes return 0, which then
+            breaks the videoPosition we have in global state.
+            Ideally this would be fixed by not destroying and recreating the video
+            across multiple screens...
           */
-          // eslint-disable-next-line @typescript-eslint/tslint/config
-          if (!disableOnProgress && typeof disableOnProgress !== 'undefined') {
-            const { currentTime } = payload
+          const { currentTime } = payload
+          if (!disableOnProgress && typeof disableOnProgress !== 'undefined' && currentTime !== 0) {
             videoStateUpdatePosition(currentTime)
             const isVideo = true
             handleValueStreamingTimerIncrement(isVideo)
