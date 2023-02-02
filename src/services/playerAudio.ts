@@ -425,7 +425,7 @@ export const audioSetRate = async (rate = 1) => {
 
 export const audioCheckIdlePlayerState = async () => {
   const state = await audioGetState()
-  return state === 0 || state === State.None
+  return state === State.None
 }
 
 /*
@@ -525,15 +525,30 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
 }
 
 export const audioGetTrackPosition = () => {
-  return PVAudioPlayer.getTrackPosition()
+  return PVAudioPlayer.getProgress().then((progress) => progress.position)
 }
 
 export const audioGetTrackDuration = () => {
-  return PVAudioPlayer.getTrackDuration()
+  return TrackPlayer.getDuration()
 }
 
-export const audioGetState = () => {
-  return PVAudioPlayer.getState()
+export const audioGetState = async () => {
+  const result = await PVAudioPlayer.getPlaybackState()
+
+  /*
+    There is bugginess with getting State.Ready from audioGetState
+    on at least iOS. As a work around, I am falling back to whatever is
+    already in global state whenever ready is returned.
+  */
+  let state = result?.state
+  const globalPlaybackState = getGlobal()?.player?.playbackState
+  if (state === State.Ready && globalPlaybackState && globalPlaybackState !== State.Buffering) {
+    state = globalPlaybackState
+  } else if (state === State.Ready) {
+    state = State.Paused
+  }
+
+  return state
 }
 
 export const audioGetRate = () => {

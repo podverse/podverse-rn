@@ -158,10 +158,19 @@ module.exports = async () => {
           setTimeout(() => {
             preventQueueEnded = false
           }, 6000)
-          syncNowPlayingItemWithTrack(callback)
+          // If the first item loaded in queue for the app session, then don't call the track changed callback.
+          if ((x.index || x.index === 0) && !x?.lastIndex && x?.lastIndex !== 0) {
+            syncNowPlayingItemWithTrack()
+          } else {
+            syncNowPlayingItemWithTrack(callback)
+          }
         } else if (Platform.OS === 'android') {
-          if (x?.index === x?.lastIndex) {
+          if ((x.index || x.index === 0) && x.index === x?.lastIndex) {
             audioHandleQueueEnded(x)
+          }
+          // If the first item loaded in queue for the app session, then don't call the track changed callback.
+          else if ((x.index || x.index === 0) && (!x?.lastIndex && x?.lastIndex !== 0)) {
+            syncNowPlayingItemWithTrack()
           } else {
             syncNowPlayingItemWithTrack(callback)
           }
@@ -191,32 +200,18 @@ module.exports = async () => {
           if (Platform.OS === 'ios') {
             if (x.state === State.Paused || x.state === State.Stopped) {
               playerUpdateUserPlaybackPosition()
-            }
-
-            if (audioCheckIfIsPlaying(x.state)) {
+            } else if (audioCheckIfIsPlaying(x.state)) {
               await playerSetRateWithLatestPlaybackSpeed()
-            }
-            if (x.state === State.Ready) {
+            } else if (x.state === State.Ready) {
               syncDurationWithMetaData()
             }
           } else if (Platform.OS === 'android') {
-            /*
-              state key for android
-              NOTE: ready and pause use the same number, so there is no true ready state for Android :[
-              none      0
-              stopped   1
-              paused    2
-              playing   3
-              ready     2
-              buffering 6
-              ???       8
-            */
-            const ready = 2
-            const playing = 3
-            if (x.state === playing) {
+            if (x.state === State.Paused || x.state === State.Stopped) {
+              playerUpdateUserPlaybackPosition()
+            } else if (x.state === State.Playing) {
               const rate = await getPlaybackSpeed()
               PVAudioPlayer.setRate(rate)
-            } else if (x.state === ready) {
+            } else if (x.state === State.Ready) {
               syncDurationWithMetaData()
             }
           }
