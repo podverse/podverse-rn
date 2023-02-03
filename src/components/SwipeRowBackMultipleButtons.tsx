@@ -26,8 +26,11 @@ export const SwipeRowBackMultipleButtons = (props: Props) => {
 
     for (const button of buttons) {
       const style = [s.swipeRowBackButton]
+      const textStyle = [s.textWrapper]
+
       if (button.type === 'danger') {
         style.push(globalTheme.swipeRowBackButtonDanger)
+        textStyle.push({color:PV.Colors.white})
       } else {
         style.push(globalTheme.swipeRowBackButtonPrimary)
       }
@@ -43,7 +46,7 @@ export const SwipeRowBackMultipleButtons = (props: Props) => {
           {button.isLoading ? (
             <ActivityIndicator accessible={false} importantForAccessibility='no' size='large' testID={testID} />
           ) : (
-            <Text accessible={false} importantForAccessibility='no' style={s.textWrapper}>
+            <Text accessible={false} importantForAccessibility='no' style={textStyle}>
               {button.text}
             </Text>
           )}

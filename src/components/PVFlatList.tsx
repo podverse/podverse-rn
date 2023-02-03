@@ -1,4 +1,5 @@
 import React from 'react'
+import { Podcast } from 'podverse-shared'
 import { RefreshControl, StyleSheet } from 'react-native'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
@@ -40,6 +41,7 @@ type Props = {
   onEndReached?: any
   onEndReachedThreshold?: number
   onGridItemSelected?: any
+  onGridItemLongPressed?: (arg0: Podcast) => void
   onRefresh?: any
   onScrollBeginDrag?: any
   renderHiddenItem?: any
@@ -89,6 +91,7 @@ export const PVFlatList = (props: Props) => {
     onEndReached,
     onEndReachedThreshold = 0.9,
     onGridItemSelected,
+    onGridItemLongPressed,
     onRefresh,
     onScrollBeginDrag,
     renderHiddenItem,
@@ -125,6 +128,7 @@ export const PVFlatList = (props: Props) => {
         <GridView
           {...props}
           onItemSelected={onGridItemSelected}
+          onLongPressItem={onGridItemLongPressed}
           data={shouldShowResults ? data : []}
           ListFooterComponent={() => {
             if (isLoadingMore && !isEndOfResults) {
