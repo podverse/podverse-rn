@@ -9,6 +9,7 @@ type Props = {
   data?: [any]
   isRefreshing: boolean
   onItemSelected: any
+  onLongPressItem?: (arg0: Podcast) => void
   ListFooterComponent: any
 }
 export class GridView extends React.PureComponent<Props> {
@@ -68,6 +69,7 @@ export class GridView extends React.PureComponent<Props> {
           onPress={() => {
             this.props.onItemSelected?.(item)
           }}
+          onLongPress={() => this.props.onLongPressItem?.(item)}
           style={styles.cellbutton}>
           <FastImage
             isAddByRSSPodcast={!!item?.addByRSSPodcastFeedUrl}

@@ -45,7 +45,7 @@ export class PVActionSheet extends React.Component<Props, State> {
 
     if (items && items.length >= 0) {
       items.forEach((item, index) => {
-        const buttonStyle = [actionSheetStyles.button]
+        let buttonStyle = [actionSheetStyles.button]
 
         if (item.key === PV.Keys.edit_clip) {
           buttonStyle.push(actionSheetStyles.buttonTop)
@@ -102,6 +102,8 @@ export class PVActionSheet extends React.Component<Props, State> {
         let onPress = item.onPress
         if (isQueueButton) onPress = queueOnPress
 
+        buttonStyle = [...buttonStyle, (item?.buttonStyle ?? {})]
+        buttonTextStyle = {...buttonTextStyle, ...(item?.buttonTextStyle ?? {})}
         buttons.push(
           <TouchableHighlight
             accessible
