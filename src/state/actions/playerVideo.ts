@@ -8,7 +8,7 @@ import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import { getPodcastCredentialsHeader } from '../../services/parser'
 import { playerCheckIfDownloadableFile, playerUpdateUserPlaybackPosition } from '../../services/player'
-import { PVAudioPlayer } from '../../services/playerAudio'
+import { audioReset, PVAudioPlayer } from '../../services/playerAudio'
 import { getPodcastFeedUrlAuthority } from '../../services/podcast'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
@@ -227,8 +227,7 @@ export const videoLoadNowPlayingItem = async (
 ) => {
   const { clipId: previousClipId, episodeId: previousEpisodeId } = previousNowPlayingItem || {}
   await AsyncStorage.setItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING, 'TRUE')
-  await PVAudioPlayer.reset()
-
+  await audioReset()
   const historyItemsIndex = await getHistoryItemsIndexLocally()
   const { clipId, episodeId } = item
 
@@ -253,7 +252,7 @@ export const videoLoadNowPlayingItem = async (
   addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
 
   /* Add second delay to make sure the playback-track-changed and playback-queue-ended
-     events triggered by PVAudioPlayer.reset() finishes */
+     events triggered by audioReset() finishes */
   setTimeout(() => {
     (async () => {
       await AsyncStorage.removeItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)

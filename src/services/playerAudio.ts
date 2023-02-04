@@ -189,8 +189,6 @@ export const audioLoadNowPlayingItem = async (
 ) => {
   // TODO VIDEO: discard/reset video player???
 
-  PVAudioPlayer.pause()
-
   const [lastPlayingItem, historyItemsIndex] = await Promise.all([
     getNowPlayingItemLocally(),
     getHistoryItemsIndexLocally()
@@ -217,9 +215,7 @@ export const audioLoadNowPlayingItem = async (
 
   if (shouldPlay) {
     if (item && !item.clipId) {
-      setTimeout(() => {
-        audioHandlePlay()
-      }, 1500)
+      audioHandlePlayWhenReady()
     } else if (item && item.clipId) {
       AsyncStorage.setItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED, 'true')
     }
@@ -383,6 +379,10 @@ export const audioTogglePlay = async () => {
   }
 }
 
+const audioHandlePlayWhenReady = () => {
+  PVAudioPlayer.setPlayWhenReady(true)
+}
+
 export const audioHandlePlay = () => {
   PVAudioPlayer.play()
 
@@ -526,6 +526,18 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
 
 export const audioGetTrackPosition = () => {
   return PVAudioPlayer.getProgress().then((progress) => progress.position)
+}
+
+export const audioReset = async () => {
+  if (Platform.OS === 'ios') {
+    await PVAudioPlayer.reset()
+  } else if (Platform.OS === 'android') {
+    const queueItems = await PVAudioPlayer.getQueue()
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
+    for (let i = 0; i < queueItems.length; i++) {
+      await PVAudioPlayer.remove(0)
+    }
+  }
 }
 
 export const audioGetTrackDuration = () => {
