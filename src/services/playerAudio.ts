@@ -529,14 +529,10 @@ export const audioGetTrackPosition = () => {
 }
 
 export const audioReset = async () => {
-  if (Platform.OS === 'ios') {
-    await PVAudioPlayer.reset()
-  } else if (Platform.OS === 'android') {
-    const queueItems = await PVAudioPlayer.getQueue()
-    // eslint-disable-next-line @typescript-eslint/prefer-for-of
-    for (let i = 0; i < queueItems.length; i++) {
-      await PVAudioPlayer.remove(0)
-    }
+  const queueItems = await PVAudioPlayer.getQueue()
+  // eslint-disable-next-line @typescript-eslint/prefer-for-of
+  for (let i = 0; i < queueItems.length; i++) {
+    await PVAudioPlayer.remove(0)
   }
 }
 
