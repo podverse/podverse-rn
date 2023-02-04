@@ -107,7 +107,7 @@ export const syncNowPlayingItemWithTrack = (callback?: any) => {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       const retryInterval = setInterval(async () => {
         retryIntervalCount += 1
-        if (retryIntervalCount >= 5) {
+        if (retryIntervalCount >= 10) {
           clearInterval(retryInterval)
         } else {
           const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(
@@ -121,7 +121,7 @@ export const syncNowPlayingItemWithTrack = (callback?: any) => {
             PVEventEmitter.emit(PV.Events.QUEUE_HAS_UPDATED)
           }
         }
-      }, 1000)
+      }, 500)
     })()
   }
 
