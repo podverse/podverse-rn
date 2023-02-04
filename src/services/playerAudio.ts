@@ -189,8 +189,6 @@ export const audioLoadNowPlayingItem = async (
 ) => {
   // TODO VIDEO: discard/reset video player???
 
-  PVAudioPlayer.pause()
-
   const [lastPlayingItem, historyItemsIndex] = await Promise.all([
     getNowPlayingItemLocally(),
     getHistoryItemsIndexLocally()
@@ -217,9 +215,7 @@ export const audioLoadNowPlayingItem = async (
 
   if (shouldPlay) {
     if (item && !item.clipId) {
-      setTimeout(() => {
-        audioHandlePlay()
-      }, 1500)
+      audioHandlePlayWhenReady()
     } else if (item && item.clipId) {
       AsyncStorage.setItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED, 'true')
     }
@@ -381,6 +377,10 @@ export const audioTogglePlay = async () => {
   } else {
     audioHandlePlayWithUpdate()
   }
+}
+
+const audioHandlePlayWhenReady = () => {
+  PVAudioPlayer.setPlayWhenReady(true)
 }
 
 export const audioHandlePlay = () => {
