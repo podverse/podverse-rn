@@ -96,6 +96,12 @@ export const downloadEpisode = async (
   const episode = clone(origEpisode)
   const podcast = clone(origPodcast)
 
+  const isDownloadable = playerCheckIfDownloadableFile(episode.mediaUrl)
+  if (!isDownloadable) {
+    debugLogger('downloadEpisode: Not a valid download file type')
+    return
+  }
+
   // Updates UI immediately
   if (!waitToAddTask) addDLTask(episode, podcast)
 
@@ -103,12 +109,6 @@ export const downloadEpisode = async (
 
   if (!shouldDownload) {
     debugLogger('downloadEpisode: Does not have a valid downloading connection')
-    return
-  }
-
-  const isDownloadable = playerCheckIfDownloadableFile(episode.mediaUrl)
-  if (!isDownloadable) {
-    debugLogger('downloadEpisode: Not a valid download file type')
     return
   }
 
