@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPodcastCredentialsHeader } from '../services/parser'
+import { playerCheckIfDownloadableFile } from '../services/player'
 import { getPodcastFeedUrlAuthority } from '../services/podcast'
 import { getSecureUrl } from '../services/tools'
 import * as DownloadState from '../state/actions/downloads'
@@ -94,6 +95,12 @@ export const downloadEpisode = async (
   // in components (like the EpisodesScreen).
   const episode = clone(origEpisode)
   const podcast = clone(origPodcast)
+
+  const isDownloadable = playerCheckIfDownloadableFile(episode.mediaUrl)
+  if (!isDownloadable) {
+    debugLogger('downloadEpisode: Not a valid download file type')
+    return
+  }
 
   // Updates UI immediately
   if (!waitToAddTask) addDLTask(episode, podcast)

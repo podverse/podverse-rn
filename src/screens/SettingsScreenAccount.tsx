@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import { Alert, StyleSheet } from 'react-native'
-import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import { Button, Divider, Icon, PVDialog, ScrollView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
@@ -174,7 +173,7 @@ export class SettingsScreenAccount extends React.Component<Props, State> {
             },
             {
               bold: deleteAccountDialogConfirmed,
-              color: deleteAccountDialogConfirmed ? PV.Colors.redDarker : PV.Colors.grayDark,
+              color: deleteAccountDialogConfirmed ? PV.Colors.redLighter : PV.Colors.gray,
               disabled: !deleteAccountDialogConfirmed,
               label: translate('Delete'),
               onPress: this._handleDeleteAccount,

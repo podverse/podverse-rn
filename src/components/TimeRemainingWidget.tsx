@@ -1,7 +1,7 @@
 import { checkIfNowPlayingItem, convertToNowPlayingItem } from 'podverse-shared'
 import React, { useState } from 'react'
 import { StyleSheet } from 'react-native'
-import { useGlobal } from 'reactn'
+import { getGlobal } from 'reactn'
 import { requestAppStoreReviewForEpisodePlayed } from '../lib/reviews'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
@@ -99,8 +99,9 @@ export const TimeRemainingWidget = (props: Props) => {
   } = props
   const { episode = {}, liveItem, podcast = {} } = item
   const convertedItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
-  const [player] = useGlobal('player')
+  const player = getGlobal().player
   const { nowPlayingItem, playbackState } = player
+  const [forceRerender, setForceRerender] = useState(false)
 
   const hasStartedItem = !!mediaFileDuration
   const totalTime = mediaFileDuration || convertedItem.episodeDuration || 0
@@ -147,7 +148,11 @@ export const TimeRemainingWidget = (props: Props) => {
       const forceUpdateOrderDate = false
       const shouldPlay = true
       const setCurrentItemNextInQueue = true
-      playerLoadNowPlayingItem(convertedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+      await playerLoadNowPlayingItem(convertedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+
+      setTimeout(() => {
+        setForceRerender(!forceRerender)
+      }, 3000)
     }
     requestAppStoreReviewForEpisodePlayed()
   }
@@ -159,7 +164,7 @@ export const TimeRemainingWidget = (props: Props) => {
   const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]
 
   return (
-    <View accessbile={false} style={[styles.container, style]} transparent={transparent}>
+    <View accessible={false} style={[styles.container, style]} transparent={transparent}>
       {!hidePlayButton && (
         <PressableWithOpacity
           accessible={false}
@@ -237,11 +242,11 @@ const styles = StyleSheet.create({
   playButton: {
     borderColor: PV.Colors.skyLight,
     borderWidth: 1,
-    borderRadius: 20,
+    borderRadius: 42,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 40,
-    width: 40,
+    height: 42,
+    width: 42,
     marginRight: 10,
     backgroundColor: PV.Colors.brandBlueDark + '44'
   },

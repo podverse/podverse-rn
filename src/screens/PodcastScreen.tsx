@@ -6,7 +6,7 @@ import {
   getAuthorityFeedUrlFromArray,
   getUsernameAndPasswordFromCredentials
 } from 'podverse-shared'
-import { Platform, StyleSheet, View as RNView } from 'react-native'
+import { Alert, Platform, StyleSheet, View as RNView } from 'react-native'
 import { Config } from 'react-native-config'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
@@ -27,8 +27,7 @@ import {
   SwitchWithText,
   TableSectionSelectors,
   Text,
-  View,
-  PVDialog
+  View
 } from '../components'
 import { errorLogger } from '../lib/logger'
 import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
@@ -87,7 +86,6 @@ type State = {
   selectedSortLabel?: string | null
   selectedItem?: any
   showActionSheet: boolean
-  showDeleteDownloadedEpisodesDialog?: boolean
   showNoInternetConnectionMessage?: boolean
   showSettings: boolean
   showUsernameAndPassword: boolean
@@ -595,22 +593,23 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   _handleToggleDeleteDownloadedEpisodesDialog = () => {
-    this.setState({ showDeleteDownloadedEpisodesDialog: !this.state.showDeleteDownloadedEpisodesDialog })
+    const DOWNLOADED_EPISODES_DELETE = PV.Alerts.DOWNLOADED_EPISODES_DELETE(() => this._handleDeleteDownloadedEpisodes)
+    Alert.alert(
+      DOWNLOADED_EPISODES_DELETE.title,
+      DOWNLOADED_EPISODES_DELETE.message,
+      DOWNLOADED_EPISODES_DELETE.buttons
+    )
   }
 
-  _handleDeleteDownloadedEpisodes = () => {
-    this.setState({ showDeleteDownloadedEpisodesDialog: false }, () => {
-      (async () => {
-        const { podcast, podcastId } = this.state
-        const id = podcast?.id || podcastId
-        try {
-          await removeDownloadedPodcast(id)
-        } catch (error) {
-          //
-        }
-        DownloadState.updateDownloadedPodcasts()
-      })()
-    })
+  _handleDeleteDownloadedEpisodes = async () => {
+    const { podcast, podcastId } = this.state
+    const id = podcast?.id || podcastId
+    try {
+      await removeDownloadedPodcast(id)
+    } catch (error) {
+      //
+    }
+    DownloadState.updateDownloadedPodcasts()
   }
 
   _handleClearNewEpisodeIndicators = () => {
@@ -883,7 +882,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       selectedSortLabel,
       selectedItem,
       showActionSheet,
-      showDeleteDownloadedEpisodesDialog,
       showNoInternetConnectionMessage,
       showSettings,
       showUsernameAndPassword,
@@ -1120,28 +1118,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
             />
           </View>
         )}
-        <PVDialog
-          buttonProps={[
-            {
-              label: translate('No'),
-              onPress: this._handleToggleDeleteDownloadedEpisodesDialog,
-              testID: 'dialog_delete_downloaded_episodes_no'.prependTestId()
-            },
-            {
-              label: translate('Yes'),
-              onPress: this._handleDeleteDownloadedEpisodes,
-              testID: 'dialog_delete_downloaded_episodes_yes'.prependTestId()
-            }
-          ]}
-          descriptionProps={[
-            {
-              children: translate('Are you sure you want to delete all of your downloaded episodes from this podcast'),
-              testID: 'dialog_delete_downloaded_episodes_description'.prependTestId()
-            }
-          ]}
-          title={translate('Delete Downloaded Episodes')}
-          visible={showDeleteDownloadedEpisodesDialog}
-        />
       </View>
     )
   }

@@ -1,23 +1,22 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import messaging from '@react-native-firebase/messaging'
 import debounce from 'lodash/debounce'
-import { convertToNowPlayingItem, createEmailLinkUrl } from 'podverse-shared'
+import { convertToNowPlayingItem, createEmailLinkUrl, Podcast, NowPlayingItem } from 'podverse-shared'
 import qs from 'qs'
 import { Alert, AppState, Dimensions, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
 import { CarPlay } from 'react-native-carplay'
 import Config from 'react-native-config'
-import Dialog from 'react-native-dialog'
 import { endConnection as iapEndConnection, initConnection as iapInitConnection } from 'react-native-iap'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
 import {
+  ActionSheet,
   Divider,
   FlatList,
   NavPodcastsViewIcon,
   PlayerEvents,
   PodcastTableCell,
   PurchaseListener,
-  PVDialog,
   SearchBar,
   SwipeRowBackMultipleButtons,
   TableSectionSelectors,
@@ -45,7 +44,7 @@ import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRef } from '../services/mediaRef'
 import { getAddByRSSPodcastsLocally, parseAllAddByRSSPodcasts } from '../services/parser'
 import { playerUpdateUserPlaybackPosition } from '../services/player'
-import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudio'
+import { audioUpdateTrackPlayerCapabilities, PVAudioPlayer } from '../services/playerAudio'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getSavedQueryPodcastsScreenSort, setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
@@ -110,11 +109,12 @@ type State = {
   selectedCategorySub: string | null
   selectedFilterLabel?: string | null
   selectedSortLabel?: string | null
-  showDataSettingsConfirmDialog: boolean
   showNoInternetConnectionMessage?: boolean
   tempQueryEnabled: boolean
   tempQueryFrom: string | null
   tempQuerySort: string | null
+  showPodcastActionSheet: boolean
+  gridItemSelected: Podcast & NowPlayingItem | null
 }
 
 const testIDPrefix = 'podcasts_screen'
@@ -165,11 +165,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
       selectedCategory: null,
       selectedCategorySub: null,
       selectedFilterLabel: translate('Subscribed'),
-      showDataSettingsConfirmDialog: false,
       selectedSortLabel: translate('A-Z'),
       tempQueryEnabled: false,
       tempQueryFrom: null,
-      tempQuerySort: null
+      tempQuerySort: null,
+      showPodcastActionSheet: false,
+      gridItemSelected: null
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
@@ -384,21 +385,32 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const trackingConsentAcknowledged = await AsyncStorage.getItem(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED)
     if (!trackingConsentAcknowledged) {
       await setTrackingConsentAcknowledged()
-      this.setState({
-        showDataSettingsConfirmDialog: true,
-        isLoadingMore: false
-      })
+      this.setState({ isLoadingMore: false })
+      const DOWNLOAD_DATA_SETTINGS = PV.Alerts.DOWNLOAD_DATA_SETTINGS(
+        this._handleDataSettingsWifiOnly,
+        this._handleDataSettingsAllowData
+      )
+      Alert.alert(DOWNLOAD_DATA_SETTINGS.title, DOWNLOAD_DATA_SETTINGS.message, DOWNLOAD_DATA_SETTINGS.buttons)
     }
   }
 
   _handleAppStateChange = (nextAppState: any) => {
     (async () => {
-      await playerUpdateUserPlaybackPosition()
+      const { nowPlayingItem: lastItem } = this.global.player
+      const currentItem = await getNowPlayingItemLocally()
+      /*
+        Only call playerUpdateUserPlaybackPosition if there is a nowPlayingItem.
+        This is a workaround because we can't clear the currently loaded
+        item from the queue with react-native-track-player, and when
+        playerUpdateUserPlaybackPosition is called it will re-assign the
+        item as the nowPlayingItem...and that is a problem when
+        playback-queue-ended should remove the nowPlayingItem from state and storage.
+      */
+      if (!!lastItem || !!currentItem) {
+        await playerUpdateUserPlaybackPosition()
+      }
 
       if (nextAppState === 'active' && !isInitialLoadPodcastsScreen) {
-        const { nowPlayingItem: lastItem } = this.global.player
-        const currentItem = await getNowPlayingItemLocally()
-
         if (Platform.OS === 'ios') {
           checkIfTrackingIsEnabled()
         }
@@ -911,6 +923,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
+  _onPodcastItemLongPressed = (item:Podcast) => {
+    this.setState({showPodcastActionSheet:true, gridItemSelected:item})
+  }
+
   _handleClearNewEpisodeIndicators = (podcast: any) => {
     if (podcast?.id || podcast?.addByRSSPodcastFeedUrl) {
       clearEpisodesCountForPodcast(podcast.addByRSSPodcastFeedUrl || podcast.id)
@@ -1060,12 +1076,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _handleDataSettingsWifiOnly = () => {
     AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
-    this.setState({ showDataSettingsConfirmDialog: false })
     this._initializeScreenData()
   }
 
   _handleDataSettingsAllowData = () => {
-    this.setState({ showDataSettingsConfirmDialog: false })
     this._initializeScreenData()
   }
 
@@ -1115,8 +1129,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       selectedCategorySub,
       selectedFilterLabel,
       selectedSortLabel,
-      showDataSettingsConfirmDialog,
-      showNoInternetConnectionMessage
+      showNoInternetConnectionMessage,
+      showPodcastActionSheet
     } = this.state
     const { session, podcastsGridViewEnabled } = this.global
     const { subscribedPodcastIds } = session?.userInfo
@@ -1177,6 +1191,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - send us an email to request a podcast')}
             onEndReached={this._onEndReached}
             onGridItemSelected={this._onPodcastItemSelected}
+            onGridItemLongPressed={this._onPodcastItemLongPressed}
             onRefresh={this._onRefresh}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderPodcastItem}
@@ -1185,31 +1200,47 @@ export class PodcastsScreen extends React.Component<Props, State> {
             testID={testIDPrefix}
           />
         </RNView>
-        <PVDialog
-          buttonProps={[
-            {
-              label: translate('No Wifi Only'),
-              onPress: this._handleDataSettingsWifiOnly,
-              testID: 'alert_no_wifi_only'.prependTestId()
-            },
-            {
-              label: translate('Yes Allow Data'),
-              onPress: this._handleDataSettingsAllowData,
-              testID: 'alert_yes_allow_data'.prependTestId()
-            }
-          ]}
-          descriptionProps={[
-            {
-              children: translate('Do you want to allow downloading episodes with your data plan'),
-              testID: 'alert_description_allow_data'.prependTestId()
-            }
-          ]}
-          title={translate('Data Settings')}
-          visible={showDataSettingsConfirmDialog}
-        />
         <PurchaseListener navigation={navigation} />
+        <ActionSheet
+          handleCancelPress={this._handleActionSheetCancelPress}
+          items={this._getGridActionItems()}
+          showModal={showPodcastActionSheet}
+          testID={testIDPrefix}
+        />
       </View>
     )
+  }
+
+  _getGridActionItems = () => {
+    const {gridItemSelected} = this.state
+
+    return [
+      {
+        accessibilityLabel: translate('Mark as Seen'),
+        key: 'mark_as_seen',
+        text: translate('Mark as Seen'),
+        onPress: () => {
+          this._handleClearNewEpisodeIndicators(gridItemSelected)
+          this.setState({showPodcastActionSheet:false,gridItemSelected:null})
+        }
+      },
+      {
+        accessibilityLabel: translate('Unsubscribe'),
+        key: 'unsubscribe',
+        text: translate('Unsubscribe'),
+        onPress: async () => {
+          await this._handleHiddenItemPress(gridItemSelected?.id, gridItemSelected?.addByRSSPodcastFeedUrl).then()
+          this.setState({showPodcastActionSheet:false,gridItemSelected:null})
+        },
+        buttonTextStyle: {
+          color: PV.Colors.redLighter
+        }
+      }
+    ]
+  }
+
+  _handleActionSheetCancelPress = () => {
+    this.setState({showPodcastActionSheet: false, gridItemSelected: null})
   }
 
   _querySubscribedPodcasts = async (preventAutoDownloading?: boolean, preventParseCustomRSSFeeds?: boolean) => {

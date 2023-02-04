@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.10.6",
+  "version": "4.11.0",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -77,14 +77,14 @@
     "react-native-confetti-cannon": "1.5.2",
     "react-native-config": "1.4.3",
     "react-native-device-info": "8.1.7",
-    "react-native-dialog": "8.2.0",
+    "react-native-dialog": "9.3.0",
     "react-native-document-picker": "7.1.2",
     "react-native-dots-pagination": "^0.2.0",
     "react-native-draggable-flatlist": "3.1.1",
     "react-native-elements": "3.4.2",
     "react-native-file-access": "2.4.5-beta.0",
     "react-native-fs": "2.18.0",
-    "react-native-gesture-handler": "2.4.2",
+    "react-native-gesture-handler": "2.8.0",
     "react-native-haptic-feedback": "1.14.0",
     "react-native-iap": "8.0.7",
     "react-native-in-app-review": "3.2.2",
@@ -104,11 +104,11 @@
     "react-native-swipe-list-view": "3.2.9",
     "react-native-system-setting": "1.7.6",
     "react-native-text-ticker": "1.13.0",
-    "react-native-track-player": "2.1.3",
+    "react-native-track-player": "3.2.0-480f64932969545fe38a261fb3867f90f514478c",
     "react-native-tracking-transparency": "0.1.1",
     "react-native-vector-icons": "8.1.0",
-    "react-native-video": "^5.2.0",
-    "react-native-video-controls": "^2.8.1",
+    "react-native-video": "6.0.0-alpha.4",
+    "react-native-video-controls": "2.8.1",
     "react-native-webview": "11.26.0",
     "react-native-xml2js": "1.0.3",
     "react-navigation": "4.4.4",
@@ -170,7 +170,8 @@
     "underscore": "1.12.1",
     "trim": "0.0.3",
     "node-fetch": "2.6.7",
-    "follow-redirects": "1.14.7"
+    "follow-redirects": "1.14.7",
+    "use-force-update": "1.0.8"
   },
   "isSwift": true
 }

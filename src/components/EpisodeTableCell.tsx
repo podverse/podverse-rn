@@ -4,6 +4,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { generateEpisodeAccessibilityText, readableDate, removeAndDecodeHTMLInString } from '../lib/utility'
 import { PV } from '../resources'
+import { playerCheckIfDownloadableFile } from '../services/player'
 import { images } from '../styles'
 import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
@@ -98,6 +99,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const episodeId = item?.id
     const isNewUnplayedEpisode = !!(podcastId && episodeId && newEpisodesCount?.[podcastId]?.data?.[episodeId])
 
+    const isDownloadableFile = playerCheckIfDownloadableFile(mediaUrl)
+
     const innerTopView = (
       <RNView accessible={false} importantForAccessibility='no-hide-descendants' style={styles.innerTopView}>
         {!!imageUrl && !hideImage && (
@@ -185,7 +188,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
                 ) : (
                   innerTopView
                 )}
-                {!liveItem && (
+                {!liveItem && isDownloadableFile && (
                   <DownloadOrDeleteButton
                     isDownloaded={isDownloaded}
                     isDownloading={isDownloading}
@@ -213,7 +216,6 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
                   item={item}
                   itemType='episode'
                   mediaFileDuration={mediaFileDuration}
-                  navigation={navigation}
                   testID={testID}
                   timeLabel={timeLabel}
                   userPlaybackPosition={userPlaybackPosition}

@@ -10,7 +10,13 @@ import Orientation from 'react-native-orientation-locker'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
-import { UpdateRequiredOverlay, OverlayAlert, ImageFullView, BoostDropdownBanner } from './src/components'
+import { 
+  UpdateRequiredOverlay, 
+  OverlayAlert, 
+  ImageFullView, 
+  BoostDropdownBanner, 
+  LoadingInterstitialView 
+} from './src/components'
 import { pvIsTablet } from './src/lib/deviceDetection'
 import { refreshDownloads } from './src/lib/downloader'
 import { PV } from './src/resources'
@@ -21,9 +27,9 @@ import { isInitialLoadPodcastsScreen } from './src/screens/PodcastsScreen'
 import { downloadCategoriesList } from './src/services/category'
 import PVEventEmitter from './src/services/eventEmitter'
 import { playerHandlePauseWithUpdate } from './src/services/player'
-import { v4vClearTransactionQueue } from './src/services/v4v/v4v'
 import { isOnMinimumAllowedVersion } from './src/services/versioning'
 import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
+import { settingsRunEveryStartup } from './src/state/actions/settings'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 import { hasValidDownloadingConnection } from './src/lib/network'
@@ -82,9 +88,7 @@ class App extends Component<Props, State> {
 
     await this.setupGlobalState(globalTheme)
 
-    // Clear V4V transaction queue every time the app launches
-    // so leftover streaming value isn't unexpectedly sent.
-    await v4vClearTransactionQueue()
+    await settingsRunEveryStartup()
 
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
 
@@ -203,6 +207,7 @@ class App extends Component<Props, State> {
           <ImageFullView />
           <BoostDropdownBanner />
         </SafeAreaProvider>
+        <LoadingInterstitialView/>
       </GestureHandlerRootView>
     ) : (
       this._renderIntersitial()

@@ -147,7 +147,10 @@ export function PlayerProgressBar(props: Props) {
   if (currentChaptersStartTimePositions && currentChaptersStartTimePositions.length > 1) {
     for (const currentChaptersStartTimePosition of currentChaptersStartTimePositions) {
       components.push(
-        <View style={[sliderStyles.clipBarStyle, styles.chapterFlagView, { left: currentChaptersStartTimePosition }]} />
+        <View
+          key={`player-progress-bar-chapter-flag-${currentChaptersStartTimePosition}`}
+          style={[sliderStyles.clipBarStyle, styles.chapterFlagView, { left: currentChaptersStartTimePosition }]}
+        />
       )
     }
   }

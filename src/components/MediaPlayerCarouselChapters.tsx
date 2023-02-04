@@ -57,7 +57,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   }
 
   componentWillUnmount() {
-    PVEventEmitter.removeListener(PV.Events.PLAYER_SPEED_UPDATED)
+    PVEventEmitter.removeListener(PV.Events.PLAYER_SPEED_UPDATED, this.updateAutoscroll)
     this.clearAutoScrollInterval()
   }
 

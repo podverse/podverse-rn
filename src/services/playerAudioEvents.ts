@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Platform } from 'react-native'
-import { State } from 'react-native-track-player'
+import { Event, State } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
 import { debugLogger, errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { downloadedEpisodeMarkForDeletion } from '../state/actions/downloads'
 import {
+  playerClearNowPlayingItem,
   playerPlayNextChapterOrQueueItem,
   playerPlayPreviousChapterOrReturnToBeginningOfTrack
 } from '../state/actions/player'
@@ -37,9 +38,7 @@ import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './u
 
 const _fileName = 'src/services/playerAudioEvents.ts'
 
-export const audioResetHistoryItem = async (x: any) => {
-  const { position, track } = x
-  const loadedTrackId = await audioGetLoadedTrackIdByIndex(track)
+const audioResetHistoryItemByTrackId = async (loadedTrackId: string, position: number) => {
   const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(loadedTrackId)
   if (metaEpisode) {
     const { mediaFileDuration } = metaEpisode
@@ -53,11 +52,27 @@ export const audioResetHistoryItem = async (x: any) => {
         }
 
         const forceUpdateOrderDate = false
-        const skipSetNowPlaying = false
+        const skipSetNowPlaying = true
         const completed = true
         await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate, skipSetNowPlaying, completed)
       }
     }
+  }
+}
+
+export const audioResetHistoryItemActiveTrackChanged = async (x: any) => {
+  const { lastPosition, lastIndex } = x
+  const loadedTrackId = await audioGetLoadedTrackIdByIndex(lastIndex)
+  if (loadedTrackId) {
+    await audioResetHistoryItemByTrackId(loadedTrackId, lastPosition)
+  }
+}
+
+export const audioResetHistoryItemQueueEnded = async (x: any) => {
+  const { position, track } = x
+  const loadedTrackId = await audioGetLoadedTrackIdByIndex(track)
+  if (loadedTrackId) {
+    await audioResetHistoryItemByTrackId(loadedTrackId, position)
   }
 }
 
@@ -67,8 +82,8 @@ const syncDurationWithMetaData = async () => {
     in order for the lock screen / notification to render a progress bar on Android.
     Not sure if it makes a difference for iOS.
   */
-  const trackIndex = await PVAudioPlayer.getCurrentTrack()
-  if (trackIndex >= 1 || trackIndex === 0) {
+  const trackIndex = await PVAudioPlayer.getActiveTrackIndex()
+  if (trackIndex || trackIndex === 0) {
     const currentTrackMetaData = await PVAudioPlayer.getTrack(trackIndex)
     const metadataDuration = currentTrackMetaData?.duration
     if (!metadataDuration) {
@@ -81,67 +96,90 @@ const syncDurationWithMetaData = async () => {
   }
 }
 
-export const audioHandleQueueEnded = async (x: any) => {
-  const preventHandleQueueEnded = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
-  /*
-    The app is calling PVAudioPlayer.reset() on iOS only in playerLoadNowPlayingItem
-    because .reset() is the only way to clear out the current item from the queue,
-    but .reset() results in the playback-queue-ended event in firing.
-    We don't want the playback-queue-ended event handling logic below to happen
-    during playerLoadNowPlayingItem, so to work around this, I am setting temporary
-    AsyncStorage state so we can know when a queue has actually ended or
-    when the event is the result of .reset() called within playerLoadNowPlayingItem.
-  */
-  if (!preventHandleQueueEnded) {
-    setTimeout(() => {
-      (async () => {
-        await audioResetHistoryItem(x)
-      })()
-    }, 0)
-  }
-}
-
-export const audioHandleTrackEnded = (x: any) => {
+export const audioHandleQueueEnded = (x: any) => {
   setTimeout(() => {
     (async () => {
-      await audioResetHistoryItem(x)
+      PVEventEmitter.emit(PV.Events.PLAYER_DISMISS)
+      await audioResetHistoryItemQueueEnded(x)
+      await playerClearNowPlayingItem()
     })()
   }, 0)
 }
 
+export const audioHandleActiveTrackChanged = (x: any) => {
+  setTimeout(() => {
+    (async () => {
+      await audioResetHistoryItemActiveTrackChanged(x)
+    })()
+  }, 0)
+}
+
+let preventQueueEnded = false
+
 // eslint-disable-next-line @typescript-eslint/require-await
 module.exports = async () => {
-  PVAudioPlayer.addEventListener('playback-error', (x) => errorLogger(_fileName, 'playback error', x))
-
-  PVAudioPlayer.addEventListener('playback-metadata-received', (x) => {
+  PVAudioPlayer.addEventListener(Event.PlaybackMetadataReceived, (x) => {
     debugLogger('playback-metadata-received', x)
   })
 
-  PVAudioPlayer.addEventListener('playback-track-changed', (x: any) => {
-    (async () => {
-      debugLogger('playback-track-changed', x)
+  /*
+    playback-active-track-changed always gets called when playback-queue-ended.
+    As a result, if we use both events, there will be a race-condition with our
+    playback-track-changed and playback-queue-ended handling. To work around this,
+    I am determining if the "queue ended" event that we care about has happened
+    from within the playback-active-track-changed event listener.
+    Also: there is a bug on iOS where playback-queue-ended will fire even when
+    there is a next item in the queue...but playback-queue-ended will also fire
+    correctly (without PlaybackActiveTrackChanged) when end of queue is reached.
+    Handling this with setTimeouts.
+  */
+  PVAudioPlayer.addEventListener(Event.PlaybackQueueEnded, (x) => {
+    debugLogger('playback-queue-ended', x)
+    if (Platform.OS === 'ios') {
+      setTimeout(() => {
+        if (!preventQueueEnded) {
+          audioHandleQueueEnded(x)
+        }
+      }, 3000)
+    }
+  })
 
-      const shouldSkip = await AsyncStorage.getItem(PV.Events.PLAYER_VIDEO_IS_LOADING)
-      if (!shouldSkip) {
-        syncNowPlayingItemWithTrack()
-        audioHandleTrackEnded(x)
+  PVAudioPlayer.addEventListener(Event.PlaybackActiveTrackChanged, (x: any) => {
+    (async () => {
+      debugLogger('playback-active-track-changed', x)
+      const prevent = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
+      if (!prevent) {
+        const callback = () => {
+          audioHandleActiveTrackChanged(x)
+        }
+
+        if (Platform.OS === 'ios') {
+          preventQueueEnded = true
+          setTimeout(() => {
+            preventQueueEnded = false
+          }, 6000)
+          // If the first item loaded in queue for the app session, then don't call the track changed callback.
+          if ((x.index || x.index === 0) && !x?.lastIndex && x?.lastIndex !== 0) {
+            syncNowPlayingItemWithTrack()
+          } else {
+            syncNowPlayingItemWithTrack(callback)
+          }
+        } else if (Platform.OS === 'android') {
+          if ((x.index || x.index === 0) && x.index === x?.lastIndex) {
+            audioHandleQueueEnded(x)
+          }
+          // If the first item loaded in queue for the app session, then don't call the track changed callback.
+          else if ((x.index || x.index === 0) && (!x?.lastIndex && x?.lastIndex !== 0)) {
+            syncNowPlayingItemWithTrack()
+          } else {
+            syncNowPlayingItemWithTrack(callback)
+          }
+        }
       }
     })()
   })
 
-  // NOTE: PVAudioPlayer.reset will call the playback-queue-ended event on Android!!!
-  PVAudioPlayer.addEventListener('playback-queue-ended', (x) => {
-    (async () => {
-      debugLogger('playback-queue-ended', x)
-
-      const shouldSkip = await AsyncStorage.getItem(PV.Events.PLAYER_VIDEO_IS_LOADING)
-      if (!shouldSkip) {
-        audioHandleQueueEnded(x)
-      }
-    })()
-  })
-
-  PVAudioPlayer.addEventListener('playback-state', (x) => {
+  PVAudioPlayer.addEventListener(Event.PlaybackState, (x) => {
     (async () => {
       debugLogger('playback-state', x)
 
@@ -162,32 +200,18 @@ module.exports = async () => {
           if (Platform.OS === 'ios') {
             if (x.state === State.Paused || x.state === State.Stopped) {
               playerUpdateUserPlaybackPosition()
-            }
-
-            if (audioCheckIfIsPlaying(x.state)) {
+            } else if (audioCheckIfIsPlaying(x.state)) {
               await playerSetRateWithLatestPlaybackSpeed()
-            }
-            if (x.state === State.Ready) {
+            } else if (x.state === State.Ready) {
               syncDurationWithMetaData()
             }
           } else if (Platform.OS === 'android') {
-            /*
-              state key for android
-              NOTE: ready and pause use the same number, so there is no true ready state for Android :[
-              none      0
-              stopped   1
-              paused    2
-              playing   3
-              ready     2
-              buffering 6
-              ???       8
-            */
-            const ready = 2
-            const playing = 3
-            if (x.state === playing) {
+            if (x.state === State.Paused || x.state === State.Stopped) {
+              playerUpdateUserPlaybackPosition()
+            } else if (x.state === State.Playing) {
               const rate = await getPlaybackSpeed()
               PVAudioPlayer.setRate(rate)
-            } else if (x.state === ready) {
+            } else if (x.state === State.Ready) {
               syncDurationWithMetaData()
             }
           }
@@ -196,42 +220,42 @@ module.exports = async () => {
     })()
   })
 
-  PVAudioPlayer.addEventListener('playback-error', (x: any) => {
+  PVAudioPlayer.addEventListener(Event.PlaybackError, (x: any) => {
     errorLogger(_fileName, 'playback-error', x)
     // TODO: post error to our logs!
     PVEventEmitter.emit(PV.Events.PLAYER_PLAYBACK_ERROR)
   })
 
-  PVAudioPlayer.addEventListener('remote-jump-backward', () => {
+  PVAudioPlayer.addEventListener(Event.RemoteJumpBackward, () => {
     const { jumpBackwardsTime } = getGlobal()
     audioJumpBackward(jumpBackwardsTime)
   })
 
-  PVAudioPlayer.addEventListener('remote-jump-forward', () => {
+  PVAudioPlayer.addEventListener(Event.RemoteJumpForward, () => {
     const { jumpForwardsTime } = getGlobal()
     audioJumpForward(jumpForwardsTime)
   })
 
-  PVAudioPlayer.addEventListener('remote-pause', () => {
+  PVAudioPlayer.addEventListener(Event.RemotePause, () => {
     audioHandlePauseWithUpdate()
   })
 
-  PVAudioPlayer.addEventListener('remote-play', () => {
+  PVAudioPlayer.addEventListener(Event.RemotePlay, () => {
     audioHandlePlayWithUpdate()
   })
 
-  PVAudioPlayer.addEventListener('remote-seek', (data) => {
+  PVAudioPlayer.addEventListener(Event.RemoteSeek, (data) => {
     if (data.position || data.position >= 0) {
       audioHandleSeekToWithUpdate(data.position)
     }
   })
 
-  PVAudioPlayer.addEventListener('remote-stop', () => {
+  PVAudioPlayer.addEventListener(Event.RemoteStop, () => {
     audioHandlePauseWithUpdate()
   })
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  PVAudioPlayer.addEventListener('remote-previous', async () => {
+  PVAudioPlayer.addEventListener(Event.RemotePrevious, async () => {
     const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
     if (remoteSkipButtonsAreTimeJumps) {
       const { jumpBackwardsTime } = getGlobal()
@@ -242,7 +266,7 @@ module.exports = async () => {
   })
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  PVAudioPlayer.addEventListener('remote-next', async () => {
+  PVAudioPlayer.addEventListener(Event.RemoteNext, async () => {
     const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
     if (remoteSkipButtonsAreTimeJumps) {
       const { jumpForwardsTime } = getGlobal()
@@ -267,7 +291,7 @@ module.exports = async () => {
     https://github.com/DoubleSymmetry/react-native-track-player/issues/1009
   */
   let wasPausedByDuck = false
-  PVAudioPlayer.addEventListener('remote-duck', (x: any) => {
+  PVAudioPlayer.addEventListener(Event.RemoteDuck, (x: any) => {
     (async () => {
       debugLogger('remote-duck', x)
       const { paused, permanent } = x
@@ -298,8 +322,8 @@ module.exports = async () => {
     })()
   })
 
-  PVAudioPlayer.addEventListener('playback-progress-updated', (x: any) => {
-    debugLogger('playback-progress-updated', x)
+  PVAudioPlayer.addEventListener(Event.PlaybackProgressUpdated, (x: any) => {
+    // debugLogger('playback-progress-updated', x)
     handleBackgroundTimerInterval()
   })
 }

@@ -9,7 +9,7 @@ import { playerCheckIfStateIsPlaying } from '../services/player'
 import { v4vGetPluralCurrencyUnitPerMinute } from '../services/v4v/v4v'
 import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
 import { toggleValueStreaming } from '../state/actions/valueTag'
-import { v4vAlbyHandleConnect, v4vAlbyHandleNavigation } from '../state/actions/v4v/providers/alby'
+import { v4vAlbyHandleNavigation } from '../state/actions/v4v/providers/alby'
 import { MediaPlayerCarouselComments } from './MediaPlayerCarouselComments'
 import {
   ActivityIndicator,
@@ -36,6 +36,8 @@ type State = {
   activeIndex: number
   boostIsSending: boolean
   boostWasSent: boolean
+  isReady: boolean
+  isReady2: boolean
 }
 
 const testIDPrefix = 'media_player_carousel'
@@ -76,7 +78,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       accessibilityItemSelected: accessibilityNowPlayingInfo,
       activeIndex: 0,
       boostIsSending: false,
-      boostWasSent: false
+      boostWasSent: false,
+      isReady: false,
+      isReady2: false
     }
   }
 
@@ -84,6 +88,20 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { activeIndex } = this.state
     const animated = false
     this.scrollToActiveIndex(activeIndex, animated)
+
+    /*
+      Add timeout to improve initial rendering time on Android.
+      https://stackoverflow.com/questions/46127753/react-native-react-navigation-slow-transitions-when-nesting-navigators
+    */
+    const timeout1 = Platform.OS === 'android' ? 50 : 0
+    const timeout2 = Platform.OS === 'android' ? 500 : 0
+
+    setTimeout(() => {
+      this.setState({ isReady: true })
+      setTimeout(() => {
+        this.setState({ isReady2: true })
+      }, timeout2)
+    }, timeout1)
   }
 
   scrollToActiveIndex = (activeIndex: number, animated: boolean) => {
@@ -146,7 +164,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { accessibilityItemSelected, activeIndex } = this.state
+    const { accessibilityItemSelected, activeIndex, isReady, isReady2 } = this.state
     const { parsedTranscript, player, screen, screenReaderEnabled, session } = this.global
     const { episode, nowPlayingItem, playbackState } = player
     const { screenWidth } = screen
@@ -196,7 +214,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       hasTranscript,
       screenReaderEnabled,
       this.global.parsedTranscript || [],
-      accessibilityItemSelected?.value || null
+      accessibilityItemSelected?.value || null,
+      isReady,
+      isReady2
     )
 
     return (
@@ -353,49 +373,68 @@ const mediaPlayerCarouselComponents = (
   hasTranscript: boolean,
   screenReaderEnabled: boolean,
   parsedTranscript: TranscriptRow[],
-  accessibilityItemSelectedValue?: string | null
+  accessibilityItemSelectedValue?: string | null,
+  isReady?: boolean,
+  isReady2?: boolean
 ) => {
   return (
     <>
       {screenReaderEnabled ? (
         <>
-          {(accessibilityItemSelectedValue === _nowPlayingInfoKey || !accessibilityItemSelectedValue) && (
+          {(isReady && (accessibilityItemSelectedValue === _nowPlayingInfoKey || !accessibilityItemSelectedValue)) && (
             <MediaPlayerCarouselViewer
               handlePressClipInfo={handlePressClipInfo}
               navigation={navigation}
               width={screenWidth}
             />
           )}
-          {accessibilityItemSelectedValue === _episodeSummaryKey && (
-            <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
-          )}
-          {accessibilityItemSelectedValue === _chaptersKey && hasChapters && (
-            <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />
-          )}
-          {accessibilityItemSelectedValue === _commentsKey && hasComments && (
-            <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />
-          )}
-          {accessibilityItemSelectedValue === _transcriptKey && hasTranscript && (
-            <MediaPlayerCarouselTranscripts isNowPlaying parsedTranscript={parsedTranscript} width={screenWidth} />
-          )}
-          {accessibilityItemSelectedValue === _chatRoomKey && hasChat && (
-            <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />
+          {isReady2 && (
+            <>
+              {accessibilityItemSelectedValue === _episodeSummaryKey && (
+                <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
+              )}
+              {accessibilityItemSelectedValue === _chaptersKey && hasChapters && (
+                <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />
+              )}
+              {accessibilityItemSelectedValue === _commentsKey && hasComments && (
+                <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />
+              )}
+              {accessibilityItemSelectedValue === _transcriptKey && hasTranscript && (
+                <MediaPlayerCarouselTranscripts isNowPlaying parsedTranscript={parsedTranscript} width={screenWidth} />
+              )}
+              {accessibilityItemSelectedValue === _chatRoomKey && hasChat && (
+                <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />
+              )}
+            </>
           )}
         </>
       ) : (
         <>
-          <MediaPlayerCarouselViewer
-            handlePressClipInfo={handlePressClipInfo}
-            navigation={navigation}
-            width={screenWidth}
-          />
-          <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
-          {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
-          {hasComments && <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />}
-          {hasTranscript && (
-            <MediaPlayerCarouselTranscripts isNowPlaying parsedTranscript={parsedTranscript} width={screenWidth} />
-          )}
-          {hasChat && <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />}
+          {
+            isReady && (
+              <MediaPlayerCarouselViewer
+                handlePressClipInfo={handlePressClipInfo}
+                navigation={navigation}
+                width={screenWidth}
+              />
+            )
+          }
+          {
+            isReady2 && (
+              <>
+                <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
+                {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
+                {hasComments && <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />}
+                {hasTranscript && (
+                  <MediaPlayerCarouselTranscripts
+                    isNowPlaying
+                    parsedTranscript={parsedTranscript}
+                    width={screenWidth} />
+                )}
+                {hasChat && <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />}
+              </>
+            )
+          }
         </>
       )}
     </>

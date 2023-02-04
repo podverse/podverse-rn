@@ -11,7 +11,14 @@ type Props = {
 
 export const PressableWithOpacity = (props: Props) => {
   return (
-    <Pressable {...props} style={({ pressed }) => [{ opacity: pressed && !props.disable ? 0.5 : 1.0 }, props.style]}>
+    <Pressable
+      {...props}
+      style={({ pressed }) => [{ opacity: pressed && !props.disable ? 0.5 : 1.0 }, props.style]}
+      onPress={() => {
+        requestAnimationFrame(() => {
+          props?.onPress();
+        })
+      }}>
       {props.children}
     </Pressable>
   )

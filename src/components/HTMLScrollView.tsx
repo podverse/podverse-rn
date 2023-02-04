@@ -1,7 +1,8 @@
 import {
   convertHHMMSSToAnchorTags,
   filterHTMLElementsFromString,
-  removeExtraInfoFromEpisodeDescription
+  removeExtraInfoFromEpisodeDescription,
+  removeHTMLFromString
 } from 'podverse-shared'
 import { Dimensions, Linking, ScrollView, StyleSheet } from 'react-native'
 import RenderHTML from 'react-native-render-html'
@@ -17,11 +18,13 @@ type Props = {
   fontSizeLargestScale?: number
   html: string
   sectionTitle?: string
+  showShortHtml?: boolean
   style: any
 }
 
 export const HTMLScrollView = (props: Props) => {
-  const { disableScrolling, fontSizeLargerScale, fontSizeLargestScale, html, sectionTitle, style } = props
+  const { disableScrolling, fontSizeLargerScale, fontSizeLargestScale, html,
+    sectionTitle, showShortHtml, style } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const [censorNSFWText] = useGlobal('censorNSFWText')
@@ -37,6 +40,9 @@ export const HTMLScrollView = (props: Props) => {
   formattedHtml = removeExtraInfoFromEpisodeDescription(formattedHtml)
   formattedHtml = formattedHtml.linkifyHtml()
 
+  let shortHtml = removeHTMLFromString(html || '').substring(0, 500)
+  shortHtml = shortHtml ? `${shortHtml}…` : ''
+
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
     baseFontStyle.fontSize = fontSizeLargerScale
   } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
@@ -44,7 +50,7 @@ export const HTMLScrollView = (props: Props) => {
   }
 
   const source = {
-    html: formattedHtml
+    html: showShortHtml ? shortHtml : formattedHtml
   }
 
   return (

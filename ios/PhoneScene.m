@@ -30,7 +30,7 @@
   }
   
   applicationDelegate.rootView.backgroundColor = [[UIColor alloc] initWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:1];
-  
+  applicationDelegate.rootView.loadingView = [[UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil] instantiateInitialViewController].view;
   rootViewController.view = applicationDelegate.rootView;
   applicationDelegate.window = [[UIWindow alloc] initWithWindowScene:(UIWindowScene *)scene];
   applicationDelegate.window.rootViewController = rootViewController;

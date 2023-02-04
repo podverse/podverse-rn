@@ -207,6 +207,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
                   testID: 'new_playlist_title_cancel'.prependTestId()
                 },
                 {
+                  bold: true,
                   label: translate('Save'),
                   onPress: this._saveNewPlaylist,
                   testID: 'new_playlist_title_save'.prependTestId()

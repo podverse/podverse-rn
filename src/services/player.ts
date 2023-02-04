@@ -12,6 +12,7 @@ import {
   videoCheckIfStateIsBuffering,
   videoCheckIfStateIsPlaying,
   videoGetCurrentLoadedTrackId,
+  videoGetFileType,
   videoGetRate,
   videoGetState,
   videoGetTrackDuration,
@@ -515,4 +516,14 @@ export const getRemoteSkipButtonsTimeJumpOverride = async () => {
   } catch (error) {
     return false
   }
+}
+
+/* HLS / m3u8 files contain only references, so they're not directly downloadable */
+export const playerCheckIfDownloadableFile = (uri?: string) => {
+  let isDownloadedVideoFile = false
+  if (uri) {
+    const fileType = videoGetFileType(uri)
+    isDownloadedVideoFile = fileType === 'hls' ? false : true
+  }
+  return isDownloadedVideoFile
 }
