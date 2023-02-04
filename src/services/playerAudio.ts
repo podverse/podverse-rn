@@ -528,6 +528,18 @@ export const audioGetTrackPosition = () => {
   return PVAudioPlayer.getProgress().then((progress) => progress.position)
 }
 
+export const audioReset = async () => {
+  if (Platform.OS === 'ios') {
+    await PVAudioPlayer.reset()
+  } else if (Platform.OS === 'android') {
+    const queueItems = await PVAudioPlayer.getQueue()
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
+    for (let i = 0; i < queueItems.length; i++) {
+      await PVAudioPlayer.remove(0)
+    }
+  }
+}
+
 export const audioGetTrackDuration = () => {
   return TrackPlayer.getDuration()
 }
