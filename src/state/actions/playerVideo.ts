@@ -11,7 +11,7 @@ import { playerCheckIfDownloadableFile, playerUpdateUserPlaybackPosition } from 
 import { audioReset, PVAudioPlayer } from '../../services/playerAudio'
 import { getPodcastFeedUrlAuthority } from '../../services/podcast'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from '../../services/userHistoryItem'
-import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
+import { getEnrichedNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
 import { downloadedEpisodeMarkForDeletion } from './downloads'
 import { playerLoadNowPlayingItem, playerUpdatePlaybackState, playerUpdatePlayerState } from './player'
 import { updateHistoryItemsIndex } from './userHistoryItem'
@@ -24,7 +24,7 @@ export const videoInitializePlayer = async (item: NowPlayingItem) => {
         userPlaybackPosition that was last saved from other devices. */
     if (!item.clipId && item.episodeId) {
       await updateHistoryItemsIndex()
-      const itemFromStorage = await getNowPlayingItemFromLocalStorage(item.episodeId)
+      const itemFromStorage = await getEnrichedNowPlayingItemFromLocalStorage(item.episodeId)
       if (itemFromStorage) {
         item = itemFromStorage
       }

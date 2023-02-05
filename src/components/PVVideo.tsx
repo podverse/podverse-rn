@@ -16,7 +16,7 @@ import {
   playerUpdateUserPlaybackPosition
 } from '../services/player'
 import { addOrUpdateHistoryItem } from '../services/userHistoryItem'
-import { getNowPlayingItemFromLocalStorage } from '../services/userNowPlayingItem'
+import { getEnrichedNowPlayingItemFromLocalStorage } from '../services/userNowPlayingItem'
 import { handleValueStreamingTimerIncrement } from '../services/v4v/v4vStreaming'
 import {
   videoCheckIfStateIsPlaying,
@@ -210,7 +210,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
     if (nowPlayingItem.episodeMediaUrl === lastNowPlayingItemUri && lastVideoPosition) {
       this._handleSeekTo(lastVideoPosition, handlePlayAfterSeek)
     } else {
-      const nowPlayingItemFromHistory = await getNowPlayingItemFromLocalStorage(
+      const nowPlayingItemFromHistory = await getEnrichedNowPlayingItemFromLocalStorage(
         nowPlayingItem.clipId || nowPlayingItem.episodeId
       )
 

@@ -13,8 +13,6 @@ import { checkIfTrackingIsEnabled } from '../../services/tracking'
 import { v4vClearTransactionQueue } from '../../services/v4v/v4v'
 
 export const settingsRunEveryStartup = async () => {
-  await AsyncStorage.removeItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
-
   /*
     Clear V4V transaction queue every time the app launches
     so leftover streaming value isn't unexpectedly sent.
@@ -22,12 +20,29 @@ export const settingsRunEveryStartup = async () => {
   await v4vClearTransactionQueue()
   
   /*
+    Retry until TrackPlayer.setupPlayer(...) finishes initializing.
     On Android, player queue items will persist between app restarts.
-    Calling .reset here clears the queue before continuing to load the app.
+    Calling .reset here clears the queue before continuing to load the app,
+    but we have to wait for the audio player to finish initializing.
   */
-  if (Platform.OS === 'android') {
-    await audioReset()
-  }
+  return new Promise((resolve) => {
+    if (Platform.OS === 'ios') {
+      resolve()
+    } else {
+      const interval = setInterval(() => {
+        (async () => {
+          try {
+            await audioReset()
+            clearInterval(interval)
+            resolve()
+          } catch (error) {
+            console.log('audioReset error', error)
+          }
+        })()
+      }, 333)
+    }
+  })
+
 }
 
 export const initializeSettings = async () => {

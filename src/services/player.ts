@@ -51,7 +51,7 @@ import {
   audioTogglePlay
 } from './playerAudio'
 import { addOrUpdateHistoryItem, saveOrResetCurrentlyPlayingItemInHistory } from './userHistoryItem'
-import { getNowPlayingItem, getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
+import { getNowPlayingItem, getEnrichedNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
 
 const _fileName = 'src/services/player.ts'
 
@@ -204,8 +204,8 @@ export const playerUpdateUserPlaybackPosition = async (skipSetNowPlaying?: boole
   try {
     const currentTrackId = await playerGetCurrentLoadedTrackId()
 
-    const setPlayerClipIsLoadedIfClip = false
-    const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(currentTrackId, setPlayerClipIsLoadedIfClip)
+    const shouldPlayClip = false
+    const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(currentTrackId, shouldPlayClip)
 
     if (currentNowPlayingItem) {
       await saveOrResetCurrentlyPlayingItemInHistory(!!shouldAwait, currentNowPlayingItem, !!skipSetNowPlaying)

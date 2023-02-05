@@ -34,7 +34,7 @@ import {
 } from './playerAudio'
 import { handleBackgroundTimerInterval, syncNowPlayingItemWithTrack } from './playerBackgroundTimer'
 import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
-import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
+import { getEnrichedNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
 
 const _fileName = 'src/services/playerAudioEvents.ts'
 
@@ -43,8 +43,8 @@ const audioResetHistoryItemByTrackId = async (loadedTrackId: string, position: n
   if (metaEpisode) {
     const { mediaFileDuration } = metaEpisode
     if ((mediaFileDuration > 59 && mediaFileDuration - 59 < position) || !mediaFileDuration) {
-      const setPlayerClipIsLoadedIfClip = false
-      const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(loadedTrackId, setPlayerClipIsLoadedIfClip)
+      const shouldPlayClip = false
+      const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(loadedTrackId, shouldPlayClip)
       if (currentNowPlayingItem) {
         const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
         if (autoDeleteEpisodeOnEnd && currentNowPlayingItem?.episodeId) {
@@ -145,38 +145,36 @@ module.exports = async () => {
   })
 
   PVAudioPlayer.addEventListener(Event.PlaybackActiveTrackChanged, (x: any) => {
-    (async () => {
-      debugLogger('playback-active-track-changed', x)
-      const prevent = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
-      if (!prevent) {
-        const callback = () => {
-          audioHandleActiveTrackChanged(x)
-        }
+    debugLogger('playback-active-track-changed', x)
 
-        if (Platform.OS === 'ios') {
-          preventQueueEnded = true
-          setTimeout(() => {
-            preventQueueEnded = false
-          }, 6000)
-          // If the first item loaded in queue for the app session, then don't call the track changed callback.
-          if ((x.index || x.index === 0) && !x?.lastIndex && x?.lastIndex !== 0) {
-            syncNowPlayingItemWithTrack()
-          } else {
-            syncNowPlayingItemWithTrack(callback)
-          }
-        } else if (Platform.OS === 'android') {
-          if ((x.index || x.index === 0) && x.index === x?.lastIndex) {
-            audioHandleQueueEnded(x)
-          }
-          // If the first item loaded in queue for the app session, then don't call the track changed callback.
-          else if ((x.index || x.index === 0) && (!x?.lastIndex && x?.lastIndex !== 0)) {
-            syncNowPlayingItemWithTrack()
-          } else {
-            syncNowPlayingItemWithTrack(callback)
-          }
-        }
+    const callback = () => {
+      audioHandleActiveTrackChanged(x)
+    }
+
+    if (Platform.OS === 'ios') {
+      preventQueueEnded = true
+      setTimeout(() => {
+        preventQueueEnded = false
+      }, 6000)
+      // If the first item loaded in queue for the app session, then don't call the track changed callback.
+      if ((x.index || x.index === 0) && !x?.lastIndex && x?.lastIndex !== 0) {
+        syncNowPlayingItemWithTrack(x?.track)
+      } else {
+        syncNowPlayingItemWithTrack(x?.track, callback)
       }
-    })()
+    } else if (Platform.OS === 'android') {
+      if ((x.index || x.index === 0) && x.index === x?.lastIndex) {
+        audioHandleQueueEnded(x)
+      }
+      // If the first item loaded in queue for the app session, then don't call the track changed callback.
+      else if ((x.index || x.index === 0) && (!x?.lastIndex && x?.lastIndex !== 0)) {
+        syncNowPlayingItemWithTrack(x?.track)
+      } else {
+        syncNowPlayingItemWithTrack(x?.track, callback)
+      }
+    }
+
+    PVEventEmitter.emit(PV.Events.PLAYER_NEW_EPISODE_LOADED)
   })
 
   PVAudioPlayer.addEventListener(Event.PlaybackState, (x) => {
@@ -198,16 +196,20 @@ module.exports = async () => {
           await playerHandleResumeAfterClipHasEnded()
         } else {
           if (Platform.OS === 'ios') {
-            if (x.state === State.Paused || x.state === State.Stopped) {
-              playerUpdateUserPlaybackPosition()
+            /* Do not listen for State.Stopped. See audioLoadNowPlayingItem for more. */
+            if (x.state === State.Paused) {
+              const skipSetNowPlaying = true
+              playerUpdateUserPlaybackPosition(skipSetNowPlaying)
             } else if (audioCheckIfIsPlaying(x.state)) {
               await playerSetRateWithLatestPlaybackSpeed()
             } else if (x.state === State.Ready) {
               syncDurationWithMetaData()
             }
           } else if (Platform.OS === 'android') {
-            if (x.state === State.Paused || x.state === State.Stopped) {
-              playerUpdateUserPlaybackPosition()
+            /* Do not listen for State.Stopped. See audioLoadNowPlayingItem for more. */
+            if (x.state === State.Paused) {
+              const skipSetNowPlaying = true
+              playerUpdateUserPlaybackPosition(skipSetNowPlaying)
             } else if (x.state === State.Playing) {
               const rate = await getPlaybackSpeed()
               PVAudioPlayer.setRate(rate)

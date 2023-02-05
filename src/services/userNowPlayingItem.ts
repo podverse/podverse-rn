@@ -135,9 +135,14 @@ export const clearNowPlayingItemOnServer = async () => {
 }
 
 /*
-  Get the nowPlayingItem from 1) history, 2) queue, or 3) downloaded episode storage.
+  This helper gets an enriched version of a NowPlayingItem, setting the userPlaybackPosition,
+  and downloaded file path if available. 
+  The userPlaybackPosition look up checks in order: 1) history, 2) queue, or 3) downloaded episode storage.
+  Only set shouldPlayClip to true if the item is playing *now*. Leave it as false if you are using this
+  helper to add items to the queue with userPlaybackPosition set as track.initialTime.
+  Sorry this is so hacky :[ this could be cleaned up a ton.
 */
-export const getNowPlayingItemFromLocalStorage = async (trackId: string, setPlayerClipIsLoadedIfClip?: boolean) => {
+export const getEnrichedNowPlayingItemFromLocalStorage = async (trackId: string, shouldPlayClip = false) => {
   if (!trackId) return null
 
   const results = await getHistoryItemsLocally()
@@ -167,7 +172,7 @@ export const getNowPlayingItemFromLocalStorage = async (trackId: string, setPlay
     }
   }
 
-  if (setPlayerClipIsLoadedIfClip && currentNowPlayingItem?.clipId) {
+  if (shouldPlayClip && currentNowPlayingItem?.clipId) {
     await AsyncStorage.setItem(PV.Keys.PLAYER_CLIP_IS_LOADED, 'TRUE')
   }
 
