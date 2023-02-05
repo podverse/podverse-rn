@@ -215,12 +215,13 @@ export const audioLoadNowPlayingItem = async (
     PVAudioPlayer.add([track])
   }
 
-  if (shouldPlay) {
-    if (item && !item.clipId) {
-      audioHandlePlayFromLastPlaybackPosition(item.episodeId)
-    } else if (item && item.clipId && item.clipStartTime) {
-      PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)
-      await PVAudioPlayer.seekTo(item.clipStartTime || 0)
+
+  if (item && !item.clipId) {
+    audioHandleLoadFromLastPlaybackPosition(item.episodeId, shouldPlay)
+  } else {
+    PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)
+    await PVAudioPlayer.seekTo(item.clipStartTime || 0)
+    if (shouldPlay) {
       audioHandlePlayWithUpdate()
     }
   }
@@ -383,7 +384,7 @@ export const audioTogglePlay = async () => {
   }
 }
 
-const audioHandlePlayFromLastPlaybackPosition = async (episodeId: string) => {
+const audioHandleLoadFromLastPlaybackPosition = async (episodeId: string, shouldPlay: boolean) => {
   if (!episodeId) return
 
   const setPlayerClipIsLoadedIfClip = true
@@ -394,7 +395,6 @@ const audioHandlePlayFromLastPlaybackPosition = async (episodeId: string) => {
 
   const lastUserPlaybackPosition = currentNowPlayingItem?.userPlaybackPosition || 0
   
-  const shouldPlay = true
   await playerSetPositionWhenDurationIsAvailable(lastUserPlaybackPosition, episodeId, shouldPlay)
 }
 
