@@ -23,6 +23,7 @@ import { removeQueueItem } from './queue'
 import { handleValueStreamingTimerIncrement } from './v4v/v4vStreaming'
 import { addOrUpdateHistoryItem } from './userHistoryItem'
 import { PVAudioPlayer } from './playerAudio'
+import { Platform } from 'react-native'
 
 const _fileName = 'src/services/playerBackgroundTimer.ts'
 
@@ -60,8 +61,16 @@ const handleSyncNowPlayingItem = async (currentNowPlayingItem: NowPlayingItem, c
 export const syncNowPlayingItemWithTrack = (track: any, callback?: any) => {
   stopClipInterval()
 
-  const initialTime = track?.initialTime || 0
-  PVAudioPlayer.seekTo(initialTime)
+  /*
+    Only call seekTo with initialTime here for Android!
+    iOS needs to be handled using iosInitialTime.
+    See the discussion here for more info:
+    https://github.com/doublesymmetry/react-native-track-player/issues/1903
+  */
+  if (Platform.OS === 'android') {
+    const initialTime = track?.initialTime || 0
+    PVAudioPlayer.seekTo(initialTime)
+  }
 
   // The first setTimeout is an attempt to prevent the following:
   // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
