@@ -125,7 +125,7 @@ export const syncNowPlayingItemWithTrack = (callback?: any) => {
     })()
   }
 
-  setTimeout(() => sync(callback), 1000)
+  sync(callback)
 }
 
 const stopCheckClipIfEndTimeReached = () => {
