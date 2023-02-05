@@ -15,6 +15,7 @@ import {
   playerGetPosition,
   playerHandlePauseWithUpdate,
   playerSetPositionWhenDurationIsAvailable,
+  playerUpdateUserPlaybackPosition,
   setClipHasEnded
 } from './player'
 import { getNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './userNowPlayingItem'
@@ -125,7 +126,7 @@ export const syncNowPlayingItemWithTrack = (callback?: any) => {
     })()
   }
 
-  setTimeout(() => sync(callback), 1000)
+  sync(callback)
 }
 
 const stopCheckClipIfEndTimeReached = () => {
@@ -149,6 +150,7 @@ const debouncedHandlePlayerClipLoaded = debounce(startCheckClipEndTime, 1000)
 PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLoaded)
 
 let chapterIntervalSecondCount = 0
+let updateUserPlaybackPositionSecondCount = 0
 export const handleBackgroundTimerInterval = () => {
   const { chapterIntervalActive, clipIntervalActive, player, session } = getGlobal()
   const { sleepTimer } = player
@@ -172,6 +174,16 @@ export const handleBackgroundTimerInterval = () => {
     }
   } catch (error) {
     errorLogger(_fileName, 'handleBackgroundTimerInterval loadChapterPlaybackInfo', error?.message)
+  }
+
+  updateUserPlaybackPositionSecondCount++
+  try {
+    if (updateUserPlaybackPositionSecondCount >= 59) {
+      updateUserPlaybackPositionSecondCount = 0
+      playerUpdateUserPlaybackPosition()
+    }
+  } catch (error) {
+    errorLogger(_fileName, 'handleBackgroundTimerInterval playerUpdateUserPlaybackPosition', error?.message)
   }
 
   try {

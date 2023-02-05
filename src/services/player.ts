@@ -227,7 +227,7 @@ export const playerLoadNowPlayingItem = async (
       return
     }
 
-    if (!checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
+    if (!checkIfVideoFileOrVideoLiveType(itemToSetNextInQueue?.episodeMediaType)) {
       audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
     }
 
@@ -249,7 +249,6 @@ export const playerLoadNowPlayingItem = async (
 export const playerSetPositionWhenDurationIsAvailable = async (
   position: number,
   trackId?: string,
-  resolveImmediately?: boolean,
   shouldPlay?: boolean
 ) => {
   return new Promise((resolve) => {
@@ -263,34 +262,14 @@ export const playerSetPositionWhenDurationIsAvailable = async (
 
         if (duration && duration > 0 && (!trackId || (currentTrackId && trackId === currentTrackId)) && position >= 0) {
           clearInterval(interval)
-
           await playerHandleSeekTo(position)
-          // Sometimes seekTo does not work right away for all episodes...
-          // to work around this bug, we set another interval to confirm the track
-          // position has been advanced into the clip time.
-          const confirmClipLoadedInterval = setInterval(() => {
-            (async () => {
-              const currentPosition = await playerGetPosition()
-              if (currentPosition >= position - 1) {
-                clearInterval(confirmClipLoadedInterval)
-              } else {
-                await playerHandleSeekTo(position)
-              }
-            })()
-          }, 500)
-
-          const shouldPlayWhenClipIsLoaded = await AsyncStorage.getItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
 
           if (shouldPlay) {
-            playerHandlePlayWithUpdate()
-          } else if (shouldPlayWhenClipIsLoaded === 'true') {
-            AsyncStorage.removeItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
             playerHandlePlayWithUpdate()
           }
 
           resolve(null)
         }
-        if (resolveImmediately) resolve(null)
       })()
     }, 500)
   })

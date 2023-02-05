@@ -220,6 +220,8 @@ export const playerLoadNowPlayingItem = async (
   forceUpdateOrderDate: boolean,
   setCurrentItemNextInQueue: boolean
 ) => {
+  await AsyncStorage.setItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING, 'TRUE')
+  
   const globalState = getGlobal()
   const { nowPlayingItem: previousNowPlayingItem } = globalState.player
 
@@ -256,6 +258,13 @@ export const playerLoadNowPlayingItem = async (
       itemToSetNextInQueue,
       previousNowPlayingItem
     )
+
+    // removing the PLAYER_PREVENT_END_OF_TRACK_HANDLING after 5 seconds,
+    // assuming that the native player has finished loading the track.
+    // TODO: If a user tries to load many tracks quickly, this could cause stuttering.
+    setTimeout(() => {
+      AsyncStorage.removeItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
+    }, 5000)
 
     showMiniPlayer()
   }

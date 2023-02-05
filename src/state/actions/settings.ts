@@ -8,7 +8,7 @@ import {
   setPlayerJumpForwards as setPlayerJumpForwardsService,
   playerUpdateTrackPlayerCapabilities
 } from '../../services/player'
-import { audioIsLoaded, audioReset, PVAudioPlayer } from '../../services/playerAudio'
+import { audioReset } from '../../services/playerAudio'
 import { checkIfTrackingIsEnabled } from '../../services/tracking'
 import { v4vClearTransactionQueue } from '../../services/v4v/v4v'
 
