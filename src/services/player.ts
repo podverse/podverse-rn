@@ -227,7 +227,7 @@ export const playerLoadNowPlayingItem = async (
       return
     }
 
-    if (!checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
+    if (!checkIfVideoFileOrVideoLiveType(itemToSetNextInQueue?.episodeMediaType)) {
       audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
     }
 
