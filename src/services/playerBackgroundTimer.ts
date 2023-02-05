@@ -69,7 +69,9 @@ export const syncNowPlayingItemWithTrack = (track: any, callback?: any) => {
   */
   if (Platform.OS === 'android') {
     const initialTime = track?.initialTime || 0
-    PVAudioPlayer.seekTo(initialTime)
+    if (initialTime > 0) {
+      PVAudioPlayer.seekTo(initialTime)
+    }
   }
 
   // The first setTimeout is an attempt to prevent the following:
