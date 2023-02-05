@@ -13,17 +13,18 @@ import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
 import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../lib/downloader'
+import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
 import { setLiveStreamWasPausedState } from '../state/actions/player'
 import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import { getPodcastCredentialsHeader } from './parser'
-import { playerSetPositionWhenDurationIsAvailable, playerSetRateWithLatestPlaybackSpeed, playerUpdateUserPlaybackPosition } from './player'
+import { playerSetRateWithLatestPlaybackSpeed, playerUpdateUserPlaybackPosition } from './player'
 import { getPodcastFeedUrlAuthority } from './podcast'
 import { addQueueItemNext, filterItemFromQueueItems, getQueueItems, getQueueItemsLocally } from './queue'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from './userHistoryItem'
-import { getEnrichedNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
+import { getEnrichedNowPlayingItemFromLocalStorage } from './userNowPlayingItem'
 
 declare module 'react-native-track-player' {
   export function getCurrentLoadedTrack(): Promise<string>
@@ -292,10 +293,11 @@ export const audioCreateTrack = async (item: NowPlayingItem, isUpcomingQueueItem
 
   if (episodeId) {
     const shouldPlayClip = !isUpcomingQueueItem
-    const [isDownloadedFile, filePath, enrichedNowPlayingItem] = await Promise.all([
+    const [isDownloadedFile, filePath, enrichedNowPlayingItem, startPodcastFromTime] = await Promise.all([
       checkIfFileIsDownloaded(episodeId, episodeMediaUrl, isAddByRSSPodcast),
       getDownloadedFilePath(episodeId, episodeMediaUrl, isAddByRSSPodcast),
-      getEnrichedNowPlayingItemFromLocalStorage(episodeId, shouldPlayClip)
+      getEnrichedNowPlayingItemFromLocalStorage(episodeId, shouldPlayClip),
+      getStartPodcastFromTime(podcastId)
     ])
 
     const fileExtension = getExtensionFromUrl(episodeMediaUrl)?.substring(1)
@@ -305,8 +307,9 @@ export const audioCreateTrack = async (item: NowPlayingItem, isUpcomingQueueItem
     let initialTime = enrichedNowPlayingItem?.userPlaybackPosition
     if (item?.clipId) {
       initialTime = item.clipStartTime || 0
+    } else if (startPodcastFromTime && !initialTime) {
+      initialTime = startPodcastFromTime
     }
-    // TODO: handle start from podcast time if no userPlaybackPosition or userPlaybackPosition < startFromTime
 
     if (isDownloadedFile) {
       track = {
