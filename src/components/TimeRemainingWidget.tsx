@@ -152,7 +152,7 @@ export const TimeRemainingWidget = (props: Props) => {
 
       setTimeout(() => {
         setForceRerender(!forceRerender)
-      }, 3000)
+      }, 1500)
     }
     requestAppStoreReviewForEpisodePlayed()
   }
