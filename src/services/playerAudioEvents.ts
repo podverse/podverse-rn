@@ -69,8 +69,8 @@ export const audioResetHistoryItemActiveTrackChanged = async (x: any) => {
 }
 
 export const audioResetHistoryItemQueueEnded = async (x: any) => {
-  const { position, track } = x
-  const loadedTrackId = await audioGetLoadedTrackIdByIndex(track)
+  const { index, position } = x
+  const loadedTrackId = await audioGetLoadedTrackIdByIndex(index)
   if (loadedTrackId) {
     await audioResetHistoryItemByTrackId(loadedTrackId, position)
   }

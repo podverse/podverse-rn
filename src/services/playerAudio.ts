@@ -19,7 +19,7 @@ import { setLiveStreamWasPausedState } from '../state/actions/player'
 import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import { getPodcastCredentialsHeader } from './parser'
-import { playerSetRateWithLatestPlaybackSpeed, playerUpdateUserPlaybackPosition } from './player'
+import { playerSetPositionWhenDurationIsAvailable, playerSetRateWithLatestPlaybackSpeed, playerUpdateUserPlaybackPosition } from './player'
 import { getPodcastFeedUrlAuthority } from './podcast'
 import { addQueueItemNext, filterItemFromQueueItems, getQueueItems, getQueueItemsLocally } from './queue'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from './userHistoryItem'
@@ -189,6 +189,8 @@ export const audioLoadNowPlayingItem = async (
 ) => {
   // TODO VIDEO: discard/reset video player???
 
+  await PVAudioPlayer.pause()
+
   const [lastPlayingItem, historyItemsIndex] = await Promise.all([
     getNowPlayingItemLocally(),
     getHistoryItemsIndexLocally()
@@ -213,11 +215,14 @@ export const audioLoadNowPlayingItem = async (
     PVAudioPlayer.add([track])
   }
 
-  if (shouldPlay) {
-    if (item && !item.clipId) {
-      audioHandlePlayWhenReady()
-    } else if (item && item.clipId) {
-      AsyncStorage.setItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED, 'true')
+
+  if (item && !item.clipId) {
+    audioHandleLoadFromLastPlaybackPosition(item.episodeId, shouldPlay)
+  } else {
+    PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)
+    await PVAudioPlayer.seekTo(item.clipStartTime || 0)
+    if (shouldPlay) {
+      audioHandlePlayWithUpdate()
     }
   }
 
@@ -379,8 +384,18 @@ export const audioTogglePlay = async () => {
   }
 }
 
-const audioHandlePlayWhenReady = () => {
-  PVAudioPlayer.setPlayWhenReady(true)
+const audioHandleLoadFromLastPlaybackPosition = async (episodeId: string, shouldPlay: boolean) => {
+  if (!episodeId) return
+
+  const setPlayerClipIsLoadedIfClip = true
+  const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(
+    episodeId,
+    setPlayerClipIsLoadedIfClip
+  )
+
+  const lastUserPlaybackPosition = currentNowPlayingItem?.userPlaybackPosition || 0
+  
+  await playerSetPositionWhenDurationIsAvailable(lastUserPlaybackPosition, episodeId, shouldPlay)
 }
 
 export const audioHandlePlay = () => {
