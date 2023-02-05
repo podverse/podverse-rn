@@ -321,7 +321,8 @@ export const audioCreateTrack = async (item: NowPlayingItem, isUpcomingQueueItem
         userAgent: getAppUserAgent(),
         pitchAlgorithm: PitchAlgorithm.Voice,
         type,
-        initialTime
+        initialTime,
+        isClip: !!item?.clipId
       }
     } else {
       const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
@@ -340,7 +341,8 @@ export const audioCreateTrack = async (item: NowPlayingItem, isUpcomingQueueItem
           'User-Agent': getAppUserAgent()
         },
         type,
-        initialTime
+        initialTime,
+        isClip: !!item?.clipId
       }
     }
   }

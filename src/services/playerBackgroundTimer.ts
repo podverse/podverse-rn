@@ -85,7 +85,6 @@ export const syncNowPlayingItemWithTrack = (track: any, callback?: any) => {
   function sync(callback?: any) {
     (async () => {
       playerUpdatePlaybackState()
-      await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
 
       const currentTrackId = await playerGetCurrentLoadedTrackId()
       const shouldPlayClip = true

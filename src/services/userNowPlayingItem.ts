@@ -172,14 +172,5 @@ export const getEnrichedNowPlayingItemFromLocalStorage = async (trackId: string,
     }
   }
 
-  if (shouldPlayClip && currentNowPlayingItem?.clipId) {
-    await AsyncStorage.setItem(PV.Keys.PLAYER_CLIP_IS_LOADED, 'TRUE')
-  }
-
-  const playerClipIsLoaded = await AsyncStorage.getItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
-  if (!playerClipIsLoaded && currentNowPlayingItem?.clipId) {
-    currentNowPlayingItem = convertNowPlayingItemClipToNowPlayingItemEpisode(currentNowPlayingItem)
-  }
-
   return currentNowPlayingItem
 }

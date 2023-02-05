@@ -7,6 +7,7 @@ import { PV } from '../resources'
 import { downloadedEpisodeMarkForDeletion } from '../state/actions/downloads'
 import {
   playerClearNowPlayingItem,
+  playerHandleResumeAfterClipHasEnded,
   playerPlayNextChapterOrQueueItem,
   playerPlayPreviousChapterOrReturnToBeginningOfTrack
 } from '../state/actions/player'
@@ -15,7 +16,6 @@ import {
   getClipHasEnded,
   getPlaybackSpeed,
   getRemoteSkipButtonsTimeJumpOverride,
-  playerHandleResumeAfterClipHasEnded,
   playerSetRateWithLatestPlaybackSpeed,
   playerUpdateUserPlaybackPosition
 } from './player'
@@ -150,6 +150,8 @@ module.exports = async () => {
     const callback = () => {
       audioHandleActiveTrackChanged(x)
     }
+    
+    const track = x?.track
 
     if (Platform.OS === 'ios') {
       preventQueueEnded = true
@@ -158,9 +160,9 @@ module.exports = async () => {
       }, 6000)
       // If the first item loaded in queue for the app session, then don't call the track changed callback.
       if ((x.index || x.index === 0) && !x?.lastIndex && x?.lastIndex !== 0) {
-        syncNowPlayingItemWithTrack(x?.track)
+        syncNowPlayingItemWithTrack(track)
       } else {
-        syncNowPlayingItemWithTrack(x?.track, callback)
+        syncNowPlayingItemWithTrack(track, callback)
       }
     } else if (Platform.OS === 'android') {
       if ((x.index || x.index === 0) && x.index === x?.lastIndex) {
@@ -168,9 +170,9 @@ module.exports = async () => {
       }
       // If the first item loaded in queue for the app session, then don't call the track changed callback.
       else if ((x.index || x.index === 0) && (!x?.lastIndex && x?.lastIndex !== 0)) {
-        syncNowPlayingItemWithTrack(x?.track)
+        syncNowPlayingItemWithTrack(track)
       } else {
-        syncNowPlayingItemWithTrack(x?.track, callback)
+        syncNowPlayingItemWithTrack(track, callback)
       }
     }
 
@@ -192,6 +194,7 @@ module.exports = async () => {
         const isPlaying = audioCheckIfIsPlaying(currentState)
 
         const shouldHandleAfterClip = clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying
+
         if (shouldHandleAfterClip) {
           await playerHandleResumeAfterClipHasEnded()
         } else {

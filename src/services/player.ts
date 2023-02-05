@@ -69,18 +69,6 @@ export const playerCheckActiveType = async () => {
   return playerType
 }
 
-export const playerHandleResumeAfterClipHasEnded = async () => {
-  await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
-  const [nowPlayingItem, playbackPosition, mediaFileDuration] = await Promise.all([
-    getNowPlayingItemLocally(),
-    playerGetPosition(),
-    playerGetDuration()
-  ])
-  const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(nowPlayingItem)
-  await addOrUpdateHistoryItem(nowPlayingItemEpisode, playbackPosition, mediaFileDuration)
-  PVEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
-}
-
 export const playerJumpBackward = async (seconds: string) => {
   const position = await playerGetPosition()
   const newPosition = position - parseInt(seconds, 10)

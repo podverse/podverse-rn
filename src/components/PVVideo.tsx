@@ -12,12 +12,12 @@ import {
   getClipHasEnded,
   getPlaybackSpeed,
   playerCheckIfStateIsPlaying,
-  playerHandleResumeAfterClipHasEnded,
   playerUpdateUserPlaybackPosition
 } from '../services/player'
 import { addOrUpdateHistoryItem } from '../services/userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage } from '../services/userNowPlayingItem'
 import { handleValueStreamingTimerIncrement } from '../services/v4v/v4vStreaming'
+import { playerHandleResumeAfterClipHasEnded } from '../state/actions/player'
 import {
   videoCheckIfStateIsPlaying,
   videoGetDownloadedFileInfo,
