@@ -7,16 +7,15 @@ import { debugLogger, errorLogger } from '../lib/logger'
 import { pvIsTablet } from '../lib/deviceDetection'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
-import { syncNowPlayingItemWithTrack } from '../services/playerBackgroundTimer'
 import {
   getClipHasEnded,
   getPlaybackSpeed,
   playerCheckIfStateIsPlaying,
   playerUpdateUserPlaybackPosition
 } from '../services/player'
+import { handleBackgroundTimerInterval } from '../services/playerBackgroundTimer'
 import { addOrUpdateHistoryItem } from '../services/userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage } from '../services/userNowPlayingItem'
-import { handleValueStreamingTimerIncrement } from '../services/v4v/v4vStreaming'
 import { playerHandleResumeAfterClipHasEnded } from '../state/actions/player'
 import {
   videoCheckIfStateIsPlaying,
@@ -143,16 +142,14 @@ export class PVVideo extends React.PureComponent<Props, State> {
   }
 
   _handleNewClipItemShouldLoad = () => {
-    const setClipTime = true
-    this._handleNewItemShouldLoad(setClipTime)
+    this._handleNewItemShouldLoad()
   }
 
   _handleNewEpisodeItemShouldLoad = () => {
-    const setClipTime = false
-    this._handleNewItemShouldLoad(setClipTime)
+    this._handleNewItemShouldLoad()
   }
 
-  _handleNewItemShouldLoad = (setClipTime: boolean) => {
+  _handleNewItemShouldLoad = () => {
     const { playbackState } = this.global.player
     const transitionPlaybackState = playbackState
     this.setState({ transitionPlaybackState }, () => {
@@ -164,15 +161,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
           },
           () => {
             try {
-              this._handleInitializeState(() => {
-                const { player } = this.global
-                let { nowPlayingItem } = player
-                // nowPlayingItem will be undefined when loading from a deep link
-                nowPlayingItem = nowPlayingItem || {}
-                if (setClipTime && nowPlayingItem.clipId) {
-                  syncNowPlayingItemWithTrack()
-                }
-              })
+              this._handleInitializeState()
             } catch (error) {
               errorLogger('PVVideo _handleNewItemShouldLoad error', error)
             }
@@ -206,22 +195,29 @@ export class PVVideo extends React.PureComponent<Props, State> {
     const { videoPosition: lastVideoPosition } = videoInfo
     const handlePlayAfterSeek = true
 
-    if (nowPlayingItem.episodeMediaUrl === lastNowPlayingItemUri && lastVideoPosition) {
-      this._handleSeekTo(lastVideoPosition, handlePlayAfterSeek)
-    } else {
-      const nowPlayingItemFromHistory = await getEnrichedNowPlayingItemFromLocalStorage(
-        nowPlayingItem.clipId || nowPlayingItem.episodeId
-      )
+    if (nowPlayingItem) {
+      if (nowPlayingItem.episodeMediaUrl === lastNowPlayingItemUri && lastVideoPosition) {
+        this._handleSeekTo(lastVideoPosition, handlePlayAfterSeek)
+      } else {
+        
+        if (nowPlayingItem.clipId && nowPlayingItem.clipStartTime) {
+          const startTime = parseInt(nowPlayingItem.clipStartTime, 10) || 0
+          this._handleSeekTo(startTime, handlePlayAfterSeek)
+          PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)
+        } else {
+          const nowPlayingItemFromHistory = await getEnrichedNowPlayingItemFromLocalStorage(nowPlayingItem.episodeId)
+          this._handleSeekTo(
+            nowPlayingItemFromHistory
+              ? nowPlayingItemFromHistory.userPlaybackPosition
+              : nowPlayingItem.userPlaybackPosition,
+            handlePlayAfterSeek
+          )
+        }
+  
+      }
 
-      this._handleSeekTo(
-        nowPlayingItemFromHistory
-          ? nowPlayingItemFromHistory.userPlaybackPosition
-          : nowPlayingItem.userPlaybackPosition,
-        handlePlayAfterSeek
-      )
+      lastNowPlayingItemUri = nowPlayingItem.episodeMediaUrl || ''
     }
-
-    lastNowPlayingItemUri = nowPlayingItem.episodeMediaUrl || ''
   }
 
   _handleDestroyPlayer = () => {
@@ -417,7 +413,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
           if (!disableOnProgress && typeof disableOnProgress !== 'undefined' && currentTime !== 0) {
             videoStateUpdatePosition(currentTime)
             const isVideo = true
-            handleValueStreamingTimerIncrement(isVideo)
+            handleBackgroundTimerInterval(isVideo)
           }
         }}
         // onReadyForDisplay={}

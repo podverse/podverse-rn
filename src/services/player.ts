@@ -186,9 +186,7 @@ export const playerGetDuration = async () => {
 export const playerUpdateUserPlaybackPosition = async (skipSetNowPlaying?: boolean, shouldAwait?: boolean) => {
   try {
     const currentTrackId = await playerGetCurrentLoadedTrackId()
-
-    const shouldPlayClip = false
-    const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(currentTrackId, shouldPlayClip)
+    const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(currentTrackId)
 
     if (currentNowPlayingItem) {
       await saveOrResetCurrentlyPlayingItemInHistory(!!shouldAwait, currentNowPlayingItem, !!skipSetNowPlaying)

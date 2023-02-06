@@ -55,7 +55,7 @@ const handleSyncNowPlayingItem = async (currentNowPlayingItem: NowPlayingItem, c
   callback?.()
 }
 
-export const syncNowPlayingItemWithTrack = (track: any, callback?: any) => {
+export const syncAudioNowPlayingItemWithTrack = (track: any, callback?: any) => {
   stopClipInterval()
 
   /*
@@ -84,7 +84,6 @@ export const syncNowPlayingItemWithTrack = (track: any, callback?: any) => {
       playerUpdatePlaybackState()
 
       const currentTrackId = await playerGetCurrentLoadedTrackId()
-      const shouldPlayClip = true
 
       /*
         When a new item loads, sometimes that item is not available in the local history
@@ -98,7 +97,7 @@ export const syncNowPlayingItemWithTrack = (track: any, callback?: any) => {
         if (retryIntervalCount >= 10) {
           clearInterval(retryInterval)
         } else {
-          const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(currentTrackId, shouldPlayClip)
+          const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(currentTrackId)
           if (currentNowPlayingItem && retryInterval) {
             clearInterval(retryInterval)
             await handleSyncNowPlayingItem(currentNowPlayingItem, callback)
@@ -135,7 +134,7 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
 
 let chapterIntervalSecondCount = 0
 let updateUserPlaybackPositionSecondCount = 0
-export const handleBackgroundTimerInterval = () => {
+export const handleBackgroundTimerInterval = (isVideo: boolean) => {
   const { chapterIntervalActive, clipIntervalActive, player, session } = getGlobal()
   const { sleepTimer } = player
   const { v4v } = session
@@ -180,7 +179,7 @@ export const handleBackgroundTimerInterval = () => {
 
   try {
     if (v4v?.streamingValueOn) {
-      handleValueStreamingTimerIncrement()
+      handleValueStreamingTimerIncrement(isVideo)
     }
   } catch (error) {
     errorLogger(_fileName, 'handleBackgroundTimerInterval handleValueStreamingTimerIncrement', error?.message)

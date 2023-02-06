@@ -32,7 +32,7 @@ import {
   audioGetLoadedTrackIdByIndex,
   audioGetTrackDuration
 } from './playerAudio'
-import { handleBackgroundTimerInterval, syncNowPlayingItemWithTrack } from './playerBackgroundTimer'
+import { handleBackgroundTimerInterval, syncAudioNowPlayingItemWithTrack } from './playerBackgroundTimer'
 import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
 
@@ -43,8 +43,7 @@ const audioResetHistoryItemByTrackId = async (loadedTrackId: string, position: n
   if (metaEpisode) {
     const { mediaFileDuration } = metaEpisode
     if ((mediaFileDuration > 59 && mediaFileDuration - 59 < position) || !mediaFileDuration) {
-      const shouldPlayClip = false
-      const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(loadedTrackId, shouldPlayClip)
+      const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(loadedTrackId)
       if (currentNowPlayingItem) {
         const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
         if (autoDeleteEpisodeOnEnd && currentNowPlayingItem?.episodeId) {
@@ -160,9 +159,9 @@ module.exports = async () => {
       }, 6000)
       // If the first item loaded in queue for the app session, then don't call the track changed callback.
       if ((x.index || x.index === 0) && !x?.lastIndex && x?.lastIndex !== 0) {
-        syncNowPlayingItemWithTrack(track)
+        syncAudioNowPlayingItemWithTrack(track)
       } else {
-        syncNowPlayingItemWithTrack(track, callback)
+        syncAudioNowPlayingItemWithTrack(track, callback)
       }
     } else if (Platform.OS === 'android') {
       if ((x.index || x.index === 0) && x.index === x?.lastIndex) {
@@ -170,9 +169,9 @@ module.exports = async () => {
       }
       // If the first item loaded in queue for the app session, then don't call the track changed callback.
       else if ((x.index || x.index === 0) && !x?.lastIndex && x?.lastIndex !== 0) {
-        syncNowPlayingItemWithTrack(track)
+        syncAudioNowPlayingItemWithTrack(track)
       } else {
-        syncNowPlayingItemWithTrack(track, callback)
+        syncAudioNowPlayingItemWithTrack(track, callback)
       }
     }
 
@@ -329,6 +328,7 @@ module.exports = async () => {
 
   PVAudioPlayer.addEventListener(Event.PlaybackProgressUpdated, (x: any) => {
     // debugLogger('playback-progress-updated', x)
-    handleBackgroundTimerInterval()
+    const isVideo = false
+    handleBackgroundTimerInterval(isVideo)
   })
 }

@@ -293,11 +293,10 @@ export const audioCreateTrack = async (item: NowPlayingItem, isUpcomingQueueItem
   }
 
   if (episodeId) {
-    const shouldPlayClip = !isUpcomingQueueItem
     const [isDownloadedFile, filePath, enrichedNowPlayingItem, startPodcastFromTime] = await Promise.all([
       checkIfFileIsDownloaded(episodeId, episodeMediaUrl, isAddByRSSPodcast),
       getDownloadedFilePath(episodeId, episodeMediaUrl, isAddByRSSPodcast),
-      getEnrichedNowPlayingItemFromLocalStorage(episodeId, shouldPlayClip),
+      getEnrichedNowPlayingItemFromLocalStorage(episodeId),
       getStartPodcastFromTime(podcastId)
     ])
 
@@ -485,8 +484,7 @@ export const audioPlayNextFromQueue = async () => {
   if (queueItems && queueItems.length > 1) {
     await PVAudioPlayer.skipToNext()
     const currentId = await audioGetCurrentLoadedTrackId()
-    const shouldPlayClip = true
-    const item = await getEnrichedNowPlayingItemFromLocalStorage(currentId, shouldPlayClip)
+    const item = await getEnrichedNowPlayingItemFromLocalStorage(currentId)
     if (item) {
       await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0)
       return item

@@ -137,26 +137,26 @@ export const clearNowPlayingItemOnServer = async () => {
   helper to add items to the queue with userPlaybackPosition set as track.initialTime.
   Sorry this is so hacky :[ this could be cleaned up a ton.
 */
-export const getEnrichedNowPlayingItemFromLocalStorage = async (trackId: string) => {
-  if (!trackId) return null
+export const getEnrichedNowPlayingItemFromLocalStorage = async (episodeId: string) => {
+  if (!episodeId) return null
 
   const results = await getHistoryItemsLocally()
 
   const { userHistoryItems } = results
   let currentNowPlayingItem = userHistoryItems.find((x: any) =>
-    checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId)
+    checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(episodeId, x.clipId, x.episodeId)
   )
 
   if (!currentNowPlayingItem) {
     const queueItems = await getQueueItemsLocally()
     const queueItemIndex = queueItems.findIndex((x: any) =>
-      checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId)
+      checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(episodeId, x.clipId, x.episodeId)
     )
     currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
   }
 
   if (!currentNowPlayingItem) {
-    currentNowPlayingItem = await getDownloadedEpisode(trackId)
+    currentNowPlayingItem = await getDownloadedEpisode(episodeId)
     if (currentNowPlayingItem) {
       currentNowPlayingItem = convertToNowPlayingItem(
         currentNowPlayingItem,
