@@ -220,9 +220,13 @@ export const audioLoadNowPlayingItem = async (
     PVAudioPlayer.add([track])
   }
 
-  if (item && !item.clipId) {
-    if (shouldPlay) PVAudioPlayer.setPlayWhenReady(true)
-  } else {
+  if (item && !item.clipId && shouldPlay) {
+    if (Platform.OS === 'android') {
+      PVAudioPlayer.setPlayWhenReady(true)
+    } else {
+      PVAudioPlayer.play()
+    }
+  } else if (item && !!item.clipId) {
     await audioHandleLoadClip(item, shouldPlay)
   }
 
@@ -322,6 +326,7 @@ export const audioCreateTrack = async (item: NowPlayingItem, isUpcomingQueueItem
         pitchAlgorithm: PitchAlgorithm.Voice,
         type,
         initialTime,
+        ...(initialTime ? { iosInitialTime: initialTime } : {}),
         isClip: !!item?.clipId
       }
     } else {
@@ -342,6 +347,7 @@ export const audioCreateTrack = async (item: NowPlayingItem, isUpcomingQueueItem
         },
         type,
         initialTime,
+        ...(initialTime ? { iosInitialTime: initialTime } : {}),
         isClip: !!item?.clipId
       }
     }
