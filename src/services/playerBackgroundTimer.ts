@@ -134,7 +134,7 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
 
 let chapterIntervalSecondCount = 0
 let updateUserPlaybackPositionSecondCount = 0
-export const handleBackgroundTimerInterval = (isVideo: boolean) => {
+const handleBackgroundTimerInterval = (isVideo: boolean) => {
   const { chapterIntervalActive, clipIntervalActive, player, session } = getGlobal()
   const { sleepTimer } = player
   const { v4v } = session
@@ -185,3 +185,13 @@ export const handleBackgroundTimerInterval = (isVideo: boolean) => {
     errorLogger(_fileName, 'handleBackgroundTimerInterval handleValueStreamingTimerIncrement', error?.message)
   }
 }
+
+/*
+  If debouncedHandleBackgroundTimerInterval gets called too rapidly,
+  we would rather have the handleBackgroundTimerInterval stop running from the debounce
+  instead of running out of control (especially with V4V features).
+*/
+export const debouncedHandleBackgroundTimerInterval = debounce(handleBackgroundTimerInterval, 750, {
+  leading: true,
+  trailing: true
+})

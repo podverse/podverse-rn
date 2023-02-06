@@ -13,7 +13,7 @@ import {
   playerCheckIfStateIsPlaying,
   playerUpdateUserPlaybackPosition
 } from '../services/player'
-import { handleBackgroundTimerInterval } from '../services/playerBackgroundTimer'
+import { debouncedHandleBackgroundTimerInterval } from '../services/playerBackgroundTimer'
 import { addOrUpdateHistoryItem } from '../services/userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage } from '../services/userNowPlayingItem'
 import { playerHandleResumeAfterClipHasEnded } from '../state/actions/player'
@@ -413,7 +413,9 @@ export class PVVideo extends React.PureComponent<Props, State> {
           if (!disableOnProgress && typeof disableOnProgress !== 'undefined' && currentTime !== 0) {
             videoStateUpdatePosition(currentTime)
             const isVideo = true
-            handleBackgroundTimerInterval(isVideo)
+            if (playerCheckIfStateIsPlaying(playbackState)) {
+              debouncedHandleBackgroundTimerInterval(isVideo)
+            }
           }
         }}
         // onReadyForDisplay={}
