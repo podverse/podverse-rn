@@ -1,5 +1,5 @@
 import { checkIfVideoFileOrVideoLiveType, convertNowPlayingItemToEpisode } from 'podverse-shared'
-import { Alert, Linking, Pressable, StyleSheet, View as RNView } from 'react-native'
+import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { navigateBackToRoot, navigateToPodcastScreenWithItem } from '../lib/navigate'
@@ -19,13 +19,6 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
   constructor(props) {
     super(props)
     this.state = {}
-  }
-
-  handleChapterLinkPress = (url: string) => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: translate('Cancel') },
-      { text: translate('Yes'), onPress: () => Linking.openURL(url) }
-    ])
   }
 
   handlePodcastNavigation = () => {
@@ -84,11 +77,6 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       clipStartTime = currentChapter.startTime
       finalClipTitle = currentChapter.title
       imageUrl = currentChapter.imageUrl || episodeImageUrl || podcastImageUrl
-    }
-
-    const imageStyles = [styles.image] as any
-    if (clipUrl) {
-      imageStyles.push(styles.imageBorder)
     }
 
     const textTopWrapperAccessibilityLabel = `${nowPlayingItem?.episodeTitle}. ${nowPlayingItem?.podcastTitle}`
@@ -170,21 +158,17 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
         <RNView style={imageWrapperStyle}>
           {checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && <PVVideo navigation={navigation} />}
           {!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
-            <PressableWithOpacity
-              accessible={false}
-              activeOpacity={1}
-              disabled={!clipUrl}
-              {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
-              style={styles.imageContainer}>
+            <RNView style={styles.imageContainer}>
               <FastImage
                 allowFullView={allowFullView}
                 isAddByRSSPodcast={!!addByRSSPodcastFeedUrl}
                 isAddByRSSPodcastLarger
                 key={imageUrl}
+                linkButtonUrl={clipUrl}
                 source={imageUrl}
-                styles={imageStyles}
+                styles={styles.image}
               />
-            </PressableWithOpacity>
+            </RNView>
           )}
         </RNView>
         {!!clipId && (

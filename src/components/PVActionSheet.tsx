@@ -102,8 +102,8 @@ export class PVActionSheet extends React.Component<Props, State> {
         let onPress = item.onPress
         if (isQueueButton) onPress = queueOnPress
 
-        buttonStyle = [...buttonStyle, (item?.buttonStyle ?? {})]
-        buttonTextStyle = {...buttonTextStyle, ...(item?.buttonTextStyle ?? {})}
+        buttonStyle = [...buttonStyle, item?.buttonStyle ?? {}]
+        buttonTextStyle = { ...buttonTextStyle, ...(item?.buttonTextStyle ?? {}) }
         buttons.push(
           <TouchableHighlight
             accessible

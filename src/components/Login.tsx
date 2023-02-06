@@ -3,7 +3,6 @@ import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { core } from '../styles'
 import { Button, TextInput } from '.'
 
 type Props = {

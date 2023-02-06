@@ -137,7 +137,7 @@ export const askToSyncWithNowPlayingItem = async (callback?: any) => {
 // so that the item plays from the correct userPlaybackPosition. The only time where
 // this is needed currently is when a user logs in, and they select to play their last item from history.
 // If we don't call syncItemsWithLocalStorage before loading the item,
-// syncNowPlayingItemWithTrack won't
+// syncAudioNowPlayingItemWithTrack won't
 const syncItemsWithLocalStorage = async (userInfo: any) => {
   if (userInfo && Array.isArray(userInfo.addByRSSPodcastFeedUrls)) {
     await setAddByRSSPodcastFeedUrlsLocally(userInfo.addByRSSPodcastFeedUrls)

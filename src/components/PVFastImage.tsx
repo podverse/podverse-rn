@@ -1,11 +1,11 @@
 import { isValidUrl, ValueTag } from 'podverse-shared'
-import { Image, Platform, Pressable, StyleSheet, View } from 'react-native'
+import { Alert, Image, Linking, Platform, Pressable, StyleSheet, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
 import { PV } from '../resources'
-import { LightningIcon, LiveStatusBadge, NewContentBadge, Text } from '.'
+import { Icon, LightningIcon, LiveStatusBadge, NewContentBadge, Text } from '.'
 const PlaceholderImage = PV.Images.PLACEHOLDER.default
 
 type Props = {
@@ -16,6 +16,7 @@ type Props = {
   isAddByRSSPodcastLarger?: boolean
   isSmall?: boolean
   isTabletGridView?: boolean
+  linkButtonUrl?: string
   newContentCount?: number
   placeholderLabel?: string
   resizeMode?: any
@@ -93,6 +94,13 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     })
   }
 
+  handleChapterLinkPress = (url: string) => {
+    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
+      { text: translate('Cancel') },
+      { text: translate('Yes'), onPress: () => Linking.openURL(url) }
+    ])
+  }
+
   render() {
     const {
       accessible = false,
@@ -100,6 +108,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
       isAddByRSSPodcast,
       isAddByRSSPodcastLarger,
       isTabletGridView,
+      linkButtonUrl,
       newContentCount,
       placeholderLabel,
       resizeMode = 'contain',
@@ -157,6 +166,17 @@ export class PVFastImage extends React.PureComponent<Props, State> {
           {!!showLiveIndicator && (
             <View style={defaultStyles.liveStatusBadge}>
               <LiveStatusBadge />
+            </View>
+          )}
+          {!!linkButtonUrl && (
+            <View style={defaultStyles.linkButton}>
+              <Icon
+                accessible={false}
+                name='external-link-alt'
+                onPress={() => this.handleChapterLinkPress(linkButtonUrl)}
+                size={14}
+                style={defaultStyles.linkButtonIcon}
+              />
             </View>
           )}
           {!!isAddByRSSPodcast && (
@@ -244,6 +264,28 @@ const defaultStyles = StyleSheet.create({
   lightningIconLarge: {
     minWidth: 36,
     minHeight: 36
+  },
+  linkButton: {
+    position: 'absolute',
+    zIndex: 1000001,
+    right: 26,
+    bottom: 7,
+    backgroundColor: PV.Colors.blackOpaque,
+    width: 48,
+    height: 48,
+    borderRadius: 48,
+    borderColor: PV.Colors.gray,
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1
+  },
+  linkButtonIcon: {
+    color: PV.Colors.white,
+    fontSize: PV.Fonts.sizes.xxl,
+    paddingBottom: 1,
+    paddingLeft: 1
   },
   liveStatusBadge: {
     position: 'absolute',
