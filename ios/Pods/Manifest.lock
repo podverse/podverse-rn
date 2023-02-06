@@ -57,7 +57,6 @@ PODS:
     - nanopb (~> 2.30908.0)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - GoogleAds-IMA-iOS-SDK (3.18.4)
   - GoogleDataTransport (9.2.1):
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
@@ -317,8 +316,6 @@ PODS:
     - React-Core
     - react-native-video/Video (= 6.0.0-alpha.4)
   - react-native-video/Video (6.0.0-alpha.4):
-    - GoogleAds-IMA-iOS-SDK (~> 3.18.1)
-    - GoogleAds-IMA-tvOS-SDK (~> 4.2)
     - PromisesSwift
     - React-Core
   - react-native-webview (11.26.0):
@@ -540,7 +537,6 @@ SPEC REPOS:
     - FirebaseInstallations
     - FirebaseMessaging
     - fmt
-    - GoogleAds-IMA-iOS-SDK
     - GoogleDataTransport
     - GoogleUtilities
     - nanopb
@@ -700,7 +696,6 @@ SPEC CHECKSUMS:
   FirebaseMessaging: b0aeba17332ee1ee610662b4d1e02a86db82f08f
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 5337263514dd6f09803962437687240c5dc39aa4
-  GoogleAds-IMA-iOS-SDK: b01284e3bf3d64ba948de6692ffda531452c3713
   GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
@@ -730,7 +725,7 @@ SPEC CHECKSUMS:
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
   react-native-track-player: d33f2c54d3cf7a8f99c2b67c2441f15419d2a32e
   react-native-tracking-transparency: b2029ff756f1128b1f2c7c7c7f3003bc3c950f9f
-  react-native-video: 8e76728a1f4bc35ae6744504fdafd02a482905bd
+  react-native-video: b2a6434fa0cc7a5381985ca2af8f8c570f110743
   react-native-webview: 994b9f8fbb504d6314dc40d83f94f27c6831b3bf
   React-perflogger: 169fb34f60c5fd793b370002ee9c916eba9bc4ae
   React-RCTActionSheet: 2355539e02ad5cd4b1328682ab046487e1e1e920

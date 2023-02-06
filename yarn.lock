@@ -9035,9 +9035,10 @@ react-native-video-controls@2.8.1:
   dependencies:
     lodash "^4.16.4"
 
-react-native-video@react-native-video/react-native-video.git#5b0fd0e5854ef3f450e66fa096ec7959eec1ab83:
+react-native-video@6.0.0-alpha.4:
   version "6.0.0-alpha.4"
-  resolved "https://codeload.github.com/react-native-video/react-native-video/tar.gz/5b0fd0e5854ef3f450e66fa096ec7959eec1ab83"
+  resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-6.0.0-alpha.4.tgz#1e22862a096c767e931883ac2f9d59698b1c1f5c"
+  integrity sha512-SgxXpSjGNEPJHNzpXULROk1SqcUFlB5UJfh5bRGvp3q1Lz7OuCc2L2DX52l+FKsg77KhTDLAvMkytUGuGlLg1g==
   dependencies:
     deprecated-react-native-prop-types "^2.2.0"
     keymirror "^0.1.1"
