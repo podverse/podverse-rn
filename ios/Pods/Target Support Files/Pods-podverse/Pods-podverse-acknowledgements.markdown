@@ -1105,11 +1105,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    limitations under the License.
 
 
-## GoogleAds-IMA-iOS-SDK
-
-Copyright 2015 Google, Inc. All rights reserved.
-
-
 ## GoogleDataTransport
 
 
