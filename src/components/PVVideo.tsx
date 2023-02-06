@@ -107,24 +107,25 @@ export class PVVideo extends React.PureComponent<Props, State> {
     const uri = nowPlayingItem.episodeMediaUrl
     let finalUri = encodeSpacesInString(convertUrlToSecureHTTPS(uri || '').trim())
 
-    const { Authorization, filePath, fileType, isDownloadedFile } = await videoGetDownloadedFileInfo(
-      nowPlayingItem
-    )
+    const { Authorization, filePath, fileType, isDownloadedFile } = await videoGetDownloadedFileInfo(nowPlayingItem)
 
     if (isDownloadedFile && filePath) {
       finalUri = filePath
     }
 
-    this.setState({
-      Authorization,
-      fileType,
-      finalUri,
-      isDownloadedFile
-    }, () => {
-      if (callback) {
-        callback()
+    this.setState(
+      {
+        Authorization,
+        fileType,
+        finalUri,
+        isDownloadedFile
+      },
+      () => {
+        if (callback) {
+          callback()
+        }
       }
-    })
+    )
   }
 
   _handleGoToLiveCurrentTime = () => {
@@ -162,21 +163,19 @@ export class PVVideo extends React.PureComponent<Props, State> {
             isReadyToPlay: false
           },
           () => {
-            (async () => {
-              try {
-                this._handleInitializeState(() => {
-                  const { player } = this.global
-                  let { nowPlayingItem } = player
-                  // nowPlayingItem will be undefined when loading from a deep link
-                  nowPlayingItem = nowPlayingItem || {}
-                  if (setClipTime && nowPlayingItem.clipId) {
-                    syncNowPlayingItemWithTrack()
-                  }
-                })
-              } catch (error) {
-                errorLogger('PVVideo _handleNewItemShouldLoad error', error)
-              }
-            })()
+            try {
+              this._handleInitializeState(() => {
+                const { player } = this.global
+                let { nowPlayingItem } = player
+                // nowPlayingItem will be undefined when loading from a deep link
+                nowPlayingItem = nowPlayingItem || {}
+                if (setClipTime && nowPlayingItem.clipId) {
+                  syncNowPlayingItemWithTrack()
+                }
+              })
+            } catch (error) {
+              errorLogger('PVVideo _handleNewItemShouldLoad error', error)
+            }
           }
         )
       })

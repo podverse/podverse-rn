@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-community/async-storage'
 import { checkIfVideoFileOrVideoLiveType, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
 import TrackPlayer, {
   AppKilledPlaybackBehavior,
@@ -196,9 +195,7 @@ export const audioLoadNowPlayingItem = async (
   */
   await PVAudioPlayer.stop()
 
-  const [historyItemsIndex] = await Promise.all([
-    getHistoryItemsIndexLocally()
-  ])
+  const [historyItemsIndex] = await Promise.all([getHistoryItemsIndexLocally()])
 
   const { clipId, episodeId } = item
   if (!clipId && episodeId) {

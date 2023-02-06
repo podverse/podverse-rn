@@ -1,5 +1,5 @@
 import { checkIfVideoFileOrVideoLiveType, convertNowPlayingItemToEpisode } from 'podverse-shared'
-import { Alert, Linking, Pressable, StyleSheet, View as RNView } from 'react-native'
+import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { navigateBackToRoot, navigateToPodcastScreenWithItem } from '../lib/navigate'
@@ -158,8 +158,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
         <RNView style={imageWrapperStyle}>
           {checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && <PVVideo navigation={navigation} />}
           {!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
-            <RNView
-              style={styles.imageContainer}>
+            <RNView style={styles.imageContainer}>
               <FastImage
                 allowFullView={allowFullView}
                 isAddByRSSPodcast={!!addByRSSPodcastFeedUrl}

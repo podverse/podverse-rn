@@ -1,10 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import {
-  checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
-  convertNowPlayingItemClipToNowPlayingItemEpisode,
-  convertToNowPlayingItem,
-  NowPlayingItem
-} from 'podverse-shared'
+import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl, convertToNowPlayingItem, NowPlayingItem } from 'podverse-shared'
 import { errorLogger } from '../lib/logger'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { PV } from '../resources'
@@ -142,7 +137,7 @@ export const clearNowPlayingItemOnServer = async () => {
   helper to add items to the queue with userPlaybackPosition set as track.initialTime.
   Sorry this is so hacky :[ this could be cleaned up a ton.
 */
-export const getEnrichedNowPlayingItemFromLocalStorage = async (trackId: string, shouldPlayClip = false) => {
+export const getEnrichedNowPlayingItemFromLocalStorage = async (trackId: string) => {
   if (!trackId) return null
 
   const results = await getHistoryItemsLocally()

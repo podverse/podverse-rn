@@ -27,7 +27,6 @@ export const EpisodeTableHeader = (props: Props) => {
     handleMorePress,
     isLoading,
     mediaFileDuration,
-    navigation,
     testID,
     userPlaybackPosition
   } = props

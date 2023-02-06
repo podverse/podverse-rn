@@ -150,7 +150,7 @@ module.exports = async () => {
     const callback = () => {
       audioHandleActiveTrackChanged(x)
     }
-    
+
     const track = x?.track
 
     if (Platform.OS === 'ios') {
@@ -169,7 +169,7 @@ module.exports = async () => {
         audioHandleQueueEnded(x)
       }
       // If the first item loaded in queue for the app session, then don't call the track changed callback.
-      else if ((x.index || x.index === 0) && (!x?.lastIndex && x?.lastIndex !== 0)) {
+      else if ((x.index || x.index === 0) && !x?.lastIndex && x?.lastIndex !== 0) {
         syncNowPlayingItemWithTrack(track)
       } else {
         syncNowPlayingItemWithTrack(track, callback)

@@ -94,7 +94,6 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     })
   }
 
-
   handleChapterLinkPress = (url: string) => {
     Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
       { text: translate('Cancel') },
@@ -171,15 +170,13 @@ export class PVFastImage extends React.PureComponent<Props, State> {
           )}
           {!!linkButtonUrl && (
             <View style={defaultStyles.linkButton}>
-
-                <Icon
-                  accessible={false}
-                  name='external-link-alt'
-                  onPress={() => this.handleChapterLinkPress(linkButtonUrl)}
-                  size={14}
-                  style={defaultStyles.linkButtonIcon}
-                />
-
+              <Icon
+                accessible={false}
+                name='external-link-alt'
+                onPress={() => this.handleChapterLinkPress(linkButtonUrl)}
+                size={14}
+                style={defaultStyles.linkButtonIcon}
+              />
             </View>
           )}
           {!!isAddByRSSPodcast && (

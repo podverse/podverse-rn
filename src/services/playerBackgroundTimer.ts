@@ -1,9 +1,8 @@
-import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
+import { Platform } from 'react-native'
 import { errorLogger } from '../lib/logger'
-import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo, loadChapterPlaybackInfo } from '../state/actions/playerChapters'
@@ -14,7 +13,6 @@ import {
   playerGetCurrentLoadedTrackId,
   playerGetPosition,
   playerHandlePauseWithUpdate,
-  playerSetPositionWhenDurationIsAvailable,
   playerUpdateUserPlaybackPosition,
   setClipHasEnded
 } from './player'
@@ -23,7 +21,6 @@ import { removeQueueItem } from './queue'
 import { handleValueStreamingTimerIncrement } from './v4v/v4vStreaming'
 import { addOrUpdateHistoryItem } from './userHistoryItem'
 import { PVAudioPlayer } from './playerAudio'
-import { Platform } from 'react-native'
 
 const _fileName = 'src/services/playerBackgroundTimer.ts'
 
@@ -101,10 +98,7 @@ export const syncNowPlayingItemWithTrack = (track: any, callback?: any) => {
         if (retryIntervalCount >= 10) {
           clearInterval(retryInterval)
         } else {
-          const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(
-            currentTrackId,
-            shouldPlayClip
-          )
+          const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(currentTrackId, shouldPlayClip)
           if (currentNowPlayingItem && retryInterval) {
             clearInterval(retryInterval)
             await handleSyncNowPlayingItem(currentNowPlayingItem, callback)

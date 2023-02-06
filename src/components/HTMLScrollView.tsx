@@ -23,8 +23,15 @@ type Props = {
 }
 
 export const HTMLScrollView = (props: Props) => {
-  const { disableScrolling, fontSizeLargerScale, fontSizeLargestScale, html,
-    sectionTitle, showShortHtml, style } = props
+  const {
+    disableScrolling,
+    fontSizeLargerScale,
+    fontSizeLargestScale,
+    html,
+    sectionTitle,
+    showShortHtml,
+    style
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const [censorNSFWText] = useGlobal('censorNSFWText')

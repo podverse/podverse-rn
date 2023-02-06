@@ -30,7 +30,7 @@ export const SwipeRowBackMultipleButtons = (props: Props) => {
 
       if (button.type === 'danger') {
         style.push(globalTheme.swipeRowBackButtonDanger)
-        textStyle.push({color:PV.Colors.white})
+        textStyle.push({ color: PV.Colors.white })
       } else {
         style.push(globalTheme.swipeRowBackButtonPrimary)
       }

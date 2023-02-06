@@ -1,9 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import {
-  checkIfVideoFileOrVideoLiveType,
-  convertNowPlayingItemClipToNowPlayingItemEpisode,
-  NowPlayingItem
-} from 'podverse-shared'
+import { checkIfVideoFileOrVideoLiveType, NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
@@ -26,7 +22,6 @@ import {
   videoSetRate,
   videoTogglePlay
 } from '../state/actions/playerVideo'
-import PVEventEmitter from './eventEmitter'
 import {
   audioIsLoaded,
   audioCheckIfIsPlaying,
@@ -50,8 +45,8 @@ import {
   audioUpdateCurrentTrack,
   audioTogglePlay
 } from './playerAudio'
-import { addOrUpdateHistoryItem, saveOrResetCurrentlyPlayingItemInHistory } from './userHistoryItem'
-import { getNowPlayingItem, getEnrichedNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
+import { saveOrResetCurrentlyPlayingItemInHistory } from './userHistoryItem'
+import { getNowPlayingItem, getEnrichedNowPlayingItemFromLocalStorage } from './userNowPlayingItem'
 
 const _fileName = 'src/services/player.ts'
 
