@@ -1,10 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import {
-  checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
-  convertNowPlayingItemClipToNowPlayingItemEpisode,
-  convertToNowPlayingItem,
-  NowPlayingItem
-} from 'podverse-shared'
+import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl, convertToNowPlayingItem, NowPlayingItem } from 'podverse-shared'
 import { errorLogger } from '../lib/logger'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { PV } from '../resources'
@@ -135,28 +130,33 @@ export const clearNowPlayingItemOnServer = async () => {
 }
 
 /*
-  Get the nowPlayingItem from 1) history, 2) queue, or 3) downloaded episode storage.
+  This helper gets an enriched version of a NowPlayingItem, setting the userPlaybackPosition,
+  and downloaded file path if available. 
+  The userPlaybackPosition look up checks in order: 1) history, 2) queue, or 3) downloaded episode storage.
+  Only set shouldPlayClip to true if the item is playing *now*. Leave it as false if you are using this
+  helper to add items to the queue with userPlaybackPosition set as track.initialTime.
+  Sorry this is so hacky :[ this could be cleaned up a ton.
 */
-export const getNowPlayingItemFromLocalStorage = async (trackId: string, setPlayerClipIsLoadedIfClip?: boolean) => {
-  if (!trackId) return null
+export const getEnrichedNowPlayingItemFromLocalStorage = async (episodeId: string) => {
+  if (!episodeId) return null
 
   const results = await getHistoryItemsLocally()
 
   const { userHistoryItems } = results
   let currentNowPlayingItem = userHistoryItems.find((x: any) =>
-    checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId)
+    checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(episodeId, x.clipId, x.episodeId)
   )
 
   if (!currentNowPlayingItem) {
     const queueItems = await getQueueItemsLocally()
     const queueItemIndex = queueItems.findIndex((x: any) =>
-      checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId)
+      checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(episodeId, x.clipId, x.episodeId)
     )
     currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
   }
 
   if (!currentNowPlayingItem) {
-    currentNowPlayingItem = await getDownloadedEpisode(trackId)
+    currentNowPlayingItem = await getDownloadedEpisode(episodeId)
     if (currentNowPlayingItem) {
       currentNowPlayingItem = convertToNowPlayingItem(
         currentNowPlayingItem,
@@ -165,15 +165,6 @@ export const getNowPlayingItemFromLocalStorage = async (trackId: string, setPlay
         currentNowPlayingItem.userPlaybackPosition
       )
     }
-  }
-
-  if (setPlayerClipIsLoadedIfClip && currentNowPlayingItem?.clipId) {
-    await AsyncStorage.setItem(PV.Keys.PLAYER_CLIP_IS_LOADED, 'TRUE')
-  }
-
-  const playerClipIsLoaded = await AsyncStorage.getItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
-  if (!playerClipIsLoaded && currentNowPlayingItem?.clipId) {
-    currentNowPlayingItem = convertNowPlayingItemClipToNowPlayingItemEpisode(currentNowPlayingItem)
   }
 
   return currentNowPlayingItem

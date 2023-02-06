@@ -1,9 +1,8 @@
-import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
+import { Platform } from 'react-native'
 import { errorLogger } from '../lib/logger'
-import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo, loadChapterPlaybackInfo } from '../state/actions/playerChapters'
@@ -14,23 +13,18 @@ import {
   playerGetCurrentLoadedTrackId,
   playerGetPosition,
   playerHandlePauseWithUpdate,
-  playerSetPositionWhenDurationIsAvailable,
   playerUpdateUserPlaybackPosition,
   setClipHasEnded
 } from './player'
-import { getNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './userNowPlayingItem'
+import { getEnrichedNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './userNowPlayingItem'
 import { removeQueueItem } from './queue'
 import { handleValueStreamingTimerIncrement } from './v4v/v4vStreaming'
 import { addOrUpdateHistoryItem } from './userHistoryItem'
+import { PVAudioPlayer } from './playerAudio'
 
 const _fileName = 'src/services/playerBackgroundTimer.ts'
 
-const debouncedSetPlaybackPosition = debounce(playerSetPositionWhenDurationIsAvailable, 1000, {
-  leading: true,
-  trailing: false
-})
-
-const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem, callback?: any) => {
+const handleSyncNowPlayingItem = async (currentNowPlayingItem: NowPlayingItem, callback?: any) => {
   if (!currentNowPlayingItem) return
 
   await clearChapterPlaybackInfo(currentNowPlayingItem)
@@ -38,25 +32,6 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   await setNowPlayingItemLocally(currentNowPlayingItem, currentNowPlayingItem.userPlaybackPosition || 0)
   if (currentNowPlayingItem && currentNowPlayingItem.clipId && !currentNowPlayingItem.clipIsOfficialChapter) {
     PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)
-  }
-
-  if (!currentNowPlayingItem.liveItem) {
-    if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
-      debouncedSetPlaybackPosition(currentNowPlayingItem.clipStartTime || 0)
-    } else if (
-      !currentNowPlayingItem.clipId &&
-      currentNowPlayingItem.userPlaybackPosition &&
-      currentNowPlayingItem.userPlaybackPosition >= 5
-    ) {
-      debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
-    } else {
-      const { podcastId } = currentNowPlayingItem
-      const startPodcastFromTime = await getStartPodcastFromTime(podcastId)
-
-      if (!currentNowPlayingItem.clipId && startPodcastFromTime) {
-        debouncedSetPlaybackPosition(startPodcastFromTime, trackId)
-      }
-    }
   }
 
   PVEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
@@ -80,8 +55,21 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   callback?.()
 }
 
-export const syncNowPlayingItemWithTrack = (callback?: any) => {
+export const syncAudioNowPlayingItemWithTrack = (track: any, callback?: any) => {
   stopClipInterval()
+
+  /*
+    Only call seekTo with initialTime here for Android!
+    iOS needs to be handled using iosInitialTime.
+    See the discussion here for more info:
+    https://github.com/doublesymmetry/react-native-track-player/issues/1903
+  */
+  if (Platform.OS === 'android') {
+    const initialTime = track?.initialTime || 0
+    if (initialTime > 0) {
+      PVAudioPlayer.seekTo(initialTime)
+    }
+  }
 
   // The first setTimeout is an attempt to prevent the following:
   // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
@@ -90,19 +78,17 @@ export const syncNowPlayingItemWithTrack = (callback?: any) => {
   // TODO: This timeout will lead to a delay before every clip starts, where it starts playing from the episode start
   // before playing from the clip start. Hopefully we can iron this out sometime...
   // - The second timeout is called in case something was out of sync previously from getCurrentTrack
-  // or getNowPlayingItemFromLocalStorage...
+  // or getEnrichedNowPlayingItemFromLocalStorage...
   function sync(callback?: any) {
     (async () => {
       playerUpdatePlaybackState()
-      await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
 
       const currentTrackId = await playerGetCurrentLoadedTrackId()
-      const setPlayerClipIsLoadedIfClip = true
 
       /*
         When a new item loads, sometimes that item is not available in the local history
         until a few seconds into the playerLoadNowPlayingItem, so we're reattempting the
-        getNowPlayingItemFromLocalStorage up to 5 times.
+        getEnrichedNowPlayingItemFromLocalStorage up to 5 times.
       */
       let retryIntervalCount = 1
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -111,13 +97,10 @@ export const syncNowPlayingItemWithTrack = (callback?: any) => {
         if (retryIntervalCount >= 10) {
           clearInterval(retryInterval)
         } else {
-          const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(
-            currentTrackId,
-            setPlayerClipIsLoadedIfClip
-          )
+          const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(currentTrackId)
           if (currentNowPlayingItem && retryInterval) {
             clearInterval(retryInterval)
-            await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem, callback)
+            await handleSyncNowPlayingItem(currentNowPlayingItem, callback)
             await removeQueueItem(currentNowPlayingItem)
             PVEventEmitter.emit(PV.Events.QUEUE_HAS_UPDATED)
           }
@@ -151,7 +134,7 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
 
 let chapterIntervalSecondCount = 0
 let updateUserPlaybackPositionSecondCount = 0
-export const handleBackgroundTimerInterval = () => {
+export const handleBackgroundTimerInterval = (isVideo: boolean) => {
   const { chapterIntervalActive, clipIntervalActive, player, session } = getGlobal()
   const { sleepTimer } = player
   const { v4v } = session
@@ -196,7 +179,7 @@ export const handleBackgroundTimerInterval = () => {
 
   try {
     if (v4v?.streamingValueOn) {
-      handleValueStreamingTimerIncrement()
+      handleValueStreamingTimerIncrement(isVideo)
     }
   } catch (error) {
     errorLogger(_fileName, 'handleBackgroundTimerInterval handleValueStreamingTimerIncrement', error?.message)

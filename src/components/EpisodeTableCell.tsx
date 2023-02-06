@@ -38,7 +38,6 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       hideImage,
       item,
       mediaFileDuration,
-      navigation,
       shouldHideCompleted,
       showPodcastInfo,
       testID,

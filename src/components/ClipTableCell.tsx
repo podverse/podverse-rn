@@ -41,7 +41,6 @@ export class ClipTableCell extends React.PureComponent<Props> {
       item,
       itemType,
       loadChapterOnPlay,
-      navigation,
       onLayout,
       showEpisodeInfo,
       showPodcastInfo,

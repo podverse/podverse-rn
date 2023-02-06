@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-community/async-storage'
 import { checkIfVideoFileOrVideoLiveType, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
 import TrackPlayer, {
   AppKilledPlaybackBehavior,
@@ -13,17 +12,18 @@ import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
 import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../lib/downloader'
+import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
 import { setLiveStreamWasPausedState } from '../state/actions/player'
 import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import { getPodcastCredentialsHeader } from './parser'
-import { playerSetPositionWhenDurationIsAvailable, playerSetRateWithLatestPlaybackSpeed, playerUpdateUserPlaybackPosition } from './player'
+import { playerSetRateWithLatestPlaybackSpeed, playerUpdateUserPlaybackPosition } from './player'
 import { getPodcastFeedUrlAuthority } from './podcast'
 import { addQueueItemNext, filterItemFromQueueItems, getQueueItems, getQueueItemsLocally } from './queue'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from './userHistoryItem'
-import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
+import { getEnrichedNowPlayingItemFromLocalStorage } from './userNowPlayingItem'
 
 declare module 'react-native-track-player' {
   export function getCurrentLoadedTrack(): Promise<string>
@@ -187,14 +187,15 @@ export const audioLoadNowPlayingItem = async (
   shouldPlay: boolean,
   forceUpdateOrderDate: boolean
 ) => {
-  // TODO VIDEO: discard/reset video player???
+  /*
+    Call .stop() instead of .pause() to avoid a race-condition in the Event.PlaybackState listener
+    with the playerUpdateUserPlaybackPosition call.
+    If we call .pause here, then playerUpdateUserPlaybackPosition gets invoked in multiple
+    places, leading to the incorrect nowPlayingItem info saved to history (such as an incorrect duration).
+  */
+  await PVAudioPlayer.stop()
 
-  await PVAudioPlayer.pause()
-
-  const [lastPlayingItem, historyItemsIndex] = await Promise.all([
-    getNowPlayingItemLocally(),
-    getHistoryItemsIndexLocally()
-  ])
+  const [historyItemsIndex] = await Promise.all([getHistoryItemsIndexLocally()])
 
   const { clipId, episodeId } = item
   if (!clipId && episodeId) {
@@ -204,30 +205,26 @@ export const audioLoadNowPlayingItem = async (
   addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
 
   const currentId = await audioGetCurrentLoadedTrackId()
+  const isUpcomingQueueItem = false
   if (currentId) {
     await audioRemoveUpcomingTracks()
-    const track = (await audioCreateTrack(item)) as Track
+    const track = (await audioCreateTrack(item, isUpcomingQueueItem)) as Track
     PVAudioPlayer.add([track])
     await PVAudioPlayer.skipToNext()
     audioSyncPlayerWithQueue()
   } else {
-    const track = (await audioCreateTrack(item)) as Track
+    const track = (await audioCreateTrack(item, isUpcomingQueueItem)) as Track
     PVAudioPlayer.add([track])
   }
 
-
-  if (item && !item.clipId) {
-    audioHandleLoadFromLastPlaybackPosition(item.episodeId, shouldPlay)
-  } else {
-    PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)
-    await PVAudioPlayer.seekTo(item.clipStartTime || 0)
-    if (shouldPlay) {
-      audioHandlePlayWithUpdate()
+  if (item && !item.clipId && shouldPlay) {
+    if (Platform.OS === 'android') {
+      PVAudioPlayer.setPlayWhenReady(true)
+    } else {
+      PVAudioPlayer.play()
     }
-  }
-
-  if (lastPlayingItem && lastPlayingItem.episodeId && lastPlayingItem.episodeId !== item.episodeId) {
-    PVEventEmitter.emit(PV.Events.PLAYER_NEW_EPISODE_LOADED)
+  } else if (item && !!item.clipId) {
+    await audioHandleLoadClip(item, shouldPlay)
   }
 
   return item
@@ -265,7 +262,7 @@ export const audioUpdateCurrentTrack = async (trackTitle?: string, artworkUrl?: 
   }
 }
 
-export const audioCreateTrack = async (item: NowPlayingItem) => {
+export const audioCreateTrack = async (item: NowPlayingItem, isUpcomingQueueItem: boolean) => {
   if (!item) return
 
   const {
@@ -296,14 +293,23 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
   }
 
   if (episodeId) {
-    const [isDownloadedFile, filePath] = await Promise.all([
+    const [isDownloadedFile, filePath, enrichedNowPlayingItem, startPodcastFromTime] = await Promise.all([
       checkIfFileIsDownloaded(episodeId, episodeMediaUrl, isAddByRSSPodcast),
-      getDownloadedFilePath(episodeId, episodeMediaUrl, isAddByRSSPodcast)
+      getDownloadedFilePath(episodeId, episodeMediaUrl, isAddByRSSPodcast),
+      getEnrichedNowPlayingItemFromLocalStorage(episodeId),
+      getStartPodcastFromTime(podcastId)
     ])
 
     const fileExtension = getExtensionFromUrl(episodeMediaUrl)?.substring(1)
     const isHLS = fileExtension === 'm3u8'
     const type = isHLS ? 'hls' : 'default'
+
+    let initialTime = enrichedNowPlayingItem?.userPlaybackPosition
+    if (item?.clipId) {
+      initialTime = item.clipStartTime || 0
+    } else if (startPodcastFromTime && !initialTime) {
+      initialTime = startPodcastFromTime
+    }
 
     if (isDownloadedFile) {
       track = {
@@ -314,7 +320,10 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
         ...(imageUrl ? { artwork: imageUrl } : {}),
         userAgent: getAppUserAgent(),
         pitchAlgorithm: PitchAlgorithm.Voice,
-        type
+        type,
+        initialTime,
+        ...(initialTime ? { iosInitialTime: initialTime } : {}),
+        isClip: !!item?.clipId
       }
     } else {
       const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
@@ -332,7 +341,10 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
           ...(Authorization ? { Authorization } : {}),
           'User-Agent': getAppUserAgent()
         },
-        type
+        type,
+        initialTime,
+        ...(initialTime ? { iosInitialTime: initialTime } : {}),
+        isClip: !!item?.clipId
       }
     }
   }
@@ -353,7 +365,8 @@ export const audioMovePlayerItemToNewPosition = async (id: string, newIndex: num
         (x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id)
       )
       if (itemToMove) {
-        const track = (await audioCreateTrack(itemToMove)) as any
+        const isUpcomingQueueItem = true
+        const track = (await audioCreateTrack(itemToMove, isUpcomingQueueItem)) as any
         PVAudioPlayer.add([track], newIndex)
       }
     } catch (error) {
@@ -384,18 +397,12 @@ export const audioTogglePlay = async () => {
   }
 }
 
-const audioHandleLoadFromLastPlaybackPosition = async (episodeId: string, shouldPlay: boolean) => {
-  if (!episodeId) return
-
-  const setPlayerClipIsLoadedIfClip = true
-  const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(
-    episodeId,
-    setPlayerClipIsLoadedIfClip
-  )
-
-  const lastUserPlaybackPosition = currentNowPlayingItem?.userPlaybackPosition || 0
-  
-  await playerSetPositionWhenDurationIsAvailable(lastUserPlaybackPosition, episodeId, shouldPlay)
+const audioHandleLoadClip = async (item: NowPlayingItem, shouldPlay: boolean) => {
+  PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)
+  await PVAudioPlayer.seekTo(item.clipStartTime || 0)
+  if (shouldPlay) {
+    audioHandlePlayWithUpdate()
+  }
 }
 
 export const audioHandlePlay = () => {
@@ -463,8 +470,9 @@ export const audioCheckIfStateIsBuffering = (playbackState: any) =>
 
 export const audioCreateTracks = async (items: NowPlayingItem[]) => {
   const tracks = [] as Track[]
+  const isUpcomingQueueItem = true
   for (const item of items) {
-    const track = (await audioCreateTrack(item)) as Track
+    const track = (await audioCreateTrack(item, isUpcomingQueueItem)) as Track
     tracks.push(track)
   }
 
@@ -476,8 +484,7 @@ export const audioPlayNextFromQueue = async () => {
   if (queueItems && queueItems.length > 1) {
     await PVAudioPlayer.skipToNext()
     const currentId = await audioGetCurrentLoadedTrackId()
-    const setPlayerClipIsLoadedIfClip = true
-    const item = await getNowPlayingItemFromLocalStorage(currentId, setPlayerClipIsLoadedIfClip)
+    const item = await getEnrichedNowPlayingItemFromLocalStorage(currentId)
     if (item) {
       await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0)
       return item
@@ -513,14 +520,14 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
       if (!item.clipId && item.episodeId) {
         /* 
           updateHistoryItemsIndex will also update the result of
-          getNowPlayingItemFromLocalStorage
+          getEnrichedNowPlayingItemFromLocalStorage
         */
         await updateHistoryItemsIndex()
 
         /*
           Get the localStorageItem with the new userPlaybackPosition from updateHistoryItemsIndex
         */
-        const localStorageItem = await getNowPlayingItemFromLocalStorage(item.episodeId)
+        const localStorageItem = await getEnrichedNowPlayingItemFromLocalStorage(item.episodeId)
         if (!!localStorageItem) {
           item = localStorageItem
         }

@@ -136,10 +136,9 @@ export class PlayerScreen extends React.Component<Props> {
 
     trackPageView('/player', 'Player Screen')
 
-    InteractionManager.runAfterInteractions(async() => {
+    InteractionManager.runAfterInteractions(async () => {
       await this._handleUpdateFullEpisode()
     })
-
   }
 
   async componentWillUnmount() {
