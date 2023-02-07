@@ -8,10 +8,10 @@ import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import { getPodcastCredentialsHeader } from '../../services/parser'
 import { playerCheckIfDownloadableFile, playerUpdateUserPlaybackPosition } from '../../services/player'
-import { audioReset, PVAudioPlayer } from '../../services/playerAudio'
+import { audioReset } from '../../services/playerAudio'
 import { getPodcastFeedUrlAuthority } from '../../services/podcast'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from '../../services/userHistoryItem'
-import { getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
+import { getEnrichedNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
 import { downloadedEpisodeMarkForDeletion } from './downloads'
 import { playerLoadNowPlayingItem, playerUpdatePlaybackState, playerUpdatePlayerState } from './player'
 import { updateHistoryItemsIndex } from './userHistoryItem'
@@ -24,7 +24,7 @@ export const videoInitializePlayer = async (item: NowPlayingItem) => {
         userPlaybackPosition that was last saved from other devices. */
     if (!item.clipId && item.episodeId) {
       await updateHistoryItemsIndex()
-      const itemFromStorage = await getNowPlayingItemFromLocalStorage(item.episodeId)
+      const itemFromStorage = await getEnrichedNowPlayingItemFromLocalStorage(item.episodeId)
       if (itemFromStorage) {
         item = itemFromStorage
       }
@@ -226,7 +226,6 @@ export const videoLoadNowPlayingItem = async (
   previousNowPlayingItem?: NowPlayingItem | null
 ) => {
   const { clipId: previousClipId, episodeId: previousEpisodeId } = previousNowPlayingItem || {}
-  await AsyncStorage.setItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING, 'TRUE')
   await audioReset()
   const historyItemsIndex = await getHistoryItemsIndexLocally()
   const { clipId, episodeId } = item
@@ -254,12 +253,9 @@ export const videoLoadNowPlayingItem = async (
   /* Add second delay to make sure the playback-track-changed and playback-queue-ended
      events triggered by audioReset() finishes */
   setTimeout(() => {
-    (async () => {
-      await AsyncStorage.removeItem(PV.Keys.PLAYER_PREVENT_END_OF_TRACK_HANDLING)
-      if (shouldPlay) {
-        playerUpdatePlaybackState(PV.Player.videoInfo.videoPlaybackState.playing)
-      }
-    })()
+    if (shouldPlay) {
+      playerUpdatePlaybackState(PV.Player.videoInfo.videoPlaybackState.playing)
+    }
   }, 1000)
 
   return item

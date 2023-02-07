@@ -90,9 +90,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     this.scrollToActiveIndex(activeIndex, animated)
 
     /*
-      Add timeout to improve initial rendering time on Android.
-      https://stackoverflow.com/questions/46127753/react-native-react-navigation-slow-transitions-when-nesting-navigators
-    */
+    Add timeout to improve initial rendering time on Android.
+    https://stackoverflow.com/questions/46127753/react-native-react-navigation-slow-transitions-when-nesting-navigators
+  */
     const timeout1 = Platform.OS === 'android' ? 50 : 0
     const timeout2 = Platform.OS === 'android' ? 500 : 0
 
@@ -381,7 +381,7 @@ const mediaPlayerCarouselComponents = (
     <>
       {screenReaderEnabled ? (
         <>
-          {(isReady && (accessibilityItemSelectedValue === _nowPlayingInfoKey || !accessibilityItemSelectedValue)) && (
+          {isReady && (accessibilityItemSelectedValue === _nowPlayingInfoKey || !accessibilityItemSelectedValue) && (
             <MediaPlayerCarouselViewer
               handlePressClipInfo={handlePressClipInfo}
               navigation={navigation}
@@ -410,31 +410,24 @@ const mediaPlayerCarouselComponents = (
         </>
       ) : (
         <>
-          {
-            isReady && (
-              <MediaPlayerCarouselViewer
-                handlePressClipInfo={handlePressClipInfo}
-                navigation={navigation}
-                width={screenWidth}
-              />
-            )
-          }
-          {
-            isReady2 && (
-              <>
-                <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
-                {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
-                {hasComments && <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />}
-                {hasTranscript && (
-                  <MediaPlayerCarouselTranscripts
-                    isNowPlaying
-                    parsedTranscript={parsedTranscript}
-                    width={screenWidth} />
-                )}
-                {hasChat && <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />}
-              </>
-            )
-          }
+          {isReady && (
+            <MediaPlayerCarouselViewer
+              handlePressClipInfo={handlePressClipInfo}
+              navigation={navigation}
+              width={screenWidth}
+            />
+          )}
+          {isReady2 && (
+            <>
+              <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
+              {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
+              {hasComments && <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />}
+              {hasTranscript && (
+                <MediaPlayerCarouselTranscripts isNowPlaying parsedTranscript={parsedTranscript} width={screenWidth} />
+              )}
+              {hasChat && <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />}
+            </>
+          )}
         </>
       )}
     </>

@@ -1,9 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import {
-  checkIfVideoFileOrVideoLiveType,
-  convertNowPlayingItemClipToNowPlayingItemEpisode,
-  NowPlayingItem
-} from 'podverse-shared'
+import { checkIfVideoFileOrVideoLiveType, NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
@@ -26,7 +22,6 @@ import {
   videoSetRate,
   videoTogglePlay
 } from '../state/actions/playerVideo'
-import PVEventEmitter from './eventEmitter'
 import {
   audioIsLoaded,
   audioCheckIfIsPlaying,
@@ -50,8 +45,8 @@ import {
   audioUpdateCurrentTrack,
   audioTogglePlay
 } from './playerAudio'
-import { addOrUpdateHistoryItem, saveOrResetCurrentlyPlayingItemInHistory } from './userHistoryItem'
-import { getNowPlayingItem, getNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
+import { saveOrResetCurrentlyPlayingItemInHistory } from './userHistoryItem'
+import { getNowPlayingItem, getEnrichedNowPlayingItemFromLocalStorage } from './userNowPlayingItem'
 
 const _fileName = 'src/services/player.ts'
 
@@ -67,18 +62,6 @@ export const playerCheckActiveType = async () => {
     playerType = videoIsLoaded() ? PV.Player.playerTypes.isVideo : null
   }
   return playerType
-}
-
-export const playerHandleResumeAfterClipHasEnded = async () => {
-  await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
-  const [nowPlayingItem, playbackPosition, mediaFileDuration] = await Promise.all([
-    getNowPlayingItemLocally(),
-    playerGetPosition(),
-    playerGetDuration()
-  ])
-  const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(nowPlayingItem)
-  await addOrUpdateHistoryItem(nowPlayingItemEpisode, playbackPosition, mediaFileDuration)
-  PVEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
 
 export const playerJumpBackward = async (seconds: string) => {
@@ -203,9 +186,7 @@ export const playerGetDuration = async () => {
 export const playerUpdateUserPlaybackPosition = async (skipSetNowPlaying?: boolean, shouldAwait?: boolean) => {
   try {
     const currentTrackId = await playerGetCurrentLoadedTrackId()
-
-    const setPlayerClipIsLoadedIfClip = false
-    const currentNowPlayingItem = await getNowPlayingItemFromLocalStorage(currentTrackId, setPlayerClipIsLoadedIfClip)
+    const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(currentTrackId)
 
     if (currentNowPlayingItem) {
       await saveOrResetCurrentlyPlayingItemInHistory(!!shouldAwait, currentNowPlayingItem, !!skipSetNowPlaying)
@@ -227,7 +208,7 @@ export const playerLoadNowPlayingItem = async (
       return
     }
 
-    if (!checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
+    if (!checkIfVideoFileOrVideoLiveType(itemToSetNextInQueue?.episodeMediaType)) {
       audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
     }
 
@@ -249,7 +230,6 @@ export const playerLoadNowPlayingItem = async (
 export const playerSetPositionWhenDurationIsAvailable = async (
   position: number,
   trackId?: string,
-  resolveImmediately?: boolean,
   shouldPlay?: boolean
 ) => {
   return new Promise((resolve) => {
@@ -263,34 +243,14 @@ export const playerSetPositionWhenDurationIsAvailable = async (
 
         if (duration && duration > 0 && (!trackId || (currentTrackId && trackId === currentTrackId)) && position >= 0) {
           clearInterval(interval)
-
           await playerHandleSeekTo(position)
-          // Sometimes seekTo does not work right away for all episodes...
-          // to work around this bug, we set another interval to confirm the track
-          // position has been advanced into the clip time.
-          const confirmClipLoadedInterval = setInterval(() => {
-            (async () => {
-              const currentPosition = await playerGetPosition()
-              if (currentPosition >= position - 1) {
-                clearInterval(confirmClipLoadedInterval)
-              } else {
-                await playerHandleSeekTo(position)
-              }
-            })()
-          }, 500)
-
-          const shouldPlayWhenClipIsLoaded = await AsyncStorage.getItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
 
           if (shouldPlay) {
-            playerHandlePlayWithUpdate()
-          } else if (shouldPlayWhenClipIsLoaded === 'true') {
-            AsyncStorage.removeItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
             playerHandlePlayWithUpdate()
           }
 
           resolve(null)
         }
-        if (resolveImmediately) resolve(null)
       })()
     }, 500)
   })
