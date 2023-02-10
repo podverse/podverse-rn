@@ -1,11 +1,37 @@
+<p align="center">
+    <img src="https://avatars.githubusercontent.com/u/11860029?s=200&v=4"
+    alt="Company Logo"
+    height="200">
+</p>
+
+<p align="center">
+    <img src="https://play-lh.googleusercontent.com/7gyLggXCV-N2rsYUKNuDD9TqRuP5XaJzBqgNwU4e82N3ErjC-VvEEkwtx7PIlaJCCw=w2560-h1440-rw"
+    alt="im1"
+    width="200" />
+    <img src="https://play-lh.googleusercontent.com/UyrgF34I1-y0OYW_5hNLf3Qc5B5HXhO6buL2aYa6-CO_HekHbUzL-WD2NVAXIHrvDQ=w2560-h1440-rw"
+    alt="img2"
+    width="200" />
+    <img src="https://play-lh.googleusercontent.com/eSBIllmpr4KXfKy-wlksQn4i1G6B9CbgmJ8ujiXGuzRngfzv-9ducHpQ6qeV6oP0oz2u=w2560-h1440-rw"
+    alt="img3"
+    width="200" />
+</p>
+
+# Podverse
+
+## About
 Free and open source podcast manager for Android, iOS, and the web. \
 Check it out at [podverse.fm](https://podverse.fm/)
 
+Listen to all your podcasts on a single application with Podverse!
+
+
+Podverse included features:
 - Subscribe to podcasts
 - Auto-download episodes
 - Drag-and-drop queue
 - Sleep timer
 - Light/dark mode
+
 Podverse premium features:
 - Create and share podcast clips
 - Switch devices and play from where you left off
@@ -14,9 +40,10 @@ Podverse premium features:
 - Create and share playlists
 - Subscribe to playlists
 
-All Podverse software is provided under a libre software licence. \
 Features requiring updating our servers require Podverse premium membership. \
 Sign up and try it gratis for three months 🥳
+
+Find us on on these App Stores and our [Website](https://podverse.fm/):
 
 <a href="https://f-droid.org/en/packages/com.podverse.fdroid/" target="_blank">
     <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
@@ -38,6 +65,13 @@ Sign up and try it gratis for three months 🥳
 
 [Instruction for contributing to the repo](https://github.com/podverse/podverse-rn/blob/master/Contributing.md) to the **Podverse Mobile App**
 
+Additional environment setup and installation for Mac or Windows is found within the contribution page.
+
+## Licensing
+
+All Podverse software is provided under a [libre software licence](https://github.com/podverse/podverse-rn/blob/develop/LICENSE).
+
+
 ### Translations on Hosted Weblate
 
 <a href="https://hosted.weblate.org/engage/podverse/">
@@ -50,7 +84,15 @@ Sign up and try it gratis for three months 🥳
 - Gary Johnson
 - [Kyle Downey](https://github.com/KyleFDowney)
 
-## Answers:
+
+## Thank you to our contributors!
+
+<a href="https://github.com/podverse/podverse-rn/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=podverse/podverse-rn" />
+</a>
+
+
+## FAQ:
 
 ### Why do some clips start at the wrong time?
 Most podcast apps today limit clips to be less than a minute, but Podverse allows creating and sharing clips of any length. \
