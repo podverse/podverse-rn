@@ -67,7 +67,7 @@
     "lodash.memoize": "4.1.2",
     "moment": "^2.29.4",
     "p-limit": "^4.0.0",
-    "podverse-shared": "^4.10.0",
+    "podverse-shared": "^4.6.12",
     "qs": "^6.11.0",
     "react": "17.0.1",
     "react-native": "0.66.5",
