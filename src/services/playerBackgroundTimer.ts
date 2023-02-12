@@ -149,7 +149,7 @@ const handleBackgroundTimerInterval = (isVideo: boolean) => {
 
   chapterIntervalSecondCount++
   try {
-    if (chapterIntervalSecondCount >= 3) {
+    if (chapterIntervalSecondCount >= 4) {
       chapterIntervalSecondCount = 0
       if (chapterIntervalActive) {
         loadChapterPlaybackInfo()
