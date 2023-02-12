@@ -19,7 +19,8 @@ import {
   ImageFullView, 
   BoostDropdownBanner, 
   LoadingInterstitialView,
-  TabBarLabel
+  TabBarLabel,
+  DownloadsActiveBadge
 } from './src/components'
 import { pvIsTablet } from './src/lib/deviceDetection'
 import { refreshDownloads } from './src/lib/downloader'
@@ -27,7 +28,7 @@ import { PV } from './src/resources'
 import { determineFontScaleMode } from './src/resources/Fonts'
 import { GlobalTheme } from './src/resources/Interfaces'
 // import Router from './src/Router'
-import { ClipsScreen, EpisodesScreen, MoreScreen, MyLibraryScreen, PodcastScreen, SettingsScreen } from './src/screens'
+import { AboutScreen, AddPodcastByRSSScreen, AppModeScreen, ClipsScreen, ContactScreen, ContactXMPPChatScreen, ContributeScreen, EpisodesScreen, FAQScreen, MembershipScreen, MoreScreen, MyLibraryScreen, PodcastScreen, PrivacyPolicyScreen, SettingsScreen, SettingsScreenAccount, SettingsScreenAdvanced, SettingsScreenDownloads, SettingsScreenHistory, SettingsScreenOther, SettingsScreenPlayer, SettingsScreenQueue, SettingsScreenTracking, TermsOfServiceScreen, V4VInfoStreamingSatsScreen, V4VProvidersAlbyScreen, V4VProvidersScreen } from './src/screens'
 import { isInitialLoadPodcastsScreen, PodcastsScreen } from './src/screens/PodcastsScreen'
 import { downloadCategoriesList } from './src/services/category'
 import PVEventEmitter from './src/services/eventEmitter'
@@ -61,8 +62,38 @@ setGlobal(initialState)
 let ignoreHandleNetworkChange = true
 let carplayEventsInitialized = false
 
-const stackOptions = (): BottomTabNavigationOptions => ({
-  headerShown: false
+const config = {
+  screens: {
+    [PV.RouteNames.PodcastsScreen]: PV.DeepLinks.Podcasts.path,
+    [PV.RouteNames.MembershipScreen]: PV.DeepLinks.Membership.path,
+    [PV.RouteNames.ContactScreen]: PV.DeepLinks.Contact.path,
+    [PV.RouteNames.ContactXMPPChatScreen]: PV.DeepLinks.XMPP.path,
+    [PV.RouteNames.ContributeScreen]: PV.DeepLinks.Contribute.path,
+    [PV.RouteNames.AboutScreen]: PV.DeepLinks.About.path,
+    [PV.RouteNames.TermsOfServiceScreen]: PV.DeepLinks.Terms.path
+  }
+}
+
+const linking = {
+  // should add 'https://podverse.fm' ?
+  prefixes: [PV.DeepLinks.prefix],
+  config
+}
+
+const setRootStackOptions = (options: StackNavigationOptions = {}): StackNavigationOptions => ({
+  headerShown: false,
+  ...options
+})
+
+const setModalStackOptions = (options: StackNavigationOptions = {}): StackNavigationOptions => ({
+  headerShown: false,
+  presentation: 'modal',
+  ...options
+})
+
+const setStackOptions = (options: BottomTabNavigationOptions = {}): BottomTabNavigationOptions => ({
+  headerShown: false,
+  ...options
 })
 
 const defaultHeaderOptions: StackNavigationOptions = {
@@ -77,18 +108,20 @@ const defaultHeaderOptions: StackNavigationOptions = {
   //   ...(Platform.OS === 'android' ? { backgroundColor: 'transparent' } : {})
 }
 
-const setHeaderOptions = (options: StackNavigationOptions): StackNavigationOptions => ({
+const setHeaderOptions = (options: StackNavigationOptions = {}): StackNavigationOptions => ({
   ...defaultHeaderOptions,
   ...options
 })
 
 const Tab = createBottomTabNavigator()
 
+const RootStack = createStackNavigator()
+
 const PodcastsStack = createStackNavigator()
 
 function PodcastsStackScreen() {
   return (
-    <PodcastsStack.Navigator>
+    <PodcastsStack.Navigator initialRouteName={PV.RouteNames.PodcastsScreen}>
       <PodcastsStack.Screen
         name={PV.RouteNames.PodcastsScreen}
         component={PodcastsScreen}
@@ -103,7 +136,7 @@ const EpisodesStack = createStackNavigator()
 
 function EpisodesStackScreen() {
   return (
-    <EpisodesStack.Navigator>
+    <EpisodesStack.Navigator initialRouteName={PV.RouteNames.EpisodesScreen}>
       <EpisodesStack.Screen name={PV.RouteNames.EpisodesScreen} component={EpisodesScreen} options={defaultHeaderOptions} />
     </EpisodesStack.Navigator>
   )
@@ -113,7 +146,7 @@ const ClipsStack = createStackNavigator()
 
 function ClipsStackScreen() {
   return (
-    <ClipsStack.Navigator>
+    <ClipsStack.Navigator initialRouteName={PV.RouteNames.ClipsScreen}>
       <ClipsStack.Screen name={PV.RouteNames.ClipsScreen} component={ClipsScreen} options={defaultHeaderOptions} />
     </ClipsStack.Navigator>
   )
@@ -123,7 +156,7 @@ const MyLibraryStack = createStackNavigator()
 
 function MyLibraryStackScreen() {
   return (
-    <MyLibraryStack.Navigator>
+    <MyLibraryStack.Navigator initialRouteName={PV.RouteNames.MyLibraryScreen}>
       <MyLibraryStack.Screen name={PV.RouteNames.MyLibraryScreen} component={MyLibraryScreen} options={defaultHeaderOptions} />
     </MyLibraryStack.Navigator>
   )
@@ -133,10 +166,122 @@ const MoreStack = createStackNavigator()
 
 function MoreStackScreen() {
   return (
-    <MoreStack.Navigator>
+    <MoreStack.Navigator initialRouteName={PV.RouteNames.MoreScreen}>
       <MoreStack.Screen name={PV.RouteNames.MoreScreen} component={MoreScreen} options={defaultHeaderOptions} />
       <MoreStack.Screen name={PV.RouteNames.SettingsScreen} component={SettingsScreen} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.SettingsScreenAccount} component={SettingsScreenAccount} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.SettingsScreenAdvanced} component={SettingsScreenAdvanced} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.SettingsScreenOther} component={SettingsScreenOther} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.SettingsScreenDownloads} component={SettingsScreenDownloads} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.SettingsScreenHistory} component={SettingsScreenHistory} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.SettingsScreenPlayer} component={SettingsScreenPlayer} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.SettingsScreenQueue} component={SettingsScreenQueue} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.SettingsScreenTracking} component={SettingsScreenTracking} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.MembershipScreen} component={MembershipScreen} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.AppModeScreen} component={AppModeScreen} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.ContactScreen} component={ContactScreen} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.ContactXMPPChatScreen} component={ContactXMPPChatScreen} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.ContributeScreen} component={ContributeScreen} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.AboutScreen} component={AboutScreen} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.TermsOfServiceScreen} component={TermsOfServiceScreen} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.PrivacyPolicyScreen} component={PrivacyPolicyScreen} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.FAQScreen} component={FAQScreen} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.V4VProvidersScreen} component={V4VProvidersScreen} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.V4VProvidersAlbyScreen} component={V4VProvidersAlbyScreen} options={defaultHeaderOptions} />
+      <MoreStack.Screen name={PV.RouteNames.V4VInfoStreamingSatsScreen} component={V4VInfoStreamingSatsScreen} options={defaultHeaderOptions} />
     </MoreStack.Navigator>
+  )
+}
+
+const AddPodcastByRSSURLStack = createStackNavigator()
+
+function AddPodcastByRSSURLStackScreen() {
+  return (
+    <AddPodcastByRSSURLStack.Navigator initialRouteName={PV.RouteNames.AddPodcastByRSSScreen}>
+      <AddPodcastByRSSURLStack.Screen name={PV.RouteNames.AddPodcastByRSSScreen} component={AddPodcastByRSSScreen} options={defaultHeaderOptions} />
+    </AddPodcastByRSSURLStack.Navigator>
+  )
+}
+
+function HomeTabs() {
+  return (
+    <Tab.Navigator
+      initialRouteName={PV.RouteNames.StackPodcasts}
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color }) => {
+          const sources = {
+            [PV.RouteNames.StackPodcasts]: PV.Tabs.Podcasts.icon,
+            [PV.RouteNames.StackEpisodes]: PV.Tabs.Episodes.icon,
+            [PV.RouteNames.StackClips]: PV.Tabs.Clips.icon,
+            [PV.RouteNames.StackMyLibrary]: PV.Tabs.MyLibrary.icon,
+            [PV.RouteNames.StackMore]: PV.Tabs.More.icon
+          }
+          const source = sources[route.name]
+
+          if (PV.RouteNames.StackMyLibrary === route.name) {
+            return (
+              <View>
+                <Image source={PV.Tabs.MyLibrary.icon} style={{ tintColor: color }} resizeMode={'contain'} />
+                <DownloadsActiveBadge />
+              </View>
+            )
+          } else {
+            return <Image source={source} style={{ tintColor: color }} resizeMode={'contain'} />
+          }
+        },
+        tabBarLabel: (props) => {
+          const tabKeys = {
+            [PV.RouteNames.StackPodcasts]: translate('Podcasts'),
+            [PV.RouteNames.StackEpisodes]: translate('Episodes'),
+            [PV.RouteNames.StackClips]: translate('Clips'),
+            [PV.RouteNames.StackMyLibrary]: translate('My Library'),
+            [PV.RouteNames.StackMore]: translate('More')
+          }
+          const tabKey = tabKeys[route.name]
+          return <TabBarLabel {...props} tabKey={tabKey} />
+        },
+        tabBarActiveTintColor: PV.Colors.skyLight,
+        tabBarInactiveTintColor: PV.Colors.white,
+        tabBarStyle: darkTheme.tabbar,
+        tabBarLabelPosition: 'below-icon'
+        // tabBar: (props: any) => <PVTabBar {...props} />
+      })}>
+      <Tab.Screen
+        name={PV.RouteNames.StackPodcasts}
+        component={PodcastsStackScreen}
+        options={setStackOptions({
+          tabBarTestID: 'tab_podcasts_screen'.prependTestId()
+        })}
+      />
+      <Tab.Screen
+        name={PV.RouteNames.StackEpisodes}
+        component={EpisodesStackScreen}
+        options={setStackOptions({
+          tabBarTestID: 'tab_episodes_screen'.prependTestId()
+        })}
+      />
+      <Tab.Screen
+        name={PV.RouteNames.StackClips}
+        component={ClipsStackScreen}
+        options={setStackOptions({
+          tabBarTestID: 'tab_clips_screen'.prependTestId()
+        })}
+      />
+      <Tab.Screen
+        name={PV.RouteNames.StackMyLibrary}
+        component={MyLibraryStackScreen}
+        options={setStackOptions({
+          tabBarTestID: 'tab_my_library_screen'.prependTestId()
+        })}
+      />
+      <Tab.Screen
+        name={PV.RouteNames.StackMore}
+        component={MoreStackScreen}
+        options={setStackOptions({
+          tabBarTestID: 'tab_more_screen'.prependTestId()
+        })}
+      />
+    </Tab.Navigator>
   )
 }
 
@@ -287,65 +432,15 @@ class App extends Component<Props, State> {
         <SafeAreaProvider initialMetrics={initialWindowMetrics} style={wrapperStyle}>
           <View style={{ flex: 1 }}>
             {/* <Router /> */}
-            <NavigationContainer>
-              <Tab.Navigator
-                initialRouteName={PV.RouteNames.StackPodcasts}
-                screenOptions={({ route }) => ({
-                  tabBarIcon: ({ color }) => {
-                    const sources = {
-                      [PV.RouteNames.StackPodcasts]: PV.Tabs.Podcasts.icon,
-                      [PV.RouteNames.StackEpisodes]: PV.Tabs.Episodes.icon,
-                      [PV.RouteNames.StackClips]: PV.Tabs.Clips.icon,
-                      [PV.RouteNames.StackMyLibrary]: PV.Tabs.MyLibrary.icon,
-                      [PV.RouteNames.StackMore]: PV.Tabs.More.icon
-                    }
-                    const source = sources[route.name]
-                    return <Image source={source} style={{ tintColor: color }} resizeMode={'contain'} />
-                  },
-                  tabBarLabel: (props) => {
-                    const tabKeys = {
-                      [PV.RouteNames.StackPodcasts]: translate('Podcasts'),
-                      [PV.RouteNames.StackEpisodes]: translate('Episodes'),
-                      [PV.RouteNames.StackClips]: translate('Clips'),
-                      [PV.RouteNames.StackMyLibrary]: translate('My Library'),
-                      [PV.RouteNames.StackMore]: translate('More')
-                    }
-                    const tabKey = tabKeys[route.name]
-                    return <TabBarLabel {...props} tabKey={tabKey} />
-                  },
-                  tabBarTestID: 'tab_podcasts_screen'.prependTestId(),
-                  tabBarActiveTintColor: PV.Colors.skyLight,
-                  tabBarInactiveTintColor: PV.Colors.white,
-                  tabBarStyle: darkTheme.tabbar,
-                  tabBarLabelPosition: 'below-icon'
-                  // tabBar: (props: any) => <PVTabBar {...props} />
-                })}>
-                <Tab.Screen
-                  name={PV.RouteNames.StackPodcasts}
-                  component={PodcastsStackScreen}
-                  options={stackOptions}
+            <NavigationContainer linking={linking}>
+              <RootStack.Navigator>
+                <RootStack.Screen name={PV.RouteNames.RootTabs} component={HomeTabs} options={setRootStackOptions()} />
+                <RootStack.Screen
+                  name={PV.RouteNames.RootAddPodcastByRSSURLStack}
+                  component={AddPodcastByRSSURLStackScreen}
+                  options={setModalStackOptions()}
                 />
-                <Tab.Screen
-                  name={PV.RouteNames.StackEpisodes}
-                  component={EpisodesStackScreen}
-                  options={stackOptions}
-                />
-                <Tab.Screen
-                  name={PV.RouteNames.StackClips}
-                  component={ClipsStackScreen}
-                  options={stackOptions}
-                />
-                <Tab.Screen
-                  name={PV.RouteNames.StackMyLibrary}
-                  component={MyLibraryStackScreen}
-                  options={stackOptions}
-                />
-                <Tab.Screen
-                  name={PV.RouteNames.StackMore}
-                  component={MoreStackScreen}
-                  options={stackOptions}
-                />
-              </Tab.Navigator>
+              </RootStack.Navigator>
             </NavigationContainer>
             <OverlayAlert />
           </View>

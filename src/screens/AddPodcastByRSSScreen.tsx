@@ -1,5 +1,5 @@
 import { createEmailLinkUrl } from 'podverse-shared'
-import { Linking, StyleSheet } from 'react-native'
+import { InteractionManager, Linking, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import {
@@ -25,6 +25,7 @@ const _fileName = 'src/screens/AddPodcastByRSSScreen.tsx'
 
 type Props = {
   navigation: any
+  route: any
 }
 
 type State = {
@@ -45,25 +46,36 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
       username: ''
     }
 
-    props.navigation.setOptions({
-      headerTitle: translate('Add Custom RSS Feed'),
-      headerLeft: () => <NavDismissIcon handlePress={props.navigation.dismiss} testID={testIDPrefix} />,
+    this.handleSetOptions(props)
+  }
+
+  handleSetOptions(props: Props) {
+    const { navigation, route } = props
+    const options = {
+      title: translate('Add Custom RSS Feed'),
+      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
       headerRight: () => (
         <NavHeaderButtonText
           accessibilityHint={translate('ARIA HINT - subscribe to this custom RSS feed')}
           accessibilityLabel={translate('Save')}
-          disabled={props.navigation.getParam('_savePodcastByRSSUrlIsLoading')}
-          handlePress={props.navigation.getParam('_handleSavePodcastByRSSURL')}
+          disabled={route.params?._savePodcastByRSSUrlIsLoading}
+          handlePress={route.params?._handleSavePodcastByRSSURL}
           testID={`${testIDPrefix}_save`}
           text={translate('Save')}
         />
       )
-    })
+    }
+
+    navigation.setOptions(options)
   }
 
   componentDidMount() {
     this.props.navigation.setParams({
       _handleSavePodcastByRSSURL: this._handleSavePodcastByRSSURL
+    })
+
+    InteractionManager.runAfterInteractions(() => {
+      this.handleSetOptions(this.props)
     })
 
     trackPageView('/add-custom-rss-feed', 'Add Custom RSS Feed Screen')
@@ -88,6 +100,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
       return
     } else if (url) {
       this.props.navigation.setParams({ _savePodcastByRSSUrlIsLoading: true })
+      this.handleSetOptions(this.props)
       this.setState({ isLoading: true }, () => {
         (async () => {
           try {
@@ -110,11 +123,13 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
             this.props.navigation.setParams({
               _savePodcastByRSSUrlIsLoading: false
             })
+            this.handleSetOptions(this.props)
           } catch (error) {
             errorLogger(_fileName, '_handleSavePodcastByRSSURL', error)
             this.props.navigation.setParams({
               _savePodcastByRSSUrlIsLoading: false
             })
+            this.handleSetOptions(this.props)
             this.setState({ isLoading: false })
           }
         })()

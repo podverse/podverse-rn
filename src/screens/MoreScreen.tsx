@@ -201,7 +201,8 @@ export class MoreScreen extends React.Component<Props, State> {
       const { tutorials } = urls
       this._handleFollowLink(tutorials)
     } else {
-      navigation.navigate(item.routeName)
+      const rootStackName = item.rootStackName
+      navigation.navigate(rootStackName, { screen: item.routeName })
     }
   }
 
@@ -334,6 +335,7 @@ const allMoreFeatures = [
   {
     title: translate('Add Custom RSS Feed'),
     key: _addPodcastByRSSKey,
+    rootStackName: PV.RouteNames.RootAddPodcastByRSSURLStack,
     routeName: PV.RouteNames.AddPodcastByRSSScreen
   },
   {

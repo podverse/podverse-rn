@@ -1,7 +1,7 @@
 import { Image, View } from 'react-native'
 import Config from 'react-native-config'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
-import { createStackNavigator, NavigationStackOptions, NavigationStackProp } from 'react-navigation-stack'
+import { createStackNavigator, NavigationStackProp } from 'react-navigation-stack'
 // import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { Component } from 'react'
 import { DownloadsActiveBadge, ErrorBoundary, TabBarLabel } from './components'
@@ -107,18 +107,6 @@ const PodcastsNavigator = createStackNavigator(
     [PV.RouteNames.EpisodeTranscriptScreen]: {
       screen: EpisodeTranscriptScreen
     }
-  },
-  {
-    defaultNavigationOptions,
-    initialRouteName: PV.RouteNames.PodcastsScreen,
-    navigationOptions: {
-      // tabBarAccessibilityLabel: translate('Episodes'),
-      tabBarIcon: ({ tintColor }: { tintColor: any }) => (
-        <Image source={PV.Tabs.Podcasts.icon} style={{ tintColor }} resizeMode={'contain'} />
-      ),
-      tabBarLabel: (props) => <TabBarLabel {...props} tabKey='Podcasts' />,
-      tabBarTestID: 'tab_podcasts_screen'.prependTestId()
-    }
   }
 )
 
@@ -132,112 +120,24 @@ const EpisodesNavigator = createStackNavigator(
     [PV.RouteNames.EpisodeTranscriptScreen]: {
       screen: EpisodeTranscriptScreen
     }
-  },
-  {
-    defaultNavigationOptions,
-    navigationOptions: {
-      tabBarIcon: ({ tintColor }: { tintColor: any }) => (
-        <Image source={PV.Tabs.Episodes.icon} style={{ tintColor }} resizeMode={'contain'} />
-      ),
-      // tabBarAccessibilityLabel: translate('Episodes'),
-      tabBarLabel: (props) => <TabBarLabel {...props} tabKey='Episodes' />,
-      tabBarTestID: 'tab_episodes_screen'.prependTestId()
-    }
   }
 )
 
 const ClipsNavigator = createStackNavigator(
   {
     [PV.RouteNames.ClipsScreen]: ClipsScreen
-  },
-  {
-    defaultNavigationOptions,
-    navigationOptions: {
-      // tabBarAccessibilityLabel: translate('Clips'),
-      tabBarIcon: ({ tintColor }: { tintColor: any }) =>
-        <Image source={PV.Tabs.Clips.icon} style={{ tintColor }} resizeMode={'contain'} />,
-      tabBarLabel: (props) => <TabBarLabel {...props} tabKey='Clips' />,
-      tabBarTestID: 'tab_clips_screen'.prependTestId()
-    }
   }
 )
 
 const SearchNavigator = createStackNavigator(
   {
     [PV.RouteNames.SearchScreen]: { screen: SearchScreen, path: '' }
-  },
-  {
-    defaultNavigationOptions
   }
 )
 
 const FilterNavigator = createStackNavigator(
   {
     [PV.RouteNames.FilterScreen]: { screen: FilterScreen, path: '' }
-  },
-  {
-    defaultNavigationOptions
-  }
-)
-
-const MoreNavigator = createStackNavigator(
-  {
-    [PV.RouteNames.MoreScreen]: MoreScreen,
-    [PV.RouteNames.SettingsScreen]: SettingsScreen,
-    [PV.RouteNames.SettingsScreenAccount]: SettingsScreenAccount,
-    [PV.RouteNames.SettingsScreenAdvanced]: SettingsScreenAdvanced,
-    [PV.RouteNames.SettingsScreenOther]: SettingsScreenOther,
-    [PV.RouteNames.SettingsScreenDownloads]: SettingsScreenDownloads,
-    [PV.RouteNames.SettingsScreenHistory]: SettingsScreenHistory,
-    [PV.RouteNames.SettingsScreenPlayer]: SettingsScreenPlayer,
-    [PV.RouteNames.SettingsScreenQueue]: SettingsScreenQueue,
-    [PV.RouteNames.SettingsScreenTracking]: SettingsScreenTracking,
-    [PV.RouteNames.MembershipScreen]: {
-      screen: MembershipScreen,
-      path: PV.DeepLinks.Membership.path
-    },
-    [PV.RouteNames.AppModeScreen]: AppModeScreen,
-    [PV.RouteNames.ContactScreen]: {
-      screen: ContactScreen,
-      path: PV.DeepLinks.Contact.path
-    },
-    [PV.RouteNames.ContactXMPPChatScreen]: {
-      screen: ContactXMPPChatScreen,
-      path: PV.DeepLinks.XMPP.path
-    },
-    [PV.RouteNames.ContributeScreen]: {
-      screen: ContributeScreen,
-      path: PV.DeepLinks.Contribute.path
-    },
-    [PV.RouteNames.AboutScreen]: {
-      screen: AboutScreen,
-      path: PV.DeepLinks.About.path
-    },
-    [PV.RouteNames.TermsOfServiceScreen]: {
-      screen: TermsOfServiceScreen,
-      path: PV.DeepLinks.Terms.path
-    },
-    [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
-    [PV.RouteNames.FAQScreen]: FAQScreen,
-    [PV.RouteNames.V4VProvidersScreen]: V4VProvidersScreen,
-    [PV.RouteNames.V4VProvidersAlbyScreen]: V4VProvidersAlbyScreen,
-    [PV.RouteNames.V4VInfoStreamingSatsScreen]: V4VInfoStreamingSatsScreen
-  },
-  {
-    defaultNavigationOptions,
-    initialRouteName: PV.RouteNames.MoreScreen,
-    navigationOptions: {
-      // tabBarAccessibilityLabel: translate('More'),
-      tabBarIcon: ({ tintColor }: { tintColor: any }) => {
-        return (
-          <View>
-            <Image source={PV.Tabs.More.icon} style={{ tintColor }} resizeMode={'contain'} />
-          </View>
-        )
-      },
-      tabBarLabel: (props) => <TabBarLabel {...props} tabKey='More' />,
-      tabBarTestID: 'tab_more_screen'.prependTestId()
-    }
   }
 )
 
@@ -265,24 +165,6 @@ const MyLibraryNavigator = createStackNavigator(
     [PV.RouteNames.ProfileScreen]: {
       screen: ProfileScreen,
       path: PV.DeepLinks.Profile.path
-    }
-  },
-  {
-    initialRouteName: PV.RouteNames.MyLibraryScreen,
-    defaultNavigationOptions,
-    navigationOptions: {
-      tabBarAccessibilityLabel: translate('My Library'),
-      // eslint-disable-next-line react/prop-types
-      tabBarIcon: ({ tintColor }: { tintColor: any }) => {
-        return (
-          <View>
-            <Image source={PV.Tabs.MyLibrary.icon} style={{ tintColor }} resizeMode={'contain'} />
-            <DownloadsActiveBadge />
-          </View>
-        )
-      },
-      tabBarLabel: (props) => <TabBarLabel {...props} tabKey='My Library' />,
-      tabBarTestID: 'tab_my_library_screen'.prependTestId()
     }
   }
 )

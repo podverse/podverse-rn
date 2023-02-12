@@ -78,5 +78,7 @@ export const RouteNames = {
   V4VProvidersScreen: 'V4VProvidersScreen',
   V4VProvidersAlbyScreen: 'V4VProvidersAlbyScreen',
   V4VProvidersAlbyLoginScreen: 'V4VProvidersAlbyLoginScreen',
-  WebPageScreen: 'WebPageScreen'
+  WebPageScreen: 'WebPageScreen',
+  RootTabs: 'RootTabs',
+  RootAddPodcastByRSSURLStack: 'RootAddPodcastByRSSURLStack'
 }
