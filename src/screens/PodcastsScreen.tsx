@@ -3,7 +3,8 @@ import messaging from '@react-native-firebase/messaging'
 import debounce from 'lodash/debounce'
 import { convertToNowPlayingItem, createEmailLinkUrl, Podcast, NowPlayingItem } from 'podverse-shared'
 import qs from 'qs'
-import { Alert, AppState, Dimensions, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
+import { Alert, AppState, Dimensions, Linking,
+  PermissionsAndroid, Platform, StyleSheet, View as RNView } from 'react-native'
 import { CarPlay } from 'react-native-carplay'
 import Config from 'react-native-config'
 import { endConnection as iapEndConnection, initConnection as iapInitConnection } from 'react-native-iap'
@@ -200,6 +201,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
 
     iapInitConnection()
+
+    if (Platform.OS === 'android') {
+      // PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION)
+    }
 
     messaging().onNotificationOpenedApp((remoteMessage) => {
       const podcastId = remoteMessage?.data?.podcastId
