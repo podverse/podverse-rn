@@ -190,7 +190,6 @@ module.exports = async () => {
         PVEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
       }
 
-
       const [clipHasEnded, nowPlayingItem] = await Promise.all([getClipHasEnded(), getNowPlayingItemLocally()])
 
       if (nowPlayingItem) {

@@ -13,14 +13,17 @@ const testIDPrefix = 'faq_screen'
 
 export class FAQScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.state = {
       isLoading: true
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: 'FAQ'
   })
 

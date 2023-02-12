@@ -21,7 +21,7 @@ const testIDPrefix = 'start_podcast_from_time_screen'
 
 export class StartPodcastFromTimeScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     const podcast = this.props.navigation.getParam('podcast')
     const podcastId = podcast?.id || podcast?.addByRSSPodcastFeedUrl
@@ -33,9 +33,12 @@ export class StartPodcastFromTimeScreen extends React.Component<Props, State> {
       podcastId,
       startPodcastFromTime
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = ({ navigation }) => {
+  navigationOptions = ({ navigation }) => {
     const handleDismiss = navigation.getParam('handleDismiss')
     return {
       title: translate('Preset podcast start time'),

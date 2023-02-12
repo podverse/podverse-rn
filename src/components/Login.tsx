@@ -22,7 +22,7 @@ const testIDPrefix = 'login'
 
 export class Login extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
     this.state = {
       email: '',
       password: '',

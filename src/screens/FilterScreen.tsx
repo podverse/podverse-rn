@@ -44,7 +44,7 @@ const testIDPrefix = 'filter_screen'
 
 export class FilterScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     const flatCategoryItems = this.props.navigation.getParam('flatCategoryItems') || []
 
@@ -59,9 +59,12 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedSortItemKey: '',
       isOffline: false
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = ({ navigation }) => {
+  navigationOptions = ({ navigation }) => {
     const filterScreenTitle = navigation.getParam('filterScreenTitle')
 
     return {

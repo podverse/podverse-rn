@@ -86,7 +86,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
   _unsubscribe: any | null
 
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.shouldLoad = true
 
@@ -115,22 +115,17 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = ({ navigation }) => {
-    const _screenTitle = navigation.getParam('_screenTitle')
-
-    return {
-      title: _screenTitle
-    } as NavigationStackOptions
-  }
+  navigationOptions = (): NavigationStackOptions => ({
+    title: getScreenTitle()
+  })
 
   async componentDidMount() {
     super.componentDidMount()
-
-    this.props.navigation.setParams({
-      _screenTitle: getScreenTitle()
-    })
 
     PVEventEmitter.on(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
     PVEventEmitter.on(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)

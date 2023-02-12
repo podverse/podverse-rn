@@ -8,7 +8,14 @@ import { trackPageView } from '../services/tracking'
 type Props = any
 
 export class PrivacyPolicyScreen extends React.Component<Props> {
-  static navigationOptions = () => ({
+  constructor(props: Props) {
+    super()
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
+  }
+
+  navigationOptions = () => ({
     title: translate('Privacy Policy')
   })
 

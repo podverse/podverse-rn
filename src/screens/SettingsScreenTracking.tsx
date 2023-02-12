@@ -18,10 +18,13 @@ const testIDPrefix = 'settings_screen_tracking'
 
 export class SettingsScreenTracking extends React.Component<Props> {
   constructor(props: Props) {
-    super(props)
+    super()
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('Tracking')
   })
 

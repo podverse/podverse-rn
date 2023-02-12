@@ -36,7 +36,7 @@ const getTabTitle = (tabKey: TabKey, appMode: AppModes) => {
 }
 export class TabBarLabel extends React.Component<Props> {
   constructor(props: Props) {
-    super(props)
+    super()
     this.state = {}
   }
 

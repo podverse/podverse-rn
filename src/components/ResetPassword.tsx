@@ -21,7 +21,7 @@ const testIDPrefix = 'reset_password'
 
 export class ResetPassword extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
     this.state = {
       email: '',
       submitIsDisabled: true

@@ -39,27 +39,27 @@ const testIDPrefix = 'add_podcast_by_rss_screen'
 
 export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
     this.state = {
       password: '',
       username: ''
     }
-  }
 
-  static navigationOptions = ({ navigation }) => ({
-    title: translate('Add Custom RSS Feed'),
-    headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-    headerRight: () => (
-      <NavHeaderButtonText
-        accessibilityHint={translate('ARIA HINT - subscribe to this custom RSS feed')}
-        accessibilityLabel={translate('Save')}
-        disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
-        handlePress={navigation.getParam('_handleSavePodcastByRSSURL')}
-        testID={`${testIDPrefix}_save`}
-        text={translate('Save')}
-      />
-    )
-  })
+    props.navigation.setOptions({
+      headerTitle: translate('Add Custom RSS Feed'),
+      headerLeft: () => <NavDismissIcon handlePress={props.navigation.dismiss} testID={testIDPrefix} />,
+      headerRight: () => (
+        <NavHeaderButtonText
+          accessibilityHint={translate('ARIA HINT - subscribe to this custom RSS feed')}
+          accessibilityLabel={translate('Save')}
+          disabled={props.navigation.getParam('_savePodcastByRSSUrlIsLoading')}
+          handlePress={props.navigation.getParam('_handleSavePodcastByRSSURL')}
+          testID={`${testIDPrefix}_save`}
+          text={translate('Save')}
+        />
+      )
+    })
+  }
 
   componentDidMount() {
     this.props.navigation.setParams({

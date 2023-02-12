@@ -45,7 +45,7 @@ const testIDPrefix = 'playlist_screen'
 
 export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
     const subscribedPlaylistIds = safelyUnwrapNestedVariable(
       () => this.global.session.userInfo.subscribedPlaylistIds,
       []

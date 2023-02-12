@@ -28,13 +28,20 @@ const _sectionInfoKey = 'sectionInfo'
 const _infoStreamingSats = 'infoStreamingSats'
 
 export class V4VProvidersScreen extends React.Component<Props, State> {
-  state = {
-    isLoading: false,
-    localSenderName: '',
-    options: []
+  constructor(props: Props) {
+    super()
+
+    this.state = {
+      isLoading: false,
+      localSenderName: '',
+      options: []
+    }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: 'V4V'
   })
 

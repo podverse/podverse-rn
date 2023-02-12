@@ -39,7 +39,7 @@ const testIDPrefix = 'playlists_add_to_screen'
 
 export class PlaylistsAddToScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
     const { navigation } = props
     const { isLoggedIn } = this.global.session
     this.state = {

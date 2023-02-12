@@ -16,7 +16,7 @@ type Props = any
 
 export class PlayerEvents extends React.PureComponent<Props> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     this._playerCannotStreamWithoutWifi = debounce(this._playerCannotStreamWithoutWifi, 3000, {
       leading: true,

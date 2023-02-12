@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, Animated, Easing, Image, View, Platform } from 'react-native'
+import { Config } from 'react-native-config'
 import { PV } from '../resources'
 
-const INTERSTITIAL_LOADING_SECONDS = 6
+const INTERSTITIAL_LOADING_SECONDS = Config.IS_DEV ? 1 : 6
 
 export const LoadingInterstitialView = () => {
   const bounceHeight = 20

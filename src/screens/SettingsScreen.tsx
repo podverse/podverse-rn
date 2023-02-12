@@ -20,14 +20,17 @@ const testIDPrefix = 'settings_screen'
 
 export class SettingsScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.state = {
       showDeleteDownloadedEpisodesDialog: false
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('Settings')
   })
 

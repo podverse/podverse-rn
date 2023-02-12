@@ -48,7 +48,7 @@ type State = {
 const testIDPrefix = 'funding_screen'
 
 export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
-  constructor() {
+  constructor(props: Props) {
     super()
     this.state = {
       boostTransactions: [],
@@ -58,14 +58,15 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
       localAppBoostAmount: 0,
       localAppStreamingAmount: 0
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => {
-    return {
-      title: translate('Funding'),
-      headerRight: null
-    }
-  }
+  navigationOptions = () => ({
+    title: translate('Funding'),
+    headerRight: null
+  })
 
   componentDidMount() {
     const { player } = this.global

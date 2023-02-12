@@ -36,8 +36,8 @@ type State = {
 const testIDPrefix = 'v4v_providers_alby_screen'
 
 export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
-  constructor(props) {
-    super(props)
+  constructor(props: Props) {
+    super()
 
     const isLoadingWaitForEvent = !!this.props.navigation.getParam('isLoadingWaitForEvent')
 
@@ -45,9 +45,12 @@ export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
       isLoading: true,
       isLoadingWaitForEvent
     }
+
+    const options = this.navigationOptions()
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: 'Alby'
   })
 

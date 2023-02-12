@@ -23,16 +23,19 @@ const testIDPrefix = 'episode_transcript_screen'
 export class EpisodeTranscriptScreen extends React.Component<Props, State> {
   shouldLoad: boolean
 
-  constructor() {
+  constructor(props: Props) {
     super()
 
     this.state = {
       isLoading: true,
       parsedTranscript: []
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('Transcript')
   })
 

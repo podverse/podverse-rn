@@ -15,18 +15,19 @@ type Props = any
 const testIDPrefix = 'funding_podcast_episode_screen'
 
 export class FundingPodcastEpisodeScreen extends React.Component<Props> {
-  constructor() {
+  constructor(props: Props) {
     super()
     this.state = {}
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-      title: translate('Funding'),
-      headerRight: null
-    }
-  }
+  navigationOptions = ({ navigation }) => ({
+    headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
+    title: translate('Funding'),
+    headerRight: null
+  })
 
   componentDidMount() {
     trackPageView('/funding', 'Funding Screen')

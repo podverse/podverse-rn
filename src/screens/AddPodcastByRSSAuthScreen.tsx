@@ -27,7 +27,7 @@ const testIDPrefix = 'add_podcast_by_rss_auth_screen'
 
 export class AddPodcastByRSSAuthScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     const feedUrl = this.props.navigation.getParam('feedUrl')
 
@@ -38,13 +38,13 @@ export class AddPodcastByRSSAuthScreen extends React.Component<Props, State> {
       submitIsDisabled: true,
       username: ''
     }
-  }
 
-  static navigationOptions = ({ navigation }) => ({
-    title: '',
-    headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-    headerRight: null
-  })
+    props.navigation.setOptions({
+      headerTitle: '',
+      headerLeft: () => <NavDismissIcon handlePress={props.navigation.dismiss} testID={testIDPrefix} />,
+      headerRight: null
+    })
+  }
 
   checkIfSubmitIsDisabled = () => {
     const submitIsDisabled = !this.state.username || !this.state.password

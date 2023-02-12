@@ -71,7 +71,7 @@ export class ProfileScreen extends React.Component<Props, State> {
   shouldLoad: boolean
 
   constructor(props: Props) {
-    super(props)
+    super()
     this.shouldLoad = true
 
     const id = safelyUnwrapNestedVariable(() => this.global.session.userInfo.id, '')

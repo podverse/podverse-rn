@@ -30,7 +30,7 @@ const testIDPrefix = 'edit_profile_screen'
 
 export class EditProfileScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
     const { isPublic, name } = this.global.session?.userInfo || {}
 
     this.state = {
@@ -38,20 +38,20 @@ export class EditProfileScreen extends React.Component<Props, State> {
       name,
       selectedIsPublicKey: isPublic
     }
-  }
 
-  static navigationOptions = ({ navigation }) => ({
-    title: translate('Edit My Profile'),
-    headerRight: () => (
-      <NavHeaderButtonText
-        accessibilityHint={translate('ARIA HINT - save these changes to your profile')}
-        accessibilityLabel={translate('Save')}
-        handlePress={navigation.getParam('updateUser')}
-        testID={testIDPrefix}
-        text={translate('Save')}
-      />
-    )
-  })
+    props.navigation.setOptions({
+      headerTitle: translate('Edit My Profile'),
+      headerRight: () => (
+        <NavHeaderButtonText
+          accessibilityHint={translate('ARIA HINT - save these changes to your profile')}
+          accessibilityLabel={translate('Save')}
+          handlePress={props.navigation.getParam('updateUser')}
+          testID={testIDPrefix}
+          text={translate('Save')}
+        />
+      )
+    })
+  }
 
   async componentDidMount() {
     this.props.navigation.setParams({ updateUser: this._updateUser })

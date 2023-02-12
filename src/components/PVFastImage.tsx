@@ -34,7 +34,7 @@ type State = {
 
 export class PVFastImage extends React.PureComponent<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.state = {
       hasError: false,

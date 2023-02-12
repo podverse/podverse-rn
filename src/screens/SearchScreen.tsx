@@ -47,7 +47,7 @@ export class SearchScreen extends React.Component<Props, State> {
   searchBarInput: any
 
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.shouldLoad = true
 
@@ -64,9 +64,12 @@ export class SearchScreen extends React.Component<Props, State> {
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = ({ navigation }) => ({
+  navigationOptions = ({ navigation }) => ({
     title: translate('Find'),
     headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
     headerRight: () => null

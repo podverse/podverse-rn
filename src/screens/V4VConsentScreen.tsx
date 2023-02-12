@@ -14,19 +14,20 @@ type State = {
 const testIDPrefix = 'value_tag_consent_screen'
 
 export class V4VConsentScreen extends React.Component<Props, State> {
-  constructor() {
+  constructor(props: Props) {
     super()
     this.state = {
       checkboxSelected: false
     }
+
+    const options = this.navigationOptions()
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = ({}) => {
-    return {
-      headerRight: null,
-      title: null
-    }
-  }
+  navigationOptions = () => ({
+    headerRight: null,
+    title: null
+  })
 
   componentDidMount() {
     trackPageView('/value-for-value-consent', 'Value for Value - Consent Screen')

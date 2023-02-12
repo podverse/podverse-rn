@@ -10,12 +10,17 @@ type Props = any
 const testIDPrefix = 'value_tag_info_streaming_sats_screen'
 
 export class V4VInfoStreamingSatsScreen extends React.Component<Props> {
-  static navigationOptions = () => {
-    return {
-      headerRight: () => null,
-      title: null
-    }
+  constructor(props: Props) {
+    super()
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
+
+  navigationOptions = () => ({
+    headerRight: () => null,
+    title: null
+  })
 
   componentDidMount() {
     trackPageView('/value-for-value-info-streaming-sats', 'Value for Value Info Streaming Sats Screen')

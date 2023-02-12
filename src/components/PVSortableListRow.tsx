@@ -8,7 +8,7 @@ type Props = {
 
 export class PVSortableListRow extends React.Component<Props> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     this._active = new Animated.Value(0)
 

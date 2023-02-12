@@ -71,8 +71,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   scrollView: any
   handlePressClipInfo: any
 
-  constructor(props) {
-    super(props)
+  constructor(props: Props) {
+    super()
 
     this.state = {
       accessibilityItemSelected: accessibilityNowPlayingInfo,

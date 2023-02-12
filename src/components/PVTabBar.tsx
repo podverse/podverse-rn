@@ -1,9 +1,7 @@
 import React from 'react'
-import { BottomTabBar } from 'react-navigation-tabs'
+// import { BottomTabBar } from '@react-navigation/bottom-tabs'
 import { useGlobal } from 'reactn'
 import { SafeAreaView } from '../components'
-import { PV } from '../resources'
-import { darkTheme } from '../styles'
 import { MiniPlayer } from './MiniPlayer'
 
 type Props = {
@@ -17,13 +15,7 @@ export const PVTabBar = (props: Props) => {
   return (
     <SafeAreaView style={{ flex: 0 }} testID='tabbar'>
       {player && player.showMiniPlayer && player.nowPlayingItem && <MiniPlayer navigation={navigation} />}
-      <BottomTabBar
-        {...props}
-        activeTintColor={PV.Colors.skyLight}
-        inactiveTintColor={PV.Colors.white}
-        style={darkTheme.tabbar}
-        labelPosition='below-icon'
-      />
+      {/* <BottomTabBar {...props} /> */}
     </SafeAreaView>
   )
 }

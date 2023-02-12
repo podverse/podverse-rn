@@ -34,7 +34,7 @@ export class HistoryScreen extends HistoryIndexListenerScreen<Props, State> {
   shouldLoad: boolean
 
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.shouldLoad = true
 
@@ -47,9 +47,12 @@ export class HistoryScreen extends HistoryIndexListenerScreen<Props, State> {
       queryPage: 1,
       viewType: props.navigation.getParam('viewType')
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = ({ navigation }) => {
+  navigationOptions = ({ navigation }) => {
     const { globalTheme } = getGlobal()
     const isTransparent = !!navigation.getParam('isTransparent')
     const textColor = isTransparent ? globalTheme.text.color : ''

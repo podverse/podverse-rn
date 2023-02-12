@@ -42,7 +42,7 @@ const testIDPrefix = 'settings_screen_other'
 
 export class SettingsScreenOther extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     const { customRSSParallelParserLimit } = this.global
 
@@ -53,9 +53,12 @@ export class SettingsScreenOther extends React.Component<Props, State> {
       customRSSParallelParserLimit: customRSSParallelParserLimit?.toString(),
       isLoading: false
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('Other')
   })
 

@@ -21,8 +21,8 @@ const testIDPrefix = 'media_player_carousel_comments'
 const _fileName = 'src/components/MediaPlayerCarouselComments.tsx'
 
 export class MediaPlayerCarouselComments extends React.PureComponent<Props, State> {
-  constructor(props) {
-    super(props)
+  constructor(props: Props) {
+    super()
     this.state = {
       commentNodes: null,
       isLoading: true

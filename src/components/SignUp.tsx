@@ -40,7 +40,7 @@ export class SignUp extends React.Component<Props, State> {
   keyboardDidHide: EmitterSubscription
 
   constructor(props: Props) {
-    super(props)
+    super()
     this.state = {
       email: '',
       hasAtLeastXCharacters: false,

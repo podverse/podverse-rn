@@ -16,11 +16,14 @@ const testIDPrefix = 'sleep_timer_screen'
 
 export class SleepTimerScreen extends React.Component<Props> {
   constructor(props: Props) {
-    super(props)
+    super()
     this.state = {}
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('Sleep Timer'),
     headerRight: () => <RNView />
   })

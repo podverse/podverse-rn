@@ -146,7 +146,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _unsubscribe: any | null
 
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.shouldLoad = true
 
@@ -174,26 +174,22 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = ({ navigation }) => {
-    const _screenTitle = navigation.getParam('_screenTitle')
-    return {
-      title: _screenTitle,
-      headerRight: () => (
-        <RNView style={core.row}>
-          <NavPodcastsViewIcon />
-        </RNView>
-      )
-    } as NavigationStackOptions
-  }
+  navigationOptions = (): NavigationStackOptions => ({
+    title: getScreenTitle(),
+    headerRight: () => (
+      <RNView style={core.row}>
+        <NavPodcastsViewIcon />
+      </RNView>
+    )
+  })
 
   async componentDidMount() {
     const { navigation } = this.props
-
-    this.props.navigation.setParams({
-      _screenTitle: getScreenTitle()
-    })
 
     if (CarPlay.connected) {
       CarPlay.bridge.checkForConnection()
@@ -264,7 +260,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     const trackingConsentAcknowledged = await getTrackingConsentAcknowledged()
     if (!trackingConsentAcknowledged) {
-      await navigation.navigate(PV.RouteNames.TrackingConsentScreen)
+      // await navigation.navigate(PV.RouteNames.TrackingConsentScreen)
     }
 
     try {

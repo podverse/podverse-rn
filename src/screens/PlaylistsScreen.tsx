@@ -38,16 +38,19 @@ const testIDPrefix = 'playlists_screen'
 
 export class PlaylistsScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
     const { isLoggedIn } = this.global.session
 
     this.state = {
       isLoading: isLoggedIn,
       isLoadingMore: false
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('Playlists')
   })
 

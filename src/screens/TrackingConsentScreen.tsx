@@ -39,20 +39,21 @@ ${translate('trackingTermsText5')}
 
 export class TrackingConsentScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.state = {
       iOSAlreadyDetermined: false
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => {
-    return {
-      title: null,
-      headerLeft: null,
-      headerRight: () => <RNView />
-    }
-  }
+  navigationOptions = () => ({
+    title: null,
+    headerLeft: null,
+    headerRight: () => <RNView />
+  })
 
   async componentDidMount() {
     if (Platform.OS === 'ios') {

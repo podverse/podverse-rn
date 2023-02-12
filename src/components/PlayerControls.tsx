@@ -54,7 +54,7 @@ const testIDPrefix = 'player_controls'
 
 export class PlayerControls extends React.PureComponent<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.state = {
       progressValue: 0,

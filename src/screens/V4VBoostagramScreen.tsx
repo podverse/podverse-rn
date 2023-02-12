@@ -57,7 +57,7 @@ const testIDPrefix = 'boostagram_screen'
 export class V4VBoostagramScreen extends React.Component<Props, State> {
   explosion: ConfettiCannon | null
 
-  constructor() {
+  constructor(props: Props) {
     super()
     this.state = {
       boostIsSending: false,
@@ -68,9 +68,12 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
       localBoostAmount: 0,
       localAppBoostAmount: 0
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = ({ navigation }) => {
+  navigationOptions = ({ navigation }) => {
     const showBackButton = navigation.getParam('showBackButton')
     return {
       ...(!!showBackButton

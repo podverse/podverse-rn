@@ -63,7 +63,7 @@ const testIDPrefix = 'make_clip_screen'
 
 export class MakeClipScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
     const { nowPlayingItem = {} } = this.global.player
     const isEditing = this.props.navigation.getParam('isEditing')
     const initialPrivacy = this.props.navigation.getParam('initialPrivacy')
@@ -81,9 +81,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
       startTime: isEditing ? nowPlayingItem.clipStartTime : null,
       shouldClearClipInfo: false
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = ({ navigation }) => {
+  navigationOptions = ({ navigation }) => {
     const globalTheme = navigation.getParam('globalTheme')
     const isLoggedIn = navigation.getParam('isLoggedIn')
     return {

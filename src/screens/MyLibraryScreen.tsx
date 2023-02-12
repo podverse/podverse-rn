@@ -18,11 +18,18 @@ type State = {
 const testIDPrefix = 'my_library_screen'
 
 export class MyLibraryScreen extends React.Component<Props, State> {
-  state = {
-    options: []
+  constructor(props: Props) {
+    super()
+
+    this.state = {
+      options: []
+    }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('My Library')
   })
 

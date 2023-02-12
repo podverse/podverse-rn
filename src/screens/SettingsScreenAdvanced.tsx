@@ -22,10 +22,13 @@ const testIDPrefix = 'settings_screen_advanced'
 
 export class SettingsScreenAdvanced extends React.Component<Props> {
   constructor(props: Props) {
-    super(props)
+    super()
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('Advanced')
   })
 

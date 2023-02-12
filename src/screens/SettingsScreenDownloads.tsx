@@ -55,12 +55,15 @@ const testIDPrefix = 'settings_screen_downloads'
 
 export class SettingsScreenDownloads extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.state = {}
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('Downloads')
   })
 

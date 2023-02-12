@@ -12,7 +12,7 @@ type Props = {
 
 export class OnboardingScreen extends React.Component<Props> {
   constructor(props: Props) {
-    super(props)
+    super()
     this.state = {
       name: ''
     }

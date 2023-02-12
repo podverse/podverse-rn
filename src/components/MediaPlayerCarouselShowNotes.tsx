@@ -19,8 +19,8 @@ type State = {
 const testIDPrefix = 'media_player_carousel_show_notes'
 
 export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, State> {
-  constructor(props) {
-    super(props)
+  constructor(props: Props) {
+    super()
     this.state = {
       showShortHtml: true
     }

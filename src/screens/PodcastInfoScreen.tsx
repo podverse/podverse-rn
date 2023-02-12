@@ -16,7 +16,7 @@ const testIDPrefix = 'podcast_info_screen'
 
 export class PodcastInfoScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     const podcast = this.props.navigation.getParam('podcast')
     const podcastId = podcast?.id || podcast?.addByRSSPodcastFeedUrl || this.props.navigation.getParam('podcastId')
@@ -25,9 +25,12 @@ export class PodcastInfoScreen extends React.Component<Props, State> {
       podcast,
       podcastId
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('More Info'),
     headerRight: null
   })

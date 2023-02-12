@@ -10,7 +10,14 @@ type Props = any
 const testIDPrefix = 'value_tag_preview_screen'
 
 export class V4VPreviewScreen extends React.Component<Props> {
-  static navigationOptions = ({ navigation }) => {
+  constructor(props: Props) {
+    super()
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
+  }
+
+  navigationOptions = ({ navigation }) => {
     const { globalTheme } = getGlobal()
 
     return {

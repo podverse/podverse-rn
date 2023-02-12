@@ -140,7 +140,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   listRef = null
 
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.shouldLoad = true
 

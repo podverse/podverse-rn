@@ -18,18 +18,18 @@ const testIDPrefix = 'email_verification_screen'
 
 export class EmailVerificationScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     const email = props.navigation.getParam('email')
     this.state = {
       email,
       isResendingEmail: false
     }
-  }
 
-  static navigationOptions = () => ({
-    title: translate('Verify Your Email')
-  })
+    props.navigation.setOptions({
+      headerTitle: translate('Verify Your Email')
+    })
+  }
 
   componentDidMount() {
     trackPageView('/email-verification', 'Email Verification Screen')

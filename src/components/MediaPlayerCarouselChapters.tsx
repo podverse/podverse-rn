@@ -40,8 +40,8 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   listRef: any | null = null
   itemHeights: any[]
 
-  constructor(props) {
-    super(props)
+  constructor(props: Props) {
+    super()
 
     this.itemHeights = []
 

@@ -34,17 +34,17 @@ type State = {
 const testIDPrefix = 'downloads_screen'
 
 export class DownloadsScreen extends React.Component<Props, State> {
-  constructor() {
+  constructor(props: Props) {
     super()
     this.state = {
       selectedItem: null,
       showActionSheet: false
     }
-  }
 
-  static navigationOptions = () => ({
-    title: translate('Downloads')
-  })
+    props.navigation.setOptions({
+      headerTitle: translate('Downloads')
+    })
+  }
 
   componentDidMount() {
     trackPageView('/downloads', 'Downloads Screen')

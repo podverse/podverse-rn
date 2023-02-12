@@ -59,7 +59,7 @@ const getScreenTitle = () => {
 
 export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     const episode = this.props.navigation.getParam('episode')
     const episodeId = episode?.id || this.props.navigation.getParam('episodeId')
@@ -93,9 +93,12 @@ export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
       totalChapters: 0,
       totalClips: 0
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = ({ navigation }) => {
+  navigationOptions = ({ navigation }) => {
     const episodeId = navigation.getParam('episodeId')
     const episodeTitle = navigation.getParam('episodeTitle')
     const podcastTitle = navigation.getParam('podcastTitle')
@@ -112,7 +115,7 @@ export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
       podcast?.value?.length > 0
 
     return {
-      title: getScreenTitle(),
+      headerTitle: getScreenTitle(),
       headerRight: () => (
         <RNView style={core.row}>
           {/* Always show NavFundingIcon in dev, otherwise funding tag will be unavailable to Appium tests. */}

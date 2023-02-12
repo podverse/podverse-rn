@@ -49,7 +49,7 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
   shouldLoad: boolean
 
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.shouldLoad = true
 

@@ -26,14 +26,17 @@ const testIDPrefix = 'settings_screen_account'
 
 export class SettingsScreenAccount extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.state = {
       deleteAccountDialogText: ''
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('Account')
   })
 

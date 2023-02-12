@@ -37,7 +37,7 @@ type State = {
 
 export class V4VWalletSettings extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.state = {
       localBoostAmount: 0,

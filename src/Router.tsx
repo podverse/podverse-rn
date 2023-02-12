@@ -2,9 +2,9 @@ import { Image, View } from 'react-native'
 import Config from 'react-native-config'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator, NavigationStackOptions, NavigationStackProp } from 'react-navigation-stack'
-import { createBottomTabNavigator } from 'react-navigation-tabs'
+// import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { Component } from 'react'
-import { DownloadsActiveBadge, ErrorBoundary, PVTabBar, TabBarLabel } from './components'
+import { DownloadsActiveBadge, ErrorBoundary, TabBarLabel } from './components'
 import { PV } from './resources'
 import {
   AboutScreen,
@@ -71,24 +71,8 @@ import {
   V4VProvidersAlbyLoginScreen,
   WebPageScreen
 } from './screens'
-import { darkTheme } from './styles'
 import { PodcastInfoScreen } from './screens/PodcastInfoScreen'
 import { translate } from './lib/i18n'
-
-const defaultNavigationOptions = () => {
-  return {
-    headerStyle: { backgroundColor: PV.Colors.ink, shadowColor: 'transparent' },
-    title: PV.Tabs.Podcasts.title,
-    headerTintColor: darkTheme.text.color,
-    headerTitleStyle: {
-      fontWeight: 'bold'
-    }
-  //   headerRight: () => <NavSearchIcon navigation={navigation} />,
-  //   // Prevent white screen flash on navigation on Android
-  //   ...(Platform.OS === 'android' ? { animationEnabled: false } : {}),
-  //   ...(Platform.OS === 'android' ? { backgroundColor: 'transparent' } : {})
-  } as NavigationStackOptions
-}
 
 const AuthNavigator = createStackNavigator(
   {
@@ -345,14 +329,14 @@ tabsList.forEach((tabName: string) => {
   tabs[tabName] = allTabs[tabName]
 })
 
-const TabNavigator = createBottomTabNavigator(tabs, {
-  tabBarComponent: (props: any) => <PVTabBar {...props} />,
-  tabBarOptions: {
-    safeAreaInset: {
-      bottom: 'never'
-    }
-  }
-})
+// const TabNavigator = createBottomTabNavigator(tabs, {
+//   tabBar: (props: any) => <PVTabBar {...props} />,
+//   tabBarOptions: {
+//     safeAreaInset: {
+//       bottom: 'never'
+//     }
+//   }
+// })
 
 const PlayerNavigator = createStackNavigator(
   {
@@ -502,7 +486,6 @@ const FeatureVideosStack = createStackNavigator({
 
 const MainApp = createStackNavigator(
   {
-    [PV.RouteNames.TabNavigator]: { screen: TabNavigator, path: '' },
     [PV.RouteNames.AuthNavigator]: AuthNavigator,
     [PV.RouteNames.PlayerNavigator]: { screen: PlayerNavigator, path: '' },
     PlaylistsAddToNavigator,

@@ -34,15 +34,18 @@ const testIDPrefix = 'membership_screen'
 
 export class MembershipScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.state = {
       disableButton: false,
       isLoading: true
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('Membership')
   })
 

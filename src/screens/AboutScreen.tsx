@@ -26,9 +26,13 @@ type Props = any
 const translatorsList = parseCommaDelimitedNamesAndURLsString(_translatorsField) as Translator[]
 
 export class AboutScreen extends React.Component<Props> {
-  static navigationOptions = () => ({
-    title: translate('About')
-  })
+  constructor(props: Props) {
+    super()
+
+    props.navigation.setOptions({
+      headerTitle: translate('About')
+    })
+  }
 
   componentDidMount() {
     trackPageView('/about', 'About Screen')

@@ -53,7 +53,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
   willFocusListener: any
 
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.state = {
       destroyPlayer: false,
@@ -199,7 +199,6 @@ export class PVVideo extends React.PureComponent<Props, State> {
       if (nowPlayingItem.episodeMediaUrl === lastNowPlayingItemUri && lastVideoPosition) {
         this._handleSeekTo(lastVideoPosition, handlePlayAfterSeek)
       } else {
-        
         if (nowPlayingItem.clipId && nowPlayingItem.clipStartTime) {
           const startTime = parseInt(nowPlayingItem.clipStartTime, 10) || 0
           this._handleSeekTo(startTime, handlePlayAfterSeek)
@@ -213,7 +212,6 @@ export class PVVideo extends React.PureComponent<Props, State> {
             handlePlayAfterSeek
           )
         }
-  
       }
 
       lastNowPlayingItemUri = nowPlayingItem.episodeMediaUrl || ''

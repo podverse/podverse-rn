@@ -58,11 +58,11 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
       showActionSheet: false,
       viewType
     }
-  }
 
-  static navigationOptions = ({ navigation }) => ({
-    title: navigation.getParam('title') || ''
-  })
+    props.navigation.setOptions({
+      headerTitle: props.navigation.getParam('title') || ''
+    })
+  }
 
   componentDidMount() {
     trackPageView('/episode/mediaRefs', 'EpisodeMediaRef Screen')

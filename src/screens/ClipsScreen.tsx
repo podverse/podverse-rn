@@ -62,7 +62,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   shouldLoad: boolean
 
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.shouldLoad = true
 
@@ -88,11 +88,11 @@ export class ClipsScreen extends React.Component<Props, State> {
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
-  }
 
-  static navigationOptions = () => ({
-    title: translate('Clips')
-  })
+    props.navigation.setOptions({
+      headerTitle: translate('Clips')
+    })
+  }
 
   async componentDidMount() {
     const { queryFrom } = this.state

@@ -33,7 +33,14 @@ ${translate('TermsOfServiceScreenMatomoTrackingText4')}
 ${translate('TermsOfServiceScreenMatomoTrackingText5')}`
 
 export class TermsOfServiceScreen extends React.Component<Props> {
-  static navigationOptions = () => ({
+  constructor(props: Props) {
+    super()
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
+  }
+
+  navigationOptions = () => ({
     title: translate('Terms of Service')
   })
 

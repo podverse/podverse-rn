@@ -22,8 +22,8 @@ const getTestID = () => 'media_player_carousel_clips'
 export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   shouldLoad: boolean
 
-  constructor(props) {
-    super(props)
+  constructor(props: Props) {
+    super()
     this.shouldLoad = true
   }
 

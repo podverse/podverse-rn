@@ -16,10 +16,13 @@ const testIDPrefix = 'purchasing_screen'
 
 export class PurchasingScreen extends React.Component<Props> {
   constructor(props: Props) {
-    super(props)
+    super()
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('Processing'),
     headerRight: () => null
   })

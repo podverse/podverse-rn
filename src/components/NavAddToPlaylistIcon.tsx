@@ -22,7 +22,7 @@ type State = {
 
 export class NavAddToPlaylistIcon extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.state = {
       showActionSheet: false

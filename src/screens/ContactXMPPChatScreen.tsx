@@ -12,9 +12,13 @@ type Props = {
 const testIDPrefix = 'contact_xmpp_chat_screen'
 
 export class ContactXMPPChatScreen extends React.Component<Props> {
-  static navigationOptions = () => ({
-    title: translate('Official chat')
-  })
+  constructor(props: Props) {
+    super()
+
+    props.navigation.setOptions({
+      headerTitle: translate('Official chat')
+    })
+  }
 
   componentDidMount() {
     trackPageView('/contact-xmpp-chat-screen', 'Contact XMPP Chat Screen')

@@ -23,16 +23,19 @@ const testIDPrefix = 'settings_screen_player'
 
 export class SettingsScreenPlayer extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
 
     this.state = {
       maximumSpeedOptionSelected: maximumSpeedSelectOptions[1]
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('Player')
   })
 

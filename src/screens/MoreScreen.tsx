@@ -36,9 +36,13 @@ export class MoreScreen extends React.Component<Props, State> {
     isLoading: false
   }
 
-  static navigationOptions = () => ({
-    title: translate('More')
-  })
+  constructor(props: Props) {
+    super()
+
+    props.navigation.setOptions({
+      headerTitle: translate('More')
+    })
+  }
 
   componentDidMount() {
     trackPageView('/more', 'More Screen')

@@ -39,7 +39,7 @@ type State = {
 
 export class TableSectionSelectors extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.state = {
       flatCategoryItems: []

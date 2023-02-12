@@ -28,7 +28,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
   shouldLoad: boolean
 
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.shouldLoad = true
 
@@ -39,9 +39,12 @@ export class ProfilesScreen extends React.Component<Props, State> {
       isUnsubscribing: false,
       queryPage: 1
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = () => ({
+  navigationOptions = () => ({
     title: translate('Profiles')
   })
 

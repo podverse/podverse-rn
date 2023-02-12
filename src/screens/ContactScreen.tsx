@@ -57,9 +57,13 @@ const liveChatOptions = [
 ]
 
 export class ContactScreen extends React.Component<Props> {
-  static navigationOptions = () => ({
-    title: translate('Contact')
-  })
+  constructor(props: Props) {
+    super()
+
+    props.navigation.setOptions({
+      headerTitle: translate('Contact')
+    })
+  }
 
   componentDidMount() {
     trackPageView('/contact', 'Contact Screen')

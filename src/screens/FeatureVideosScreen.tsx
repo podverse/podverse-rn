@@ -16,7 +16,14 @@ const testIDPrefix = 'feature_videos_screen'
 export class FeatureVideosScreen extends React.Component<Props, State> {
   videoRef: Video
 
-  static navigationOptions = ({ navigation }) => {
+  constructor(props: Props) {
+    super()
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
+  }
+
+  navigationOptions = ({ navigation }) => {
     return {
       title: translate('Feature Demo'),
       headerLeft: () => null,

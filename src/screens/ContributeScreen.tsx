@@ -16,9 +16,13 @@ type Props = {
 const testIDPrefix = 'contribute_screen'
 
 export class ContributeScreen extends React.Component<Props> {
-  static navigationOptions = () => ({
-    title: translate('Contribute')
-  })
+  constructor(props: Props) {
+    super()
+
+    props.navigation.setOptions({
+      headerTitle: translate('Contribute')
+    })
+  }
 
   componentDidMount() {
     trackPageView('/contribute', 'Contribute Screen')

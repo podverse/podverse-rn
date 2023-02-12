@@ -12,15 +12,18 @@ type State = {
 }
 
 export class WebPageScreen extends React.Component<Props, State> {
-  constructor(props) {
-    super(props)
+  constructor(props: Props) {
+    super()
 
     this.state = {
       uri: this.props.navigation.getParam('uri')
     }
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
-  static navigationOptions = ({ navigation }) => ({
+  navigationOptions = ({ navigation }) => ({
     title: '',
     headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} />
   })

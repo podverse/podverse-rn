@@ -46,9 +46,12 @@ const testIDPrefix = 'player_screen'
 let eventListenerPlayerNewEpisodeLoaded: any
 export class PlayerScreen extends React.Component<Props> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.state = {}
+
+    const options = this.navigationOptions(props)
+    props.navigation.setOptions(options)
   }
 
   static navigationOptions = ({ navigation }) => {

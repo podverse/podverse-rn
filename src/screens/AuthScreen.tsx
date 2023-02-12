@@ -27,7 +27,7 @@ const testIDPrefix = 'auth_screen'
 
 export class AuthScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
 
     const showSignUp = props.navigation.getParam('showSignUp')
 
@@ -37,19 +37,17 @@ export class AuthScreen extends React.Component<Props, State> {
       isLoadingSignUp: false,
       screenType: (showSignUp && _signup) || props.screenType || _login
     }
-  }
 
-  static navigationOptions = ({ navigation }) => {
-    const title = navigation.getParam('title') || translate('Login')
-    return {
-      title,
-      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
+    const headerTitle = props.navigation.getParam('title') || translate('Login')
+    props.navigation.setOptions({
+      headerTitle,
+      headerLeft: () => <NavDismissIcon handlePress={props.navigation.dismiss} testID={testIDPrefix} />,
       headerRight: () => null,
       headerStyle: {
         borderBottomWidth: 0,
         backgroundColor: PV.Colors.ink
       }
-    }
+    })
   }
 
   componentDidMount() {

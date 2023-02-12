@@ -34,7 +34,7 @@ const testIDPrefix = 'edit_playlist_screen'
 
 export class EditPlaylistScreen extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super()
     const playlist = props.navigation.getParam('playlist')
 
     this.state = {
@@ -46,18 +46,16 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
       playlist,
       sortableListData: []
     }
-  }
 
-  static navigationOptions = ({ navigation }) => {
-    const isEditing = !!navigation.getParam('isEditing')
-    const handlePress = navigation.getParam(isEditing ? '_stopEditing' : '_startEditing')
+    const isEditing = !!props.navigation.getParam('isEditing')
+    const handlePress = props.navigation.getParam(isEditing ? '_stopEditing' : '_startEditing')
     const text = isEditing ? translate('Done') : translate('Remove')
     const accessibilityHint = isEditing
       ? translate('ARIA HINT - tap to stop removing items from this playlist')
       : translate('ARIA HINT - tap to start removing items from this playlist')
 
-    return {
-      title: translate('Edit Playlist'),
+    props.navigation.setOptions({
+      headerTitle: translate('Edit Playlist'),
       headerRight: () => (
         <RNView style={styles.headerButtonWrapper}>
           <NavHeaderButtonText
@@ -70,7 +68,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
           />
         </RNView>
       )
-    }
+    })
   }
 
   async componentDidMount() {
