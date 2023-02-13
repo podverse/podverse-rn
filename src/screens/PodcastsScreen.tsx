@@ -200,55 +200,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
 
     iapInitConnection()
-
-    messaging().onNotificationOpenedApp((remoteMessage) => {
-      const podcastId = remoteMessage?.data?.podcastId
-      const episodeId = remoteMessage?.data?.episodeId
-
-      if (remoteMessage && podcastId && episodeId) {
-        setTimeout(() => {
-          navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(navigation, podcastId, episodeId)
-        }, PV.Navigation.navigationTimeoutDelay)
-      }
-    })
-
-    messaging()
-      .getInitialNotification()
-      .then(async (remoteMessage) => {
-        const podcastId = remoteMessage?.data?.podcastId
-        const episodeId = remoteMessage?.data?.episodeId
-        const podcastTitle = remoteMessage?.data?.podcastTitle
-        const episodeTitle = remoteMessage?.data?.episodeTitle
-        const notificationType = remoteMessage?.data?.notificationType
-        const isLiveNotification = notificationType === 'live'
-
-        if (remoteMessage && podcastId && episodeId && isLiveNotification) {
-          const GO_TO_LIVE_PODCAST = PV.Alerts.GO_TO_LIVE_PODCAST(
-            navigation,
-            podcastId,
-            episodeId,
-            podcastTitle,
-            episodeTitle,
-            this._goBackWithDelay
-          )
-          Alert.alert(GO_TO_LIVE_PODCAST.title, GO_TO_LIVE_PODCAST.message, GO_TO_LIVE_PODCAST.buttons)
-        } else if (remoteMessage && podcastId && episodeId) {
-          await this._goBackWithDelay()
-          setTimeout(() => {
-            navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(navigation, podcastId, episodeId)
-          }, PV.Navigation.navigationTimeoutDelay)
-        }
-      })
-
-    Linking.getInitialURL().then((initialUrl) => {
-      // settimeout here gives a chance to the rest of
-      // the app to have finished loading and navigate correctly
-      setTimeout(() => {
-        if (initialUrl) {
-          this._handleOpenURLEvent({ url: initialUrl })
-        }
-      }, 300)
-    })
+    // settimeout here gives a chance to the rest of
+    // the app to have finished loading and navigate correctly
+    setTimeout(this.setupDeeplinkListeners, PV.Timeouts.APP_LAUNCH_DELAY + 500)
 
     Dimensions.addEventListener('change', this._handleOrientationChange)
     Linking.addEventListener('url', this._handleOpenURLEvent)
@@ -317,6 +271,49 @@ export class PodcastsScreen extends React.Component<Props, State> {
     PVEventEmitter.removeListener(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
     PVEventEmitter.removeListener(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
     // this._unsubscribe?.()
+  }
+
+  setupDeeplinkListeners = () => {
+    messaging().onNotificationOpenedApp((remoteMessage) => {
+      const podcastId = remoteMessage?.data?.podcastId
+      const episodeId = remoteMessage?.data?.episodeId
+  
+      if (remoteMessage && podcastId && episodeId) {
+        navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(this.props.navigation, podcastId, episodeId)
+      }
+    })
+  
+    messaging()
+      .getInitialNotification()
+      .then(async (remoteMessage) => {
+        const podcastId = remoteMessage?.data?.podcastId
+        const episodeId = remoteMessage?.data?.episodeId
+        const podcastTitle = remoteMessage?.data?.podcastTitle
+        const episodeTitle = remoteMessage?.data?.episodeTitle
+        const notificationType = remoteMessage?.data?.notificationType
+        const isLiveNotification = notificationType === 'live'
+  
+        if (remoteMessage && podcastId && episodeId && isLiveNotification) {
+          const GO_TO_LIVE_PODCAST = PV.Alerts.GO_TO_LIVE_PODCAST(
+            this.props.navigation,
+            podcastId,
+            episodeId,
+            podcastTitle,
+            episodeTitle,
+            this._goBackWithDelay
+          )
+          Alert.alert(GO_TO_LIVE_PODCAST.title, GO_TO_LIVE_PODCAST.message, GO_TO_LIVE_PODCAST.buttons)
+        } else if (remoteMessage && podcastId && episodeId) {
+          await this._goBackWithDelay()
+          navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(this.props.navigation, podcastId, episodeId)
+        }
+      })
+
+      Linking.getInitialURL().then((initialUrl) => {
+        if (initialUrl) {
+          this._handleOpenURLEvent({ url: initialUrl })
+        }
+      })
   }
 
   _handleMaintenanceMode = () => {

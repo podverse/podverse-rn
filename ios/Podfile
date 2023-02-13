@@ -5,6 +5,8 @@ $FirebaseSDKVersion = '8.10.0'
 platform :ios, '14.0'
 
 target 'podverse' do
+  permissions_path = '../node_modules/react-native-permissions/ios'
+
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/React/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
@@ -36,6 +38,7 @@ target 'podverse' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'RCT-Folly', :podspec => '../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec'
 
+  pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
 
 
   config = use_native_modules!
