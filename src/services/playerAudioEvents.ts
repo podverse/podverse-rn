@@ -68,8 +68,8 @@ export const audioResetHistoryItemActiveTrackChanged = async (x: any) => {
 }
 
 export const audioResetHistoryItemQueueEnded = async (x: any) => {
-  const { index, position } = x
-  const loadedTrackId = await audioGetLoadedTrackIdByIndex(index)
+  const { position, track } = x
+  const loadedTrackId = await audioGetLoadedTrackIdByIndex(track)
   if (loadedTrackId) {
     await audioResetHistoryItemByTrackId(loadedTrackId, position)
   }
@@ -182,7 +182,14 @@ module.exports = async () => {
     (async () => {
       debugLogger('playback-state', x)
 
-      PVEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
+      // Force global state to appear as playing since we expect it to play quickly,
+      // then update state 1 second to render buffering state if still buffering.
+      if (x.state === State.Buffering) {
+        PVEventEmitter.emit(PV.Events.PLAYER_STATE_BUFFERING)
+      } else {
+        PVEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
+      }
+
 
       const [clipHasEnded, nowPlayingItem] = await Promise.all([getClipHasEnded(), getNowPlayingItemLocally()])
 

@@ -83,6 +83,8 @@ PODS:
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
+  - Permission-Notifications (3.6.1):
+    - RNPermissions
   - PromisesObjC (2.1.1)
   - PromisesSwift (2.1.1):
     - PromisesObjC (= 2.1.1)
@@ -410,6 +412,8 @@ PODS:
     - React-Core
   - RNLocalize (2.1.1):
     - React-Core
+  - RNPermissions (3.6.1):
+    - React-Core
   - RNReactNativeHapticFeedback (1.14.0):
     - React-Core
   - RNReanimated (2.9.1):
@@ -466,6 +470,7 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - Firebase/Messaging (~> 8.10.0)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - Permission-Notifications (from `../node_modules/react-native-permissions/ios/Notifications`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTSystemSetting (from `../node_modules/react-native-system-setting`)
@@ -517,6 +522,7 @@ DEPENDENCIES:
   - RNIap (from `../node_modules/react-native-iap`)
   - RNKeychain (from `../node_modules/react-native-keychain`)
   - RNLocalize (from `../node_modules/react-native-localize`)
+  - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -562,6 +568,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  Permission-Notifications:
+    :path: "../node_modules/react-native-permissions/ios/Notifications"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -660,6 +668,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-keychain"
   RNLocalize:
     :path: "../node_modules/react-native-localize"
+  RNPermissions:
+    :path: "../node_modules/react-native-permissions"
   RNReactNativeHapticFeedback:
     :path: "../node_modules/react-native-haptic-feedback"
   RNReanimated:
@@ -699,6 +709,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
+  Permission-Notifications: 150484ae586eb9be4e32217582a78350a9bb31c3
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   PromisesSwift: 99fddfe4a0ec88a56486644c0da106694c92a604
   RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
@@ -750,6 +761,7 @@ SPEC CHECKSUMS:
   RNIap: 0f95fd117338bd1846e0a77600a02d16056f7795
   RNKeychain: ff836453cba46938e0e9e4c22e43d43fa2c90333
   RNLocalize: 82a569022724d35461e2dc5b5d015a13c3ca995b
+  RNPermissions: dcdb7b99796bbeda6975a6e79ad519c41b251b1c
   RNReactNativeHapticFeedback: 1e3efeca9628ff9876ee7cdd9edec1b336913f8c
   RNReanimated: 11e6e30bbc49079b7f0c321ac5830e6d113d0224
   RNScreens: 0591543e343c7444ea1756b6265d81a4295922c9
@@ -762,6 +774,6 @@ SPEC CHECKSUMS:
   Yoga: b316a990bb6d115afa1b436b5626ac7c61717d17
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 3e0746f1d7a3e51a499ebc01b20e57d8c6ba9cd4
+PODFILE CHECKSUM: 8c667910359b07eafcc3e8d25626c4fc4332e3f9
 
 COCOAPODS: 1.11.3
