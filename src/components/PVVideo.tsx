@@ -1,10 +1,11 @@
 import { addParameterToURL, convertUrlToSecureHTTPS, encodeSpacesInString } from 'podverse-shared'
-import { Modal, StyleSheet } from 'react-native'
+import { Modal, StyleSheet, View } from 'react-native'
 import React from 'reactn'
 import Orientation from 'react-native-orientation-locker'
 import Video from 'react-native-video-controls'
-import { debugLogger, errorLogger } from '../lib/logger'
 import { pvIsTablet } from '../lib/deviceDetection'
+import { hlsGetParsedManifest, HLSManifest } from '../lib/hls'
+import { debugLogger, errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import {
@@ -40,6 +41,7 @@ type State = {
   disableOnProgress?: boolean
   fileType?: 'hls' | 'other'
   finalUri?: string
+  hlsManifest?: HLSManifest | null
   isDownloadedFile: boolean
   isFullscreen: boolean
   isReadyToPlay: boolean
@@ -112,11 +114,18 @@ export class PVVideo extends React.PureComponent<Props, State> {
       finalUri = filePath
     }
 
+    let hlsManifest = null
+    if (!isDownloadedFile && fileType === 'hls') {
+      hlsManifest = await hlsGetParsedManifest(finalUri, 144)
+      finalUri = hlsManifest?.selectedPlaylist?.uri ? hlsManifest?.selectedPlaylist?.uri : finalUri
+    }
+
     this.setState(
       {
         Authorization,
         fileType,
         finalUri,
+        hlsManifest,
         isDownloadedFile
       },
       () => {
@@ -127,6 +136,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
     )
   }
 
+  // TODO: fix this
   _handleGoToLiveCurrentTime = () => {
     try {
       const { finalUri } = this.state
