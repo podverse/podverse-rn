@@ -32,7 +32,7 @@ import {
   audioGetLoadedTrackIdByIndex,
   audioGetTrackDuration
 } from './playerAudio'
-import { debouncedHandleBackgroundTimerInterval, syncAudioNowPlayingItemWithTrack } from './playerBackgroundTimer'
+import { handleBackgroundTimerInterval, syncAudioNowPlayingItemWithTrack } from './playerBackgroundTimer'
 import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from './userNowPlayingItem'
 
@@ -182,14 +182,13 @@ module.exports = async () => {
     (async () => {
       debugLogger('playback-state', x)
 
-      // Force global state to appear as playing since we expect it to play quickly,
-      // then update state 1 second to render buffering state if still buffering.
-      if (x.state === State.Buffering) {
-        PVEventEmitter.emit(PV.Events.PLAYER_STATE_BUFFERING)
-      } else {
-        PVEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
-      }
-
+      // // Force global state to appear as playing since we expect it to play quickly,
+      // // then update state 1 second to render buffering state if still buffering.
+      // if (x.state === State.Buffering) {
+      //   PVEventEmitter.emit(PV.Events.PLAYER_STATE_BUFFERING)
+      // } else {
+      PVEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
+      // }
 
       const [clipHasEnded, nowPlayingItem] = await Promise.all([getClipHasEnded(), getNowPlayingItemLocally()])
 
@@ -336,6 +335,6 @@ module.exports = async () => {
   PVAudioPlayer.addEventListener(Event.PlaybackProgressUpdated, (x: any) => {
     // debugLogger('playback-progress-updated', x)
     const isVideo = false
-    debouncedHandleBackgroundTimerInterval(isVideo)
+    handleBackgroundTimerInterval(isVideo)
   })
 }
