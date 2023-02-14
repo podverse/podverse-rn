@@ -366,6 +366,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
         disableBack={!isFullscreen || isMiniPlayer}
         disablePlayPause={!isFullscreen || isMiniPlayer}
         disableSeekbar={!isFullscreen || isMiniPlayer}
+        // disableSettings
         disableTimer
         disableVolume
         disableFullscreen={isFullscreen || disableFullscreen || isMiniPlayer}
@@ -439,6 +440,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
           Call this.videoRef.setState({ rate }) to change the rate. */
         rate={1}
         ref={(ref: Video) => (this.videoRef = ref)}
+        showSettings={() => console.log('showSettings')}
         source={{
           uri: finalUri,
           headers: {
