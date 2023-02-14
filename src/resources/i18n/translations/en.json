@@ -185,6 +185,7 @@
   "ARIA HINT - You can optionally provide a title for your clip here": "Optionally, title for your clip here for organization and searchability.",
   "ARIA LABEL - Queue Last": "Enqueue Last",
   "ARIA LABEL - Queue Next": "Enqueue as next",
+  "Audio": "Audio",
   "Audio livestreams": "Audio livestreams",
   "Auth invalid message": "Your login session has expired. Please log in to continue using Premium features.",
   "Auth invalid title": "Logged out",

@@ -5,6 +5,7 @@ import Orientation from 'react-native-orientation-locker'
 import Video from 'react-native-video-controls'
 import { pvIsTablet } from '../lib/deviceDetection'
 import { hlsGetParsedManifest, HLSManifest } from '../lib/hls'
+import { translate } from '../lib/i18n'
 import { debugLogger, errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
@@ -28,6 +29,7 @@ import {
   videoStateUpdatePosition,
   videoUpdatePlaybackState
 } from '../state/actions/playerVideo'
+import { ActionSheet } from '.'
 
 type Props = {
   disableFullscreen?: boolean
@@ -45,6 +47,7 @@ type State = {
   isDownloadedFile: boolean
   isFullscreen: boolean
   isReadyToPlay: boolean
+  showSettingsActionSheet: boolean
   transitionPlaybackState?: any // remember what the playback state was between navigations
 }
 
@@ -61,7 +64,8 @@ export class PVVideo extends React.PureComponent<Props, State> {
       destroyPlayer: false,
       isDownloadedFile: false,
       isFullscreen: false,
-      isReadyToPlay: false
+      isReadyToPlay: false,
+      showSettingsActionSheet: false
     }
   }
 
@@ -100,7 +104,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
     PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_LIVE_GO_TO_CURRENT_TIME, this._handleGoToLiveCurrentTime)
   }
 
-  _handleInitializeState = async (callback?: any) => {
+  _handleInitializeState = async (selectedResolution?: number) => {
     const { player } = this.global
     let { nowPlayingItem } = player
     // nowPlayingItem will be undefined when loading from a deep link
@@ -116,7 +120,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
     let hlsManifest = null
     if (!isDownloadedFile && fileType === 'hls') {
-      hlsManifest = await hlsGetParsedManifest(finalUri)
+      hlsManifest = await hlsGetParsedManifest(finalUri, selectedResolution)
       finalUri = hlsManifest?.selectedPlaylist?.uri ? hlsManifest?.selectedPlaylist?.uri : finalUri
     }
 
@@ -127,11 +131,6 @@ export class PVVideo extends React.PureComponent<Props, State> {
         finalUri,
         hlsManifest,
         isDownloadedFile
-      },
-      () => {
-        if (callback) {
-          callback()
-        }
       }
     )
   }
@@ -351,9 +350,15 @@ export class PVVideo extends React.PureComponent<Props, State> {
     this._handlePause()
   }
 
+  _handleToggleSettings = () => {
+    const { showSettingsActionSheet } = this.state
+    this.setState({ showSettingsActionSheet: !showSettingsActionSheet })
+  }
+
   render() {
     const { disableFullscreen, isMiniPlayer } = this.props
-    const { Authorization, destroyPlayer, fileType, finalUri, isFullscreen, isReadyToPlay } = this.state
+    const { Authorization, destroyPlayer, fileType,
+      finalUri, isFullscreen, isReadyToPlay, showSettingsActionSheet } = this.state
     const { player, userAgent } = this.global
     const { playbackState } = player
 
@@ -366,7 +371,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
         disableBack={!isFullscreen || isMiniPlayer}
         disablePlayPause={!isFullscreen || isMiniPlayer}
         disableSeekbar={!isFullscreen || isMiniPlayer}
-        // disableSettings
+        disableSettings={isFullscreen || isMiniPlayer}
         disableTimer
         disableVolume
         disableFullscreen={isFullscreen || disableFullscreen || isMiniPlayer}
@@ -440,7 +445,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
           Call this.videoRef.setState({ rate }) to change the rate. */
         rate={1}
         ref={(ref: Video) => (this.videoRef = ref)}
-        showSettings={() => console.log('showSettings')}
+        showSettings={this._handleToggleSettings}
         source={{
           uri: finalUri,
           headers: {
@@ -465,6 +470,30 @@ export class PVVideo extends React.PureComponent<Props, State> {
           </Modal>
         )}
         {!destroyPlayer && !isFullscreen && pvVideo}
+        <ActionSheet
+          handleCancelPress={this._handleToggleSettings}
+          items={() => {
+            const { hlsManifest } = this.state
+            const buttons = []
+            if (hlsManifest?.playlists && hlsManifest?.selectedPlaylist) {
+              for (const playlist of hlsManifest.playlists) {
+                const text = playlist.height === 0 ? translate('Audio') : `${playlist.height}p`
+                buttons.push({
+                  accessibilityLabel: `${playlist.height}`,
+                  key: `videoSettingsButton-${playlist.height}`,
+                  text,
+                  onPress: () => {
+                    this._handleInitializeState(playlist.height)
+                    this._handleToggleSettings()
+                  }
+                })
+              }
+            }
+            return buttons
+          }}
+          showModal={showSettingsActionSheet}
+          // testID={testIDPrefix}
+        />
       </>
     )
   }
