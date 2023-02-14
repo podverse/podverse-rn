@@ -277,12 +277,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
     messaging().onNotificationOpenedApp((remoteMessage) => {
       const podcastId = remoteMessage?.data?.podcastId
       const episodeId = remoteMessage?.data?.episodeId
-  
+
       if (remoteMessage && podcastId && episodeId) {
         navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(this.props.navigation, podcastId, episodeId)
       }
     })
-  
+
     messaging()
       .getInitialNotification()
       .then(async (remoteMessage) => {
@@ -292,7 +292,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const episodeTitle = remoteMessage?.data?.episodeTitle
         const notificationType = remoteMessage?.data?.notificationType
         const isLiveNotification = notificationType === 'live'
-  
+
         if (remoteMessage && podcastId && episodeId && isLiveNotification) {
           const GO_TO_LIVE_PODCAST = PV.Alerts.GO_TO_LIVE_PODCAST(
             this.props.navigation,
@@ -309,11 +309,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
         }
       })
 
-      Linking.getInitialURL().then((initialUrl) => {
-        if (initialUrl) {
-          this._handleOpenURLEvent({ url: initialUrl })
-        }
-      })
+    Linking.getInitialURL().then((initialUrl) => {
+      if (initialUrl) {
+        this._handleOpenURLEvent({ url: initialUrl })
+      }
+    })
   }
 
   _handleMaintenanceMode = () => {

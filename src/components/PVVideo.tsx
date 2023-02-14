@@ -124,15 +124,13 @@ export class PVVideo extends React.PureComponent<Props, State> {
       finalUri = hlsManifest?.selectedPlaylist?.uri ? hlsManifest?.selectedPlaylist?.uri : finalUri
     }
 
-    this.setState(
-      {
-        Authorization,
-        fileType,
-        finalUri,
-        hlsManifest,
-        isDownloadedFile
-      }
-    )
+    this.setState({
+      Authorization,
+      fileType,
+      finalUri,
+      hlsManifest,
+      isDownloadedFile
+    })
   }
 
   _handleGoToLiveCurrentTime = () => {
@@ -211,7 +209,6 @@ export class PVVideo extends React.PureComponent<Props, State> {
       if (nowPlayingItem.episodeMediaUrl === lastNowPlayingItemUri && lastVideoPosition) {
         this._handleSeekTo(lastVideoPosition, handlePlayAfterSeek)
       } else {
-        
         if (nowPlayingItem.clipId && nowPlayingItem.clipStartTime) {
           const startTime = parseInt(nowPlayingItem.clipStartTime, 10) || 0
           this._handleSeekTo(startTime, handlePlayAfterSeek)
@@ -225,7 +222,6 @@ export class PVVideo extends React.PureComponent<Props, State> {
             handlePlayAfterSeek
           )
         }
-  
       }
 
       lastNowPlayingItemUri = nowPlayingItem.episodeMediaUrl || ''
@@ -360,8 +356,15 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
   render() {
     const { disableFullscreen, isMiniPlayer } = this.props
-    const { Authorization, destroyPlayer, fileType,
-      finalUri, isFullscreen, isReadyToPlay, showSettingsActionSheet } = this.state
+    const {
+      Authorization,
+      destroyPlayer,
+      fileType,
+      finalUri,
+      isFullscreen,
+      isReadyToPlay,
+      showSettingsActionSheet
+    } = this.state
     const { player, userAgent } = this.global
     const { playbackState } = player
 
@@ -481,9 +484,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
             if (hlsManifest?.playlists && hlsManifest?.selectedPlaylist) {
               for (const playlist of hlsManifest.playlists) {
                 let text = playlist.height === 0 ? translate('Audio') : `${playlist.height}p`
-                text = playlist.height === hlsManifest.selectedPlaylist.height
-                  ? `${text} ✓`
-                  : text
+                text = playlist.height === hlsManifest.selectedPlaylist.height ? `${text} ✓` : text
 
                 buttons.push({
                   accessibilityLabel: `${playlist.height}`,

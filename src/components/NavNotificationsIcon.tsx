@@ -2,7 +2,7 @@ import React from 'reactn'
 import { Alert, Linking } from 'react-native'
 import Config from 'react-native-config'
 import messaging from '@react-native-firebase/messaging'
-import {requestNotifications, RESULTS} from 'react-native-permissions';
+import { requestNotifications, RESULTS } from 'react-native-permissions'
 import { darkTheme } from '../styles'
 import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
@@ -44,10 +44,8 @@ export class NavNotificationsIcon extends React.Component<Props, State> {
     } else {
       this.setState({ isLoading: true })
       try {
-        const {status} = await requestNotifications(['alert', 'sound', 'badge'])
-        const enabled = 
-          status === RESULTS.GRANTED ||
-          status === RESULTS.LIMITED
+        const { status } = await requestNotifications(['alert', 'sound', 'badge'])
+        const enabled = status === RESULTS.GRANTED || status === RESULTS.LIMITED
         if (enabled) {
           const fcmToken = await messaging().getToken()
           await saveOrUpdateFCMDevice(fcmToken)

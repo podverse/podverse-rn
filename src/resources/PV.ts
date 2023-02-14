@@ -30,7 +30,7 @@ import { SearchBar } from './SearchBar'
 import { Table } from './Table'
 import { Tabs } from './Tabs'
 import { TextInputs } from './TextInputs'
-import {Timeouts}from './Timeouts'
+import { Timeouts } from './Timeouts'
 import { URLs } from './URLs'
 import { V4V } from './V4V'
 

@@ -40,9 +40,7 @@ export const hlsGetParsedManifest = async (url: string, resolution = 720) => {
 
       playlists = playlists.sort((a, b) => b.height - a.height)
 
-      const selectedPlaylist = playlists.find((x) => x.height === resolution)
-        || playlists[0]
-        || null
+      const selectedPlaylist = playlists.find((x) => x.height === resolution) || playlists[0] || null
 
       pvManifest = {
         playlists,
@@ -54,7 +52,7 @@ export const hlsGetParsedManifest = async (url: string, resolution = 720) => {
   }
 
   console.log(pvManifest)
- 
+
   return pvManifest
 }
 

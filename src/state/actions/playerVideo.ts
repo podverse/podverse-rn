@@ -13,7 +13,8 @@ import { getPodcastFeedUrlAuthority } from '../../services/podcast'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from '../../services/userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
 import { downloadedEpisodeMarkForDeletion } from './downloads'
-import { playerLoadNowPlayingItem, playerUpdatePlaybackState, playerUpdatePlayerState, setLiveStreamWasPausedState } from './player'
+import { playerLoadNowPlayingItem, playerUpdatePlaybackState,
+  playerUpdatePlayerState, setLiveStreamWasPausedState } from './player'
 import { updateHistoryItemsIndex } from './userHistoryItem'
 
 const _fileName = 'src/state/actions/playerVideo.ts'
