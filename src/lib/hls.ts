@@ -51,8 +51,6 @@ export const hlsGetParsedManifest = async (url: string, resolution = 720) => {
     debugLogger('hls getParsedHLSFile', error)
   }
 
-  console.log(pvManifest)
-
   return pvManifest
 }
 
