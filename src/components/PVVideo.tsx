@@ -18,7 +18,7 @@ import {
 import { handleBackgroundTimerInterval } from '../services/playerBackgroundTimer'
 import { addOrUpdateHistoryItem } from '../services/userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage } from '../services/userNowPlayingItem'
-import { playerHandleResumeAfterClipHasEnded } from '../state/actions/player'
+import { playerHandleResumeAfterClipHasEnded, setLiveStreamWasPausedState } from '../state/actions/player'
 import {
   videoCheckIfStateIsPlaying,
   videoGetDownloadedFileInfo,
@@ -135,16 +135,19 @@ export class PVVideo extends React.PureComponent<Props, State> {
     )
   }
 
-  // TODO: fix this
   _handleGoToLiveCurrentTime = () => {
     try {
-      const { finalUri } = this.state
-      if (finalUri) {
-        const refreshUri = addParameterToURL(finalUri, `forceRefresh=${Date.now()}`)
-        if (refreshUri) {
-          this.setState({ finalUri: refreshUri })
+      videoUpdatePlaybackState(PV.Player.videoInfo.videoPlaybackState.paused, () => {
+        const { finalUri } = this.state
+        if (finalUri) {
+          const refreshUri = addParameterToURL(finalUri, `forceRefresh=${Date.now()}`)
+          if (refreshUri) {
+            this.setState({ finalUri: refreshUri })
+            videoUpdatePlaybackState(PV.Player.videoInfo.videoPlaybackState.playing)
+            setLiveStreamWasPausedState(false)
+          }
         }
-      }
+      })
     } catch (error) {
       errorLogger(_fileName, '_handleGoToLiveCurrentTime', error)
     }
