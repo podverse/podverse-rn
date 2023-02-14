@@ -65,6 +65,7 @@
     "linkifyjs": "2.1.9",
     "lodash": "4.17.21",
     "lodash.memoize": "4.1.2",
+    "m3u8-parser": "^6.0.0",
     "moment": "^2.29.4",
     "p-limit": "^4.0.0",
     "podverse-shared": "^4.6.12",
