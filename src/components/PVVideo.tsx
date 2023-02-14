@@ -116,7 +116,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
     let hlsManifest = null
     if (!isDownloadedFile && fileType === 'hls') {
-      hlsManifest = await hlsGetParsedManifest(finalUri, 144)
+      hlsManifest = await hlsGetParsedManifest(finalUri)
       finalUri = hlsManifest?.selectedPlaylist?.uri ? hlsManifest?.selectedPlaylist?.uri : finalUri
     }
 
