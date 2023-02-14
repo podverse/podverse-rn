@@ -477,7 +477,11 @@ export class PVVideo extends React.PureComponent<Props, State> {
             const buttons = []
             if (hlsManifest?.playlists && hlsManifest?.selectedPlaylist) {
               for (const playlist of hlsManifest.playlists) {
-                const text = playlist.height === 0 ? translate('Audio') : `${playlist.height}p`
+                let text = playlist.height === 0 ? translate('Audio') : `${playlist.height}p`
+                text = playlist.height === hlsManifest.selectedPlaylist.height
+                  ? `${text} ✓`
+                  : text
+
                 buttons.push({
                   accessibilityLabel: `${playlist.height}`,
                   key: `videoSettingsButton-${playlist.height}`,
