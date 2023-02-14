@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-video-controls/VideoPlayer.js b/node_modules/react-native-video-controls/VideoPlayer.js
-index 7d36b4b..8fb7086 100644
+index 7d36b4b..98d3825 100644
 --- a/node_modules/react-native-video-controls/VideoPlayer.js
 +++ b/node_modules/react-native-video-controls/VideoPlayer.js
 @@ -106,7 +106,7 @@ export default class VideoPlayer extends Component {
@@ -25,7 +25,7 @@ index 7d36b4b..8fb7086 100644
    }
  
 +  renderSettings() {
-+    let source = require('./assets/img/settings.png');
++    let source = require('../../src/resources/images/rnvc-settings.png');
 +    return this.renderControl(
 +      <Image source={source} />,
 +      this.props.showSettings,
@@ -67,21 +67,9 @@ index 7d36b4b..8fb7086 100644
        flex: 0.6,
 diff --git a/node_modules/react-native-video-controls/assets/.DS_Store b/node_modules/react-native-video-controls/assets/.DS_Store
 new file mode 100644
-index 0000000..f2709ea
+index 0000000..3f1ae02
 Binary files /dev/null and b/node_modules/react-native-video-controls/assets/.DS_Store differ
 diff --git a/node_modules/react-native-video-controls/assets/img/.DS_Store b/node_modules/react-native-video-controls/assets/img/.DS_Store
 new file mode 100644
-index 0000000..fa9bc5a
+index 0000000..dfd9975
 Binary files /dev/null and b/node_modules/react-native-video-controls/assets/img/.DS_Store differ
-diff --git a/node_modules/react-native-video-controls/assets/img/settings.png b/node_modules/react-native-video-controls/assets/img/settings.png
-new file mode 100644
-index 0000000..0867d85
-Binary files /dev/null and b/node_modules/react-native-video-controls/assets/img/settings.png differ
-diff --git a/node_modules/react-native-video-controls/assets/img/settings@2x.png b/node_modules/react-native-video-controls/assets/img/settings@2x.png
-new file mode 100644
-index 0000000..99866b1
-Binary files /dev/null and b/node_modules/react-native-video-controls/assets/img/settings@2x.png differ
-diff --git a/node_modules/react-native-video-controls/assets/img/settings@3x.png b/node_modules/react-native-video-controls/assets/img/settings@3x.png
-new file mode 100644
-index 0000000..66e49db
-Binary files /dev/null and b/node_modules/react-native-video-controls/assets/img/settings@3x.png differ
