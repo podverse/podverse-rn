@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, Animated, Easing, Image, View, Platform } from 'react-native'
 import { PV } from '../resources'
 
-const INTERSTITIAL_LOADING_SECONDS = 6
-
 export const LoadingInterstitialView = () => {
   const bounceHeight = 20
   const dots = 4
@@ -20,7 +18,7 @@ export const LoadingInterstitialView = () => {
       dotAnimations.push(new Animated.Value(0))
     }
     setAnimations(dotAnimations)
-    setTimeout(() => setShowScreen(false), INTERSTITIAL_LOADING_SECONDS * 1000)
+    setTimeout(() => setShowScreen(false), PV.Timeouts.APP_LAUNCH_DELAY)
   }, [])
 
   useEffect(() => {

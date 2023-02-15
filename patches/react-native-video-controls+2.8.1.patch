@@ -1,7 +1,16 @@
 diff --git a/node_modules/react-native-video-controls/VideoPlayer.js b/node_modules/react-native-video-controls/VideoPlayer.js
-index 7d36b4b..e300dc4 100644
+index 7d36b4b..98d3825 100644
 --- a/node_modules/react-native-video-controls/VideoPlayer.js
 +++ b/node_modules/react-native-video-controls/VideoPlayer.js
+@@ -106,7 +106,7 @@ export default class VideoPlayer extends Component {
+       toggleFullscreen: this._toggleFullscreen.bind(this),
+       togglePlayPause: this._togglePlayPause.bind(this),
+       toggleControls: this._toggleControls.bind(this),
+-      toggleTimer: this._toggleTimer.bind(this),
++      toggleTimer: this._toggleTimer.bind(this)
+     };
+ 
+     /**
 @@ -613,7 +613,7 @@ export default class VideoPlayer extends Component {
     * @return {float} position of seeker handle in px based on currentTime
     */
@@ -11,3 +20,56 @@ index 7d36b4b..e300dc4 100644
      return this.player.seekerWidth * percent;
    }
  
+@@ -1022,6 +1022,15 @@ export default class VideoPlayer extends Component {
+     );
+   }
+ 
++  renderSettings() {
++    let source = require('../../src/resources/images/rnvc-settings.png');
++    return this.renderControl(
++      <Image source={source} />,
++      this.props.showSettings,
++      styles.controls.settings,
++    );
++  }
++
+   /**
+    * Render bottom control group and wrap it in a holder
+    */
+@@ -1035,6 +1044,9 @@ export default class VideoPlayer extends Component {
+     const playPauseControl = this.props.disablePlayPause
+       ? this.renderNullControl()
+       : this.renderPlayPause();
++    const settingsControl = this.props.disableSettings
++      ? this.renderNullControl()
++      : this.renderSettings();
+ 
+     return (
+       <Animated.View
+@@ -1055,6 +1067,7 @@ export default class VideoPlayer extends Component {
+             {playPauseControl}
+             {this.renderTitle()}
+             {timerControl}
++            {settingsControl}
+           </SafeAreaView>
+         </ImageBackground>
+       </Animated.View>
+@@ -1350,6 +1363,10 @@ const styles = {
+       width: 80,
+       zIndex: 0,
+     },
++    settings: {
++      position: 'relative',
++      zIndex: 0
++    },
+     title: {
+       alignItems: 'center',
+       flex: 0.6,
+diff --git a/node_modules/react-native-video-controls/assets/.DS_Store b/node_modules/react-native-video-controls/assets/.DS_Store
+new file mode 100644
+index 0000000..3f1ae02
+Binary files /dev/null and b/node_modules/react-native-video-controls/assets/.DS_Store differ
+diff --git a/node_modules/react-native-video-controls/assets/img/.DS_Store b/node_modules/react-native-video-controls/assets/img/.DS_Store
+new file mode 100644
+index 0000000..dfd9975
+Binary files /dev/null and b/node_modules/react-native-video-controls/assets/img/.DS_Store differ

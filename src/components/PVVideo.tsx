@@ -1,10 +1,12 @@
 import { addParameterToURL, convertUrlToSecureHTTPS, encodeSpacesInString } from 'podverse-shared'
-import { Modal, StyleSheet } from 'react-native'
+import { Modal, StyleSheet, View } from 'react-native'
 import React from 'reactn'
 import Orientation from 'react-native-orientation-locker'
 import Video from 'react-native-video-controls'
-import { debugLogger, errorLogger } from '../lib/logger'
 import { pvIsTablet } from '../lib/deviceDetection'
+import { hlsGetParsedManifest, HLSManifest } from '../lib/hls'
+import { translate } from '../lib/i18n'
+import { debugLogger, errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import {
@@ -13,10 +15,10 @@ import {
   playerCheckIfStateIsPlaying,
   playerUpdateUserPlaybackPosition
 } from '../services/player'
-import { debouncedHandleBackgroundTimerInterval } from '../services/playerBackgroundTimer'
+import { handleBackgroundTimerInterval } from '../services/playerBackgroundTimer'
 import { addOrUpdateHistoryItem } from '../services/userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage } from '../services/userNowPlayingItem'
-import { playerHandleResumeAfterClipHasEnded } from '../state/actions/player'
+import { playerHandleResumeAfterClipHasEnded, setLiveStreamWasPausedState } from '../state/actions/player'
 import {
   videoCheckIfStateIsPlaying,
   videoGetDownloadedFileInfo,
@@ -27,6 +29,7 @@ import {
   videoStateUpdatePosition,
   videoUpdatePlaybackState
 } from '../state/actions/playerVideo'
+import { ActionSheet } from '.'
 
 type Props = {
   disableFullscreen?: boolean
@@ -40,9 +43,11 @@ type State = {
   disableOnProgress?: boolean
   fileType?: 'hls' | 'other'
   finalUri?: string
+  hlsManifest?: HLSManifest | null
   isDownloadedFile: boolean
   isFullscreen: boolean
   isReadyToPlay: boolean
+  showSettingsActionSheet: boolean
   transitionPlaybackState?: any // remember what the playback state was between navigations
 }
 
@@ -59,7 +64,8 @@ export class PVVideo extends React.PureComponent<Props, State> {
       destroyPlayer: false,
       isDownloadedFile: false,
       isFullscreen: false,
-      isReadyToPlay: false
+      isReadyToPlay: false,
+      showSettingsActionSheet: false
     }
   }
 
@@ -98,7 +104,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
     PVEventEmitter.removeListener(PV.Events.PLAYER_VIDEO_LIVE_GO_TO_CURRENT_TIME, this._handleGoToLiveCurrentTime)
   }
 
-  _handleInitializeState = async (callback?: any) => {
+  _handleInitializeState = async (selectedResolution?: number) => {
     const { player } = this.global
     let { nowPlayingItem } = player
     // nowPlayingItem will be undefined when loading from a deep link
@@ -112,30 +118,34 @@ export class PVVideo extends React.PureComponent<Props, State> {
       finalUri = filePath
     }
 
-    this.setState(
-      {
-        Authorization,
-        fileType,
-        finalUri,
-        isDownloadedFile
-      },
-      () => {
-        if (callback) {
-          callback()
-        }
-      }
-    )
+    let hlsManifest = null
+    if (!isDownloadedFile && fileType === 'hls') {
+      hlsManifest = await hlsGetParsedManifest(finalUri, selectedResolution)
+      finalUri = hlsManifest?.selectedPlaylist?.uri ? hlsManifest?.selectedPlaylist?.uri : finalUri
+    }
+
+    this.setState({
+      Authorization,
+      fileType,
+      finalUri,
+      hlsManifest,
+      isDownloadedFile
+    })
   }
 
   _handleGoToLiveCurrentTime = () => {
     try {
-      const { finalUri } = this.state
-      if (finalUri) {
-        const refreshUri = addParameterToURL(finalUri, `forceRefresh=${Date.now()}`)
-        if (refreshUri) {
-          this.setState({ finalUri: refreshUri })
+      videoUpdatePlaybackState(PV.Player.videoInfo.videoPlaybackState.paused, () => {
+        const { finalUri } = this.state
+        if (finalUri) {
+          const refreshUri = addParameterToURL(finalUri, `forceRefresh=${Date.now()}`)
+          if (refreshUri) {
+            this.setState({ finalUri: refreshUri })
+            videoUpdatePlaybackState(PV.Player.videoInfo.videoPlaybackState.playing)
+            setLiveStreamWasPausedState(false)
+          }
         }
-      }
+      })
     } catch (error) {
       errorLogger(_fileName, '_handleGoToLiveCurrentTime', error)
     }
@@ -199,7 +209,6 @@ export class PVVideo extends React.PureComponent<Props, State> {
       if (nowPlayingItem.episodeMediaUrl === lastNowPlayingItemUri && lastVideoPosition) {
         this._handleSeekTo(lastVideoPosition, handlePlayAfterSeek)
       } else {
-        
         if (nowPlayingItem.clipId && nowPlayingItem.clipStartTime) {
           const startTime = parseInt(nowPlayingItem.clipStartTime, 10) || 0
           this._handleSeekTo(startTime, handlePlayAfterSeek)
@@ -213,7 +222,6 @@ export class PVVideo extends React.PureComponent<Props, State> {
             handlePlayAfterSeek
           )
         }
-  
       }
 
       lastNowPlayingItemUri = nowPlayingItem.episodeMediaUrl || ''
@@ -341,9 +349,22 @@ export class PVVideo extends React.PureComponent<Props, State> {
     this._handlePause()
   }
 
+  _handleToggleSettings = () => {
+    const { showSettingsActionSheet } = this.state
+    this.setState({ showSettingsActionSheet: !showSettingsActionSheet })
+  }
+
   render() {
     const { disableFullscreen, isMiniPlayer } = this.props
-    const { Authorization, destroyPlayer, fileType, finalUri, isFullscreen, isReadyToPlay } = this.state
+    const {
+      Authorization,
+      destroyPlayer,
+      fileType,
+      finalUri,
+      isFullscreen,
+      isReadyToPlay,
+      showSettingsActionSheet
+    } = this.state
     const { player, userAgent } = this.global
     const { playbackState } = player
 
@@ -356,6 +377,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
         disableBack={!isFullscreen || isMiniPlayer}
         disablePlayPause={!isFullscreen || isMiniPlayer}
         disableSeekbar={!isFullscreen || isMiniPlayer}
+        disableSettings={isFullscreen || isMiniPlayer}
         disableTimer
         disableVolume
         disableFullscreen={isFullscreen || disableFullscreen || isMiniPlayer}
@@ -414,18 +436,22 @@ export class PVVideo extends React.PureComponent<Props, State> {
             videoStateUpdatePosition(currentTime)
             const isVideo = true
             if (playerCheckIfStateIsPlaying(playbackState)) {
-              debouncedHandleBackgroundTimerInterval(isVideo)
+              handleBackgroundTimerInterval(isVideo)
             }
           }
         }}
         // onReadyForDisplay={}
         paused={!isReadyToPlay || !playerCheckIfStateIsPlaying(playbackState)}
+        pictureInPicture
+        playInBackground
+        playWhenInactive
         poster={nowPlayingItem.episodeImageUrl || nowPlayingItem.podcastImageUrl}
         progressUpdateInterval={1000}
         /* The props.rate is only used in the Video constructor.
           Call this.videoRef.setState({ rate }) to change the rate. */
         rate={1}
         ref={(ref: Video) => (this.videoRef = ref)}
+        showSettings={this._handleToggleSettings}
         source={{
           uri: finalUri,
           headers: {
@@ -450,6 +476,32 @@ export class PVVideo extends React.PureComponent<Props, State> {
           </Modal>
         )}
         {!destroyPlayer && !isFullscreen && pvVideo}
+        <ActionSheet
+          handleCancelPress={this._handleToggleSettings}
+          items={() => {
+            const { hlsManifest } = this.state
+            const buttons = []
+            if (hlsManifest?.playlists && hlsManifest?.selectedPlaylist) {
+              for (const playlist of hlsManifest.playlists) {
+                let text = playlist.height === 0 ? translate('Audio') : `${playlist.height}p`
+                text = playlist.height === hlsManifest.selectedPlaylist.height ? `${text} ✓` : text
+
+                buttons.push({
+                  accessibilityLabel: `${playlist.height}`,
+                  key: `videoSettingsButton-${playlist.height}`,
+                  text,
+                  onPress: () => {
+                    this._handleInitializeState(playlist.height)
+                    this._handleToggleSettings()
+                  }
+                })
+              }
+            }
+            return buttons
+          }}
+          showModal={showSettingsActionSheet}
+          // testID={testIDPrefix}
+        />
       </>
     )
   }

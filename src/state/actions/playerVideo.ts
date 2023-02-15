@@ -13,7 +13,8 @@ import { getPodcastFeedUrlAuthority } from '../../services/podcast'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally } from '../../services/userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
 import { downloadedEpisodeMarkForDeletion } from './downloads'
-import { playerLoadNowPlayingItem, playerUpdatePlaybackState, playerUpdatePlayerState } from './player'
+import { playerLoadNowPlayingItem, playerUpdatePlaybackState,
+  playerUpdatePlayerState, setLiveStreamWasPausedState } from './player'
 import { updateHistoryItemsIndex } from './userHistoryItem'
 
 const _fileName = 'src/state/actions/playerVideo.ts'
@@ -174,6 +175,10 @@ export const videoTogglePlay = () => {
     newPlaybackState = PV.Player.videoInfo.videoPlaybackState.playing
   }
 
+  if (newPlaybackState === PV.Player.videoInfo.videoPlaybackState.paused) {
+    setLiveStreamWasPausedState(true)
+  }
+
   setGlobal({
     player: {
       ...player,
@@ -210,6 +215,7 @@ export const videoHandlePause = () => {
       playbackState: newPlaybackState
     }
   }, () => {
+    setLiveStreamWasPausedState(true)
     PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_PLAYBACK_STATE_CHANGED)
   })
 }
