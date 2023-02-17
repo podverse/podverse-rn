@@ -32,7 +32,7 @@ export const hlsGetParsedManifest = async (url: string, resolution = 720) => {
             playlists.push({
               height: p.attributes.RESOLUTION.height,
               width: p.attributes.RESOLUTION.width,
-              uri: hlsReplaceUriInUrl(p.uri, url)
+              uri: hlsReplaceUriInUrl(url, p.uri)
             })
           }
         }
