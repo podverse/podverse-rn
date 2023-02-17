@@ -361,6 +361,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
       destroyPlayer,
       fileType,
       finalUri,
+      hlsManifest,
       isFullscreen,
       isReadyToPlay,
       showSettingsActionSheet
@@ -372,12 +373,14 @@ export class PVVideo extends React.PureComponent<Props, State> {
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
 
+    const hasExtraResolutions = hlsManifest?.playlists?.length && hlsManifest.playlists.length > 1
+
     const pvVideo = finalUri ? (
       <Video
         disableBack={!isFullscreen || isMiniPlayer}
         disablePlayPause={!isFullscreen || isMiniPlayer}
         disableSeekbar={!isFullscreen || isMiniPlayer}
-        disableSettings={isFullscreen || isMiniPlayer}
+        disableSettings={isFullscreen || isMiniPlayer || !hasExtraResolutions}
         disableTimer
         disableVolume
         disableFullscreen={isFullscreen || disableFullscreen || isMiniPlayer}
