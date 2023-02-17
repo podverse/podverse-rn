@@ -19,7 +19,6 @@ import { trackPageView } from '../services/tracking'
 import {
   convertValueTagIntoValueTransactions,
   extractV4VValueTags,
-  MINIMUM_BOOST_PAYMENT,
   MINIMUM_STREAMING_PAYMENT,
   v4vGetActiveValueTag,
   v4vGetSatoshisInFormattedFiatValue,
@@ -30,18 +29,14 @@ import {
   getBoostagramItemValueTags,
   v4vGetActiveProviderInfo,
   V4VTypeMethod,
-  v4vUpdateTypeMethodSettingsBoostAmount,
   v4vUpdateTypeMethodSettingsStreamingAmount
 } from '../state/actions/v4v/v4v'
 import { core, images } from '../styles'
 
 type Props = any
 type State = {
-  boostTransactions: ValueTransaction[]
   streamingTransactions: ValueTransaction[]
-  localBoostAmount: number
   localStreamingAmount: number
-  localAppBoostAmount: number
   localAppStreamingAmount: number
 }
 
@@ -51,11 +46,8 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
   constructor() {
     super()
     this.state = {
-      boostTransactions: [],
       streamingTransactions: [],
-      localBoostAmount: 0,
       localStreamingAmount: 0,
-      localAppBoostAmount: 0,
       localAppStreamingAmount: 0
     }
   }
@@ -84,14 +76,11 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
 
       this.setState(
         {
-          localBoostAmount: typeMethodSettings.boostAmount,
           localStreamingAmount: typeMethodSettings.streamingAmount,
-          localAppBoostAmount: typeMethodSettings.appBoostAmount,
           localAppStreamingAmount: typeMethodSettings.appStreamingAmount
         },
         () => {
           Promise.all([
-            this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, typeMethodSettings.boostAmount),
             this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_STREAMING, typeMethodSettings.streamingAmount)
           ])
         }
@@ -135,7 +124,7 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleUpdateBoostTransactionsState = async (action: 'ACTION_BOOST' | 'ACTION_STREAMING', amount: number) => {
+  _handleUpdateBoostTransactionsState = async (action: 'ACTION_STREAMING', amount: number) => {
     const { player } = this.global
     const { nowPlayingItem } = player
     const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(nowPlayingItem))
@@ -146,11 +135,6 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
     const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
 
     if (activeValueTag && activeProvider?.key) {
-      let shouldRound = false
-      if (action === PV.V4V.ACTION_BOOST) {
-        shouldRound = true
-      }
-
       const newValueTransactions = await convertValueTagIntoValueTransactions(
         activeValueTag,
         nowPlayingItem.podcastTitle || '',
@@ -158,24 +142,18 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
         nowPlayingItem.podcastIndexPodcastId || '',
         action,
         amount,
-        shouldRound,
+        false,
         activeProvider.key
       )
 
-      if (action === 'ACTION_BOOST') {
-        this.setState({ boostTransactions: newValueTransactions })
-      } else if (action === 'ACTION_STREAMING') {
-        this.setState({ streamingTransactions: newValueTransactions })
-      }
+
+      this.setState({ streamingTransactions: newValueTransactions })
     }
   }
 
   render() {
     const {
-      boostTransactions,
-      // localAppBoostAmount,
       // localAppStreamingAmount,
-      localBoostAmount,
       localStreamingAmount,
       streamingTransactions
     } = this.state
@@ -210,17 +188,8 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
 
     const headerAccessibilityLabel = `${podcastTitle}, ${episodeTitle}, ${pubDate}`
 
-    const boostAmountText = activeProvider?.unit ? v4vGetTextInputLabel(translate('Boost Amount'), activeProvider) : ''
     const streamingAmountText = activeProvider?.unit
       ? v4vGetTextInputLabel(translate('Streaming Amount'), activeProvider)
-      : ''
-
-    const boostFiatAmountText = activeProvider
-      ? v4vGetSatoshisInFormattedFiatValue({
-          btcRateInFiat: activeProvider.fiat_rate_float,
-          satoshiAmount: localBoostAmount,
-          currency: activeProvider.fiat_currency
-        })
       : ''
 
     const streamingFiatAmountText = activeProvider
@@ -275,7 +244,7 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
               accessibilityRole='header'
               style={styles.textHeader}
               testID={`${testIDPrefix}_episode_funding_header`}>
-              {translate('Value for Value')}
+              {translate('Streaming')}
             </Text>
           )}
           {hasValueInfo && !activeProvider && (
@@ -293,57 +262,6 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
           )}
           {!!activeProvider && hasValueInfo && (
             <View>
-              {/* <Text style={styles.textSubLabel} testID={`${testIDPrefix}_value_settings_lightning_sub_label`}>
-                some wallet text here
-              </Text> */}
-              <View style={styles.itemWrapper}>
-                <TextInput
-                  editable
-                  eyebrowTitle={boostAmountText}
-                  keyboardType='numeric'
-                  onBlur={async () => {
-                    const { localBoostAmount } = this.state
-                    if (activeProvider) {
-                      const { type, method } = activeProvider
-                      if (Number(localBoostAmount) && Number(localBoostAmount) > MINIMUM_BOOST_PAYMENT) {
-                        await v4vUpdateTypeMethodSettingsBoostAmount(
-                          this.global,
-                          type,
-                          method,
-                          Number(localBoostAmount)
-                        )
-                        this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, Number(localBoostAmount))
-                      } else {
-                        await v4vUpdateTypeMethodSettingsBoostAmount(this.global, type, method, MINIMUM_BOOST_PAYMENT)
-                        this.setState({ localBoostAmount: MINIMUM_BOOST_PAYMENT })
-                        this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, MINIMUM_BOOST_PAYMENT)
-                      }
-                    }
-                  }}
-                  onSubmitEditing={() => Keyboard.dismiss()}
-                  onChangeText={(newNumber: number) => {
-                    this.setState({ localBoostAmount: newNumber })
-                  }}
-                  outerWrapperStyle={styles.textInput}
-                  subText={!!boostFiatAmountText ? `${boostFiatAmountText}*` : ''}
-                  subTextAlignRight
-                  testID={`${testIDPrefix}_boost_amount_text_input`}
-                  value={localBoostAmount?.toString() || ''}
-                />
-              </View>
-              <View style={styles.V4VRecipientsInfoView}>
-                <Text
-                  style={styles.textTableLabel}
-                  testID={`${testIDPrefix}_value_settings_lightning_boost_sample_label`}>
-                  {translate('Boost splits')}
-                </Text>
-                <V4VRecipientsInfoView
-                  testID={`${testIDPrefix}_boost`}
-                  totalAmount={activeProviderSettings?.boostAmount || 0}
-                  transactions={boostTransactions}
-                  erroringTransactions={previousTransactionErrors.boost}
-                />
-              </View>
               <View style={styles.itemWrapper}>
                 <TextInput
                   editable

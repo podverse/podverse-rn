@@ -32,7 +32,7 @@ export const hlsGetParsedManifest = async (url: string, resolution = 720) => {
             playlists.push({
               height: p.attributes.RESOLUTION.height,
               width: p.attributes.RESOLUTION.width,
-              uri: replaceUriInUrl(p.uri, url)
+              uri: hlsReplaceUriInUrl(url, p.uri)
             })
           }
         }
@@ -54,11 +54,31 @@ export const hlsGetParsedManifest = async (url: string, resolution = 720) => {
   return pvManifest
 }
 
-const replaceUriInUrl = (uri: string, url: string) => {
-  let finalUrl = url
-  if (uri && url) {
-    finalUrl = url.substring(0, url.lastIndexOf('/') + 1)
-    finalUrl = finalUrl + uri
+const hlsReplaceUriInUrl = (base: string, relative: string) => {
+  let finalUrl = ''
+  if (relative?.startsWith('..')) {
+    finalUrl = convertToAbsoluteUrl(base, relative)
+  } else {      
+    finalUrl = base.substring(0, base.lastIndexOf('/') + 1)
+    finalUrl = finalUrl + relative
   }
+
   return finalUrl
+}
+
+/*
+  Thanks to Bergi for this helper on StackOverflow.
+  https://stackoverflow.com/a/14780463/2608858
+*/
+function convertToAbsoluteUrl(base: string, relative: string) {
+  const stack = base.split('/')
+  const parts = relative.split('/')
+  stack.pop() // remove current file name (or empty string)
+  // (omit if "base" is the current folder without trailing slash)
+  for (const part of parts) {
+    if (part === '.') continue
+    if (part === '..') stack.pop()
+    else stack.push(part)
+  }
+  return stack.join('/')
 }
