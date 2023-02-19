@@ -8,6 +8,7 @@ import { clearNowPlayingItem, getNowPlayingItem } from '../services/userNowPlayi
 import { errorLogger } from './logger'
 import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
 import { BackgroundDownloader, deleteDownloadedEpisode } from './downloader'
+import { setItemWithStorageCapacityCheck } from './asyncStorage'
 
 const _fileName = 'src/lib/downloadedPodcast.ts'
 export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) => {
@@ -198,7 +199,7 @@ export const removeAllDownloadedPodcasts = async () => {
 const setDownloadedPodcasts = async (podcasts: any[]) => {
   podcasts = sortPodcastArrayAlphabetically(podcasts)
   if (Array.isArray(podcasts)) {
-    await AsyncStorage.setItem(PV.Keys.DOWNLOADED_PODCASTS, JSON.stringify(podcasts))
+    await setItemWithStorageCapacityCheck(PV.Keys.DOWNLOADED_PODCASTS, JSON.stringify(podcasts))
   }
 }
 
