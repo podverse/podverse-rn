@@ -637,6 +637,7 @@
   "Start Timer": "Start Timer",
   "Status": "Status:",
   "Stop Timer": "Stop Timer",
+  "Storage data exceeded message": "Local data storage size exceeded. Please unsubscribe from a few podcasts to continue.",
   "Stream": "Stream",
   "Stream Off": "Stream Off",
   "Stream On": "Stream On",
