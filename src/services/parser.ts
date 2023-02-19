@@ -4,6 +4,7 @@ import pLimit from 'p-limit'
 import { checkIfContainsStringMatch, isValidDate } from 'podverse-shared'
 import * as RNKeychain from 'react-native-keychain'
 import { getGlobal } from 'reactn'
+import { checkInvalidAsyncStorageCapacity, setItemWithStorageCapacityCheck } from '../lib/asyncStorage'
 import { debugLogger, errorLogger } from '../lib/logger'
 import { downloadEpisode } from '../lib/downloader'
 import { downloadCustomFileNameId } from '../lib/hash'
@@ -155,13 +156,13 @@ export const getAddByRSSPodcastFeedUrlsLocally = async () => {
 const setAddByRSSPodcastsLocally = async (podcasts: any[]) => {
   if (Array.isArray(podcasts)) {
     const cleanedPodcasts = podcasts.filter((podcast: any) => !!podcast)
-    await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCASTS, JSON.stringify(cleanedPodcasts))
+    await setItemWithStorageCapacityCheck(PV.Keys.ADD_BY_RSS_PODCASTS, JSON.stringify(cleanedPodcasts))
   }
 }
 
 export const setAddByRSSPodcastFeedUrlsLocally = async (addByRSSPodcastFeedUrls: any[]) => {
   if (Array.isArray(addByRSSPodcastFeedUrls)) {
-    await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS, JSON.stringify(addByRSSPodcastFeedUrls))
+    await setItemWithStorageCapacityCheck(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS, JSON.stringify(addByRSSPodcastFeedUrls))
   }
 }
 
