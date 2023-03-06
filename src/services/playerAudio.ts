@@ -274,7 +274,7 @@ export const audioUpdateCurrentTrack = async (trackTitle?: string, artworkUrl?: 
   }
 }
 
-export const audioCreateTrack = async (item: NowPlayingItem, isUpcomingQueueItem: boolean) => {
+export const audioCreateTrack = async (item: NowPlayingItem) => {
   if (!item) return
 
   const {
