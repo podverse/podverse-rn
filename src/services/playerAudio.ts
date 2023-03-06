@@ -175,7 +175,9 @@ const audioRemoveUpcomingTracks = async () => {
         const upcomingQueueItemsCount = queueItemsCount - currentIndex - 1
         for (let i = 0; i < upcomingQueueItemsCount; i++) {
           const adjustedIndex = queueItemsCount - i - 1
-          await PVAudioPlayer.remove(adjustedIndex)
+          if (adjustedIndex >= 0) {
+            await PVAudioPlayer.remove(adjustedIndex)
+          }
         }
       }
     }
