@@ -1,6 +1,6 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, View } from 'react-native'
 import React, { useEffect, useGlobal, useState } from 'reactn'
-import { Icon } from '../components'
+import { Icon, Text } from '../components'
 import { translate } from '../lib/i18n'
 import { getMembershipStatus } from '../lib/membership'
 import { readableDate, safelyUnwrapNestedVariable } from '../lib/utility'
