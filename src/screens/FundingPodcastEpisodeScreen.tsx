@@ -135,7 +135,7 @@ export class FundingPodcastEpisodeScreen extends React.Component<Props> {
     return (
       <View style={styles.content} testID='funding_screen_view'>
         <View accessible accessibilityLabel={headerAccessibilityLabel} style={styles.innerTopView}>
-          <FastImage isSmall source={boostagramItem.podcastShrunkImageUrl} styles={styles.image} />
+          <FastImage isSmall source={boostagramItem?.podcastShrunkImageUrl} styles={styles.image} />
           <View style={{ flex: 1, justifyContent: 'center' }}>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
