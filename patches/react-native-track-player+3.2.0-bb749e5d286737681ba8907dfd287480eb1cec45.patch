@@ -2591,11 +2591,11 @@ index 0000000..71d2dbd
 \ No newline at end of file
 diff --git a/node_modules/react-native-track-player/android/build/intermediates/incremental/packageDebugResources/compile-file-map.properties b/node_modules/react-native-track-player/android/build/intermediates/incremental/packageDebugResources/compile-file-map.properties
 new file mode 100644
-index 0000000..b42bf87
+index 0000000..ad074ae
 --- /dev/null
 +++ b/node_modules/react-native-track-player/android/build/intermediates/incremental/packageDebugResources/compile-file-map.properties
 @@ -0,0 +1,11 @@
-+#Mon Mar 06 16:37:12 CST 2023
++#Mon Mar 06 20:43:58 CST 2023
 +/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/main/res/drawable-hdpi/rewind.png=/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-hdpi-v4/rewind.png
 +/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/main/res/drawable-mdpi/forward.png=/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-mdpi-v4/forward.png
 +/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/src/main/res/drawable-mdpi/rewind.png=/Users/mitch/Repos/podverse-rn/node_modules/react-native-track-player/android/build/intermediates/packaged_res/debug/drawable-mdpi-v4/rewind.png
@@ -4982,11 +4982,11 @@ index 0000000..4424406
 Binary files /dev/null and b/node_modules/react-native-track-player/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i.len differ
 diff --git a/node_modules/react-native-track-player/android/build/kotlin/compileDebugKotlin/cacheable/last-build.bin b/node_modules/react-native-track-player/android/build/kotlin/compileDebugKotlin/cacheable/last-build.bin
 new file mode 100644
-index 0000000..3a8a948
+index 0000000..01ad279
 Binary files /dev/null and b/node_modules/react-native-track-player/android/build/kotlin/compileDebugKotlin/cacheable/last-build.bin differ
 diff --git a/node_modules/react-native-track-player/android/build/kotlin/compileDebugKotlin/local-state/build-history.bin b/node_modules/react-native-track-player/android/build/kotlin/compileDebugKotlin/local-state/build-history.bin
 new file mode 100644
-index 0000000..d2e7fa7
+index 0000000..8b9e483
 Binary files /dev/null and b/node_modules/react-native-track-player/android/build/kotlin/compileDebugKotlin/local-state/build-history.bin differ
 diff --git a/node_modules/react-native-track-player/android/build/outputs/logs/manifest-merger-debug-report.txt b/node_modules/react-native-track-player/android/build/outputs/logs/manifest-merger-debug-report.txt
 new file mode 100644
@@ -5378,7 +5378,7 @@ new file mode 100644
 index 0000000..3cca80f
 Binary files /dev/null and b/node_modules/react-native-track-player/android/build/tmp/kotlin-classes/debug/com/doublesymmetry/trackplayer/utils/RejectionException.class differ
 diff --git a/node_modules/react-native-track-player/ios/RNTrackPlayer/Models/Track.swift b/node_modules/react-native-track-player/ios/RNTrackPlayer/Models/Track.swift
-index ea5a302..4985d2b 100644
+index ea5a302..dba6f9f 100644
 --- a/node_modules/react-native-track-player/ios/RNTrackPlayer/Models/Track.swift
 +++ b/node_modules/react-native-track-player/ios/RNTrackPlayer/Models/Track.swift
 @@ -11,7 +11,7 @@ import MediaPlayer
@@ -5393,7 +5393,7 @@ index ea5a302..4985d2b 100644
 @@ -27,6 +27,8 @@ class Track: AudioItem, TimePitching, AssetOptionsProviding {
      let pitchAlgorithm: String?
      var isLiveStream: Bool?
-     
+ 
 +    var initialTime: TimeInterval = 0.0
 +
      var album: String?
@@ -5419,21 +5419,3 @@ index ea5a302..4985d2b 100644
      // MARK: - AudioItem Protocol
  
      func getSourceUrl() -> String {
-diff --git a/node_modules/react-native-track-player/src/trackPlayer.ts b/node_modules/react-native-track-player/src/trackPlayer.ts
-index cfdf084..9addc0f 100644
---- a/node_modules/react-native-track-player/src/trackPlayer.ts
-+++ b/node_modules/react-native-track-player/src/trackPlayer.ts
-@@ -253,9 +253,13 @@ export async function updateMetadataForTrack(
-   // Clone the object before modifying it
-   metadata = Object.assign({}, metadata);
- 
-+  console.log('updateMetadataForTrack asdf', trackIndex, metadata.artwork)
-+
-   // Resolve the artwork URL
-   metadata.artwork = resolveImportedPath(metadata.artwork);
- 
-+  console.log('updateMetadataForTrack qwer', trackIndex, metadata.artwork)
-+
-   return TrackPlayer.updateMetadataForTrack(trackIndex, metadata);
- }
- 
