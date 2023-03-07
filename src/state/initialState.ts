@@ -179,6 +179,7 @@ const initialTheme: InitialState = {
   screenReaderEnabled: false,
   newEpisodesCount: {},
   hideNewEpisodesBadges: false,
+  hideDividersInLists: false,
   imageFullViewSourceUrl: '',
   imageFullViewShow: false
 }

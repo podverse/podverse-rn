@@ -11,9 +11,9 @@ type DividerProps = {
 export const Divider = (props: DividerProps) => {
   const { optional } = props
   const [globalTheme] = useGlobal('globalTheme')
-  const hideDividers = true
+  const [hideDividersInLists] = useGlobal('hideDividersInLists')
   
-  if (hideDividers && optional) {
+  if (hideDividersInLists && optional) {
     return null
   }
   
