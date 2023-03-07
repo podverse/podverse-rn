@@ -75,6 +75,7 @@ export class FundingPodcastEpisodeScreen extends React.Component<Props> {
     if (episode && podcast) {
       item = {
         episodeFunding: episode.funding || [],
+        episodeGuid: episode.guid || '',
         episodePubDate: episode.pubDate,
         episodeTitle: episode.title || '',
         episodeValue: episode.value || [],
@@ -135,7 +136,7 @@ export class FundingPodcastEpisodeScreen extends React.Component<Props> {
     return (
       <View style={styles.content} testID='funding_screen_view'>
         <View accessible accessibilityLabel={headerAccessibilityLabel} style={styles.innerTopView}>
-          <FastImage isSmall source={boostagramItem.podcastShrunkImageUrl} styles={styles.image} />
+          <FastImage isSmall source={boostagramItem?.podcastShrunkImageUrl} styles={styles.image} />
           <View style={{ flex: 1, justifyContent: 'center' }}>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}

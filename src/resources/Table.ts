@@ -8,8 +8,8 @@ export const Table = {
         height: 92
       },
       image: {
-        height: 74,
-        width: 74,
+        height: 78,
+        width: 78,
         margin: 10
       }
     }

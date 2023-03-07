@@ -85,7 +85,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
     }
   }
 
-  _ItemSeparatorComponent = () => <Divider />
+  _ItemSeparatorComponent = () => <Divider optional />
 
   _renderProfileItem = ({ item, index }) => {
     // In order to be subscribed to a profile, that profile must be public,

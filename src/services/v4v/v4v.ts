@@ -27,6 +27,7 @@ const _fileName = 'src/services/v4v/v4v.ts'
 
 export type BoostagramItem = {
   episodeFunding?: Funding[]
+  episodeGuid?: string
   episodePubDate?: Date
   episodeTitle?: string
   episodeValue?: ValueTag[]
@@ -174,7 +175,8 @@ export const convertValueTagIntoValueTransactions = async (
   action: string,
   totalBatchedAmount = 0,
   roundDownValues: boolean,
-  providerKey: string
+  providerKey: string,
+  episode_guid: string
 ) => {
   const { method, type } = valueTag
 
@@ -209,7 +211,8 @@ export const convertValueTagIntoValueTransactions = async (
       method,
       type,
       totalBatchedAmount,
-      providerKey
+      providerKey,
+      episode_guid
     )
 
     if (valueTransaction) valueTransactions.push(valueTransaction)
@@ -230,7 +233,8 @@ const convertValueTagIntoValueTransaction = async (
   // and is not used for the actual transaction amount that is sent.
   // The actual transaction amount is determined in the normalizeValueRecipients function.
   totalBatchedAmount: number,
-  providerKey: string
+  providerKey: string,
+  episode_guid: string
 ) => {
   const timestamp = Date.now()
   const [speed, currentPlaybackPosition] = await Promise.all([playerGetRate(), playerGetPosition()])
@@ -247,7 +251,8 @@ const convertValueTagIntoValueTransaction = async (
     totalBatchedAmount,
     normalizedValueRecipient.name || '',
     normalizedValueRecipient.customKey || '',
-    normalizedValueRecipient.customValue || ''
+    normalizedValueRecipient.customValue || '',
+    episode_guid
   )
 
   return {
@@ -378,7 +383,8 @@ export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMe
     action,
     boostAmount,
     roundDownBoostTransactions,
-    activeProvider.key
+    activeProvider.key,
+    item?.episodeGuid || ''
   )
 
   const totalAmountPaid = await processSendValueTransactions(valueTransactions, action, includeMessage)
@@ -570,7 +576,8 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
         'streaming',
         amount,
         roundDownStreamingTransactions,
-        providerKey
+        providerKey,
+        item?.episodeGuid || ''
       )
     ])
 

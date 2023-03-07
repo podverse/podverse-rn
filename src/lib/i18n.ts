@@ -1,5 +1,6 @@
 import * as RNLocalize from 'react-native-localize'
 import Config from 'react-native-config'
+import { parseTranslatorsSection } from 'podverse-shared'
 
 const translationGetters = {
   // lazy requires (metro bundler does not support symlinks)
@@ -15,6 +16,20 @@ const translationGetters = {
   pt: () => require('../resources/i18n/translations/pt.json'),
   ru: () => require('../resources/i18n/translations/ru.json'),
   sv: () => require('../resources/i18n/translations/sv.json')
+}
+
+export const getTransalatorsSections = () => {
+  const languageKeys = Object.keys(translationGetters)
+  const translatorSections = []
+  for (const key of languageKeys) {
+    const translatorsField = translationGetters[key]?.()._translatorsField
+    if (translatorsField) {
+      const translatorSection = parseTranslatorsSection(translate(`language - ${key}`), translatorsField)
+      translatorSections.push(translatorSection)
+    }
+  }
+
+  return translatorSections
 }
 
 class Internationalizer {

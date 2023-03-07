@@ -1,8 +1,8 @@
 import React from 'react'
-import { StyleSheet, Text } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { ActivityIndicator, PressableWithOpacity } from '.'
+import { ActivityIndicator, PressableWithOpacity, Text } from '.'
 
 type Props = {
   accessibilityLabel?: string
