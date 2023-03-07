@@ -155,7 +155,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
       })
     })
 
-  _ItemSeparatorComponent = () => <Divider />
+  _ItemSeparatorComponent = () => <Divider optional />
 
   _renderRow = ({ item, index, drag, isActive }) => {
     const { isEditing } = this.state

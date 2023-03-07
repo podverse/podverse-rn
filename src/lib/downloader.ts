@@ -58,6 +58,7 @@ const addDLTask = (episode: any, podcast: any) =>
     episodeDescription: episode.description,
     episodeDuration: episode.duration,
     episodeFunding: episode.funding,
+    episodeGuid: episode.guid,
     episodeId: episode.id,
     episodeImageUrl: episode.imageUrl,
     episodeLinkUrl: episode.linkUrl,

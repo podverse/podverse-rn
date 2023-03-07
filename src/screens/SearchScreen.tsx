@@ -120,7 +120,7 @@ export class SearchScreen extends React.Component<Props, State> {
     )
   }
 
-  _ItemSeparatorComponent = () => <Divider />
+  _ItemSeparatorComponent = () => <Divider optional />
 
   _onEndReached = ({ distanceFromEnd }) => {
     const { endOfResultsReached } = this.state

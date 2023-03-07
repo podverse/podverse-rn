@@ -79,7 +79,7 @@ export class MyLibraryScreen extends React.Component<Props, State> {
     return (
       <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <SectionList
-          ItemSeparatorComponent={() => <Divider />}
+          ItemSeparatorComponent={() => <Divider optional />}
           renderItem={({ item }) => {
             const accessibilityLabel =
               item.key === _downloadsKey && downloadsActiveCount > 0

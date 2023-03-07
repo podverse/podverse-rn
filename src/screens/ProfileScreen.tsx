@@ -304,7 +304,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     }
   }
 
-  _ItemSeparatorComponent = () => <Divider />
+  _ItemSeparatorComponent = () => <Divider optional />
 
   _handlePodcastPress = (podcast: any) => {
     const { navigation } = this.props

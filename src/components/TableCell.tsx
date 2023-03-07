@@ -60,7 +60,7 @@ export const TableCell = (props: TableCellProps) => {
           )}
         </View>
       </Pressable>
-      {includeDivider && <Divider />}
+      {includeDivider && <Divider optional />}
     </>
   )
 }

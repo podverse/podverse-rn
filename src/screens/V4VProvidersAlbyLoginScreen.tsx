@@ -62,15 +62,19 @@ export class V4VProvidersAlbyLoginScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.wrapper}>
-        <WebView
-          dataDetectorTypes='all'
-          overScrollMode='never'
-          originWhitelist={['https://*', `${PV.DeepLinks.prefix}*`]}
-          onShouldStartLoadWithRequest={this._onShouldStartLoadWithRequest}
-          removeClippedSubviews
-          source={{ uri: url }}
-          style={{ opacity: 0.99 }}
-        />
+        {
+          !!url && (
+            <WebView
+              dataDetectorTypes='all'
+              overScrollMode='never'
+              originWhitelist={['https://*', `${PV.DeepLinks.prefix}*`]}
+              onShouldStartLoadWithRequest={this._onShouldStartLoadWithRequest}
+              removeClippedSubviews
+              source={{ uri: url }}
+              style={{ opacity: 0.99 }}
+            />
+          )
+        }
       </View>
     )
   }

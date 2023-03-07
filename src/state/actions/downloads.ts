@@ -42,6 +42,7 @@ export type DownloadTaskState = {
   episodeDescription?: string
   episodeDuration?: number
   episodeFunding?: any
+  episodeGuid?: string
   episodeId: string
   episodeImageUrl?: string
   episodeLinkUrl?: string

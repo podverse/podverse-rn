@@ -8500,10 +8500,10 @@ plist@^3.0.2, plist@^3.0.5:
     base64-js "^1.5.1"
     xmlbuilder "^9.0.7"
 
-podverse-shared@^4.6.12:
-  version "4.6.12"
-  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.6.12.tgz#60739413f23b28c67606435098a53cc8783fc262"
-  integrity sha512-rThXBk+LLyYLoyq7P9AA4qhHMSaHYCcokD9NrDgGHCiww9udMnoxValiy2rTvj9BCcL0qnMeDjeYuOuWB7FqjQ==
+podverse-shared@^4.12.4:
+  version "4.12.4"
+  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.12.4.tgz#32556fbb9078ef380e3dd353a2cd374306b9e962"
+  integrity sha512-Wy7HVi4rboftGeW4Wjs/AX6axKMjPZxgsgxifzXPDA5Hf7bo32oOwn19MNesZzpnkOGr7ZjRAx9nQcr6izUZ3Q==
   dependencies:
     he "^1.2.0"
     html-entities "^2.3.2"
@@ -9041,10 +9041,10 @@ react-native-text-ticker@1.13.0:
   resolved "https://registry.yarnpkg.com/react-native-text-ticker/-/react-native-text-ticker-1.13.0.tgz#e96e9bd72a66e67353c12f95f17499506aee3560"
   integrity sha512-5Mh5vqZhfeIVQdXBFaUQw6I/uMyhi9ZlB/RQydqqtwoXZHEZkuz9250bfskpG0L/NkshOWHh1n2Xdlji0LxYzg==
 
-react-native-track-player@3.2.0-480f64932969545fe38a261fb3867f90f514478c:
-  version "3.2.0-480f64932969545fe38a261fb3867f90f514478c"
-  resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-3.2.0-480f64932969545fe38a261fb3867f90f514478c.tgz#b0046472452228198a04d78f5129310dabd51a1e"
-  integrity sha512-A9zjpfeiFH8xSX/UFuRSD+ARPZxuM11rCN7HKfxU6R//+GX5W6mtYrmn2iaIxd/mYW8GcfDsyDe3QazU0s0xQg==
+react-native-track-player@3.2.0-bb749e5d286737681ba8907dfd287480eb1cec45:
+  version "3.2.0-bb749e5d286737681ba8907dfd287480eb1cec45"
+  resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-3.2.0-bb749e5d286737681ba8907dfd287480eb1cec45.tgz#9813246fcc1c05320ad0386765513c8b4148cd91"
+  integrity sha512-WS4DbirdPwrnkozKGgXBkphtRDpfTGQ16kRUag3Ltr4bmFGTQHk7g4otI1C0So7fEZzJzzFEmXR/F8ykJ+lmkw==
 
 react-native-tracking-transparency@0.1.1:
   version "0.1.1"

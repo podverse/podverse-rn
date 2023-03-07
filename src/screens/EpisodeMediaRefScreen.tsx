@@ -121,7 +121,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
     return newState
   }
 
-  _ItemSeparatorComponent = () => <Divider />
+  _ItemSeparatorComponent = () => <Divider optional />
 
   _ListHeaderComponent = () => {
     const { navigation } = this.props

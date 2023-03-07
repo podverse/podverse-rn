@@ -78,15 +78,25 @@ PVAudioPlayer.getTrackDuration = async () => {
   return PVAudioPlayer.getDuration()
 }
 
-PVAudioPlayer.setupPlayer({
-  waitForBuffer: true,
-  maxCacheSize: 1000000, // 1 GB from KB, this affects Android only I think.
-  iosCategoryMode: IOSCategoryMode.SpokenAudio
-}).then(() => {
-  audioUpdateTrackPlayerCapabilities()
-})
+/*
+  Delay a second on Android to try to avoid
+  not allowed to start service Intent error
+  https://github.com/doublesymmetry/react-native-track-player/issues/1812
 
-PVAudioPlayer.setRepeatMode(RepeatMode.Off)
+*/
+
+const timeout = Platform.OS === 'android' ? 1000 : 0
+setTimeout(() => {
+  PVAudioPlayer.setupPlayer({
+    waitForBuffer: true,
+    maxCacheSize: 1000000, // 1 GB from KB, this affects Android only I think.
+    iosCategoryMode: IOSCategoryMode.SpokenAudio
+  }).then(() => {
+    audioUpdateTrackPlayerCapabilities()
+  })
+  
+  PVAudioPlayer.setRepeatMode(RepeatMode.Off)
+}, timeout)
 
 export const audioUpdateTrackPlayerCapabilities = () => {
   const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
@@ -175,7 +185,9 @@ const audioRemoveUpcomingTracks = async () => {
         const upcomingQueueItemsCount = queueItemsCount - currentIndex - 1
         for (let i = 0; i < upcomingQueueItemsCount; i++) {
           const adjustedIndex = queueItemsCount - i - 1
-          await PVAudioPlayer.remove(adjustedIndex)
+          if (adjustedIndex >= 0) {
+            await PVAudioPlayer.remove(adjustedIndex)
+          }
         }
       }
     }
@@ -262,7 +274,7 @@ export const audioUpdateCurrentTrack = async (trackTitle?: string, artworkUrl?: 
   }
 }
 
-export const audioCreateTrack = async (item: NowPlayingItem, isUpcomingQueueItem: boolean) => {
+export const audioCreateTrack = async (item: NowPlayingItem) => {
   if (!item) return
 
   const {

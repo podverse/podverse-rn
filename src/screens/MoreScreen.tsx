@@ -218,7 +218,8 @@ export class MoreScreen extends React.Component<Props, State> {
     return (
       <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <SectionList
-          ItemSeparatorComponent={() => <Divider />}
+          contentContainerStyle={{ paddingBottom: 16 }}
+          ItemSeparatorComponent={() => <Divider optional />}
           renderItem={({ item }) => {
             const { appMode } = this.global
             let appModeSelectedText = translate('Podcasts')
