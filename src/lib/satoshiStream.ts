@@ -37,7 +37,7 @@ export const createSatoshiStreamStats = (
       podcast,
       feedID: podcastIndexId,
       episode,
-      itemID: episode_guid,
+      episode_guid,
       ts,
       action,
       speed,
