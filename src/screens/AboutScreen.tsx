@@ -37,8 +37,6 @@ export class AboutScreen extends React.Component<Props, State> {
   })
 
   componentDidMount() {
-    console.log('ok!', this.state.translatorsSections)
-
     trackPageView('/about', 'About Screen')
   }
 
