@@ -90,7 +90,7 @@ export class ContactScreen extends React.Component<Props> {
     return (
       <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <SectionList
-          ItemSeparatorComponent={() => <Divider />}
+          ItemSeparatorComponent={() => <Divider optional />}
           renderItem={({ item }) => {
             return (
               <TableCell
