@@ -75,6 +75,7 @@ export class FundingPodcastEpisodeScreen extends React.Component<Props> {
     if (episode && podcast) {
       item = {
         episodeFunding: episode.funding || [],
+        episodeGuid: episode.guid || '',
         episodePubDate: episode.pubDate,
         episodeTitle: episode.title || '',
         episodeValue: episode.value || [],

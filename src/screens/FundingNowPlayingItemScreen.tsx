@@ -143,7 +143,8 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
         action,
         amount,
         false,
-        activeProvider.key
+        activeProvider.key,
+        nowPlayingItem.episodeGuid || ''
       )
 
 
