@@ -154,11 +154,9 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flexDirection: 'row',
-    borderBottomColor: PV.Colors.gray,
-    borderBottomWidth: 1,
     backgroundColor: PV.Colors.ink,
     alignItems: 'center',
-    paddingBottom: 6
+    paddingBottom: 10
   },
   bottomText: {
     color: PV.Colors.skyLight,

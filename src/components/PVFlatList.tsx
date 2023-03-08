@@ -5,7 +5,7 @@ import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { ActivityIndicator, MessageWithAction, View, GridView } from './'
+import { ActivityIndicator, MessageWithAction, View, GridView, Divider } from './'
 
 type Props = {
   contentContainerStyle: any
@@ -122,6 +122,10 @@ export const PVFlatList = (props: Props) => {
   const shouldShowNoResultsFoundMessage =
     !disableNoResultsMessage && !isLoadingMore && !showNoInternetConnectionMessage && noResultsFound
 
+  const finalItemSeparator = !!ItemSeparatorComponent
+    ? ItemSeparatorComponent
+    : () => <Divider optional />
+
   return (
     <View style={styles.view} transparent={transparent}>
       {gridView ? (
@@ -168,7 +172,7 @@ export const PVFlatList = (props: Props) => {
           disableRightSwipe
           extraData={extraData}
           getItemLayout={getItemLayout}
-          ItemSeparatorComponent={ItemSeparatorComponent}
+          ItemSeparatorComponent={finalItemSeparator}
           keyExtractor={keyExtractor}
           onScrollBeginDrag={onScrollBeginDrag}
           ListFooterComponent={() => {

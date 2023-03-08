@@ -1,8 +1,7 @@
 import React from 'react'
-import { Text } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { PressableWithOpacity } from '.'
+import { PressableWithOpacity, Text } from '.'
 
 type Props = {
   accessible?: boolean

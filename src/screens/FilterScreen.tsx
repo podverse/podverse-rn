@@ -283,6 +283,7 @@ export class FilterScreen extends React.Component<Props, State> {
         <FlatList
           disableNoResultsMessage
           keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.value || item?.id)}
+          ItemSeparatorComponent={() => <></>}
           renderSectionHeader={({ section }) => (
             <View style={styles.sectionItemWrapper}>
               <Text

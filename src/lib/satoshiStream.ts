@@ -21,7 +21,8 @@ export const createSatoshiStreamStats = (
   totalBatchedAmount: number,
   name: string,
   customKey: string,
-  customValue: string
+  customValue: string,
+  episode_guid: string
 ) => {
   /* TLV records have a limit */
   const podcast = (podcastTitle || translate('Untitled Podcast')).substring(0, 60)
@@ -36,6 +37,7 @@ export const createSatoshiStreamStats = (
       podcast,
       feedID: podcastIndexId,
       episode,
+      episode_guid,
       ts,
       action,
       speed,

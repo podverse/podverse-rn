@@ -205,7 +205,7 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
     return (
       <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <SectionList
-          ItemSeparatorComponent={() => <Divider />}
+          ItemSeparatorComponent={() => <Divider optional />}
           renderItem={this._renderItem}
           ListHeaderComponent={this._generateListHeaderComponent()}
           renderSectionHeader={this._renderSectionHeader}

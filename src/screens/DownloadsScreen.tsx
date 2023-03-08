@@ -50,7 +50,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
     trackPageView('/downloads', 'Downloads Screen')
   }
 
-  _ItemSeparatorComponent = () => <Divider />
+  _ItemSeparatorComponent = () => <Divider optional />
 
   _handleItemPress = (downloadTaskState: DownloadTaskState) => {
     if (downloadTaskState.status === DownloadStatus.FINISHED) {

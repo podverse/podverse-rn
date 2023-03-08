@@ -22,6 +22,7 @@ import { getCustomLaunchScreenKey, setCustomLaunchScreenKey } from '../services/
 import { trackPageView } from '../services/tracking'
 import { setCustomRSSParallelParserLimit } from '../state/actions/customRSSParallelParserLimit'
 import { toggleHideNewEpisodesBadges } from '../state/actions/newEpisodesCount'
+import { toggleHideDividersInLists } from '../state/actions/settings-ui'
 import { setCensorNSFWText, setHideCompleted } from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
@@ -130,7 +131,7 @@ export class SettingsScreenOther extends React.Component<Props, State> {
 
   render() {
     const { customLaunchScreenOptionSelected, customRSSParallelParserLimit, isLoading } = this.state
-    const { censorNSFWText, globalTheme, hideCompleted, hideNewEpisodesBadges } = this.global
+    const { censorNSFWText, globalTheme, hideCompleted, hideDividersInLists, hideNewEpisodesBadges } = this.global
     const isDarkMode = globalTheme === darkTheme
 
     return (
@@ -179,6 +180,15 @@ export class SettingsScreenOther extends React.Component<Props, State> {
                 testID={`${testIDPrefix}_hide_new_episodes_badges`}
                 text={translate('Hide new episode count badges')}
                 value={!!hideNewEpisodesBadges}
+              />
+            </View>
+            <View style={core.itemWrapper}>
+              <SwitchWithText
+                accessibilityLabel={translate('Hide dividers in lists')}
+                onValueChange={toggleHideDividersInLists}
+                testID={`${testIDPrefix}_hide_dividers_in_lists`}
+                text={translate('Hide dividers in lists')}
+                value={!!hideDividersInLists}
               />
             </View>
             <View style={core.itemWrapperReducedHeight}>

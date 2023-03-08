@@ -1,3 +1,3 @@
 export const Timeouts = {
-  APP_LAUNCH_DELAY: 6000
+  APP_LAUNCH_DELAY: 5000
 }

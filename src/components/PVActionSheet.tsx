@@ -1,5 +1,6 @@
-import { Animated, Modal, Text, TouchableHighlight, View } from 'react-native'
+import { Animated, Modal, TouchableHighlight, View } from 'react-native'
 import React from 'reactn'
+import { Text } from '../components'
 import { translate } from '../lib/i18n'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
@@ -89,7 +90,7 @@ export class PVActionSheet extends React.Component<Props, State> {
             },
             () => {
               (async () => {
-                await item.onPress()
+                await item?.onPress?.()
                 this.setState({
                   isLoadingQueueLast: false,
                   isLoadingQueueNext: false

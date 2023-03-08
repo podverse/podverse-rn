@@ -132,7 +132,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
 
   _handleNewPlaylistDismiss = () => this.setState({ showNewPlaylistDialog: false })
 
-  _ItemSeparatorComponent = () => <Divider />
+  _ItemSeparatorComponent = () => <Divider optional />
 
   _renderPlaylistItem = ({ item, index }) => {
     const { episodeId, isSavingId, mediaRefId } = this.state
