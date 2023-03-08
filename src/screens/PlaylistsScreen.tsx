@@ -79,7 +79,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     this.setState({ sections })
   }
 
-  _ItemSeparatorComponent = () => <Divider />
+  _ItemSeparatorComponent = () => <Divider optional />
 
   _renderPlaylistItem = ({ index, item, section }) => {
     const ownerName = (item.owner && item.owner.name) || translate('anonymous')
@@ -146,7 +146,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     return (
       <SwipeRowBack
         isLoading={isRemoving}
-        onPress={() => onPress(item.id, rowMap)}
+        onPress={() => onPress?.(item.id, rowMap)}
         testID={`${testIDPrefix}_playlist_${sectionKey}_item_${index}_${testIDSuffix}`}
         text={buttonText}
       />

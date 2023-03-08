@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.12.2",
+  "version": "4.12.4",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -68,7 +68,7 @@
     "m3u8-parser": "^6.0.0",
     "moment": "^2.29.4",
     "p-limit": "^4.0.0",
-    "podverse-shared": "^4.6.12",
+    "podverse-shared": "^4.12.5",
     "qs": "^6.11.0",
     "react": "17.0.1",
     "react-native": "0.66.5",
@@ -105,7 +105,7 @@
     "react-native-swipe-list-view": "3.2.9",
     "react-native-system-setting": "1.7.6",
     "react-native-text-ticker": "1.13.0",
-    "react-native-track-player": "3.2.0-480f64932969545fe38a261fb3867f90f514478c",
+    "react-native-track-player": "3.2.0-bb749e5d286737681ba8907dfd287480eb1cec45",
     "react-native-tracking-transparency": "0.1.1",
     "react-native-vector-icons": "8.1.0",
     "react-native-video": "6.0.0-alpha.4",

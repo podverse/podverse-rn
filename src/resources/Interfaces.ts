@@ -240,6 +240,7 @@ export interface InitialState {
     [key: string]: number
   }
   hideNewEpisodesBadges: boolean
+  hideDividersInLists: boolean
   imageFullViewSourceUrl?: string
   imageFullViewShow?: boolean
 }

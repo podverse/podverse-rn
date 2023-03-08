@@ -129,6 +129,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     if (episode && podcast) {
       item = {
         episodeFunding: episode.funding || [],
+        episodeGuid: episode.guid || '',
         episodePubDate: episode.pubDate,
         episodeTitle: episode.title || '',
         episodeValue: episode.value || [],
@@ -149,6 +150,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     } else if (nowPlayingItem) {
       item = {
         episodeFunding: nowPlayingItem.episodeFunding || [],
+        episodeGuid: nowPlayingItem.episodeGuid || '',
         episodePubDate: (nowPlayingItem.episodePubDate as any) || new Date(),
         episodeTitle: nowPlayingItem.episodeTitle || '',
         episodeValue: nowPlayingItem.episodeValue || [],
@@ -197,7 +199,8 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
         action,
         amount,
         shouldRound,
-        activeProvider.key
+        activeProvider.key,
+        boostagramItem.episodeGuid ||  ''
       )
 
       this.setState({ boostTransactions: newValueTransactions })
@@ -277,7 +280,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     return (
       <View style={styles.content} testID='funding_screen_view'>
         <View accessible accessibilityLabel={headerAccessibilityLabel} style={styles.innerTopView}>
-          <FastImage isSmall source={boostagramItem.podcastShrunkImageUrl} styles={styles.image} />
+          <FastImage isSmall source={boostagramItem?.podcastShrunkImageUrl} styles={styles.image} />
           <View style={{ justifyContent: 'center', flex: 1 }}>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}

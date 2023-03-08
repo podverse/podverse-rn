@@ -135,7 +135,7 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
     )
   }
 
-  _ItemSeparatorComponent = () => <Divider />
+  _ItemSeparatorComponent = () => <Divider optional />
 
   _renderItem = ({ item, index }) => {
     const { navigation } = this.props

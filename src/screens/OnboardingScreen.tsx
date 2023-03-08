@@ -1,6 +1,6 @@
 import React from 'react'
-import { Image, SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import { PressableWithOpacity } from '../components'
+import { Image, SafeAreaView, StyleSheet, View } from 'react-native'
+import { PressableWithOpacity, Text } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'

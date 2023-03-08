@@ -1,5 +1,5 @@
 import React from 'reactn'
-import { Text } from 'react-native'
+import { Text } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { AppModes } from '../resources/AppMode'

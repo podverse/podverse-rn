@@ -895,7 +895,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _ItemSeparatorComponent = () => <Divider style={{ marginHorizontal: 10 }} />
+  _ItemSeparatorComponent = () => <Divider optional style={{ marginHorizontal: 10 }} />
 
   _renderPodcastItem = ({ item, index }) => (
     <PodcastTableCell

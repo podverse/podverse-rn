@@ -143,7 +143,8 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
         action,
         amount,
         false,
-        activeProvider.key
+        activeProvider.key,
+        nowPlayingItem.episodeGuid || ''
       )
 
 
@@ -203,7 +204,7 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
     return (
       <View style={styles.content} testID='funding_screen_view'>
         <View accessible accessibilityLabel={headerAccessibilityLabel} style={styles.innerTopView}>
-          <FastImage isSmall source={nowPlayingItem.podcastShrunkImageUrl} styles={styles.image} />
+          <FastImage isSmall source={nowPlayingItem?.podcastShrunkImageUrl} styles={styles.image} />
           <View style={{ flex: 1 }}>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
