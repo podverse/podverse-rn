@@ -334,16 +334,15 @@ export const v4vRefreshAccessToken = async (activeProviderKey: string) => {
 }
 
 export const v4vRefreshProviderWalletInfo = async (activeProviderKey: string, preventPlayerUpdate?: boolean) => {
-  const globalState = getGlobal()
-
   // Use require here to prevent circular dependencies issues.
   if (activeProviderKey === 'alby') {
     const { v4vAlbyGetAccountInfo } = require('./providers/alby')
     await v4vAlbyGetAccountInfo()
   }
-
+  
   // Make sure the global player state is updated
   // so the boostagram buttons show.
+  const globalState = getGlobal()
   const nowPlayingItem = globalState?.player?.nowPlayingItem
   if (!preventPlayerUpdate && nowPlayingItem) {
     playerUpdatePlayerState(nowPlayingItem)
