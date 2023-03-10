@@ -2135,9 +2135,9 @@
     url-toolkit "^2.2.1"
 
 "@xmldom/xmldom@~0.7.0":
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.7.5.tgz#09fa51e356d07d0be200642b0e4f91d8e6dd408d"
-  integrity sha512-V3BIhmY36fXZ1OtVcI9W+FxQqxVLsPKcNjWigIaa81dLC9IolJl5Mt4Cvhmr0flUnjSpTdrbMTSbXqYqV5dT6A==
+  version "0.7.9"
+  resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.7.9.tgz#7f9278a50e737920e21b297b8a35286e9942c056"
+  integrity sha512-yceMpm/xd4W2a85iqZyO09gTnHvXF6pyiWjD2jcOJs7hRoZtNNOO1eJlhHj1ixA+xip2hOyGn+LgcvLCMo5zXA==
 
 "@yarnpkg/lockfile@^1.1.0":
   version "1.1.0"
@@ -8500,10 +8500,10 @@ plist@^3.0.2, plist@^3.0.5:
     base64-js "^1.5.1"
     xmlbuilder "^9.0.7"
 
-podverse-shared@^4.12.4:
-  version "4.12.4"
-  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.12.4.tgz#32556fbb9078ef380e3dd353a2cd374306b9e962"
-  integrity sha512-Wy7HVi4rboftGeW4Wjs/AX6axKMjPZxgsgxifzXPDA5Hf7bo32oOwn19MNesZzpnkOGr7ZjRAx9nQcr6izUZ3Q==
+podverse-shared@^4.12.5:
+  version "4.12.5"
+  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.12.5.tgz#906c10334ff7a5244d516e186c3618b1c8278bfc"
+  integrity sha512-KH1l/7wpWYs8GDgCd5iT+xTK8i3BMIYy//4lyk3lnkGz3+skS1WaU39FgJNRZB3ffAy8WzVa8FbFFstC8lTTLg==
   dependencies:
     he "^1.2.0"
     html-entities "^2.3.2"
