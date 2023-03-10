@@ -580,11 +580,15 @@ export const audioReset = async () => {
   at that queue item position every time before calling .remove().
 */
 export const audioRemoveTrack = async (position: number) => {
-  if (position === 0 || position > 0) {
-    const queueItems = await PVAudioPlayer.getQueue()
-    const itemExists = queueItems.length - 1 >= position
-    if (itemExists) {
-      await PVAudioPlayer.remove(position)
+  if (Platform.OS === 'ios') {
+    await PVAudioPlayer.remove(position)
+  } else {
+    if (position === 0 || position > 0) {
+      const queueItems = await PVAudioPlayer.getQueue()
+      const itemExists = queueItems.length - 1 >= position
+      if (itemExists) {
+        await PVAudioPlayer.remove(position)
+      }
     }
   }
 }
