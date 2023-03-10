@@ -153,5 +153,9 @@
     "Membership": "Assinatura",
     "Settings": "Preferências",
     "Podcasts": "Podcasts",
-    "Profiles": "Perfis"
+    "Profiles": "Perfis",
+    "ARIA HINT - open the full player screen": "Abrir em tela cheia",
+    "ARIA HINT - resume playing": "Retomar",
+    "ARIA HINT - remove this item": "Remover este item",
+    "ARIA HINT - pause playback": "Pausar reprodução"
 }
