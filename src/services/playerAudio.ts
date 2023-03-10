@@ -186,7 +186,7 @@ const audioRemoveUpcomingTracks = async () => {
         for (let i = 0; i < upcomingQueueItemsCount; i++) {
           const adjustedIndex = queueItemsCount - i - 1
           if (adjustedIndex >= 0) {
-            await PVAudioPlayer.remove(adjustedIndex)
+            await audioRemoveTrack(adjustedIndex)
           }
         }
       }
@@ -371,7 +371,7 @@ export const audioMovePlayerItemToNewPosition = async (id: string, newIndex: num
 
   if (previousIndex > 0 || previousIndex === 0) {
     try {
-      await PVAudioPlayer.remove(previousIndex)
+      await audioRemoveTrack(previousIndex)
       const pvQueueItems = await getQueueItemsLocally()
       const itemToMove = pvQueueItems.find(
         (x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id)
@@ -566,7 +566,30 @@ export const audioReset = async () => {
   const queueItems = await PVAudioPlayer.getQueue()
   // eslint-disable-next-line @typescript-eslint/prefer-for-of
   for (let i = 0; i < queueItems.length; i++) {
-    await PVAudioPlayer.remove(0)
+    await audioRemoveTrack(0)
+  }
+}
+
+/*
+  There is a bug with PVAudioPlayer.removeUpcomingTracks() which can in some cases
+  remove the currently playing item on Android at unintended times.
+  To work around this, I wrote a custom removeUpcomingTracks helper...
+  BUT if PVAudioPlayer.remove() is called with a number higher than the tracks available,
+  the app will crash with an java.lang.IllegalArgumentException error.
+  To attempt to work around this bug, I am checking that a track exists
+  at that queue item position every time before calling .remove().
+*/
+export const audioRemoveTrack = async (position: number) => {
+  if (Platform.OS === 'ios') {
+    await PVAudioPlayer.remove(position)
+  } else {
+    if (position === 0 || position > 0) {
+      const queueItems = await PVAudioPlayer.getQueue()
+      const itemExists = queueItems.length - 1 >= position
+      if (itemExists) {
+        await PVAudioPlayer.remove(position)
+      }
+    }
   }
 }
 
