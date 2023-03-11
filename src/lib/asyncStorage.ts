@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { NativeModules, Platform, Alert } from 'react-native'
 import { translate } from './i18n'
+import { debugLogger } from './logger'
 
 const testKey = 'asyncStorageTestKey'
 
@@ -21,7 +22,7 @@ let shouldPreventAlert = false
 
 export const checkInvalidAsyncStorageCapacity = async () => {
   if(Platform.OS === "ios") {
-    console.log("Not implemented for ios")
+    debugLogger('Not implemented for ios')
     return false
   } else {
       const {PVAsyncStorage} = NativeModules;
