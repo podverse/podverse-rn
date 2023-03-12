@@ -776,5 +776,10 @@
     "language - en": "Engelsk",
     "language - es": "Spansk",
     "language - fr": "Fransk",
-    "language - nb": "Norsk bokmål"
+    "language - nb": "Norsk bokmål",
+    "language - sv": "Svensk",
+    "language - oc": "Oksitansk",
+    "language - lt": "Litauisk",
+    "language - pt": "Portugisisk",
+    "language - ru": "Russisk"
 }
