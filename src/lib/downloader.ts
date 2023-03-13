@@ -1,7 +1,7 @@
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import { convertBytesToHumanReadableString, Episode, getExtensionFromUrl } from 'podverse-shared'
-import RNBackgroundDownloader from 'react-native-background-downloader'
+import RNBackgroundDownloader from '@kesha-antonov/react-native-background-downloader'
 import RNFS from 'react-native-fs'
 import * as ScopedStorage from 'react-native-scoped-storage'
 import { AndroidScoped, FileSystem } from 'react-native-file-access'
