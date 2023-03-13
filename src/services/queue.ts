@@ -11,14 +11,12 @@ const _fileName = 'src/services/queue.ts'
 export const addQueueItemLast = async (item: NowPlayingItem) => {
   const useServerData = await checkIfShouldUseServerData()
   const results = useServerData ? await addQueueItemLastOnServer(item) : await addQueueItemLastLocally(item)
-  await playerSyncPlayerWithQueue()
   return results
 }
 
 export const addQueueItemNext = async (item: NowPlayingItem) => {
   const useServerData = await checkIfShouldUseServerData()
   const results = useServerData ? await addQueueItemNextOnServer(item) : await addQueueItemNextLocally(item)
-  await playerSyncPlayerWithQueue()
   return results
 }
 
@@ -68,7 +66,9 @@ const addQueueItemLastLocally = async (item: NowPlayingItem) => {
   const items = await getQueueItemsLocally()
   const filteredItems = filterItemFromQueueItems(items, item)
   filteredItems.push(item)
-  return setAllQueueItemsLocally(filteredItems)
+  await setAllQueueItemsLocally(filteredItems)
+  await playerSyncPlayerWithQueue()
+  return filteredItems
 }
 
 const addQueueItemLastOnServer = async (item: NowPlayingItem) => {
@@ -80,7 +80,9 @@ const addQueueItemNextLocally = async (item: NowPlayingItem) => {
   const items = await getQueueItemsLocally()
   const filteredItems = filterItemFromQueueItems(items, item)
   filteredItems.unshift(item)
-  return setAllQueueItemsLocally(filteredItems)
+  await setAllQueueItemsLocally(filteredItems)
+  await playerSyncPlayerWithQueue()
+  return filteredItems
 }
 
 const addQueueItemNextOnServer = async (item: NowPlayingItem) => {
@@ -112,7 +114,7 @@ export const addQueueItemToServer = async (item: NowPlayingItem, newPosition: nu
     opts: { credentials: 'include' }
   })
 
-  const { userQueueItems } = response.data
+  const { userQueueItems } = response?.data || {}
   if (userQueueItems) {
     await setAllQueueItemsLocally(userQueueItems)
   }
