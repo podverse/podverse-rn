@@ -217,16 +217,15 @@ export const audioLoadNowPlayingItem = async (
   addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
 
   const currentId = await audioGetCurrentLoadedTrackId()
-  const isUpcomingQueueItem = false
   if (currentId) {
     await audioRemoveUpcomingTracks()
-    const track = (await audioCreateTrack(item, isUpcomingQueueItem)) as Track
-    PVAudioPlayer.add([track])
+    const track = (await audioCreateTrack(item)) as Track
+    await PVAudioPlayer.add([track])
     await PVAudioPlayer.skipToNext()
-    audioSyncPlayerWithQueue()
+    await audioSyncPlayerWithQueue()
   } else {
-    const track = (await audioCreateTrack(item, isUpcomingQueueItem)) as Track
-    PVAudioPlayer.add([track])
+    const track = (await audioCreateTrack(item)) as Track
+    await PVAudioPlayer.add([track])
   }
 
   if (item && !item.clipId && shouldPlay) {
@@ -247,7 +246,7 @@ export const audioSyncPlayerWithQueue = async () => {
     const pvQueueItems = await getQueueItemsLocally()
     await audioRemoveUpcomingTracks()
     const tracks = await audioCreateTracks(pvQueueItems)
-    PVAudioPlayer.add(tracks)
+    await PVAudioPlayer.add(tracks)
   } catch (error) {
     errorLogger(_fileName, 'audioSyncPlayerWithQueue', error)
   }
@@ -377,9 +376,8 @@ export const audioMovePlayerItemToNewPosition = async (id: string, newIndex: num
         (x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id)
       )
       if (itemToMove) {
-        const isUpcomingQueueItem = true
-        const track = (await audioCreateTrack(itemToMove, isUpcomingQueueItem)) as any
-        PVAudioPlayer.add([track], newIndex)
+        const track = (await audioCreateTrack(itemToMove)) as any
+        await PVAudioPlayer.add([track], newIndex)
       }
     } catch (error) {
       errorLogger(_fileName, 'movePlayerItemToNewPosition', error)
@@ -482,9 +480,8 @@ export const audioCheckIfStateIsBuffering = (playbackState: any) =>
 
 export const audioCreateTracks = async (items: NowPlayingItem[]) => {
   const tracks = [] as Track[]
-  const isUpcomingQueueItem = true
   for (const item of items) {
-    const track = (await audioCreateTrack(item, isUpcomingQueueItem)) as Track
+    const track = (await audioCreateTrack(item)) as Track
     tracks.push(track)
   }
 
@@ -548,7 +545,7 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
 
       if (filteredItems.length > 0) {
         const tracks = await audioCreateTracks(filteredItems)
-        PVAudioPlayer.add(tracks)
+        await PVAudioPlayer.add(tracks)
       }
     }
   } catch (error) {
