@@ -251,11 +251,11 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     paddingHorizontal: 8,
-    paddingTop: 14,
-    paddingBottom: 10,
+    paddingTop: 18,
+    paddingBottom: 14,
     marginHorizontal: 8,
     borderBottomColor: PV.Colors.gray,
-    borderBottomWidth: 1
+    borderBottomWidth: 0.5
   },
   wrapperActive: {
     borderBottomWidth: 2,

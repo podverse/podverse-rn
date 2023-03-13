@@ -1,4 +1,4 @@
-import { Platform, StyleSheet } from 'react-native'
+import { Dimensions, Platform, StyleSheet } from 'react-native'
 import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
@@ -147,6 +147,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const hasComments = !!checkIfHasSupportedCommentTag(episode)
     const hasTranscript = checkIfHasTranscript(parsedTranscript)
     const hasChat = checkIfHasChat(episode)
+    console.log
     const items = accessibilitySelectorItems(hasChapters, hasComments, hasTranscript, hasChat)
     const accessibilityItemSelected = items.find((x) => x.value === selectedKey)
     this.setState({ accessibilityItemSelected })
@@ -504,6 +505,13 @@ const styles = StyleSheet.create({
     top: -7
   },
   wrapper: {
-    flex: 1
+    flex: 1,
+    minHeight: Dimensions.get('window').height >
+      PV.Dimensions.preventKeyboardShrinkMinHeight.smallScreen.height
+      ? 420
+      : Dimensions.get('window').height >
+          PV.Dimensions.preventKeyboardShrinkMinHeight.smallestScreen.height
+        ? 250
+        : 0
   }
 })
