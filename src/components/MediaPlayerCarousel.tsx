@@ -147,7 +147,6 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const hasComments = !!checkIfHasSupportedCommentTag(episode)
     const hasTranscript = checkIfHasTranscript(parsedTranscript)
     const hasChat = checkIfHasChat(episode)
-    console.log
     const items = accessibilitySelectorItems(hasChapters, hasComments, hasTranscript, hasChat)
     const accessibilityItemSelected = items.find((x) => x.value === selectedKey)
     this.setState({ accessibilityItemSelected })
