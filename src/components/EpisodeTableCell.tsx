@@ -221,7 +221,6 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
                 />
               </View>
             </Pressable>
-            {!hideDivider && <Divider optional style={{ marginHorizontal: 10 }} />}
           </RNView>
         )}
       </RNView>

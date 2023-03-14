@@ -186,7 +186,7 @@ const audioRemoveUpcomingTracks = async () => {
         for (let i = 0; i < upcomingQueueItemsCount; i++) {
           const adjustedIndex = queueItemsCount - i - 1
           if (adjustedIndex >= 0) {
-            await PVAudioPlayer.remove(adjustedIndex)
+            await audioRemoveTrack(adjustedIndex)
           }
         }
       }
@@ -217,16 +217,15 @@ export const audioLoadNowPlayingItem = async (
   addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
 
   const currentId = await audioGetCurrentLoadedTrackId()
-  const isUpcomingQueueItem = false
   if (currentId) {
     await audioRemoveUpcomingTracks()
-    const track = (await audioCreateTrack(item, isUpcomingQueueItem)) as Track
-    PVAudioPlayer.add([track])
+    const track = (await audioCreateTrack(item)) as Track
+    await PVAudioPlayer.add([track])
     await PVAudioPlayer.skipToNext()
-    audioSyncPlayerWithQueue()
+    await audioSyncPlayerWithQueue()
   } else {
-    const track = (await audioCreateTrack(item, isUpcomingQueueItem)) as Track
-    PVAudioPlayer.add([track])
+    const track = (await audioCreateTrack(item)) as Track
+    await PVAudioPlayer.add([track])
   }
 
   if (item && !item.clipId && shouldPlay) {
@@ -247,7 +246,7 @@ export const audioSyncPlayerWithQueue = async () => {
     const pvQueueItems = await getQueueItemsLocally()
     await audioRemoveUpcomingTracks()
     const tracks = await audioCreateTracks(pvQueueItems)
-    PVAudioPlayer.add(tracks)
+    await PVAudioPlayer.add(tracks)
   } catch (error) {
     errorLogger(_fileName, 'audioSyncPlayerWithQueue', error)
   }
@@ -371,15 +370,14 @@ export const audioMovePlayerItemToNewPosition = async (id: string, newIndex: num
 
   if (previousIndex > 0 || previousIndex === 0) {
     try {
-      await PVAudioPlayer.remove(previousIndex)
+      await audioRemoveTrack(previousIndex)
       const pvQueueItems = await getQueueItemsLocally()
       const itemToMove = pvQueueItems.find(
         (x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id)
       )
       if (itemToMove) {
-        const isUpcomingQueueItem = true
-        const track = (await audioCreateTrack(itemToMove, isUpcomingQueueItem)) as any
-        PVAudioPlayer.add([track], newIndex)
+        const track = (await audioCreateTrack(itemToMove)) as any
+        await PVAudioPlayer.add([track], newIndex)
       }
     } catch (error) {
       errorLogger(_fileName, 'movePlayerItemToNewPosition', error)
@@ -482,9 +480,8 @@ export const audioCheckIfStateIsBuffering = (playbackState: any) =>
 
 export const audioCreateTracks = async (items: NowPlayingItem[]) => {
   const tracks = [] as Track[]
-  const isUpcomingQueueItem = true
   for (const item of items) {
-    const track = (await audioCreateTrack(item, isUpcomingQueueItem)) as Track
+    const track = (await audioCreateTrack(item)) as Track
     tracks.push(track)
   }
 
@@ -548,7 +545,7 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
 
       if (filteredItems.length > 0) {
         const tracks = await audioCreateTracks(filteredItems)
-        PVAudioPlayer.add(tracks)
+        await PVAudioPlayer.add(tracks)
       }
     }
   } catch (error) {
@@ -566,7 +563,30 @@ export const audioReset = async () => {
   const queueItems = await PVAudioPlayer.getQueue()
   // eslint-disable-next-line @typescript-eslint/prefer-for-of
   for (let i = 0; i < queueItems.length; i++) {
-    await PVAudioPlayer.remove(0)
+    await audioRemoveTrack(0)
+  }
+}
+
+/*
+  There is a bug with PVAudioPlayer.removeUpcomingTracks() which can in some cases
+  remove the currently playing item on Android at unintended times.
+  To work around this, I wrote a custom removeUpcomingTracks helper...
+  BUT if PVAudioPlayer.remove() is called with a number higher than the tracks available,
+  the app will crash with an java.lang.IllegalArgumentException error.
+  To attempt to work around this bug, I am checking that a track exists
+  at that queue item position every time before calling .remove().
+*/
+export const audioRemoveTrack = async (position: number) => {
+  if (Platform.OS === 'ios') {
+    await PVAudioPlayer.remove(position)
+  } else {
+    if (position === 0 || position > 0) {
+      const queueItems = await PVAudioPlayer.getQueue()
+      const itemExists = queueItems.length - 1 >= position
+      if (itemExists) {
+        await PVAudioPlayer.remove(position)
+      }
+    }
   }
 }
 

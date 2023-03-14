@@ -161,7 +161,6 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    paddingTop: 24,
-    paddingHorizontal: 12
+    paddingTop: 24
   }
 })

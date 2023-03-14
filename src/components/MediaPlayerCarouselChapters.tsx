@@ -1,5 +1,5 @@
 import { convertToNowPlayingItem } from 'podverse-shared'
-import { StyleSheet } from 'react-native'
+import { AppState, AppStateEvent, AppStateStatic, AppStateStatus, StyleSheet } from 'react-native'
 import React, { setGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
@@ -39,6 +39,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   interval: ReturnType<typeof setInterval> | null = null
   listRef: any | null = null
   itemHeights: any[]
+  appStateListenerChange: any
 
   constructor(props) {
     super(props)
@@ -52,13 +53,34 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   }
 
   componentDidMount() {
+    this.appStateListenerChange = AppState.addEventListener('change', this._handleAppStateChange)
     PVEventEmitter.on(PV.Events.PLAYER_SPEED_UPDATED, this.updateAutoscroll)
     this._queryData()
   }
 
   componentWillUnmount() {
+    this.appStateListenerChange.remove()
     PVEventEmitter.removeListener(PV.Events.PLAYER_SPEED_UPDATED, this.updateAutoscroll)
     this.clearAutoScrollInterval()
+  }
+
+  _handleAppStateChange = (nextAppStateStatus: AppStateStatus) => {
+    if (nextAppStateStatus === 'active') {
+      this._handleFocus()
+    } else if (nextAppStateStatus === 'background' || nextAppStateStatus === 'inactive') {
+      this._handleBlur()
+    }
+  }
+
+  _handleFocus = () => {
+    const { autoScrollOn } = this.state
+    if (autoScrollOn) {
+      this.enableAutoscroll()
+    }
+  }
+
+  _handleBlur = () => {
+    this.disableAutoscroll()
   }
 
   _handleNavigationPress = (selectedItem: any) => {
@@ -100,14 +122,10 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     }
   }
 
-  enableAutoscroll = async () => {
+  setAutoScrollInterval = async () => {
     const playbackSpeed = await getPlaybackSpeed()
-    const intervalTime = 2000 / playbackSpeed
-    lastPlayingChapter = null
-    this.clearAutoScrollInterval()
-
-    this.setState({ autoScrollOn: true })
-    this.interval = setInterval(() => {
+    const intervalTime = 1000 / playbackSpeed
+    return setInterval(() => {
       const { currentChapter, currentChapters } = this.global
       const itemHeightsReady = currentChapters.length === this.itemHeights.length
 
@@ -124,6 +142,13 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
         }
       }
     }, intervalTime)
+  }
+
+  enableAutoscroll = async () => {
+    lastPlayingChapter = null
+    this.clearAutoScrollInterval()
+    this.setState({ autoScrollOn: true })
+    this.interval = await this.setAutoScrollInterval()
   }
 
   clearAutoScrollInterval = () => {

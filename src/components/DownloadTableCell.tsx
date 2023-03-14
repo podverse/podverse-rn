@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: PV.Colors.ink,
     alignItems: 'center',
+    paddingTop: 8,
     paddingBottom: 10
   },
   bottomText: {

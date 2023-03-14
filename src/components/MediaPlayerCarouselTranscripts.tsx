@@ -1,5 +1,5 @@
 import { TranscriptRow } from 'podverse-shared'
-import { StyleSheet } from 'react-native'
+import { AppState, AppStateStatus, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
@@ -28,6 +28,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
   currentSpeaker?: string
   interval: ReturnType<typeof setInterval> | null = null
   listRef: any | null = null
+  appStateListenerChange: any
 
   constructor() {
     super()
@@ -41,12 +42,33 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
   }
 
   componentDidMount() {
+    this.appStateListenerChange = AppState.addEventListener('change', this._handleAppStateChange)
     PVEventEmitter.on(PV.Events.PLAYER_SPEED_UPDATED, this.updateAutoscroll)
   }
 
   componentWillUnmount() {
-    PVEventEmitter.removeListener(PV.Events.PLAYER_SPEED_UPDATED)
+    this.appStateListenerChange.remove()
+    PVEventEmitter.removeListener(PV.Events.PLAYER_SPEED_UPDATED, this.updateAutoscroll)
     this.clearAutoScrollInterval()
+  }
+
+  _handleAppStateChange = (nextAppStateStatus: AppStateStatus) => {
+    if (nextAppStateStatus === 'active') {
+      this._handleFocus()
+    } else if (nextAppStateStatus === 'background' || nextAppStateStatus === 'inactive') {
+      this._handleBlur()
+    }
+  }
+
+  _handleFocus = () => {
+    const { autoScrollOn } = this.state
+    if (autoScrollOn) {
+      this.enableAutoscroll()
+    }
+  }
+
+  _handleBlur = () => {
+    this.disableAutoscroll()
   }
 
   disableAutoscroll = () => {
@@ -81,13 +103,10 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     }
   }
 
-  enableAutoscroll = async () => {
+  setAutoScrollInterval = async () => {
     const playbackSpeed = await getPlaybackSpeed()
     const intervalTime = 1000 / playbackSpeed
-    this.clearAutoScrollInterval()
-
-    this.setState({ autoScrollOn: true })
-    this.interval = setInterval(() => {
+    return setInterval(() => {
       (async () => {
         const { parsedTranscript } = this.props
         if (parsedTranscript) {
@@ -105,6 +124,12 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
         }
       })()
     }, intervalTime)
+  }
+
+  enableAutoscroll = async () => {
+    this.clearAutoScrollInterval()
+    this.setState({ autoScrollOn: true })
+    this.interval = await this.setAutoScrollInterval()
   }
 
   clearAutoScrollInterval = () => {
