@@ -309,7 +309,7 @@ PODS:
     - React-Core
   - react-native-safe-area-context (3.3.2):
     - React-Core
-  - react-native-track-player (4.0.0-rc02):
+  - react-native-track-player (4.0.0-rc03):
     - React-Core
     - SwiftAudioEx (= 1.0.0-rc.3)
   - react-native-tracking-transparency (0.1.1):
@@ -734,7 +734,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: 27f287f2d191693f3b9d01a4273137fcf91c3b5d
   react-native-orientation-locker: 851f6510d8046ea2f14aa169b1e01fcd309a94ba
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
-  react-native-track-player: 25b36aa51becae76d4d79365c8f70acac2483d05
+  react-native-track-player: 2da6a2b71bb7ac92e83f6cf5b8bbef656afc41ef
   react-native-tracking-transparency: b2029ff756f1128b1f2c7c7c7f3003bc3c950f9f
   react-native-video: b2a6434fa0cc7a5381985ca2af8f8c570f110743
   react-native-webview: 994b9f8fbb504d6314dc40d83f94f27c6831b3bf

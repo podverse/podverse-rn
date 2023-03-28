@@ -9041,10 +9041,10 @@ react-native-text-ticker@1.13.0:
   resolved "https://registry.yarnpkg.com/react-native-text-ticker/-/react-native-text-ticker-1.13.0.tgz#e96e9bd72a66e67353c12f95f17499506aee3560"
   integrity sha512-5Mh5vqZhfeIVQdXBFaUQw6I/uMyhi9ZlB/RQydqqtwoXZHEZkuz9250bfskpG0L/NkshOWHh1n2Xdlji0LxYzg==
 
-react-native-track-player@4.0.0-rc02:
-  version "4.0.0-rc02"
-  resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-4.0.0-rc02.tgz#d90092eaf16631d547e6a14c1eeebbd398da3a9d"
-  integrity sha512-EA+dyRD0s0GswA218MI/tjIZsPAQ59qCHMuTVAEmb1px9DhIESyo7ZwSP3Q+YGu1J3/PF2R5l/Rh/Hq0eB+F1Q==
+react-native-track-player@4.0.0-rc03:
+  version "4.0.0-rc03"
+  resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-4.0.0-rc03.tgz#1ccad916c8b14c20d8f3084daee772d32e6ff360"
+  integrity sha512-fKImt9yPc+XY1Y8WrR5CiPJrb+JXZxzc1JZO2IDOmY+4tIDNCFTiwmy9YT5ycv9uB6p9SIz6cINbcPUb5++Hmg==
 
 react-native-tracking-transparency@0.1.1:
   version "0.1.1"
