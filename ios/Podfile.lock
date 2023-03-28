@@ -309,9 +309,9 @@ PODS:
     - React-Core
   - react-native-safe-area-context (3.3.2):
     - React-Core
-  - react-native-track-player (3.2.0-bb749e5d286737681ba8907dfd287480eb1cec45):
+  - react-native-track-player (4.0.0-rc02):
     - React-Core
-    - SwiftAudioEx (= 1.0.0-rc.2)
+    - SwiftAudioEx (= 1.0.0-rc.3)
   - react-native-tracking-transparency (0.1.1):
     - React
   - react-native-video (6.0.0-alpha.4):
@@ -454,7 +454,7 @@ PODS:
     - React
   - RNVectorIcons (8.1.0):
     - React-Core
-  - SwiftAudioEx (1.0.0-rc.2)
+  - SwiftAudioEx (1.0.0-rc.3)
   - toolbar-android (0.2.1):
     - React
   - Yoga (1.14.0)
@@ -734,7 +734,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: 27f287f2d191693f3b9d01a4273137fcf91c3b5d
   react-native-orientation-locker: 851f6510d8046ea2f14aa169b1e01fcd309a94ba
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
-  react-native-track-player: e60e731db6d8662942f72795f766380b1e1d874b
+  react-native-track-player: 25b36aa51becae76d4d79365c8f70acac2483d05
   react-native-tracking-transparency: b2029ff756f1128b1f2c7c7c7f3003bc3c950f9f
   react-native-video: b2a6434fa0cc7a5381985ca2af8f8c570f110743
   react-native-webview: 994b9f8fbb504d6314dc40d83f94f27c6831b3bf
@@ -769,7 +769,7 @@ SPEC CHECKSUMS:
   RNShare: be91a5c149585affb02c25b351bd07ba927c7006
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
-  SwiftAudioEx: 12e816dd695bac59050d28528f19b4f4f521bb1b
+  SwiftAudioEx: f0fe8358a56794aab2df848e14b8e005e6743f7c
   toolbar-android: 2a73856e98b750d7e71ce4644d3f41cc98211719
   Yoga: b316a990bb6d115afa1b436b5626ac7c61717d17
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
