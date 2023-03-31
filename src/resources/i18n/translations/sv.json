@@ -765,5 +765,21 @@
     "Launch screen": "Startskärm",
     "Hide Completed": "Göm avslutade",
     "Show less": "Visa mindre",
-    "Show more": "Visa mer"
+    "Show more": "Visa mer",
+    "Hide dividers in lists": "Dölja delare i listor",
+    "language - da": "Danska",
+    "language - de": "Danska",
+    "language - el": "Grekiska",
+    "language - en": "Engelska",
+    "language - es": "Spanska",
+    "language - fr": "Franska",
+    "language - lt": "Litauiska",
+    "language - nb": "Norska Bokmål",
+    "language - oc": "Occitanska",
+    "language - pt": "Portugisiska",
+    "language - ru": "Ryska",
+    "language - sv": "Svenska",
+    "Streaming": "Strömning",
+    "Audio": "Ljud",
+    "Storage data exceeded message": "Storleken på det lokala datalagret har överskridits. Avsluta några podcaster för att fortsätta."
 }
