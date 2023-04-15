@@ -42,7 +42,9 @@ const audioResetHistoryItemByTrackId = async (loadedTrackId: string, position: n
   const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(loadedTrackId)
   if (metaEpisode) {
     const { mediaFileDuration } = metaEpisode
-    if ((mediaFileDuration > 59 && mediaFileDuration - 59 < position) || !mediaFileDuration) {
+    const isWithin2MinutesOfEnd = mediaFileDuration && (mediaFileDuration - 120 < position)
+    const isLessThanOneMinute = mediaFileDuration <= 60
+    if (isWithin2MinutesOfEnd || isLessThanOneMinute || !mediaFileDuration) {
       const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(loadedTrackId)
       if (currentNowPlayingItem) {
         const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
