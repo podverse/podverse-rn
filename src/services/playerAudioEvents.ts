@@ -52,10 +52,21 @@ const audioResetHistoryItemByTrackId = async (loadedTrackId: string, position: n
           downloadedEpisodeMarkForDeletion(currentNowPlayingItem.episodeId)
         }
 
-        const forceUpdateOrderDate = false
-        const skipSetNowPlaying = true
-        const completed = true
-        await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate, skipSetNowPlaying, completed)
+        const retriesLimit = 5        
+        for (let i = 0; i < retriesLimit; i++) {
+          try {
+            const forceUpdateOrderDate = false
+            const skipSetNowPlaying = true
+            const completed = true
+            await addOrUpdateHistoryItem(
+              currentNowPlayingItem, 0, null, forceUpdateOrderDate, skipSetNowPlaying, completed)
+            break;
+          } catch (error) {
+            // Maybe the network request failed due to poor internet.
+            // continue to try again.
+            continue;
+          }
+        }
       }
     }
   }
