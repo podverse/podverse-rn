@@ -607,7 +607,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     await initPlayerState(this.global)
     await initializeSettings()
-    await v4vInitialize()
 
     // Load the AsyncStorage authenticatedUser and subscribed podcasts immediately,
     // before getting the latest from server and parsing the addByPodcastFeedUrls in getAuthUserInfo.
@@ -649,6 +648,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
       initializePlayer(),
       initializePlayerSettings()
     ])
+
+    // Run this after initializePlayer is finished,
+    // as the nowPlayingItem may affect when v4v buttons
+    // are rendered on the PlayerScreen
+    await v4vInitialize()
 
     this._setDownloadedDataIfOffline()
     downloadedEpisodeDeleteMarked()
