@@ -42,7 +42,7 @@ export class EpisodeTranscriptScreen extends React.Component<Props, State> {
 
     if (episode?.transcript?.[0]?.url && episode?.transcript?.[0]?.type) {
       try {
-        parsedTranscript = await getParsedTranscript(episode.transcript[0].url, episode.transcript[0].type)
+        parsedTranscript = await getParsedTranscript(episode.transcript[0].url)
       } catch (error) {
         errorLogger(_fileName, 'componentDidMount', error)
       }
