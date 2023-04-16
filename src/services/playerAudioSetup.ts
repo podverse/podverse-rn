@@ -6,6 +6,7 @@ import TrackPlayer, {
   RepeatMode
 } from 'react-native-track-player'
 import { PVAudioPlayer } from './playerAudio'
+import { Platform } from 'react-native'
 
 const setupPlayer = async (options: Parameters<typeof TrackPlayer.setupPlayer>[0]) => {
   const setup = async () => {
@@ -29,7 +30,7 @@ export const PlayerAudioSetupService = async () => {
     waitForBuffer: true,
     maxCacheSize: 1000000, // 1 GB from KB, this affects Android only I think.
     iosCategoryMode: IOSCategoryMode.SpokenAudio,
-    // autoHandleInterruptions: true
+    autoHandleInterruptions: Platform.OS === 'android',
   })
   
   audioUpdateTrackPlayerCapabilities()
