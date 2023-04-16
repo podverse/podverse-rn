@@ -1,5 +1,6 @@
 import { getGlobal } from 'reactn'
 import TrackPlayer, {
+  AndroidAudioContentType,
   AppKilledPlaybackBehavior,
   Capability,
   IOSCategoryMode,
@@ -31,6 +32,7 @@ export const PlayerAudioSetupService = async () => {
     maxCacheSize: 1000000, // 1 GB from KB, this affects Android only I think.
     iosCategoryMode: IOSCategoryMode.SpokenAudio,
     autoHandleInterruptions: Platform.OS === 'android',
+    androidAudioContentType: AndroidAudioContentType.Speech
   })
   
   audioUpdateTrackPlayerCapabilities()
