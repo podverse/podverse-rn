@@ -41,10 +41,10 @@ import {
   audioPlayNextFromQueue,
   audioHandleSeekToWithUpdate,
   audioSyncPlayerWithQueue,
-  audioUpdateTrackPlayerCapabilities,
   audioUpdateCurrentTrack,
   audioTogglePlay
 } from './playerAudio'
+import { audioUpdateTrackPlayerCapabilities } from './playerAudioSetup'
 import { saveOrResetCurrentlyPlayingItemInHistory } from './userHistoryItem'
 import { getNowPlayingItem, getEnrichedNowPlayingItemFromLocalStorage } from './userNowPlayingItem'
 

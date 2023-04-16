@@ -42,7 +42,9 @@ const audioResetHistoryItemByTrackId = async (loadedTrackId: string, position: n
   const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(loadedTrackId)
   if (metaEpisode) {
     const { mediaFileDuration } = metaEpisode
-    if ((mediaFileDuration > 59 && mediaFileDuration - 59 < position) || !mediaFileDuration) {
+    const isWithin2MinutesOfEnd = mediaFileDuration && (mediaFileDuration - 120 < position)
+    const isLessThanOneMinute = mediaFileDuration <= 60
+    if (isWithin2MinutesOfEnd || isLessThanOneMinute || !mediaFileDuration) {
       const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(loadedTrackId)
       if (currentNowPlayingItem) {
         const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
@@ -50,10 +52,21 @@ const audioResetHistoryItemByTrackId = async (loadedTrackId: string, position: n
           downloadedEpisodeMarkForDeletion(currentNowPlayingItem.episodeId)
         }
 
-        const forceUpdateOrderDate = false
-        const skipSetNowPlaying = true
-        const completed = true
-        await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate, skipSetNowPlaying, completed)
+        const retriesLimit = 5        
+        for (let i = 0; i < retriesLimit; i++) {
+          try {
+            const forceUpdateOrderDate = false
+            const skipSetNowPlaying = true
+            const completed = true
+            await addOrUpdateHistoryItem(
+              currentNowPlayingItem, 0, null, forceUpdateOrderDate, skipSetNowPlaying, completed)
+            break;
+          } catch (error) {
+            // Maybe the network request failed due to poor internet.
+            // continue to try again.
+            continue;
+          }
+        }
       }
     }
   }
