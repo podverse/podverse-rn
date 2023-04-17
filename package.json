@@ -120,7 +120,7 @@
     "standard": "16.0.3",
     "stream": "0.0.2",
     "timers": "0.1.1",
-    "transcriptator": "^1.0.5",
+    "transcriptator": "^1.0.6",
     "validator": "13.7.0",
     "wd": "1.14.0"
   },

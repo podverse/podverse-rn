@@ -170,11 +170,11 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
         activeOpacity={0.7}
         disable={disable}
         onPress={onPress}>
-        {!!this.currentSpeaker && (
+        {/* {!!this.currentSpeaker && (
           <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
             {this.currentSpeaker}
           </Text>
-        )}
+        )} */}
         <View style={styles.row}>
           <Text style={[styles.text, activeTranscriptStyle]} testID={cellID}>
             {body}
@@ -272,6 +272,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
             getItemLayout={(_: any, index: number) => {
               return { length: 80, offset: 80 * index, index }
             }}
+            ItemSeparatorComponent={() => <></>}
             keyExtractor={(item: TranscriptRow) => getCellID(item)}
             listRef={(ref: any) => {
               this.listRef = ref
