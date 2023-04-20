@@ -143,7 +143,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     const { isNowPlaying } = this.props
     const { activeTranscriptRowIndex } = this.state
     const transcriptionItem = item.item
-    const { speaker, startTime, startTimeHHMMSS, text } = transcriptionItem
+    const { body, speaker, startTime, startTimeFormatted } = transcriptionItem
     const cellID = getCellID(transcriptionItem)
 
     if (speaker && speaker !== this.currentSpeaker) {
@@ -158,7 +158,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
         ? { color: PV.Colors.orange }
         : {}
 
-    const accessibilityLabel = `${this.currentSpeaker ? `${this.currentSpeaker}, ` : ''} ${text}, ${startTimeHHMMSS}`
+    const accessibilityLabel = `${this.currentSpeaker ? `${this.currentSpeaker}, ` : ''} ${body}, ${startTimeFormatted}`
 
     const disable = !isNowPlaying
     const onPress = isNowPlaying ? () => playerHandleSeekTo(startTime) : null
@@ -170,17 +170,17 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
         activeOpacity={0.7}
         disable={disable}
         onPress={onPress}>
-        {!!this.currentSpeaker && (
+        {/* {!!this.currentSpeaker && (
           <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
             {this.currentSpeaker}
           </Text>
-        )}
+        )} */}
         <View style={styles.row}>
           <Text style={[styles.text, activeTranscriptStyle]} testID={cellID}>
-            {text}
+            {body}
           </Text>
           <Text style={[styles.startTime, activeTranscriptStyle]} testID={`${cellID}-${startTime}`}>
-            {startTimeHHMMSS}
+            {startTimeFormatted}
           </Text>
         </View>
       </PressableWithOpacity>
@@ -189,10 +189,10 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
   renderSingleLineTranscript = (item: any) => {
     const transcriptionItem = item
-    const { text } = transcriptionItem
+    const { body } = transcriptionItem
     return (
       <View style={styles.singleLineWrapper}>
-        <Text style={styles.singleLineText}>{text}</Text>
+        <Text style={styles.singleLineText}>{body}</Text>
       </View>
     )
   }
@@ -247,7 +247,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
               })
             } else {
               const searchResults = parsedTranscript.filter((item: Record<string, any>) => {
-                return item?.text?.toLowerCase().includes(searchText?.toLowerCase())
+                return item?.body?.toLowerCase().includes(searchText?.toLowerCase())
               })
 
               this.setState(
@@ -272,6 +272,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
             getItemLayout={(_: any, index: number) => {
               return { length: 80, offset: 80 * index, index }
             }}
+            ItemSeparatorComponent={() => <></>}
             keyExtractor={(item: TranscriptRow) => getCellID(item)}
             listRef={(ref: any) => {
               this.listRef = ref

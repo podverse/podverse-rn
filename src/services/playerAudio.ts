@@ -78,62 +78,6 @@ PVAudioPlayer.getTrackDuration = async () => {
   return PVAudioPlayer.getDuration()
 }
 
-/*
-  Delay a second on Android to try to avoid
-  not allowed to start service Intent error
-  https://github.com/doublesymmetry/react-native-track-player/issues/1812
-
-*/
-
-const timeout = Platform.OS === 'android' ? 1000 : 0
-setTimeout(() => {
-  PVAudioPlayer.setupPlayer({
-    waitForBuffer: true,
-    maxCacheSize: 1000000, // 1 GB from KB, this affects Android only I think.
-    iosCategoryMode: IOSCategoryMode.SpokenAudio
-  }).then(() => {
-    audioUpdateTrackPlayerCapabilities()
-  })
-  
-  PVAudioPlayer.setRepeatMode(RepeatMode.Off)
-}, timeout)
-
-export const audioUpdateTrackPlayerCapabilities = () => {
-  const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
-
-  PVAudioPlayer.updateOptions({
-    capabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo,
-      Capability.SkipToNext,
-      Capability.SkipToPrevious
-    ],
-    compactCapabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo
-    ],
-    notificationCapabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo
-    ],
-    backwardJumpInterval: parseInt(jumpBackwardsTime, 10),
-    forwardJumpInterval: parseInt(jumpForwardsTime, 10),
-    progressUpdateEventInterval: 1,
-    android: {
-      appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
-    }
-  })
-}
-
 export const audioIsLoaded = async () => {
   const trackIndex = await PVAudioPlayer.getActiveTrackIndex()
   return Number.isInteger(trackIndex) && (trackIndex || trackIndex === 0)

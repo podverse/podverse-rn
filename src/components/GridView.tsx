@@ -89,7 +89,7 @@ export class GridView extends React.PureComponent<Props> {
     return (
       <FlatList
         {...this.props}
-        ItemSeparatorComponent={null}
+        ItemSeparatorComponent={() => <></>}
         testID='grid_view'
         key={isTabletLandscape ? 'landscape' : 'portrait'}
         data={this.props.data}
