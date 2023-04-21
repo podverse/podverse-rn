@@ -418,7 +418,7 @@ const sendValueTransactions = async (
 }
 
 export const processValueTransactionQueue = async () => {
-  const action = 'streaming'
+  const action = 'stream'
   const bundledValueTransactionsToProcess = await bundleValueTransactionQueue()
 
   // Hardcoding to Alby until another service is added.
