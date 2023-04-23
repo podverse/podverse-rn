@@ -1,4 +1,5 @@
 import { getGlobal } from 'reactn'
+import { Platform } from 'react-native'
 import TrackPlayer, {
   AndroidAudioContentType,
   AppKilledPlaybackBehavior,
@@ -7,7 +8,6 @@ import TrackPlayer, {
   RepeatMode
 } from 'react-native-track-player'
 import { PVAudioPlayer } from './playerAudio'
-import { Platform } from 'react-native'
 
 const setupPlayer = async (options: Parameters<typeof TrackPlayer.setupPlayer>[0]) => {
   const setup = async () => {
