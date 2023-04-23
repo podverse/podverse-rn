@@ -1541,10 +1541,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@podverse/podcast-feed-parser@^1.0.17":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@podverse/podcast-feed-parser/-/podcast-feed-parser-1.1.0.tgz#6f4768a27700d75c444f31f9e53c57803236ab3d"
-  integrity sha512-TStZuwl//uDQdF1rcvxeLU0wOgct6Ly5In8Tci3oLD41J+agSF7wTE0jlgec0gKOJ91yzQIwvrYHlhXPJjeLiw==
+"@podverse/podcast-feed-parser@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@podverse/podcast-feed-parser/-/podcast-feed-parser-1.1.1.tgz#ac561e2a0a0285789850b340cfe5f8e68aecf471"
+  integrity sha512-CIKLkhXNgD2Bz3UtDLdLd/wLaDzBROzjq6JR6xSj/a01bn0VahUd1uhsPh++n26+IMfMsmCbD5p3t0Q/udT4aQ==
   dependencies:
     abort-controller "^3.0.0"
     isomorphic-fetch "^3.0.0"
