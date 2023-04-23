@@ -159,24 +159,13 @@ export const downloadEpisode = async (
   const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
 
   let downloadUrl = episode.mediaUrl
-  if (downloadUrl.startsWith('http://')) {
-    try {
-      const secureUrlInfo = await getSecureUrl(episode.mediaUrl)
-      if (secureUrlInfo?.secureUrl) {
-        downloadUrl = secureUrlInfo.secureUrl
-      }
-    } catch (error) {
-      errorLogger(_fileName, 'Secure url not found for http mediaUrl. Info: ', error)
+  try {
+    const secureUrlInfo = await getSecureUrl(episode.mediaUrl)
+    if (secureUrlInfo?.secureUrl) {
+      downloadUrl = secureUrlInfo.secureUrl
     }
-  } else if (downloadUrl.indexOf('http://') >= 0) {
-    /*
-      Find and replace ALL "http://" matches because sometimes
-      episodes use a tracker prefix url, then redirects to
-      the actual URL passed in as a parameter
-      For example: from Andrew Schulz's Flagrant with Akaash Singh
-      https://chrt.fm/track/9DD8D/pdst.fm/e/http://feeds.soundcloud.com/stream/1351569700-flagrantpodcast-mr-beast.mp3
-    */
-    downloadUrl = downloadUrl.replaceAll('http://', 'https://')
+  } catch (error) {
+    errorLogger(_fileName, 'Secure url not found for http mediaUrl. Info: ', error)
   }
 
   (async () => {
