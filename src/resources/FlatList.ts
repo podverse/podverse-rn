@@ -13,7 +13,7 @@ export const FlatList = {
     height: 72
   },
   ListHeaderHiddenSearchBar: {
-    contentOffset: { x: 0, y: 67 }
+    contentOffset: { x: 0, y: 76 }
   },
   hiddenItems: {
     rightOpenValue: {
