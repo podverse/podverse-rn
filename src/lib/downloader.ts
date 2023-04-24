@@ -1,3 +1,4 @@
+import url from 'url'
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import { convertBytesToHumanReadableString, Episode, getExtensionFromUrl } from 'podverse-shared'
@@ -22,6 +23,10 @@ import { getAppUserAgent, safelyUnwrapNestedVariable } from './utility'
 import { downloadImageFile } from './storage'
 
 const _fileName = 'src/lib/downloader.ts'
+
+const forceSecureRedirectDomains = {
+  'feeds.gty.org': true
+}
 
 export const BackgroundDownloader = () => {
   const userAgent = getAppUserAgent()
@@ -159,13 +164,25 @@ export const downloadEpisode = async (
   const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
 
   let downloadUrl = episode.mediaUrl
-  try {
-    const secureUrlInfo = await getSecureUrl(episode.mediaUrl)
-    if (secureUrlInfo?.secureUrl) {
-      downloadUrl = secureUrlInfo.secureUrl
+  const hostname = url?.parse(downloadUrl)?.hostname
+  if ((hostname && forceSecureRedirectDomains[hostname]) || downloadUrl.startsWith('http://')) {
+    try {
+      const secureUrlInfo = await getSecureUrl(episode.mediaUrl)
+      if (secureUrlInfo?.secureUrl) {
+        downloadUrl = secureUrlInfo.secureUrl
+      }
+    } catch (error) {
+      errorLogger(_fileName, 'Secure url not found for http mediaUrl. Info: ', error)
     }
-  } catch (error) {
-    errorLogger(_fileName, 'Secure url not found for http mediaUrl. Info: ', error)
+  } else if (downloadUrl.indexOf('http://') >= 0) {
+    /*
+      Find and replace ALL "http://" matches because sometimes
+      episodes use a tracker prefix url, then redirects to
+      the actual URL passed in as a parameter
+      For example: from Andrew Schulz's Flagrant with Akaash Singh
+      https://chrt.fm/track/9DD8D/pdst.fm/e/http://feeds.soundcloud.com/stream/1351569700-flagrantpodcast-mr-beast.mp3
+    */
+    downloadUrl = downloadUrl.replaceAll('http://', 'https://')
   }
 
   (async () => {
