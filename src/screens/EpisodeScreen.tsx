@@ -8,6 +8,7 @@ import {
   HTMLScrollView,
   Icon,
   NavFundingIcon,
+  NavOfficialLinkIcon,
   NavShareIcon,
   PressableWithOpacity,
   ScrollView,
@@ -111,6 +112,8 @@ export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
       podcast?.funding?.length > 0 ||
       podcast?.value?.length > 0
 
+    const hasLinkUrl = !!episode?.linkUrl
+
     return {
       title: getScreenTitle(),
       headerRight: () => (
@@ -118,6 +121,9 @@ export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
           {/* Always show NavFundingIcon in dev, otherwise funding tag will be unavailable to Appium tests. */}
           {(!!Config.IS_DEV || !!showFundingIcon) && podcast && episode && (
             <NavFundingIcon episode={episode} globalTheme={globalTheme} navigation={navigation} podcast={podcast} />
+          )}
+          {hasLinkUrl && (
+            <NavOfficialLinkIcon globalTheme={globalTheme} linkUrl={episode.linkUrl} />
           )}
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon

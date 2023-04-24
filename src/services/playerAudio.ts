@@ -1,7 +1,6 @@
 import { checkIfVideoFileOrVideoLiveType, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
 import TrackPlayer, {
   PitchAlgorithm,
-  RepeatMode,
   State,
   Track
 } from 'react-native-track-player'
