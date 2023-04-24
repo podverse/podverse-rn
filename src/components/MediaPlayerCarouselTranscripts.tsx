@@ -1,5 +1,5 @@
 import { TranscriptRow } from 'podverse-shared'
-import { StyleSheet } from 'react-native'
+import { AppState, AppStateStatus, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
@@ -28,6 +28,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
   currentSpeaker?: string
   interval: ReturnType<typeof setInterval> | null = null
   listRef: any | null = null
+  appStateListenerChange: any
 
   constructor() {
     super()
@@ -41,12 +42,33 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
   }
 
   componentDidMount() {
+    this.appStateListenerChange = AppState.addEventListener('change', this._handleAppStateChange)
     PVEventEmitter.on(PV.Events.PLAYER_SPEED_UPDATED, this.updateAutoscroll)
   }
 
   componentWillUnmount() {
-    PVEventEmitter.removeListener(PV.Events.PLAYER_SPEED_UPDATED)
+    this.appStateListenerChange.remove()
+    PVEventEmitter.removeListener(PV.Events.PLAYER_SPEED_UPDATED, this.updateAutoscroll)
     this.clearAutoScrollInterval()
+  }
+
+  _handleAppStateChange = (nextAppStateStatus: AppStateStatus) => {
+    if (nextAppStateStatus === 'active') {
+      this._handleFocus()
+    } else if (nextAppStateStatus === 'background' || nextAppStateStatus === 'inactive') {
+      this._handleBlur()
+    }
+  }
+
+  _handleFocus = () => {
+    const { autoScrollOn } = this.state
+    if (autoScrollOn) {
+      this.enableAutoscroll()
+    }
+  }
+
+  _handleBlur = () => {
+    this.disableAutoscroll()
   }
 
   disableAutoscroll = () => {
@@ -81,13 +103,10 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     }
   }
 
-  enableAutoscroll = async () => {
+  setAutoScrollInterval = async () => {
     const playbackSpeed = await getPlaybackSpeed()
     const intervalTime = 1000 / playbackSpeed
-    this.clearAutoScrollInterval()
-
-    this.setState({ autoScrollOn: true })
-    this.interval = setInterval(() => {
+    return setInterval(() => {
       (async () => {
         const { parsedTranscript } = this.props
         if (parsedTranscript) {
@@ -107,6 +126,12 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     }, intervalTime)
   }
 
+  enableAutoscroll = async () => {
+    this.clearAutoScrollInterval()
+    this.setState({ autoScrollOn: true })
+    this.interval = await this.setAutoScrollInterval()
+  }
+
   clearAutoScrollInterval = () => {
     if (this.interval) {
       clearInterval(this.interval)
@@ -118,7 +143,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     const { isNowPlaying } = this.props
     const { activeTranscriptRowIndex } = this.state
     const transcriptionItem = item.item
-    const { speaker, startTime, startTimeHHMMSS, text } = transcriptionItem
+    const { body, speaker, startTime, startTimeFormatted } = transcriptionItem
     const cellID = getCellID(transcriptionItem)
 
     if (speaker && speaker !== this.currentSpeaker) {
@@ -133,7 +158,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
         ? { color: PV.Colors.orange }
         : {}
 
-    const accessibilityLabel = `${this.currentSpeaker ? `${this.currentSpeaker}, ` : ''} ${text}, ${startTimeHHMMSS}`
+    const accessibilityLabel = `${this.currentSpeaker ? `${this.currentSpeaker}, ` : ''} ${body}, ${startTimeFormatted}`
 
     const disable = !isNowPlaying
     const onPress = isNowPlaying ? () => playerHandleSeekTo(startTime) : null
@@ -145,17 +170,17 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
         activeOpacity={0.7}
         disable={disable}
         onPress={onPress}>
-        {!!this.currentSpeaker && (
+        {/* {!!this.currentSpeaker && (
           <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
             {this.currentSpeaker}
           </Text>
-        )}
+        )} */}
         <View style={styles.row}>
           <Text style={[styles.text, activeTranscriptStyle]} testID={cellID}>
-            {text}
+            {body}
           </Text>
           <Text style={[styles.startTime, activeTranscriptStyle]} testID={`${cellID}-${startTime}`}>
-            {startTimeHHMMSS}
+            {startTimeFormatted}
           </Text>
         </View>
       </PressableWithOpacity>
@@ -164,10 +189,10 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
   renderSingleLineTranscript = (item: any) => {
     const transcriptionItem = item
-    const { text } = transcriptionItem
+    const { body } = transcriptionItem
     return (
       <View style={styles.singleLineWrapper}>
-        <Text style={styles.singleLineText}>{text}</Text>
+        <Text style={styles.singleLineText}>{body}</Text>
       </View>
     )
   }
@@ -222,7 +247,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
               })
             } else {
               const searchResults = parsedTranscript.filter((item: Record<string, any>) => {
-                return item?.text?.toLowerCase().includes(searchText?.toLowerCase())
+                return item?.body?.toLowerCase().includes(searchText?.toLowerCase())
               })
 
               this.setState(
@@ -247,6 +272,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
             getItemLayout={(_: any, index: number) => {
               return { length: 80, offset: 80 * index, index }
             }}
+            ItemSeparatorComponent={() => <></>}
             keyExtractor={(item: TranscriptRow) => getCellID(item)}
             listRef={(ref: any) => {
               this.listRef = ref

@@ -4,7 +4,7 @@ import React from 'reactn'
 import { ActivityIndicator, MediaPlayerCarouselTranscripts, View } from '../components'
 import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
-import { getParsedTranscript } from '../lib/transcriptHelpers'
+import { getEpisodeProxyTranscript, getParsedTranscript } from '../lib/transcriptHelpers'
 import { trackPageView } from '../services/tracking'
 
 const _fileName = 'src/screens/EpisodeTranscriptScreen.tsx'
@@ -42,7 +42,11 @@ export class EpisodeTranscriptScreen extends React.Component<Props, State> {
 
     if (episode?.transcript?.[0]?.url && episode?.transcript?.[0]?.type) {
       try {
-        parsedTranscript = await getParsedTranscript(episode.transcript[0].url, episode.transcript[0].type)
+        if (episode?.id) {
+          parsedTranscript = await getEpisodeProxyTranscript(episode.id)
+        } else {
+          parsedTranscript = await getParsedTranscript(episode.transcript[0].url)
+        }
       } catch (error) {
         errorLogger(_fileName, 'componentDidMount', error)
       }

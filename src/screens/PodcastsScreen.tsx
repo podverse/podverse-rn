@@ -44,7 +44,7 @@ import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRef } from '../services/mediaRef'
 import { getAddByRSSPodcastsLocally, parseAllAddByRSSPodcasts } from '../services/parser'
 import { playerUpdateUserPlaybackPosition } from '../services/player'
-import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudio'
+import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudioSetup'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getSavedQueryPodcastsScreenSort, setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
@@ -233,6 +233,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT, 'TRUE'),
+          AsyncStorage.setItem(PV.Keys.REFRESH_SUBSCRIPTIONS_ON_LAUNCH, 'TRUE'),
           resetAllAppKeychain()
         ])
 
@@ -607,7 +608,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     await initPlayerState(this.global)
     await initializeSettings()
-    await v4vInitialize()
 
     // Load the AsyncStorage authenticatedUser and subscribed podcasts immediately,
     // before getting the latest from server and parsing the addByPodcastFeedUrls in getAuthUserInfo.
@@ -650,6 +650,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
       initializePlayerSettings()
     ])
 
+    // Run this after initializePlayer is finished,
+    // as the nowPlayingItem may affect when v4v buttons
+    // are rendered on the PlayerScreen
+    await v4vInitialize()
+
     this._setDownloadedDataIfOffline()
     downloadedEpisodeDeleteMarked()
 
@@ -665,10 +670,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const isConnected = await hasValidNetworkConnection()
       const preventIsLoading = true
       const preventAutoDownloading = false
+      const keepSearchTitle = false
       if (isConnected) {
+        const refreshSubscriptionsOnLaunch = await AsyncStorage.getItem(PV.Keys.REFRESH_SUBSCRIPTIONS_ON_LAUNCH)
+        const preventParseCustomRSSFeeds = !refreshSubscriptionsOnLaunch
         const savedQuerySort = await getSavedQueryPodcastsScreenSort()
         this.setState({ querySort: savedQuerySort }, () => {
-          this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
+          this.handleSelectFilterItem(
+            PV.Filters._subscribedKey,
+            preventIsLoading,
+            preventAutoDownloading,
+            keepSearchTitle,
+            preventParseCustomRSSFeeds
+          )
         })
       } else {
         this._setDownloadedDataIfOffline()

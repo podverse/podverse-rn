@@ -268,7 +268,7 @@ const convertValueTagIntoValueTransaction = async (
 const processSendValueTransactionError = (
   failedKeysendResponse: AlbyKeysendResponse,
   customKeyValueAddresses: KeysendCustomKeyValueAddress[],
-  type: 'boost' | 'streaming'
+  type: 'boost' | 'stream'
 ) => {
   let customKey
   let customValue
@@ -298,7 +298,7 @@ const processSendValueTransactionError = (
 
 const processSendValueTransactions = async (
   valueTransactions: ValueTransaction[],
-  type: 'boost' | 'streaming',
+  type: 'boost' | 'stream',
   includeMessage?: boolean
 ) => {
   let totalAmountPaid = 0
@@ -418,7 +418,7 @@ const sendValueTransactions = async (
 }
 
 export const processValueTransactionQueue = async () => {
-  const action = 'streaming'
+  const action = 'stream'
   const bundledValueTransactionsToProcess = await bundleValueTransactionQueue()
 
   // Hardcoding to Alby until another service is added.
@@ -573,7 +573,7 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
         item?.podcastTitle || '',
         item?.episodeTitle || '',
         item?.podcastIndexPodcastId || '',
-        'streaming',
+        'stream',
         amount,
         roundDownStreamingTransactions,
         providerKey,

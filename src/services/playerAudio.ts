@@ -1,10 +1,6 @@
 import { checkIfVideoFileOrVideoLiveType, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
 import TrackPlayer, {
-  AppKilledPlaybackBehavior,
-  Capability,
-  IOSCategoryMode,
   PitchAlgorithm,
-  RepeatMode,
   State,
   Track
 } from 'react-native-track-player'
@@ -78,62 +74,6 @@ PVAudioPlayer.getTrackDuration = async () => {
   return PVAudioPlayer.getDuration()
 }
 
-/*
-  Delay a second on Android to try to avoid
-  not allowed to start service Intent error
-  https://github.com/doublesymmetry/react-native-track-player/issues/1812
-
-*/
-
-const timeout = Platform.OS === 'android' ? 1000 : 0
-setTimeout(() => {
-  PVAudioPlayer.setupPlayer({
-    waitForBuffer: true,
-    maxCacheSize: 1000000, // 1 GB from KB, this affects Android only I think.
-    iosCategoryMode: IOSCategoryMode.SpokenAudio
-  }).then(() => {
-    audioUpdateTrackPlayerCapabilities()
-  })
-  
-  PVAudioPlayer.setRepeatMode(RepeatMode.Off)
-}, timeout)
-
-export const audioUpdateTrackPlayerCapabilities = () => {
-  const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
-
-  PVAudioPlayer.updateOptions({
-    capabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo,
-      Capability.SkipToNext,
-      Capability.SkipToPrevious
-    ],
-    compactCapabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo
-    ],
-    notificationCapabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo
-    ],
-    backwardJumpInterval: parseInt(jumpBackwardsTime, 10),
-    forwardJumpInterval: parseInt(jumpForwardsTime, 10),
-    progressUpdateEventInterval: 1,
-    android: {
-      appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
-    }
-  })
-}
-
 export const audioIsLoaded = async () => {
   const trackIndex = await PVAudioPlayer.getActiveTrackIndex()
   return Number.isInteger(trackIndex) && (trackIndex || trackIndex === 0)
@@ -174,24 +114,25 @@ export const audioGetLoadedTrackIdByIndex = async (trackIndex: number) => {
   removing the upcoming tracks (starting from the end of the queue).
 */
 const audioRemoveUpcomingTracks = async () => {
-  if (Platform.OS === 'ios') {
-    await PVAudioPlayer.removeUpcomingTracks()
-  } else if (Platform.OS === 'android') {
-    const currentIndex = await PVAudioPlayer.getActiveTrackIndex()
-    if (currentIndex === 0 || (currentIndex && currentIndex >= 1)) {
-      const queueItems = await PVAudioPlayer.getQueue()
-      if (queueItems && queueItems.length > 1) {
-        const queueItemsCount = queueItems.length
-        const upcomingQueueItemsCount = queueItemsCount - currentIndex - 1
-        for (let i = 0; i < upcomingQueueItemsCount; i++) {
-          const adjustedIndex = queueItemsCount - i - 1
-          if (adjustedIndex >= 0) {
-            await PVAudioPlayer.remove(adjustedIndex)
-          }
-        }
-      }
-    }
-  }
+  await PVAudioPlayer.removeUpcomingTracks()
+  // if (Platform.OS === 'ios') {
+  //   await PVAudioPlayer.removeUpcomingTracks()
+  // } else if (Platform.OS === 'android') {
+  //   const currentIndex = await PVAudioPlayer.getActiveTrackIndex()
+  //   if (currentIndex === 0 || (currentIndex && currentIndex >= 1)) {
+  //     const queueItems = await PVAudioPlayer.getQueue()
+  //     if (queueItems && queueItems.length > 1) {
+  //       const queueItemsCount = queueItems.length
+  //       const upcomingQueueItemsCount = queueItemsCount - currentIndex - 1
+  //       for (let i = 0; i < upcomingQueueItemsCount; i++) {
+  //         const adjustedIndex = queueItemsCount - i - 1
+  //         if (adjustedIndex >= 0) {
+  //           await audioRemoveTrack(adjustedIndex)
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 }
 
 export const audioLoadNowPlayingItem = async (
@@ -217,16 +158,15 @@ export const audioLoadNowPlayingItem = async (
   addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
 
   const currentId = await audioGetCurrentLoadedTrackId()
-  const isUpcomingQueueItem = false
   if (currentId) {
     await audioRemoveUpcomingTracks()
-    const track = (await audioCreateTrack(item, isUpcomingQueueItem)) as Track
-    PVAudioPlayer.add([track])
+    const track = (await audioCreateTrack(item)) as Track
+    await PVAudioPlayer.add([track])
     await PVAudioPlayer.skipToNext()
-    audioSyncPlayerWithQueue()
+    await audioSyncPlayerWithQueue()
   } else {
-    const track = (await audioCreateTrack(item, isUpcomingQueueItem)) as Track
-    PVAudioPlayer.add([track])
+    const track = (await audioCreateTrack(item)) as Track
+    await PVAudioPlayer.add([track])
   }
 
   if (item && !item.clipId && shouldPlay) {
@@ -247,7 +187,7 @@ export const audioSyncPlayerWithQueue = async () => {
     const pvQueueItems = await getQueueItemsLocally()
     await audioRemoveUpcomingTracks()
     const tracks = await audioCreateTracks(pvQueueItems)
-    PVAudioPlayer.add(tracks)
+    await PVAudioPlayer.add(tracks)
   } catch (error) {
     errorLogger(_fileName, 'audioSyncPlayerWithQueue', error)
   }
@@ -371,15 +311,14 @@ export const audioMovePlayerItemToNewPosition = async (id: string, newIndex: num
 
   if (previousIndex > 0 || previousIndex === 0) {
     try {
-      await PVAudioPlayer.remove(previousIndex)
+      await audioRemoveTrack(previousIndex)
       const pvQueueItems = await getQueueItemsLocally()
       const itemToMove = pvQueueItems.find(
         (x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id)
       )
       if (itemToMove) {
-        const isUpcomingQueueItem = true
-        const track = (await audioCreateTrack(itemToMove, isUpcomingQueueItem)) as any
-        PVAudioPlayer.add([track], newIndex)
+        const track = (await audioCreateTrack(itemToMove)) as any
+        await PVAudioPlayer.add([track], newIndex)
       }
     } catch (error) {
       errorLogger(_fileName, 'movePlayerItemToNewPosition', error)
@@ -482,9 +421,8 @@ export const audioCheckIfStateIsBuffering = (playbackState: any) =>
 
 export const audioCreateTracks = async (items: NowPlayingItem[]) => {
   const tracks = [] as Track[]
-  const isUpcomingQueueItem = true
   for (const item of items) {
-    const track = (await audioCreateTrack(item, isUpcomingQueueItem)) as Track
+    const track = (await audioCreateTrack(item)) as Track
     tracks.push(track)
   }
 
@@ -548,7 +486,7 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
 
       if (filteredItems.length > 0) {
         const tracks = await audioCreateTracks(filteredItems)
-        PVAudioPlayer.add(tracks)
+        await PVAudioPlayer.add(tracks)
       }
     }
   } catch (error) {
@@ -566,7 +504,30 @@ export const audioReset = async () => {
   const queueItems = await PVAudioPlayer.getQueue()
   // eslint-disable-next-line @typescript-eslint/prefer-for-of
   for (let i = 0; i < queueItems.length; i++) {
-    await PVAudioPlayer.remove(0)
+    await audioRemoveTrack(0)
+  }
+}
+
+/*
+  There is a bug with PVAudioPlayer.removeUpcomingTracks() which can in some cases
+  remove the currently playing item on Android at unintended times.
+  To work around this, I wrote a custom removeUpcomingTracks helper...
+  BUT if PVAudioPlayer.remove() is called with a number higher than the tracks available,
+  the app will crash with an java.lang.IllegalArgumentException error.
+  To attempt to work around this bug, I am checking that a track exists
+  at that queue item position every time before calling .remove().
+*/
+export const audioRemoveTrack = async (position: number) => {
+  if (Platform.OS === 'ios') {
+    await PVAudioPlayer.remove(position)
+  } else {
+    if (position === 0 || position > 0) {
+      const queueItems = await PVAudioPlayer.getQueue()
+      const itemExists = queueItems.length - 1 >= position
+      if (itemExists) {
+        await PVAudioPlayer.remove(position)
+      }
+    }
   }
 }
 

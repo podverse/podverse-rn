@@ -1,4 +1,4 @@
-import { Platform, StyleSheet } from 'react-native'
+import { Dimensions, Platform, StyleSheet } from 'react-native'
 import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
@@ -504,6 +504,13 @@ const styles = StyleSheet.create({
     top: -7
   },
   wrapper: {
-    flex: 1
+    flex: 1,
+    minHeight: Dimensions.get('window').height >
+      PV.Dimensions.preventKeyboardShrinkMinHeight.smallScreen.height
+      ? 420
+      : Dimensions.get('window').height >
+          PV.Dimensions.preventKeyboardShrinkMinHeight.smallestScreen.height
+        ? 250
+        : 0
   }
 })

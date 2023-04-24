@@ -9,7 +9,7 @@ import {
 import { State } from 'react-native-track-player'
 import { getGlobal, setGlobal } from 'reactn'
 import { errorLogger } from '../../lib/logger'
-import { getParsedTranscript } from '../../lib/transcriptHelpers'
+import { getEpisodeProxyTranscript, getParsedTranscript } from '../../lib/transcriptHelpers'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import { checkIfLiveItemIsLive } from '../../services/liveItem'
@@ -317,9 +317,15 @@ const enrichParsedTranscript = (item: NowPlayingItem) => {
   if (item?.episodeTranscript && item.episodeTranscript[0] && item.episodeTranscript[0].url) {
     setGlobal({ parsedTranscript: [] }, async () => {
       try {
-        const parsedTranscript =
-          await getParsedTranscript(item.episodeTranscript[0].url, item.episodeTranscript[0].type)
-        setGlobal({ parsedTranscript })
+        if (item?.episodeTranscript && item.episodeTranscript[0] && item.episodeTranscript[0].url) {
+          let parsedTranscript = null
+          if (item?.episodeId) {
+            parsedTranscript = await getEpisodeProxyTranscript(item.episodeId)
+          } else {
+            parsedTranscript = await getParsedTranscript(item.episodeTranscript[0].url)
+          }
+          setGlobal({ parsedTranscript })
+        }
       } catch (error) {
         errorLogger(_fileName, 'playerLoadNowPlayingItem transcript parsing', error)
       }

@@ -668,8 +668,7 @@ export const core = StyleSheet.create({
     borderTopWidth: 0,
     flex: 0,
     minHeight: PV.FlatList.searchBar.height,
-    justifyContent: 'center',
-    marginBottom: 8
+    justifyContent: 'center'
   },
   pickerSelect: {
     flex: 0,
