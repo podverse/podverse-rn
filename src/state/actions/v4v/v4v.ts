@@ -371,7 +371,7 @@ export const v4vGetActiveProviderInfo = (valueTags: ValueTag[]) => {
 /* V4V PreviousTransactionErrors helpers */
 
 export const v4vAddPreviousTransactionError = (
-  type: 'boost' | 'streaming',
+  type: 'boost' | 'stream',
   address: string,
   message: string,
   customKey?: string,

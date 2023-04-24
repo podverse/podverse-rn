@@ -4,7 +4,7 @@ import pLimit from 'p-limit'
 import { checkIfContainsStringMatch, isValidDate } from 'podverse-shared'
 import * as RNKeychain from 'react-native-keychain'
 import { getGlobal } from 'reactn'
-import { checkInvalidAsyncStorageCapacity, setItemWithStorageCapacityCheck } from '../lib/asyncStorage'
+import { setItemWithStorageCapacityCheck } from '../lib/asyncStorage'
 import { debugLogger, errorLogger } from '../lib/logger'
 import { downloadEpisode } from '../lib/downloader'
 import { downloadCustomFileNameId } from '../lib/hash'
@@ -296,7 +296,7 @@ export const removePodcastCredentials = async (feedUrl: string) => {
   )
 }
 
-export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string) => {
+export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string, throwError?: boolean) => {
   try {
     const userAgent = getAppUserAgent()
     const Authorization = credentials ? `Basic ${btoa(credentials)}` : ''
@@ -354,7 +354,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
 
     podcast.funding = meta.funding
     podcast.guid = meta.guid
-    podcast.imageUrl = meta.imageURL
+    podcast.imageUrl = meta.imageURL?.trim()
     podcast.isExplicit = meta.explicit
     podcast.language = meta.language
 
@@ -404,7 +404,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
         episode.episodeType = parsedEpisode.type
         episode.funding = parsedEpisode.funding
         episode.guid = parsedEpisode.guid
-        episode.imageUrl = parsedEpisode.image
+        episode.imageUrl = parsedEpisode.image?.trim()
         episode.isExplicit = parsedEpisode.explicit
         episode.isPublic = true
         episode.linkUrl = parsedEpisode.link
@@ -438,7 +438,12 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
 
     return podcast
   } catch (error) {
-    errorLogger(_fileName, 'parseAddByRSSPodcast', feedUrl, error)
+    errorLogger(_fileName, `parseAddByRSSPodcast ${feedUrl}`, error)
+
+    if (throwError) {
+      throw error
+    }
+    
     const previouslySavedPodcast = await getAddByRSSPodcastLocally(feedUrl)
     return previouslySavedPodcast
   }

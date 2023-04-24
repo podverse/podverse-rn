@@ -1,5 +1,7 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
+import { PV } from '../../resources'
 import { checkIfShouldUseServerData } from '../../services/auth'
 import {
   addOrUpdateHistoryItem,
@@ -16,6 +18,7 @@ import {
   setHistoryItemsIndexLocally
 } from '../../services/userHistoryItem'
 import { clearEpisodesCountForPodcastEpisode } from './newEpisodesCount'
+import { downloadedEpisodeMarkForDeletion } from './downloads'
 
 export const clearHistoryItems = async () => {
   const globalState = getGlobal()
@@ -161,6 +164,11 @@ export const toggleMarkAsPlayed = async (item: NowPlayingItem, shouldMarkAsPlaye
 
     if ((item?.podcastId || item?.addByRSSPodcastFeedUrl) && item?.episodeId) {
       await clearEpisodesCountForPodcastEpisode(item?.podcastId || item?.addByRSSPodcastFeedUrl, item.episodeId)
+    }
+
+    const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+    if (autoDeleteEpisodeOnEnd && shouldMarkAsPlayed) {
+      downloadedEpisodeMarkForDeletion(item.episodeId)
     }
 
     await addOrUpdateHistoryItem(

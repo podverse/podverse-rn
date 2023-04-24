@@ -50,6 +50,7 @@ type Props = {
   rightOpenValue?: number
   sections?: any
   showNoInternetConnectionMessage?: boolean
+  stickyHeaderIndices?: boolean
   stickySectionHeadersEnabled?: boolean
   testID: string
   transparent?: boolean
@@ -100,6 +101,7 @@ export const PVFlatList = (props: Props) => {
     rightOpenValue = PV.FlatList.hiddenItems.rightOpenValue.oneButton,
     sections,
     showNoInternetConnectionMessage,
+    stickyHeaderIndices = true,
     stickySectionHeadersEnabled,
     testID,
     transparent
@@ -220,6 +222,7 @@ export const PVFlatList = (props: Props) => {
           renderItem={renderItem}
           rightOpenValue={rightOpenValue}
           sections={sections}
+          stickyHeaderIndices={stickyHeaderIndices ? [0] : []}
           stickySectionHeadersEnabled={!!stickySectionHeadersEnabled}
           style={[
             globalTheme.flatList,

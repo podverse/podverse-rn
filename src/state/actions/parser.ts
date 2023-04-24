@@ -20,9 +20,10 @@ import { getSubscribedPodcasts } from './podcast'
 
 const _fileName = 'src/state/actions/parser.ts'
 
-const handleAddOrRemoveByRSSPodcast = async (feedUrl: string, shouldAdd: boolean, credentials?: string) => {
+const handleAddOrRemoveByRSSPodcast = async (feedUrl: string, shouldAdd: boolean, credentials?: string,
+  throwError?: boolean) => {
   if (shouldAdd) {
-    const podcast = await parseAddByRSSPodcast(feedUrl, credentials)
+    const podcast = await parseAddByRSSPodcast(feedUrl, credentials, throwError)
     if (podcast) {
       const isLoggedIn = await checkIfLoggedIn()
       if (isLoggedIn) {
@@ -99,7 +100,9 @@ export const addAddByRSSPodcast = async (feedUrl: string, skipBadParse = false) 
 
   try {
     const shouldAdd = true
-    await handleAddOrRemoveByRSSPodcast(feedUrl, shouldAdd)
+    const credentials = ''
+    const throwError = true
+    await handleAddOrRemoveByRSSPodcast(feedUrl, shouldAdd, credentials, throwError)
     PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
     result = true
   } catch (error) {
@@ -124,7 +127,8 @@ export const addAddByRSSPodcastWithCredentials = async (feedUrl: string, credent
 
   try {
     const shouldAdd = true
-    await handleAddOrRemoveByRSSPodcast(feedUrl, shouldAdd, credentials)
+    const throwError = true
+    await handleAddOrRemoveByRSSPodcast(feedUrl, shouldAdd, credentials, throwError)
     result = true
   } catch (error) {
     if (error.message === '401') {

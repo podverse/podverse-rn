@@ -63,7 +63,8 @@ export const initializeSettings = async () => {
     jumpForwardsTime,
     addCurrentItemNextInQueue,
     podcastsGridViewEnabled,
-    customRSSParallelParserLimit
+    customRSSParallelParserLimit,
+    refreshSubscriptionsOnLaunch
   ] = await Promise.all([
     AsyncStorage.getItem(PV.Keys.CENSOR_NSFW_TEXT),
     AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN),
@@ -81,7 +82,8 @@ export const initializeSettings = async () => {
     AsyncStorage.getItem(PV.Keys.PLAYER_JUMP_FORWARDS),
     AsyncStorage.getItem(PV.Keys.PLAYER_ADD_CURRENT_ITEM_NEXT_IN_QUEUE),
     AsyncStorage.getItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED),
-    getCustomRSSParallelParserLimit()
+    getCustomRSSParallelParserLimit(),
+    AsyncStorage.getItem(PV.Keys.REFRESH_SUBSCRIPTIONS_ON_LAUNCH)
   ])
 
   setGlobal({
@@ -101,7 +103,8 @@ export const initializeSettings = async () => {
     jumpForwardsTime: jumpForwardsTime || PV.Player.jumpSeconds,
     urlsAPI,
     urlsWeb,
-    addCurrentItemNextInQueue: !!addCurrentItemNextInQueue
+    addCurrentItemNextInQueue: !!addCurrentItemNextInQueue,
+    refreshSubscriptionsOnLaunch
   }, () => {
     // Call handleFinishSettingPlayerTime in case a custom jump time is available.
     handleFinishSettingPlayerTime()
@@ -113,6 +116,14 @@ export const setCensorNSFWText = (value: boolean) => {
     value
       ? await AsyncStorage.setItem(PV.Keys.CENSOR_NSFW_TEXT, 'TRUE')
       : await AsyncStorage.removeItem(PV.Keys.CENSOR_NSFW_TEXT)
+  })
+}
+
+export const setRefreshSubscriptionsOnLaunch = (value: boolean) => {
+  setGlobal({ refreshSubscriptionsOnLaunch: value }, async () => {
+    value
+      ? await AsyncStorage.setItem(PV.Keys.REFRESH_SUBSCRIPTIONS_ON_LAUNCH, 'TRUE')
+      : await AsyncStorage.removeItem(PV.Keys.REFRESH_SUBSCRIPTIONS_ON_LAUNCH)
   })
 }
 

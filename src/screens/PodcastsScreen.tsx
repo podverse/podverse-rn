@@ -233,6 +233,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT, 'TRUE'),
+          AsyncStorage.setItem(PV.Keys.REFRESH_SUBSCRIPTIONS_ON_LAUNCH, 'TRUE'),
           resetAllAppKeychain()
         ])
 
@@ -669,10 +670,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const isConnected = await hasValidNetworkConnection()
       const preventIsLoading = true
       const preventAutoDownloading = false
+      const keepSearchTitle = false
       if (isConnected) {
+        const refreshSubscriptionsOnLaunch = await AsyncStorage.getItem(PV.Keys.REFRESH_SUBSCRIPTIONS_ON_LAUNCH)
+        const preventParseCustomRSSFeeds = !refreshSubscriptionsOnLaunch
         const savedQuerySort = await getSavedQueryPodcastsScreenSort()
         this.setState({ querySort: savedQuerySort }, () => {
-          this.handleSelectFilterItem(PV.Filters._subscribedKey, preventIsLoading, preventAutoDownloading)
+          this.handleSelectFilterItem(
+            PV.Filters._subscribedKey,
+            preventIsLoading,
+            preventAutoDownloading,
+            keepSearchTitle,
+            preventParseCustomRSSFeeds
+          )
         })
       } else {
         this._setDownloadedDataIfOffline()

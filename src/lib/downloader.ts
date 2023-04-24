@@ -1,3 +1,4 @@
+import url from 'url'
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import { convertBytesToHumanReadableString, Episode, getExtensionFromUrl } from 'podverse-shared'
@@ -22,6 +23,10 @@ import { getAppUserAgent, safelyUnwrapNestedVariable } from './utility'
 import { downloadImageFile } from './storage'
 
 const _fileName = 'src/lib/downloader.ts'
+
+const forceSecureRedirectDomains = {
+  'feeds.gty.org': true
+}
 
 export const BackgroundDownloader = () => {
   const userAgent = getAppUserAgent()
@@ -159,7 +164,8 @@ export const downloadEpisode = async (
   const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
 
   let downloadUrl = episode.mediaUrl
-  if (downloadUrl.startsWith('http://')) {
+  const hostname = url?.parse(downloadUrl)?.hostname
+  if ((hostname && forceSecureRedirectDomains[hostname]) || downloadUrl.startsWith('http://')) {
     try {
       const secureUrlInfo = await getSecureUrl(episode.mediaUrl)
       if (secureUrlInfo?.secureUrl) {

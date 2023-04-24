@@ -181,7 +181,8 @@ const initialTheme: InitialState = {
   hideNewEpisodesBadges: false,
   hideDividersInLists: false,
   imageFullViewSourceUrl: '',
-  imageFullViewShow: false
+  imageFullViewShow: false,
+  refreshSubscriptionsOnLaunch: true
 }
 
 export default initialTheme

@@ -100,13 +100,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderColor: 'transparent',
     borderWidth: 0,
-    paddingHorizontal: 12
+    paddingHorizontal: 12,
+    paddingBottom: 8
   },
   inputContainerStyle: {
     backgroundColor: PV.Colors.velvet,
     borderRadius: 6,
     borderWidth: 0,
-    marginVertical: 5,
+    marginBottom: 5,
+    marginTop: 3,
     height: 40
   },
   inputStyle: {

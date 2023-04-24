@@ -1,10 +1,6 @@
 import { checkIfVideoFileOrVideoLiveType, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
 import TrackPlayer, {
-  AppKilledPlaybackBehavior,
-  Capability,
-  IOSCategoryMode,
   PitchAlgorithm,
-  RepeatMode,
   State,
   Track
 } from 'react-native-track-player'

@@ -1541,10 +1541,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@podverse/podcast-feed-parser@^1.0.17":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@podverse/podcast-feed-parser/-/podcast-feed-parser-1.1.0.tgz#6f4768a27700d75c444f31f9e53c57803236ab3d"
-  integrity sha512-TStZuwl//uDQdF1rcvxeLU0wOgct6Ly5In8Tci3oLD41J+agSF7wTE0jlgec0gKOJ91yzQIwvrYHlhXPJjeLiw==
+"@podverse/podcast-feed-parser@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@podverse/podcast-feed-parser/-/podcast-feed-parser-1.1.1.tgz#ac561e2a0a0285789850b340cfe5f8e68aecf471"
+  integrity sha512-CIKLkhXNgD2Bz3UtDLdLd/wLaDzBROzjq6JR6xSj/a01bn0VahUd1uhsPh++n26+IMfMsmCbD5p3t0Q/udT4aQ==
   dependencies:
     abort-controller "^3.0.0"
     isomorphic-fetch "^3.0.0"
@@ -8727,6 +8727,11 @@ pumpify@^1.3.3:
     inherits "^2.0.3"
     pump "^2.0.0"
 
+punycode@1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.3.2.tgz#9653a036fb7c1ee42342f2325cceefea3926c48d"
+  integrity sha512-RofWgt/7fL5wP1Y7fxE7/EmTLzQVnB0ycyibJ0OOHIlJqTNzglYFxVwETOcIoJqJmpDXJ9xImDv+Fq34F/d4Dw==
+
 punycode@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
@@ -8768,6 +8773,11 @@ query-string@^6.13.6, query-string@^6.8.2:
     filter-obj "^1.1.0"
     split-on-first "^1.0.0"
     strict-uri-encode "^2.0.0"
+
+querystring@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/querystring/-/querystring-0.2.0.tgz#b209849203bb25df820da756e747005878521620"
+  integrity sha512-X/xY82scca2tau62i9mDyU9K+I+djTMUsvwf7xnUX5GLvVzgJybOJf4Y6o9Zx3oJK/LSXg5tTZBjwzqVPaPO2g==
 
 queue-microtask@^1.2.2:
   version "1.2.3"
@@ -11089,6 +11099,14 @@ url-toolkit@^2.2.1:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/url-toolkit/-/url-toolkit-2.2.5.tgz#58406b18e12c58803e14624df5e374f638b0f607"
   integrity sha512-mtN6xk+Nac+oyJ/PrI7tzfmomRVNFIWKUbG8jdYFt52hxbiReFAXIjYskvu64/dvuW71IcB7lV8l0HvZMac6Jg==
+
+url@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/url/-/url-0.11.0.tgz#3838e97cfc60521eb73c525a8e55bfdd9e2e28f1"
+  integrity sha512-kbailJa29QrtXnxgq+DdCEGlbTeYM2eJUxsz6vjZavrCYPMIFHMKQmSKYAIuUK2i7hgPm28a8piX5NTUtM/LKQ==
+  dependencies:
+    punycode "1.3.2"
+    querystring "0.2.0"
 
 use-force-update@1.0.8, use-force-update@^1.0.5:
   version "1.0.8"
