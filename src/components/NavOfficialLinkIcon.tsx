@@ -32,7 +32,7 @@ export const NavOfficialLinkIcon = (props: Props) => {
       accessibilityRole='button'
       handlePress={handleFollowLink}
       testID='nav_official_link_icon'>
-      <NavItemIcon name='home' solid color={color} />
+      <NavItemIcon name='globe' solid color={color} />
     </NavItemWrapper>
   )
 }
