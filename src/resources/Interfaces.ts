@@ -243,6 +243,7 @@ export interface InitialState {
   hideDividersInLists: boolean
   imageFullViewSourceUrl?: string
   imageFullViewShow?: boolean
+  refreshSubscriptionsOnLaunch?: boolean
 }
 
 export interface BannerInfoError {

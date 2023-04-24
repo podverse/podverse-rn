@@ -23,7 +23,7 @@ import { trackPageView } from '../services/tracking'
 import { setCustomRSSParallelParserLimit } from '../state/actions/customRSSParallelParserLimit'
 import { toggleHideNewEpisodesBadges } from '../state/actions/newEpisodesCount'
 import { toggleHideDividersInLists } from '../state/actions/settings-ui'
-import { setCensorNSFWText, setHideCompleted } from '../state/actions/settings'
+import { setCensorNSFWText, setHideCompleted, setRefreshSubscriptionsOnLaunch } from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {
@@ -71,6 +71,11 @@ export class SettingsScreenOther extends React.Component<Props, State> {
   _handleToggleNSFWText = async () => {
     const censorNSFWText = await AsyncStorage.getItem(PV.Keys.CENSOR_NSFW_TEXT)
     setCensorNSFWText(!censorNSFWText)
+  }
+
+  _handleToggleRefreshSubscriptionsOnLaunch = async () => {
+    const refreshSubscriptionsOnLaunch = await AsyncStorage.getItem(PV.Keys.REFRESH_SUBSCRIPTIONS_ON_LAUNCH)
+    setRefreshSubscriptionsOnLaunch(!refreshSubscriptionsOnLaunch)
   }
 
   _handleToggleHideCompletedByDefault = async () => {
@@ -131,7 +136,14 @@ export class SettingsScreenOther extends React.Component<Props, State> {
 
   render() {
     const { customLaunchScreenOptionSelected, customRSSParallelParserLimit, isLoading } = this.state
-    const { censorNSFWText, globalTheme, hideCompleted, hideDividersInLists, hideNewEpisodesBadges } = this.global
+    const {
+      censorNSFWText,
+      globalTheme,
+      hideCompleted,
+      hideDividersInLists,
+      hideNewEpisodesBadges,
+      refreshSubscriptionsOnLaunch
+    } = this.global
     const isDarkMode = globalTheme === darkTheme
 
     return (
@@ -155,6 +167,15 @@ export class SettingsScreenOther extends React.Component<Props, State> {
                 />
               </View>
             )}
+            <View style={core.itemWrapper}>
+              <SwitchWithText
+                accessibilityLabel={translate('Refresh subscriptions on launch')}
+                onValueChange={this._handleToggleRefreshSubscriptionsOnLaunch}
+                testID={`${testIDPrefix}_refresh_subscriptions`}
+                text={translate('Refresh subscriptions on launch')}
+                value={!!refreshSubscriptionsOnLaunch}
+              />
+            </View>
             <View style={core.itemWrapper}>
               <SwitchWithText
                 accessibilityLabel={translate('Censor NSFW text')}
