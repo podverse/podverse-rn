@@ -120,7 +120,7 @@ type State = {
 const testIDPrefix = 'podcasts_screen'
 
 export let isInitialLoadPodcastsScreen = true
-const horizontalRowHeight = 94
+const horizontalRowHeight = 98
 const dividerHeight = 1
 
 const getScreenTitle = () => {
