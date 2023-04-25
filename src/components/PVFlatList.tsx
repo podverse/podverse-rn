@@ -50,7 +50,7 @@ type Props = {
   rightOpenValue?: number
   sections?: any
   showNoInternetConnectionMessage?: boolean
-  stickyHeaderIndices?: boolean
+  stickyHeader?: boolean
   stickySectionHeadersEnabled?: boolean
   testID: string
   transparent?: boolean
@@ -101,7 +101,7 @@ export const PVFlatList = (props: Props) => {
     rightOpenValue = PV.FlatList.hiddenItems.rightOpenValue.oneButton,
     sections,
     showNoInternetConnectionMessage,
-    stickyHeaderIndices = true,
+    stickyHeader,
     stickySectionHeadersEnabled,
     testID,
     transparent
@@ -165,74 +165,76 @@ export const PVFlatList = (props: Props) => {
             : {})}
         />
       ) : (
-        <SwipeListView
-          closeOnRowPress
-          contentContainerStyle={contentContainerStyle}
-          contentOffset={contentOffset}
-          data={shouldShowResults ? data : []}
-          disableLeftSwipe={disableLeftSwipe}
-          disableRightSwipe
-          extraData={extraData}
-          getItemLayout={getItemLayout}
-          ItemSeparatorComponent={finalItemSeparator}
-          keyExtractor={keyExtractor}
-          onScrollBeginDrag={onScrollBeginDrag}
-          ListFooterComponent={() => {
-            if (isLoadingMore && !isEndOfResults) {
-              return (
-                <View
-                  accessible={false}
-                  style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}
-                  transparent={transparent}>
-                  <ActivityIndicator accessible={false} testID={testID} />
-                </View>
-              )
-            } else if (!isLoadingMore && !isEndOfResults) {
-              return <View style={[styles.isLoadingMoreCell]} transparent={transparent} />
-            }
-            // else if (isEndOfResults && !isCompleteData) {
-            //   return (
-            //     <View style={[styles.lastCell, globalTheme.tableCellBorder]} transparent={transparent}>
-            //       <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.lastCellText]}>
-            //         {translate('End of results')}
-            //       </Text>
-            //     </View>
-            //   )
-            // }
-
-            return null
-          }}
-          ListHeaderComponent={ListHeaderComponent}
-          listViewRef={listRef}
-          onEndReached={onEndReached}
-          onEndReachedThreshold={onEndReachedThreshold}
-          {...(onRefresh
-            ? {
-                refreshControl: (
-                  <RefreshControl
-                    refreshing={isRefreshing}
-                    onRefresh={onRefresh}
-                    tintColor={globalTheme?.activityIndicator?.color}
-                  />
+        <>
+          {stickyHeader ? <View>{ListHeaderComponent()}</View> : null}
+          <SwipeListView
+            closeOnRowPress
+            contentContainerStyle={contentContainerStyle}
+            contentOffset={contentOffset}
+            data={shouldShowResults ? data : []}
+            disableLeftSwipe={disableLeftSwipe}
+            disableRightSwipe
+            extraData={extraData}
+            getItemLayout={getItemLayout}
+            ItemSeparatorComponent={finalItemSeparator}
+            keyExtractor={keyExtractor}
+            onScrollBeginDrag={onScrollBeginDrag}
+            ListFooterComponent={() => {
+              if (isLoadingMore && !isEndOfResults) {
+                return (
+                  <View
+                    accessible={false}
+                    style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}
+                    transparent={transparent}>
+                    <ActivityIndicator accessible={false} testID={testID} />
+                  </View>
                 )
+              } else if (!isLoadingMore && !isEndOfResults) {
+                return <View style={[styles.isLoadingMoreCell]} transparent={transparent} />
               }
-            : {})}
-          renderHiddenItem={renderHiddenItem || _renderHiddenItem}
-          renderSectionHeader={renderSectionHeader}
-          renderItem={renderItem}
-          rightOpenValue={rightOpenValue}
-          sections={sections}
-          stickyHeaderIndices={stickyHeaderIndices ? [0] : []}
-          stickySectionHeadersEnabled={!!stickySectionHeadersEnabled}
-          style={[
-            globalTheme.flatList,
-            transparent ? { backgroundColor: 'transparent' } : {},
-            !shouldShowResults ? styles.noResultsFlatList : {}
-          ]}
-          useFlatList={!useSectionList}
-          useSectionList={useSectionList}
-          {...PV.FlatList.optimizationProps}
-        />
+              // else if (isEndOfResults && !isCompleteData) {
+              //   return (
+              //     <View style={[styles.lastCell, globalTheme.tableCellBorder]} transparent={transparent}>
+              //       <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.lastCellText]}>
+              //         {translate('End of results')}
+              //       </Text>
+              //     </View>
+              //   )
+              // }
+
+              return null
+            }}
+            ListHeaderComponent={!!stickyHeader ? null : ListHeaderComponent}
+            listViewRef={listRef}
+            onEndReached={onEndReached}
+            onEndReachedThreshold={onEndReachedThreshold}
+            {...(onRefresh
+              ? {
+                  refreshControl: (
+                    <RefreshControl
+                      refreshing={isRefreshing}
+                      onRefresh={onRefresh}
+                      tintColor={globalTheme?.activityIndicator?.color}
+                    />
+                  )
+                }
+              : {})}
+            renderHiddenItem={renderHiddenItem || _renderHiddenItem}
+            renderSectionHeader={renderSectionHeader}
+            renderItem={renderItem}
+            rightOpenValue={rightOpenValue}
+            sections={sections}
+            stickySectionHeadersEnabled={!!stickySectionHeadersEnabled}
+            style={[
+              globalTheme.flatList,
+              transparent ? { backgroundColor: 'transparent' } : {},
+              !shouldShowResults ? styles.noResultsFlatList : {}
+            ]}
+            useFlatList={!useSectionList}
+            useSectionList={useSectionList}
+            {...PV.FlatList.optimizationProps}
+          />
+        </>
       )}
       {shouldShowNoResultsFoundMessage && (
         <MessageWithAction
