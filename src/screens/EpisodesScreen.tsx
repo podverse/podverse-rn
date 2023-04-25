@@ -366,7 +366,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
           handleClear={this._handleSearchBarClear}
           hideIcon
           icon='filter'
-          noContainerPadding
           onChangeText={this._handleSearchBarTextChange}
           placeholder={getSearchPlaceholder()}
           testID={`${testIDPrefix}_filter_bar`}
@@ -589,6 +588,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
             onRefresh={this._onRefresh}
             renderItem={this._renderEpisodeItem}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
+            stickyHeader
           />
         )}
         <ActionSheet
