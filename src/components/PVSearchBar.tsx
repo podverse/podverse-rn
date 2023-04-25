@@ -13,7 +13,6 @@ type Props = {
   hideIcon?: boolean
   icon?: 'search' | 'filter'
   inputRef?: any
-  noContainerPadding?: boolean
   onChangeText: any
   placeholder?: string
   subText?: string
@@ -29,7 +28,6 @@ export const PVSearchBar = (props: Props) => {
     hideIcon,
     icon = 'search',
     inputRef,
-    noContainerPadding,
     onChangeText,
     placeholder,
     subText,
@@ -41,8 +39,6 @@ export const PVSearchBar = (props: Props) => {
   const inputStyle = PV.Fonts.fontScale.largest === fontScaleMode ? { fontSize: PV.Fonts.largeSizes.md } : {}
   const iconName = icon === 'filter' ? 'filter' : 'search'
   const iconColor = icon === 'filter' ? PV.Colors.grayLighter : PV.Colors.white
-
-  const finalContainerStyle = noContainerPadding ? { ...containerStyle, paddingVertical: 0 } : containerStyle
 
   return (
     <RNView>
@@ -61,7 +57,7 @@ export const PVSearchBar = (props: Props) => {
           ) : null
         }
         onClear={handleClear}
-        containerStyle={[styles.containerStyle, finalContainerStyle]}
+        containerStyle={[styles.containerStyle, containerStyle]}
         inputContainerStyle={styles.inputContainerStyle}
         inputStyle={[globalTheme.textInput, styles.inputStyle, inputStyle]}
         onChangeText={onChangeText}
@@ -101,21 +97,23 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     borderWidth: 0,
     paddingHorizontal: 12,
-    paddingBottom: 8
+    paddingBottom: 0,
+    paddingTop: 0
   },
   inputContainerStyle: {
     backgroundColor: PV.Colors.velvet,
     borderRadius: 6,
     borderWidth: 0,
-    marginBottom: 5,
-    marginTop: 3,
+    marginBottom: 6,
+    marginTop: 4,
     height: 40
   },
   inputStyle: {
     borderWidth: 0,
     fontSize: PV.Fonts.sizes.xxl,
     marginHorizontal: 10,
-    paddingVertical: Platform.OS === 'android' ? 3 : 0
+    paddingTop: Platform.OS === 'android' ? 3 : 0,
+    paddingBottom: Platform.OS === 'android' ? 3 : 0
   },
   imageStyle: {
     width: 28,
