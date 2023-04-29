@@ -2,7 +2,6 @@ import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal } from 'reactn'
 import { Platform } from 'react-native'
-import { RepeatMode } from 'react-native-track-player'
 import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
@@ -27,12 +26,6 @@ const _fileName = 'src/services/playerBackgroundTimer.ts'
 
 const handleSyncNowPlayingItem = async (currentNowPlayingItem: NowPlayingItem, callback?: any) => {
   if (!currentNowPlayingItem) return
-
-  if (currentNowPlayingItem.liveItem) {
-    PVAudioPlayer.setRepeatMode(RepeatMode.Off)
-  } else {
-    PVAudioPlayer.setRepeatMode(RepeatMode.Queue)
-  }
 
   await clearChapterPlaybackInfo(currentNowPlayingItem)
 
