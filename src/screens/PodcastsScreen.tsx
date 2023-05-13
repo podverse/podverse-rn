@@ -1190,7 +1190,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             isLoadingMore={isLoadingMore}
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
-            {...(isCategoryScreen ? {} : { ListHeaderComponent: this._ListHeaderComponent })}
+            {...(isCategoryScreen ? null : { ListHeaderComponent: this._ListHeaderComponent })}
             noResultsMessage={
               // eslint-disable-next-line max-len
               noSubscribedPodcasts
