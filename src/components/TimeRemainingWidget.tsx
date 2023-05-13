@@ -1,6 +1,6 @@
 import { checkIfNowPlayingItem, convertToNowPlayingItem } from 'podverse-shared'
 import React, { useState } from 'react'
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import { getGlobal } from 'reactn'
 import { requestAppStoreReviewForEpisodePlayed } from '../lib/reviews'
 import { PV } from '../resources'
@@ -169,7 +169,11 @@ export const TimeRemainingWidget = (props: Props) => {
         <PressableWithOpacity
           accessible={false}
           importantForAccessibility='no-hide-descendants'
-          onPress={playItem}
+          hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+          // People have reported issues with this play button not always playing
+          // on the first try as expected on Android. I'm not sure why Android has
+          // this issue but not iOS, but I'm using onPressOut to work around this.
+          {...(Platform.OS === 'ios' ? { onPress: playItem } : { onPressOut: playItem })}
           style={iconStyle}
           testID={`${testID}_time_remaining_widget_toggle_play`.prependTestId()}>
           {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
