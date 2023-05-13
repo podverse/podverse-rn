@@ -642,9 +642,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _initializeScreenDataPart2 = async () => {
+    // Init downloads without blocking thread
+    initDownloads()
+
     await Promise.all([
       this._handleInitialDefaultQuery,
-      initDownloads(),
       initAutoQueue(),
       initializePlayer(),
       initializePlayerSettings()
