@@ -19,7 +19,7 @@ import { addDownloadedPodcastEpisode, getDownloadedPodcasts } from './downloaded
 import { downloadCustomFileNameId } from './hash'
 import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode } from './downloadingEpisode'
 import { hasValidDownloadingConnection } from './network'
-import { getAppUserAgent, safelyUnwrapNestedVariable, wait } from './utility'
+import { getAppUserAgent, safelyUnwrapNestedVariable } from './utility'
 import { downloadImageFile } from './storage'
 
 const _fileName = 'src/lib/downloader.ts'
@@ -292,7 +292,6 @@ export const initDownloads = async () => {
   for (const task of existingDownloadTasks) {
     if (!episodes.some((x: any) => x.id === task.id)) {
       await task.stop()
-      await wait(2000)
       timeout = 1000
     }
   }
@@ -342,7 +341,6 @@ export const initDownloads = async () => {
     if (filteredDownloadTask.status === DownloadStatus.DOWNLOADING) {
       if (existingDownloadTasks.some((x: any) => x.id === filteredDownloadTask.episodeId)) {
         // Wait for task.stop() to complete
-        await wait(2000)
         setTimeout(() => {
           const restart = true
           downloadEpisode(episode, episode.podcast, restart)
