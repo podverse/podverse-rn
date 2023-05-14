@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.12.11",
+  "version": "4.12.12",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -41,7 +41,6 @@
     "@babel/eslint-parser": "^7.15.0",
     "@babel/preset-env": "^7.17.10",
     "@babel/preset-typescript": "^7.16.7",
-    "@kesha-antonov/react-native-background-downloader": "^2.7.2",
     "@podverse/podcast-feed-parser": "^1.1.1",
     "@react-native-community/async-storage": "1.12.1",
     "@react-native-community/masked-view": "0.1.11",
@@ -73,6 +72,7 @@
     "qs": "^6.11.0",
     "react": "17.0.1",
     "react-native": "0.66.5",
+    "react-native-background-downloader": "^2.3.4",
     "react-native-carplay": "2.1.0",
     "react-native-cheerio": "1.0.0-rc.4",
     "react-native-confetti-cannon": "1.5.2",

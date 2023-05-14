@@ -166,7 +166,7 @@ export const PVFlatList = (props: Props) => {
         />
       ) : (
         <>
-          {stickyHeader ? <View>{ListHeaderComponent()}</View> : null}
+          {stickyHeader && ListHeaderComponent ? <View>{ListHeaderComponent()}</View> : null}
           <SwipeListView
             closeOnRowPress
             contentContainerStyle={contentContainerStyle}

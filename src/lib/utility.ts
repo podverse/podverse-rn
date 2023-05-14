@@ -195,3 +195,7 @@ export const removeAndDecodeHTMLInString = (text: string) => {
   text = decodeHTMLString(text)
   return text?.trim() || ''
 }
+
+export const wait = (milliseconds: number) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
