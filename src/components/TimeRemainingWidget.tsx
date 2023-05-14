@@ -173,7 +173,8 @@ export const TimeRemainingWidget = (props: Props) => {
           // People have reported issues with this play button not always playing
           // on the first try as expected on Android. I'm not sure why Android has
           // this issue but not iOS, but I'm using onPressOut to work around this.
-          {...(Platform.OS === 'ios' ? { onPress: playItem } : { onPressOut: playItem })}
+          // {...(Platform.OS === 'ios' ? { onPress: playItem } : { onPressOut: playItem })}
+          onPress={playItem}
           style={iconStyle}
           testID={`${testID}_time_remaining_widget_toggle_play`.prependTestId()}>
           {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
@@ -249,8 +250,8 @@ const styles = StyleSheet.create({
     borderRadius: 42,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 42,
-    width: 42,
+    height: 44,
+    width: 44,
     marginRight: 10,
     backgroundColor: PV.Colors.brandBlueDark + '44'
   },
