@@ -577,7 +577,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
             keyExtractor={(item: any, index: number) =>
               safeKeyExtractor(testIDPrefix, index, item?.id, !!item.addedByRSS)
             }
-            {...(isCategoryScreen ? {} : { ListHeaderComponent: this._ListHeaderComponent })}
+            {...(isCategoryScreen ? null : { ListHeaderComponent: this._ListHeaderComponent })}
             noResultsMessage={
               // eslint-disable-next-line max-len
               noSubscribedPodcasts

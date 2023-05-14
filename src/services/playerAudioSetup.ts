@@ -1,7 +1,7 @@
 import { getGlobal } from 'reactn'
-import { Platform } from 'react-native'
+// import { Platform } from 'react-native'
 import TrackPlayer, {
-  AndroidAudioContentType,
+  // AndroidAudioContentType,
   AppKilledPlaybackBehavior,
   Capability,
   IOSCategoryMode,
@@ -30,9 +30,9 @@ export const PlayerAudioSetupService = async () => {
   await setupPlayer({
     waitForBuffer: true,
     maxCacheSize: 1000000, // 1 GB from KB, this affects Android only I think.
-    iosCategoryMode: IOSCategoryMode.SpokenAudio,
-    autoHandleInterruptions: Platform.OS === 'android',
-    androidAudioContentType: AndroidAudioContentType.Speech
+    iosCategoryMode: IOSCategoryMode.SpokenAudio
+    // autoHandleInterruptions: Platform.OS === 'android',
+    // androidAudioContentType: AndroidAudioContentType.Speech
   })
   
   audioUpdateTrackPlayerCapabilities()
