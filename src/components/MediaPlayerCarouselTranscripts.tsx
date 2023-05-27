@@ -22,7 +22,7 @@ type State = {
   searchResults: never[]
 }
 
-const getCellID = (item: TranscriptRow) => `transcript-cell-${item.line}`
+const getCellID = (item: TranscriptRow, index: number) => `transcript-cell-${index}`
 
 export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, State> {
   currentSpeaker?: string
@@ -139,12 +139,12 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     }
   }
 
-  renderItem = (item: any) => {
+  renderItem = (item: any, index: number) => {
     const { isNowPlaying } = this.props
     const { activeTranscriptRowIndex } = this.state
     const transcriptionItem = item.item
     const { body, speaker, startTime, startTimeFormatted } = transcriptionItem
-    const cellID = getCellID(transcriptionItem)
+    const cellID = getCellID(transcriptionItem, index)
 
     if (speaker && speaker !== this.currentSpeaker) {
       this.currentSpeaker = speaker
@@ -273,7 +273,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
               return { length: 80, offset: 80 * index, index }
             }}
             ItemSeparatorComponent={() => <></>}
-            keyExtractor={(item: TranscriptRow) => getCellID(item)}
+            keyExtractor={(item: TranscriptRow, index: number) => getCellID(item, index)}
             listRef={(ref: any) => {
               this.listRef = ref
             }}
