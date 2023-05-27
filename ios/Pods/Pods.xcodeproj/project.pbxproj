@@ -16003,8 +16003,8 @@
 		BFDFE7DC352907FC980B868725387E98 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1240;
+				LastSwiftUpdateCheck = 1300;
+				LastUpgradeCheck = 1300;
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -19975,24 +19975,6 @@
 			};
 			name = Release;
 		};
-		0E9C38FFF7544FCAF0A52AB84B208441 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 216C2C7FED1CB225DDDD4618E681D60F /* React-Core.release.xcconfig */;
-			buildSettings = {
-				CODE_SIGNING_ALLOWED = NO;
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/React-Core";
-				ENABLE_BITCODE = NO;
-				IBSC_MODULE = React;
-				INFOPLIST_FILE = "Target Support Files/React-Core/ResourceBundle-AccessibilityResources-React-Core-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				PRODUCT_NAME = AccessibilityResources;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Release;
-		};
 		0F47BF9BB3568D5B7D8036142BAB58DB /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 32BE212BA8DC6DFD2F8583AE51071061 /* RNSecureKeyStore.release.xcconfig */;
@@ -21305,24 +21287,6 @@
 			};
 			name = Release;
 		};
-		567B916ECCEF885E726B3E53B1A7E804 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = A0BD009349B5198B53D449F882F46298 /* React-Core.debug.xcconfig */;
-			buildSettings = {
-				CODE_SIGNING_ALLOWED = NO;
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/React-Core";
-				ENABLE_BITCODE = NO;
-				IBSC_MODULE = React;
-				INFOPLIST_FILE = "Target Support Files/React-Core/ResourceBundle-AccessibilityResources-React-Core-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				PRODUCT_NAME = AccessibilityResources;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Debug;
-		};
 		57C3E402D5CE1335CA945532C9EB6E51 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CEAF6EA30425A3EA95BD5477EE7A45BA /* PromisesObjC.debug.xcconfig */;
@@ -22332,6 +22296,24 @@
 			};
 			name = Debug;
 		};
+		835FBB052D448C8AB3A6897D42B2BCC4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A0BD009349B5198B53D449F882F46298 /* React-Core.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/React-Core";
+				ENABLE_BITCODE = NO;
+				IBSC_MODULE = React;
+				INFOPLIST_FILE = "Target Support Files/React-Core/ResourceBundle-AccessibilityResources-React-Core-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_NAME = AccessibilityResources;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
 		839B8332105B9744CB5A06EBF72A5BF6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6A437CE2EB2BC8FD1AE1D9341D06C77D /* React-RCTImage.release.xcconfig */;
@@ -22778,6 +22760,24 @@
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		9E45CE58F9C7BB6915D9536ADC1DCF7C /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 216C2C7FED1CB225DDDD4618E681D60F /* React-Core.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/React-Core";
+				ENABLE_BITCODE = NO;
+				IBSC_MODULE = React;
+				INFOPLIST_FILE = "Target Support Files/React-Core/ResourceBundle-AccessibilityResources-React-Core-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_NAME = AccessibilityResources;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;
 		};
@@ -24631,8 +24631,8 @@
 		E0E6E6F1D86C4A38762C07BBCE33A148 /* Build configuration list for PBXNativeTarget "React-Core-AccessibilityResources" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				567B916ECCEF885E726B3E53B1A7E804 /* Debug */,
-				0E9C38FFF7544FCAF0A52AB84B208441 /* Release */,
+				835FBB052D448C8AB3A6897D42B2BCC4 /* Debug */,
+				9E45CE58F9C7BB6915D9536ADC1DCF7C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
