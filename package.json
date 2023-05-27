@@ -85,7 +85,7 @@
     "react-native-elements": "3.4.2",
     "react-native-file-access": "2.4.5-beta.0",
     "react-native-fs": "2.18.0",
-    "react-native-gesture-handler": "2.8.0",
+    "react-native-gesture-handler": "2.10.1",
     "react-native-haptic-feedback": "1.14.0",
     "react-native-iap": "8.0.7",
     "react-native-in-app-review": "3.2.2",

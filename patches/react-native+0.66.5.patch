@@ -73,3 +73,67 @@ index e0f450e..425951e 100644
                                      break;
                                  }
                                }]];
+diff --git a/node_modules/react-native/ReactCommon/yoga/yoga/Yoga.cpp b/node_modules/react-native/ReactCommon/yoga/yoga/Yoga.cpp
+index 2c68674..8bfe02e 100644
+--- a/node_modules/react-native/ReactCommon/yoga/yoga/Yoga.cpp
++++ b/node_modules/react-native/ReactCommon/yoga/yoga/Yoga.cpp
+@@ -2229,7 +2229,7 @@ static float YGDistributeFreeSpaceSecondPass(
+         depth,
+         generationCount);
+     node->setLayoutHadOverflow(
+-        node->getLayout().hadOverflow() |
++        node->getLayout().hadOverflow() ||
+         currentRelativeChild->getLayout().hadOverflow());
+   }
+   return deltaFreeSpace;
+@@ -3005,7 +3005,7 @@ static void YGNodelayoutImpl(
+     }
+ 
+     node->setLayoutHadOverflow(
+-        node->getLayout().hadOverflow() |
++        node->getLayout().hadOverflow() ||
+         (collectedFlexItemsValues.remainingFreeSpace < 0));
+ 
+     // STEP 6: MAIN-AXIS JUSTIFICATION & CROSS-AXIS SIZE DETERMINATION
+@@ -4190,13 +4190,13 @@ YOGA_EXPORT void YGNodeCalculateLayoutWithContext(
+         node->getLayout().direction(), ownerWidth, ownerHeight, ownerWidth);
+     YGRoundToPixelGrid(node, node->getConfig()->pointScaleFactor, 0.0f, 0.0f);
+ 
+-#ifdef DEBUG
+-    if (node->getConfig()->printTree) {
+-      YGNodePrint(
+-          node,
+-          (YGPrintOptions) (YGPrintOptionsLayout | YGPrintOptionsChildren | YGPrintOptionsStyle));
+-    }
+-#endif
++// #ifdef DEBUG
++//     if (node->getConfig()->printTree) {
++//       YGNodePrint(
++//           node,
++//           (YGPrintOptions) (YGPrintOptionsLayout | YGPrintOptionsChildren | YGPrintOptionsStyle));
++//     }
++// #endif
+   }
+ 
+   Event::publish<Event::LayoutPassEnd>(node, {layoutContext, &markerData});
+@@ -4250,13 +4250,13 @@ YOGA_EXPORT void YGNodeCalculateLayoutWithContext(
+           !nodeWithoutLegacyFlag->isLayoutTreeEqualToNode(*node);
+       node->setLayoutDoesLegacyFlagAffectsLayout(neededLegacyStretchBehaviour);
+ 
+-#ifdef DEBUG
+-      if (nodeWithoutLegacyFlag->getConfig()->printTree) {
+-        YGNodePrint(
+-            nodeWithoutLegacyFlag,
+-            (YGPrintOptions) (YGPrintOptionsLayout | YGPrintOptionsChildren | YGPrintOptionsStyle));
+-      }
+-#endif
++// #ifdef DEBUG
++//       if (nodeWithoutLegacyFlag->getConfig()->printTree) {
++//         YGNodePrint(
++//             nodeWithoutLegacyFlag,
++//             (YGPrintOptions) (YGPrintOptionsLayout | YGPrintOptionsChildren | YGPrintOptionsStyle));
++//       }
++// #endif
+     }
+     YGConfigFreeRecursive(nodeWithoutLegacyFlag);
+     YGNodeFreeRecursive(nodeWithoutLegacyFlag);
