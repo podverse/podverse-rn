@@ -21,6 +21,14 @@ export const FlatList = {
       twoButtons: -220
     }
   },
+  transcriptRowHeights: {
+    speaker: 54,
+    text: 60,
+    textAndSpeaker: 114,
+    singleLine: 32,
+    singleLineAndSpeaker: 86,
+    autoScrollYOffset: 130
+  },
   optimizationProps: {
     initialNumToRender: 10, // default 10
     maxToRenderPerBatch: 10, // default 10

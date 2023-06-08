@@ -10737,10 +10737,10 @@ tr46@~0.0.3:
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
   integrity sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=
 
-transcriptator@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/transcriptator/-/transcriptator-1.0.6.tgz#7ededf9bdfd5dbd9c01826d83ea2a3fdcdcd84f2"
-  integrity sha512-88t5AwgGMfuFpgfMW/4BqapcQLmFbPvHOoGh9CbnrVu8XyGYZBVR6cjLG+otBSpQm2E73y+rFSWrt/tN67+09w==
+transcriptator@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/transcriptator/-/transcriptator-1.1.0.tgz#089a79d070d4269ac72647e149763a7b789419b6"
+  integrity sha512-mOcdpyICwWioj573MFWnGi2chYXlglGAWdvtX6dEeL332ftSs7UUv4PlicMa+Na06c9ceCYYXKAjv5Pr2LU+4A==
   dependencies:
     node-html-parser "^6.1.5"
 
