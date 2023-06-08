@@ -13,13 +13,21 @@ export const FlatList = {
     height: 72
   },
   ListHeaderHiddenSearchBar: {
-    contentOffset: { x: 0, y: 76 }
+    contentOffset: { x: 0, y: 68 }
   },
   hiddenItems: {
     rightOpenValue: {
       oneButton: -120,
       twoButtons: -220
     }
+  },
+  transcriptRowHeights: {
+    speaker: 54,
+    text: 60,
+    textAndSpeaker: 114,
+    singleLine: 32,
+    singleLineAndSpeaker: 86,
+    autoScrollYOffset: 130
   },
   optimizationProps: {
     initialNumToRender: 10, // default 10

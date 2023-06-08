@@ -57,7 +57,7 @@ PODS:
     - nanopb (~> 2.30908.0)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - GoogleDataTransport (9.2.2):
+  - GoogleDataTransport (9.2.3):
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
@@ -404,7 +404,7 @@ PODS:
     - RNFBApp
   - RNFS (2.18.0):
     - React
-  - RNGestureHandler (2.8.0):
+  - RNGestureHandler (2.10.1):
     - React-Core
   - RNIap (8.0.7):
     - React-Core
@@ -706,7 +706,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: b0aeba17332ee1ee610662b4d1e02a86db82f08f
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 5337263514dd6f09803962437687240c5dc39aa4
-  GoogleDataTransport: 8378d1fa8ac49753ea6ce70d65a7cb70ce5f66e6
+  GoogleDataTransport: f0308f5905a745f94fb91fea9c6cbaf3831cb1bd
   GoogleUtilities: 9aa0ad5a7bc171f8bae016300bfcfa3fb8425749
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   Permission-Notifications: 150484ae586eb9be4e32217582a78350a9bb31c3
@@ -757,7 +757,7 @@ SPEC CHECKSUMS:
   RNFBApp: 854ef84c03014ec30d66f6362ceb0e51985c893a
   RNFBMessaging: 9b6c56d4dbd0115ca433c9b47e1c4b769f62e262
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
-  RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
+  RNGestureHandler: 42ec7c28dd02d540ed6c9159c57a98ff016492dc
   RNIap: 0f95fd117338bd1846e0a77600a02d16056f7795
   RNKeychain: ff836453cba46938e0e9e4c22e43d43fa2c90333
   RNLocalize: 82a569022724d35461e2dc5b5d015a13c3ca995b
@@ -776,4 +776,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 8c667910359b07eafcc3e8d25626c4fc4332e3f9
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.1

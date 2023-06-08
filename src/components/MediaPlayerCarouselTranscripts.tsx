@@ -22,7 +22,7 @@ type State = {
   searchResults: never[]
 }
 
-const getCellID = (item: TranscriptRow) => `transcript-cell-${item.line}`
+const getCellID = (item: TranscriptRow, index: number) => `transcript-cell-${index}`
 
 export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, State> {
   currentSpeaker?: string
@@ -105,7 +105,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
   setAutoScrollInterval = async () => {
     const playbackSpeed = await getPlaybackSpeed()
-    const intervalTime = 1000 / playbackSpeed
+    const intervalTime = 500 / playbackSpeed
     return setInterval(() => {
       (async () => {
         const { parsedTranscript } = this.props
@@ -117,8 +117,11 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
           )
 
           if (index !== -1) {
-            const indexBefore = index > 0 ? index - 1 : 0
-            this.listRef.scrollToIndex({ index: indexBefore, animated: false })
+            const { parsedTranscript } = this.props
+            const transcriptRow = parsedTranscript[index] || { positionY: 0 }
+            const { positionY } = transcriptRow
+            this.listRef.scrollToOffset({
+              offset: positionY - PV.FlatList.transcriptRowHeights.autoScrollYOffset, animated: false })
             this.setState({ activeTranscriptRowIndex: index })
           }
         }
@@ -139,12 +142,12 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     }
   }
 
-  renderItem = (item: any) => {
+  renderItem = ({ item, index }) => {
     const { isNowPlaying } = this.props
     const { activeTranscriptRowIndex } = this.state
-    const transcriptionItem = item.item
+    const transcriptionItem = item
     const { body, speaker, startTime, startTimeFormatted } = transcriptionItem
-    const cellID = getCellID(transcriptionItem)
+    const cellID = getCellID(transcriptionItem, index)
 
     if (speaker && speaker !== this.currentSpeaker) {
       this.currentSpeaker = speaker
@@ -154,7 +157,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
     const activeTranscriptStyle =
       ((activeTranscriptRowIndex && activeTranscriptRowIndex >= 0) || activeTranscriptRowIndex === 0) &&
-      activeTranscriptRowIndex === item.index
+      activeTranscriptRowIndex === index
         ? { color: PV.Colors.orange }
         : {}
 
@@ -170,11 +173,11 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
         activeOpacity={0.7}
         disable={disable}
         onPress={onPress}>
-        {/* {!!this.currentSpeaker && (
+        {!!this.currentSpeaker && (
           <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
             {this.currentSpeaker}
           </Text>
-        )} */}
+        )}
         <View style={styles.row}>
           <Text style={[styles.text, activeTranscriptStyle]} testID={cellID}>
             {body}
@@ -270,10 +273,17 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
             data={parsedTranscript}
             dataTotalCount={parsedTranscript.length}
             getItemLayout={(_: any, index: number) => {
-              return { length: 80, offset: 80 * index, index }
+              const { parsedTranscript } = this.props
+              const transcriptRow = parsedTranscript[index]
+
+              if (transcriptRow) {
+                return { length: transcriptRow.height, offset: transcriptRow.positionY, index }  
+              }
+
+              return { length: 54, offset: 54 * index, index }
             }}
             ItemSeparatorComponent={() => <></>}
-            keyExtractor={(item: TranscriptRow) => getCellID(item)}
+            keyExtractor={(item: TranscriptRow, index: number) => getCellID(item, index)}
             listRef={(ref: any) => {
               this.listRef = ref
             }}
@@ -290,7 +300,8 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
 const styles = StyleSheet.create({
   contentContainerStyle: {
-    marginVertical: 16
+    marginVertical: 16,
+    paddingBottom: 48
   },
   header: {
     flexDirection: 'row',
@@ -304,16 +315,17 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    paddingBottom: 0,
     paddingHorizontal: 12,
-    height: 80
+    paddingVertical: 2
   },
   speaker: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
     paddingBottom: 6,
     paddingHorizontal: 12,
-    paddingTop: 16
+    paddingTop: 24,
+    height: 54,
+    color: PV.Colors.skyLight
   },
   singleLineText: {
     fontSize: PV.Fonts.sizes.xxl,
@@ -335,7 +347,8 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     flex: 1,
     flexWrap: 'wrap',
-    fontSize: PV.Fonts.sizes.xxl
+    fontSize: PV.Fonts.sizes.xxl,
+    lineHeight: PV.Fonts.sizes.xxl + 7,
   },
   view: {
     flex: 1
