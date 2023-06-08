@@ -1,5 +1,5 @@
 import React from 'react'
-import { AccessibilityRole, View } from 'react-native'
+import { AccessibilityRole, LayoutChangeEvent, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { ImportantForAccessibility } from '../lib/accessibilityHelpers'
 
@@ -16,7 +16,7 @@ type Props = {
   importantForAccessibility?: ImportantForAccessibility
   isSecondary?: any
   numberOfLines?: number
-  onLayout?: any
+  onLayout?: LayoutChangeEvent
   onPress?: any
   style?: any
   testID: string
