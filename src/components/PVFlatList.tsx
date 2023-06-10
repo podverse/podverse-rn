@@ -8,11 +8,13 @@ import { PV } from '../resources'
 import { ActivityIndicator, MessageWithAction, View, GridView, Divider } from './'
 
 type Props = {
+  automaticallyAdjustContentInsets?: boolean
   contentContainerStyle: any
   contentOffset?: {
     x: number
     y: number
   }
+  customOptimizationProps?: any
   data?: any
   dataTotalCount?: number | null
   disableLeftSwipe: boolean
@@ -63,8 +65,10 @@ const _renderHiddenItem = (transparent?: boolean) => <View transparent={transpar
 
 export const PVFlatList = (props: Props) => {
   const {
+    automaticallyAdjustContentInsets = true,
     contentContainerStyle = {},
     contentOffset = { x: 0, y: 0 },
+    customOptimizationProps,
     data,
     dataTotalCount,
     disableLeftSwipe = true,
@@ -168,6 +172,7 @@ export const PVFlatList = (props: Props) => {
         <>
           {stickyHeader && ListHeaderComponent ? <View>{ListHeaderComponent()}</View> : null}
           <SwipeListView
+            automaticallyAdjustContentInsets={automaticallyAdjustContentInsets}
             closeOnRowPress
             contentContainerStyle={contentContainerStyle}
             contentOffset={contentOffset}
@@ -232,7 +237,7 @@ export const PVFlatList = (props: Props) => {
             ]}
             useFlatList={!useSectionList}
             useSectionList={useSectionList}
-            {...PV.FlatList.optimizationProps}
+            {...(customOptimizationProps ? { ...customOptimizationProps } : { ...PV.FlatList.optimizationProps })}
           />
         </>
       )}
