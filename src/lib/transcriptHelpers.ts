@@ -56,7 +56,9 @@ const enrichTranscriptatorResult = (parsedTranscript: TranscriptRow[]) => {
     }
 
     const splitIndex = getSplitIndex(body)
-    const hasTwoLines = body.length >= 33 && body.length > splitIndex
+
+    const line2 = body.substring(splitIndex)
+    const hasTwoLines = body.length >= 33 && body.length >= splitIndex && line2?.trim().length > 0
 
     const line1 = body.substring(0, splitIndex)
     const line1Value = {
@@ -71,7 +73,6 @@ const enrichTranscriptatorResult = (parsedTranscript: TranscriptRow[]) => {
     
     
     if (hasTwoLines) {
-      const line2 = body.substring(splitIndex)
       const line2Value = {
         ...parsedRow,
         body: line2.trim(),
