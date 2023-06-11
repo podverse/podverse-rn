@@ -16,27 +16,74 @@ TimestampFormatter.registerCustomFormatter(convertSecToHHMMSS)
 
 const enrichTranscriptatorResult = (parsedTranscript: TranscriptRow[]) => {
   if (!parsedTranscript) return []
+  
   let enrichedTranscript = []
-  let lastPositionY = 0
-  for (const [index, value] of parsedTranscript.entries()) {
-    const hasSpeaker = value.speaker
-    const isSingleLine = value.body?.length <= 32
+  let newIndex = 0
 
-    let height = 0
+  for (const parsedRow of parsedTranscript) {
+    const body = parsedRow.body || ''
+    const hasSpeaker = !!parsedRow.speaker
+
     if (hasSpeaker) {
-      height = isSingleLine ?
-        PV.FlatList.transcriptRowHeights.singleLineAndSpeaker : PV.FlatList.transcriptRowHeights.textAndSpeaker
-    } else {
-      height = isSingleLine
-        ? PV.FlatList.transcriptRowHeights.singleLine : PV.FlatList.transcriptRowHeights.text
+      const emptySpaceValue = {
+        isEmptySpace: true,
+        index: newIndex
+      }
+      enrichedTranscript.push(emptySpaceValue)
+      newIndex++
+
+      const speakerValue = {
+        speaker: parsedRow.speaker?.trim(),
+        index: newIndex,
+      }
+      enrichedTranscript.push(speakerValue)
+      newIndex++
     }
 
-    value.height = height
-    const positionY = lastPositionY + height
-    value.positionY = positionY
-    enrichedTranscript.push(value)
-    lastPositionY = positionY
-    value.index = index
+    // Make sure we only split on a clean word-wrap.
+    const getSplitIndex = (body: string) => {
+      const isMoreThan1Line = body.length >= 33
+      if (isMoreThan1Line) {
+        const splitIndex = body.indexOf(' ', 32) || body.indexOf('-', 32)
+        if (splitIndex > 32) {
+          return splitIndex
+        } else {
+          const splitIndex = body.indexOf(' ', 24) || body.indexOf('-', 24)
+          return splitIndex
+        }
+      }
+      return 32
+    }
+
+    const splitIndex = getSplitIndex(body)
+
+    const line2 = body.substring(splitIndex)
+    const hasTwoLines = body.length >= 33 && body.length >= splitIndex && line2?.trim().length > 0
+
+    const line1 = body.substring(0, splitIndex)
+    const line1Value = {
+      ...parsedRow,
+      body: line1.trim(),
+      speaker: '',
+      index: newIndex,
+      hasTwoLines
+    }
+    enrichedTranscript.push(line1Value)
+    newIndex++
+    
+    
+    if (hasTwoLines) {
+      const line2Value = {
+        ...parsedRow,
+        body: line2.trim(),
+        speaker: '',
+        startTimeFormatted: '',
+        endTimeFormatted: '',
+        index: newIndex
+      }
+      enrichedTranscript.push(line2Value)
+      newIndex++
+    }
   }
 
   return enrichedTranscript

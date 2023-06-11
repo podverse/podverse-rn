@@ -22,25 +22,28 @@ export const FlatList = {
     }
   },
   transcriptRowHeights: {
-    speaker: 54,
-    text: 60,
-    textAndSpeaker: 114,
-    singleLine: 32,
-    singleLineAndSpeaker: 86,
-    autoScrollYOffset: 130
-  },
+    singleLine: 28,
+    autoScrollYOffset: 28 * 8
+  }, 
   optimizationProps: {
-    initialNumToRender: 10, // default 10
-    maxToRenderPerBatch: 10, // default 10
-    removeClippedSubviews: true, // default false
-    updateCellsBatchingPeriod: 100, // default 50
-    windowSize: 7 // default 21
+    initialNumToRender: 10,
+    maxToRenderPerBatch: 10,
+    removeClippedSubviews: true,
+    updateCellsBatchingPeriod: 100,
+    windowSize: 7
   },
   optimizationPropsFaster: {
-    initialNumToRender: 10, // default 10
-    maxToRenderPerBatch: 10, // default 10
-    removeClippedSubviews: true, // default false
-    updateCellsBatchingPeriod: 100, // default 50
-    windowSize: 5 // default 21
+    initialNumToRender: 10,
+    maxToRenderPerBatch: 10,
+    removeClippedSubviews: true,
+    updateCellsBatchingPeriod: 100,
+    windowSize: 5
+  },
+  optimizationPropsDefault: {
+    initialNumToRender: 10,
+    maxToRenderPerBatch: 10,
+    removeClippedSubviews: false,
+    updateCellsBatchingPeriod: 50,
+    windowSize: 21
   }
 }

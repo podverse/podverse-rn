@@ -42,7 +42,8 @@ import {
   audioHandleSeekToWithUpdate,
   audioSyncPlayerWithQueue,
   audioUpdateCurrentTrack,
-  audioTogglePlay
+  audioTogglePlay,
+  audioReset
 } from './playerAudio'
 import { audioUpdateTrackPlayerCapabilities } from './playerAudioSetup'
 import { saveOrResetCurrentlyPlayingItemInHistory } from './userHistoryItem'
@@ -208,13 +209,17 @@ export const playerLoadNowPlayingItem = async (
       return
     }
 
-    if (!checkIfVideoFileOrVideoLiveType(itemToSetNextInQueue?.episodeMediaType)) {
-      audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
-    }
-
     const skipSetNowPlaying = true
     await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
 
+    if (!checkIfVideoFileOrVideoLiveType(itemToSetNextInQueue?.episodeMediaType)) {
+      if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
+        await audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
+      } else {
+        audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
+      }
+    }
+    
     if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
       await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, previousNowPlayingItem)
     } else {

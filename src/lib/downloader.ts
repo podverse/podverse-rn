@@ -1,6 +1,7 @@
 import url from 'url'
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
+import debounce from 'lodash/debounce'
 import { convertBytesToHumanReadableString, Episode, getExtensionFromUrl } from 'podverse-shared'
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
@@ -10,7 +11,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPodcastCredentialsHeader } from '../services/parser'
-import { playerCheckIfDownloadableFile } from '../services/player'
+import { playerCheckIfDownloadableFile, playerSyncPlayerWithQueue } from '../services/player'
 import { getPodcastFeedUrlAuthority } from '../services/podcast'
 import { getSecureUrl } from '../services/tools'
 import * as DownloadState from '../state/actions/downloads'
@@ -54,6 +55,13 @@ export const cancelDownloadTask = (episodeId: string) => {
   const task = downloadTasks.find((x: any) => x.id === episodeId)
   if (task) task.stop()
 }
+
+const debouncePlayerSyncPlayerWithQueue = debounce(async () => {
+  await playerSyncPlayerWithQueue()
+}, 3000, {
+  leading: true,
+  trailing: true
+})
 
 const addDLTask = (episode: any, podcast: any) =>
   DownloadState.addDownloadTask({
@@ -255,6 +263,13 @@ export const downloadEpisode = async (
         })
 
         PVEventEmitter.emit(PV.Events.DOWNLOADED_EPISODE_REFRESH)
+
+        // Make sure the queue refreshes so that the downloaded episode path is
+        // in the track object instead of the stream URL.
+        // Related to:
+        // https://github.com/podverse/podverse-rn/issues/1314
+        // https://github.com/podverse/podverse-rn/issues/1717
+        debouncePlayerSyncPlayerWithQueue()
       })
       .error((error: string) => {
         DownloadState.updateDownloadError(episode.id)
