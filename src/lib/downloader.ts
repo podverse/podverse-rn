@@ -266,7 +266,9 @@ export const downloadEpisode = async (
 
         // Make sure the queue refreshes so that the downloaded episode path is
         // in the track object instead of the stream URL.
-        // Related to: https://github.com/podverse/podverse-rn/issues/1717
+        // Related to:
+        // https://github.com/podverse/podverse-rn/issues/1314
+        // https://github.com/podverse/podverse-rn/issues/1717
         debouncePlayerSyncPlayerWithQueue()
       })
       .error((error: string) => {
