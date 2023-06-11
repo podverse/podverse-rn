@@ -105,7 +105,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
   setAutoScrollInterval = async () => {
     const playbackSpeed = await getPlaybackSpeed()
-    const intervalTime = 500 / playbackSpeed
+    const intervalTime = 1000 / playbackSpeed
     return setInterval(() => {
       (async () => {
         const { parsedTranscript } = this.props
@@ -297,8 +297,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
             automaticallyAdjustContentInsets={false}
             contentContainerStyle={styles.contentContainerStyle}
             contentOffset={{ x: 0, y: 0 }}
-            // NOTE: customOptimizationProps set to default to better ensure item layout accuracy
-            customOptimizationProps={PV.FlatList.optimizationPropsDefault}
+            customOptimizationProps={PV.FlatList.optimizationPropsFaster}
             data={parsedTranscript}
             dataTotalCount={parsedTranscript.length}
             getItemLayout={(_: any, index: number) => {
@@ -369,8 +368,6 @@ const styles = StyleSheet.create({
     paddingLeft: 8
   },
   text: {
-    borderColor: 'white',
-    borderRightWidth: 1,
     flex: 1,
     flexWrap: 'wrap',
     fontSize: PV.Fonts.sizes.xxl,
