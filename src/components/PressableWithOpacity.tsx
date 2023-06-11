@@ -20,6 +20,11 @@ export const PressableWithOpacity = (props: Props) => {
         requestAnimationFrame(() => {
           props?.onPress?.()
         })
+      }}
+      onLongPress={() => {
+        requestAnimationFrame(() => {
+          props?.onLongPress?.()
+        })
       }}>
       {props.children}
     </Pressable>
