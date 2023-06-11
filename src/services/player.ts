@@ -209,6 +209,9 @@ export const playerLoadNowPlayingItem = async (
       return
     }
 
+    const skipSetNowPlaying = true
+    await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
+
     if (!checkIfVideoFileOrVideoLiveType(itemToSetNextInQueue?.episodeMediaType)) {
       if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
         await audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
@@ -216,10 +219,7 @@ export const playerLoadNowPlayingItem = async (
         audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
       }
     }
-
-    const skipSetNowPlaying = true
-    await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
-
+    
     if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
       await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, previousNowPlayingItem)
     } else {

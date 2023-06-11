@@ -459,12 +459,6 @@ export const audioAddNowPlayingItemNextInQueue = async (
   ) {
     await addQueueItemNext(itemToSetNextInQueue)
   }
-
-  // NOTE: If a video file is playing next, make sure to reset the audio player and queue,
-  // so that the track/queue ended events do not fire when the app switches from audio to video player.
-  if (checkIfVideoFileOrVideoLiveType(item.episodeMediaType)) {
-    await audioReset()
-  }
 }
 
 export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
