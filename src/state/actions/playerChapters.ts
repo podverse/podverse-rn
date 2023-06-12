@@ -129,6 +129,10 @@ export const setChaptersOnGlobalState = async (currentChapters: any[]) => {
   setGlobal({
     currentChapters,
     currentChaptersStartTimePositions
+  }, () => {
+    setTimeout(() => {
+      loadChapterPlaybackInfo()
+    }, 2000)
   })
 }
 

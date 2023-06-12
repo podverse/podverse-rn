@@ -16,13 +16,13 @@ type Props = {
 }
 
 type State = {
-  activeTranscriptRowIndex: number | null
+  activeTranscriptRowIndexes: number[]
   autoScrollOn: boolean
   searchText: string
   searchResults: never[]
 }
 
-const getCellID = (item: TranscriptRow) => `transcript-cell-${item.line}`
+const getCellID = (item: TranscriptRow, index: number) => `transcript-cell-${index}`
 
 export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, State> {
   currentSpeaker?: string
@@ -34,7 +34,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     super()
 
     this.state = {
-      activeTranscriptRowIndex: null,
+      activeTranscriptRowIndexes: [],
       autoScrollOn: false,
       searchText: '',
       searchResults: []
@@ -75,7 +75,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     if (this.interval) {
       this.setState(
         {
-          activeTranscriptRowIndex: null,
+          activeTranscriptRowIndexes: [],
           autoScrollOn: false
         },
         this.clearAutoScrollInterval
@@ -87,7 +87,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     if (this.interval) {
       this.setState(
         {
-          activeTranscriptRowIndex: null,
+          activeTranscriptRowIndexes: [],
           autoScrollOn: false
         },
         this.clearAutoScrollInterval
@@ -112,14 +112,23 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
         if (parsedTranscript) {
           const currentPosition = await playerGetPosition()
 
-          const index = parsedTranscript.findIndex(
+          const firstMatchingIndex = parsedTranscript.findIndex(
             (item: Record<string, any>) => item.startTime < currentPosition && item.endTime > currentPosition
           )
 
-          if (index !== -1) {
-            const indexBefore = index > 0 ? index - 1 : 0
-            this.listRef.scrollToIndex({ index: indexBefore, animated: false })
-            this.setState({ activeTranscriptRowIndex: index })
+          const activeTranscriptRowIndexes = []
+          activeTranscriptRowIndexes.push(firstMatchingIndex)
+
+          const activeItem = firstMatchingIndex >= 0 ? parsedTranscript[firstMatchingIndex] : null
+
+          if (activeItem?.hasTwoLines) {
+            activeTranscriptRowIndexes.push(firstMatchingIndex + 1)
+          }
+
+          if (activeTranscriptRowIndexes.some((index) => index !== -1)) {
+            this.listRef.scrollToOffset({
+              offset: PV.FlatList.transcriptRowHeights.singleLine * (firstMatchingIndex - 3), animated: false })
+            this.setState({ activeTranscriptRowIndexes })
           }
         }
       })()
@@ -139,12 +148,13 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     }
   }
 
-  renderItem = (item: any) => {
+  renderItem = ({ item, index }) => {
     const { isNowPlaying } = this.props
-    const { activeTranscriptRowIndex } = this.state
-    const transcriptionItem = item.item
-    const { body, speaker, startTime, startTimeFormatted } = transcriptionItem
-    const cellID = getCellID(transcriptionItem)
+    const { activeTranscriptRowIndexes } = this.state
+    const transcriptionItem = item
+    const { body, isEmptySpace, speaker, startTime, startTimeFormatted } = transcriptionItem
+    const cellID = getCellID(transcriptionItem, index)
+    const { screenWidth } = this.global.screen
 
     if (speaker && speaker !== this.currentSpeaker) {
       this.currentSpeaker = speaker
@@ -152,38 +162,56 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
       this.currentSpeaker = ''
     }
 
-    const activeTranscriptStyle =
-      ((activeTranscriptRowIndex && activeTranscriptRowIndex >= 0) || activeTranscriptRowIndex === 0) &&
-      activeTranscriptRowIndex === item.index
-        ? { color: PV.Colors.orange }
-        : {}
-
+    const isActive = activeTranscriptRowIndexes.some((activeTranscriptRowIndex) =>
+      (activeTranscriptRowIndex >= 0 && activeTranscriptRowIndex === index))
+    const activeTranscriptStyle = isActive ? { color: PV.Colors.orange } : {}
+      
     const accessibilityLabel = `${this.currentSpeaker ? `${this.currentSpeaker}, ` : ''} ${body}, ${startTimeFormatted}`
 
     const disable = !isNowPlaying
     const onPress = isNowPlaying ? () => playerHandleSeekTo(startTime) : null
 
     return (
-      <PressableWithOpacity
-        accessible
-        accessibilityLabel={accessibilityLabel}
-        activeOpacity={0.7}
-        disable={disable}
-        onPress={onPress}>
-        {/* {!!this.currentSpeaker && (
-          <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
-            {this.currentSpeaker}
-          </Text>
-        )} */}
-        <View style={styles.row}>
-          <Text style={[styles.text, activeTranscriptStyle]} testID={cellID}>
-            {body}
-          </Text>
-          <Text style={[styles.startTime, activeTranscriptStyle]} testID={`${cellID}-${startTime}`}>
-            {startTimeFormatted}
-          </Text>
-        </View>
-      </PressableWithOpacity>
+      <>
+        {
+          !!isEmptySpace && (
+            <View style={{ height: PV.FlatList.transcriptRowHeights.singleLine }} />
+          )
+        }
+        {
+          !isEmptySpace && (
+            <PressableWithOpacity
+              accessible
+              accessibilityLabel={accessibilityLabel}
+              activeOpacity={0.7}
+              disable={disable}
+              onPress={onPress}>
+              {!!this.currentSpeaker && (
+                <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
+                  {this.currentSpeaker}
+                </Text>
+              )}
+              {
+                !this.currentSpeaker && (
+                  <View style={styles.row}>
+                    <Text style={[styles.text, activeTranscriptStyle]} testID={cellID}>
+                      {body}
+                    </Text>
+                    {
+                      screenWidth > 360 && (
+                        <Text style={[styles.startTime, activeTranscriptStyle]} testID={`${cellID}-${startTime}`}>
+                          {startTimeFormatted}
+                        </Text>
+                      )
+                    }
+                  </View>
+                )
+              }
+            </PressableWithOpacity>
+
+          )
+        }
+      </>
     )
   }
 
@@ -266,14 +294,21 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
         {isSingleLineTranscript && <ScrollView>{this.renderSingleLineTranscript(parsedTranscript[0])}</ScrollView>}
         {!isSingleLineTranscript && (
           <FlatList
+            automaticallyAdjustContentInsets={false}
             contentContainerStyle={styles.contentContainerStyle}
+            contentOffset={{ x: 0, y: 0 }}
+            customOptimizationProps={PV.FlatList.optimizationPropsFaster}
             data={parsedTranscript}
             dataTotalCount={parsedTranscript.length}
             getItemLayout={(_: any, index: number) => {
-              return { length: 80, offset: 80 * index, index }
+              return {
+                length: PV.FlatList.transcriptRowHeights.singleLine,
+                offset: PV.FlatList.transcriptRowHeights.singleLine * index,
+                index
+              }
             }}
             ItemSeparatorComponent={() => <></>}
-            keyExtractor={(item: TranscriptRow) => getCellID(item)}
+            keyExtractor={(item: TranscriptRow, index: number) => getCellID(item, index)}
             listRef={(ref: any) => {
               this.listRef = ref
             }}
@@ -290,7 +325,9 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
 const styles = StyleSheet.create({
   contentContainerStyle: {
-    marginVertical: 16
+    marginBottom: 16,
+    paddingBottom: 48,
+    paddingTop: 0
   },
   header: {
     flexDirection: 'row',
@@ -304,41 +341,41 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    paddingBottom: 0,
-    paddingHorizontal: 12,
-    height: 80
+    paddingHorizontal: 12
   },
   speaker: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    paddingBottom: 6,
     paddingHorizontal: 12,
-    paddingTop: 16
+    height: PV.FlatList.transcriptRowHeights.singleLine,
+    lineHeight: PV.FlatList.transcriptRowHeights.singleLine,
+    color: PV.Colors.skyLight
   },
   singleLineText: {
     fontSize: PV.Fonts.sizes.xxl,
-    lineHeight: PV.Fonts.sizes.xxl + 7,
+    height: PV.FlatList.transcriptRowHeights.singleLine,
+    lineHeight: PV.FlatList.transcriptRowHeights.singleLine,
     paddingHorizontal: 8
   },
   singleLineWrapper: {
     paddingHorizontal: 12,
-    paddingVertical: 12
   },
   startTime: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.xxl,
+    fontSize: PV.Fonts.sizes.lg,
     fontVariant: ['tabular-nums'],
-    paddingLeft: 16
+    lineHeight: PV.FlatList.transcriptRowHeights.singleLine - 1,
+    paddingLeft: 8
   },
   text: {
-    borderColor: 'white',
-    borderRightWidth: 1,
     flex: 1,
     flexWrap: 'wrap',
-    fontSize: PV.Fonts.sizes.xxl
+    fontSize: PV.Fonts.sizes.xxl,
+    height: PV.FlatList.transcriptRowHeights.singleLine,
+    lineHeight: PV.FlatList.transcriptRowHeights.singleLine
   },
   view: {
-    flex: 1
+    paddingTop: 0
   },
   wrapper: {
     flex: 1,

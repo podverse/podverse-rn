@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.12.12",
+  "version": "4.12.13",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -85,7 +85,7 @@
     "react-native-elements": "3.4.2",
     "react-native-file-access": "2.4.5-beta.0",
     "react-native-fs": "2.18.0",
-    "react-native-gesture-handler": "2.8.0",
+    "react-native-gesture-handler": "2.10.1",
     "react-native-haptic-feedback": "1.14.0",
     "react-native-iap": "8.0.7",
     "react-native-in-app-review": "3.2.2",
@@ -120,7 +120,7 @@
     "standard": "16.0.3",
     "stream": "0.0.2",
     "timers": "0.1.1",
-    "transcriptator": "^1.0.6",
+    "transcriptator": "^1.1.0",
     "url": "^0.11.0",
     "validator": "13.7.0",
     "wd": "1.14.0"

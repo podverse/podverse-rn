@@ -377,6 +377,10 @@ export const audioHandlePause = () => {
   PVAudioPlayer.pause()
 }
 
+const audioHandleStop = async () => {
+  await PVAudioPlayer.stop()
+}
+
 export const audioHandlePauseWithUpdate = () => {
   audioHandlePause()
   playerUpdateUserPlaybackPosition()
@@ -442,7 +446,7 @@ export const audioPlayNextFromQueue = async () => {
   }
 }
 
-export const audioAddNowPlayingItemNextInQueue = (
+export const audioAddNowPlayingItemNextInQueue = async (
   item: NowPlayingItem,
   itemToSetNextInQueue: NowPlayingItem | null
 ) => {
@@ -451,10 +455,9 @@ export const audioAddNowPlayingItemNextInQueue = (
   if (
     addCurrentItemNextInQueue &&
     itemToSetNextInQueue &&
-    item.episodeId !== itemToSetNextInQueue.episodeId &&
-    !checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)
+    item.episodeId !== itemToSetNextInQueue.episodeId
   ) {
-    addQueueItemNext(itemToSetNextInQueue)
+    await addQueueItemNext(itemToSetNextInQueue)
   }
 }
 
@@ -501,11 +504,9 @@ export const audioGetTrackPosition = () => {
 }
 
 export const audioReset = async () => {
-  const queueItems = await PVAudioPlayer.getQueue()
-  // eslint-disable-next-line @typescript-eslint/prefer-for-of
-  for (let i = 0; i < queueItems.length; i++) {
-    await audioRemoveTrack(0)
-  }
+  await audioRemoveUpcomingTracks()
+  await audioHandleStop()
+  await PVAudioPlayer.reset()
 }
 
 /*

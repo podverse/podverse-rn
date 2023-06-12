@@ -13,7 +13,7 @@ export const FlatList = {
     height: 72
   },
   ListHeaderHiddenSearchBar: {
-    contentOffset: { x: 0, y: 76 }
+    contentOffset: { x: 0, y: 68 }
   },
   hiddenItems: {
     rightOpenValue: {
@@ -21,18 +21,29 @@ export const FlatList = {
       twoButtons: -220
     }
   },
+  transcriptRowHeights: {
+    singleLine: 28,
+    autoScrollYOffset: 28 * 8
+  }, 
   optimizationProps: {
-    initialNumToRender: 10, // default 10
-    maxToRenderPerBatch: 10, // default 10
-    removeClippedSubviews: true, // default false
-    updateCellsBatchingPeriod: 100, // default 50
-    windowSize: 7 // default 21
+    initialNumToRender: 10,
+    maxToRenderPerBatch: 10,
+    removeClippedSubviews: true,
+    updateCellsBatchingPeriod: 100,
+    windowSize: 7
   },
   optimizationPropsFaster: {
-    initialNumToRender: 10, // default 10
-    maxToRenderPerBatch: 10, // default 10
-    removeClippedSubviews: true, // default false
-    updateCellsBatchingPeriod: 100, // default 50
-    windowSize: 5 // default 21
+    initialNumToRender: 10,
+    maxToRenderPerBatch: 10,
+    removeClippedSubviews: true,
+    updateCellsBatchingPeriod: 100,
+    windowSize: 5
+  },
+  optimizationPropsDefault: {
+    initialNumToRender: 10,
+    maxToRenderPerBatch: 10,
+    removeClippedSubviews: false,
+    updateCellsBatchingPeriod: 50,
+    windowSize: 21
   }
 }
