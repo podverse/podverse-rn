@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.12.13",
+  "version": "4.12.14",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -68,7 +68,7 @@
     "m3u8-parser": "^6.0.0",
     "moment": "^2.29.4",
     "p-limit": "^4.0.0",
-    "podverse-shared": "^4.12.8",
+    "podverse-shared": "^4.13.1",
     "qs": "^6.11.0",
     "react": "17.0.1",
     "react-native": "0.66.5",
@@ -159,6 +159,7 @@
     "lint-staged": "9.5.0",
     "metro-react-native-babel-preset": "0.66.2",
     "patch-package": "^6.4.7",
+    "podcast-partytime": "^4.5.5",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "1.19.1",
     "react-native-typescript-transformer": "1.2.13",
