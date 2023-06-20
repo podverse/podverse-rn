@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Funding, NowPlayingItem, ValueRecipient, ValueRecipientNormalized,
-  ValueTag, ValueTransaction } from 'podverse-shared'
+  ValueTag, ValueTimeSplit, ValueTransaction, checkIfIsLightningKeysendValueTag } from 'podverse-shared'
 import * as RNKeychain from 'react-native-keychain'
 import { errorLogger } from '../../lib/logger'
 import { translate } from '../../lib/i18n'
@@ -178,8 +178,11 @@ export const convertValueTagIntoValueTransactions = async (
   providerKey: string,
   episode_guid: string
 ) => {
-  const { method, type } = valueTag
 
+  // TODO: handle adding fee transactions first, both locally and from remoteItems
+
+  const { method, type } = valueTag
+  
   // Only alby is supported right now
   if (!providerKey || providerKey !== 'alby') {
     throw new Error("No matching connected v4v provider found.")
@@ -198,6 +201,10 @@ export const convertValueTagIntoValueTransactions = async (
 
   const valueTransactions: ValueTransaction[] = []
   const recipients = valueTag.recipients
+
+  // TODO: handle fees
+  // TODO: handle remoteItem / remotePercentage / inheritance
+  // TODO: handle locally specified splits
 
   const normalizedValueRecipients = normalizeValueRecipients(recipients, totalBatchedAmount, roundDownValues)
 
@@ -352,14 +359,18 @@ const processSendValueTransactions = async (
   return totalAmountPaid
 }
 
-export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMessage?: boolean) => {
+export const sendBoost = async (
+  item: NowPlayingItem | BoostagramItem,
+  playerPosition: number,
+  includeMessage?: boolean
+) => {
   const action = 'boost'
   const valueTags =
     (item?.episodeValue?.length && item?.episodeValue) ||
     (item?.podcastValue?.length && item?.podcastValue)
 
   // Only support Bitcoin Lightning network boosts right now
-  const valueTag = v4vGetActiveValueTag(valueTags, 'lightning', 'keysend')
+  const valueTag = v4vGetActiveValueTag(valueTags, playerPosition, 'lightning', 'keysend')
 
   if (!valueTag) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
@@ -555,6 +566,40 @@ const getMatchingValueTransactionIndex = (valueTransaction: ValueTransaction, va
     }
   })
 
+/*
+  The finalValueTag is retrieved by determining if a valueTimeSplits valueTag should be used instead,
+  and if it should, then return the valueTimeSplit version instead,
+  and also account for the remotePercentage and fee attributes.
+*/
+export const getFinalValueTag = (valueTag: ValueTag, playerPosition: number) => {
+  let finalValueTag = valueTag
+  if (valueTag?.valueTimeSplits && valueTag?.valueTimeSplits.length > 0) {
+    const flooredPlayerPosition = Math.floor(playerPosition) || 0
+
+    const valueTimeSplitsValueTags = valueTag.valueTimeSplits || []
+    const matchingValueTimeSplitsValueTag = valueTimeSplitsValueTags.find((v: ValueTimeSplit) => {
+      return flooredPlayerPosition >= v.startTime && flooredPlayerPosition < v.endTime
+    })
+
+    if (matchingValueTimeSplitsValueTag?.valueTags?.length > 0) {
+      for (const valueTag of matchingValueTimeSplitsValueTag.valueTags) {
+        if (checkIfIsLightningKeysendValueTag(valueTag)) {
+          finalValueTag = valueTag
+          finalValueTag.activeValueTimeSplit = {
+            isActive: true,
+            startTime: matchingValueTimeSplitsValueTag.startTime,
+            endTime: matchingValueTimeSplitsValueTag.endTime
+          }
+
+          finalValueTag
+        }
+      }
+    }
+  }
+
+  return finalValueTag
+}
+
 export const saveStreamingValueTransactionsToTransactionQueue = async (
   valueTags: ValueTag[],
   item: NowPlayingItem | BoostagramItem,
@@ -562,19 +607,22 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
   providerKey: string
 ) => {
   try {
+    const playerPosition = await playerGetPosition()
     // TODO: right now we are assuming the first item will be the lightning network
     // this will need to be updated to support additional valueTags
-    const valueTag = valueTags[0]
+    const finalValueTag = getFinalValueTag(valueTags[0], playerPosition)
+    const finalAmount = amount / PV.V4V.streamingConfig.incrementIntervalValueDivider
     const roundDownStreamingTransactions = false
+
     const [transactionQueue, valueTransactions] = await Promise.all([
       getValueTransactionQueue(),
       convertValueTagIntoValueTransactions(
-        valueTag,
+        finalValueTag,
         item?.podcastTitle || '',
         item?.episodeTitle || '',
         item?.podcastIndexPodcastId || '',
         'stream',
-        amount,
+        finalAmount,
         roundDownStreamingTransactions,
         providerKey,
         item?.episodeGuid || ''
@@ -685,9 +733,21 @@ export const v4vDeleteProviderFromStorage = async (providerKey: 'alby') => {
   }
 }
 
-export const v4vGetActiveValueTag = (valueTags: ValueTag[], type?: 'lightning', method?: 'keysend') => {
+// TODO: make this handle valueTag and valueTimeSplits
+export const v4vGetActiveValueTag = (
+  valueTags: ValueTag[],
+  playerPosition: number,
+  type?: 'lightning',
+  method?: 'keysend',
+) => {
   if (!type || !method || !Array.isArray(valueTags)) return null
-  return valueTags.find((valueTag) => valueTag.type === type && valueTag.method === method)
+  let valueTag = valueTags.find((valueTag) => valueTag.type === type && valueTag.method === method)
+
+  if (valueTag) {
+    valueTag = getFinalValueTag(valueTag, playerPosition)
+  }
+
+  return valueTag
 }
 
 export const extractV4VValueTags = (episodeValue?: ValueTag[], podcastValue?: ValueTag[]) => {

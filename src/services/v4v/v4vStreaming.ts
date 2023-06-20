@@ -1,6 +1,7 @@
 import { Platform } from 'react-native'
 import { getGlobal, setGlobal } from 'reactn'
 import { translate } from '../../lib/i18n'
+import { PV } from '../../resources'
 import { extractV4VValueTags, 
   processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../../services/v4v/v4v'
 import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../../state/actions/v4v/v4v'
@@ -35,7 +36,7 @@ const incrementStreamingIntervalCount = async (isVideo?: boolean) => {
   }
 }
 
-const handleValueStreamingMinutePassed = async () => {
+const handleValueStreamingIntervalPassed = async () => {
   const globalState = getGlobal()
   const { nowPlayingItem } = globalState.player
 
@@ -46,9 +47,9 @@ const handleValueStreamingMinutePassed = async () => {
   const { streamingAmount } = activeProviderSettings || {}
 
   valueStreamingAccumulatorSecondCount = 0
-
-  // Send batch of streaming value from queue every 1 minutes
-  const shouldProcessQueue = valueStreamingProcessQueueSecondCount >= 60
+  
+  // Send batch of streaming value from queue every X minutes
+  const shouldProcessQueue = valueStreamingProcessQueueSecondCount >= PV.V4V.streamingConfig.processQueueInterval
   if (shouldProcessQueue) {
     valueStreamingProcessQueueSecondCount = 0
   }
@@ -74,8 +75,11 @@ export const handleValueStreamingTimerIncrement = (isVideo?: boolean) => {
       if (playerCheckIfStateIsPlaying(playbackState)) {
         await incrementStreamingIntervalCount(isVideo)
 
-        if (valueStreamingAccumulatorSecondCount && valueStreamingAccumulatorSecondCount >= 60) {
-          shouldProcessQueue = await handleValueStreamingMinutePassed()
+        // Call the streaming interval every 6 seconds / 10 times per minute.
+        if (
+          valueStreamingAccumulatorSecondCount
+          && valueStreamingAccumulatorSecondCount >= PV.V4V.streamingConfig.incrementInterval) {
+          shouldProcessQueue = await handleValueStreamingIntervalPassed()
         }
       }
 

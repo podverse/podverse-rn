@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { NowPlayingItem, ValueTag } from 'podverse-shared'
+import { NowPlayingItem, ValueTag, ValueTimeSplit, checkIfIsLightningKeysendValueTag } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../../resources'
+import { getValueTagsForItemGuidOrFeedGuid } from '../../../services/podcastIndex'
 import {
   BoostagramItem,
   getStreamingValueOn,
@@ -470,6 +471,86 @@ export const v4vClearBoostagramMessage = () => {
       }
     }
   })
+}
+
+/* Enrich the value tag in state */
+
+const convertValueTimeSplitsToAppConvertedSplits = (
+  oldValueTimeSplit: any,
+  valueTimeSplitValueTags: ValueTag[],
+  type: 'remoteItemToAppConverted' | 'localSpecifiedToAppConverted'
+) => {
+  return {
+    type,
+    startTime: oldValueTimeSplit.startTime,
+    duration: oldValueTimeSplit.duration,
+    endTime: oldValueTimeSplit.startTime + oldValueTimeSplit.duration,
+    remoteStartTime: oldValueTimeSplit.remoteStartTime,
+    remotePercentage: oldValueTimeSplit.remotePercentage,
+    remoteItem: oldValueTimeSplit.remoteItem,
+    valueTags: valueTimeSplitValueTags
+  }
+}
+
+export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
+  const oldValueTags = item?.episodeValue || []
+  const newValueTags: ValueTag[] = []
+  
+  for (const oldValueTag of oldValueTags) {
+    const oldValueTimeSplits = oldValueTag.valueTimeSplits || []
+    if (oldValueTag) {
+      const newValueTag = {...oldValueTag}
+      if (checkIfIsLightningKeysendValueTag(oldValueTag)) {
+        const newValueTimeSplits: ValueTimeSplit[] = []
+        for (const oldValueTimeSplit of oldValueTimeSplits) {
+          let newValueTimeSplit: ValueTimeSplit | null = null
+          if (oldValueTimeSplit?.type && oldValueTimeSplit.remoteItem?.feedGuid) {
+            if (
+              oldValueTimeSplit?.type === 'remoteItemToAppConverted'
+              || oldValueTimeSplit?.type === 'localSpecifiedToAppConverted'
+            ) {
+              // Do nothing. It's already converted.
+            } else if (oldValueTimeSplit?.type === 'remoteItem') {
+              const valueTimeSplitTags = await getValueTagsForItemGuidOrFeedGuid(
+                oldValueTimeSplit.remoteItem?.feedGuid,
+                oldValueTimeSplit.remoteItem?.itemGuid
+              )
+              newValueTimeSplit = convertValueTimeSplitsToAppConvertedSplits(
+                oldValueTimeSplit,
+                valueTimeSplitTags,
+                'remoteItemToAppConverted'
+              )
+              newValueTimeSplits.push(newValueTimeSplit)
+            } else if (oldValueTimeSplit?.type === 'localSpecified') {
+              // TODO - handle locally specified value time splits
+              newValueTimeSplits.push(oldValueTimeSplit)
+            } else {
+              newValueTimeSplits.push(oldValueTimeSplit)
+            }
+          } else {
+            newValueTimeSplits.push(oldValueTimeSplit)
+          }
+        }
+        newValueTag.valueTimeSplits = newValueTimeSplits
+      }
+      newValueTags.push(newValueTag)
+    }
+
+    const playerState = getGlobal().player
+    const nowPlayingItem = playerState?.nowPlayingItem
+
+    if (nowPlayingItem) {
+      setGlobal({
+        player: {
+          ...playerState,
+          nowPlayingItem: {
+            ...nowPlayingItem,
+            episodeValue: newValueTags
+          }
+        }
+      })
+    }
+  }
 }
 
 /* Misc helpers */
