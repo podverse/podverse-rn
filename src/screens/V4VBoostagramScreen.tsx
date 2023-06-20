@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { ValueTransaction } from 'podverse-shared'
+import { ValueTag, ValueTransaction } from 'podverse-shared'
 import { Keyboard, StyleSheet } from 'react-native'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
@@ -19,6 +19,7 @@ import {
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
+import { playerGetPosition } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import {
   BoostagramItem,
@@ -43,6 +44,7 @@ import { core, images } from '../styles'
 
 type Props = any
 type State = {
+  activeValueTag?: ValueTag
   boostIsSending: boolean
   boostTransactions: ValueTransaction[]
   boostWasSent: boolean
@@ -50,6 +52,7 @@ type State = {
   explosionOrigin: number
   localBoostAmount: number
   localAppBoostAmount: number
+  playerPositionState: number
 }
 
 const testIDPrefix = 'boostagram_screen'
@@ -66,7 +69,8 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
       defaultMessage: '',
       explosionOrigin: 0,
       localBoostAmount: 0,
-      localAppBoostAmount: 0
+      localAppBoostAmount: 0,
+      playerPositionState: 0
     }
   }
 
@@ -83,14 +87,16 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const boostagramItem = this._convertToBoostagramItem()
+    const playerPositionState = await playerGetPosition()
 
     const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(boostagramItem))
 
     const { episodeValue, podcastValue } = boostagramItem
     const valueTags = extractV4VValueTags(episodeValue, podcastValue)
-    const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
+    const activeValueTag = v4vGetActiveValueTag(
+      valueTags, playerPositionState, activeProvider?.type, activeProvider?.method)
 
     if (activeValueTag && activeProvider) {
       const { method, type } = activeProvider
@@ -100,9 +106,11 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
 
       this.setState(
         {
+          activeValueTag,
           defaultMessage,
           localBoostAmount: typeMethodSettings.boostAmount,
-          localAppBoostAmount: typeMethodSettings.appBoostAmount
+          localAppBoostAmount: typeMethodSettings.appBoostAmount,
+          playerPositionState
         },
         () => {
           this._handleUpdateBoostTransactionsState(PV.V4V.ACTION_BOOST, typeMethodSettings.boostAmount)
@@ -175,15 +183,9 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
   }
 
   _handleUpdateBoostTransactionsState = async (action: 'ACTION_BOOST', amount: number) => {
+    const { activeValueTag } = this.state
     const boostagramItem = this._convertToBoostagramItem()
-
     const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(boostagramItem))
-
-    const valueTags =
-      (boostagramItem?.episodeValue?.length && boostagramItem?.episodeValue) ||
-      (boostagramItem?.podcastValue?.length && boostagramItem?.podcastValue) ||
-      []
-    const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
 
     if (activeValueTag && activeProvider?.key) {
       let shouldRound = false
@@ -215,9 +217,10 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     ReactNativeHapticFeedback.trigger('impactHeavy', PV.Haptic.options)
     this.setState({ boostIsSending: true }, () => {
       (async () => {
+        const { playerPositionState } = this.state
         const boostagramItem = this._convertToBoostagramItem()
         const includeMessage = true
-        await sendBoost(boostagramItem, includeMessage)
+        await sendBoost(boostagramItem, playerPositionState, includeMessage)
         this.setState(
           {
             boostIsSending: false,
@@ -234,6 +237,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
 
   render() {
     const {
+      activeValueTag,
       boostIsSending,
       boostTransactions,
       boostWasSent,
@@ -398,6 +402,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
                   {translate('Boost splits')}
                 </Text>
                 <V4VRecipientsInfoView
+                  activeValueTag={activeValueTag}
                   testID={`${testIDPrefix}_boost`}
                   totalAmount={activeProviderSettings?.boostAmount || 0}
                   transactions={boostTransactions}

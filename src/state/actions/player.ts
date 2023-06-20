@@ -40,6 +40,7 @@ import { clearChapterPlaybackInfo, getChapterNext, getChapterPrevious, loadChapt
   setChapterOnGlobalState} from './playerChapters'
 import { videoInitializePlayer, videoStateClearVideoInfo,
   videoStateSetVideoInfo } from './playerVideo'
+import { v4vEnrichValueTagDataIfNeeded } from './v4v/v4v'
 
 const _fileName = 'src/state/actions/player.ts'
 
@@ -308,9 +309,11 @@ export const setLiveStreamWasPausedState = (bool: boolean) => {
 }
 
 export const handleEnrichingPlayerState = (item: NowPlayingItem) => {
+  // Be careful not to cause async issues when updating global state with these function calls.
   trackPlayerScreenPageView(item)
   loadChaptersForNowPlayingItem(item)
   enrichParsedTranscript(item)
+  v4vEnrichValueTagDataIfNeeded(item)
 }
 
 const enrichParsedTranscript = (item: NowPlayingItem) => {
