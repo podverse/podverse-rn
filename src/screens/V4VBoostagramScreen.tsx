@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { ValueTransaction } from 'podverse-shared'
+import { ValueTag, ValueTransaction } from 'podverse-shared'
 import { Keyboard, StyleSheet } from 'react-native'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
@@ -44,6 +44,7 @@ import { core, images } from '../styles'
 
 type Props = any
 type State = {
+  activeValueTag?: ValueTag
   boostIsSending: boolean
   boostTransactions: ValueTransaction[]
   boostWasSent: boolean
@@ -105,6 +106,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
 
       this.setState(
         {
+          activeValueTag,
           defaultMessage,
           localBoostAmount: typeMethodSettings.boostAmount,
           localAppBoostAmount: typeMethodSettings.appBoostAmount,
@@ -181,17 +183,9 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
   }
 
   _handleUpdateBoostTransactionsState = async (action: 'ACTION_BOOST', amount: number) => {
-    const { playerPositionState } = this.state
+    const { activeValueTag } = this.state
     const boostagramItem = this._convertToBoostagramItem()
-
     const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(boostagramItem))
-
-    const valueTags =
-      (boostagramItem?.episodeValue?.length && boostagramItem?.episodeValue) ||
-      (boostagramItem?.podcastValue?.length && boostagramItem?.podcastValue) ||
-      []
-    const activeValueTag = v4vGetActiveValueTag(
-      valueTags, playerPositionState, activeProvider?.type, activeProvider?.method)
 
     if (activeValueTag && activeProvider?.key) {
       let shouldRound = false
@@ -243,6 +237,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
 
   render() {
     const {
+      activeValueTag,
       boostIsSending,
       boostTransactions,
       boostWasSent,
@@ -407,6 +402,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
                   {translate('Boost splits')}
                 </Text>
                 <V4VRecipientsInfoView
+                  activeValueTag={activeValueTag}
                   testID={`${testIDPrefix}_boost`}
                   totalAmount={activeProviderSettings?.boostAmount || 0}
                   transactions={boostTransactions}

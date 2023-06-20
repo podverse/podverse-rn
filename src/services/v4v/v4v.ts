@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Funding, NowPlayingItem, ValueRecipient, ValueRecipientNormalized,
-  ValueTag, ValueTransaction, checkIfIsLightningKeysendValueTag } from 'podverse-shared'
+  ValueTag, ValueTimeSplit, ValueTransaction, checkIfIsLightningKeysendValueTag } from 'podverse-shared'
 import * as RNKeychain from 'react-native-keychain'
 import { errorLogger } from '../../lib/logger'
 import { translate } from '../../lib/i18n'
@@ -18,8 +18,7 @@ import {
   v4vRefreshProviderWalletInfo,
   V4VSenderInfo,
   V4VSettings,
-  v4vSettingsDefault,
-  ValueTimeSplit
+  v4vSettingsDefault
 } from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
 import { AlbyKeysendResponse, AlbyMultiKeySendResponse, KeysendCustomKeyValueAddress } from './providers/alby'
@@ -578,15 +577,21 @@ export const getFinalValueTag = (valueTag: ValueTag, playerPosition: number) => 
     const flooredPlayerPosition = Math.floor(playerPosition) || 0
 
     const valueTimeSplitsValueTags = valueTag.valueTimeSplits || []
-    const valueTimeSplitsValueTag = valueTimeSplitsValueTags.find((v: ValueTimeSplit) => {
+    const matchingValueTimeSplitsValueTag = valueTimeSplitsValueTags.find((v: ValueTimeSplit) => {
       return flooredPlayerPosition >= v.startTime && flooredPlayerPosition < v.endTime
     })
 
-    if (valueTimeSplitsValueTag?.valueTags?.length > 0) {
-      for (const valueTag of valueTimeSplitsValueTag.valueTags) {
+    if (matchingValueTimeSplitsValueTag?.valueTags?.length > 0) {
+      for (const valueTag of matchingValueTimeSplitsValueTag.valueTags) {
         if (checkIfIsLightningKeysendValueTag(valueTag)) {
           finalValueTag = valueTag
-          break
+          finalValueTag.activeValueTimeSplit = {
+            isActive: true,
+            startTime: matchingValueTimeSplitsValueTag.startTime,
+            endTime: matchingValueTimeSplitsValueTag.endTime
+          }
+
+          finalValueTag
         }
       }
     }
