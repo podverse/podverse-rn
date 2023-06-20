@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { NowPlayingItem, ValueTag, checkIfIsLightningKeysendValueTag } from 'podverse-shared'
+import { NowPlayingItem, ValueTag, ValueTimeSplit, checkIfIsLightningKeysendValueTag } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../../resources'
 import { getValueTagsForItemGuidOrFeedGuid } from '../../../services/podcastIndex'
@@ -474,22 +474,6 @@ export const v4vClearBoostagramMessage = () => {
 }
 
 /* Enrich the value tag in state */
-
-/* TODO: remove */
-export type ValueTimeSplit = {
-  type: 'remoteItem' | 'remoteItemToAppConverted' | 'localSpecified' | 'localSpecifiedToAppConverted'
-  startTime: number
-  duration: number
-  endTime: number
-  remoteStartTime?: number
-  remotePercentage?: number
-  remoteItem?: {
-    feedGuid?: string
-    itemGuid: string
-    medium?: string
-  }
-  valueTags: ValueTag[]
-}
 
 const convertValueTimeSplitsToAppConvertedSplits = (
   oldValueTimeSplit: any,
