@@ -87,6 +87,6 @@ export const V4V: V4VType = {
   streamingConfig: {
     incrementInterval: 6, // in seconds, 10 times per minute
     incrementIntervalValueDivider: 10, // divide by 10 for 10 times per minute
-    processQueueInterval: 60 // in seconds, every 5 minutes
+    processQueueInterval: 180 // in seconds, every 3 minutes
   }
 }
