@@ -15,6 +15,7 @@ import {
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
+import { playerGetPosition } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import {
   convertValueTagIntoValueTransactions,
@@ -38,6 +39,7 @@ type State = {
   streamingTransactions: ValueTransaction[]
   localStreamingAmount: number
   localAppStreamingAmount: number
+  playerPositionState: number
 }
 
 const testIDPrefix = 'funding_screen'
@@ -48,7 +50,8 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
     this.state = {
       streamingTransactions: [],
       localStreamingAmount: 0,
-      localAppStreamingAmount: 0
+      localAppStreamingAmount: 0,
+      playerPositionState: 0
     }
   }
 
@@ -59,7 +62,7 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { player } = this.global
     const { nowPlayingItem } = player
 
@@ -67,7 +70,9 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
 
     const { episodeValue, podcastValue } = nowPlayingItem
     const valueTags = extractV4VValueTags(episodeValue, podcastValue)
-    const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
+    const playerPositionState = await playerGetPosition()
+    const activeValueTag = v4vGetActiveValueTag(
+      valueTags, playerPositionState, activeProvider?.type, activeProvider?.method)
 
     if (activeValueTag && activeProvider) {
       const { method, type } = activeProvider
@@ -77,7 +82,8 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
       this.setState(
         {
           localStreamingAmount: typeMethodSettings.streamingAmount,
-          localAppStreamingAmount: typeMethodSettings.appStreamingAmount
+          localAppStreamingAmount: typeMethodSettings.appStreamingAmount,
+          playerPositionState
         },
         () => {
           Promise.all([
@@ -125,6 +131,7 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
   }
 
   _handleUpdateBoostTransactionsState = async (action: 'ACTION_STREAMING', amount: number) => {
+    const { playerPositionState } = this.state
     const { player } = this.global
     const { nowPlayingItem } = player
     const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(nowPlayingItem))
@@ -132,7 +139,8 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
     const valueTags =
       (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue) ||
       (nowPlayingItem?.podcastValue?.length && nowPlayingItem?.podcastValue)
-    const activeValueTag = v4vGetActiveValueTag(valueTags, activeProvider?.type, activeProvider?.method)
+    const activeValueTag = v4vGetActiveValueTag(
+      valueTags, playerPositionState, activeProvider?.type, activeProvider?.method)
 
     if (activeValueTag && activeProvider?.key) {
       const newValueTransactions = await convertValueTagIntoValueTransactions(

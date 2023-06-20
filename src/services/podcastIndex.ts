@@ -11,7 +11,10 @@ export const getPodcastFromPodcastIndexById = async (id: string) => {
 
 export const getValueTagsForFeedGuid = async (feedGuid: string) => {
   const response = await request({
-    endpoint: `/podcast-index/value/podcast-guid/${feedGuid}`
+    endpoint: `/podcast-index/value/by-guids`,
+    query: {
+      podcastGuid: feedGuid
+    }
   })
 
   return response && response.data
@@ -19,7 +22,11 @@ export const getValueTagsForFeedGuid = async (feedGuid: string) => {
 
 export const getValueTagsForFeedGuidAndItemGuid = async (feedGuid: string, itemGuid: string) => {
   const response = await request({
-    endpoint: `/podcast-index/value/podcast-guid/${feedGuid}/episode-guid/${itemGuid}`
+    endpoint: `/podcast-index/value/by-guids`,
+    query: {
+      podcastGuid: feedGuid,
+      episodeGuid: itemGuid
+    }
   })
 
   return response && response.data

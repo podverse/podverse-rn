@@ -476,7 +476,7 @@ export const v4vClearBoostagramMessage = () => {
 /* Enrich the value tag in state */
 
 /* TODO: remove */
-type ValueTimeSplit = {
+export type ValueTimeSplit = {
   type: 'remoteItem' | 'remoteItemToAppConverted' | 'localSpecified' | 'localSpecifiedToAppConverted'
   startTime: number
   duration: number
@@ -551,6 +551,7 @@ export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
       }
       newValueTags.push(newValueTag)
     }
+
     const playerState = getGlobal().player
     const nowPlayingItem = playerState?.nowPlayingItem
 
