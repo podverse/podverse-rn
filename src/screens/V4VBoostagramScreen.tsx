@@ -48,6 +48,8 @@ type State = {
   boostIsSending: boolean
   boostFeeTransactions: ValueTransaction[]
   boostNonFeeTransactions: ValueTransaction[]
+  boostParentFeeTransactions: ValueTransaction[]
+  boostParentNonFeeTransactions: ValueTransaction[]
   boostWasSent: boolean
   defaultMessage: string
   explosionOrigin: number
@@ -67,6 +69,8 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
       boostIsSending: false,
       boostFeeTransactions: [],
       boostNonFeeTransactions: [],
+      boostParentFeeTransactions: [],
+      boostParentNonFeeTransactions: [],
       boostWasSent: false,
       defaultMessage: '',
       explosionOrigin: 0,
@@ -96,6 +100,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(boostagramItem))
 
     const { episodeValue, podcastValue } = boostagramItem
+
     const valueTags = extractV4VValueTags(episodeValue, podcastValue)
     const activeValueTag = v4vGetActiveValueTag(
       valueTags, playerPositionState, activeProvider?.type, activeProvider?.method)
@@ -209,7 +214,9 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
 
       this.setState({
         boostFeeTransactions: valueTransactions?.feeValueTransactions,
-        boostNonFeeTransactions: valueTransactions?.nonFeeValueTransactions
+        boostNonFeeTransactions: valueTransactions?.nonFeeValueTransactions,
+        boostParentFeeTransactions: valueTransactions?.parentFeeValueTransactions,
+        boostParentNonFeeTransactions: valueTransactions?.parentNonFeeValueTransactions
       })
     }
   }
@@ -246,11 +253,13 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
       boostIsSending,
       boostFeeTransactions,
       boostNonFeeTransactions,
+      boostParentFeeTransactions,
+      boostParentNonFeeTransactions,
       boostWasSent,
       defaultMessage,
       explosionOrigin,
       // localAppBoostAmount,
-      localBoostAmount
+      localBoostAmount,
     } = this.state
     const { screen, session } = this.global
     const { screenWidth } = screen
@@ -413,6 +422,8 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
                   totalAmount={activeProviderSettings?.boostAmount || 0}
                   feeTransactions={boostFeeTransactions}
                   nonFeeTransactions={boostNonFeeTransactions}
+                  parentFeeTransactions={boostParentFeeTransactions}
+                  parentNonFeeTransactions={boostParentNonFeeTransactions}
                   erroringTransactions={previousTransactionErrors.boost}
                 />
               </View>

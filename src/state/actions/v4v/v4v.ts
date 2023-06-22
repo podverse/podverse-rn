@@ -524,6 +524,8 @@ export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
                 valueTimeSplitTags,
                 'remoteItemToAppConverted'
               )
+
+              newValueTimeSplit.parentValueTag = parentValueTag
               newValueTimeSplits.push(newValueTimeSplit)
             } else if (oldValueTimeSplit?.type === 'localSpecified') {
               // TODO - handle locally specified value time splits
@@ -534,10 +536,6 @@ export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
           } else {
             newValueTimeSplits.push(oldValueTimeSplit)
           }
-
-          // The parentValueTag is needed for handling remotePercentage.
-          // We use the same parentValueTag for all of the valueTimeSplits within a valueTag.
-          newValueTag.parentValueTag = parentValueTag
         }
         newValueTag.valueTimeSplits = newValueTimeSplits
       }

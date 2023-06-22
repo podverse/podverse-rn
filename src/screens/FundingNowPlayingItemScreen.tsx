@@ -39,6 +39,8 @@ type State = {
   activeValueTag?: ValueTag
   streamingFeeTransactions: ValueTransaction[]
   streamingNonFeeTransactions: ValueTransaction[]
+  streamingParentFeeTransactions: ValueTransaction[]
+  streamingParentNonFeeTransactions: ValueTransaction[]
   localStreamingAmount: number
   localAppStreamingAmount: number
   playerPositionState: number
@@ -51,6 +53,8 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
     super()
     this.state = {
       streamingFeeTransactions: [],
+      streamingParentFeeTransactions: [],
+      streamingParentNonFeeTransactions: [],
       streamingNonFeeTransactions: [],
       localStreamingAmount: 0,
       localAppStreamingAmount: 0,
@@ -156,7 +160,9 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
 
       this.setState({
         streamingFeeTransactions: newValueTransactions?.feeValueTransactions,
-        streamingNonFeeTransactions: newValueTransactions?.nonFeeValueTransactions
+        streamingNonFeeTransactions: newValueTransactions?.nonFeeValueTransactions,
+        streamingParentFeeTransactions: newValueTransactions?.parentFeeValueTransactions,
+        streamingParentNonFeeTransactions: newValueTransactions?.parentNonFeeValueTransactions
       })
     }
   }
@@ -167,7 +173,9 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
       // localAppStreamingAmount,
       localStreamingAmount,
       streamingFeeTransactions,
-      streamingNonFeeTransactions
+      streamingNonFeeTransactions,
+      streamingParentFeeTransactions,
+      streamingParentNonFeeTransactions
     } = this.state
     const { player, session } = this.global
     const { v4v } = session
@@ -326,6 +334,8 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
                   totalAmount={activeProviderSettings?.streamingAmount || 0}
                   feeTransactions={streamingFeeTransactions}
                   nonFeeTransactions={streamingNonFeeTransactions}
+                  parentFeeTransactions={streamingParentFeeTransactions}
+                  parentNonFeeTransactions={streamingParentNonFeeTransactions}
                   erroringTransactions={previousTransactionErrors.streaming}
                 />
               </View>
