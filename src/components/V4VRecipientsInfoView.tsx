@@ -27,14 +27,13 @@ type Props = {
 export class V4VRecipientsInfoView extends React.PureComponent<Props> {
   render() {
     const { activeValueTag } = this.props
-    if (!activeValueTag) return null
 
     const { erroringTransactions = [], feeTransactions = [], isReceipt, nonFeeTransactions, parentFeeTransactions = [],
       parentNonFeeTransactions, testID, totalAmount } = this.props
       const totalAmountText = isReceipt ? translate('amount paid') : translate('total amount')
       const parsedTotalAmount = typeof totalAmount === 'string' ? parseInt(totalAmount, 10) : totalAmount
 
-    const remotePercentage = activeValueTag.remotePercentage || 100
+    const remotePercentage = activeValueTag?.remotePercentage || 100
     const localPercentage = 100 - remotePercentage
 
     const combinedFeeTransactions = feeTransactions.concat(parentFeeTransactions)
