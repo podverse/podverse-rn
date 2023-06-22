@@ -46,7 +46,8 @@ type Props = any
 type State = {
   activeValueTag?: ValueTag
   boostIsSending: boolean
-  boostTransactions: ValueTransaction[]
+  boostFeeTransactions: ValueTransaction[]
+  boostNonFeeTransactions: ValueTransaction[]
   boostWasSent: boolean
   defaultMessage: string
   explosionOrigin: number
@@ -64,7 +65,8 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     super()
     this.state = {
       boostIsSending: false,
-      boostTransactions: [],
+      boostFeeTransactions: [],
+      boostNonFeeTransactions: [],
       boostWasSent: false,
       defaultMessage: '',
       explosionOrigin: 0,
@@ -193,7 +195,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
         shouldRound = true
       }
 
-      const newValueTransactions = await convertValueTagIntoValueTransactions(
+      const valueTransactions = await convertValueTagIntoValueTransactions(
         activeValueTag,
         boostagramItem.podcastTitle || '',
         boostagramItem.episodeTitle || '',
@@ -205,7 +207,10 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
         boostagramItem.episodeGuid ||  ''
       )
 
-      this.setState({ boostTransactions: newValueTransactions })
+      this.setState({
+        boostFeeTransactions: valueTransactions?.feeValueTransactions,
+        boostNonFeeTransactions: valueTransactions?.nonFeeValueTransactions
+      })
     }
   }
 
@@ -239,7 +244,8 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     const {
       activeValueTag,
       boostIsSending,
-      boostTransactions,
+      boostFeeTransactions,
+      boostNonFeeTransactions,
       boostWasSent,
       defaultMessage,
       explosionOrigin,
@@ -405,7 +411,8 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
                   activeValueTag={activeValueTag}
                   testID={`${testIDPrefix}_boost`}
                   totalAmount={activeProviderSettings?.boostAmount || 0}
-                  transactions={boostTransactions}
+                  feeTransactions={boostFeeTransactions}
+                  nonFeeTransactions={boostNonFeeTransactions}
                   erroringTransactions={previousTransactionErrors.boost}
                 />
               </View>
@@ -515,7 +522,7 @@ const styles = StyleSheet.create({
   },
   textTableLabel: {
     fontSize: PV.Fonts.sizes.xl,
-    fontStyle: 'italic',
+    fontWeight: PV.Fonts.weights.semibold,
     marginBottom: 16
   },
   textWrapper: {

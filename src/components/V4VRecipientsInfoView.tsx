@@ -15,10 +15,11 @@ export type ValueTransactionRouteError = {
 type Props = {
   activeValueTag?: ValueTag
   erroringTransactions?: ValueTransactionRouteError[]
+  feeTransactions: ValueTransaction[]
   isReceipt?: boolean
+  nonFeeTransactions: ValueTransaction[]
   testID: string
   totalAmount?: number | string
-  transactions: ValueTransaction[]
 }
 
 export class V4VRecipientsInfoView extends React.PureComponent<Props> {
@@ -26,9 +27,49 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
     const { activeValueTag } = this.props
     if (!activeValueTag) return null
 
-    const { erroringTransactions = [], isReceipt, testID, totalAmount, transactions } = this.props
-    const totalAmountText = isReceipt ? translate('amount paid') : translate('total amount')
-    const parsedTotalAmount = typeof totalAmount === 'string' ? parseInt(totalAmount, 10) : totalAmount
+    
+    const { erroringTransactions = [], feeTransactions, isReceipt,
+      nonFeeTransactions, testID, totalAmount } = this.props
+      const totalAmountText = isReceipt ? translate('amount paid') : translate('total amount')
+      const parsedTotalAmount = typeof totalAmount === 'string' ? parseInt(totalAmount, 10) : totalAmount
+
+    const renderTransactionSection = (data: any, index: number) => {
+      const { customKey, customValue, name, amount, split, address } = data.normalizedValueRecipient
+      const erroring = erroringTransactions.find((trs) => {
+        return (
+          (customKey &&
+            customValue &&
+            trs.customKey === customKey &&
+            trs.customValue === customValue &&
+            trs.address === address) ||
+          ((!customKey || !customValue) && trs.address === address)
+        )
+      })
+      return (
+        <View key={`${testID}_boost_info_${index}`}>
+          <View>
+            <View style={styles.recipientInfoWrapper}>
+              <Text
+                testID={`${testID}_boost_recipient_name_${index}}`}
+                style={[styles.recipientText, erroring ? { color: PV.Colors.redLighter } : {}]}>
+                {name}
+              </Text>
+              <Text
+                key={`${index}`}
+                testID={`${testID}_boost_recipient_amount_${index}}`}
+                style={styles.recipientTextAmount}>
+                {`${split}% – ${amount}`}
+              </Text>
+            </View>
+          </View>
+          {erroring && (
+            <Text testID={`${testID}_boost_recipient_error_${index}}`} style={styles.recipientTextError}>
+              {erroring.message}
+            </Text>
+          )}
+        </View>
+      )
+    }
 
     return (
       <View style={{ flex: 1 }}>
@@ -47,47 +88,19 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
             <Text testID={`${testID}_boost_recipient_name_title`} style={styles.recipientText}>
               {translate('Name')}
             </Text>
-            <Text testID={`${testID}_boost_recipient_amount_title`} style={styles.recipientTextRight}>
-              {translate('split')} / {translate('sats')}
-            </Text>
+            {/* <Text testID={`${testID}_boost_recipient_amount_title`} style={styles.recipientTextRight}>
+              {`translate('split')} / {translate('sats')`}
+            </Text> */}
           </View>
-          {transactions.map((data, index) => {
-            const { customKey, customValue, name, amount, split, address } = data.normalizedValueRecipient
-            const erroring = erroringTransactions.find((trs) => {
-              return (
-                (customKey &&
-                  customValue &&
-                  trs.customKey === customKey &&
-                  trs.customValue === customValue &&
-                  trs.address === address) ||
-                ((!customKey || !customValue) && trs.address === address)
-              )
-            })
-            return (
-              <View key={`${testID}_boost_info_${index}`}>
-                <View>
-                  <View style={styles.recipientInfoWrapper}>
-                    <Text
-                      testID={`${testID}_boost_recipient_name_${index}}`}
-                      style={[styles.recipientText, erroring ? { color: PV.Colors.redLighter } : {}]}>
-                      {name}
-                    </Text>
-                    <Text
-                      key={`${index}`}
-                      testID={`${testID}_boost_recipient_amount_${index}}`}
-                      style={styles.recipientTextAmount}>
-                      {`${split}% – ${amount}`}
-                    </Text>
-                  </View>
-                </View>
-                {erroring && (
-                  <Text testID={`${testID}_boost_recipient_error_${index}}`} style={styles.recipientTextError}>
-                    {erroring.message}
-                  </Text>
-                )}
-              </View>
-            )
-          })}
+          {nonFeeTransactions?.map((data, index) => renderTransactionSection(data, index))}
+          {feeTransactions?.length > 0 && (
+            <Text
+              testID={`${testID}_boost_fees_text`}
+              style={styles.recipientFees}>
+              {translate('Fees')}
+            </Text>
+          )}
+          {feeTransactions?.map((data, index) => renderTransactionSection(data, index))}
           <View style={styles.recipientTableFooter}>
             <Text testID={`${testID}_boost_recipient_amount_total`} style={styles.recipientFooterText}>
               {`${totalAmountText}: ${parsedTotalAmount}`}
@@ -143,6 +156,12 @@ const styles = StyleSheet.create({
   recipientText: {
     paddingVertical: 10,
     fontSize: PV.Fonts.sizes.lg,
+    flex: 1
+  },
+  recipientFees: {
+    paddingTop: 10,
+    fontSize: PV.Fonts.sizes.lg,
+    fontWeight: PV.Fonts.weights.semibold,
     flex: 1
   },
   recipientTextRight: {

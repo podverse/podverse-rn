@@ -500,6 +500,10 @@ export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
     const oldValueTimeSplits = oldValueTag.valueTimeSplits || []
     if (oldValueTag) {
       const newValueTag = {...oldValueTag}
+      const parentValueTag = {
+        ...oldValueTag,
+        valueTimeSplits: null
+      }
       if (checkIfIsLightningKeysendValueTag(oldValueTag)) {
         const newValueTimeSplits: ValueTimeSplit[] = []
         for (const oldValueTimeSplit of oldValueTimeSplits) {
@@ -530,6 +534,10 @@ export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
           } else {
             newValueTimeSplits.push(oldValueTimeSplit)
           }
+
+          // The parentValueTag is needed for handling remotePercentage.
+          // We use the same parentValueTag for all of the valueTimeSplits within a valueTag.
+          newValueTag.parentValueTag = parentValueTag
         }
         newValueTag.valueTimeSplits = newValueTimeSplits
       }
