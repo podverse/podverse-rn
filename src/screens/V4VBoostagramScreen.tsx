@@ -46,7 +46,10 @@ type Props = any
 type State = {
   activeValueTag?: ValueTag
   boostIsSending: boolean
-  boostTransactions: ValueTransaction[]
+  boostFeeTransactions: ValueTransaction[]
+  boostNonFeeTransactions: ValueTransaction[]
+  boostParentFeeTransactions: ValueTransaction[]
+  boostParentNonFeeTransactions: ValueTransaction[]
   boostWasSent: boolean
   defaultMessage: string
   explosionOrigin: number
@@ -64,7 +67,10 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     super()
     this.state = {
       boostIsSending: false,
-      boostTransactions: [],
+      boostFeeTransactions: [],
+      boostNonFeeTransactions: [],
+      boostParentFeeTransactions: [],
+      boostParentNonFeeTransactions: [],
       boostWasSent: false,
       defaultMessage: '',
       explosionOrigin: 0,
@@ -94,6 +100,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     const { activeProvider } = v4vGetActiveProviderInfo(getBoostagramItemValueTags(boostagramItem))
 
     const { episodeValue, podcastValue } = boostagramItem
+
     const valueTags = extractV4VValueTags(episodeValue, podcastValue)
     const activeValueTag = v4vGetActiveValueTag(
       valueTags, playerPositionState, activeProvider?.type, activeProvider?.method)
@@ -193,7 +200,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
         shouldRound = true
       }
 
-      const newValueTransactions = await convertValueTagIntoValueTransactions(
+      const valueTransactions = await convertValueTagIntoValueTransactions(
         activeValueTag,
         boostagramItem.podcastTitle || '',
         boostagramItem.episodeTitle || '',
@@ -205,7 +212,12 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
         boostagramItem.episodeGuid ||  ''
       )
 
-      this.setState({ boostTransactions: newValueTransactions })
+      this.setState({
+        boostFeeTransactions: valueTransactions?.feeValueTransactions,
+        boostNonFeeTransactions: valueTransactions?.nonFeeValueTransactions,
+        boostParentFeeTransactions: valueTransactions?.parentFeeValueTransactions,
+        boostParentNonFeeTransactions: valueTransactions?.parentNonFeeValueTransactions
+      })
     }
   }
 
@@ -239,12 +251,15 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
     const {
       activeValueTag,
       boostIsSending,
-      boostTransactions,
+      boostFeeTransactions,
+      boostNonFeeTransactions,
+      boostParentFeeTransactions,
+      boostParentNonFeeTransactions,
       boostWasSent,
       defaultMessage,
       explosionOrigin,
       // localAppBoostAmount,
-      localBoostAmount
+      localBoostAmount,
     } = this.state
     const { screen, session } = this.global
     const { screenWidth } = screen
@@ -405,7 +420,10 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
                   activeValueTag={activeValueTag}
                   testID={`${testIDPrefix}_boost`}
                   totalAmount={activeProviderSettings?.boostAmount || 0}
-                  transactions={boostTransactions}
+                  feeTransactions={boostFeeTransactions}
+                  nonFeeTransactions={boostNonFeeTransactions}
+                  parentFeeTransactions={boostParentFeeTransactions}
+                  parentNonFeeTransactions={boostParentNonFeeTransactions}
                   erroringTransactions={previousTransactionErrors.boost}
                 />
               </View>
@@ -515,7 +533,7 @@ const styles = StyleSheet.create({
   },
   textTableLabel: {
     fontSize: PV.Fonts.sizes.xl,
-    fontStyle: 'italic',
+    fontWeight: PV.Fonts.weights.semibold,
     marginBottom: 16
   },
   textWrapper: {

@@ -94,7 +94,10 @@ export const BoostDropdownBanner = () => {
                 isReceipt
                 testID='boost_dropdown_banner'
                 totalAmount={bannerInfo.totalAmount}
-                transactions={transactions}
+                feeTransactions={[]}
+                nonFeeTransactions={transactions}
+                parentFeeTransactions={[]}
+                parentNonFeeTransactions={[]}
               />
             )}
           </ScrollView>

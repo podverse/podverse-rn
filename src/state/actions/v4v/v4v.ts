@@ -500,6 +500,10 @@ export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
     const oldValueTimeSplits = oldValueTag.valueTimeSplits || []
     if (oldValueTag) {
       const newValueTag = {...oldValueTag}
+      const parentValueTag = {
+        ...oldValueTag,
+        valueTimeSplits: null
+      }
       if (checkIfIsLightningKeysendValueTag(oldValueTag)) {
         const newValueTimeSplits: ValueTimeSplit[] = []
         for (const oldValueTimeSplit of oldValueTimeSplits) {
@@ -520,6 +524,8 @@ export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
                 valueTimeSplitTags,
                 'remoteItemToAppConverted'
               )
+
+              newValueTimeSplit.parentValueTag = parentValueTag
               newValueTimeSplits.push(newValueTimeSplit)
             } else if (oldValueTimeSplit?.type === 'localSpecified') {
               // TODO - handle locally specified value time splits
