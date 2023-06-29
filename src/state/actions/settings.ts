@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Platform } from 'react-native'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import { getCustomRSSParallelParserLimit } from '../../services/customRSSParallelParserLimit'
@@ -26,21 +25,17 @@ export const settingsRunEveryStartup = async () => {
     but we have to wait for the audio player to finish initializing.
   */
   return new Promise((resolve) => {
-    if (Platform.OS === 'ios') {
-      resolve()
-    } else {
-      const interval = setInterval(() => {
-        (async () => {
-          try {
-            await audioReset()
-            clearInterval(interval)
-            resolve()
-          } catch (error) {
-            console.log('audioReset error', error)
-          }
-        })()
-      }, 333)
-    }
+    const interval = setInterval(() => {
+      (async () => {
+        try {
+          await audioReset()
+          clearInterval(interval)
+          resolve()
+        } catch (error) {
+          console.log('audioReset error', error)
+        }
+      })()
+    }, 333)
   })
 
 }
