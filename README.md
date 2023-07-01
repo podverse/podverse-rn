@@ -61,9 +61,13 @@ Find us on on these App Stores and our [Website](https://podverse.fm/):
     height="60"/>
 </a>
 
-## Contributing
+## Getting started
 
-[Instruction for contributing to the repo](https://github.com/podverse/podverse-rn/blob/master/Contributing.md) to the **Podverse Mobile App**
+If you are looking to run this app or contribute to Podverse for the first time, please read the sections that are relevant for you in our [CONTRIBUTE.md](https://github.com/podverse/podverse-ops/blob/master/CONTRIBUTING.md) file in the podverse-ops repo. Among other things, that file contains instructions for running a local instance of the Podverse database.
+
+## More contributing info
+
+[Instruction for contributing to the repo](https://github.com/podverse/podverse-rn/blob/master/Contributing.md) for the **Podverse Mobile App**.
 
 Additional environment setup and installation for Mac or Windows is found within the contribution page.
 
