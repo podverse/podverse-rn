@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/prefer-regexp-exec */
 import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
+
+// NOTE: remember to update src/lib/i18n.ts
 import 'moment/locale/da'
 import 'moment/locale/de'
 import 'moment/locale/el'
 import 'moment/locale/es'
 import 'moment/locale/fr'
+import 'moment/locale/it'
 import 'moment/locale/lt'
 import 'moment/locale/nb'
 import 'moment/locale/oc-lnc'
@@ -13,6 +16,7 @@ import 'moment/locale/pt'
 import 'moment/locale/ru'
 import 'moment/locale/sv'
 import 'moment/locale/tr'
+
 import { convertSecToHHMMSS, decodeHTMLString, removeHTMLFromString } from 'podverse-shared'
 import { Platform } from 'react-native'
 import Config from 'react-native-config'
