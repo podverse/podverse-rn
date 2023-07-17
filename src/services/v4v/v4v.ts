@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Funding, NowPlayingItem, ValueRecipient, ValueRecipientNormalized,
-  ValueTag, ValueTransaction } from 'podverse-shared'
+  ValueTag, ValueTimeSplit, ValueTransaction, checkIfIsLightningKeysendValueTag } from 'podverse-shared'
 import * as RNKeychain from 'react-native-keychain'
 import { errorLogger } from '../../lib/logger'
 import { translate } from '../../lib/i18n'
@@ -149,12 +149,13 @@ const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipien
     Round down for boosts.
     Don't round for streaming sats.
 */
-export const normalizeValueRecipients = (recipients: ValueRecipient[], total: number, roundDownValues: boolean) => {
+export const normalizeValueRecipients = (
+  recipients: ValueRecipient[], totalBatchedAmount: number, roundDownValues: boolean) => {
   const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(recipients)
 
   const finalNormalizedValueRecipients: ValueRecipientNormalized[] = []
   for (const normalizedValueRecipient of normalizedValueRecipients) {
-    let amount = (total / 100) * (normalizedValueRecipient.normalizedSplit || 0)
+    let amount = (totalBatchedAmount / 100) * (normalizedValueRecipient.normalizedSplit || 0)
 
     amount = roundDownValues ? Math.floor(amount) : amount
 
@@ -178,8 +179,9 @@ export const convertValueTagIntoValueTransactions = async (
   providerKey: string,
   episode_guid: string
 ) => {
-  const { method, type } = valueTag
 
+  const { method, type } = valueTag
+  
   // Only alby is supported right now
   if (!providerKey || providerKey !== 'alby') {
     throw new Error("No matching connected v4v provider found.")
@@ -196,29 +198,128 @@ export const convertValueTagIntoValueTransactions = async (
     )
   }
 
-  const valueTransactions: ValueTransaction[] = []
+  const feeValueTransactions: ValueTransaction[] = []
+  const nonFeeValueTransactions: ValueTransaction[] = []
+  const parentFeeValueTransactions: ValueTransaction[] = []
+  const parentNonFeeValueTransactions: ValueTransaction[] = []
   const recipients = valueTag.recipients
+  const parentValueTagRecipients = valueTag?.parentValueTag?.recipients
 
-  const normalizedValueRecipients = normalizeValueRecipients(recipients, totalBatchedAmount, roundDownValues)
+  // TODO: handle locally specified splits
 
-  for (const normalizedValueRecipient of normalizedValueRecipients) {
-    const valueTransaction = await convertValueTagIntoValueTransaction(
-      normalizedValueRecipient,
+  const feeRecipients = recipients.filter((recipient) => !!recipient?.fee)
+  const nonFeeRecipients = recipients?.filter((recipient) => !recipient?.fee)
+
+  const parentValueTagFeeRecipients = parentValueTagRecipients?.filter((recipient) => !!recipient?.fee) || []
+  
+  const parentValueTagNonFeeRecipients = parentValueTagRecipients?.filter((recipient) => !recipient?.fee) || []
+  
+  let remainingTotalAmount = totalBatchedAmount
+
+  const convertFeeRecipientsIntoValueTransaction = async (feeRecipient: ValueRecipient) => {
+    const split = parseFloat(feeRecipient.split) || 0
+    if (split && split >= 1 && split <= 100) {
+      const amount = remainingTotalAmount * (split / 100)
+
+      const feeRecipientWithAmount = {
+        ...feeRecipient,
+        // it's ok to set normalizedSplit to 0 because
+        // it doesn't get used in convertValueTagIntoValueTransaction
+        normalizedSplit: 0,
+        amount
+      }
+
+      const valueTransaction = await convertValueTagIntoValueTransaction(
+        feeRecipientWithAmount,
+        podcastTitle,
+        episodeTitle,
+        podcastIndexPodcastId,
+        action,
+        method,
+        type,
+        totalBatchedAmount,
+        providerKey,
+        episode_guid
+      )
+
+      remainingTotalAmount = remainingTotalAmount - amount
+  
+      return valueTransaction
+    }
+  }
+
+  for (const feeRecipient of feeRecipients) {
+    const feeRecipientValueTransaction = await convertFeeRecipientsIntoValueTransaction(feeRecipient)
+    if (feeRecipientValueTransaction) feeValueTransactions.push(feeRecipientValueTransaction)    
+  }
+
+  for (const parentValueTagFeeRecipient of parentValueTagFeeRecipients) {
+    const parentValueTagFeeRecipientValueTransaction =
+      await convertFeeRecipientsIntoValueTransaction(parentValueTagFeeRecipient)
+    if (parentValueTagFeeRecipientValueTransaction) {
+      parentFeeValueTransactions.push(parentValueTagFeeRecipientValueTransaction)    
+    }
+  }
+
+  const remotePercentage = valueTag?.remotePercentage || 100
+  const finalRemotePercentage = remotePercentage >= 1 && remotePercentage <= 100 ? remotePercentage : 100
+  const localPercentage = 100 - finalRemotePercentage
+
+  const nonFeeRecipientsAmount = remainingTotalAmount * (finalRemotePercentage / 100)
+  const parentValueTagNonFeeRecipientsAmount = remainingTotalAmount * (localPercentage / 100)
+
+  const normalizedNonFeeValueRecipients =
+    normalizeValueRecipients(nonFeeRecipients, nonFeeRecipientsAmount, roundDownValues)
+
+  const normalizedParentNonFeeValueRecipients =
+    normalizeValueRecipients(parentValueTagNonFeeRecipients, parentValueTagNonFeeRecipientsAmount, roundDownValues)
+
+  for (const normalizedNonFeeValueRecipient of normalizedNonFeeValueRecipients) {
+    const normalizedNonFeeValueTransaction = await convertValueTagIntoValueTransaction(
+      normalizedNonFeeValueRecipient,
       podcastTitle,
       episodeTitle,
       podcastIndexPodcastId,
       action,
       method,
       type,
+      // This is the FULL boost amount that is included in the metadata.
+      // This does not affect the split value sent.
+      // The amount to send has been calculated already in the normalizedNonFeeValueRecipient.
       totalBatchedAmount,
       providerKey,
       episode_guid
     )
 
-    if (valueTransaction) valueTransactions.push(valueTransaction)
+    if (normalizedNonFeeValueTransaction) nonFeeValueTransactions.push(normalizedNonFeeValueTransaction)
   }
 
-  return valueTransactions
+  for (const normalizedParentNonFeeValueRecipient of normalizedParentNonFeeValueRecipients) {
+    const normalizedParentNonFeeValueTransaction = await convertValueTagIntoValueTransaction(
+      normalizedParentNonFeeValueRecipient,
+      podcastTitle,
+      episodeTitle,
+      podcastIndexPodcastId,
+      action,
+      method,
+      type,
+      // See note above.
+      totalBatchedAmount,
+      providerKey,
+      episode_guid
+    )
+
+    if (normalizedParentNonFeeValueTransaction) {
+      parentNonFeeValueTransactions.push(normalizedParentNonFeeValueTransaction)
+    }
+  }
+
+  return {
+    feeValueTransactions,
+    nonFeeValueTransactions,
+    parentFeeValueTransactions,
+    parentNonFeeValueTransactions
+  }
 }
 
 const convertValueTagIntoValueTransaction = async (
@@ -352,14 +453,18 @@ const processSendValueTransactions = async (
   return totalAmountPaid
 }
 
-export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMessage?: boolean) => {
+export const sendBoost = async (
+  item: NowPlayingItem | BoostagramItem,
+  playerPosition: number,
+  includeMessage?: boolean
+) => {
   const action = 'boost'
   const valueTags =
     (item?.episodeValue?.length && item?.episodeValue) ||
     (item?.podcastValue?.length && item?.podcastValue)
 
   // Only support Bitcoin Lightning network boosts right now
-  const valueTag = v4vGetActiveValueTag(valueTags, 'lightning', 'keysend')
+  const valueTag = v4vGetActiveValueTag(valueTags, playerPosition, 'lightning', 'keysend')
 
   if (!valueTag) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
@@ -375,7 +480,12 @@ export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMe
   if (!activeProvider?.key) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
   const roundDownBoostTransactions = true
-  const valueTransactions = await convertValueTagIntoValueTransactions(
+  const {
+    feeValueTransactions,
+    nonFeeValueTransactions,
+    parentFeeValueTransactions,
+    parentNonFeeValueTransactions
+  } = await convertValueTagIntoValueTransactions(
     valueTag,
     item?.podcastTitle || '',
     item?.episodeTitle || '',
@@ -387,12 +497,17 @@ export const sendBoost = async (item: NowPlayingItem | BoostagramItem, includeMe
     item?.episodeGuid || ''
   )
 
-  const totalAmountPaid = await processSendValueTransactions(valueTransactions, action, includeMessage)
+  const combinedNonFeeValueTransactions = nonFeeValueTransactions.concat(parentNonFeeValueTransactions)
+  const combinedFeeValueTransactions = feeValueTransactions.concat(parentFeeValueTransactions)
 
+  await processSendValueTransactions(combinedNonFeeValueTransactions, action, includeMessage)
+  await processSendValueTransactions(combinedFeeValueTransactions, action, includeMessage)
+  
   // Run refresh wallet data in the background after transactions complete.
   v4vRefreshProviderWalletInfo(activeProvider?.key)
-
-  return { transactions: valueTransactions, totalAmountPaid }
+  
+  // const totalAmountPaid = nonFeeAmountPaid + feeAmountPaid
+  // return { transactions: combinedFeeValueTransactions, totalAmountPaid }
 }
 
 const sendValueTransactions = async (
@@ -555,6 +670,40 @@ const getMatchingValueTransactionIndex = (valueTransaction: ValueTransaction, va
     }
   })
 
+/*
+  The finalValueTag is retrieved by determining if a valueTimeSplits valueTag should be used instead,
+  and if it should, then return the valueTimeSplit version instead,
+  and also account for the remotePercentage and fee attributes.
+*/
+export const getFinalValueTag = (valueTag: ValueTag, playerPosition: number) => {
+  let finalValueTag = valueTag
+
+  if (valueTag?.valueTimeSplits && valueTag?.valueTimeSplits.length > 0) {
+    const flooredPlayerPosition = Math.floor(playerPosition) || 0
+    const valueTimeSplitsValueTags = valueTag.valueTimeSplits || []
+    const matchingValueTimeSplitsValueTag = valueTimeSplitsValueTags.find((v: ValueTimeSplit) => {
+      return flooredPlayerPosition >= v.startTime && flooredPlayerPosition < v.endTime
+    })
+
+    if (matchingValueTimeSplitsValueTag?.valueTags?.length > 0) {
+      for (const matchingValueTag of matchingValueTimeSplitsValueTag.valueTags) {
+        if (checkIfIsLightningKeysendValueTag(matchingValueTag)) {
+          finalValueTag = matchingValueTag
+          finalValueTag.activeValueTimeSplit = {
+            isActive: true,
+            startTime: matchingValueTimeSplitsValueTag.startTime,
+            endTime: matchingValueTimeSplitsValueTag.endTime
+          }
+          finalValueTag.parentValueTag = matchingValueTimeSplitsValueTag.parentValueTag
+          finalValueTag.remotePercentage = matchingValueTimeSplitsValueTag.remotePercentage
+        }
+      }
+    }
+  }
+
+  return finalValueTag
+}
+
 export const saveStreamingValueTransactionsToTransactionQueue = async (
   valueTags: ValueTag[],
   item: NowPlayingItem | BoostagramItem,
@@ -562,27 +711,40 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
   providerKey: string
 ) => {
   try {
+    const playerPosition = await playerGetPosition()
     // TODO: right now we are assuming the first item will be the lightning network
     // this will need to be updated to support additional valueTags
-    const valueTag = valueTags[0]
+    const finalValueTag = getFinalValueTag(valueTags[0], playerPosition)
+    const finalAmount = amount / PV.V4V.streamingConfig.incrementIntervalValueDivider
     const roundDownStreamingTransactions = false
+
     const [transactionQueue, valueTransactions] = await Promise.all([
       getValueTransactionQueue(),
       convertValueTagIntoValueTransactions(
-        valueTag,
+        finalValueTag,
         item?.podcastTitle || '',
         item?.episodeTitle || '',
         item?.podcastIndexPodcastId || '',
         'stream',
-        amount,
+        finalAmount,
         roundDownStreamingTransactions,
         providerKey,
         item?.episodeGuid || ''
       )
     ])
 
-    for (const transaction of valueTransactions) {
-      transactionQueue.push(transaction)
+    const { feeValueTransactions, nonFeeValueTransactions, parentFeeValueTransactions,
+      parentNonFeeValueTransactions } = valueTransactions
+
+    const combinedNonFeeValueTransactions = nonFeeValueTransactions.concat(parentNonFeeValueTransactions)
+    const combinedFeeValueTransactions = feeValueTransactions.concat(parentFeeValueTransactions)
+
+    for (const combinedNonFeeValueTransaction of combinedNonFeeValueTransactions) {
+      transactionQueue.push(combinedNonFeeValueTransaction)
+    }
+
+    for (const combinedFeeValueTransaction of combinedFeeValueTransactions) {
+      transactionQueue.push(combinedFeeValueTransaction)
     }
 
     await AsyncStorage.setItem(PV.V4V.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
@@ -685,9 +847,20 @@ export const v4vDeleteProviderFromStorage = async (providerKey: 'alby') => {
   }
 }
 
-export const v4vGetActiveValueTag = (valueTags: ValueTag[], type?: 'lightning', method?: 'keysend') => {
+export const v4vGetActiveValueTag = (
+  valueTags: ValueTag[],
+  playerPosition: number,
+  type?: 'lightning',
+  method?: 'keysend',
+) => {
   if (!type || !method || !Array.isArray(valueTags)) return null
-  return valueTags.find((valueTag) => valueTag.type === type && valueTag.method === method)
+  let valueTag = valueTags.find((valueTag) => valueTag.type === type && valueTag.method === method)
+
+  if (valueTag) {
+    valueTag = getFinalValueTag(valueTag, playerPosition)
+  }
+
+  return valueTag
 }
 
 export const extractV4VValueTags = (episodeValue?: ValueTag[], podcastValue?: ValueTag[]) => {

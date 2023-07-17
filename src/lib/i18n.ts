@@ -2,6 +2,7 @@ import * as RNLocalize from 'react-native-localize'
 import Config from 'react-native-config'
 import { parseTranslatorsSection } from 'podverse-shared'
 
+// NOTE: remember to update src/lib/utility
 const translationGetters = {
   // lazy requires (metro bundler does not support symlinks)
   da: () => require('../resources/i18n/translations/da.json'),
@@ -10,6 +11,7 @@ const translationGetters = {
   en: () => require('../resources/i18n/translations/en.json'),
   es: () => require('../resources/i18n/translations/es.json'),
   fr: () => require('../resources/i18n/translations/fr.json'),
+  it: () => require('../resources/i18n/translations/it.json'),
   lt: () => require('../resources/i18n/translations/lt.json'),
   nb: () => require('../resources/i18n/translations/nb_NO.json'),
   oc: () => require('../resources/i18n/translations/oc.json'),
