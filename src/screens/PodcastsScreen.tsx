@@ -3,7 +3,18 @@ import messaging from '@react-native-firebase/messaging'
 import debounce from 'lodash/debounce'
 import { convertToNowPlayingItem, createEmailLinkUrl, Podcast, NowPlayingItem } from 'podverse-shared'
 import qs from 'qs'
-import { Alert, AppState, Dimensions, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
+import {
+  Alert,
+  AppState,
+  Dimensions,
+  Linking,
+  NativeEventEmitter,
+  NativeModules,
+  Platform,
+  StyleSheet,
+  View as RNView,
+  EmitterSubscription
+} from 'react-native'
 import { CarPlay } from 'react-native-carplay'
 import Config from 'react-native-config'
 import { endConnection as iapEndConnection, initConnection as iapInitConnection } from 'react-native-iap'
@@ -23,7 +34,7 @@ import {
   View
 } from '../components'
 import { SwipeRowBackButton } from '../components/SwipeRowBackMultipleButtons'
-import { errorLogger } from '../lib/logger'
+import { errorLogger, debugLogger } from '../lib/logger'
 import { isPortrait } from '../lib/deviceDetection'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
@@ -87,6 +98,8 @@ import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
 import { v4vInitialize } from '../state/actions/v4v/v4v'
 import { core } from '../styles'
 
+const { PVUnifiedPushModule } = NativeModules
+
 const _fileName = 'src/screens/PodcastsScreen.tsx'
 
 type Props = {
@@ -144,6 +157,9 @@ const getSearchPlaceholder = () => {
 export class PodcastsScreen extends React.Component<Props, State> {
   shouldLoad: boolean
   _unsubscribe: any | null
+  // TODO: Replace with service
+  pvNativeEventEmitter: NativeEventEmitter = new NativeEventEmitter(PVUnifiedPushModule)
+  pvNativeEventSubscriptions: EmitterSubscription[] = []
 
   constructor(props: Props) {
     super(props)
@@ -272,43 +288,72 @@ export class PodcastsScreen extends React.Component<Props, State> {
     PVEventEmitter.removeListener(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
     PVEventEmitter.removeListener(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
     // this._unsubscribe?.()
+
+    this.pvNativeEventSubscriptions.forEach((subscription) => subscription.remove())
+    // this.pvNativeEventEmitter.removeAllListeners('UnifiedPushMessage')
+  }
+
+  handleNoficationOpened = async (remoteMessage: any, goBackToRootScreen = false) => {
+    const podcastId = remoteMessage?.data?.podcastId
+    const episodeId = remoteMessage?.data?.episodeId
+
+    debugLogger(`Notification for podcastId: ${podcastId}, episodeId: ${episodeId}`)
+
+    if (goBackToRootScreen) {
+      await this._goBackWithDelay()
+    }
+
+    if (remoteMessage && podcastId && episodeId) {
+      navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(this.props.navigation, podcastId, episodeId)
+    }
+  }
+
+  handleInitialNotification = async (remoteMessage: any) => {
+    const podcastId = remoteMessage?.data?.podcastId
+    const episodeId = remoteMessage?.data?.episodeId
+    const podcastTitle = remoteMessage?.data?.podcastTitle
+    const episodeTitle = remoteMessage?.data?.episodeTitle
+    const notificationType = remoteMessage?.data?.notificationType
+    const isLiveNotification = notificationType === 'live'
+
+    debugLogger(
+      `Notification for podcastId: ${podcastId}, episodeId: ${episodeId}, isLiveNotification: ${isLiveNotification}`
+    )
+
+    if (remoteMessage && podcastId && episodeId && isLiveNotification) {
+      const GO_TO_LIVE_PODCAST = PV.Alerts.GO_TO_LIVE_PODCAST(
+        this.props.navigation,
+        podcastId,
+        episodeId,
+        podcastTitle,
+        episodeTitle,
+        this._goBackWithDelay
+      )
+      Alert.alert(GO_TO_LIVE_PODCAST.title, GO_TO_LIVE_PODCAST.message, GO_TO_LIVE_PODCAST.buttons)
+    } else if (remoteMessage && podcastId && episodeId) {
+      await this.handleNoficationOpened(remoteMessage, true)
+    }
   }
 
   setupDeeplinkListeners = () => {
-    messaging().onNotificationOpenedApp((remoteMessage) => {
-      const podcastId = remoteMessage?.data?.podcastId
-      const episodeId = remoteMessage?.data?.episodeId
+    if (Config.RELEASE_TYPE === 'F-Droid') {
+      this.pvNativeEventSubscriptions.push(
+        this.pvNativeEventEmitter.addListener('UnifiedPushMessage', ({instance, payload}) => { 
+          debugLogger(`Received UnifiedPush notification from ${instance} with payload`, payload)
+          this.handleNoficationOpened(payload)
+        })
+      )
 
-      if (remoteMessage && podcastId && episodeId) {
-        navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(this.props.navigation, podcastId, episodeId)
-      }
-    })
-
-    messaging()
-      .getInitialNotification()
-      .then(async (remoteMessage) => {
-        const podcastId = remoteMessage?.data?.podcastId
-        const episodeId = remoteMessage?.data?.episodeId
-        const podcastTitle = remoteMessage?.data?.podcastTitle
-        const episodeTitle = remoteMessage?.data?.episodeTitle
-        const notificationType = remoteMessage?.data?.notificationType
-        const isLiveNotification = notificationType === 'live'
-
-        if (remoteMessage && podcastId && episodeId && isLiveNotification) {
-          const GO_TO_LIVE_PODCAST = PV.Alerts.GO_TO_LIVE_PODCAST(
-            this.props.navigation,
-            podcastId,
-            episodeId,
-            podcastTitle,
-            episodeTitle,
-            this._goBackWithDelay
-          )
-          Alert.alert(GO_TO_LIVE_PODCAST.title, GO_TO_LIVE_PODCAST.message, GO_TO_LIVE_PODCAST.buttons)
-        } else if (remoteMessage && podcastId && episodeId) {
-          await this._goBackWithDelay()
-          navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(this.props.navigation, podcastId, episodeId)
-        }
-      })
+      PVUnifiedPushModule.getInitialNotification()
+        .then(this.handleInitialNotification)
+    } else {
+      messaging().onNotificationOpenedApp(this.handleNoficationOpened)
+  
+      messaging()
+        .getInitialNotification()
+        .then(this.handleInitialNotification)
+    }
+    
 
     Linking.getInitialURL().then((initialUrl) => {
       if (initialUrl) {
@@ -625,6 +670,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     const userAgent = getAppUserAgent()
     this.setGlobal({ userAgent })
+
+    // Initialize UnifiedPush on Android
+    // Only sets it if previously registered
+    if (Platform.OS === 'android' && Config.RELEASE_TYPE === 'F-Droid') {
+      await PVUnifiedPushModule.registerExistingDistributor()
+    }
 
     this.setState({ isLoadingMore: false }, () => {
       (async () => {

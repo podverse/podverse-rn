@@ -198,6 +198,8 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation platform('com.google.firebase:firebase-bom:29.0.3')
+
+    implementation 'com.github.UnifiedPush:android-connector:2.1.1'
     
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";

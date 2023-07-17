@@ -85,6 +85,18 @@ export class SettingsScreen extends React.Component<Props, State> {
             </Text>
           </TableCell>
           <TableCell
+            accessibilityLabel={translate('Notifications')}
+            includeDivider
+            onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenNotifications)}
+            testIDPrefix={`${testIDPrefix}_notifications`}
+            testIDSuffix=''>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+              {translate('Notifications')}
+            </Text>
+          </TableCell>
+          <TableCell
             accessibilityLabel={translate('Player')}
             includeDivider
             onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenPlayer)}
