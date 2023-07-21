@@ -656,6 +656,10 @@ export const core = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold,
     marginBottom: 16
   },
+  helperText: {
+    fontSize: PV.Fonts.sizes.sm,
+    paddingHorizontal: 16
+  },
   itemWrapper: {
     marginBottom: 24
   },
@@ -675,6 +679,10 @@ export const core = StyleSheet.create({
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
     marginVertical: 14
+  },
+  pickerSelectInner: {
+    marginHorizontal: 12,
+    paddingHorizontal: 12
   },
   pickerSelectIcon: {
     flex: 0,

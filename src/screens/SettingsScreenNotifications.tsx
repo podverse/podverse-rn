@@ -1,12 +1,13 @@
 /* eslint-disable max-len */
-import AsyncStorage from '@react-native-community/async-storage'
-import { NativeModules, Platform, StyleSheet } from 'react-native'
+import { NativeModules, Platform, StyleSheet, View as RNView } from 'react-native'
+import Config from 'react-native-config'
 import React from 'reactn'
 import RNPickerSelect from 'react-native-picker-select'
 import { debugLogger } from '../lib/logger'
 import { Icon, NumberSelectorWithText, ScrollView, SwitchWithText, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
+import { getUPNotificationsEnabled, removeUPNotificationsEnabled, setUPNotificationsEnabled } from '../services/notifications'
 import { trackPageView } from '../services/tracking'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent } from '../styles'
 
@@ -19,7 +20,8 @@ type Props = {
 type State = {
   distributor: string
   availableDistributors: string[]
-  upNoficiationsEnabled: string
+  notificationsEnabled: boolean
+  upNotificationsEnabled: boolean
 }
 
 const testIDPrefix = 'settings_screen_notifications'
@@ -31,7 +33,8 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
     this.state = {
       distributor: '',
       availableDistributors: [],
-      upNoficiationsEnabled: ''
+      notificationsEnabled: false,
+      upNotificationsEnabled: false
     }
   }
 
@@ -40,7 +43,7 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
   })
 
   async componentDidMount() {
-    const upNoficiationsEnabled = await AsyncStorage.getItem(PV.Keys.NOTIFICATIONS_UNIFIED_PUSH_ENABLED)
+    const upNotificationsEnabled = await getUPNotificationsEnabled()
     let distributor = ''
     let availableDistributors: string[] = []
 
@@ -61,19 +64,33 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
     this.setState({
       availableDistributors,
       distributor,
-      upNoficiationsEnabled: upNoficiationsEnabled ?? ''
+      upNotificationsEnabled
     })
 
     trackPageView('/settings-notifications', 'Settings Screen Notifications')
   }
 
-  _toggleNoficiationsEnabled = (upNoficiationsEnabled: string) => {
-    this.setState({ distributor: '', upNoficiationsEnabled }, () => {
+  _toggleNotificationsEnabled = (notificationsEnabled: boolean) => {
+    this.setState({ distributor: '', notificationsEnabled }, () => {
       (async () => {
-        if (upNoficiationsEnabled) {
-          await AsyncStorage.setItem(PV.Keys.NOTIFICATIONS_UNIFIED_PUSH_ENABLED, 'TRUE')
+        if (notificationsEnabled) {
+          debugLogger('Registering notifications')
+          // setup
         } else {
-          await AsyncStorage.removeItem(PV.Keys.NOTIFICATIONS_UNIFIED_PUSH_ENABLED)
+          debugLogger('Unregistering notifications')
+          // remove
+        }
+      })()
+    })
+  }
+
+  _toggleUPNotificationsEnabled = (upNotificationsEnabled: boolean) => {
+    this.setState({ distributor: '', upNotificationsEnabled }, () => {
+      (async () => {
+        if (upNotificationsEnabled) {
+          await setUPNotificationsEnabled()
+        } else {
+          await removeUPNotificationsEnabled()
 
           debugLogger('Unregistering UnifiedPush')
           await PVUnifiedPushModule.unregister()
@@ -82,9 +99,7 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
     })
   }
 
-
   _setUPDistributor = (newDistributor: string) => {
-    // TODO: Investigate getting called twice in a row because I don't know react
     const { distributor } = this.state
     if (newDistributor && newDistributor !== distributor) {
       this.setState({ distributor: newDistributor }, () => {
@@ -97,10 +112,15 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
   }
 
   render() {
-    const { availableDistributors, distributor, upNoficiationsEnabled } = this.state
+    const { availableDistributors, distributor, upNotificationsEnabled } = this.state
     const { globalTheme } = this.global
     const isDarkMode = globalTheme === darkTheme
 
+    // TODO: There is a weird bug with RNPickerSelect onValueChange
+    // that results in the handler being called twice on value change.
+    // This affects all our RNPickerSelects, so we should probably write
+    // a HOC to fix it, then use the HOC everywhere.
+    // More info: https://github.com/lawnstarter/react-native-picker-select/issues/265
     const distributorItems = availableDistributors.map(d => ({
       label: d,
       value: d
@@ -111,32 +131,75 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
         contentContainerStyle={styles.scrollViewContentContainer}
         style={styles.wrapper}
         testID={`${testIDPrefix}_view`}>
-        <View style={core.itemWrapper}>
-          <SwitchWithText
-            accessibilityLabel={translate('Enable UnifiedPush Notifications')}
-            onValueChange={this._toggleNoficiationsEnabled}
-            testID={`${testIDPrefix}_enable_unifiedpush_notifications`}
-            text={translate('Enable UnifiedPush Notifications')}
-            value={upNoficiationsEnabled}
-          />
-        </View>
-        <View style={core.itemWrapperReducedHeight}>
-          <RNPickerSelect
-            disabled={!upNoficiationsEnabled}
-            fixAndroidTouchableBug
-            items={distributorItems}
-            onValueChange={this._setUPDistributor}
-            placeholder={placeholderItem}
-            style={hidePickerIconOnAndroidTransparent(isDarkMode)}
-            useNativeAndroidPickerStyle={false}
-            value={distributor}/>
-        </View>
+        {
+          (Config.RELEASE_TYPE === 'F-Droid') && (
+            <View style={core.itemWrapper}>
+              <SwitchWithText
+                accessibilityLabel={translate('Notifications')}
+                onValueChange={this._toggleNotificationsEnabled}
+                testID={`${testIDPrefix}_enable_notifications`}
+                text={translate('Notifications')}
+                value={upNotificationsEnabled}
+              />
+            </View>
+          )
+        }
+        {
+          (Config.RELEASE_TYPE !== 'F-Droid') && (
+            <>
+              <View style={core.itemWrapper}>
+                <SwitchWithText
+                  accessibilityLabel={translate('Enable UnifiedPush notifications')}
+                  onValueChange={this._toggleUPNotificationsEnabled}
+                  testID={`${testIDPrefix}_enable_unifiedpush_notifications`}
+                  text={translate('Enable UnifiedPush notifications')}
+                  value={upNotificationsEnabled}
+                />
+              </View>
+              {
+                upNotificationsEnabled && (
+                  <View style={core.itemWrapperReducedHeight}>
+                    <RNPickerSelect
+                      disabled={!upNotificationsEnabled}
+                      fixAndroidTouchableBug
+                      items={distributorItems}
+                      onValueChange={this._setUPDistributor}
+                      placeholder={placeholderItem}
+                      style={hidePickerIconOnAndroidTransparent(isDarkMode)}
+                      useNativeAndroidPickerStyle={false}
+                      value={distributor}>
+                      <RNView
+                        accessible
+                        accessibilityLabel={`${translate('Select a distributor')}`}
+                        importantForAccessibility='yes'
+                        style={[core.selectorWrapper, styles.pickerSelectInner]}>
+                        <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[core.pickerSelect, globalTheme.text]}>
+                          {!!distributor ? distributor : placeholderItem.label}
+                        </Text>
+                        <Icon name='angle-down' size={14} style={[core.pickerSelectIcon, globalTheme.text]} />
+                      </RNView>
+                    </RNPickerSelect>
+                    <View style={core.itemWrapper}>
+                      <Text style={core.helperText}>{translate('Notifications UP help text')}</Text>
+                    </View>
+                  </View>
+                )
+              }
+            </>
+          )
+        }
       </ScrollView>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  pickerSelectInner: {
+    marginTop: 8,
+    marginBottom: 20,
+    marginHorizontal: 12,
+    paddingHorizontal: 12
+  },
   scrollViewContentContainer: {
     paddingBottom: 48
   },
@@ -148,6 +211,6 @@ const styles = StyleSheet.create({
 })
 
 const placeholderItem = {
-  label: 'Select a distributor',
+  label: translate('Select a distributor'),
   value: ''
 }
