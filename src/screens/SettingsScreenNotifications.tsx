@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
-import { NativeModules, Platform, StyleSheet, View as RNView } from 'react-native'
-import Config from 'react-native-config'
-import React from 'reactn'
+import { Alert, NativeModules, StyleSheet, View as RNView } from 'react-native'
+import React, { getGlobal } from 'reactn'
 import RNPickerSelect from 'react-native-picker-select'
+import { checkIfFDroidAppVersion } from '../lib/deviceDetection'
 import { debugLogger } from '../lib/logger'
-import { Icon, NumberSelectorWithText, ScrollView, SwitchWithText, Text, View } from '../components'
+import { Icon, ScrollView, SwitchWithText, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { getUPNotificationsEnabled, removeUPNotificationsEnabled, setUPNotificationsEnabled } from '../services/notifications'
+import { checkIfUPNotificationsEnabled, disableUPNotifications, enableUPNotifications } from '../services/notifications'
 import { trackPageView } from '../services/tracking'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent } from '../styles'
 
@@ -46,11 +46,11 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
   })
 
   async componentDidMount() {
-    const upNotificationsEnabled = await getUPNotificationsEnabled()
+    const upNotificationsEnabled = await checkIfUPNotificationsEnabled()
     let distributor = ''
     let availableDistributors: string[] = []
 
-    if (Platform.OS === 'android' && Config.RELEASE_TYPE === 'F-Droid') {
+    if (checkIfFDroidAppVersion()) {
       distributor = await PVUnifiedPushModule.getCurrentDistributor()
       debugLogger(`Current UnifiedPush distributor: ${distributor}`)
 
@@ -62,12 +62,6 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
       if (availableDistributors.length === 0) {
         debugLogger('No UnifiedPush available')
       }
-
-      const keys = await PVUnifiedPushModule.getUPPushKeys()
-
-      // TODO: Send keys to server
-      this.publicKey = keys.publicKey
-      this.authKey = keys.authKey
     }
 
     this.setState({
@@ -79,45 +73,40 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
     trackPageView('/settings-notifications', 'Settings Screen Notifications')
   }
 
-  _toggleNotificationsEnabled = (notificationsEnabled: boolean) => {
-    this.setState({ distributor: '', notificationsEnabled }, () => {
-      (async () => {
-        if (notificationsEnabled) {
-          debugLogger('Registering notifications')
-          // setup
-        } else {
-          debugLogger('Unregistering notifications')
-          // remove
-        }
-      })()
-    })
+  _toggleUPNotifications = (upNotificationsEnabled: boolean) => {
+    const { session } = getGlobal()
+
+    if (!session?.isLoggedIn) {
+      Alert.alert(
+        PV.Alerts.LOGIN_TO_ENABLE_PODCAST_NOTIFICATIONS.title,
+        PV.Alerts.LOGIN_TO_ENABLE_PODCAST_NOTIFICATIONS.message
+      )
+    } else {
+      this.setState({ distributor: '', upNotificationsEnabled }, () => {
+        (async () => {
+          if (upNotificationsEnabled) {
+            // Do nothing except update component state.
+            // It isn't until the user selects a distributor that we want to save
+            // the info server and enable UP notifications locally.
+          } else {
+            await disableUPNotifications()
+            debugLogger('Unregistering UnifiedPush')
+            await PVUnifiedPushModule.unregister()
+          }
+        })()
+      })
+    }
   }
 
-  _toggleUPNotificationsEnabled = (upNotificationsEnabled: boolean) => {
-    this.setState({ distributor: '', upNotificationsEnabled }, () => {
-      (async () => {
-        if (upNotificationsEnabled) {
-          await setUPNotificationsEnabled()
-        } else {
-          await removeUPNotificationsEnabled()
-
-          debugLogger('Unregistering UnifiedPush')
-          await PVUnifiedPushModule.unregister()
-        }
-      })()
-    })
-  }
-
-  _setUPDistributor = (newDistributor: string) => {
+  _enableUPNotifications = (newDistributor: string) => {
     const { distributor } = this.state
     if (newDistributor && newDistributor !== distributor) {
       this.setState({ distributor: newDistributor }, () => {
         (async () => {
           debugLogger(`Setting UnifiedPush distributor: ${newDistributor}`)
-          await PVUnifiedPushModule.setUPDistributor(newDistributor)
-
-          debugLogger(`UnifiedPush publicKey: ${this.publicKey}`)
-          debugLogger(`UnifiedPush authKey: ${this.authKey}`)
+          if (newDistributor) {
+            await enableUPNotifications(newDistributor)
+          }
         })()
       })
     }
@@ -144,25 +133,12 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
         style={styles.wrapper}
         testID={`${testIDPrefix}_view`}>
         {
-          (Config.RELEASE_TYPE !== 'F-Droid') && (
-            <View style={core.itemWrapper}>
-              <SwitchWithText
-                accessibilityLabel={translate('Notifications')}
-                onValueChange={this._toggleNotificationsEnabled}
-                testID={`${testIDPrefix}_enable_notifications`}
-                text={translate('Notifications')}
-                value={upNotificationsEnabled}
-              />
-            </View>
-          )
-        }
-        {
-          (Config.RELEASE_TYPE === 'F-Droid') && (
+          (checkIfFDroidAppVersion()) && (
             <>
               <View style={core.itemWrapper}>
                 <SwitchWithText
                   accessibilityLabel={translate('Enable UnifiedPush notifications')}
-                  onValueChange={this._toggleUPNotificationsEnabled}
+                  onValueChange={this._toggleUPNotifications}
                   testID={`${testIDPrefix}_enable_unifiedpush_notifications`}
                   text={translate('Enable UnifiedPush notifications')}
                   value={upNotificationsEnabled}
@@ -175,7 +151,7 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
                       disabled={!upNotificationsEnabled}
                       fixAndroidTouchableBug
                       items={distributorItems}
-                      onValueChange={this._setUPDistributor}
+                      onValueChange={this._enableUPNotifications}
                       placeholder={placeholderItem}
                       style={hidePickerIconOnAndroidTransparent(isDarkMode)}
                       useNativeAndroidPickerStyle={false}

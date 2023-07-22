@@ -35,7 +35,7 @@ import {
 } from '../components'
 import { SwipeRowBackButton } from '../components/SwipeRowBackMultipleButtons'
 import { errorLogger, debugLogger } from '../lib/logger'
-import { isPortrait } from '../lib/deviceDetection'
+import { checkIfFDroidAppVersion, isPortrait } from '../lib/deviceDetection'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
@@ -336,7 +336,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   setupDeeplinkListeners = () => {
-    if (Config.RELEASE_TYPE === 'F-Droid') {
+    if (checkIfFDroidAppVersion()) {
       this.pvNativeEventSubscriptions.push(
         this.pvNativeEventEmitter.addListener('UnifiedPushMessage', ({instance, payload}) => { 
           debugLogger(`Received UnifiedPush notification from ${instance} with payload`, payload)
@@ -671,7 +671,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     // Initialize UnifiedPush on Android
     // Only sets it if previously registered
-    if (Platform.OS === 'android' && Config.RELEASE_TYPE === 'F-Droid') {
+    if (checkIfFDroidAppVersion()) {
       await PVUnifiedPushModule.registerExistingDistributor()
     }
 

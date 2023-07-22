@@ -1,10 +1,11 @@
 import React from 'reactn'
 import Config from 'react-native-config'
 import { darkTheme } from '../styles'
+import { checkIfFDroidAppVersion } from '../lib/deviceDetection'
 import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { enableNotifications, getUPNotificationsEnabled,
+import { checkIfUPNotificationsEnabled, enableFCMNotifications,
   notificationSubscribe, notificationUnsubscribe } from '../services/notifications'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { ActivityIndicator, NavItemIcon, NavItemWrapper } from '.'
@@ -41,15 +42,15 @@ export class NavNotificationsIcon extends React.Component<Props, State> {
       onNotificationSelectionChanged({ isEnabled: true })
     }
 
-    if (Config.RELEASE_TYPE === 'F-Droid') {
-      const isEnabled = await getUPNotificationsEnabled()
+    if (checkIfFDroidAppVersion()) {
+      const isEnabled = await checkIfUPNotificationsEnabled()
       if (!isEnabled) {
         navigation.navigate(PV.RouteNames.SettingsScreenNotifications)
       } else {
         await handleNotificationSubscribed()
       }
     } else {
-      await enableNotifications(handleNotificationSubscribed)
+      await enableFCMNotifications(handleNotificationSubscribed)
     }
 
     this.setState({ isLoading: false })
