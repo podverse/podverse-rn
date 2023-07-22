@@ -27,6 +27,9 @@ type State = {
 const testIDPrefix = 'settings_screen_notifications'
 
 export class SettingsScreenNotifications extends React.Component<Props, State> {
+  publicKey: string
+  authKey: string
+
   constructor(props: Props) {
     super(props)
 
@@ -47,7 +50,7 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
     let distributor = ''
     let availableDistributors: string[] = []
 
-    if (Platform.OS === 'android') {
+    if (Platform.OS === 'android' && Config.RELEASE_TYPE === 'F-Droid') {
       distributor = await PVUnifiedPushModule.getCurrentDistributor()
       debugLogger(`Current UnifiedPush distributor: ${distributor}`)
 
@@ -59,6 +62,12 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
       if (availableDistributors.length === 0) {
         debugLogger('No UnifiedPush available')
       }
+
+      const keys = await PVUnifiedPushModule.getUPPushKeys()
+
+      // TODO: Send keys to server
+      this.publicKey = keys.publicKey
+      this.authKey = keys.authKey
     }
 
     this.setState({
@@ -106,6 +115,9 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
         (async () => {
           debugLogger(`Setting UnifiedPush distributor: ${newDistributor}`)
           await PVUnifiedPushModule.setUPDistributor(newDistributor)
+
+          debugLogger(`UnifiedPush publicKey: ${this.publicKey}`)
+          debugLogger(`UnifiedPush authKey: ${this.authKey}`)
         })()
       })
     }
@@ -132,7 +144,7 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
         style={styles.wrapper}
         testID={`${testIDPrefix}_view`}>
         {
-          (Config.RELEASE_TYPE === 'F-Droid') && (
+          (Config.RELEASE_TYPE !== 'F-Droid') && (
             <View style={core.itemWrapper}>
               <SwitchWithText
                 accessibilityLabel={translate('Notifications')}
@@ -145,7 +157,7 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
           )
         }
         {
-          (Config.RELEASE_TYPE !== 'F-Droid') && (
+          (Config.RELEASE_TYPE === 'F-Droid') && (
             <>
               <View style={core.itemWrapper}>
                 <SwitchWithText

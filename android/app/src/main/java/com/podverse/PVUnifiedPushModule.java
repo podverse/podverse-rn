@@ -6,7 +6,6 @@ import static org.unifiedpush.android.connector.UnifiedPush.registerApp;
 import static org.unifiedpush.android.connector.UnifiedPush.saveDistributor;
 import static org.unifiedpush.android.connector.UnifiedPush.unregisterApp;
 
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -38,12 +37,14 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.unifiedpush.android.connector.UnifiedPush;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -59,7 +60,7 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
     private static final String DELIMITER = ",";
 
     static ReadableMap initialNotification = null;
-    private HashMap<Integer, Boolean> initialNotificationMap = new HashMap<>();
+    private final HashMap<Integer, Boolean> initialNotificationMap = new HashMap<>();
 
     private static ReactApplicationContext applicationContext;
 
@@ -99,7 +100,8 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
             registerApp(
                     context,
                     "default",
-                    new ArrayList<String>(),
+                    // new ArrayList<String>() for unencrypted UTF-8, if you want to disable encryption
+                    new ArrayList<String>(Collections.singleton(UnifiedPush.FEATURE_BYTES_MESSAGE)),
                     context.getPackageName()
             );
 
@@ -118,6 +120,8 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
         if (!distributor.isEmpty()) {
             Log.i("com.podverse.PVUnifiedPushModule", "current UP distributor: " + distributor);
             promise.resolve(distributor);
+
+            return;
         }
 
         Log.i("com.podverse.PVUnifiedPushModule", "no UP distributor set");
@@ -154,7 +158,8 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
         registerApp(
                 context,
                 "default",
-                new ArrayList<String>(),
+                // new ArrayList<String>() for unencrypted UTF-8, if you want to disable encryption
+                new ArrayList<String>(Collections.singleton(UnifiedPush.FEATURE_BYTES_MESSAGE)),
                 context.getPackageName()
         );
 
@@ -169,6 +174,22 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
 
         Log.i("com.podverse.PVUnifiedPushModule", "unregistering UP distributor ");
         unregisterApp(context, "default");
+    }
+
+    @ReactMethod
+    public void getUPPushKeys(Promise promise) {
+        var context = this.getReactApplicationContext();
+
+        var pvUnifiedPushEncryption = new PVUnifiedPushEncryption(context);
+
+        var publicKey = pvUnifiedPushEncryption.getPublicKey();
+        var authKey = pvUnifiedPushEncryption.getAuthKey();
+
+        WritableMap writableMap = new WritableNativeMap();
+        writableMap.putString("publicKey", publicKey);
+        writableMap.putString("authKey", authKey);
+
+        promise.resolve(writableMap);
     }
 
     @ReactMethod
@@ -227,7 +248,7 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
 
     private static WritableMap jsonToReact(JSONObject jsonObject) throws JSONException {
         WritableMap writableMap = Arguments.createMap();
-        Iterator iterator = jsonObject.keys();
+        Iterator<String> iterator = jsonObject.keys();
         while (iterator.hasNext()) {
             String key = (String) iterator.next();
             Object value = jsonObject.get(key);
@@ -365,9 +386,7 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
             throw new RuntimeException(e);
         }
 
-        // TODO: Resolve image URL in thread
-        // https://stackoverflow.com/questions/6343166/how-can-i-fix-android-os-networkonmainthreadexception
-        //Bitmap image = getBitmapfromUrl(imageUrl);
+        Bitmap image = getBitmapfromUrl(imageUrl);
 
         Intent intent = new Intent(context, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -377,13 +396,13 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
                 PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
-                //.setLargeIcon(image) /* Notification icon image */
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, notificationType)
+                .setLargeIcon(image) /* Notification icon image */
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(messageTitle)
                 .setContentText(messageBody)
-                //.setStyle(new NotificationCompat.BigPictureStyle()
-                //        .bigPicture(image)) /* Notification with Image */
+                .setStyle(new NotificationCompat.BigPictureStyle()
+                        .bigPicture(image)) /* Notification with Image */
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
@@ -403,12 +422,10 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
                             NotificationManager.IMPORTANCE_HIGH :
                             NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager.createNotificationChannel(channel);
-            notificationBuilder.setChannelId(notificationType);
         }
 
         Log.d("com.podverse.PVUnifiedPushModule", "Sending notification of type " + notificationType + " with id " + messageId);
 
-        // TODO: Check permissions to send notifications?
         notificationManager.notify(messageId, notificationBuilder.build());
     }
 

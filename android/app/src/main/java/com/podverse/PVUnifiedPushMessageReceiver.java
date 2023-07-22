@@ -9,9 +9,7 @@ import com.facebook.react.bridge.WritableNativeMap;
 
 import org.unifiedpush.android.connector.MessagingReceiver;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.zip.CRC32;
 
 public class PVUnifiedPushMessageReceiver extends MessagingReceiver {
     public PVUnifiedPushMessageReceiver() {
@@ -64,55 +62,63 @@ public class PVUnifiedPushMessageReceiver extends MessagingReceiver {
 
     @Override
     public void onMessage(@NonNull Context context, @NonNull byte[] message, @NonNull String instance) {
-        // TODO: Handle foreground/background case
-        // https://github.com/invertase/react-native-firebase/blob/main/packages/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingReceiver.java#L39-L43
-
         /*
+            UnifiedPush notification flow
+
             1. handle receive message
-                a. generate message id (timestamp + sha hash?/crc32?)
-                b. insert message id into property, comma separated
-                c. insert message into another property, comma separated (indices match first property)
-                d. in both properties, trim the # of elements to a reasonable number (10, 100)
-                e. store message in-memory in hashmap by message id, for efficiency if app is open
+                a. generate message id (least significant bits of current millisecond timestamp)
+                b. insert message id into property of available messages, comma separated
+                c. insert message into another property, with they message id as key
+                d. in message id list, trim the # of elements to a reasonable number
             2. generate notification
                 a. generate intent with message id added to extras
                 b. trigger notification with intent
             3. handle intent while app is open
-                a. use react native ActivityEventListener?
-                    * https://github.com/invertase/react-native-firebase/blob/main/packages/messaging/android/src/main/java/io/invertase/firebase/messaging/ReactNativeFirebaseMessagingModule.java#L259
-                b. get message id from intent extras
-                c. attempt to get message from hashmap in memory
-                d. fall back to getting message from property by message id and removing it
-                e. send message via event emitter
+                a. get message id from intent extras
+                b. get message from property by message id and remove it
+                c. send message via event emitter, event type "UnifiedPushMessage"
             4. handle loading intent from current activity on application start
-                a. see 3.b-3.d
-                b. return message directly via promise
-            5. in all cases, decrypt message payload with EDCH p256
+                a. see 3.a-3.b
+                b. return message directly via promise in getInitialNotification
+            5. in all cases, decrypt message payload with ECDH p256
+
+            Expected decrypted JSON payload:
+            {
+                "body": "notification text",
+                "title": "notification title",
+                "podcastId": "Podverse podcast id",
+                "episodeId": "Podverse episode id",
+                "podcastTitle": "podcast title",
+                "episodeTitle": "episode title",
+                "notificationType": "new-episode|live",
+                "timeSent": "iso 8601 format timestamp",
+                "image": "podcast episode image"
+            }
          */
 
-        // Called when a new message is received. The message contains the full POST body of the push message
+        // Called when a new message is received.
+        // The message contains the full POST body of the push message
+        // Encrypted with aes128gcm webpush ecdh
 
-        Log.i("com.podverse.PVUnifiedPushMessageReceiver", "Received UP message");
+        // Handle decryption and image downloading in a separate thread to avoid blocking the main process
+        new Thread(() -> {
+            Log.i("com.podverse.PVUnifiedPushMessageReceiver", "Received UP message");
 
-        String messageString = new String(message, StandardCharsets.UTF_8);
-        var notificationCRC = new CRC32();
-        notificationCRC.update(message);
+            // if you want to disable encryption
+            // String messageString = new String(message, StandardCharsets.UTF_8);
+            String messageString = PVUnifiedPushEncryption.decryptNotification(context, message);
 
-        // This isn't a reliable timestamp, just the lowest 32 bits to get something "unique"
-        int messageId = (int) new Date().getTime();
+            if (messageString == null) {
+                Log.i("com.podverse.PVUnifiedPushMessageReceiver", "Unable to decrypt UP message");
+                return;
+            }
 
-        PVUnifiedPushModule.storeNotificationString(context, messageString, messageId);
-        PVUnifiedPushModule.sendNotification(context, messageString, messageId, instance);
+            // This isn't a reliable timestamp, just the lowest 32 bits to get something "unique"
+            int messageId = (int) new Date().getTime();
 
-        /*Log.d("com.podverse.PVUnifiedPushMessageReceiver",
-                "received message from instance '" + instance + "': " + messageString);
+            PVUnifiedPushModule.storeNotificationString(context, messageString, messageId);
 
-        var UPMessage = new PVUnifiedPushMessage(
-                "UnifiedPushMessage",
-                instance,
-                messageString
-        );
-
-        PVUnifiedPushModule.emitEvent(UPMessage);*/
+            PVUnifiedPushModule.sendNotification(context, messageString, messageId, instance);
+        }).start();
     }
 }

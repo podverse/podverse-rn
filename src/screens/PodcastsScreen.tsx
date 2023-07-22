@@ -349,9 +349,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     } else {
       messaging().onNotificationOpenedApp(this.handleNoficationOpened)
   
-      messaging()
-        .getInitialNotification()
-        .then(this.handleInitialNotification)
+      messaging().getInitialNotification().then(this.handleInitialNotification)
     }
     
 
