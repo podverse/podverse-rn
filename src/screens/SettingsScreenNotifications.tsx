@@ -10,7 +10,6 @@ import { PV } from '../resources'
 import { getUPNotificationsEnabled, removeUPNotificationsEnabled, setUPNotificationsEnabled } from '../services/notifications'
 import { trackPageView } from '../services/tracking'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent } from '../styles'
-import Config from 'react-native-config'
 
 const { PVUnifiedPushModule } = NativeModules
 
