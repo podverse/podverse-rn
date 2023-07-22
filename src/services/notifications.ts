@@ -52,8 +52,29 @@ export const getUPNotificationsEnabled = async () => {
 }
 
 export const setUPNotificationsEnabled = async () => {
-  await requestNotifications(['alert', 'sound', 'badge'])
-  await AsyncStorage.setItem(PV.Keys.NOTIFICATIONS_UNIFIED_PUSH_ENABLED, 'TRUE')
+  const { session } = getGlobal()
+
+  if (!session?.isLoggedIn) {
+    Alert.alert(
+      PV.Alerts.LOGIN_TO_ENABLE_PODCAST_NOTIFICATIONS.title,
+      PV.Alerts.LOGIN_TO_ENABLE_PODCAST_NOTIFICATIONS.message
+    )
+  } else {
+    const { status } = await requestNotifications(['alert', 'sound', 'badge'])
+    const enabled = status === RESULTS.GRANTED || status === RESULTS.LIMITED
+    if (enabled) {
+      // get upEndpoint
+      // save upEndpoint to server
+      // await saveOrUpdateFCMDevice(fcmToken)
+    } else {
+      Alert.alert(PV.Alerts.ENABLE_NOTIFICATIONS_SETTINGS.title, PV.Alerts.ENABLE_NOTIFICATIONS_SETTINGS.message, [
+        { text: translate('Cancel') },
+        { text: translate('Go to Settings'), onPress: () => Linking.openSettings() }
+      ])
+    }
+
+    await AsyncStorage.setItem(PV.Keys.NOTIFICATIONS_UNIFIED_PUSH_ENABLED, 'TRUE')
+  }
 }
 
 export const removeUPNotificationsEnabled = async () => {

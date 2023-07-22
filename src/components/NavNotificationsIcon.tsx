@@ -4,11 +4,13 @@ import { darkTheme } from '../styles'
 import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { enableNotifications, notificationSubscribe, notificationUnsubscribe } from '../services/notifications'
+import { enableNotifications, getUPNotificationsEnabled,
+  notificationSubscribe, notificationUnsubscribe } from '../services/notifications'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { ActivityIndicator, NavItemIcon, NavItemWrapper } from '.'
 
 type Props = {
+  navigation: any
   podcastId: string
   isEnabled: boolean
   onNotificationSelectionChanged: any
@@ -29,7 +31,7 @@ export class NavNotificationsIcon extends React.Component<Props, State> {
   }
 
   onEnableNotifications = async () => {
-    const { onNotificationSelectionChanged, podcastId } = this.props
+    const { onNotificationSelectionChanged, navigation, podcastId } = this.props
     this.setState({ isLoading: true })
 
     const handleNotificationSubscribed = async () => {
@@ -39,7 +41,17 @@ export class NavNotificationsIcon extends React.Component<Props, State> {
       onNotificationSelectionChanged({ isEnabled: true })
     }
 
-    await enableNotifications(handleNotificationSubscribed)
+    if (Config.RELEASE_TYPE === 'F-Droid') {
+      const isEnabled = await getUPNotificationsEnabled()
+      if (!isEnabled) {
+        navigation.navigate(PV.RouteNames.SettingsScreenNotifications)
+      } else {
+        await handleNotificationSubscribed()
+      }
+    } else {
+      await enableNotifications(handleNotificationSubscribed)
+    }
+
     this.setState({ isLoading: false })
   }
 
