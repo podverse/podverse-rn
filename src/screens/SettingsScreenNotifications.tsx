@@ -144,7 +144,7 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
         style={styles.wrapper}
         testID={`${testIDPrefix}_view`}>
         {
-          (Config.RELEASE_TYPE === 'F-Droid') && (
+          (Config.RELEASE_TYPE !== 'F-Droid') && (
             <View style={core.itemWrapper}>
               <SwitchWithText
                 accessibilityLabel={translate('Notifications')}
@@ -157,7 +157,7 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
           )
         }
         {
-          (Config.RELEASE_TYPE !== 'F-Droid') && (
+          (Config.RELEASE_TYPE === 'F-Droid') && (
             <>
               <View style={core.itemWrapper}>
                 <SwitchWithText
