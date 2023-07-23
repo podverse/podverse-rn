@@ -106,7 +106,7 @@ export const checkIfUPNotificationsEnabled = async () => {
   return !!value
 }
 
-export const enableUPNotifications = async (newUpEndpoint: string) => {
+export const setUPDistributor = async (upDistributor: string) => {
   const { session } = getGlobal()
 
   if (!session?.isLoggedIn) {
@@ -118,18 +118,7 @@ export const enableUPNotifications = async (newUpEndpoint: string) => {
     const { status } = await requestNotifications(['alert', 'sound', 'badge'])
     const enabled = status === RESULTS.GRANTED || status === RESULTS.LIMITED
     if (enabled) {
-      const keys = await PVUnifiedPushModule.getUPPushKeys()
-
-      const upPublicKey = keys.publicKey
-      const upAuthKey = keys.authKey
-      debugLogger(`UnifiedPush publicKey: ${upPublicKey}`)
-      debugLogger(`UnifiedPush authKey: ${upAuthKey}`)
-
-      await saveOrUpdateUPDevice(newUpEndpoint, upPublicKey, upAuthKey)
-
-      // Only finish setting up the distributor after the upDevice
-      // has been created in the server-side database.
-      await PVUnifiedPushModule.setUPDistributor(newUpEndpoint)
+      await PVUnifiedPushModule.setUPDistributor(upDistributor)
     } else {
       Alert.alert(PV.Alerts.ENABLE_NOTIFICATIONS_SETTINGS.title, PV.Alerts.ENABLE_NOTIFICATIONS_SETTINGS.message, [
         { text: translate('Cancel') },
@@ -138,6 +127,26 @@ export const enableUPNotifications = async (newUpEndpoint: string) => {
     }
 
     await AsyncStorage.setItem(PV.Keys.NOTIFICATIONS_UNIFIED_PUSH_ENABLED, 'TRUE')
+  }
+}
+
+export const enableUPNotifications = async (newUpEndpoint: string) => {
+  const { session } = getGlobal()
+
+  if (!session?.isLoggedIn) {
+    Alert.alert(
+      PV.Alerts.LOGIN_TO_ENABLE_PODCAST_NOTIFICATIONS.title,
+      PV.Alerts.LOGIN_TO_ENABLE_PODCAST_NOTIFICATIONS.message
+    )
+  } else {
+    const keys = await PVUnifiedPushModule.getUPPushKeys()
+
+    const upPublicKey = keys.publicKey
+    const upAuthKey = keys.authKey
+    debugLogger(`UnifiedPush publicKey: ${upPublicKey}`)
+    debugLogger(`UnifiedPush authKey: ${upAuthKey}`)
+
+    await saveOrUpdateUPDevice(newUpEndpoint, upPublicKey, upAuthKey)
   }
 }
 

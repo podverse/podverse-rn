@@ -290,7 +290,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // this._unsubscribe?.()
 
     this.pvNativeEventSubscriptions.forEach((subscription) => subscription.remove())
-    // this.pvNativeEventEmitter.removeAllListeners('UnifiedPushMessage')
   }
 
   handleNoficationOpened = async (remoteMessage: any, goBackToRootScreen = false) => {

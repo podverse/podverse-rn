@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Alert, NativeModules, StyleSheet, View as RNView } from 'react-native'
+import { Alert, NativeModules, StyleSheet, View as RNView, NativeEventEmitter, EmitterSubscription } from 'react-native'
 import React, { getGlobal } from 'reactn'
 import RNPickerSelect from 'react-native-picker-select'
 import { checkIfFDroidAppVersion } from '../lib/deviceDetection'
@@ -7,7 +7,7 @@ import { debugLogger } from '../lib/logger'
 import { Icon, ScrollView, SwitchWithText, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { checkIfUPNotificationsEnabled, disableUPNotifications, enableUPNotifications } from '../services/notifications'
+import { checkIfUPNotificationsEnabled, disableUPNotifications, enableUPNotifications, setUPDistributor } from '../services/notifications'
 import { trackPageView } from '../services/tracking'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent } from '../styles'
 
@@ -27,6 +27,9 @@ type State = {
 const testIDPrefix = 'settings_screen_notifications'
 
 export class SettingsScreenNotifications extends React.Component<Props, State> {
+  pvNativeEventEmitter: NativeEventEmitter = new NativeEventEmitter(PVUnifiedPushModule)
+  pvNativeEventSubscriptions: EmitterSubscription[] = []
+  
   publicKey: string
   authKey: string
 
@@ -62,6 +65,15 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
       if (availableDistributors.length === 0) {
         debugLogger('No UnifiedPush available')
       }
+
+      this.pvNativeEventSubscriptions.push(
+        this.pvNativeEventEmitter.addListener('UnifiedPushNewEndpoint', ({instance, payload}) => { 
+          (async () => {
+            debugLogger(`Received UnifiedPush endpoint from ${instance}: ${payload.endpoint}`)
+            await enableUPNotifications(payload.endpoint)
+          })()
+        })
+      )
     }
 
     this.setState({
@@ -71,6 +83,10 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
     })
 
     trackPageView('/settings-notifications', 'Settings Screen Notifications')
+  }
+
+  componentWillUnmount() {
+    this.pvNativeEventSubscriptions.forEach((subscription) => subscription.remove())
   }
 
   _toggleUPNotifications = (upNotificationsEnabled: boolean) => {
@@ -105,7 +121,7 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
         (async () => {
           debugLogger(`Setting UnifiedPush distributor: ${newDistributor}`)
           if (newDistributor) {
-            await enableUPNotifications(newDistributor)
+            await setUPDistributor(newDistributor)
           }
         })()
       })
