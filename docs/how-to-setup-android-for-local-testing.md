@@ -25,6 +25,8 @@ If you change any of the `.env` variables, you will need to rebuild the app with
 
 If you update any translations in the i18n json files, you will need to restart the React Native server by running `npm run dev`.
 
+I'm not sure why, but sometimes I have had to re-run `adb reverse tcp:1234 tcp:1234` to reestablish a connection between the device and local Podverse API server.
+
 ## React Native Debugger UI
 
 By default the Javascript / React Native logs will be output to your terminal that is running the React Native server. If you would like the output to be redirected to the React Native Debugger UI (which would allow you to use your web browser's developer console for debugging), then you will need to do the following:
@@ -38,3 +40,5 @@ By default the Javascript / React Native logs will be output to your terminal th
 7. Go back into the mobile app, and shake it to reveal the React Native menu again.
 8. Tap the "Debug" option.
 9. If it worked, then in your web browser at http://localhost:8081/debugger-ui/ it should say "Status: Debugger session active." Open your web browser's developer tools console to view the JavaScript logs output.
+
+Sometimes I have lost connection with the React Native Debugger UI, even after following those steps. Sometimes just running `npm run dev:android` will fix it.
