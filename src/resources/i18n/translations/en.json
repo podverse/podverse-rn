@@ -488,7 +488,7 @@
   "No Wifi Connection": "No Wi-Fi connection",
   "No Wifi Only": "No, Wi-Fi only",
   "Notifications": "Notifications",
-  "Notifications UP help text": "Selcet an installed provider (like ntfy) from the dropdown menu to use UnifiedPush. Turn off battery optimization for it no notificaitons are missed.",
+  "Notifications UP help text": "Selcet an installed provider (like ntfy) from the dropdown menu to use UnifiedPush. Turn off battery optimization for it to not miss any notifications.",
   "Now Playing": "Now Playing",
   "Official chat": "Chat",
   "Official webpage": "Webpage",
