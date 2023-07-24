@@ -343,8 +343,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         })
       )
 
-      PVUnifiedPushModule.getInitialNotification()
-        .then(this.handleInitialNotification)
+      PVUnifiedPushModule.getInitialNotification().then(this.handleInitialNotification)
     } else {
       messaging().onNotificationOpenedApp(this.handleNoficationOpened)
   

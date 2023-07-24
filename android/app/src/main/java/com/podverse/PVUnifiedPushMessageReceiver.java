@@ -114,7 +114,7 @@ public class PVUnifiedPushMessageReceiver extends MessagingReceiver {
             }
 
             // This isn't a reliable timestamp, just the lowest 32 bits to get something "unique"
-            int messageId = (int) new Date().getTime();
+            int messageId = Math.abs((int) new Date().getTime());
 
             PVUnifiedPushModule.storeNotificationString(context, messageString, messageId);
 
