@@ -231,6 +231,6 @@ export const Alerts = {
   },
   ENABLE_NOTIFICATIONS_SETTINGS: {
     message: translate('Enable notifications in settings message'),
-    title: translate('Enable Notifications')
+    title: translate('Notifications')
   }
 }

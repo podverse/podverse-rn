@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import { ScrollView, TableCell, Text, View } from '../components'
+import { checkIfFDroidAppVersion } from '../lib/deviceDetection'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -84,6 +85,22 @@ export class SettingsScreen extends React.Component<Props, State> {
               {translate('History')}
             </Text>
           </TableCell>
+          {
+            checkIfFDroidAppVersion() && (
+              <TableCell
+                accessibilityLabel={translate('Notifications')}
+                includeDivider
+                onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenNotifications)}
+                testIDPrefix={`${testIDPrefix}_notifications`}
+                testIDSuffix=''>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+                  {translate('Notifications')}
+                </Text>
+              </TableCell>
+            )
+          }
           <TableCell
             accessibilityLabel={translate('Player')}
             includeDivider
