@@ -488,7 +488,7 @@
   "No Wifi Connection": "No Wi-Fi connection",
   "No Wifi Only": "No, Wi-Fi only",
   "Notifications": "Notifications",
-  "Notifications UP help text": "In order to receive push notifications using UnifiedPush, you will need a distributor app installed on your device. After it is installed, then select a distributor from the dropdown above. A popular option for a UP distributor app is called ntfy.",
+  "Notifications UP help text": "In order to receive push notifications using UnifiedPush, you will need a distributor app installed on your device. After it is installed, then select a distributor from the dropdown above. A popular option for a UP distributor app is called ntfy. Also, you should disable \"battery optimization\" for your distributor app, to make sure your phone is always listening for notifications.",
   "Now Playing": "Now Playing",
   "Official chat": "Official chat",
   "Official webpage": "Official webpage",
