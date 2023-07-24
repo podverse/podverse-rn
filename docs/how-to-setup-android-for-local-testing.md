@@ -25,7 +25,7 @@ If you change any of the `.env` variables, you will need to rebuild the app with
 
 If you update any translations in the i18n json files, you will need to restart the React Native server by running `npm run dev`.
 
-I'm not sure why, but sometimes I have had to re-run `adb reverse tcp:1234 tcp:1234` to reestablish a connection between the device and local Podverse API server.
+Whenever you run `npm run dev:android`, you may need to re-run `adb reverse tcp:1234 tcp:1234` to reestablish a connection between the device and local Podverse API server.
 
 ## React Native Debugger UI
 
