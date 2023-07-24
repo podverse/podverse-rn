@@ -4,8 +4,6 @@ import static com.podverse.PVUnifiedPushModule.emitEvent;
 import static com.podverse.PVUnifiedPushModule.popNotificationMap;
 
 import com.facebook.react.ReactActivity;
-import com.facebook.react.ReactActivityDelegate;
-import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 
@@ -16,10 +14,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 
 import org.json.JSONException;
-
-import io.invertase.firebase.common.ReactNativeFirebaseEventEmitter;
-import io.invertase.firebase.messaging.ReactNativeFirebaseMessagingReceiver;
-import io.invertase.firebase.messaging.ReactNativeFirebaseMessagingSerializer;
 
 public class MainActivity extends ReactActivity {
 
