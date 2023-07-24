@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.WritableMap;
 
-
 public class PVUnifiedPushMessage {
     public @NonNull String eventName;
     public @NonNull String instance;
