@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +43,15 @@ public class MainActivity extends ReactActivity {
 
     @Override
     public void onNewIntent(Intent intent) {
+        Log.d("com.podverse.MainActivity", "Received new intent");
         if (intent == null || intent.getExtras() == null) {
+            Log.d("com.podverse.MainActivity", "intent is null");
+            super.onNewIntent(intent);
+            return;
+        }
+
+        if (intent.getExtras() == null) {
+            Log.d("com.podverse.MainActivity", "intent extras are null");
             super.onNewIntent(intent);
             return;
         }
@@ -51,12 +60,16 @@ public class MainActivity extends ReactActivity {
 
         int messageId = extras.getInt("pv_message_id", -1);
         if (messageId == -1) {
+            Log.d("com.podverse.MainActivity", "pv_message_id does not exist");
             super.onNewIntent(intent);
             return;
         }
 
+        Log.d("com.podverse.MainActivity", "pv_message_id: " + messageId);
+
         String instance = extras.getString("up_instance", null);
         if (instance == null) {
+            Log.d("com.podverse.MainActivity", "up_instance does not exist");
             super.onNewIntent(intent);
             return;
         }
