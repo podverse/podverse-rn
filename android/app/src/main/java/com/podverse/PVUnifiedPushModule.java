@@ -9,8 +9,10 @@ import static org.unifiedpush.android.connector.UnifiedPush.unregisterApp;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +27,7 @@ import androidx.core.app.NotificationCompat;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
@@ -59,25 +62,109 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
     private static final int MAX_STORED_NOTIFICATIONS = 100;
     private static final String DELIMITER = ",";
 
+    private IntentFilter intentFilter;
+    private BroadcastReceiver receiver;
+
+    public static final String INTENT_EMIT_REACT_EVENT = "emit_react_event";
+
     static ReadableMap initialNotification = null;
     private final HashMap<Integer, Boolean> initialNotificationMap = new HashMap<>();
 
-    private static ReactApplicationContext applicationContext;
-
     PVUnifiedPushModule(ReactApplicationContext context) {
         super(context);
-        applicationContext = context;
     }
 
     @Override
     public void initialize() {
         super.initialize();
+        initializeBroadcastReceiver();
     }
 
     @NonNull
     @Override
     public String getName() {
         return "PVUnifiedPushModule";
+    }
+
+
+    private void initializeBroadcastReceiver() {
+        // This is an internal "event receiver" to receive info from java methods that don't have
+        // access to the react context and send them to react via the native event emitter
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(INTENT_EMIT_REACT_EVENT);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String eventName = intent.getStringExtra("event_name");
+                String instance = intent.getStringExtra("instance");
+
+                WritableMap payload = null;
+                var payloadParams = intent.getStringArrayExtra("payload_key_values");
+                var data = intent.getStringExtra("data");
+
+                if (payloadParams != null || data != null) {
+                    payload = Arguments.createMap();
+
+                    if (payloadParams != null) {
+                        for (var payloadParam : payloadParams) {
+                            var keyValue = payloadParam.split(",");
+                            var key = keyValue[0];
+                            var value = keyValue[1];
+                            payload.putString(key, value);
+                        }
+                    }
+
+                    if (data != null) {
+                        try {
+                            payload.putMap("data", jsonToReact(new JSONObject(data)));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                var UPMessage = new PVUnifiedPushMessage(
+                        eventName,
+                        instance,
+                        payload
+                );
+
+                emitReactEvent(getReactApplicationContext(), UPMessage);
+            }
+        };
+        getReactApplicationContext().registerReceiver(receiver, intentFilter);
+    }
+
+    static void emitEvent(@NonNull Context context, @NonNull String eventName, @NonNull String instance, String[] keyValues) {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(INTENT_EMIT_REACT_EVENT);
+        broadcastIntent.putExtra("event_name", eventName);
+        broadcastIntent.putExtra("instance", instance);
+        if (keyValues != null) {
+            broadcastIntent.putExtra("payload_key_values", keyValues);
+        }
+        context.sendBroadcast(broadcastIntent);
+    }
+
+    static void emitEvent(@NonNull Context context, @NonNull String eventName, @NonNull String instance, @NonNull String data) {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(INTENT_EMIT_REACT_EVENT);
+        broadcastIntent.putExtra("event_name", eventName);
+        broadcastIntent.putExtra("instance", instance);
+        broadcastIntent.putExtra("data", data);
+        context.sendBroadcast(broadcastIntent);
+    }
+
+    public static void emitReactEvent(@NonNull ReactContext context, @NonNull PVUnifiedPushMessage message) {
+        var map = Arguments.makeNativeMap(Map.of(
+                "instance", message.instance
+        ));
+
+        if (message.payload != null) {
+            map.putMap("payload", message.payload);
+        }
+
+        context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(message.eventName, map);
     }
 
     public static void setInitialNotification(ReadableMap readableMap) {
@@ -246,7 +333,7 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
         }
     }
 
-    private static WritableMap jsonToReact(JSONObject jsonObject) throws JSONException {
+    public static WritableMap jsonToReact(JSONObject jsonObject) throws JSONException {
         WritableMap writableMap = Arguments.createMap();
         Iterator<String> iterator = jsonObject.keys();
         while (iterator.hasNext()) {
@@ -270,7 +357,7 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
         return writableMap;
     }
 
-    private static WritableArray jsonToReact(JSONArray jsonArray) throws JSONException {
+    public static WritableArray jsonToReact(JSONArray jsonArray) throws JSONException {
         WritableArray writableArray = Arguments.createArray();
         for (int i = 0; i < jsonArray.length(); i++) {
             Object value = jsonArray.get(i);
@@ -359,10 +446,6 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
         return jsonToReact(popNotificationJson(context, messageId));
     }
 
-    public static WritableMap popNotificationMap(int messageId) throws JSONException {
-        return popNotificationMap(applicationContext, messageId);
-    }
-
     public static void sendNotification(@NonNull Context context, @NonNull String payload, int messageId, @NonNull String instance) {
         JSONObject notification;
 
@@ -449,17 +532,5 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
 
             throw new RuntimeException(e);
         }
-    }
-
-    public static void emitEvent(@NonNull PVUnifiedPushMessage message) {
-        var map = Arguments.makeNativeMap(Map.of(
-                "instance", message.instance
-        ));
-
-        if (message.payload != null) {
-            map.putMap("payload", message.payload);
-        }
-
-        applicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(message.eventName, map);
     }
 }
