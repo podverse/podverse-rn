@@ -27,7 +27,8 @@ type State = {
 const testIDPrefix = 'settings_screen_notifications'
 
 export class SettingsScreenNotifications extends React.Component<Props, State> {
-  pvNativeEventEmitter: NativeEventEmitter = new NativeEventEmitter(PVUnifiedPushModule)
+  pvNativeEventEmitter: NativeEventEmitter | null =
+    checkIfFDroidAppVersion() ? new NativeEventEmitter(PVUnifiedPushModule) : null
   pvNativeEventSubscriptions: EmitterSubscription[] = []
   
   publicKey: string
@@ -53,7 +54,7 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
     let distributor = ''
     let availableDistributors: string[] = []
 
-    if (checkIfFDroidAppVersion()) {
+    if (checkIfFDroidAppVersion() && !!this.pvNativeEventEmitter) {
       distributor = await PVUnifiedPushModule.getCurrentDistributor()
       debugLogger(`Current UnifiedPush distributor: ${distributor}`)
 
