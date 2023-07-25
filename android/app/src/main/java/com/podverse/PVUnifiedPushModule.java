@@ -88,6 +88,8 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
 
 
     private void initializeBroadcastReceiver() {
+        // This is an internal "event receiver" to receive info from java methods that don't have
+        // access to the react context and send them to react via the native event emitter
         intentFilter = new IntentFilter();
         intentFilter.addAction(INTENT_EMIT_REACT_EVENT);
         receiver = new BroadcastReceiver() {
@@ -98,14 +100,26 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
 
                 WritableMap payload = null;
                 var payloadParams = intent.getStringArrayExtra("payload_key_values");
+                var data = intent.getStringExtra("data");
 
-                if (payloadParams != null) {
+                if (payloadParams != null || data != null) {
                     payload = Arguments.createMap();
-                    for (var payloadParam : payloadParams) {
-                        var keyValue = payloadParam.split(",");
-                        var key = keyValue[0];
-                        var value = keyValue[1];
-                        payload.putString(key, value);
+
+                    if (payloadParams != null) {
+                        for (var payloadParam : payloadParams) {
+                            var keyValue = payloadParam.split(",");
+                            var key = keyValue[0];
+                            var value = keyValue[1];
+                            payload.putString(key, value);
+                        }
+                    }
+
+                    if (data != null) {
+                        try {
+                            payload.putMap("data", jsonToReact(new JSONObject(data)));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
 
@@ -129,6 +143,15 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
         if (keyValues != null) {
             broadcastIntent.putExtra("payload_key_values", keyValues);
         }
+        context.sendBroadcast(broadcastIntent);
+    }
+
+    static void emitEvent(@NonNull Context context, @NonNull String eventName, @NonNull String instance, @NonNull String data) {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(INTENT_EMIT_REACT_EVENT);
+        broadcastIntent.putExtra("event_name", eventName);
+        broadcastIntent.putExtra("instance", instance);
+        broadcastIntent.putExtra("data", data);
         context.sendBroadcast(broadcastIntent);
     }
 
@@ -310,7 +333,7 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
         }
     }
 
-    private static WritableMap jsonToReact(JSONObject jsonObject) throws JSONException {
+    public static WritableMap jsonToReact(JSONObject jsonObject) throws JSONException {
         WritableMap writableMap = Arguments.createMap();
         Iterator<String> iterator = jsonObject.keys();
         while (iterator.hasNext()) {
@@ -334,7 +357,7 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
         return writableMap;
     }
 
-    private static WritableArray jsonToReact(JSONArray jsonArray) throws JSONException {
+    public static WritableArray jsonToReact(JSONArray jsonArray) throws JSONException {
         WritableArray writableArray = Arguments.createArray();
         for (int i = 0; i < jsonArray.length(); i++) {
             Object value = jsonArray.get(i);

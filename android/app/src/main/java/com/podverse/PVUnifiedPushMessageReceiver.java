@@ -31,14 +31,14 @@ public class PVUnifiedPushMessageReceiver extends MessagingReceiver {
     public void onRegistrationFailed(@NonNull Context context, @NonNull String instance) {
         // called when the registration is not possible, eg. no network
 
-        PVUnifiedPushModule.emitEvent(context, "UnifiedPushRegistrationFailed", instance, null);
+        PVUnifiedPushModule.emitEvent(context, "UnifiedPushRegistrationFailed", instance, (String[]) null);
     }
 
     @Override
     public void onUnregistered(@NonNull Context context, @NonNull String instance) {
         // called when this application is unregistered from receiving push messages
 
-        PVUnifiedPushModule.emitEvent(context, "UnifiedPushUnregistered", instance, null);
+        PVUnifiedPushModule.emitEvent(context, "UnifiedPushUnregistered", instance, (String[]) null);
     }
 
     @Override
