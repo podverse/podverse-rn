@@ -12,7 +12,7 @@ import {
   login,
   signUp
 } from '../../services/auth'
-import { fcmTokenGetLocally } from '../../services/fcmDevices'
+import { checkIfNotificationsEnabled } from '../../services/notifications'
 import { getPodcastCredentials, parseAllAddByRSSPodcasts,
   setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
 import { toggleSubscribeToPodcast } from '../../services/podcast'
@@ -159,8 +159,7 @@ export const loginUser = async (credentials: Credentials) => {
     const serverUserInfo = await login(credentials.email, credentials.password)
     const { v4v } = globalState.session
 
-    const localFCMSaved = await fcmTokenGetLocally()
-    serverUserInfo.notificationsEnabled = !!localFCMSaved
+    serverUserInfo.notificationsEnabled = await checkIfNotificationsEnabled()
 
     setGlobal(
       {

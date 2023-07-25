@@ -655,7 +655,7 @@
     "Search channels": "Søk etter kanaler …",
     "Add custom RSS feeds": "Legg til RSS-informasjonskanaler",
     "Skip track buttons are time jumps on lockscreen and bluetooth devices": "Tidshopp med knapper for spoling på hodesett og låseskjermen.",
-    "Enable Notifications": "Merknader",
+    "Notifications": "Merknader",
     "Enable notifications in settings message": "Skru på merknader i enhetsinnstillingene.",
     "Go to live podcast": "Lytt til direktesending?",
     "New episodes and livestream notifications": "Merknader om nye episoder og direktestrømmer",
@@ -781,5 +781,14 @@
     "language - oc": "Oksitansk",
     "language - lt": "Litauisk",
     "language - pt": "Portugisisk",
-    "language - ru": "Russisk"
+    "language - ru": "Russisk",
+    "Time range": "Tidsområde",
+    "Enable UnifiedPush notifications": "Skru på UnifiedPush-merknader",
+    "Notifications UP help text": "Du må ha en tilbyder som f.eks. ntfy installert på enheten som du velger fra rullegardinsmenyen. Skru av batterioptimalisering for tilbyderprogrammet slik at det alltid virker.",
+    "Select a distributor": "Velg tilbyder",
+    "Fees": "Gebyrer",
+    "Local": "Lokalt",
+    "Remote": "Annensteds hen",
+    "Official webpage": "Offisiell nettside",
+    "Refresh subscriptions on launch": "Sjekk abonnementer ved oppstart"
 }

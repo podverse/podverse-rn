@@ -18,12 +18,25 @@
 
 # Podverse
 
+- [About](#about)
+- [Licensing](#licensing)
+- [Getting started](#getting-started)
+- [More contributing info](#more-contributing-info)
+  * [Translations on Hosted Weblate](#translations-on-hosted-weblate)
+- [Team:](#team-)
+- [Thank you to our contributors!](#thank-you-to-our-contributors-)
+- [FAQ:](#faq-)
+  * [Why do some clips start at the wrong time?](#why-do-some-clips-start-at-the-wrong-time-)
+  * [What does the license (AGPLv3) mean?](#what-does-the-license--agplv3--mean-)
+  * [Why is Podverse free as in freedom?](#why-is-podverse-free-as-in-freedom-)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>generated with markdown-toc</a></i></small>
+
 ## About
 Free and open source podcast manager for Android, iOS, and the web. \
 Check it out at [podverse.fm](https://podverse.fm/)
 
 Listen to all your podcasts on a single application with Podverse!
-
 
 Podverse included features:
 - Subscribe to podcasts
@@ -61,16 +74,19 @@ Find us on on these App Stores and our [Website](https://podverse.fm/):
     height="60"/>
 </a>
 
-## Contributing
-
-[Instruction for contributing to the repo](https://github.com/podverse/podverse-rn/blob/master/Contributing.md) to the **Podverse Mobile App**
-
-Additional environment setup and installation for Mac or Windows is found within the contribution page.
-
 ## Licensing
 
 All Podverse software is provided under a [libre software licence](https://github.com/podverse/podverse-rn/blob/develop/LICENSE).
 
+## Getting started
+
+If you are looking to run this app or contribute to Podverse for the first time, please read the sections that are relevant for you in our [CONTRIBUTE.md](https://github.com/podverse/podverse-ops/blob/master/CONTRIBUTING.md) file in the podverse-ops repo. Among other things, that file contains instructions for running a local instance of the Podverse database.
+
+## More contributing info
+
+[Instruction for contributing to the repo](https://github.com/podverse/podverse-rn/blob/master/Contributing.md) for the **Podverse Mobile App**.
+
+Additional environment setup and installation for Mac or Windows is found within the contribution page.
 
 ### Translations on Hosted Weblate
 
