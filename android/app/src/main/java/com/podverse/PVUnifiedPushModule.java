@@ -475,7 +475,7 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("pv_message_id", messageId);
         intent.putExtra("up_instance", instance);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0 /* Request code */, intent,
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, messageId, intent,
                 PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
