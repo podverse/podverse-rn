@@ -1,12 +1,14 @@
 package com.podverse;
 
-import static com.podverse.PVUnifiedPushModule.emitEvent;
+import static com.podverse.PVUnifiedPushModule.emitReactEvent;
 import static com.podverse.PVUnifiedPushModule.popNotificationMap;
 
 import com.facebook.react.ReactActivity;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.content.Intent;
@@ -16,6 +18,8 @@ import android.content.res.Configuration;
 import org.json.JSONException;
 
 public class MainActivity extends ReactActivity {
+
+    public static SharedPreferences preferences;
 
     /**
      * Returns the name of the main component registered from JavaScript.
@@ -33,6 +37,8 @@ public class MainActivity extends ReactActivity {
         if(getResources().getBoolean(R.bool.portrait_only)){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+
+        preferences = getSharedPreferences( getPackageName() + "_preferences", MODE_PRIVATE);
     }
 
     @Override
@@ -67,7 +73,7 @@ public class MainActivity extends ReactActivity {
         WritableMap notificationMap = null;
 
         try {
-            notificationMap = popNotificationMap(messageId);
+            notificationMap = popNotificationMap(this, messageId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -85,8 +91,9 @@ public class MainActivity extends ReactActivity {
                     instance,
                     eventMap
             );
+            var keyValues = new String[]{"endpoint," + eventMap.toString()};
 
-            emitEvent(UPMessage);
+            PVUnifiedPushModule.emitEvent(this, "UnifiedPushMessage", instance, keyValues);
         }
     }
 }

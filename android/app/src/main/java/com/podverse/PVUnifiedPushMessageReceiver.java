@@ -5,7 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.facebook.react.bridge.WritableNativeMap;
+import com.facebook.react.bridge.ReactContext;
 
 import org.unifiedpush.android.connector.MessagingReceiver;
 
@@ -22,42 +22,23 @@ public class PVUnifiedPushMessageReceiver extends MessagingReceiver {
         Log.d("com.podverse.PVUnifiedPushMessageReceiver",
                 "received endpoint '" + endpoint + "' for instance '" + instance + "'");
 
-        WritableNativeMap map = new WritableNativeMap();
-        map.putString("endpoint", endpoint);
+        var keyValues = new String[]{"endpoint," + endpoint};
 
-        var UPMessage = new PVUnifiedPushMessage(
-                "UnifiedPushNewEndpoint",
-                instance,
-                map
-        );
-
-        PVUnifiedPushModule.emitEvent(UPMessage);
+        PVUnifiedPushModule.emitEvent(context, "UnifiedPushNewEndpoint", instance, keyValues);
     }
 
     @Override
     public void onRegistrationFailed(@NonNull Context context, @NonNull String instance) {
         // called when the registration is not possible, eg. no network
 
-        var UPMessage = new PVUnifiedPushMessage(
-                "UnifiedPushRegistrationFailed",
-                instance,
-                null
-        );
-
-        PVUnifiedPushModule.emitEvent(UPMessage);
+        PVUnifiedPushModule.emitEvent(context, "UnifiedPushRegistrationFailed", instance, null);
     }
 
     @Override
     public void onUnregistered(@NonNull Context context, @NonNull String instance) {
         // called when this application is unregistered from receiving push messages
 
-        var UPMessage = new PVUnifiedPushMessage(
-                "UnifiedPushUnregistered",
-                instance,
-                null
-        );
-
-        PVUnifiedPushModule.emitEvent(UPMessage);
+        PVUnifiedPushModule.emitEvent(context, "UnifiedPushUnregistered", instance, null);
     }
 
     @Override
