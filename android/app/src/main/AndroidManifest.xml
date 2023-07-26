@@ -229,6 +229,16 @@
             </intent-filter>
         </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+
+        <receiver android:exported="true"  android:enabled="true"  android:name=".PVUnifiedPushMessageReceiver">
+            <intent-filter>
+                <action android:name="org.unifiedpush.android.connector.MESSAGE"/>
+                <action android:name="org.unifiedpush.android.connector.UNREGISTERED"/>
+                <action android:name="org.unifiedpush.android.connector.NEW_ENDPOINT"/>
+                <action android:name="org.unifiedpush.android.connector.REGISTRATION_FAILED" />
+                <action android:name="org.unifiedpush.android.connector.REGISTRATION_REFUSED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -4,9 +4,9 @@ import * as RNKeychain from 'react-native-keychain'
 import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { PV } from '../resources'
 import { Credentials, logoutUser } from '../state/actions/auth'
-import { fcmTokenGetLocally } from './fcmDevices'
+import { PV } from '../resources'
+import { checkIfNotificationsEnabled } from './notifications'
 import { getQueueItems } from './queue'
 import { request } from './request'
 import { getHistoryItems, getHistoryItemsIndex, getHistoryItemsIndexLocally } from './userHistoryItem'
@@ -120,8 +120,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
 
   historyItemsIndex = await getHistoryItemsIndexLocally()
 
-  const localFCMSaved = await fcmTokenGetLocally()
-  notificationsEnabled = !!localFCMSaved
+  notificationsEnabled = await checkIfNotificationsEnabled()
 
   const bearerToken = await getBearerToken()
   isLoggedIn = !!bearerToken
@@ -170,8 +169,7 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
     data.historyQueryPage = page
     data.queueItems = queueItems
 
-    const localFCMSaved = await fcmTokenGetLocally()
-    data.notificationsEnabled = !!localFCMSaved
+    data.notificationsEnabled = await checkIfNotificationsEnabled()
 
     if (Array.isArray(addByRSSPodcastFeedUrls)) {
       await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS, JSON.stringify(addByRSSPodcastFeedUrls))

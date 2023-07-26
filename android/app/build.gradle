@@ -136,8 +136,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         ndkVersion rootProject.ext.ndkVersion
-        versionCode 5200
-        versionName "4.13.0"
+        versionCode 5203
+        versionName "4.13.1"
         multiDexEnabled true
         missingDimensionStrategy 'store', 'play'
     }
@@ -198,6 +198,9 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation platform('com.google.firebase:firebase-bom:29.0.3')
+
+    implementation 'com.github.UnifiedPush:android-connector:2.1.1'
+    implementation "com.google.crypto.tink:apps-webpush:1.9.1"
     
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";

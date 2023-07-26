@@ -1,7 +1,7 @@
 import React from 'react'
-import { StyleSheet, SafeAreaView, View, Image, Linking, Platform } from 'react-native'
-import Config from 'react-native-config'
+import { Image, Linking, Platform, StyleSheet, SafeAreaView, View } from 'react-native'
 import { PV } from '../resources'
+import { checkIfFDroidAppVersion } from '../lib/deviceDetection'
 import { Button, Text } from './'
 
 export const UpdateRequiredOverlay = () => {
@@ -11,7 +11,7 @@ export const UpdateRequiredOverlay = () => {
         ? 'https://apps.apple.com/us/app/podverse/id1390888454'
         : 'https://play.google.com/store/apps/details?id=com.podverse&hl=en_US&gl=US'
 
-    if (Config.RELEASE_TYPE === 'F-Droid') {
+    if (checkIfFDroidAppVersion()) {
       link = 'https://f-droid.org/en/packages/com.podverse.fdroid/'
     }
 

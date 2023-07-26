@@ -213,6 +213,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
           {!addByRSSPodcastFeedUrl && (
             <NavNotificationsIcon
               podcastId={podcastId}
+              navigation={navigation}
               isEnabled={notificationsEnabled}
               onNotificationSelectionChanged={() =>
                 navigation.setParams({ notificationsEnabled: !notificationsEnabled })

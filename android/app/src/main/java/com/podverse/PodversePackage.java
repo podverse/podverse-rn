@@ -21,6 +21,7 @@ public class PodversePackage implements ReactPackage {
        List<NativeModule> modules = new ArrayList<>();
 
        modules.add(new PVAsyncStorageModule(reactContext));
+       modules.add(new PVUnifiedPushModule(reactContext));
 
        return modules;
    }
