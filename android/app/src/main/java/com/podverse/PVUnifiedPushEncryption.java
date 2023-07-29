@@ -120,17 +120,17 @@ public class PVUnifiedPushEncryption {
         }
 
         if (privateKey == null) {
-            Log.d("com.podverse.PVUnifiedPushEncryption", "privateKey is null");
+            Log.e("com.podverse.PVUnifiedPushEncryption", "privateKey is null");
             return null;
         }
 
         if (publicKey == null) {
-            Log.d("com.podverse.PVUnifiedPushEncryption", "publicKey is null");
+            Log.e("com.podverse.PVUnifiedPushEncryption", "publicKey is null");
             return null;
         }
 
         if (authKey == null) {
-            Log.d("com.podverse.PVUnifiedPushEncryption", "authKey is null");
+            Log.e("com.podverse.PVUnifiedPushEncryption", "authKey is null");
             return null;
         }
 
