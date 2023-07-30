@@ -8,7 +8,7 @@ import { playerCheckIfDownloadableFile } from '../services/player'
 import { images } from '../styles'
 import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
-import { Divider, FastImage, NewContentBadge, Text, View } from './'
+import { FastImage, NewContentBadge, Text, View } from './'
 
 type Props = {
   handleDeletePress?: any
@@ -25,6 +25,7 @@ type Props = {
   testID: string
   transparent?: boolean
   userPlaybackPosition?: number
+  selected?: boolean
 }
 
 export class EpisodeTableCell extends React.PureComponent<Props> {
@@ -41,7 +42,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       shouldHideCompleted,
       showPodcastInfo,
       testID,
-      userPlaybackPosition
+      userPlaybackPosition,
+      selected
     } = this.props
 
     const { duration, id, liveItem, mediaUrl, pubDate = '', podcast = {} } = item
@@ -164,7 +166,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     )
 
     return (
-      <RNView>
+      <RNView style={[styles.outerView,selected ? styles.selected : null]}>
         {(!shouldHideCompleted || !!liveItem) && (
           <RNView>
             <Pressable
@@ -229,6 +231,11 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 }
 
 const styles = StyleSheet.create({
+  outerView: {
+    borderWidth:2,
+    borderStyle:"solid",
+    marginVertical:5
+  },
   description: {
     fontSize: PV.Fonts.sizes.sm,
     color: PV.Colors.grayLighter,
@@ -281,5 +288,9 @@ const styles = StyleSheet.create({
   wrapperTop: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  selected: {
+    borderColor: PV.Colors.skyLight,
+    borderRadius: 10
   }
 })

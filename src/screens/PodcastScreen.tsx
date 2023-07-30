@@ -27,7 +27,8 @@ import {
   SwitchWithText,
   TableSectionSelectors,
   Text,
-  View
+  View,
+  PillButton
 } from '../components'
 import { errorLogger } from '../lib/logger'
 import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
@@ -58,7 +59,7 @@ import { checkIfNotificationsEnabledForPodcastId } from '../state/actions/notifi
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
-import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
+import { checkIfLoggedIn } from '../services/auth'
 
 const _fileName = 'src/screens/PodcastScreen.tsx'
 
@@ -82,6 +83,7 @@ type State = {
   queryPage: number
   querySort: string | null
   searchBarText: string
+  searchTitle?: string
   selectedFilterLabel?: string | null
   selectedSortLabel?: string | null
   selectedItem?: any
@@ -92,6 +94,9 @@ type State = {
   startPodcastFromTime?: number
   username: string
   viewType: string | null
+  showMarkAsPlayedButton: boolean
+  selectedEpisodes: string[]
+  multiSelectEnabled: boolean
 }
 
 type RenderItemArg = { item: any; index: number }
@@ -135,29 +140,29 @@ const getDefaultSelectedFilterLabel = () => {
   return defaultSelectedFilterLabel
 }
 
-export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
+export class PodcastScreen extends React.Component<Props, State> {
   shouldLoad: boolean
   listRef = null
 
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.shouldLoad = true
 
-    const podcast = this.props.navigation.getParam('podcast')
-    const podcastId = podcast?.id || podcast?.addByRSSPodcastFeedUrl || this.props.navigation.getParam('podcastId')
-    const viewType = this.props.navigation.getParam('viewType') || PV.Filters._episodesKey
+    const podcast = props.navigation.getParam('podcast')
+    const podcastId = podcast?.id || podcast?.addByRSSPodcastFeedUrl || props.navigation.getParam('podcastId')
+    const viewType = props.navigation.getParam('viewType') || PV.Filters._episodesKey
     const notificationsEnabled = checkIfNotificationsEnabledForPodcastId(podcastId)
 
     if (podcast?.id || podcast?.addByRSSPodcastFeedUrl) {
-      this.props.navigation.setParams({
+      props.navigation.setParams({
         podcastId,
         podcastTitle: podcast.title,
         addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
         notificationsEnabled
       })
     } else if (podcastId) {
-      this.props.navigation.setParams({
+      props.navigation.setParams({
         podcastId,
         notificationsEnabled
       })
@@ -185,7 +190,10 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       showSettings: false,
       showUsernameAndPassword: false,
       username: '',
-      viewType
+      viewType,
+      showMarkAsPlayedButton: false,
+      multiSelectEnabled: false,
+      selectedEpisodes: []
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
@@ -237,8 +245,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   async componentDidMount() {
-    super.componentDidMount()
-
     const { navigation } = this.props
     const { podcastId } = this.state
     const { isInMaintenanceMode } = this.global
@@ -261,6 +267,8 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
     this.refreshStartPodcastFromTime()
 
+    const shouldShowMarkAsPlayed = await checkIfLoggedIn()
+
     this.setState(
       {
         ...(!hasInternetConnection || isInMaintenanceMode
@@ -269,7 +277,8 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
             }
           : { viewType: this.state.viewType }),
         podcast,
-        hasInternetConnection: !!hasInternetConnection
+        hasInternetConnection: !!hasInternetConnection,
+        showMarkAsPlayedButton: true //shouldShowMarkAsPlayed
       },
       () => {
         this._initializePageData()
@@ -285,7 +294,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   componentWillUnmount() {
-    super.componentWillUnmount()
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.removeListener(PV.Events.PODCAST_START_PODCAST_FROM_TIME_SET, this.refreshStartPodcastFromTime)
     PVEventEmitter.removeListener(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
@@ -565,16 +573,27 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast, userPlaybackPosition))
           }
           handleNavigationPress={() => {
-            const { hasInternetConnection } = this.state
-            this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
-              episode,
-              podcast,
-              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
-              hasInternetConnection
-            })
+            if (!this.state.multiSelectEnabled) {
+              const { hasInternetConnection } = this.state
+              this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
+                episode,
+                podcast,
+                addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
+                hasInternetConnection
+              })
+            } else {
+              if (!this.state.selectedEpisodes.includes(episode.id)) {
+                this.setState({ selectedEpisodes: [...this.state.selectedEpisodes, episode.id] })
+              } else {
+                this.setState({
+                  selectedEpisodes: this.state.selectedEpisodes.filter((episodeId) => episodeId !== episode.id)
+                })
+              }
+            }
           }}
           hideImage
           item={episode}
+          selected={this.state.multiSelectEnabled && this.state.selectedEpisodes.includes(episode.id)}
           mediaFileDuration={mediaFileDuration}
           navigation={navigation}
           shouldHideCompleted={shouldHideCompleted}
@@ -701,9 +720,9 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
             } else {
               await toggleSubscribeToPodcast(podcastId)
             }
-            this.setState({ isSubscribing: false })
+            this.setState({ isSubscribing: false, selectedEpisodes: [], multiSelectEnabled:false })
           } catch (error) {
-            this.setState({ isSubscribing: false })
+            this.setState({ isSubscribing: false, selectedEpisodes: [], multiSelectEnabled:false })
           }
 
           const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
@@ -865,6 +884,102 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     })
   }
 
+  _onMarkAsPlayed = (episodeIds: string[] = []) => {
+    if (!episodeIds.length) {
+      Alert.alert(
+        translate('Mark All Episodes As Played'), 
+        translate('All episodes in this podcast will be marked as played.'), 
+        [
+          {
+            text: translate('Confirm'),
+            onPress: this.markEpisodesAsPlayed
+          },
+          {
+            text: translate('Cancel'),
+            style: 'cancel'
+          }
+        ]
+      )
+    } else {
+      this.markEpisodesAsPlayed(episodeIds)
+    }
+  }
+
+  markEpisodesAsPlayed = async (episodeIds: string[] = []) => {
+    // if episodeIds is empty all must be marked as played
+    if(episodeIds.length) {
+      console.log("Marking some: ", episodeIds)
+    } else {
+      console.log("Marking ALL")
+    }
+
+    const networkCall = () => {
+      return new Promise<void>((res) => {
+        setTimeout(() => {
+          console.log('Making the call')
+          res()
+        }, 1500)
+      })
+    }
+
+    await networkCall()
+    this.setState({
+      showSettings: false,
+      multiSelectEnabled: false,
+      selectedEpisodes: []
+    })
+  }
+
+  _renderTableInnerHeader = () => {
+    const { navigation } = this.props
+    const { querySort, selectedFilterLabel, selectedSortLabel, viewType, multiSelectEnabled } = this.state
+
+    const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
+
+    if (multiSelectEnabled) {
+      return (
+        <RNView style={styles.multiSelectOptionsContainer}>
+          <PillButton
+            testID='podcast_screen_cancel_multi_selection'
+            buttonTitle={translate('Cancel')}
+            handleOnPress={() => {
+              this.setState({ selectedEpisodes: [], multiSelectEnabled: false })
+            }}
+            destructive
+          />
+          <PillButton
+            testID='podcast_screen_mark_as_played_button'
+            buttonTitle={translate('Mark All Episodes As Played')}
+            handleOnPress={() => {
+              if(!this.state.selectedEpisodes?.length) {
+                Alert.alert("Please select at least one episode to mark as played","",[{text:"OK"}])
+              } else {
+                this._onMarkAsPlayed(this.state.selectedEpisodes)
+              }
+            }}
+          />
+        </RNView>
+      )
+    } else {
+      return (
+        <TableSectionSelectors
+          addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
+          filterScreenTitle={getScreenTitle()}
+          handleSelectFilterItem={this.handleSelectFilterItem}
+          handleSelectSortItem={this.handleSelectSortItem}
+          includePadding
+          navigation={navigation}
+          screenName='PodcastScreen'
+          selectedFilterItemKey={viewType}
+          selectedFilterLabel={selectedFilterLabel}
+          selectedSortItemKey={querySort}
+          selectedSortLabel={selectedSortLabel}
+          testID={testIDPrefix}
+        />
+      )
+    }
+  }
+
   render() {
     const { navigation } = this.props
 
@@ -877,9 +992,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       password,
       podcast,
       podcastId,
-      querySort,
-      selectedFilterLabel,
-      selectedSortLabel,
       selectedItem,
       showActionSheet,
       showNoInternetConnectionMessage,
@@ -887,7 +999,10 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       showUsernameAndPassword,
       startPodcastFromTime,
       username,
-      viewType
+      viewType,
+      flatListData,
+      flatListDataTotalCount,
+      showMarkAsPlayedButton
     } = this.state
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
@@ -900,7 +1015,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       )
     }
 
-    const { flatListData, flatListDataTotalCount } = this.state
     const { autoDownloadSettings, autoQueueSettings } = this.global
     const autoDownloadOn =
       (podcast && podcast.id && autoDownloadSettings[podcast.id]) || (podcastId && autoDownloadSettings[podcastId])
@@ -936,20 +1050,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
           testID={testIDPrefix}
         />
         {!showSettings ? (
-          <TableSectionSelectors
-            addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
-            filterScreenTitle={getScreenTitle()}
-            handleSelectFilterItem={this.handleSelectFilterItem}
-            handleSelectSortItem={this.handleSelectSortItem}
-            includePadding
-            navigation={navigation}
-            screenName='PodcastScreen'
-            selectedFilterItemKey={viewType}
-            selectedFilterLabel={selectedFilterLabel}
-            selectedSortItemKey={querySort}
-            selectedSortLabel={selectedSortLabel}
-            testID={testIDPrefix}
-          />
+          this._renderTableInnerHeader()
         ) : (
           <ScrollView style={styles.settingsView}>
             <Text accessibilityRole='header' style={styles.settingsTitle}>
@@ -1067,6 +1168,28 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
               testID={`${testIDPrefix}_clear_new_episode_indicators`}
               text={translate('Mark episodes as seen')}
             />
+            {showMarkAsPlayedButton && (
+              <Button
+                accessibilityHint={translate('ARIA HINT - mark all episodes as played')}
+                accessibilityLabel={translate('Mark episodes as played')}
+                onPress={() => {
+                  this.setState({ multiSelectEnabled: true, showSettings: false })
+                }}
+                wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
+                testID={`${testIDPrefix}_mars_all_episodes_played`}
+                text={translate('Select Multiple Episodes')}
+              />
+            )}
+            {showMarkAsPlayedButton && (
+              <Button
+                accessibilityHint={translate('ARIA HINT - mark all episodes as played')}
+                accessibilityLabel={translate('Mark All Episodes As Played')}
+                onPress={this._onMarkAsPlayed}
+                wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
+                testID={`${testIDPrefix}_mars_all_episodes_played`}
+                text={translate('Mark All Episodes As Played')}
+              />
+            )}
             <Button
               accessibilityHint={translate('ARIA HINT - delete all the episodes you have downloaded for this podcast')}
               accessibilityLabel={translate('Delete Downloaded Episodes')}
@@ -1324,8 +1447,19 @@ const styles = StyleSheet.create({
   itemWrapper: {
     marginTop: 32
   },
+  multiSelectOptionsContainer: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-evenly', 
+    paddingVertical: 12 
+  },
   settingsClearNewEpisodeIndicators: {
-    marginBottom: 32,
+    marginBottom: 20,
+    marginHorizontal: 8,
+    marginTop: 8,
+    borderRadius: 8
+  },
+  settingsMarkEpisodesAsPlayed: {
+    marginBottom: 20,
     marginHorizontal: 8,
     marginTop: 8,
     borderRadius: 8
