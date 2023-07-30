@@ -90,9 +90,11 @@ public class PVUnifiedPushMessageReceiver extends MessagingReceiver {
             String messageString = PVUnifiedPushEncryption.decryptNotification(context, message);
 
             if (messageString == null) {
-                Log.i("com.podverse.PVUnifiedPushMessageReceiver", "Unable to decrypt UP message");
+                Log.e("com.podverse.PVUnifiedPushMessageReceiver", "Unable to decrypt UP message");
                 return;
             }
+
+            Log.d("com.podverse.PVUnifiedPushMessageReceiver", "Decrypted notification payload: " + messageString);
 
             // This isn't a reliable timestamp, just the lowest 32 bits to get something "unique"
             int messageId = Math.abs((int) new Date().getTime());

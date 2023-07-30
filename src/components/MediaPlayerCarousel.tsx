@@ -192,8 +192,24 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const streamingButtonMainTextStyles = streamingValueOn
       ? [styles.boostButtonMainText, { fontWeight: '500' }]
       : [styles.boostButtonMainText]
-
+    
     const streamingButtonSubTextStyles = streamingValueOn ? [styles.boostButtonSubText] : [styles.boostButtonSubText]
+
+    const boostagramButtonText = !!session?.v4v?.valueTimeSplitIsActive
+      ? translate('Time splits').toUpperCase()
+      : translate('Boostagram').toUpperCase()
+
+    const boostagramButtonMainTextStyles = !!session?.v4v?.valueTimeSplitIsActive
+      ? [styles.boostagramButtonMainText, { color: PV.Colors.green }]
+      : [styles.boostagramButtonMainText]
+
+    const boostagramIconColor = !!session?.v4v?.valueTimeSplitIsActive
+      ? 'green'
+      : 'white'
+
+    const boostagramIconName = !!session?.v4v?.valueTimeSplitIsActive
+      ? 'clock'
+      : 'comment-alt'
 
     const streamingIndicatorStyles =
       Platform.OS === 'ios'
@@ -294,14 +310,15 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                 onPress={this._handleBoostagramPress}
                 style={styles.boostagramButton}
                 testID={'boostagram_button'.prependTestId()}>
-                <Text style={styles.boostagramButtonMainText} testID='boost_button_text_1'>
-                  {translate('Boostagram').toUpperCase()}
+                <Text style={boostagramButtonMainTextStyles} testID='boost_button_text_1'>
+                  {boostagramButtonText}
                 </Text>
                 <Icon
                   accessibilityLabel={translate('Boostagram')}
                   accessibilityRole='button'
-                  name='comment-alt'
+                  name={boostagramIconName}
                   size={17}
+                  color={boostagramIconColor}
                   testID={`${testIDPrefix}_boostagram_button`}
                 />
               </PressableWithOpacity>
