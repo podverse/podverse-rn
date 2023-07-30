@@ -131,6 +131,7 @@ declare module 'reactn/default' {
         }
         senderInfo: V4VSenderInfo
         boostagramMessage: string
+        valueTimeSplitIsActive: boolean
       }
     }
     subscribedPodcasts: []

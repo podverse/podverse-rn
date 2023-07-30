@@ -98,6 +98,16 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
                 String eventName = intent.getStringExtra("event_name");
                 String instance = intent.getStringExtra("instance");
 
+                if (eventName == null) {
+                    Log.e("com.podverse.PVUnifiedPushModule", "event_name is null");
+                    return;
+                }
+
+                if (instance == null) {
+                    Log.e("com.podverse.PVUnifiedPushModule", "instance is null");
+                    return;
+                }
+
                 WritableMap payload = null;
                 var payloadParams = intent.getStringArrayExtra("payload_key_values");
                 var data = intent.getStringExtra("data");
@@ -132,7 +142,12 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
                 emitReactEvent(getReactApplicationContext(), UPMessage);
             }
         };
-        getReactApplicationContext().registerReceiver(receiver, intentFilter);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getReactApplicationContext().registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            getReactApplicationContext().registerReceiver(receiver, intentFilter);
+        }
     }
 
     static void emitEvent(@NonNull Context context, @NonNull String eventName, @NonNull String instance, String[] keyValues) {
@@ -452,24 +467,52 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
         try {
             notification = new JSONObject(payload);
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            Log.e("com.podverse.PVUnifiedPushModule", "Failed to parse notification with id " + messageId);
+            e.printStackTrace();
+            return;
         }
 
-        String imageUrl;
+        String imageUrl = null;
         String messageTitle;
         String messageBody;
         String notificationType;
 
         try {
             imageUrl = notification.getString("image");
-            messageTitle = notification.getString("title");
-            messageBody = notification.getString("body");
-            notificationType = notification.getString("notificationType");
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            Log.w("com.podverse.PVUnifiedPushModule", "Failed to get image from notification with id " + messageId);
+            e.printStackTrace();
         }
 
-        Bitmap image = getBitmapfromUrl(imageUrl);
+        try {
+            messageTitle = notification.getString("title");
+        } catch (JSONException e) {
+            Log.e("com.podverse.PVUnifiedPushModule", "Failed to get title from notification with id " + messageId);
+            e.printStackTrace();
+            return;
+        }
+
+        try {
+            messageBody = notification.getString("body");
+        } catch (JSONException e) {
+            Log.e("com.podverse.PVUnifiedPushModule", "Failed to get body from notification with id " + messageId);
+            e.printStackTrace();
+            return;
+        }
+
+        try {
+            notificationType = notification.getString("notificationType");
+        } catch (JSONException e) {
+            Log.e("com.podverse.PVUnifiedPushModule", "Failed to get notificationType from notification with id " + messageId);
+            e.printStackTrace();
+            return;
+        }
+
+        Bitmap image = null;
+
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            image = getBitmapfromUrl(imageUrl);
+        }
 
         Intent intent = new Intent(context, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -480,15 +523,17 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, notificationType)
-                .setLargeIcon(image) /* Notification icon image */
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(messageTitle)
                 .setContentText(messageBody)
-                .setStyle(new NotificationCompat.BigPictureStyle()
-                        .bigPicture(image)) /* Notification with Image */
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
+
+        if (image != null) {
+            notificationBuilder.setLargeIcon(image); /* Notification icon image */
+            notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(image)); /* Notification with Image */
+        }
 
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -530,7 +575,7 @@ public class PVUnifiedPushModule extends ReactContextBaseJavaModule {
             var message = e.getMessage();
             Log.e("com.podverse.PVUnifiedPushModule", Objects.requireNonNullElse(message, "Unknown IOException"));
 
-            throw new RuntimeException(e);
+            return null;
         }
     }
 }

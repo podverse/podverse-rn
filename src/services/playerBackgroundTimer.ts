@@ -8,6 +8,7 @@ import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/
 import { clearChapterPlaybackInfo, loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { startCheckClipEndTime, stopClipInterval } from '../state/actions/playerClips'
 import { handleSleepTimerCountEvent } from '../state/actions/sleepTimer'
+import { handleIntervalEnrichGlobalState } from '../state/actions/v4v/v4v'
 import PVEventEmitter from './eventEmitter'
 import {
   playerGetCurrentLoadedTrackId,
@@ -179,6 +180,15 @@ export const handleBackgroundTimerInterval = (isVideo: boolean) => {
 
   try {
     if (v4v?.streamingValueOn) {
+      handleValueStreamingTimerIncrement(isVideo)
+    }
+  } catch (error) {
+    errorLogger(_fileName, 'handleBackgroundTimerInterval handleValueStreamingTimerIncrement', error?.message)
+  }
+
+  try {
+    if (!!v4v) {
+      handleIntervalEnrichGlobalState(session)
       handleValueStreamingTimerIncrement(isVideo)
     }
   } catch (error) {

@@ -158,7 +158,8 @@ const initialTheme: InitialState = {
       senderInfo: {
         name: translate('anonymous')
       },
-      boostagramMessage: ''
+      boostagramMessage: '',
+      valueTimeSplitIsActive: false
     }
   },
   subscribedPodcasts: [],

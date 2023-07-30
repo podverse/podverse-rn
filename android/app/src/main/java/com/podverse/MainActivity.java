@@ -69,7 +69,7 @@ public class MainActivity extends ReactActivity {
 
         String instance = extras.getString("up_instance", null);
         if (instance == null) {
-            Log.d("com.podverse.MainActivity", "up_instance does not exist");
+            Log.e("com.podverse.MainActivity", "up_instance does not exist");
             super.onNewIntent(intent);
             return;
         }

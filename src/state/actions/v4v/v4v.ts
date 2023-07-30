@@ -1,12 +1,16 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { NowPlayingItem, ValueTag, ValueTimeSplit, checkIfIsLightningKeysendValueTag } from 'podverse-shared'
+import { Episode, NowPlayingItem, Podcast, ValueTag,
+  ValueTimeSplit, checkIfIsLightningKeysendValueTag } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../../resources'
+import { playerGetPosition } from '../../../services/player'
 import { getValueTagsForItemGuidOrFeedGuid } from '../../../services/podcastIndex'
 import {
   BoostagramItem,
+  extractV4VValueTags,
   getStreamingValueOn,
   v4vDeleteProviderFromStorage,
+  v4vGetActiveValueTag,
   v4vGetProvidersConnected,
   v4vGetSenderInfo,
   v4vGetSettings,
@@ -473,6 +477,52 @@ export const v4vClearBoostagramMessage = () => {
   })
 }
 
+/* Convert to Boostagram Item */
+
+export const v4vConvertToBoostagramItem = (podcast?: Podcast, episode?: Episode) => {
+  const { player } = getGlobal()
+  const { nowPlayingItem } = player
+
+  let item = {} as BoostagramItem
+  if (episode && podcast) {
+    item = {
+      episodeFunding: episode.funding || [],
+      episodeGuid: episode.guid || '',
+      episodePubDate: episode.pubDate,
+      episodeTitle: episode.title || '',
+      episodeValue: episode.value || [],
+      podcastFunding: podcast.funding || [],
+      podcastIndexPodcastId: podcast.podcastIndexId || '',
+      podcastShrunkImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
+      podcastTitle: podcast.title || '',
+      podcastValue: podcast.value || []
+    }
+  } else if (podcast) {
+    item = {
+      podcastFunding: podcast.funding || [],
+      podcastIndexPodcastId: podcast.podcastIndexId || '',
+      podcastShrunkImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
+      podcastTitle: podcast.title || '',
+      podcastValue: podcast.value || []
+    }
+  } else if (nowPlayingItem) {
+    item = {
+      episodeFunding: nowPlayingItem.episodeFunding || [],
+      episodeGuid: nowPlayingItem.episodeGuid || '',
+      episodePubDate: (nowPlayingItem.episodePubDate as any) || new Date(),
+      episodeTitle: nowPlayingItem.episodeTitle || '',
+      episodeValue: nowPlayingItem.episodeValue || [],
+      podcastFunding: nowPlayingItem.podcastFunding || [],
+      podcastIndexPodcastId: nowPlayingItem.podcastIndexPodcastId || '',
+      podcastShrunkImageUrl: nowPlayingItem.podcastShrunkImageUrl || nowPlayingItem.podcastImageUrl || '',
+      podcastTitle: nowPlayingItem.podcastTitle || '',
+      podcastValue: nowPlayingItem.podcastValue || []
+    }
+  }
+
+  return item
+}
+
 /* Enrich the value tag in state */
 
 const convertValueTimeSplitsToAppConvertedSplits = (
@@ -556,6 +606,28 @@ export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
         }
       })
     }
+  }
+}
+
+export const handleIntervalEnrichGlobalState = async (session: any) => {
+  const boostagramItem = v4vConvertToBoostagramItem()
+  const playerPositionState = await playerGetPosition()
+  const { activeProvider } =
+    v4vGetActiveProviderInfo(getBoostagramItemValueTags(boostagramItem))
+  const { episodeValue, podcastValue } = boostagramItem
+  const valueTags = extractV4VValueTags(episodeValue, podcastValue)
+  const activeValueTag = v4vGetActiveValueTag(
+    valueTags, playerPositionState, activeProvider?.type, activeProvider?.method)
+  if (activeValueTag && activeProvider) {
+    setGlobal({
+      session: {
+        ...session,
+        v4v: {
+          ...session.v4v,
+          valueTimeSplitIsActive: !!activeValueTag?.activeValueTimeSplit?.isActive
+        }
+      }
+    })
   }
 }
 
