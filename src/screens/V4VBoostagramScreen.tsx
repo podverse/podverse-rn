@@ -35,6 +35,7 @@ import {
 import {
   getBoostagramItemValueTags,
   v4vClearBoostagramMessage,
+  v4vConvertToBoostagramItem,
   v4vGetActiveProviderInfo,
   V4VTypeMethod,
   v4vUpdateBoostagramMessage,
@@ -135,49 +136,9 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
   }
 
   _convertToBoostagramItem = () => {
-    const { player } = this.global
-    const { nowPlayingItem } = player
     const podcast = this.props.navigation.getParam('podcast')
     const episode = this.props.navigation.getParam('episode')
-
-    let item = {} as BoostagramItem
-    if (episode && podcast) {
-      item = {
-        episodeFunding: episode.funding || [],
-        episodeGuid: episode.guid || '',
-        episodePubDate: episode.pubDate,
-        episodeTitle: episode.title || '',
-        episodeValue: episode.value || [],
-        podcastFunding: podcast.funding || [],
-        podcastIndexPodcastId: podcast.podcastIndexId || '',
-        podcastShrunkImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
-        podcastTitle: podcast.title || '',
-        podcastValue: podcast.value || []
-      }
-    } else if (podcast) {
-      item = {
-        podcastFunding: podcast.funding || [],
-        podcastIndexPodcastId: podcast.podcastIndexId || '',
-        podcastShrunkImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
-        podcastTitle: podcast.title || '',
-        podcastValue: podcast.value || []
-      }
-    } else if (nowPlayingItem) {
-      item = {
-        episodeFunding: nowPlayingItem.episodeFunding || [],
-        episodeGuid: nowPlayingItem.episodeGuid || '',
-        episodePubDate: (nowPlayingItem.episodePubDate as any) || new Date(),
-        episodeTitle: nowPlayingItem.episodeTitle || '',
-        episodeValue: nowPlayingItem.episodeValue || [],
-        podcastFunding: nowPlayingItem.podcastFunding || [],
-        podcastIndexPodcastId: nowPlayingItem.podcastIndexPodcastId || '',
-        podcastShrunkImageUrl: nowPlayingItem.podcastShrunkImageUrl || nowPlayingItem.podcastImageUrl || '',
-        podcastTitle: nowPlayingItem.podcastTitle || '',
-        podcastValue: nowPlayingItem.podcastValue || []
-      }
-    }
-
-    return item
+    return v4vConvertToBoostagramItem(podcast, episode)
   }
 
   _handleV4VProvidersPressed = async () => {

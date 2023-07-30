@@ -223,6 +223,7 @@ export interface InitialState {
       }
       senderInfo: V4VSenderInfo
       boostagramMessage: string
+      valueTimeSplitIsActive: boolean
     }
   }
   subscribedPodcasts: []
