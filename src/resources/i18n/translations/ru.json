@@ -403,5 +403,8 @@
     "Chat Room": "Чат",
     "Extend Membership": "Продлить подписку",
     "Join our XMPP server": "Присоединяйтесь к нам в Jabber",
-    "Social Media - Discord": "Присоединяйтесь к нам в Discord"
+    "Social Media - Discord": "Присоединяйтесь к нам в Discord",
+    "Data Settings": "Передача данных",
+    "Do you want to allow downloading episodes with your data plan": "Разрешить использовать трафик из вашего тарифного плана для загрузки эпизодов?",
+    "Please verify your email address to login": "Подтвердите свой адрес электронной почты, чтобы войти в систему."
 }
