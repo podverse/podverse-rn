@@ -45,7 +45,7 @@ export const createSatoshiStreamStats = (
       speed,
       pubkey,
       value_msat_total: totalBatchedAmount * 1000,
-      value_msat: recipientAmount,
+      value_msat: recipientAmount * 1000,
       uuid: uuidv4(),
       app_name: Config.USER_AGENT_PREFIX,
       app_version: `${getVersion()}-${getBuildNumber()}`,
