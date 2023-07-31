@@ -341,6 +341,7 @@ const convertValueTagIntoValueTransaction = async (
   const timestamp = Date.now()
   const [speed, currentPlaybackPosition] = await Promise.all([playerGetRate(), playerGetPosition()])
   const pubkey = 'podverse-pubkey'
+  const recipientAmount = normalizedValueRecipient.amount
 
   const satoshiStreamStats = createSatoshiStreamStats(
     podcastTitle,
@@ -354,7 +355,8 @@ const convertValueTagIntoValueTransaction = async (
     normalizedValueRecipient.name || '',
     normalizedValueRecipient.customKey || '',
     normalizedValueRecipient.customValue || '',
-    episode_guid
+    episode_guid,
+    recipientAmount
   )
 
   return {
