@@ -554,7 +554,7 @@ export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
         ...oldValueTag,
         valueTimeSplits: null
       }
-      if (checkIfIsLightningKeysendValueTag(oldValueTag)) {
+      if (!item.liveItem && checkIfIsLightningKeysendValueTag(oldValueTag)) {
         const newValueTimeSplits: ValueTimeSplit[] = []
         for (const oldValueTimeSplit of oldValueTimeSplits) {
           let newValueTimeSplit: ValueTimeSplit | null = null
