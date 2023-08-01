@@ -83,10 +83,14 @@ export const downloadImageFile = async (uri: string) => {
     }
 
     const destination = podverseImagesPath + downloadCustomFileNameId(uri) + ext
+    const userAgent = getAppUserAgent()
 
     const downloadOptions: DownloadFileOptions = {
       fromUrl: uri.replace('http://', 'https://'),
-      toFile: destination
+      toFile: destination,
+      headers: {
+        'User-Agent': userAgent
+      }
     }
 
     await RNFS.downloadFile(downloadOptions).promise
