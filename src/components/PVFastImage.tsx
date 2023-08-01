@@ -1,5 +1,5 @@
 import { isValidUrl, ValueTag } from 'podverse-shared'
-import { Alert, Image, Linking, Platform, Pressable, StyleSheet, View } from 'react-native'
+import { Image, Platform, Pressable, StyleSheet, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
@@ -95,10 +95,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
   }
 
   handleChapterLinkPress = (url: string) => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: translate('Cancel') },
-      { text: translate('Yes'), onPress: () => Linking.openURL(url) }
-    ])
+    PV.Alerts.LEAVING_APP_ALERT(url)
   }
 
   render() {
