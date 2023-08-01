@@ -543,7 +543,8 @@ const convertValueTimeSplitsToAppConvertedSplits = (
 }
 
 export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
-  const oldValueTags = item?.episodeValue || []
+  if (!item) return
+  const oldValueTags = item.episodeValue || []
   const newValueTags: ValueTag[] = []
   
   for (const oldValueTag of oldValueTags) {
