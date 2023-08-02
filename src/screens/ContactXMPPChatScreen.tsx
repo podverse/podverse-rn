@@ -1,4 +1,4 @@
-import { Alert, Linking, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ScrollView, Text, TextLink } from '../components'
 import { translate } from '../lib/i18n'
@@ -21,10 +21,7 @@ export class ContactXMPPChatScreen extends React.Component<Props> {
   }
 
   _handleWebClientLinkPress = (url: string) => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: 'Cancel' },
-      { text: 'Yes', onPress: () => Linking.openURL(url) }
-    ])
+    PV.Alerts.LEAVING_APP_ALERT(url)
   }
 
   render() {

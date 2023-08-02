@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { StyleSheet, SafeAreaView, ScrollView, Alert, Linking } from 'react-native'
+import { StyleSheet, SafeAreaView, ScrollView } from 'react-native'
 import { CheckBox } from 'react-native-elements'
 import React from 'reactn'
 import { Button, Text } from '../components'
@@ -33,10 +33,7 @@ export class V4VConsentScreen extends React.Component<Props, State> {
   }
 
   _handleSourceCodePress = () => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: 'Cancel' },
-      { text: 'Yes', onPress: () => Linking.openURL(PV.URLs.appRepo) }
-    ])
+    PV.Alerts.LEAVING_APP_ALERT(PV.URLs.appRepo)
   }
 
   _acceptAgreement = async () => {

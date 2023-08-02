@@ -135,39 +135,42 @@ export const PVFlatList = (props: Props) => {
   return (
     <View style={styles.view} transparent={transparent}>
       {gridView ? (
-        <GridView
-          {...props}
-          onItemSelected={onGridItemSelected}
-          onLongPressItem={onGridItemLongPressed}
-          data={shouldShowResults ? data : []}
-          ListFooterComponent={() => {
-            if (isLoadingMore && !isEndOfResults) {
-              return (
-                <View
-                  accessible={false}
-                  style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}
-                  transparent={transparent}>
-                  <ActivityIndicator accessible={false} testID={testID} />
-                </View>
-              )
-            } else if (!isLoadingMore && !isEndOfResults) {
-              return <View style={[styles.isLoadingMoreCell]} transparent={transparent} />
-            }
-
-            return null
-          }}
-          {...(onRefresh
-            ? {
-                refreshControl: (
-                  <RefreshControl
-                    refreshing={isRefreshing}
-                    onRefresh={onRefresh}
-                    tintColor={globalTheme?.activityIndicator?.color}
-                  />
+        <>
+          {stickyHeader && ListHeaderComponent ? <View>{ListHeaderComponent()}</View> : null}
+          <GridView
+            {...props}
+            onItemSelected={onGridItemSelected}
+            onLongPressItem={onGridItemLongPressed}
+            data={shouldShowResults ? data : []}
+            ListFooterComponent={() => {
+              if (isLoadingMore && !isEndOfResults) {
+                return (
+                  <View
+                    accessible={false}
+                    style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}
+                    transparent={transparent}>
+                    <ActivityIndicator accessible={false} testID={testID} />
+                  </View>
                 )
+              } else if (!isLoadingMore && !isEndOfResults) {
+                return <View style={[styles.isLoadingMoreCell]} transparent={transparent} />
               }
-            : {})}
-        />
+
+              return null
+            }}
+            {...(onRefresh
+              ? {
+                  refreshControl: (
+                    <RefreshControl
+                      refreshing={isRefreshing}
+                      onRefresh={onRefresh}
+                      tintColor={globalTheme?.activityIndicator?.color}
+                    />
+                  )
+                }
+              : {})}
+          />
+        </>
       ) : (
         <>
           {stickyHeader && ListHeaderComponent ? <View>{ListHeaderComponent()}</View> : null}

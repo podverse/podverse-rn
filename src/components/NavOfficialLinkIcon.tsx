@@ -1,5 +1,4 @@
 import React from 'react'
-import { Alert, Linking } from 'react-native'
 import { darkTheme } from '../../src/styles'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
@@ -15,10 +14,7 @@ type Props = {
 
 export const NavOfficialLinkIcon = (props: Props) => {
   const handleFollowLink = () => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: 'Cancel' },
-      { text: 'Yes', onPress: () => Linking.openURL(props.linkUrl) }
-    ])
+    PV.Alerts.LEAVING_APP_ALERT(props.linkUrl)
   }
 
   let color = darkTheme.text.color

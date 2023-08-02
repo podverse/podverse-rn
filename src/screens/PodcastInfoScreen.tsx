@@ -1,4 +1,4 @@
-import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
 import { HTMLScrollView, NavOfficialLinkIcon, PodcastTableHeader, View } from '../components'
@@ -60,10 +60,7 @@ export class PodcastInfoScreen extends React.Component<Props, State> {
   }
 
   showLeavingAppAlert = (url: string) => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: 'Cancel' },
-      { text: 'Yes', onPress: () => Linking.openURL(url) }
-    ])
+    PV.Alerts.LEAVING_APP_ALERT(url)
   }
 
   render() {

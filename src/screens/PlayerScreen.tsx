@@ -88,25 +88,25 @@ export class PlayerScreen extends React.Component<Props> {
           {(!!Config.IS_DEV || !!showFundingIcon) && (
             <NavFundingIcon globalTheme={globalTheme} navigation={navigation} />
           )}
-          {!addByRSSPodcastFeedUrl && (
-            <RNView style={core.row}>
-              {!liveItem && (
-                <>
-                  <NavMakeClipIcon
-                    getInitialProgressValue={_getInitialProgressValue}
-                    globalTheme={globalTheme}
-                    navigation={navigation}
-                  />
-                  <NavAddToPlaylistIcon
-                    getEpisodeId={_getEpisodeId}
-                    getMediaRefId={_getMediaRefId}
-                    globalTheme={globalTheme}
-                    navigation={navigation}
-                  />
-                </>
-              )}
-            </RNView>
-          )}
+          <RNView style={core.row}>
+            {!liveItem && (
+              <>
+                <NavMakeClipIcon
+                  addByRSSPodcastFeedUrl={!!addByRSSPodcastFeedUrl}
+                  getInitialProgressValue={_getInitialProgressValue}
+                  globalTheme={globalTheme}
+                  navigation={navigation}
+                />
+                <NavAddToPlaylistIcon
+                  addByRSSPodcastFeedUrl={!!addByRSSPodcastFeedUrl}
+                  getEpisodeId={_getEpisodeId}
+                  getMediaRefId={_getMediaRefId}
+                  globalTheme={globalTheme}
+                  navigation={navigation}
+                />
+              </>
+            )}
+          </RNView>
           <NavShareIcon globalTheme={globalTheme} handlePress={_showShareActionSheet} />
           {!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
             <NavQueueIcon globalTheme={globalTheme} isTransparent navigation={navigation} showBackButton />

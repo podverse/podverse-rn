@@ -1,4 +1,4 @@
-import { Alert, Linking, Pressable, StyleSheet } from 'react-native'
+import { Pressable, StyleSheet } from 'react-native'
 import React from 'reactn'
 import AsyncStorage from '@react-native-community/async-storage'
 import { Divider, FastImage, Icon, NavDismissIcon, PressableWithOpacity, ScrollView, Text, View } from '../components'
@@ -33,10 +33,7 @@ export class FundingPodcastEpisodeScreen extends React.Component<Props> {
   }
 
   handleFollowLink = (url: string) => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: translate('Cancel') },
-      { text: translate('Yes'), onPress: () => Linking.openURL(url) }
-    ])
+    PV.Alerts.LEAVING_APP_ALERT(url)
   }
 
   renderFundingLink = (item: any, type: string, index: number) => {

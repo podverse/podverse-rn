@@ -390,7 +390,7 @@
     "profile": "profil",
     "random": "tilfeldig",
     "passwords match": "— samsvarende passord",
-    "recent": "nylig",
+    "recent": "Nylig",
     "paste RSS feed link here": "Lim inn RSS-lenke her …",
     "requirement met": "oppfyller kravene",
     "satoshis": "Sats",
@@ -612,7 +612,7 @@
     "Mark as Unplayed": "Marker som uspilt",
     "Join our XMPP server": "Ta del i vår XMPP-tjener",
     "Chat with us on Discord": "Sludre med oss på Discord",
-    "Official chat": "Offisiell sludring",
+    "Official chat": "Sludring",
     "Buy a Podverse premium membership": "Kjøp et Podverse premium-medlemskap til deg selv eller andre",
     "Send us an email": "Send oss en e-post",
     "ContactXMPPText1": "En fri og universell sludreplatform som alle kan opprette og vertstjene sin del av.",
@@ -789,6 +789,7 @@
     "Fees": "Gebyrer",
     "Local": "Lokalt",
     "Remote": "Annensteds hen",
-    "Official webpage": "Offisiell nettside",
-    "Refresh subscriptions on launch": "Sjekk abonnementer ved oppstart"
+    "Official webpage": "Nettside",
+    "Refresh subscriptions on launch": "Sjekk abonnementer ved oppstart",
+    "Time splits": "Tidsinndelinger"
 }

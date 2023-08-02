@@ -1,3 +1,4 @@
+import { Alert } from 'react-native'
 import Config from 'react-native-config'
 import React, { getGlobal } from 'reactn'
 import { GlobalTheme } from '../../src/resources/Interfaces'
@@ -9,6 +10,7 @@ import PVEventEmitter from '../services/eventEmitter'
 import { NavItemIcon, NavItemWrapper } from './'
 
 type Props = {
+  addByRSSPodcastFeedUrl: boolean
   getInitialProgressValue: any
   globalTheme: GlobalTheme
   navigation: any
@@ -17,22 +19,28 @@ type Props = {
 export const NavMakeClipIcon = (props: Props) => {
   if (Config.DISABLE_MAKE_CLIP) return null
 
-  const { getInitialProgressValue, navigation } = props
+  const { addByRSSPodcastFeedUrl, getInitialProgressValue, navigation } = props
 
   const handlePress = async () => {
-    const [initialProgressValue, isPublic] = await Promise.all([getInitialProgressValue(), getMakeClipIsPublic()])
 
-    const { globalTheme, session } = getGlobal()
-    const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
-
-    PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS)
-
-    navigation.navigate(PV.RouteNames.MakeClipScreen, {
-      initialProgressValue,
-      initialPrivacy: isPublic,
-      isLoggedIn,
-      globalTheme
-    })
+    if (addByRSSPodcastFeedUrl) {
+      Alert.alert(PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE('disabled clipping').title,
+        PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE().message)
+    } else {
+      const [initialProgressValue, isPublic] = await Promise.all([getInitialProgressValue(), getMakeClipIsPublic()])
+  
+      const { globalTheme, session } = getGlobal()
+      const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
+  
+      PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS)
+  
+      navigation.navigate(PV.RouteNames.MakeClipScreen, {
+        initialProgressValue,
+        initialPrivacy: isPublic,
+        isLoggedIn,
+        globalTheme
+      })
+    }
   }
 
   let color = darkTheme.text.color

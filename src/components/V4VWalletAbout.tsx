@@ -1,4 +1,4 @@
-import { Alert, Linking, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
@@ -14,10 +14,7 @@ export const V4VWalletAbout = (props: Props) => {
   const { testID, v4vKey } = props
 
   const _handleAboutPress = () => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: translate('Cancel') },
-      { text: translate('Yes'), onPress: () => Linking.openURL(PV.V4V.providers[v4vKey].env[_v4v_env_].aboutUrl) }
-    ])
+    PV.Alerts.LEAVING_APP_ALERT(PV.V4V.providers[v4vKey].env[_v4v_env_].aboutUrl)
   }
 
   return (

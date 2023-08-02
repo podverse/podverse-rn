@@ -9,6 +9,7 @@ type Props = {
   disabled?: boolean
   fontSizeLargerScale?: number
   fontSizeLargestScale?: number
+  hasAsterisk?: boolean
   numberOfLines?: number
   onPress?: any
   style?: any
@@ -23,6 +24,7 @@ export const TextLink = (props: Props) => {
     disabled,
     fontSizeLargerScale,
     fontSizeLargestScale,
+    hasAsterisk,
     numberOfLines,
     onPress,
     style,
@@ -47,9 +49,10 @@ export const TextLink = (props: Props) => {
       accessibilityRole='button'
       disabled={disabled}
       onPress={onPress}
+      style={{ flexDirection: 'row' }}
       testID={testID ? testID.prependTestId() : ''}>
       <Text numberOfLines={numberOfLines} style={[globalTheme.link, textInputStyle, style]}>
-        {text}
+        {`${text}${!!hasAsterisk ? '*' : ''}`}
       </Text>
     </PressableWithOpacity>
   )

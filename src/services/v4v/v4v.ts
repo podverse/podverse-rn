@@ -219,7 +219,8 @@ export const convertValueTagIntoValueTransactions = async (
   const convertFeeRecipientsIntoValueTransaction = async (feeRecipient: ValueRecipient) => {
     const split = parseFloat(feeRecipient.split) || 0
     if (split && split >= 1 && split <= 100) {
-      const amount = remainingTotalAmount * (split / 100)
+      let amount = remainingTotalAmount * (split / 100)
+      amount = roundDownValues ? Math.floor(amount) : amount
 
       const feeRecipientWithAmount = {
         ...feeRecipient,
@@ -340,6 +341,7 @@ const convertValueTagIntoValueTransaction = async (
   const timestamp = Date.now()
   const [speed, currentPlaybackPosition] = await Promise.all([playerGetRate(), playerGetPosition()])
   const pubkey = 'podverse-pubkey'
+  const recipientAmount = normalizedValueRecipient.amount
 
   const satoshiStreamStats = createSatoshiStreamStats(
     podcastTitle,
@@ -353,7 +355,8 @@ const convertValueTagIntoValueTransaction = async (
     normalizedValueRecipient.name || '',
     normalizedValueRecipient.customKey || '',
     normalizedValueRecipient.customValue || '',
-    episode_guid
+    episode_guid,
+    recipientAmount
   )
 
   return {
@@ -793,9 +796,6 @@ export const v4vSetSenderInfo = async (senderInfo: V4VSenderInfo) => {
     errorLogger(_fileName, 'v4vSetSenderInfo error', error)
   }
 }
-
-
-
 
 /* Misc helpers */
 
