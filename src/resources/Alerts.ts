@@ -29,6 +29,12 @@ export const Alerts = {
       Alert.alert(title, message, buttons, options)
     }, timeout)
   },
+  ADD_BY_RSS_FEATURE_UNAVAILABLE: (title?: string) => {
+    return {
+      message: `${translate('Add by RSS feature unavailable explanation')}`,
+      title: `${title ? translate(title) : ''}`
+    }
+  },
   ALBY_UNAUTHORIZED_EXPIRED: {
     message: `${translate('Alby unauthorized timeout message')}`,
     title: `${translate('Alby unauthorized timeout title')}`

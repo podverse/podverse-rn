@@ -1,4 +1,4 @@
-import { View } from 'react-native'
+import { Alert, View } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import { GlobalTheme } from '../../src/resources/Interfaces'
@@ -9,6 +9,7 @@ import { PV } from '../resources'
 import { ActionSheet, NavItemIcon, NavItemWrapper } from './'
 
 type Props = {
+  addByRSSPodcastFeedUrl?: boolean
   getEpisodeId: any
   getMediaRefId: any
   globalTheme?: GlobalTheme
@@ -30,9 +31,12 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
   }
 
   _handleIconPress = () => {
-    const { getEpisodeId, getMediaRefId, navigation } = this.props
+    const { addByRSSPodcastFeedUrl, getEpisodeId, getMediaRefId, navigation } = this.props
 
-    if (getEpisodeId && getMediaRefId) {
+    if (addByRSSPodcastFeedUrl) {
+      Alert.alert(PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE('disabled add to playlist').title,
+        PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE().message)
+    } else if (getEpisodeId && getMediaRefId) {
       const episodeId = getEpisodeId()
       const mediaRefId = getMediaRefId()
       if (mediaRefId) {
