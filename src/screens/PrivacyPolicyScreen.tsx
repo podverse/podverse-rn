@@ -1,4 +1,4 @@
-import { Alert, Linking, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { HTMLScrollView, View } from '../components'
 import { translate } from '../lib/i18n'
@@ -17,10 +17,7 @@ export class PrivacyPolicyScreen extends React.Component<Props> {
   }
 
   showLeavingAppAlert = (url: string) => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: 'Cancel' },
-      { text: 'Yes', onPress: () => Linking.openURL(url) }
-    ])
+    PV.Alerts.LEAVING_APP_ALERT(url)
   }
 
   render() {

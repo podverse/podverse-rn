@@ -8,12 +8,15 @@ import { FastImage, PressableWithOpacity } from './'
 type Props = {
   data?: [any]
   isRefreshing: boolean
+  ListFooterComponent: any
+  ListHeaderComponent?: any
   onItemSelected: any
   onLongPressItem?: (arg0: Podcast) => void
-  ListFooterComponent: any
+  stickyHeader?: boolean
 }
 export class GridView extends React.PureComponent<Props> {
   render() {
+    const { stickyHeader, ListHeaderComponent } = this.props
     const { deviceType, newEpisodesCount, screen } = this.global
     const { orientation, screenWidth } = screen
     const shouldShowResults = this.props.data && this.props.data.length > 0
@@ -94,12 +97,13 @@ export class GridView extends React.PureComponent<Props> {
         key={isTabletLandscape ? 'landscape' : 'portrait'}
         data={this.props.data}
         onEndReachedThreshold={0.3}
+        ListHeaderComponent={!!stickyHeader ? null : ListHeaderComponent}
         refreshing={this.props.isRefreshing}
         getItemLayout={_getItemLayout}
         renderItem={_renderItem}
         numColumns={columns}
         keyExtractor={_keyExtractor}
-        style={shouldShowResults ? [] : styles.noResultsView}
+        style={shouldShowResults ? [styles.listRows] : styles.noResultsView}
         {...PV.FlatList.optimizationPropsFaster}
       />
     )
@@ -127,5 +131,8 @@ const styles = StyleSheet.create({
     flex: 0,
     flexDirection: 'column',
     margin: 1
+  },
+  listRows: {
+    paddingVertical: 10
   }
 })

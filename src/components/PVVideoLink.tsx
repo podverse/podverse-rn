@@ -9,6 +9,7 @@ type Props = {
   accessibilityHint?: string
   accessibilityLabel?: string
   accessibilityRole?: AccessibilityRole
+  hasAsterisk?: boolean
   importantForAccessibility?: ImportantForAccessibility
   onPress?: any
   style?: any
@@ -19,7 +20,8 @@ type Props = {
 }
 
 export const PVVideoLink = (props: Props) => {
-  const { accessible, accessibilityHint, testID, title, url, navigation } = props
+  const { accessible, accessibilityHint, hasAsterisk, testID,
+    title, url, navigation } = props
 
   const textStyle = [styles.text, { ...(!url ? { color: PV.Colors.white } : {}) }]
 
@@ -32,6 +34,7 @@ export const PVVideoLink = (props: Props) => {
       accessible={accessible}
       disabled={!url}
       accessibilityHint={accessibilityHint}
+      hasAsterisk={hasAsterisk}
       onPress={openVideoScreen}
       style={textStyle}
       text={title}

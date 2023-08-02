@@ -543,7 +543,8 @@ const convertValueTimeSplitsToAppConvertedSplits = (
 }
 
 export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
-  const oldValueTags = item?.episodeValue || []
+  if (!item) return
+  const oldValueTags = item.episodeValue || []
   const newValueTags: ValueTag[] = []
   
   for (const oldValueTag of oldValueTags) {
@@ -554,7 +555,7 @@ export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
         ...oldValueTag,
         valueTimeSplits: null
       }
-      if (checkIfIsLightningKeysendValueTag(oldValueTag)) {
+      if (!item.liveItem && checkIfIsLightningKeysendValueTag(oldValueTag)) {
         const newValueTimeSplits: ValueTimeSplit[] = []
         for (const oldValueTimeSplit of oldValueTimeSplits) {
           let newValueTimeSplit: ValueTimeSplit | null = null

@@ -1,5 +1,5 @@
 import { NowPlayingItem } from 'podverse-shared'
-import { Alert, AlertButton, AlertOptions, Platform } from 'react-native'
+import { Alert, AlertButton, AlertOptions, Linking, Platform } from 'react-native'
 import { translate } from '../lib/i18n'
 import { navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
 import { sendVerificationEmail } from '../services/auth'
@@ -28,6 +28,12 @@ export const Alerts = {
     setTimeout(() => {
       Alert.alert(title, message, buttons, options)
     }, timeout)
+  },
+  ADD_BY_RSS_FEATURE_UNAVAILABLE: (title?: string) => {
+    return {
+      message: `${translate('Add by RSS feature unavailable explanation')}`,
+      title: `${title ? translate(title) : ''}`
+    }
   },
   ALBY_UNAUTHORIZED_EXPIRED: {
     message: `${translate('Alby unauthorized timeout message')}`,
@@ -152,11 +158,15 @@ export const Alerts = {
       }
     ]
   }),
-  LEAVING_APP: {
-    title: translate('Leaving App'),
-    message: translate(
+  LEAVING_APP_ALERT: (url: string) => {
+    const message = `${translate(
       'You are about to be navigated to a website outside the app Are you sure you want to leave brandName'
-    )
+    )}\n\n${url}`
+
+    Alert.alert(translate('Leaving App'), message, [
+      { text: translate('Cancel') },
+      { text: translate('Yes'), onPress: () => Linking.openURL(url) }
+    ])
   },
   LOGIN_INVALID: {
     message: translate('Invalid username or password'),

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { parseOpmlFile } from 'podverse-shared'
-import { SectionList, Alert, Linking } from 'react-native'
+import { SectionList, Alert } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import { parseString } from 'react-native-xml2js'
@@ -175,10 +175,7 @@ export class MoreScreen extends React.Component<Props, State> {
   }
 
   _handleFollowLink = (url: string) => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: 'Cancel' },
-      { text: 'Yes', onPress: () => Linking.openURL(url) }
-    ])
+    PV.Alerts.LEAVING_APP_ALERT(url)
   }
 
   _onPress = async (item: any) => {

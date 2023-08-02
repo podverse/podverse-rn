@@ -1,5 +1,5 @@
 import { ValueTag, ValueTransaction } from 'podverse-shared'
-import { Alert, Keyboard, Linking, Pressable, StyleSheet } from 'react-native'
+import { Keyboard, Pressable, StyleSheet } from 'react-native'
 import React from 'reactn'
 import AsyncStorage from '@react-native-community/async-storage'
 import {
@@ -105,10 +105,7 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
   }
 
   handleFollowLink = (url: string) => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: translate('Cancel') },
-      { text: translate('Yes'), onPress: () => Linking.openURL(url) }
-    ])
+    PV.Alerts.LEAVING_APP_ALERT(url)
   }
 
   renderFundingLink = (item: any, type: string, index: number) => {

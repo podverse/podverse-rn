@@ -1,4 +1,4 @@
-import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import packageJson from '../../package.json'
 import { Divider, ScrollView, TableSectionSelectors, Text, View } from '../components'
@@ -42,10 +42,7 @@ export class TermsOfServiceScreen extends React.Component<Props> {
   }
 
   showLeavingAppAlert = (url: string) => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: 'Cancel' },
-      { text: 'Yes', onPress: () => Linking.openURL(url) }
-    ])
+    PV.Alerts.LEAVING_APP_ALERT(url)
   }
 
   render() {

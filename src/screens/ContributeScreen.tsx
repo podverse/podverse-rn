@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { createEmailLinkUrl } from 'podverse-shared'
-import { Alert, Linking, StyleSheet } from 'react-native'
+import { Linking, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import { Divider, ScrollView, Text, TextLink, View } from '../components'
@@ -25,10 +25,7 @@ export class ContributeScreen extends React.Component<Props> {
   }
 
   handleFollowLink = (url: string) => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: translate('Cancel') },
-      { text: translate('Yes'), onPress: () => Linking.openURL(url) }
-    ])
+    PV.Alerts.LEAVING_APP_ALERT(url)
   }
 
   handeBuyAPodverseMembership = () => {
