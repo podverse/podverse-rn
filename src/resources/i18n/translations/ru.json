@@ -382,8 +382,8 @@
     "Sign Up": "Регистрация",
     "ARIA HINT - disable the downloaded episode limit for this podcast": "Снимите ограничение на загрузку для этого подкаста",
     "Login Error": "Не удалось войти",
-    "Mark episodes as played": "Отмечайте эпизоды как проигранные",
-    "Mark episodes as seen": "Отмечайте эпизоды как просмотренные",
+    "Mark episodes as played": "Отметить эпизоды как проигранные",
+    "Mark episodes as seen": "Отметить эпизоды как просмотренные",
     "Reset Password Failed": "Не удалось сбросить пароль",
     "All brandName software is provided free and open source under the AGPLv3 license": "Копируйте, проверяйте, изменяйте и делитесь — со всеми.\nВсе программное обеспечение Podverse имеет лицензию AGPLv3+.",
     "You are not subscribed to any podcasts yet": "У вас еще нет подписки на подкасты",
@@ -405,6 +405,12 @@
     "Join our XMPP server": "Присоединяйтесь к нам в Jabber",
     "Social Media - Discord": "Присоединяйтесь к нам в Discord",
     "Data Settings": "Передача данных",
-    "Do you want to allow downloading episodes with your data plan": "Разрешить использовать трафик из вашего тарифного плана для загрузки эпизодов?",
-    "Please verify your email address to login": "Подтвердите свой адрес электронной почты, чтобы войти в систему."
+    "Do you want to allow downloading episodes with your data plan": "Разрешить использовать мобильный интернет для загрузки эпизодов?",
+    "Please verify your email address to login": "Подтвердите свой адрес электронной почты, чтобы войти в систему.",
+    "Yes Allow Data": "Использовать мобильный интернет",
+    "Jump forwards seconds": "Секунды для пропуска",
+    "Jump backwards seconds": "Секунды при перемотки назад",
+    "Podverse External Storage Permission": "Доступ к внешней карте памяти",
+    "Next": "Следующий",
+    "Last": "Предыдущий"
 }
