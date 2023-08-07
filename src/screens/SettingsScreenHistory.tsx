@@ -4,7 +4,6 @@ import React from 'reactn'
 import { ActivityIndicator, Button, ScrollView } from '../components'
 import { translate } from '../lib/i18n'
 import { trackPageView } from '../services/tracking'
-import { clearEpisodesCount } from '../state/actions/newEpisodesCount'
 import { clearHistoryItems } from '../state/actions/userHistoryItem'
 import { core } from '../styles'
 
@@ -31,10 +30,6 @@ export class SettingsScreenHistory extends React.Component<Props, State> {
 
   componentDidMount() {
     trackPageView('/settings-history', 'Settings Screen History')
-  }
-
-  _handleClearAllNewEpisodeNotifications = () => {
-    clearEpisodesCount()
   }
 
   _handleClearHistory = () => {
@@ -77,13 +72,6 @@ export class SettingsScreenHistory extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && (
           <>
-            <Button
-              accessibilityLabel={translate('ARIA HINT - clear the new episode indicators for all podcasts')}
-              onPress={this._handleClearAllNewEpisodeNotifications}
-              testID={`${testIDPrefix}_clear_all_new_episode_indicators`}
-              text={translate('Mark episodes as seen')}
-              wrapperStyles={[core.button, styles.clearAllNewEpisodeIndicators]}
-            />
             <Button
               accessibilityLabel={translate('Clear History')}
               isWarning

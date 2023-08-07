@@ -159,5 +159,6 @@ declare module 'reactn/default' {
     imageFullViewSourceUrl?: string
     imageFullViewShow?: boolean
     refreshSubscriptionsOnLaunch?: boolean
+    showPodcastsListPopover: boolean
   }
 }
