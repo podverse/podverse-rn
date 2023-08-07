@@ -21,6 +21,7 @@ import { convertSecToHHMMSS, decodeHTMLString, removeHTMLFromString } from 'podv
 import { Platform } from 'react-native'
 import Config from 'react-native-config'
 import { PV } from '../resources'
+import { InitialState } from '../resources/Interfaces'
 import { getLanguageTag, translate } from './i18n'
 const cheerio = require('react-native-cheerio')
 
@@ -202,4 +203,17 @@ export const removeAndDecodeHTMLInString = (text: string) => {
 
 export const wait = (milliseconds: number) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
+
+// Create a function to listen to specific properties of global state 
+// And subscribe to be able to fire callbacks when it changes
+export const GlobalPropertyCallbackFunction = (propertyKey: string, callback: (newValue: number) => void) => {
+  let lastValue: number | null = null;
+  return (globalState: InitialState) => {
+    const newValue = globalState[propertyKey];
+    if (newValue !== lastValue) {
+      lastValue = newValue;
+      callback(newValue);
+    }
+  };
 }

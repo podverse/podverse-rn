@@ -1,6 +1,5 @@
 import { PVComment } from 'podverse-shared'
 import React from 'react'
-import { Alert, Linking } from 'react-native'
 import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -20,10 +19,7 @@ export const Comment = ({ children, comment }: Props) => {
 
   const handleFollowLink = (url: string | null) => {
     if (url) {
-      Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-        { text: 'Cancel' },
-        { text: 'Yes', onPress: () => Linking.openURL(url) }
-      ])
+      PV.Alerts.LEAVING_APP_ALERT(url)
     }
   }
 
