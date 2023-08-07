@@ -75,14 +75,20 @@ export const downloadImageFile = async (uri: string) => {
 
     downloadedImageCache[uri] = true
 
-    const ext = getExtensionFromUrl(uri)
+    let ext = getExtensionFromUrl(uri)
+    let useFullUrl = false
+    if(uri.includes("wavlake.com")) {
+      useFullUrl = true
+      ext = ".jpg"
+    }
+    
     const folderExists = await RNFS.exists(podverseImagesPath)
 
     if (!folderExists) {
       await RNFS.mkdir(podverseImagesPath)
     }
 
-    const destination = podverseImagesPath + downloadCustomFileNameId(uri) + ext
+    const destination = podverseImagesPath + downloadCustomFileNameId(uri, {charOffset: ext.length, useFullUrl}) + ext
     const userAgent = getAppUserAgent()
 
     const downloadOptions: DownloadFileOptions = {
@@ -101,8 +107,15 @@ export const downloadImageFile = async (uri: string) => {
 
 export const getSavedImageUri = async (uri: string) => {
   let fileExists = false
-  const ext = getExtensionFromUrl(uri)
-  const filePath = podverseImagesPath + downloadCustomFileNameId(uri) + ext
+
+  let ext = getExtensionFromUrl(uri)
+  let useFullUrl = false
+  if(uri.includes("wavlake.com")) {
+    useFullUrl = true
+    ext = ".jpg"
+  }
+
+  const filePath = podverseImagesPath + downloadCustomFileNameId(uri, {charOffset: ext.length, useFullUrl}) + ext
 
   try {
     fileExists = await RNFS.exists(filePath)

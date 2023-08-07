@@ -1,4 +1,4 @@
-import { Alert, Linking, Pressable, StyleSheet, View as RNView } from 'react-native'
+import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { prefixClipLabel, readableClipTime, readableDate } from '../lib/utility'
@@ -26,10 +26,7 @@ type Props = {
 
 export class ClipTableCell extends React.PureComponent<Props> {
   handleChapterLinkPress = (url: string) => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: translate('Cancel') },
-      { text: translate('Yes'), onPress: () => Linking.openURL(url) }
-    ])
+    PV.Alerts.LEAVING_APP_ALERT(url)
   }
 
   render() {
