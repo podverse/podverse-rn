@@ -278,7 +278,7 @@
     "ARIA HINT - stop auto downloading new episodes from this podcast": "Остановить автозагрузку новых эпизодов",
     "Delete All Downloaded Episodes": "Удалить все загруженные эпизоды",
     "Delete Clip": "Удалить клип",
-    "Login Needed": "Сначала войдите",
+    "Login Needed": "Требуется вход в аккаунт",
     "Login to view your playlists": "Войдите, чтобы видеть ваши плейлисты",
     "playlist": "плейлист",
     "top – month": "топ — за месяц",
@@ -386,7 +386,7 @@
     "Mark episodes as seen": "Отметить эпизоды как просмотренные",
     "Reset Password Failed": "Не удалось сбросить пароль",
     "All brandName software is provided free and open source under the AGPLv3 license": "Копируйте, проверяйте, изменяйте и делитесь — со всеми.\nВсе программное обеспечение Podverse имеет лицензию AGPLv3+.",
-    "You are not subscribed to any podcasts yet": "У вас еще нет подписки на подкасты",
+    "You are not subscribed to any podcasts yet": "Пока что вы не подписаны ни на один подкаст",
     "Something went wrong when trying to create a Podverse folder in your external storage card. More Info: ": "Не удалось создать папку Podverse на внешней карте памяти: ",
     "Auth invalid message": "Срок действия вашего сеанса входа в систему истек. Пожалуйста, войдите в систему, чтобы продолжить пользоваться премиум-функциями.",
     "AddPodcastByRSSScreenText1": "Примечание: Клипы, плейлисты и общий доступ не поддерживаются для каналов, добавленных здесь.",
@@ -412,5 +412,7 @@
     "Jump backwards seconds": "Секунды при перемотки назад",
     "Podverse External Storage Permission": "Доступ к внешней карте памяти",
     "Next": "Следующий",
-    "Last": "Предыдущий"
+    "Last": "Предыдущий",
+    "Include username and password": "Войти с помощью логина и пароля",
+    "paste RSS feed link here": "Вставьте RSS-ссылку…"
 }
