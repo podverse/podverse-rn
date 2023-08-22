@@ -26,7 +26,8 @@ import { downloadImageFile } from './storage'
 const _fileName = 'src/lib/downloader.ts'
 
 const forceSecureRedirectDomains = {
-  'feeds.gty.org': true
+  'feeds.gty.org': true,
+  'chtbl.com': true
 }
 
 export const BackgroundDownloader = () => {

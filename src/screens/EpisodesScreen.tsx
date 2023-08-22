@@ -107,7 +107,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       selectedCategory: null,
       selectedCategorySub: null,
       selectedFilterLabel: hasSubscribedPodcasts ? translate('Subscribed') : translate('All Podcasts'),
-      selectedSortLabel: hasSubscribedPodcasts ? translate('recent') : translate('top – week'),
+      selectedSortLabel: hasSubscribedPodcasts ? translate('Recent') : translate('top – week'),
       showActionSheet: false,
       tempQueryEnabled: false,
       tempQueryFrom: hasSubscribedPodcasts ? PV.Filters._subscribedKey : Config.DEFAULT_QUERY_EPISODES_SCREEN,

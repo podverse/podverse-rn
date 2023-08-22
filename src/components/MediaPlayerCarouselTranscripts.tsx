@@ -375,6 +375,7 @@ const styles = StyleSheet.create({
     lineHeight: PV.FlatList.transcriptRowHeights.singleLine
   },
   view: {
+    flex: 1,
     paddingTop: 0
   },
   wrapper: {

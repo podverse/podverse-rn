@@ -405,21 +405,26 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
               </View>
             )}
             <View style={core.itemWrapper}>
+              <View style={core.itemWrapper}>
+                <SwitchWithText
+                  accessibilityLabel={translate('Delete downloaded episodes after end is reached')}
+                  onValueChange={this._toggleAutoDeleteEpisodeOnEnd}
+                  testID={`${testIDPrefix}_auto_delete_episode`}
+                  text={translate('Delete downloaded episodes after end is reached')}
+                  value={!!autoDeleteEpisodeOnEnd}
+                />
+              </View>
               <SwitchWithText
                 accessibilityLabel={translate('Auto download by default on subscribe')}
                 onValueChange={this._toggleAutoDownloadByDefault}
+                subText={!!autoDownloadByDefault
+                  ? translate('Auto download by default on subscribe - subtext on')
+                  : translate('Auto download by default on subscribe - subtext off')
+                }
+                subTextAccessible
                 testID={`${testIDPrefix}_auto_download_by_default`}
                 text={translate('Auto download by default on subscribe')}
                 value={!!autoDownloadByDefault}
-              />
-            </View>
-            <View style={core.itemWrapper}>
-              <SwitchWithText
-                accessibilityLabel={translate('Delete downloaded episodes after end is reached')}
-                onValueChange={this._toggleAutoDeleteEpisodeOnEnd}
-                testID={`${testIDPrefix}_auto_delete_episode`}
-                text={translate('Delete downloaded episodes after end is reached')}
-                value={!!autoDeleteEpisodeOnEnd}
               />
             </View>
             <Divider style={core.itemWrapper} />

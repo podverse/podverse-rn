@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import {
+  Episode,
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem,
   getAuthorityFeedUrlFromArray,
@@ -50,6 +51,7 @@ import {
   savePodcastCredentials
 } from '../services/parser'
 import { getPodcast } from '../services/podcast'
+import { PodcastScreenSavedQuery, getSavedQueryPodcastScreen, updateSavedQueriesPodcastScreen } from '../services/savedQueryFilters'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import * as DownloadState from '../state/actions/downloads'
@@ -180,7 +182,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       querySort: PV.Filters._mostRecentKey,
       searchBarText: '',
       selectedFilterLabel: getDefaultSelectedFilterLabel(),
-      selectedSortLabel: translate('recent'),
+      selectedSortLabel: translate('Recent'),
       showActionSheet: false,
       showSettings: false,
       showUsernameAndPassword: false,
@@ -261,15 +263,27 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
     this.refreshStartPodcastFromTime()
 
+    let savedQuery: PodcastScreenSavedQuery = {}
+    if (podcastId) {
+      savedQuery = await getSavedQueryPodcastScreen(podcastId)
+    }
+
+    const newViewType = !hasInternetConnection || isInMaintenanceMode
+      ? PV.Filters._downloadedKey
+      : (savedQuery?.filterType || this.state.viewType)
+    const newSortType = savedQuery?.sortType || PV.Filters._mostRecentKey
+
+    const selectedFilterLabel = await getSelectedFilterLabel(newViewType)
+    const selectedSortLabel = await getSelectedSortLabel(newSortType)
+
     this.setState(
       {
-        ...(!hasInternetConnection || isInMaintenanceMode
-          ? {
-              viewType: PV.Filters._downloadedKey
-            }
-          : { viewType: this.state.viewType }),
+        querySort: newSortType,
+        viewType: newViewType,
         podcast,
-        hasInternetConnection: !!hasInternetConnection
+        hasInternetConnection: !!hasInternetConnection,
+        selectedFilterLabel,
+        selectedSortLabel
       },
       () => {
         this._initializePageData()
@@ -317,8 +331,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
           try {
             if (podcast && podcast.addByRSSPodcastFeedUrl) {
               newPodcast = podcast
-              newState.flatListData = podcast.episodes || []
-              newState.flatListDataTotalCount = newState.flatListData.length
+              newState = await this._queryData(this.state.viewType)
             } else if (isInMaintenanceMode) {
               newPodcast = podcast
               newState = await this._queryData(PV.Filters._downloadedKey)
@@ -385,6 +398,14 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   handleSelectFilterItem = async (selectedKey: string) => {
     if (!selectedKey) return
 
+    if (this.state?.podcastId && this.state?.querySort) {
+      const savedQuery: PodcastScreenSavedQuery = {
+        filterType: selectedKey,
+        sortType: this.state.querySort
+      }
+      await updateSavedQueriesPodcastScreen(this.state.podcastId, savedQuery)
+    }
+
     const selectedFilterLabel = await getSelectedFilterLabel(selectedKey)
 
     this.setState(
@@ -409,6 +430,14 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
 
   handleSelectSortItem = async (selectedKey: string) => {
     if (!selectedKey) return
+
+    if (this.state?.podcastId && this.state?.viewType) {
+      const savedQuery: PodcastScreenSavedQuery = {
+        filterType: this.state.viewType,
+        sortType: selectedKey
+      }
+      await updateSavedQueriesPodcastScreen(this.state.podcastId, savedQuery)
+    }
 
     const selectedSortLabel = await getSelectedSortLabel(selectedKey)
 
@@ -1274,7 +1303,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   _queryAddByRSSEpisodes = (viewType: string, querySort: string | null) => {
-    const { podcast } = this.state
+    const { podcast, searchBarText } = this.state
 
     if (!Array.isArray(podcast?.episodes)) {
       return {
@@ -1302,6 +1331,16 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     }
 
     const addByRSSEpisodesCount = addByRSSEpisodes.length
+
+    const trimmedSearchBarText = searchBarText?.trim() || ''
+    if (trimmedSearchBarText) {
+      const finalSearchText = trimmedSearchBarText.toLowerCase()
+      const pattern = new RegExp(`${finalSearchText}*`, 'g')
+      addByRSSEpisodes = addByRSSEpisodes.filter((episode: Episode) => {
+        const lowerCaseTitle = episode?.title?.toLowerCase() || ''
+        return pattern.test(lowerCaseTitle)
+      })
+    }
 
     return {
       addByRSSEpisodes,
