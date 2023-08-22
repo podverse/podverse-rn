@@ -80,7 +80,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       selectedCategory: null,
       selectedCategorySub: null,
       selectedFilterLabel: translate('Subscribed'),
-      selectedSortLabel: translate('recent'),
+      selectedSortLabel: translate('Recent'),
       showActionSheet: false,
       tempQueryEnabled: false,
       tempQueryFrom: PV.Filters._subscribedKey,

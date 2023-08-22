@@ -102,7 +102,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       queryPage: 1,
       querySort: initializeClips ? PV.Filters._mostRecentKey : PV.Filters._alphabeticalKey,
       selectedFilterLabel: initializeClips ? translate('Clips') : translate('Podcasts'),
-      selectedSortLabel: initializeClips ? translate('recent') : translate('A-Z'),
+      selectedSortLabel: initializeClips ? translate('Recent') : translate('A-Z'),
       showActionSheet: false,
       userId,
       viewType: initializeClips ? PV.Filters._clipsKey : PV.Filters._podcastsKey

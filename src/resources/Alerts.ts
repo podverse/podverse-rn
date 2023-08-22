@@ -61,7 +61,7 @@ export const Alerts = {
 
     return {
       message: `${item?.podcastTitle} - ${title}?`,
-      title: `${translate('Recent ')}${type}`,
+      title: `${translate('Recent')} ${type}`,
       buttons: [
         {
           text: translate('Cancel'),
