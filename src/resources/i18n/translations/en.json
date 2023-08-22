@@ -512,6 +512,8 @@
   "Only with link": "Only with link",
   "Only with Link means only people who": "\"Only with link\" means it not in the \"Public\" list on Podverse and the clip's link is needed to play it. Create public clips with Podverse Premium.",
   "OPML import and export": "OPML import and export",
+  "OPML import error message general": "There was an issue with the opml file import.",
+  "OPML import error message wrong file type": "File must have a .opml or .xml file extension.",
   "optional": "optional",
   "Other": "Other",
   "Password": "Password",
