@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { parseOpmlFile } from 'podverse-shared'
+import { getExtensionFromUrl, parseOpmlFile } from 'podverse-shared'
 import { SectionList, Alert } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
@@ -29,6 +29,8 @@ type State = {
 }
 
 const testIDPrefix = 'more_screen'
+
+const validOPMLFileExtensions = ['.opml', '.xml']
 
 export class MoreScreen extends React.Component<Props, State> {
   state = {
@@ -141,6 +143,13 @@ export class MoreScreen extends React.Component<Props, State> {
 
         uri = res.uri
       }
+
+      const fileExtension = getExtensionFromUrl(uri)
+      if (!validOPMLFileExtensions.includes(fileExtension)) {
+        Alert.alert(translate('Error'), translate('OPML import error message wrong file type'))
+        return        
+      }
+
       const contents = await RNFS.readFile(decodeURI(uri), 'utf8')
 
       this.setState({ isLoading: true }, () => {
@@ -169,7 +178,7 @@ export class MoreScreen extends React.Component<Props, State> {
         // User cancelled the picker, exit any dialogs or menus and move on
       } else {
         errorLogger(_fileName, '_importOpml DocumentPicker.isCancel', err)
-        Alert.alert('Error', 'There was an issue with the opml file import.', err.message)
+        Alert.alert(translate('Error'), translate('OPML import general error message'), err.message)
       }
     }
   }

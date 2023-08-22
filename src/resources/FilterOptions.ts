@@ -136,7 +136,7 @@ const allSortItems = [
   sortChronologicalItem,
   sortAlphabeticalItem,
   {
-    label: translate('recent'),
+    label: translate('Recent'),
     value: _mostRecentKey
   },
   {
