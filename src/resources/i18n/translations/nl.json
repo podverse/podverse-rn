@@ -23,5 +23,8 @@
     "Episode": "Aflevering",
     "Episodes": "Afleveringen",
     "Features": "Mogelijkheden",
-    "Feature Request": "Verzoek een nieuwe functie"
+    "Feature Request": "Verzoek een nieuwe functie",
+    "_translatorsFieldExample": "Robert Schuman<https://robert.schuman.homepage>,Jan Bloggs,Jonas Janssens<https://voorbeeld.socialmedia/jan>",
+    "Clip": "Clip",
+    "Clips": "Clips"
 }
