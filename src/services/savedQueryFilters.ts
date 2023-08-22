@@ -61,3 +61,40 @@ export const setSavedQueryEpisodesScreen = async (
     errorLogger(_fileName, 'setSavedQueryEpisodesScreen', error)
   }
 }
+
+/* PodcastScreen saved query filters */
+
+export type PodcastScreenSavedQuery = {
+  filterType?: string
+  sortType?: string
+}
+
+const getSavedQueriesPodcastScreen = async () => {
+  try {
+    const itemsString = await AsyncStorage.getItem(PV.Keys.SAVED_QUERIES_PODCAST_SCREEN)
+    return (itemsString ? JSON.parse(itemsString) : {}) as PodcastScreenSavedQuery
+  } catch (error) {
+    errorLogger(_fileName, 'getSavedQueriesPodcastScreen', error)
+    return {}
+  }
+}
+
+export const getSavedQueryPodcastScreen = async (podcastId: string) => {
+  const savedQueries = await getSavedQueriesPodcastScreen()
+  const savedQuery = savedQueries[podcastId] || {}
+  return savedQuery
+}
+
+export const updateSavedQueriesPodcastScreen = async (podcastId: string, query: PodcastScreenSavedQuery) => {
+  const savedQueries = await getSavedQueriesPodcastScreen()
+  savedQueries[podcastId] = query
+  await AsyncStorage.setItem(PV.Keys.SAVED_QUERIES_PODCAST_SCREEN, JSON.stringify(savedQueries))
+  return savedQueries
+}
+
+export const removeSavedQueriesPodcastScreen = async (podcastId: string) => {
+  const savedQueries = await getSavedQueriesPodcastScreen()
+  delete savedQueries[podcastId]
+  await AsyncStorage.setItem(PV.Keys.SAVED_QUERIES_PODCAST_SCREEN, JSON.stringify(savedQueries))
+  return savedQueries
+}
