@@ -193,6 +193,8 @@
   "Auth invalid title": "Logged out",
   "Auto": "Auto",
   "Auto download by default on subscribe": "When subscribing",
+  "Auto download by default on subscribe - subtext off": "Auto-download is off by default when subscribing to podcasts",
+  "Auto download by default on subscribe - subtext on": "Auto-download is on by default when subscribing to podcasts",
   "Auto Downloading Off": "Auto-downloading off",
   "Auto Downloading On": "Auto-downloading on",
   "Automatically add new episodes to queue": "Auto-enqueue new episodes",
