@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import {
+  Episode,
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem,
   getAuthorityFeedUrlFromArray,
@@ -1274,7 +1275,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   _queryAddByRSSEpisodes = (viewType: string, querySort: string | null) => {
-    const { podcast } = this.state
+    const { podcast, searchBarText } = this.state
 
     if (!Array.isArray(podcast?.episodes)) {
       return {
@@ -1302,6 +1303,16 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     }
 
     const addByRSSEpisodesCount = addByRSSEpisodes.length
+
+    const trimmedSearchBarText = searchBarText?.trim() || ''
+    if (trimmedSearchBarText) {
+      const finalSearchText = trimmedSearchBarText.toLowerCase()
+      const pattern = new RegExp(`${finalSearchText}*`, 'g')
+      addByRSSEpisodes = addByRSSEpisodes.filter((episode: Episode) => {
+        const lowerCaseTitle = episode?.title?.toLowerCase() || ''
+        return pattern.test(lowerCaseTitle)
+      })
+    }
 
     return {
       addByRSSEpisodes,
