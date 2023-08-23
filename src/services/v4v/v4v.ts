@@ -177,7 +177,9 @@ export const convertValueTagIntoValueTransactions = async (
   totalBatchedAmount = 0,
   roundDownValues: boolean,
   providerKey: string,
-  episode_guid: string
+  episode_guid: string,
+  remote_feed_guid?: string,
+  remote_item_guid?: string
 ) => {
 
   const { method, type } = valueTag
@@ -240,7 +242,9 @@ export const convertValueTagIntoValueTransactions = async (
         type,
         totalBatchedAmount,
         providerKey,
-        episode_guid
+        episode_guid,
+        remote_feed_guid,
+        remote_item_guid
       )
 
       remainingTotalAmount = remainingTotalAmount - amount
@@ -289,7 +293,9 @@ export const convertValueTagIntoValueTransactions = async (
       // The amount to send has been calculated already in the normalizedNonFeeValueRecipient.
       totalBatchedAmount,
       providerKey,
-      episode_guid
+      episode_guid,
+      remote_feed_guid,
+      remote_item_guid
     )
 
     if (normalizedNonFeeValueTransaction) nonFeeValueTransactions.push(normalizedNonFeeValueTransaction)
@@ -307,7 +313,9 @@ export const convertValueTagIntoValueTransactions = async (
       // See note above.
       totalBatchedAmount,
       providerKey,
-      episode_guid
+      episode_guid,
+      remote_feed_guid,
+      remote_item_guid
     )
 
     if (normalizedParentNonFeeValueTransaction) {
@@ -336,7 +344,9 @@ const convertValueTagIntoValueTransaction = async (
   // The actual transaction amount is determined in the normalizeValueRecipients function.
   totalBatchedAmount: number,
   providerKey: string,
-  episode_guid: string
+  episode_guid: string,
+  remote_feed_guid?: string,
+  remote_item_guid?: string
 ) => {
   const timestamp = Date.now()
   const [speed, currentPlaybackPosition] = await Promise.all([playerGetRate(), playerGetPosition()])
@@ -356,7 +366,9 @@ const convertValueTagIntoValueTransaction = async (
     normalizedValueRecipient.customKey || '',
     normalizedValueRecipient.customValue || '',
     episode_guid,
-    recipientAmount
+    recipientAmount,
+    remote_feed_guid,
+    remote_item_guid
   )
 
   return {
@@ -497,7 +509,9 @@ export const sendBoost = async (
     boostAmount,
     roundDownBoostTransactions,
     activeProvider.key,
-    item?.episodeGuid || ''
+    item?.episodeGuid || '',
+    valueTag?.remoteFeedGuid,
+    valueTag?.remoteItemGuid
   )
 
   const combinedNonFeeValueTransactions = nonFeeValueTransactions.concat(parentNonFeeValueTransactions)
@@ -699,6 +713,8 @@ export const getFinalValueTag = (valueTag: ValueTag, playerPosition: number) => 
           }
           finalValueTag.parentValueTag = matchingValueTimeSplitsValueTag.parentValueTag
           finalValueTag.remotePercentage = matchingValueTimeSplitsValueTag.remotePercentage
+          finalValueTag.remoteFeedGuid = matchingValueTimeSplitsValueTag?.remoteItem?.feedGuid
+          finalValueTag.remoteItemGuid = matchingValueTimeSplitsValueTag?.remoteItem?.itemGuid
         }
       }
     }
@@ -732,7 +748,9 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
         finalAmount,
         roundDownStreamingTransactions,
         providerKey,
-        item?.episodeGuid || ''
+        item?.episodeGuid || '',
+        finalValueTag?.remoteFeedGuid,
+        finalValueTag?.remoteItemGuid
       )
     ])
 

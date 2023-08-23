@@ -538,7 +538,9 @@ const convertValueTimeSplitsToAppConvertedSplits = (
     remoteStartTime: oldValueTimeSplit.remoteStartTime,
     remotePercentage: oldValueTimeSplit.remotePercentage,
     remoteItem: oldValueTimeSplit.remoteItem,
-    valueTags: valueTimeSplitValueTags
+    valueTags: valueTimeSplitValueTags,
+    remoteFeedGuid: oldValueTimeSplit.remoteFeedGuid,
+    remoteItemGuid: oldValueTimeSplit.remoteItemGuid
   }
 }
 
