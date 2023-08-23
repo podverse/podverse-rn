@@ -68,7 +68,7 @@
     "m3u8-parser": "^6.0.0",
     "moment": "^2.29.4",
     "p-limit": "^4.0.0",
-    "podverse-shared": "^4.13.6",
+    "podverse-shared": "^4.13.8",
     "qs": "^6.11.0",
     "react": "17.0.1",
     "react-native": "0.66.5",
