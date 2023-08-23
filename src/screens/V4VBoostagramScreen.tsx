@@ -170,7 +170,9 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
         amount,
         shouldRound,
         activeProvider.key,
-        boostagramItem.episodeGuid ||  ''
+        boostagramItem.episodeGuid ||  '',
+        activeValueTag?.remoteFeedGuid,
+        activeValueTag?.remoteItemGuid
       )
 
       this.setState({
