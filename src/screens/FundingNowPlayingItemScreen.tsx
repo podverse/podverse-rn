@@ -151,7 +151,9 @@ export class FundingNowPlayingItemScreen extends React.Component<Props, State> {
         amount,
         false,
         activeProvider.key,
-        nowPlayingItem.episodeGuid || ''
+        nowPlayingItem.episodeGuid || '',
+        activeValueTag?.remoteFeedGuid,
+        activeValueTag?.remoteItemGuid
       )
 
 

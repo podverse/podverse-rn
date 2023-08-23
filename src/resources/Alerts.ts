@@ -1,4 +1,4 @@
-import { NowPlayingItem } from 'podverse-shared'
+import { NowPlayingItem, capitalizeFirstLetter } from 'podverse-shared'
 import { Alert, AlertButton, AlertOptions, Linking, Platform } from 'react-native'
 import { translate } from '../lib/i18n'
 import { navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
@@ -61,7 +61,7 @@ export const Alerts = {
 
     return {
       message: `${item?.podcastTitle} - ${title}?`,
-      title: `${translate('Recent')} ${type}`,
+      title: `${capitalizeFirstLetter(translate('Recent'))} ${type}`,
       buttons: [
         {
           text: translate('Cancel'),
