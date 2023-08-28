@@ -1207,20 +1207,26 @@ export class PodcastScreen extends React.Component<Props, State> {
               testID={`${testIDPrefix}_clear_new_episode_indicators`}
               text={translate('Mark episodes as seen')}
             />
-            <Button
-              accessibilityLabel={translate('Select Multiple Episodes')}
-              onPress={this._onShowMarkMultipleAsPlayed}
-              wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
-              testID={`${testIDPrefix}_mark_selected_episodes_as_played`}
-              text={translate('Select Multiple Episodes')}
-            />
-            <Button
-              accessibilityLabel={translate('Mark All Episodes As Played')}
-              onPress={this._onMarkAsPlayed}
-              wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
-              testID={`${testIDPrefix}_mars_all_episodes_played`}
-              text={translate('Mark All Episodes As Played')}
-            />
+            {
+              !addByRSSPodcastFeedUrl && (
+                <>
+                  <Button
+                    accessibilityLabel={translate('Select Multiple Episodes')}
+                    onPress={this._onShowMarkMultipleAsPlayed}
+                    wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
+                    testID={`${testIDPrefix}_mark_selected_episodes_as_played`}
+                    text={translate('Select Multiple Episodes')}
+                  />
+                  <Button
+                    accessibilityLabel={translate('Mark All Episodes As Played')}
+                    onPress={this._onMarkAsPlayed}
+                    wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
+                    testID={`${testIDPrefix}_mars_all_episodes_played`}
+                    text={translate('Mark All Episodes As Played')}
+                  />
+                </>
+              )
+            }
             <Button
               accessibilityHint={translate('ARIA HINT - delete all the episodes you have downloaded for this podcast')}
               accessibilityLabel={translate('Delete Downloaded Episodes')}
@@ -1513,7 +1519,9 @@ const styles = StyleSheet.create({
     borderRadius: 8
   },
   settingsDeletebutton: {
-    margin: 8,
+    marginBottom: 50,
+    marginTop: 8,
+    marginHorizontal: 8,
     borderRadius: 8
   },
   settingsHelpText: {

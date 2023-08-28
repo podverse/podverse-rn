@@ -419,7 +419,8 @@ export const markAsPlayedEpisodesMultipleOnServer = async (episodeIds: string[])
     opts: { credentials: 'include' },
     body: {
       episodeIds
-    }
+    },
+    timeoutLongest: true
   })
 
   return response && response.data
@@ -436,7 +437,8 @@ export const markAsPlayedEpisodesAllOnServer = async (podcastId: string) => {
       Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
-    opts: { credentials: 'include' }
+    opts: { credentials: 'include' },
+    timeoutLongest: true
   })
 
   return response && response.data
