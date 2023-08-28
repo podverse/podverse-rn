@@ -1,5 +1,5 @@
 import { convertToNowPlayingItem } from 'podverse-shared'
-import { AppState, AppStateEvent, AppStateStatic, AppStateStatus, StyleSheet } from 'react-native'
+import { AppState, AppStateStatus, StyleSheet } from 'react-native'
 import React, { setGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'

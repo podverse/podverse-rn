@@ -509,7 +509,7 @@ export const v4vConvertToBoostagramItem = (podcast?: Podcast, episode?: Episode)
     item = {
       episodeFunding: nowPlayingItem.episodeFunding || [],
       episodeGuid: nowPlayingItem.episodeGuid || '',
-      episodePubDate: (nowPlayingItem.episodePubDate as any) || new Date(),
+      episodePubDate: (nowPlayingItem.episodePubDate ) || new Date(),
       episodeTitle: nowPlayingItem.episodeTitle || '',
       episodeValue: nowPlayingItem.episodeValue || [],
       podcastFunding: nowPlayingItem.podcastFunding || [],

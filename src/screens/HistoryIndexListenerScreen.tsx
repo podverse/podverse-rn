@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
 import React from 'reactn'
-import { PV } from '../resources'
-import PVEventEmitter from '../services/eventEmitter'
 
 interface Props {}
 interface State {}

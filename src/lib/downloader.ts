@@ -57,12 +57,16 @@ export const cancelDownloadTask = (episodeId: string) => {
   if (task) task.stop()
 }
 
-const debouncePlayerSyncPlayerWithQueue = debounce(async () => {
-  await playerSyncPlayerWithQueue()
-}, 3000, {
-  leading: true,
-  trailing: true
-})
+const debouncePlayerSyncPlayerWithQueue = debounce(
+  async () => {
+    await playerSyncPlayerWithQueue()
+  },
+  3000,
+  {
+    leading: true,
+    trailing: true
+  }
+)
 
 const addDLTask = (episode: any, podcast: any) =>
   DownloadState.addDownloadTask({

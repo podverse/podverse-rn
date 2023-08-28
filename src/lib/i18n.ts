@@ -14,6 +14,7 @@ const translationGetters = {
   it: () => require('../resources/i18n/translations/it.json'),
   lt: () => require('../resources/i18n/translations/lt.json'),
   nb: () => require('../resources/i18n/translations/nb_NO.json'),
+  nl: () => require('../resources/i18n/translations/nl.json'),
   oc: () => require('../resources/i18n/translations/oc.json'),
   pt: () => require('../resources/i18n/translations/pt.json'),
   ru: () => require('../resources/i18n/translations/ru.json'),

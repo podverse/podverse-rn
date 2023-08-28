@@ -443,7 +443,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
     if (throwError) {
       throw error
     }
-    
+
     const previouslySavedPodcast = await getAddByRSSPodcastLocally(feedUrl)
     return previouslySavedPodcast
   }

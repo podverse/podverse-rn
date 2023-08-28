@@ -109,42 +109,38 @@ export class AboutScreen extends React.Component<Props, State> {
                 style={[styles.sectionTitle, { marginBottom: 0 }]}>
                 {translate('Translators')}
               </Text>
-              {
-                translatorsSections.map((translatorsSection: TranslatorsSection) => {
-                  const translatorNames = translatorsSection.translators
-                    .map((translator: Translator, index: number) => {
-                    const style = translator.url ? [styles.translatorName, styles.link] : styles.translatorName
-                    const translatorName = translator.name?.trim()
-                    return (
-                      <Text
-                        fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                        key={`translators_${translatorsSection.language}_${index}`}
-                        isSecondary={!translator.url}
-                        {...(!!translator.url
-                          ? {
-                              onPress: () => this.handleFollowLink(translator.url)
-                            }
-                          : {})}
-                        style={style}>
-                        {translatorName}
-                      </Text>
-                    )
-                  })
-
+              {translatorsSections.map((translatorsSection: TranslatorsSection) => {
+                const translatorNames = translatorsSection.translators.map((translator: Translator, index: number) => {
+                  const style = translator.url ? [styles.translatorName, styles.link] : styles.translatorName
+                  const translatorName = translator.name?.trim()
                   return (
-                    <>
-                      <Text
-                        fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                        key={`translators_${translatorsSection.language}`}
-                        style={styles.translationLanguage}>
-                        {translatorsSection.language}
-                      </Text>
-                      {translatorNames}
-                    </>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                      key={`translators_${translatorsSection.language}_${index}`}
+                      isSecondary={!translator.url}
+                      {...(!!translator.url
+                        ? {
+                            onPress: () => this.handleFollowLink(translator.url)
+                          }
+                        : {})}
+                      style={style}>
+                      {translatorName}
+                    </Text>
                   )
-
                 })
-              }
+
+                return (
+                  <>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                      key={`translators_${translatorsSection.language}`}
+                      style={styles.translationLanguage}>
+                      {translatorsSection.language}
+                    </Text>
+                    {translatorNames}
+                  </>
+                )
+              })}
               <Divider style={[styles.divider, { marginTop: 24 }]} />
             </>
           )}

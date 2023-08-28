@@ -58,7 +58,7 @@ const hlsReplaceUriInUrl = (base: string, relative: string) => {
   let finalUrl = ''
   if (relative?.startsWith('..')) {
     finalUrl = convertToAbsoluteUrl(base, relative)
-  } else {      
+  } else {
     finalUrl = base.substring(0, base.lastIndexOf('/') + 1)
     finalUrl = finalUrl + relative
   }

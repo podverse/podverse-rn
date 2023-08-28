@@ -42,7 +42,7 @@ const audioResetHistoryItemByTrackId = async (loadedTrackId: string, position: n
   const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(loadedTrackId)
   if (metaEpisode) {
     const { mediaFileDuration } = metaEpisode
-    const isWithin2MinutesOfEnd = mediaFileDuration && (mediaFileDuration - 120 < position)
+    const isWithin2MinutesOfEnd = mediaFileDuration && mediaFileDuration - 120 < position
     const isLessThanOneMinute = mediaFileDuration <= 60
     if (isWithin2MinutesOfEnd || isLessThanOneMinute || !mediaFileDuration) {
       const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(loadedTrackId)
@@ -52,19 +52,25 @@ const audioResetHistoryItemByTrackId = async (loadedTrackId: string, position: n
           downloadedEpisodeMarkForDeletion(currentNowPlayingItem.episodeId)
         }
 
-        const retriesLimit = 5        
+        const retriesLimit = 5
         for (let i = 0; i < retriesLimit; i++) {
           try {
             const forceUpdateOrderDate = false
             const skipSetNowPlaying = true
             const completed = true
             await addOrUpdateHistoryItem(
-              currentNowPlayingItem, 0, null, forceUpdateOrderDate, skipSetNowPlaying, completed)
-            break;
+              currentNowPlayingItem,
+              0,
+              null,
+              forceUpdateOrderDate,
+              skipSetNowPlaying,
+              completed
+            )
+            break
           } catch (error) {
             // Maybe the network request failed due to poor internet.
             // continue to try again.
-            continue;
+            continue
           }
         }
       }
@@ -345,7 +351,7 @@ module.exports = async () => {
     })()
   })
 
-  PVAudioPlayer.addEventListener(Event.PlaybackProgressUpdated, (x: any) => {
+  PVAudioPlayer.addEventListener(Event.PlaybackProgressUpdated, () => {
     // debugLogger('playback-progress-updated', x)
     const isVideo = false
     handleBackgroundTimerInterval(isVideo)

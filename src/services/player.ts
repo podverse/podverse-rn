@@ -42,8 +42,7 @@ import {
   audioHandleSeekToWithUpdate,
   audioSyncPlayerWithQueue,
   audioUpdateCurrentTrack,
-  audioTogglePlay,
-  audioReset
+  audioTogglePlay
 } from './playerAudio'
 import { audioUpdateTrackPlayerCapabilities } from './playerAudioSetup'
 import { saveOrResetCurrentlyPlayingItemInHistory } from './userHistoryItem'
@@ -219,7 +218,7 @@ export const playerLoadNowPlayingItem = async (
         audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
       }
     }
-    
+
     if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
       await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, previousNowPlayingItem)
     } else {

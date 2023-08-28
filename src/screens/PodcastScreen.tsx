@@ -13,6 +13,7 @@ import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
 import {
   ActionSheet,
+  ActivityIndicator,
   Button,
   ClipTableCell,
   Divider,
@@ -22,6 +23,7 @@ import {
   NavShareIcon,
   NavNotificationsIcon,
   NumberSelectorWithText,
+  PillButton,
   PodcastTableHeader,
   ScrollView,
   SearchBar,
@@ -51,7 +53,11 @@ import {
   savePodcastCredentials
 } from '../services/parser'
 import { getPodcast } from '../services/podcast'
-import { PodcastScreenSavedQuery, getSavedQueryPodcastScreen, updateSavedQueriesPodcastScreen } from '../services/savedQueryFilters'
+import {
+  PodcastScreenSavedQuery,
+  getSavedQueryPodcastScreen,
+  updateSavedQueriesPodcastScreen
+} from '../services/savedQueryFilters'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import * as DownloadState from '../state/actions/downloads'
@@ -59,8 +65,9 @@ import { clearEpisodesCountForPodcast } from '../state/actions/newEpisodesCount'
 import { checkIfNotificationsEnabledForPodcastId } from '../state/actions/notifications'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
+import { markAsPlayedEpisodesAll, markAsPlayedEpisodesMultiple } from '../state/actions/userHistoryItem'
 import { core } from '../styles'
-import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
+import { checkIfLoggedIn } from '../services/auth'
 
 const _fileName = 'src/screens/PodcastScreen.tsx'
 
@@ -74,6 +81,7 @@ type State = {
   flatListData: any[]
   flatListDataTotalCount: number | null
   hasInternetConnection: boolean
+  isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
   isSubscribing: boolean
@@ -84,6 +92,7 @@ type State = {
   queryPage: number
   querySort: string | null
   searchBarText: string
+  searchTitle?: string
   selectedFilterLabel?: string | null
   selectedSortLabel?: string | null
   selectedItem?: any
@@ -94,6 +103,8 @@ type State = {
   startPodcastFromTime?: number
   username: string
   viewType: string | null
+  selectedEpisodes: string[]
+  multiSelectEnabled: boolean
 }
 
 type RenderItemArg = { item: any; index: number }
@@ -137,29 +148,29 @@ const getDefaultSelectedFilterLabel = () => {
   return defaultSelectedFilterLabel
 }
 
-export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
+export class PodcastScreen extends React.Component<Props, State> {
   shouldLoad: boolean
   listRef = null
 
   constructor(props: Props) {
-    super(props)
+    super()
 
     this.shouldLoad = true
 
-    const podcast = this.props.navigation.getParam('podcast')
-    const podcastId = podcast?.id || podcast?.addByRSSPodcastFeedUrl || this.props.navigation.getParam('podcastId')
-    const viewType = this.props.navigation.getParam('viewType') || PV.Filters._episodesKey
+    const podcast = props.navigation.getParam('podcast')
+    const podcastId = podcast?.id || podcast?.addByRSSPodcastFeedUrl || props.navigation.getParam('podcastId')
+    const viewType = props.navigation.getParam('viewType') || PV.Filters._episodesKey
     const notificationsEnabled = checkIfNotificationsEnabledForPodcastId(podcastId)
 
     if (podcast?.id || podcast?.addByRSSPodcastFeedUrl) {
-      this.props.navigation.setParams({
+      props.navigation.setParams({
         podcastId,
         podcastTitle: podcast.title,
         addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
         notificationsEnabled
       })
     } else if (podcastId) {
-      this.props.navigation.setParams({
+      props.navigation.setParams({
         podcastId,
         notificationsEnabled
       })
@@ -171,6 +182,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       flatListData: [],
       flatListDataTotalCount: null,
       hasInternetConnection: false,
+      isLoading: false,
       isLoadingMore: true,
       isRefreshing: false,
       isSubscribing: false,
@@ -187,7 +199,9 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       showSettings: false,
       showUsernameAndPassword: false,
       username: '',
-      viewType
+      viewType,
+      multiSelectEnabled: false,
+      selectedEpisodes: []
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
@@ -239,8 +253,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   async componentDidMount() {
-    super.componentDidMount()
-
     const { navigation } = this.props
     const { podcastId } = this.state
     const { isInMaintenanceMode } = this.global
@@ -268,9 +280,10 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       savedQuery = await getSavedQueryPodcastScreen(podcastId)
     }
 
-    const newViewType = !hasInternetConnection || isInMaintenanceMode
-      ? PV.Filters._downloadedKey
-      : (savedQuery?.filterType || this.state.viewType)
+    const newViewType =
+      !hasInternetConnection || isInMaintenanceMode
+        ? PV.Filters._downloadedKey
+        : savedQuery?.filterType || this.state.viewType
     const newSortType = savedQuery?.sortType || PV.Filters._mostRecentKey
 
     const selectedFilterLabel = await getSelectedFilterLabel(newViewType)
@@ -299,7 +312,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   componentWillUnmount() {
-    super.componentWillUnmount()
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.removeListener(PV.Events.PODCAST_START_PODCAST_FROM_TIME_SET, this.refreshStartPodcastFromTime)
     PVEventEmitter.removeListener(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
@@ -382,9 +394,9 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   _handleMaintenanceMode = () => {
-    const { queryFrom } = this.state
+    const { viewType } = this.state
 
-    if (queryFrom !== PV.Filters._downloadedKey) {
+    if (viewType !== PV.Filters._downloadedKey) {
       this.handleSelectFilterItem(PV.Filters._downloadedKey)
     }
   }
@@ -594,16 +606,28 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast, userPlaybackPosition))
           }
           handleNavigationPress={() => {
-            const { hasInternetConnection } = this.state
-            this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
-              episode,
-              podcast,
-              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
-              hasInternetConnection
-            })
+            if (!this.state.multiSelectEnabled) {
+              const { hasInternetConnection } = this.state
+              this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
+                episode,
+                podcast,
+                addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
+                hasInternetConnection
+              })
+            } else {
+              if (!this.state.selectedEpisodes.includes(episode.id)) {
+                this.setState({ selectedEpisodes: [...this.state.selectedEpisodes, episode.id] })
+              } else {
+                this.setState({
+                  selectedEpisodes: this.state.selectedEpisodes.filter((episodeId) => episodeId !== episode.id)
+                })
+              }
+            }
           }}
+          hideControls={this.state.multiSelectEnabled}
           hideImage
           item={episode}
+          selected={this.state.multiSelectEnabled && this.state.selectedEpisodes.includes(episode.id)}
           mediaFileDuration={mediaFileDuration}
           navigation={navigation}
           shouldHideCompleted={shouldHideCompleted}
@@ -730,9 +754,9 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
             } else {
               await toggleSubscribeToPodcast(podcastId)
             }
-            this.setState({ isSubscribing: false })
+            this.setState({ isSubscribing: false, selectedEpisodes: [], multiSelectEnabled: false })
           } catch (error) {
-            this.setState({ isSubscribing: false })
+            this.setState({ isSubscribing: false, selectedEpisodes: [], multiSelectEnabled: false })
           }
 
           const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
@@ -894,11 +918,141 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
     })
   }
 
+  _onShowMarkMultipleAsPlayed = async () => {
+    const { navigation } = this.props
+    const { viewType } = this.state
+
+    const shouldShowMarkAsPlayed = await checkIfLoggedIn()
+
+    if (shouldShowMarkAsPlayed) {
+      if (viewType !== PV.Filters._episodesKey) {
+        await this.handleSelectFilterItem(PV.Filters._episodesKey)
+      }
+      this.setState({ multiSelectEnabled: true, showSettings: false })
+    } else {
+      Alert.alert(
+        PV.Alerts.LOGIN_TO_MARK_EPISODES_AS_PLAYED.title,
+        PV.Alerts.LOGIN_TO_MARK_EPISODES_AS_PLAYED.message,
+        PV.Alerts.GO_TO_LOGIN_BUTTONS(navigation)
+      )
+    }
+  }
+
+  _onMarkAsPlayed = async (episodeIds: string[] = []) => {
+    const { navigation } = this.props
+    const shouldShowMarkAsPlayed = await checkIfLoggedIn()
+
+    if (shouldShowMarkAsPlayed) {
+      if (!episodeIds.length) {
+        Alert.alert(
+          translate('Mark All Episodes As Played'),
+          translate('All episodes in this podcast will be marked as played.'),
+          [
+            {
+              text: translate('Confirm'),
+              onPress: this.markEpisodesAsPlayed
+            },
+            {
+              text: translate('Cancel'),
+              style: 'cancel'
+            }
+          ]
+        )
+      } else {
+        this.markEpisodesAsPlayed(episodeIds)
+      }
+    } else {
+      Alert.alert(
+        PV.Alerts.LOGIN_TO_MARK_EPISODES_AS_PLAYED.title,
+        PV.Alerts.LOGIN_TO_MARK_EPISODES_AS_PLAYED.message,
+        PV.Alerts.GO_TO_LOGIN_BUTTONS(navigation)
+      )
+    }
+  }
+
+  markEpisodesAsPlayed = async (episodeIds: string[] = []) => {
+    const { podcastId } = this.state
+    this.setState({ isLoading: true })
+    // if episodeIds is empty all must be marked as played
+    if (episodeIds.length) {
+      await markAsPlayedEpisodesMultiple(episodeIds)
+    } else if (podcastId) {
+      await markAsPlayedEpisodesAll(podcastId)
+    } else {
+      Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
+      this.setState({ isLoading: false })
+      return
+    }
+
+    this.setState({
+      isLoading: false,
+      showSettings: false,
+      multiSelectEnabled: false,
+      selectedEpisodes: []
+    })
+  }
+
+  _renderTableInnerHeader = () => {
+    const { navigation } = this.props
+    const { querySort, selectedFilterLabel, selectedSortLabel, viewType, multiSelectEnabled } = this.state
+
+    const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
+
+    if (multiSelectEnabled) {
+      return (
+        <RNView style={styles.multiSelectOptionsContainer}>
+          <View style={styles.markSelectedButtonsRow}>
+            <PillButton
+              testID='podcast_screen_cancel_multi_selection'
+              buttonTitle={translate('Cancel')}
+              handleOnPress={() => {
+                this.setState({ selectedEpisodes: [], multiSelectEnabled: false })
+              }}
+              destructive
+            />
+            <PillButton
+              testID='podcast_screen_mark_as_played_button'
+              buttonTitle={translate('Mark selected')}
+              handleOnPress={() => {
+                if (!this.state.selectedEpisodes?.length) {
+                  Alert.alert('Please select at least one episode to mark as played', '', [{ text: 'OK' }])
+                } else {
+                  this._onMarkAsPlayed(this.state.selectedEpisodes)
+                }
+              }}
+            />
+          </View>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.markSelectedButtonsHelperText}>
+            {translate('Select episodes to mark as played')}
+          </Text>
+        </RNView>
+      )
+    } else {
+      return (
+        <TableSectionSelectors
+          addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
+          filterScreenTitle={getScreenTitle()}
+          handleSelectFilterItem={this.handleSelectFilterItem}
+          handleSelectSortItem={this.handleSelectSortItem}
+          includePadding
+          navigation={navigation}
+          screenName='PodcastScreen'
+          selectedFilterItemKey={viewType}
+          selectedFilterLabel={selectedFilterLabel}
+          selectedSortItemKey={querySort}
+          selectedSortLabel={selectedSortLabel}
+          testID={testIDPrefix}
+        />
+      )
+    }
+  }
+
   render() {
     const { navigation } = this.props
 
     const {
       downloadedEpisodeLimit,
+      isLoading,
       isLoadingMore,
       isRefreshing,
       isSubscribing,
@@ -906,9 +1060,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       password,
       podcast,
       podcastId,
-      querySort,
-      selectedFilterLabel,
-      selectedSortLabel,
       selectedItem,
       showActionSheet,
       showNoInternetConnectionMessage,
@@ -916,7 +1067,9 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       showUsernameAndPassword,
       startPodcastFromTime,
       username,
-      viewType
+      viewType,
+      flatListData,
+      flatListDataTotalCount
     } = this.state
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
@@ -929,7 +1082,6 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
       )
     }
 
-    const { flatListData, flatListDataTotalCount } = this.state
     const { autoDownloadSettings, autoQueueSettings } = this.global
     const autoDownloadOn =
       (podcast && podcast.id && autoDownloadSettings[podcast.id]) || (podcastId && autoDownloadSettings[podcastId])
@@ -965,20 +1117,7 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
           testID={testIDPrefix}
         />
         {!showSettings ? (
-          <TableSectionSelectors
-            addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
-            filterScreenTitle={getScreenTitle()}
-            handleSelectFilterItem={this.handleSelectFilterItem}
-            handleSelectSortItem={this.handleSelectSortItem}
-            includePadding
-            navigation={navigation}
-            screenName='PodcastScreen'
-            selectedFilterItemKey={viewType}
-            selectedFilterLabel={selectedFilterLabel}
-            selectedSortItemKey={querySort}
-            selectedSortLabel={selectedSortLabel}
-            testID={testIDPrefix}
-          />
+          this._renderTableInnerHeader()
         ) : (
           <ScrollView style={styles.settingsView}>
             <Text accessibilityRole='header' style={styles.settingsTitle}>
@@ -1096,6 +1235,24 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
               testID={`${testIDPrefix}_clear_new_episode_indicators`}
               text={translate('Mark episodes as seen')}
             />
+            {!addByRSSPodcastFeedUrl && (
+              <>
+                <Button
+                  accessibilityLabel={translate('Select Multiple Episodes')}
+                  onPress={this._onShowMarkMultipleAsPlayed}
+                  wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
+                  testID={`${testIDPrefix}_mark_selected_episodes_as_played`}
+                  text={translate('Select Multiple Episodes')}
+                />
+                <Button
+                  accessibilityLabel={translate('Mark All Episodes As Played')}
+                  onPress={this._onMarkAsPlayed}
+                  wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
+                  testID={`${testIDPrefix}_mars_all_episodes_played`}
+                  text={translate('Mark All Episodes As Played')}
+                />
+              </>
+            )}
             <Button
               accessibilityHint={translate('ARIA HINT - delete all the episodes you have downloaded for this podcast')}
               accessibilityLabel={translate('Delete Downloaded Episodes')}
@@ -1146,6 +1303,15 @@ export class PodcastScreen extends HistoryIndexListenerScreen<Props, State> {
               testID={testIDPrefix}
             />
           </View>
+        )}
+        {isLoading && (
+          <ActivityIndicator
+            fillSpace
+            isOverlay
+            loadingMessage={translate('Mark as played loading text')}
+            testID={testIDPrefix}
+            transparent={false}
+          />
         )}
       </View>
     )
@@ -1363,14 +1529,36 @@ const styles = StyleSheet.create({
   itemWrapper: {
     marginTop: 32
   },
+  markSelectedButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly'
+  },
+  markSelectedButtonsHelperText: {
+    marginBottom: 2,
+    marginTop: 10,
+    textAlign: 'center',
+    fontSize: PV.Fonts.sizes.tiny
+  },
+  multiSelectOptionsContainer: {
+    flexDirection: 'column',
+    paddingVertical: 12
+  },
   settingsClearNewEpisodeIndicators: {
-    marginBottom: 32,
+    marginBottom: 20,
+    marginHorizontal: 8,
+    marginTop: 8,
+    borderRadius: 8
+  },
+  settingsMarkEpisodesAsPlayed: {
+    marginBottom: 20,
     marginHorizontal: 8,
     marginTop: 8,
     borderRadius: 8
   },
   settingsDeletebutton: {
-    margin: 8,
+    marginBottom: 50,
+    marginTop: 8,
+    marginHorizontal: 8,
     borderRadius: 8
   },
   settingsHelpText: {

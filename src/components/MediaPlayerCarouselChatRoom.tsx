@@ -26,19 +26,17 @@ export class MediaPlayerCarouselChatRoom extends React.PureComponent<Props> {
     return (
       <View style={[styles.wrapper, { width }]} testID={`${testIDPrefix}_view`} transparent>
         <TableSectionSelectors disableFilter includePadding selectedFilterLabel={translate('Chat Room')} />
-        {
-          !!chatIRCURL && (
-            <WebView
-              accessible={false}
-              containerStyle={styles.wrapper}
-              originWhitelist={['*']}
-              overScrollMode='never'
-              removeClippedSubviews
-              source={{ uri: chatIRCURL }}
-              style={{ backgroundColor: 'transparent', opacity: 0.99 }}
-            />
-          )
-        }
+        {!!chatIRCURL && (
+          <WebView
+            accessible={false}
+            containerStyle={styles.wrapper}
+            originWhitelist={['*']}
+            overScrollMode='never'
+            removeClippedSubviews
+            source={{ uri: chatIRCURL }}
+            style={{ backgroundColor: 'transparent', opacity: 0.99 }}
+          />
+        )}
       </View>
     )
   }

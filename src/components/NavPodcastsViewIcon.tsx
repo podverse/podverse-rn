@@ -18,7 +18,7 @@ export const NavPodcastsViewIcon = () => {
       accessibilityRole='button'
       handlePress={handlePress}
       testID='nav_layout_icon'>
-        <NavItemIcon name='list' />
+      <NavItemIcon name='list' />
     </NavItemWrapper>
   )
 }

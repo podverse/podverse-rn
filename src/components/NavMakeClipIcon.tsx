@@ -22,18 +22,19 @@ export const NavMakeClipIcon = (props: Props) => {
   const { addByRSSPodcastFeedUrl, getInitialProgressValue, navigation } = props
 
   const handlePress = async () => {
-
     if (addByRSSPodcastFeedUrl) {
-      Alert.alert(PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE('disabled clipping').title,
-        PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE().message)
+      Alert.alert(
+        PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE('disabled clipping').title,
+        PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE().message
+      )
     } else {
       const [initialProgressValue, isPublic] = await Promise.all([getInitialProgressValue(), getMakeClipIsPublic()])
-  
+
       const { globalTheme, session } = getGlobal()
       const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
-  
+
       PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS)
-  
+
       navigation.navigate(PV.RouteNames.MakeClipScreen, {
         initialProgressValue,
         initialPrivacy: isPublic,

@@ -64,19 +64,17 @@ export const WebViewStaticHTML = (props: Props) => {
 
   return (
     <View style={isLoading ? { display: 'none' } : styles.view}>
-      {
-        !!styledHTML && (
-          <WebView
-            accessible={false}
-            containerStyle={styles.view}
-            originWhitelist={['*']}
-            overScrollMode='never'
-            removeClippedSubviews
-            source={{ html: styledHTML }}
-            style={{ backgroundColor: 'transparent', opacity: 0.99 }}
-          />
-        )
-      }
+      {!!styledHTML && (
+        <WebView
+          accessible={false}
+          containerStyle={styles.view}
+          originWhitelist={['*']}
+          overScrollMode='never'
+          removeClippedSubviews
+          source={{ html: styledHTML }}
+          style={{ backgroundColor: 'transparent', opacity: 0.99 }}
+        />
+      )}
     </View>
   )
 }
