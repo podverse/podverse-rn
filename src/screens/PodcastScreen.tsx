@@ -12,6 +12,7 @@ import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
 import {
   ActionSheet,
+  ActivityIndicator,
   Button,
   ClipTableCell,
   Divider,
@@ -21,6 +22,7 @@ import {
   NavShareIcon,
   NavNotificationsIcon,
   NumberSelectorWithText,
+  PillButton,
   PodcastTableHeader,
   ScrollView,
   SearchBar,
@@ -28,7 +30,6 @@ import {
   TableSectionSelectors,
   Text,
   View,
-  PillButton
 } from '../components'
 import { errorLogger } from '../lib/logger'
 import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
@@ -58,6 +59,7 @@ import { clearEpisodesCountForPodcast } from '../state/actions/newEpisodesCount'
 import { checkIfNotificationsEnabledForPodcastId } from '../state/actions/notifications'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
+import { markAsPlayedEpisodesAll, markAsPlayedEpisodesMultiple } from '../state/actions/userHistoryItem'
 import { core } from '../styles'
 import { checkIfLoggedIn } from '../services/auth'
 
@@ -73,6 +75,7 @@ type State = {
   flatListData: any[]
   flatListDataTotalCount: number | null
   hasInternetConnection: boolean
+  isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
   isSubscribing: boolean
@@ -94,7 +97,6 @@ type State = {
   startPodcastFromTime?: number
   username: string
   viewType: string | null
-  showMarkAsPlayedButton: boolean
   selectedEpisodes: string[]
   multiSelectEnabled: boolean
 }
@@ -174,6 +176,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       flatListData: [],
       flatListDataTotalCount: null,
       hasInternetConnection: false,
+      isLoading: false,
       isLoadingMore: true,
       isRefreshing: false,
       isSubscribing: false,
@@ -191,7 +194,6 @@ export class PodcastScreen extends React.Component<Props, State> {
       showUsernameAndPassword: false,
       username: '',
       viewType,
-      showMarkAsPlayedButton: false,
       multiSelectEnabled: false,
       selectedEpisodes: []
     }
@@ -267,8 +269,6 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     this.refreshStartPodcastFromTime()
 
-    const shouldShowMarkAsPlayed = await checkIfLoggedIn()
-
     this.setState(
       {
         ...(!hasInternetConnection || isInMaintenanceMode
@@ -277,8 +277,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             }
           : { viewType: this.state.viewType }),
         podcast,
-        hasInternetConnection: !!hasInternetConnection,
-        showMarkAsPlayedButton: true //shouldShowMarkAsPlayed
+        hasInternetConnection: !!hasInternetConnection
       },
       () => {
         this._initializePageData()
@@ -377,9 +376,9 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _handleMaintenanceMode = () => {
-    const { queryFrom } = this.state
+    const { viewType } = this.state
 
-    if (queryFrom !== PV.Filters._downloadedKey) {
+    if (viewType !== PV.Filters._downloadedKey) {
       this.handleSelectFilterItem(PV.Filters._downloadedKey)
     }
   }
@@ -591,6 +590,7 @@ export class PodcastScreen extends React.Component<Props, State> {
               }
             }
           }}
+          hideControls={this.state.multiSelectEnabled}
           hideImage
           item={episode}
           selected={this.state.multiSelectEnabled && this.state.selectedEpisodes.includes(episode.id)}
@@ -884,46 +884,78 @@ export class PodcastScreen extends React.Component<Props, State> {
     })
   }
 
-  _onMarkAsPlayed = (episodeIds: string[] = []) => {
-    if (!episodeIds.length) {
-      Alert.alert(
-        translate('Mark All Episodes As Played'), 
-        translate('All episodes in this podcast will be marked as played.'), 
-        [
-          {
-            text: translate('Confirm'),
-            onPress: this.markEpisodesAsPlayed
-          },
-          {
-            text: translate('Cancel'),
-            style: 'cancel'
-          }
-        ]
-      )
+  _onShowMarkMultipleAsPlayed = async () => {
+    const { navigation } = this.props
+    const { viewType } = this.state
+
+    const shouldShowMarkAsPlayed = await checkIfLoggedIn()
+
+    if (shouldShowMarkAsPlayed) {
+      if (viewType !== PV.Filters._episodesKey) {
+        await this.handleSelectFilterItem(PV.Filters._episodesKey)
+      }
+      this.setState({ multiSelectEnabled: true, showSettings: false })
     } else {
-      this.markEpisodesAsPlayed(episodeIds)
+      Alert.alert(
+        PV.Alerts.LOGIN_TO_MARK_EPISODES_AS_PLAYED.title,
+        PV.Alerts.LOGIN_TO_MARK_EPISODES_AS_PLAYED.message,
+        PV.Alerts.GO_TO_LOGIN_BUTTONS(navigation)
+      )
+    }
+  }
+
+  _onMarkAsPlayed = async (episodeIds: string[] = []) => {
+    const { navigation } = this.props
+    const shouldShowMarkAsPlayed = await checkIfLoggedIn()
+
+    if (shouldShowMarkAsPlayed) {
+      if (!episodeIds.length) {
+        Alert.alert(
+          translate('Mark All Episodes As Played'), 
+          translate('All episodes in this podcast will be marked as played.'), 
+          [
+            {
+              text: translate('Confirm'),
+              onPress: this.markEpisodesAsPlayed
+            },
+            {
+              text: translate('Cancel'),
+              style: 'cancel'
+            }
+          ]
+        )
+      } else {
+        this.markEpisodesAsPlayed(episodeIds)
+      }
+    } else {
+      Alert.alert(
+        PV.Alerts.LOGIN_TO_MARK_EPISODES_AS_PLAYED.title,
+        PV.Alerts.LOGIN_TO_MARK_EPISODES_AS_PLAYED.message,
+        PV.Alerts.GO_TO_LOGIN_BUTTONS(navigation)
+      )
     }
   }
 
   markEpisodesAsPlayed = async (episodeIds: string[] = []) => {
+    const { podcastId } = this.state
+    this.setState({ isLoading: true })
     // if episodeIds is empty all must be marked as played
     if(episodeIds.length) {
-      console.log("Marking some: ", episodeIds)
+      await markAsPlayedEpisodesMultiple(episodeIds)
+    } else if (podcastId) {
+      await markAsPlayedEpisodesAll(podcastId)
     } else {
-      console.log("Marking ALL")
+      Alert.alert(
+        PV.Alerts.SOMETHING_WENT_WRONG.title,
+        PV.Alerts.SOMETHING_WENT_WRONG.message,
+        PV.Alerts.BUTTONS.OK
+      )
+      this.setState({ isLoading: false })
+      return
     }
 
-    const networkCall = () => {
-      return new Promise<void>((res) => {
-        setTimeout(() => {
-          console.log('Making the call')
-          res()
-        }, 1500)
-      })
-    }
-
-    await networkCall()
     this.setState({
+      isLoading: false,
       showSettings: false,
       multiSelectEnabled: false,
       selectedEpisodes: []
@@ -939,25 +971,32 @@ export class PodcastScreen extends React.Component<Props, State> {
     if (multiSelectEnabled) {
       return (
         <RNView style={styles.multiSelectOptionsContainer}>
-          <PillButton
-            testID='podcast_screen_cancel_multi_selection'
-            buttonTitle={translate('Cancel')}
-            handleOnPress={() => {
-              this.setState({ selectedEpisodes: [], multiSelectEnabled: false })
-            }}
-            destructive
-          />
-          <PillButton
-            testID='podcast_screen_mark_as_played_button'
-            buttonTitle={translate('Mark All Episodes As Played')}
-            handleOnPress={() => {
-              if(!this.state.selectedEpisodes?.length) {
-                Alert.alert("Please select at least one episode to mark as played","",[{text:"OK"}])
-              } else {
-                this._onMarkAsPlayed(this.state.selectedEpisodes)
-              }
-            }}
-          />
+          <View style={styles.markSelectedButtonsRow}>
+            <PillButton
+              testID='podcast_screen_cancel_multi_selection'
+              buttonTitle={translate('Cancel')}
+              handleOnPress={() => {
+                this.setState({ selectedEpisodes: [], multiSelectEnabled: false })
+              }}
+              destructive
+            />
+            <PillButton
+              testID='podcast_screen_mark_as_played_button'
+              buttonTitle={translate('Mark selected')}
+              handleOnPress={() => {
+                if(!this.state.selectedEpisodes?.length) {
+                  Alert.alert("Please select at least one episode to mark as played","",[{text:"OK"}])
+                } else {
+                  this._onMarkAsPlayed(this.state.selectedEpisodes)
+                }
+              }}
+            />
+          </View>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+            style={styles.markSelectedButtonsHelperText}>
+            {translate('Select episodes to mark as played')}
+          </Text>
         </RNView>
       )
     } else {
@@ -985,6 +1024,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     const {
       downloadedEpisodeLimit,
+      isLoading,
       isLoadingMore,
       isRefreshing,
       isSubscribing,
@@ -1001,8 +1041,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       username,
       viewType,
       flatListData,
-      flatListDataTotalCount,
-      showMarkAsPlayedButton
+      flatListDataTotalCount
     } = this.state
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
@@ -1168,28 +1207,20 @@ export class PodcastScreen extends React.Component<Props, State> {
               testID={`${testIDPrefix}_clear_new_episode_indicators`}
               text={translate('Mark episodes as seen')}
             />
-            {showMarkAsPlayedButton && (
-              <Button
-                accessibilityHint={translate('ARIA HINT - mark all episodes as played')}
-                accessibilityLabel={translate('Mark episodes as played')}
-                onPress={() => {
-                  this.setState({ multiSelectEnabled: true, showSettings: false })
-                }}
-                wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
-                testID={`${testIDPrefix}_mars_all_episodes_played`}
-                text={translate('Select Multiple Episodes')}
-              />
-            )}
-            {showMarkAsPlayedButton && (
-              <Button
-                accessibilityHint={translate('ARIA HINT - mark all episodes as played')}
-                accessibilityLabel={translate('Mark All Episodes As Played')}
-                onPress={this._onMarkAsPlayed}
-                wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
-                testID={`${testIDPrefix}_mars_all_episodes_played`}
-                text={translate('Mark All Episodes As Played')}
-              />
-            )}
+            <Button
+              accessibilityLabel={translate('Select Multiple Episodes')}
+              onPress={this._onShowMarkMultipleAsPlayed}
+              wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
+              testID={`${testIDPrefix}_mark_selected_episodes_as_played`}
+              text={translate('Select Multiple Episodes')}
+            />
+            <Button
+              accessibilityLabel={translate('Mark All Episodes As Played')}
+              onPress={this._onMarkAsPlayed}
+              wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
+              testID={`${testIDPrefix}_mars_all_episodes_played`}
+              text={translate('Mark All Episodes As Played')}
+            />
             <Button
               accessibilityHint={translate('ARIA HINT - delete all the episodes you have downloaded for this podcast')}
               accessibilityLabel={translate('Delete Downloaded Episodes')}
@@ -1240,6 +1271,14 @@ export class PodcastScreen extends React.Component<Props, State> {
               testID={testIDPrefix}
             />
           </View>
+        )}
+        {isLoading && (
+          <ActivityIndicator
+            fillSpace
+            isOverlay
+            loadingMessage={translate('Mark as played loading text')}
+            testID={testIDPrefix}
+            transparent={false} />
         )}
       </View>
     )
@@ -1447,9 +1486,18 @@ const styles = StyleSheet.create({
   itemWrapper: {
     marginTop: 32
   },
-  multiSelectOptionsContainer: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-evenly', 
+  markSelectedButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly'
+  },
+  markSelectedButtonsHelperText: {
+    marginBottom: 2,
+    marginTop: 10,
+    textAlign: 'center',
+    fontSize: PV.Fonts.sizes.tiny
+  },
+  multiSelectOptionsContainer: {
+    flexDirection: 'column',
     paddingVertical: 12 
   },
   settingsClearNewEpisodeIndicators: {

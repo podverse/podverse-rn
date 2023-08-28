@@ -404,3 +404,40 @@ export const setHistoryItemsIndexLocally = async (historyItemsIndex: any) => {
 }
 
 export const defaultHistoryItemsIndex = { episodes: {}, mediaRefs: {} }
+
+export const markAsPlayedEpisodesMultipleOnServer = async (episodeIds: string[]) => {
+  const bearerToken = await getBearerToken()
+  const endpoint = `/user-history-item/multiple`
+
+  const response = await request({
+    endpoint,
+    method: 'PATCH',
+    headers: {
+      Authorization: bearerToken,
+      'Content-Type': 'application/json'
+    },
+    opts: { credentials: 'include' },
+    body: {
+      episodeIds
+    }
+  })
+
+  return response && response.data
+}
+
+export const markAsPlayedEpisodesAllOnServer = async (podcastId: string) => {
+  const bearerToken = await getBearerToken()
+  const endpoint = `/user-history-item/podcast/${podcastId}`
+
+  const response = await request({
+    endpoint,
+    method: 'PATCH',
+    headers: {
+      Authorization: bearerToken,
+      'Content-Type': 'application/json'
+    },
+    opts: { credentials: 'include' }
+  })
+
+  return response && response.data
+}

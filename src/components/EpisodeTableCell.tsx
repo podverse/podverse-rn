@@ -15,6 +15,7 @@ type Props = {
   handleDownloadPress?: any
   handleMorePress?: any
   handleNavigationPress?: any
+  hideControls?: boolean
   hideDivider?: boolean
   hideImage?: boolean
   item?: any
@@ -35,6 +36,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       handleDownloadPress,
       handleMorePress,
       handleNavigationPress,
+      hideControls,
       hideDivider,
       hideImage,
       item,
@@ -189,7 +191,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
                 ) : (
                   innerTopView
                 )}
-                {!liveItem && isDownloadableFile && (
+                {!hideControls && !liveItem && isDownloadableFile && (
                   <DownloadOrDeleteButton
                     isDownloaded={isDownloaded}
                     isDownloading={isDownloading}
@@ -214,6 +216,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
                 <TimeRemainingWidget
                   episodeCompleted={episodeCompleted}
                   handleMorePress={handleMorePress}
+                  hideMoreButton={hideControls}
+                  hidePlayButton={hideControls}
                   item={item}
                   itemType='episode'
                   mediaFileDuration={mediaFileDuration}

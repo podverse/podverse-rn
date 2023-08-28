@@ -21,6 +21,7 @@ type Props = {
   episodeDownloading?: boolean
   forceShowProgressBar?: boolean
   handleMorePress?: any
+  hideMoreButton?: boolean
   hidePlayButton?: boolean
   isChapter?: boolean
   item: any
@@ -85,6 +86,7 @@ export const TimeRemainingWidget = (props: Props) => {
     episodeDownloading,
     forceShowProgressBar,
     handleMorePress,
+    hideMoreButton,
     hidePlayButton,
     item,
     itemType,
@@ -217,7 +219,7 @@ export const TimeRemainingWidget = (props: Props) => {
         </View>
       )}
       <View style={{ flexDirection: 'row' }}>
-        {!!handleMorePress && (
+        {!hideMoreButton && !!handleMorePress && (
           <MoreButton
             accessible={false}
             handleMorePress={handleMorePress}
