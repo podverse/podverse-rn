@@ -3,19 +3,14 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import {
-  MINIMUM_APP_BOOST_PAYMENT,
-  MINIMUM_APP_STREAMING_PAYMENT,
   MINIMUM_BOOST_PAYMENT,
   MINIMUM_STREAMING_PAYMENT,
-  v4vGetPluralCurrencyUnit,
   v4vGetSatoshisInFormattedFiatValue,
   v4vGetTextInputLabel,
   v4vGetTypeMethodKey
 } from '../services/v4v/v4v'
 import {
   V4VProviderConnectedState,
-  v4vUpdateTypeMethodSettingsAppBoostAmount,
-  v4vUpdateTypeMethodSettingsAppStreamingAmount,
   v4vUpdateTypeMethodSettingsBoostAmount,
   v4vUpdateTypeMethodSettingsStreamingAmount
 } from '../state/actions/v4v/v4v'

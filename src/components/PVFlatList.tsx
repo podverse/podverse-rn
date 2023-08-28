@@ -128,9 +128,7 @@ export const PVFlatList = (props: Props) => {
   const shouldShowNoResultsFoundMessage =
     !disableNoResultsMessage && !isLoadingMore && !showNoInternetConnectionMessage && noResultsFound
 
-  const finalItemSeparator = !!ItemSeparatorComponent
-    ? ItemSeparatorComponent
-    : () => <Divider optional />
+  const finalItemSeparator = !!ItemSeparatorComponent ? ItemSeparatorComponent : () => <Divider optional />
 
   return (
     <View style={styles.view} transparent={transparent}>

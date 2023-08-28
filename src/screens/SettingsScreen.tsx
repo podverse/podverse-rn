@@ -85,22 +85,20 @@ export class SettingsScreen extends React.Component<Props, State> {
               {translate('History')}
             </Text>
           </TableCell>
-          {
-            checkIfFDroidAppVersion() && (
-              <TableCell
-                accessibilityLabel={translate('Notifications')}
-                includeDivider
-                onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenNotifications)}
-                testIDPrefix={`${testIDPrefix}_notifications`}
-                testIDSuffix=''>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                  {translate('Notifications')}
-                </Text>
-              </TableCell>
-            )
-          }
+          {checkIfFDroidAppVersion() && (
+            <TableCell
+              accessibilityLabel={translate('Notifications')}
+              includeDivider
+              onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenNotifications)}
+              testIDPrefix={`${testIDPrefix}_notifications`}
+              testIDSuffix=''>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+                {translate('Notifications')}
+              </Text>
+            </TableCell>
+          )}
           <TableCell
             accessibilityLabel={translate('Player')}
             includeDivider

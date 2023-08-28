@@ -147,7 +147,7 @@ export class MoreScreen extends React.Component<Props, State> {
       const fileExtension = getExtensionFromUrl(uri)
       if (!validOPMLFileExtensions.includes(fileExtension)) {
         Alert.alert(translate('Error'), translate('OPML import error message wrong file type'))
-        return        
+        return
       }
 
       const contents = await RNFS.readFile(decodeURI(uri), 'utf8')

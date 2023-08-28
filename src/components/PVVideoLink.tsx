@@ -20,8 +20,7 @@ type Props = {
 }
 
 export const PVVideoLink = (props: Props) => {
-  const { accessible, accessibilityHint, hasAsterisk, testID,
-    title, url, navigation } = props
+  const { accessible, accessibilityHint, hasAsterisk, testID, title, url, navigation } = props
 
   const textStyle = [styles.text, { ...(!url ? { color: PV.Colors.white } : {}) }]
 

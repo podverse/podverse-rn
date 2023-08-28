@@ -45,7 +45,12 @@ import { translate } from '../lib/i18n'
 import { navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { resetAllAppKeychain } from '../lib/secutity'
-import { GlobalPropertyCallbackFunction, getAppUserAgent, safeKeyExtractor, setCategoryQueryProperty } from '../lib/utility'
+import {
+  GlobalPropertyCallbackFunction,
+  getAppUserAgent,
+  safeKeyExtractor,
+  setCategoryQueryProperty
+} from '../lib/utility'
 import { PV } from '../resources'
 import { v4vAlbyCheckConnectDeepLink } from '../services/v4v/providers/alby'
 import { getAutoDownloadsLastRefreshDate, handleAutoDownloadEpisodes } from '../services/autoDownloads'
@@ -98,11 +103,10 @@ import {
 } from '../state/actions/podcast'
 import { updateScreenReaderEnabledState } from '../state/actions/screenReader'
 import { initializeSettings, setPodcastsGridView } from '../state/actions/settings'
-import { setShouldshowPodcastsListPopover } from "../state/actions/podcasts-ui"
+import { setShouldshowPodcastsListPopover } from '../state/actions/podcasts-ui'
 import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
 import { v4vInitialize } from '../state/actions/v4v/v4v'
 import { core } from '../styles'
-import { InitialState } from '../resources/Interfaces'
 
 const { PVUnifiedPushModule } = NativeModules
 
@@ -164,8 +168,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
   shouldLoad: boolean
   _unsubscribe: any | null
   // TODO: Replace with service
-  pvNativeEventEmitter: NativeEventEmitter | null =
-    checkIfFDroidAppVersion() ? new NativeEventEmitter(PVUnifiedPushModule) : null
+  pvNativeEventEmitter: NativeEventEmitter | null = checkIfFDroidAppVersion()
+    ? new NativeEventEmitter(PVUnifiedPushModule)
+    : null
   pvNativeEventSubscriptions: EmitterSubscription[] = []
 
   constructor(props: Props) {
@@ -197,18 +202,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
-        
+
     // Add a callback for subscribed podcasts to show or hide header button
     addCallback(
-      GlobalPropertyCallbackFunction(
-        'subscribedPodcastsTotalCount',
-        (podcastCount) => {
-          props.navigation.setParams({
-            _hasSubscribedPodcasts: podcastCount && podcastCount > 0
-          })
-        }
-      )
-    );
+      GlobalPropertyCallbackFunction('subscribedPodcastsTotalCount', (podcastCount) => {
+        props.navigation.setParams({
+          _hasSubscribedPodcasts: podcastCount && podcastCount > 0
+        })
+      })
+    )
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -216,14 +218,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const _hasSubscribedPodcasts = navigation.getParam('_hasSubscribedPodcasts')
     return {
       title: _screenTitle,
-      headerRight: () => 
-      _hasSubscribedPodcasts 
-      ? (
-        <RNView style={core.row}>
-          <NavPodcastsViewIcon />
-        </RNView>
-      ) 
-      : null
+      headerRight: () =>
+        _hasSubscribedPodcasts ? (
+          <RNView style={core.row}>
+            <NavPodcastsViewIcon />
+          </RNView>
+        ) : null
     } as NavigationStackOptions
   }
 
@@ -231,7 +231,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { navigation } = this.props
 
     this.props.navigation.setParams({
-      _screenTitle: getScreenTitle(),
+      _screenTitle: getScreenTitle()
     })
 
     if (CarPlay.connected) {
@@ -360,7 +360,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   setupDeeplinkListeners = () => {
     if (checkIfFDroidAppVersion() && !!this.pvNativeEventEmitter) {
       this.pvNativeEventSubscriptions.push(
-        this.pvNativeEventEmitter.addListener('UnifiedPushMessage', ({instance, payload}) => { 
+        this.pvNativeEventEmitter.addListener('UnifiedPushMessage', ({ instance, payload }) => {
           debugLogger(`Received UnifiedPush notification from ${instance} with payload`, payload)
           this.handleNoficationOpened(payload)
         })
@@ -369,10 +369,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
       PVUnifiedPushModule.getInitialNotification().then(this.handleInitialNotification)
     } else {
       messaging().onNotificationOpenedApp(this.handleNoficationOpened)
-  
-      messaging().getInitialNotification().then(this.handleInitialNotification)
+
+      messaging()
+        .getInitialNotification()
+        .then(this.handleInitialNotification)
     }
-    
 
     Linking.getInitialURL().then((initialUrl) => {
       if (initialUrl) {
@@ -758,7 +759,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         })
       } else {
         this._setDownloadedDataIfOffline()
-      }      
+      }
     }
   }
 
@@ -1179,7 +1180,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     } else if (queryFrom === PV.Filters._subscribedKey) {
       flatListData = subscribedPodcasts
       flatListDataTotalCount = subscribedPodcastsTotalCount
-      
     } else {
       flatListData = this.state?.flatListData || []
       flatListDataTotalCount = this.state?.flatListDataTotalCount || []
@@ -1558,19 +1558,19 @@ const styles = StyleSheet.create({
     flex: 1
   },
   popoverStyle: {
-    backgroundColor: PV.Colors.whiteOpaque, 
+    backgroundColor: PV.Colors.whiteOpaque,
     borderRadius: 10
   },
   podcastViewChangeButton: {
-    backgroundColor: PV.Colors.velvet, 
-    marginTop:10, 
-    marginBottom:10, 
+    backgroundColor: PV.Colors.velvet,
+    marginTop: 10,
+    marginBottom: 10,
     paddingHorizontal: 10
   },
   markAllAsSeenButton: {
     backgroundColor: PV.Colors.velvet,
-    marginTop:0, 
-    marginBottom:10, 
+    marginTop: 0,
+    marginBottom: 10,
     paddingHorizontal: 10
   }
 })

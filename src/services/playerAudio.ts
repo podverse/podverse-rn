@@ -1,9 +1,5 @@
 import { checkIfVideoFileOrVideoLiveType, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
-import TrackPlayer, {
-  PitchAlgorithm,
-  State,
-  Track
-} from 'react-native-track-player'
+import TrackPlayer, { PitchAlgorithm, State, Track } from 'react-native-track-player'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
@@ -452,11 +448,7 @@ export const audioAddNowPlayingItemNextInQueue = async (
 ) => {
   const { addCurrentItemNextInQueue } = getGlobal()
 
-  if (
-    addCurrentItemNextInQueue &&
-    itemToSetNextInQueue &&
-    item.episodeId !== itemToSetNextInQueue.episodeId
-  ) {
+  if (addCurrentItemNextInQueue && itemToSetNextInQueue && item.episodeId !== itemToSetNextInQueue.episodeId) {
     await addQueueItemNext(itemToSetNextInQueue)
   }
 }

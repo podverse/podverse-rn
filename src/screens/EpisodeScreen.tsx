@@ -122,9 +122,7 @@ export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
           {(!!Config.IS_DEV || !!showFundingIcon) && podcast && episode && (
             <NavFundingIcon episode={episode} globalTheme={globalTheme} navigation={navigation} podcast={podcast} />
           )}
-          {hasLinkUrl && (
-            <NavOfficialLinkIcon globalTheme={globalTheme} linkUrl={episode.linkUrl} />
-          )}
+          {hasLinkUrl && <NavOfficialLinkIcon globalTheme={globalTheme} linkUrl={episode.linkUrl} />}
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon
               endingText={translate('shared using brandName')}

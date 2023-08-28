@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
   subText: {
     flex: 0,
     marginTop: 24,
+    paddingHorizontal: 16,
     fontSize: PV.Fonts.sizes.xl,
     textAlign: 'center'
   },

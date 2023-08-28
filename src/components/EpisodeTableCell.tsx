@@ -8,13 +8,14 @@ import { playerCheckIfDownloadableFile } from '../services/player'
 import { images } from '../styles'
 import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
-import { Divider, FastImage, NewContentBadge, Text, View } from './'
+import { FastImage, NewContentBadge, Text, View } from './'
 
 type Props = {
   handleDeletePress?: any
   handleDownloadPress?: any
   handleMorePress?: any
   handleNavigationPress?: any
+  hideControls?: boolean
   hideDivider?: boolean
   hideImage?: boolean
   item?: any
@@ -25,6 +26,7 @@ type Props = {
   testID: string
   transparent?: boolean
   userPlaybackPosition?: number
+  selected?: boolean
 }
 
 export class EpisodeTableCell extends React.PureComponent<Props> {
@@ -34,14 +36,15 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       handleDownloadPress,
       handleMorePress,
       handleNavigationPress,
-      hideDivider,
+      hideControls,
       hideImage,
       item,
       mediaFileDuration,
       shouldHideCompleted,
       showPodcastInfo,
       testID,
-      userPlaybackPosition
+      userPlaybackPosition,
+      selected
     } = this.props
 
     const { duration, id, liveItem, mediaUrl, pubDate = '', podcast = {} } = item
@@ -164,7 +167,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     )
 
     return (
-      <RNView>
+      <RNView style={[styles.outerView, selected ? styles.selected : null]}>
         {(!shouldHideCompleted || !!liveItem) && (
           <RNView>
             <Pressable
@@ -187,7 +190,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
                 ) : (
                   innerTopView
                 )}
-                {!liveItem && isDownloadableFile && (
+                {!hideControls && !liveItem && isDownloadableFile && (
                   <DownloadOrDeleteButton
                     isDownloaded={isDownloaded}
                     isDownloading={isDownloading}
@@ -212,6 +215,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
                 <TimeRemainingWidget
                   episodeCompleted={episodeCompleted}
                   handleMorePress={handleMorePress}
+                  hideMoreButton={hideControls}
+                  hidePlayButton={hideControls}
                   item={item}
                   itemType='episode'
                   mediaFileDuration={mediaFileDuration}
@@ -229,6 +234,11 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 }
 
 const styles = StyleSheet.create({
+  outerView: {
+    borderWidth: 2,
+    borderStyle: 'solid',
+    marginVertical: 5
+  },
   description: {
     fontSize: PV.Fonts.sizes.sm,
     color: PV.Colors.grayLighter,
@@ -281,5 +291,9 @@ const styles = StyleSheet.create({
   wrapperTop: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  selected: {
+    borderColor: PV.Colors.skyLight,
+    borderRadius: 10
   }
 })

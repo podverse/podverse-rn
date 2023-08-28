@@ -28,10 +28,18 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
   render() {
     const { activeValueTag } = this.props
 
-    const { erroringTransactions = [], feeTransactions = [], isReceipt, nonFeeTransactions, parentFeeTransactions = [],
-      parentNonFeeTransactions, testID, totalAmount } = this.props
-      const totalAmountText = isReceipt ? translate('amount paid') : translate('total amount')
-      const parsedTotalAmount = typeof totalAmount === 'string' ? parseInt(totalAmount, 10) : totalAmount
+    const {
+      erroringTransactions = [],
+      feeTransactions = [],
+      isReceipt,
+      nonFeeTransactions,
+      parentFeeTransactions = [],
+      parentNonFeeTransactions,
+      testID,
+      totalAmount
+    } = this.props
+    const totalAmountText = isReceipt ? translate('amount paid') : translate('total amount')
+    const parsedTotalAmount = typeof totalAmount === 'string' ? parseInt(totalAmount, 10) : totalAmount
 
     const remotePercentage = activeValueTag?.remotePercentage || 100
     const localPercentage = 100 - remotePercentage
@@ -78,60 +86,47 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
 
     return (
       <View style={{ flex: 1 }}>
-        {
-          activeValueTag?.activeValueTimeSplit?.isActive && (
-            <View style={styles.valueTimeSplitsWrapper}>
-              <Text testID={`${testID}_value_time_splits_label`} style={styles.valueTimeSplitsText}>
-                {/* eslint-disable-next-line max-len */}
-                {`${translate('Time range')} ${convertSecToHHMMSS(activeValueTag.activeValueTimeSplit.startTime)} - ${convertSecToHHMMSS(activeValueTag.activeValueTimeSplit.endTime)}`}
-              </Text>
-            </View>
-          )
-        }
+        {activeValueTag?.activeValueTimeSplit?.isActive && (
+          <View style={styles.valueTimeSplitsWrapper}>
+            <Text testID={`${testID}_value_time_splits_label`} style={styles.valueTimeSplitsText}>
+              {/* eslint-disable-next-line max-len */}
+              {`${translate('Time range')} ${convertSecToHHMMSS(
+                activeValueTag.activeValueTimeSplit.startTime
+              )} - ${convertSecToHHMMSS(activeValueTag.activeValueTimeSplit.endTime)}`}
+            </Text>
+          </View>
+        )}
         <View style={styles.recipientTable}>
-          {
-            activeValueTag?.activeValueTimeSplit?.isActive && (
-              <>
-                <View style={styles.recipientInfoWrapper}>
-                  <Text
-                    testID={`${testID}_boost_recipient_remote`}
-                    style={styles.recipientSectionHeader}>
-                    {translate('Remote')}
-                  </Text>
-                  <Text
-                    testID={`${testID}_boost_recipient_remote_percentage`}
-                    style={styles.recipientSectionHeaderNumber}>
-                    {`${remotePercentage}%`}
-                  </Text>
-                </View>
-                {nonFeeTransactions?.map((data, index) => renderTransactionSection(data, index))}
-                <Divider style={styles.sectionDivider} />
-                <View style={styles.recipientInfoWrapper}>
-                  <Text
-                    testID={`${testID}_boost_recipient_local`}
-                    style={styles.recipientSectionHeader}>
-                    {translate('Local')}
-                  </Text>
-                  <Text
-                    testID={`${testID}_boost_recipient_local_percentage`}
-                    style={styles.recipientSectionHeaderNumber}>
-                    {`${localPercentage}%`}
-                  </Text>
-                </View>
-                {parentNonFeeTransactions?.map((data, index) => renderTransactionSection(data, index))}
-                <Divider style={styles.sectionDivider} />
-              </>
-            )
-          }
-          {
-            !activeValueTag?.activeValueTimeSplit?.isActive && (
-              nonFeeTransactions?.map((data, index) => renderTransactionSection(data, index))
-            )
-          }
+          {activeValueTag?.activeValueTimeSplit?.isActive && (
+            <>
+              <View style={styles.recipientInfoWrapper}>
+                <Text testID={`${testID}_boost_recipient_remote`} style={styles.recipientSectionHeader}>
+                  {translate('Remote')}
+                </Text>
+                <Text
+                  testID={`${testID}_boost_recipient_remote_percentage`}
+                  style={styles.recipientSectionHeaderNumber}>
+                  {`${remotePercentage}%`}
+                </Text>
+              </View>
+              {nonFeeTransactions?.map((data, index) => renderTransactionSection(data, index))}
+              <Divider style={styles.sectionDivider} />
+              <View style={styles.recipientInfoWrapper}>
+                <Text testID={`${testID}_boost_recipient_local`} style={styles.recipientSectionHeader}>
+                  {translate('Local')}
+                </Text>
+                <Text testID={`${testID}_boost_recipient_local_percentage`} style={styles.recipientSectionHeaderNumber}>
+                  {`${localPercentage}%`}
+                </Text>
+              </View>
+              {parentNonFeeTransactions?.map((data, index) => renderTransactionSection(data, index))}
+              <Divider style={styles.sectionDivider} />
+            </>
+          )}
+          {!activeValueTag?.activeValueTimeSplit?.isActive &&
+            nonFeeTransactions?.map((data, index) => renderTransactionSection(data, index))}
           {combinedFeeTransactions?.length > 0 && (
-            <Text
-              testID={`${testID}_boost_fees_text`}
-              style={styles.recipientSectionHeader}>
+            <Text testID={`${testID}_boost_fees_text`} style={styles.recipientSectionHeader}>
               {translate('Fees')}
             </Text>
           )}

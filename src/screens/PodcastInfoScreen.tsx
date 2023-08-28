@@ -38,9 +38,7 @@ export class PodcastInfoScreen extends React.Component<Props, State> {
       title: translate('More Info'),
       headerRight: () => (
         <RNView style={core.row}>
-          {hasLinkUrl && (
-            <NavOfficialLinkIcon globalTheme={globalTheme} linkUrl={podcast.linkUrl} />
-          )}
+          {hasLinkUrl && <NavOfficialLinkIcon globalTheme={globalTheme} linkUrl={podcast.linkUrl} />}
         </RNView>
       )
     } as NavigationStackOptions

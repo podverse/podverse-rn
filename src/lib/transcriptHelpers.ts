@@ -1,6 +1,5 @@
 import { convertSecToHHMMSS, TranscriptRow } from 'podverse-shared'
 import { convertFile, Options, TimestampFormatter } from 'transcriptator'
-import { PV } from '../resources'
 import { request } from '../services/request'
 import { errorLogger } from './logger'
 
@@ -16,8 +15,8 @@ TimestampFormatter.registerCustomFormatter(convertSecToHHMMSS)
 
 const enrichTranscriptatorResult = (parsedTranscript: TranscriptRow[]) => {
   if (!parsedTranscript) return []
-  
-  let enrichedTranscript = []
+
+  const enrichedTranscript = []
   let newIndex = 0
 
   for (const parsedRow of parsedTranscript) {
@@ -34,7 +33,7 @@ const enrichTranscriptatorResult = (parsedTranscript: TranscriptRow[]) => {
 
       const speakerValue = {
         speaker: parsedRow.speaker?.trim(),
-        index: newIndex,
+        index: newIndex
       }
       enrichedTranscript.push(speakerValue)
       newIndex++
@@ -70,8 +69,7 @@ const enrichTranscriptatorResult = (parsedTranscript: TranscriptRow[]) => {
     }
     enrichedTranscript.push(line1Value)
     newIndex++
-    
-    
+
     if (hasTwoLines) {
       const line2Value = {
         ...parsedRow,
@@ -88,7 +86,6 @@ const enrichTranscriptatorResult = (parsedTranscript: TranscriptRow[]) => {
 
   return enrichedTranscript
 }
-
 
 export const getParsedTranscript = async (transcriptUrl: string) => {
   let parsedTranscript = [] as TranscriptRow[]

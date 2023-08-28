@@ -127,7 +127,9 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
           if (activeTranscriptRowIndexes.some((index) => index !== -1)) {
             this.listRef.scrollToOffset({
-              offset: PV.FlatList.transcriptRowHeights.singleLine * (firstMatchingIndex - 3), animated: false })
+              offset: PV.FlatList.transcriptRowHeights.singleLine * (firstMatchingIndex - 3),
+              animated: false
+            })
             this.setState({ activeTranscriptRowIndexes })
           }
         }
@@ -162,10 +164,11 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
       this.currentSpeaker = ''
     }
 
-    const isActive = activeTranscriptRowIndexes.some((activeTranscriptRowIndex) =>
-      (activeTranscriptRowIndex >= 0 && activeTranscriptRowIndex === index))
+    const isActive = activeTranscriptRowIndexes.some(
+      (activeTranscriptRowIndex) => activeTranscriptRowIndex >= 0 && activeTranscriptRowIndex === index
+    )
     const activeTranscriptStyle = isActive ? { color: PV.Colors.orange } : {}
-      
+
     const accessibilityLabel = `${this.currentSpeaker ? `${this.currentSpeaker}, ` : ''} ${body}, ${startTimeFormatted}`
 
     const disable = !isNowPlaying
@@ -173,44 +176,33 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
     return (
       <>
-        {
-          !!isEmptySpace && (
-            <View style={{ height: PV.FlatList.transcriptRowHeights.singleLine }} />
-          )
-        }
-        {
-          !isEmptySpace && (
-            <PressableWithOpacity
-              accessible
-              accessibilityLabel={accessibilityLabel}
-              activeOpacity={0.7}
-              disable={disable}
-              onPress={onPress}>
-              {!!this.currentSpeaker && (
-                <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
-                  {this.currentSpeaker}
+        {!!isEmptySpace && <View style={{ height: PV.FlatList.transcriptRowHeights.singleLine }} />}
+        {!isEmptySpace && (
+          <PressableWithOpacity
+            accessible
+            accessibilityLabel={accessibilityLabel}
+            activeOpacity={0.7}
+            disable={disable}
+            onPress={onPress}>
+            {!!this.currentSpeaker && (
+              <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
+                {this.currentSpeaker}
+              </Text>
+            )}
+            {!this.currentSpeaker && (
+              <View style={styles.row}>
+                <Text style={[styles.text, activeTranscriptStyle]} testID={cellID}>
+                  {body}
                 </Text>
-              )}
-              {
-                !this.currentSpeaker && (
-                  <View style={styles.row}>
-                    <Text style={[styles.text, activeTranscriptStyle]} testID={cellID}>
-                      {body}
-                    </Text>
-                    {
-                      screenWidth > 360 && (
-                        <Text style={[styles.startTime, activeTranscriptStyle]} testID={`${cellID}-${startTime}`}>
-                          {startTimeFormatted}
-                        </Text>
-                      )
-                    }
-                  </View>
-                )
-              }
-            </PressableWithOpacity>
-
-          )
-        }
+                {screenWidth > 360 && (
+                  <Text style={[styles.startTime, activeTranscriptStyle]} testID={`${cellID}-${startTime}`}>
+                    {startTimeFormatted}
+                  </Text>
+                )}
+              </View>
+            )}
+          </PressableWithOpacity>
+        )}
       </>
     )
   }
@@ -358,7 +350,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8
   },
   singleLineWrapper: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 12
   },
   startTime: {
     flex: 0,
