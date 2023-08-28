@@ -15,7 +15,9 @@ import {
   getHistoryItemsIndexLocally,
   getHistoryItemsLocally,
   removeHistoryItem as removeHistoryItemService,
-  setHistoryItemsIndexLocally
+  setHistoryItemsIndexLocally,
+  markAsPlayedEpisodesAllOnServer,
+  markAsPlayedEpisodesMultipleOnServer
 } from '../../services/userHistoryItem'
 import { clearEpisodesCountForPodcastEpisode } from './newEpisodesCount'
 import { downloadedEpisodeMarkForDeletion } from './downloads'
@@ -180,4 +182,14 @@ export const toggleMarkAsPlayed = async (item: NowPlayingItem, shouldMarkAsPlaye
       completed
     )
   }
+}
+
+export const markAsPlayedEpisodesMultiple = async (episodeIds: string[]) => {
+  await markAsPlayedEpisodesMultipleOnServer(episodeIds)
+  await updateHistoryItemsIndex()
+}
+
+export const markAsPlayedEpisodesAll = async (podcastId: string) => {
+  await markAsPlayedEpisodesAllOnServer(podcastId)
+  await updateHistoryItemsIndex()
 }
