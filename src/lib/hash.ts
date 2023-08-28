@@ -13,7 +13,7 @@ export const base64Encode = (str: string) => {
   We also remove the query param part of the url, since those
   can sometimes contain auth tokens and params that change frequently.
 */
-export const downloadCustomFileNameId = (url: string, options?: {charOffset?:number, useFullUrl?: boolean}) => {
+export const downloadCustomFileNameId = (url: string, options?: { charOffset?: number; useFullUrl?: boolean }) => {
   const extensionOffset = options?.charOffset || getExtensionFromUrl(url)?.length || 0
   const charLimit = 250 - extensionOffset
   const urlPath = options?.useFullUrl ? url : getPathFromUrl(url)

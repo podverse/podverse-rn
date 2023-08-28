@@ -1,6 +1,6 @@
 import { checkIfNowPlayingItem, convertToNowPlayingItem } from 'podverse-shared'
 import React, { useState } from 'react'
-import { Platform, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { getGlobal } from 'reactn'
 import { requestAppStoreReviewForEpisodePlayed } from '../lib/reviews'
 import { PV } from '../resources'

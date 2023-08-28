@@ -192,7 +192,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const streamingButtonMainTextStyles = streamingValueOn
       ? [styles.boostButtonMainText, { fontWeight: '500' }]
       : [styles.boostButtonMainText]
-    
+
     const streamingButtonSubTextStyles = streamingValueOn ? [styles.boostButtonSubText] : [styles.boostButtonSubText]
 
     const boostagramButtonText = !!session?.v4v?.valueTimeSplitIsActive
@@ -203,13 +203,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       ? [styles.boostagramButtonMainText, { color: PV.Colors.green }]
       : [styles.boostagramButtonMainText]
 
-    const boostagramIconColor = !!session?.v4v?.valueTimeSplitIsActive
-      ? 'green'
-      : 'white'
+    const boostagramIconColor = !!session?.v4v?.valueTimeSplitIsActive ? 'green' : 'white'
 
-    const boostagramIconName = !!session?.v4v?.valueTimeSplitIsActive
-      ? 'clock'
-      : 'comment-alt'
+    const boostagramIconName = !!session?.v4v?.valueTimeSplitIsActive ? 'clock' : 'comment-alt'
 
     const streamingIndicatorStyles =
       Platform.OS === 'ios'
@@ -522,11 +518,10 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    minHeight: Dimensions.get('window').height >
-      PV.Dimensions.preventKeyboardShrinkMinHeight.smallScreen.height
-      ? 420
-      : Dimensions.get('window').height >
-          PV.Dimensions.preventKeyboardShrinkMinHeight.smallestScreen.height
+    minHeight:
+      Dimensions.get('window').height > PV.Dimensions.preventKeyboardShrinkMinHeight.smallScreen.height
+        ? 420
+        : Dimensions.get('window').height > PV.Dimensions.preventKeyboardShrinkMinHeight.smallestScreen.height
         ? 250
         : 0
   }

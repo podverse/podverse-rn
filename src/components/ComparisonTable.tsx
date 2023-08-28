@@ -81,8 +81,13 @@ export const ComparisonTable = (props: ComparisonTableProps) => {
             <View accessible accessibilityLabel={item.accessibilityLabel} key={item.text} style={styles.tableRow}>
               <View accessible={false} style={styles.columnTextWrapper}>
                 <View accessible={false} style={styles.columnText}>
-                  <PVVideoLink hasAsterisk={item.hasAsterisk}
-                    title={item.text} navigation={navigation} url={item.videoUrl} testID='' />
+                  <PVVideoLink
+                    hasAsterisk={item.hasAsterisk}
+                    title={item.text}
+                    navigation={navigation}
+                    url={item.videoUrl}
+                    testID=''
+                  />
                 </View>
               </View>
               <View accessible={false} style={styles.columnIcon}>

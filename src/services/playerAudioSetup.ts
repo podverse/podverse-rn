@@ -12,7 +12,6 @@ import { PVAudioPlayer } from './playerAudio'
 const setupPlayer = async (options: Parameters<typeof TrackPlayer.setupPlayer>[0]) => {
   const setup = async () => {
     try {
-
       await TrackPlayer.setupPlayer(options)
     } catch (error) {
       return (error as Error & { code?: string }).code
@@ -34,7 +33,7 @@ export const PlayerAudioSetupService = async () => {
     autoHandleInterruptions: Platform.OS === 'android'
     // androidAudioContentType: AndroidAudioContentType.Speech
   })
-  
+
   audioUpdateTrackPlayerCapabilities()
   PVAudioPlayer.setRepeatMode(RepeatMode.Off)
 }

@@ -53,8 +53,8 @@ export const createSatoshiStreamStats = (
       app_version: `${getVersion()}-${getBuildNumber()}`,
       name,
       sender_name: senderName,
-      ...( remote_feed_guid ? { remote_feed_guid } : {}),
-      ...( remote_item_guid ? { remote_item_guid } : {})
+      ...(remote_feed_guid ? { remote_feed_guid } : {}),
+      ...(remote_item_guid ? { remote_item_guid } : {})
       // 7629169 "message" added elsewhere in app-logic
     },
     '7629175': podcastIndexId,

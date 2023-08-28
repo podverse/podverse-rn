@@ -37,7 +37,6 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       handleMorePress,
       handleNavigationPress,
       hideControls,
-      hideDivider,
       hideImage,
       item,
       mediaFileDuration,
@@ -168,7 +167,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     )
 
     return (
-      <RNView style={[styles.outerView,selected ? styles.selected : null]}>
+      <RNView style={[styles.outerView, selected ? styles.selected : null]}>
         {(!shouldHideCompleted || !!liveItem) && (
           <RNView>
             <Pressable
@@ -236,9 +235,9 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   outerView: {
-    borderWidth:2,
-    borderStyle:"solid",
-    marginVertical:5
+    borderWidth: 2,
+    borderStyle: 'solid',
+    marginVertical: 5
   },
   description: {
     fontSize: PV.Fonts.sizes.sm,

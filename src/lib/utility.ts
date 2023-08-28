@@ -203,18 +203,18 @@ export const removeAndDecodeHTMLInString = (text: string) => {
 }
 
 export const wait = (milliseconds: number) => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds));
+  return new Promise((resolve) => setTimeout(resolve, milliseconds))
 }
 
-// Create a function to listen to specific properties of global state 
+// Create a function to listen to specific properties of global state
 // And subscribe to be able to fire callbacks when it changes
 export const GlobalPropertyCallbackFunction = (propertyKey: string, callback: (newValue: number) => void) => {
-  let lastValue: number | null = null;
+  let lastValue: number | null = null
   return (globalState: InitialState) => {
-    const newValue = globalState[propertyKey];
+    const newValue = globalState[propertyKey]
     if (newValue !== lastValue) {
-      lastValue = newValue;
-      callback(newValue);
+      lastValue = newValue
+      callback(newValue)
     }
-  };
+  }
 }

@@ -5,8 +5,12 @@ import { checkIfFDroidAppVersion } from '../lib/deviceDetection'
 import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { checkIfUPNotificationsEnabled, enableFCMNotifications,
-  notificationSubscribe, notificationUnsubscribe } from '../services/notifications'
+import {
+  checkIfUPNotificationsEnabled,
+  enableFCMNotifications,
+  notificationSubscribe,
+  notificationUnsubscribe
+} from '../services/notifications'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { ActivityIndicator, NavItemIcon, NavItemWrapper } from '.'
 

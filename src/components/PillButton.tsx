@@ -16,7 +16,7 @@ export const PillButton = (props: Props) => {
 
   let destructButtonStyles = {}
   let destructTextStyles = {}
-  if(destructive) {
+  if (destructive) {
     destructButtonStyles = styles.destructiveButtonStyle
     destructTextStyles = styles.destructiveTextStyle
   }
@@ -37,7 +37,7 @@ export const PillButton = (props: Props) => {
         fontSizeLargerScale={PV.Fonts.largeSizes.md}
         fontSizeLargestScale={PV.Fonts.largeSizes.sm}
         testID={testID}
-        style={[styles.buttonText,destructTextStyles]}>
+        style={[styles.buttonText, destructTextStyles]}>
         {buttonTitle.toUpperCase()}
       </Text>
     </PressableWithOpacity>
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: PV.Colors.brandBlueLight,
-    fontSize: PV.Fonts.sizes.tiny,
+    fontSize: PV.Fonts.sizes.tiny
   },
   destructiveButtonStyle: {
     borderColor: PV.Colors.redLighter

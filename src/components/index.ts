@@ -106,4 +106,4 @@ export { V4VWalletConnectButtons } from './V4VWalletConnectButtons'
 export { V4VWalletInfo } from './V4VWalletInfo'
 export { V4VWalletSettings } from './V4VWalletSettings'
 export { LoadingInterstitialView } from './LoadingInterstitialView'
-export { PillButton } from "./PillButton"
+export { PillButton } from './PillButton'

@@ -7,7 +7,12 @@ import { debugLogger } from '../lib/logger'
 import { Icon, ScrollView, SwitchWithText, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { checkIfUPNotificationsEnabled, disableUPNotifications, enableUPNotifications, setUPDistributor } from '../services/notifications'
+import {
+  checkIfUPNotificationsEnabled,
+  disableUPNotifications,
+  enableUPNotifications,
+  setUPDistributor
+} from '../services/notifications'
 import { trackPageView } from '../services/tracking'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent } from '../styles'
 
@@ -27,10 +32,11 @@ type State = {
 const testIDPrefix = 'settings_screen_notifications'
 
 export class SettingsScreenNotifications extends React.Component<Props, State> {
-  pvNativeEventEmitter: NativeEventEmitter | null =
-    checkIfFDroidAppVersion() ? new NativeEventEmitter(PVUnifiedPushModule) : null
+  pvNativeEventEmitter: NativeEventEmitter | null = checkIfFDroidAppVersion()
+    ? new NativeEventEmitter(PVUnifiedPushModule)
+    : null
   pvNativeEventSubscriptions: EmitterSubscription[] = []
-  
+
   publicKey: string
   authKey: string
 
@@ -68,7 +74,7 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
       }
 
       this.pvNativeEventSubscriptions.push(
-        this.pvNativeEventEmitter.addListener('UnifiedPushNewEndpoint', ({instance, payload}) => { 
+        this.pvNativeEventEmitter.addListener('UnifiedPushNewEndpoint', ({ instance, payload }) => {
           (async () => {
             debugLogger(`Received UnifiedPush endpoint from ${instance}: ${payload.endpoint}`)
             await enableUPNotifications(payload.endpoint)
@@ -139,7 +145,7 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
     // This affects all our RNPickerSelects, so we should probably write
     // a HOC to fix it, then use the HOC everywhere.
     // More info: https://github.com/lawnstarter/react-native-picker-select/issues/265
-    const distributorItems = availableDistributors.map(d => ({
+    const distributorItems = availableDistributors.map((d) => ({
       label: d,
       value: d
     }))
@@ -149,50 +155,46 @@ export class SettingsScreenNotifications extends React.Component<Props, State> {
         contentContainerStyle={styles.scrollViewContentContainer}
         style={styles.wrapper}
         testID={`${testIDPrefix}_view`}>
-        {
-          (checkIfFDroidAppVersion()) && (
-            <>
-              <View style={core.itemWrapper}>
-                <SwitchWithText
-                  accessibilityLabel={translate('Enable UnifiedPush notifications')}
-                  onValueChange={this._toggleUPNotifications}
-                  testID={`${testIDPrefix}_enable_unifiedpush_notifications`}
-                  text={translate('Enable UnifiedPush notifications')}
-                  value={upNotificationsEnabled}
-                />
+        {checkIfFDroidAppVersion() && (
+          <>
+            <View style={core.itemWrapper}>
+              <SwitchWithText
+                accessibilityLabel={translate('Enable UnifiedPush notifications')}
+                onValueChange={this._toggleUPNotifications}
+                testID={`${testIDPrefix}_enable_unifiedpush_notifications`}
+                text={translate('Enable UnifiedPush notifications')}
+                value={upNotificationsEnabled}
+              />
+            </View>
+            {upNotificationsEnabled && (
+              <View style={core.itemWrapperReducedHeight}>
+                <RNPickerSelect
+                  disabled={!upNotificationsEnabled}
+                  fixAndroidTouchableBug
+                  items={distributorItems}
+                  onValueChange={this._enableUPNotifications}
+                  placeholder={placeholderItem}
+                  style={hidePickerIconOnAndroidTransparent(isDarkMode)}
+                  useNativeAndroidPickerStyle={false}
+                  value={distributor}>
+                  <RNView
+                    accessible
+                    accessibilityLabel={`${translate('Select a distributor')}`}
+                    importantForAccessibility='yes'
+                    style={[core.selectorWrapper, styles.pickerSelectInner]}>
+                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[core.pickerSelect, globalTheme.text]}>
+                      {!!distributor ? distributor : placeholderItem.label}
+                    </Text>
+                    <Icon name='angle-down' size={14} style={[core.pickerSelectIcon, globalTheme.text]} />
+                  </RNView>
+                </RNPickerSelect>
+                <View style={core.itemWrapper}>
+                  <Text style={core.helperText}>{translate('Notifications UP help text')}</Text>
+                </View>
               </View>
-              {
-                upNotificationsEnabled && (
-                  <View style={core.itemWrapperReducedHeight}>
-                    <RNPickerSelect
-                      disabled={!upNotificationsEnabled}
-                      fixAndroidTouchableBug
-                      items={distributorItems}
-                      onValueChange={this._enableUPNotifications}
-                      placeholder={placeholderItem}
-                      style={hidePickerIconOnAndroidTransparent(isDarkMode)}
-                      useNativeAndroidPickerStyle={false}
-                      value={distributor}>
-                      <RNView
-                        accessible
-                        accessibilityLabel={`${translate('Select a distributor')}`}
-                        importantForAccessibility='yes'
-                        style={[core.selectorWrapper, styles.pickerSelectInner]}>
-                        <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[core.pickerSelect, globalTheme.text]}>
-                          {!!distributor ? distributor : placeholderItem.label}
-                        </Text>
-                        <Icon name='angle-down' size={14} style={[core.pickerSelectIcon, globalTheme.text]} />
-                      </RNView>
-                    </RNPickerSelect>
-                    <View style={core.itemWrapper}>
-                      <Text style={core.helperText}>{translate('Notifications UP help text')}</Text>
-                    </View>
-                  </View>
-                )
-              }
-            </>
-          )
-        }
+            )}
+          </>
+        )}
       </ScrollView>
     )
   }

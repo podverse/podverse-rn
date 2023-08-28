@@ -34,8 +34,10 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
     const { addByRSSPodcastFeedUrl, getEpisodeId, getMediaRefId, navigation } = this.props
 
     if (addByRSSPodcastFeedUrl) {
-      Alert.alert(PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE('disabled add to playlist').title,
-        PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE().message)
+      Alert.alert(
+        PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE('disabled add to playlist').title,
+        PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE().message
+      )
     } else if (getEpisodeId && getMediaRefId) {
       const episodeId = getEpisodeId()
       const mediaRefId = getMediaRefId()

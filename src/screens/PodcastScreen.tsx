@@ -30,7 +30,7 @@ import {
   SwitchWithText,
   TableSectionSelectors,
   Text,
-  View,
+  View
 } from '../components'
 import { errorLogger } from '../lib/logger'
 import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
@@ -53,7 +53,11 @@ import {
   savePodcastCredentials
 } from '../services/parser'
 import { getPodcast } from '../services/podcast'
-import { PodcastScreenSavedQuery, getSavedQueryPodcastScreen, updateSavedQueriesPodcastScreen } from '../services/savedQueryFilters'
+import {
+  PodcastScreenSavedQuery,
+  getSavedQueryPodcastScreen,
+  updateSavedQueriesPodcastScreen
+} from '../services/savedQueryFilters'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import * as DownloadState from '../state/actions/downloads'
@@ -276,9 +280,10 @@ export class PodcastScreen extends React.Component<Props, State> {
       savedQuery = await getSavedQueryPodcastScreen(podcastId)
     }
 
-    const newViewType = !hasInternetConnection || isInMaintenanceMode
-      ? PV.Filters._downloadedKey
-      : (savedQuery?.filterType || this.state.viewType)
+    const newViewType =
+      !hasInternetConnection || isInMaintenanceMode
+        ? PV.Filters._downloadedKey
+        : savedQuery?.filterType || this.state.viewType
     const newSortType = savedQuery?.sortType || PV.Filters._mostRecentKey
 
     const selectedFilterLabel = await getSelectedFilterLabel(newViewType)
@@ -749,9 +754,9 @@ export class PodcastScreen extends React.Component<Props, State> {
             } else {
               await toggleSubscribeToPodcast(podcastId)
             }
-            this.setState({ isSubscribing: false, selectedEpisodes: [], multiSelectEnabled:false })
+            this.setState({ isSubscribing: false, selectedEpisodes: [], multiSelectEnabled: false })
           } catch (error) {
-            this.setState({ isSubscribing: false, selectedEpisodes: [], multiSelectEnabled:false })
+            this.setState({ isSubscribing: false, selectedEpisodes: [], multiSelectEnabled: false })
           }
 
           const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
@@ -940,8 +945,8 @@ export class PodcastScreen extends React.Component<Props, State> {
     if (shouldShowMarkAsPlayed) {
       if (!episodeIds.length) {
         Alert.alert(
-          translate('Mark All Episodes As Played'), 
-          translate('All episodes in this podcast will be marked as played.'), 
+          translate('Mark All Episodes As Played'),
+          translate('All episodes in this podcast will be marked as played.'),
           [
             {
               text: translate('Confirm'),
@@ -969,16 +974,12 @@ export class PodcastScreen extends React.Component<Props, State> {
     const { podcastId } = this.state
     this.setState({ isLoading: true })
     // if episodeIds is empty all must be marked as played
-    if(episodeIds.length) {
+    if (episodeIds.length) {
       await markAsPlayedEpisodesMultiple(episodeIds)
     } else if (podcastId) {
       await markAsPlayedEpisodesAll(podcastId)
     } else {
-      Alert.alert(
-        PV.Alerts.SOMETHING_WENT_WRONG.title,
-        PV.Alerts.SOMETHING_WENT_WRONG.message,
-        PV.Alerts.BUTTONS.OK
-      )
+      Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
       this.setState({ isLoading: false })
       return
     }
@@ -1013,17 +1014,15 @@ export class PodcastScreen extends React.Component<Props, State> {
               testID='podcast_screen_mark_as_played_button'
               buttonTitle={translate('Mark selected')}
               handleOnPress={() => {
-                if(!this.state.selectedEpisodes?.length) {
-                  Alert.alert("Please select at least one episode to mark as played","",[{text:"OK"}])
+                if (!this.state.selectedEpisodes?.length) {
+                  Alert.alert('Please select at least one episode to mark as played', '', [{ text: 'OK' }])
                 } else {
                   this._onMarkAsPlayed(this.state.selectedEpisodes)
                 }
               }}
             />
           </View>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-            style={styles.markSelectedButtonsHelperText}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.markSelectedButtonsHelperText}>
             {translate('Select episodes to mark as played')}
           </Text>
         </RNView>
@@ -1236,26 +1235,24 @@ export class PodcastScreen extends React.Component<Props, State> {
               testID={`${testIDPrefix}_clear_new_episode_indicators`}
               text={translate('Mark episodes as seen')}
             />
-            {
-              !addByRSSPodcastFeedUrl && (
-                <>
-                  <Button
-                    accessibilityLabel={translate('Select Multiple Episodes')}
-                    onPress={this._onShowMarkMultipleAsPlayed}
-                    wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
-                    testID={`${testIDPrefix}_mark_selected_episodes_as_played`}
-                    text={translate('Select Multiple Episodes')}
-                  />
-                  <Button
-                    accessibilityLabel={translate('Mark All Episodes As Played')}
-                    onPress={this._onMarkAsPlayed}
-                    wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
-                    testID={`${testIDPrefix}_mars_all_episodes_played`}
-                    text={translate('Mark All Episodes As Played')}
-                  />
-                </>
-              )
-            }
+            {!addByRSSPodcastFeedUrl && (
+              <>
+                <Button
+                  accessibilityLabel={translate('Select Multiple Episodes')}
+                  onPress={this._onShowMarkMultipleAsPlayed}
+                  wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
+                  testID={`${testIDPrefix}_mark_selected_episodes_as_played`}
+                  text={translate('Select Multiple Episodes')}
+                />
+                <Button
+                  accessibilityLabel={translate('Mark All Episodes As Played')}
+                  onPress={this._onMarkAsPlayed}
+                  wrapperStyles={styles.settingsMarkEpisodesAsPlayed}
+                  testID={`${testIDPrefix}_mars_all_episodes_played`}
+                  text={translate('Mark All Episodes As Played')}
+                />
+              </>
+            )}
             <Button
               accessibilityHint={translate('ARIA HINT - delete all the episodes you have downloaded for this podcast')}
               accessibilityLabel={translate('Delete Downloaded Episodes')}
@@ -1313,7 +1310,8 @@ export class PodcastScreen extends React.Component<Props, State> {
             isOverlay
             loadingMessage={translate('Mark as played loading text')}
             testID={testIDPrefix}
-            transparent={false} />
+            transparent={false}
+          />
         )}
       </View>
     )
@@ -1543,7 +1541,7 @@ const styles = StyleSheet.create({
   },
   multiSelectOptionsContainer: {
     flexDirection: 'column',
-    paddingVertical: 12 
+    paddingVertical: 12
   },
   settingsClearNewEpisodeIndicators: {
     marginBottom: 20,

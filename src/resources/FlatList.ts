@@ -24,7 +24,7 @@ export const FlatList = {
   transcriptRowHeights: {
     singleLine: 28,
     autoScrollYOffset: 28 * 8
-  }, 
+  },
   optimizationProps: {
     initialNumToRender: 10,
     maxToRenderPerBatch: 10,

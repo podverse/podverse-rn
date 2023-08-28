@@ -58,8 +58,12 @@ export const upDeviceDelete = async (upEndpoint: string) => {
   return response && response.data
 }
 
-export const upDeviceUpdate = async (previousUPEndpoint: string,
-    nextUPEndpoint: string, upPublicKey: string, upAuthKey: string) => {
+export const upDeviceUpdate = async (
+  previousUPEndpoint: string,
+  nextUPEndpoint: string,
+  upPublicKey: string,
+  upAuthKey: string
+) => {
   const bearerToken = await getBearerToken()
 
   const response = await request({

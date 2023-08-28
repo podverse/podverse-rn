@@ -417,9 +417,10 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
               <SwitchWithText
                 accessibilityLabel={translate('Auto download by default on subscribe')}
                 onValueChange={this._toggleAutoDownloadByDefault}
-                subText={!!autoDownloadByDefault
-                  ? translate('Auto download by default on subscribe - subtext on')
-                  : translate('Auto download by default on subscribe - subtext off')
+                subText={
+                  !!autoDownloadByDefault
+                    ? translate('Auto download by default on subscribe - subtext on')
+                    : translate('Auto download by default on subscribe - subtext off')
                 }
                 subTextAccessible
                 testID={`${testIDPrefix}_auto_download_by_default`}
