@@ -11,6 +11,7 @@ import {
   playerPlayNextChapterOrQueueItem,
   playerPlayPreviousChapterOrReturnToBeginningOfTrack
 } from '../state/actions/player'
+import { handleAABrowseMediaId, handlePlayRemoteMediaId } from '../lib/carplay/PVCarPlay.android'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
@@ -356,4 +357,8 @@ module.exports = async () => {
     const isVideo = false
     handleBackgroundTimerInterval(isVideo)
   })
+
+  // Android Auto Handlers
+  PVAudioPlayer.addEventListener(Event.RemotePlayId, (e) => handlePlayRemoteMediaId(e.id))
+  PVAudioPlayer.addEventListener(Event.RemoteBrowse, (e) => handleAABrowseMediaId(e.mediaId))
 }

@@ -106,7 +106,7 @@
     "react-native-swipe-list-view": "3.2.9",
     "react-native-system-setting": "1.7.6",
     "react-native-text-ticker": "1.13.0",
-    "react-native-track-player": "3.2.0-32baacdfdcbf5edb81a8a3199fdf30896dcce0cc",
+    "react-native-track-player": "git+https://lovegaoshi@github.com/lovegaoshi/react-native-track-player.git#dev-AA-RN0.66",
     "react-native-tracking-transparency": "0.1.1",
     "react-native-vector-icons": "8.1.0",
     "react-native-video": "6.0.0-alpha.4",
