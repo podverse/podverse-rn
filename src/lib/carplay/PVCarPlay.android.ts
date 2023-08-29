@@ -1,10 +1,10 @@
-import { Platform } from 'react-native'
 import TrackPlayer, { AndroidAutoContentStyle, AndroidAutoBrowseTree } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
 import { Episode, NowPlayingItem, Podcast } from 'podverse-shared'
 
 import { translate } from '../i18n'
-import { getPodcast } from '../../services/podcast'
+import { readableDate } from '../utility'
+import { getEpisodesForPodcast } from './helpers'
 
 /* Constants */
 
@@ -16,17 +16,18 @@ enum TabKeys {
 
 enum MediaKeys {
   Podcast = 'Podcast',
+  Episode = 'Episode',
   Queue = 'Queue',
   History = 'History',
   PlaceHolder = 'PlaceHolder'
 }
 
-// This timeout is a work-around for asynchronous state loading issues in background tabs.
-const stateUpdateTimeout = 10000
+// TODO: ts type?
+let episodes: any[] = []
 
 export let browseTree: AndroidAutoBrowseTree = { '/': [] }
 
-const setAndroidAutoBrowseTree = (newContent: Partial<AndroidAutoBrowseTree>) => {
+const updateAndroidAutoBrowseTree = (newContent: Partial<AndroidAutoBrowseTree>) => {
   browseTree = {
     ...browseTree,
     ...newContent
@@ -36,11 +37,29 @@ const setAndroidAutoBrowseTree = (newContent: Partial<AndroidAutoBrowseTree>) =>
 
 export const handleAABrowseMediaId = async (mediaId: string) => {
   if (mediaId.startsWith(MediaKeys.Podcast)) {
+    // mirrors handlePodcastsListOnSelect.
     // load podcast if content needs to be refreshed (?), or content is empty.
-    // TODO: when is content needs to be refreshed
+    // TODO: when is content needs to be refreshed? or always refresh?
     if (browseTree[mediaId] === undefined) {
-      console.log(mediaId.substring(MediaKeys.Podcast.length + 1))
-      console.log(await getPodcast(mediaId.substring(MediaKeys.Podcast.length + 1)))
+      const index = mediaId.substring(MediaKeys.Podcast.length + 1)
+      const { subscribedPodcasts } = getGlobal()
+      const podcast = subscribedPodcasts[index]
+      episodes = (await getEpisodesForPodcast(podcast))[0] || []
+      updateAndroidAutoBrowseTree({
+        [mediaId]: episodes.map((episode, index) => {
+          const pubDate =
+            (episode?.liveItem?.start && readableDate(episode.liveItem.start)) ||
+            (episode.pubDate && readableDate(episode.pubDate)) ||
+            ''
+          return {
+            title: episode.title || translate('Untitled Episode'),
+            subtitle: pubDate,
+            playable: '0',
+            iconUri: podcast.imageUrl,
+            mediaId: `${MediaKeys.Episode}-${index}`
+          }
+        })
+      })
     }
   }
 }
@@ -51,11 +70,7 @@ export const handlePlayRemoteMediaId = (mediaId: string) => {
 
 /* Initialize */
 
-export const registerCarModule = (onConnect, onDisconnect) => {
-  if (Platform.OS !== 'android') return
-}
-
-export const initializeAndroidAutoContent = (t: (val: string) => string = translate) => {
+export const registerAndroidAutoModule = (t: (val: string) => string = translate) => {
   const defaultBrowseTree = {
     '/': [
       {
@@ -75,23 +90,21 @@ export const initializeAndroidAutoContent = (t: (val: string) => string = transl
       }
     ]
   }
-  setAndroidAutoBrowseTree(defaultBrowseTree)
+  updateAndroidAutoBrowseTree(defaultBrowseTree)
   TrackPlayer.setBrowseTreeStyle(AndroidAutoContentStyle.CategoryGrid, AndroidAutoContentStyle.List)
-}
-
-/* Root View */
-
-export const showRootView = (subscribedPodcasts: Podcast[], historyItems: any[], queueItems: any[]) => {
-  // TODO: Android implementation
 }
 
 /* Podcasts Tab */
 
+/**
+ * mirrors handleCarPlayPodcastsUpdate.
+ */
 export const handleAndroidAutoPodcastsUpdate = () => {
   const { subscribedPodcasts } = getGlobal()
-  setAndroidAutoBrowseTree({
-    [TabKeys.PodcastTab]: subscribedPodcasts.map((podcast) => ({
-      mediaId: `${MediaKeys.Podcast}-${podcast.id}`,
+  updateAndroidAutoBrowseTree({
+    [TabKeys.PodcastTab]: subscribedPodcasts.map((podcast: Podcast, index) => ({
+      // mediaId: `${MediaKeys.Podcast}-${podcast.id}`,
+      mediaId: `${MediaKeys.Podcast}-${index}`,
       playable: '1',
       title: podcast.title,
       subtitle: podcast.subtitle,

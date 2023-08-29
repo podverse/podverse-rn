@@ -45,7 +45,7 @@ import {
 import {
   handleAndroidAutoPodcastsUpdate,
   handleAndroidAutoQueueUpdate,
-  initializeAndroidAutoContent
+  registerAndroidAutoModule
 } from './src/lib/carplay/PVCarPlay.android'
 
 LogBox.ignoreLogs(['EventEmitter.removeListener', 'Require cycle'])
@@ -86,7 +86,7 @@ class App extends Component<Props, State> {
     // Android Auto
     if (Platform.OS === 'android') {
       // initialize Android Auto Tabs with no content. Content will be updated as they are loaded to the global state.
-      initializeAndroidAutoContent()
+      registerAndroidAutoModule()
       console.debug('[Android Auto] registering event listeners...')
       PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleAndroidAutoQueueUpdate)
       PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY, handleAndroidAutoPodcastsUpdate)
