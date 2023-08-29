@@ -55,7 +55,7 @@ export const handleAABrowseMediaId = async (mediaId: string) => {
             title: episode.title || translate('Untitled Episode'),
             subtitle: pubDate,
             playable: '0',
-            iconUri: podcast.imageUrl,
+            iconUri: episode.episodeImageUrl || podcast.imageUrl,
             mediaId: `${MediaKeys.Episode}-${index}`
           }
         })
@@ -121,7 +121,19 @@ export const handleAndroidAutoPodcastsUpdate = () => {
 
 export const handleAndroidAutoQueueUpdate = () => {
   // TODO: Android implementation
-  console.error('handleAndroidAutoQueueUpdate not implemented')
+  const { session } = getGlobal()
+  const updatedItems = session?.userInfo?.queueItems || []
+  updateAndroidAutoBrowseTree({
+    [TabKeys.QueueTab]: updatedItems.map((episode: any, index) => {
+      return {
+        title: episode.episodeTitle || translate('Untitled Episode'),
+        subtitle: episode.podcastTitle,
+        playable: '0',
+        iconUri: episode.episodeImageUrl,
+        mediaId: `${MediaKeys.Queue}-${index}`
+      }
+    })
+  })
 }
 
 /* History Tab */
