@@ -26,8 +26,8 @@ enum MediaKeys {
   PlaceHolder = 'PlaceHolder'
 }
 
-// TODO: ts type?
-let episodes: any[] = []
+const cachedPodcasts: { [key: string]: Podcast } = {}
+const cachedEpisodes: { [key: string]: Episode[] } = {}
 
 export let browseTree: AndroidAutoBrowseTree = { '/': [] }
 
@@ -47,10 +47,12 @@ export const handleAABrowseMediaId = async (mediaId: string) => {
     if (browseTree[mediaId] === undefined) {
       const index = mediaId.substring(MediaKeys.Podcast.length + 1)
       const { subscribedPodcasts } = getGlobal()
-      const podcast = subscribedPodcasts[index]
-      episodes = (await getEpisodesForPodcast(podcast))[0] || []
+      const podcast = subscribedPodcasts[index] as Podcast
+      const queryEpisodes: Episode[] = (await getEpisodesForPodcast(podcast))[0] || []
+      cachedPodcasts[podcast.id] = podcast
+      cachedEpisodes[podcast.id] = queryEpisodes
       updateAndroidAutoBrowseTree({
-        [mediaId]: episodes.map((episode, index) => {
+        [mediaId]: queryEpisodes.map((episode, index) => {
           const pubDate =
             (episode?.liveItem?.start && readableDate(episode.liveItem.start)) ||
             (episode.pubDate && readableDate(episode.pubDate)) ||
@@ -59,8 +61,8 @@ export const handleAABrowseMediaId = async (mediaId: string) => {
             title: episode.title || translate('Untitled Episode'),
             subtitle: pubDate,
             playable: '0',
-            iconUri: episode.episodeImageUrl || podcast.imageUrl,
-            mediaId: `${MediaKeys.Episode}-${index}`
+            iconUri: episode.imageUrl || podcast.imageUrl,
+            mediaId: `${MediaKeys.Episode}-${podcast.id}-${index}`
           }
         })
       })
@@ -96,9 +98,18 @@ export const handlePlayRemoteMediaId = async (mediaId: string) => {
       return
     }
     const convertedEpisode = convertNowPlayingItemToEpisode(foundEpisode[0])
-    loadEpisodeInPlayer(convertedEpisode, convertedEpisode.podcast)
+    await loadEpisodeInPlayer(convertedEpisode, convertedEpisode.podcast)
+    refreshHistory()
+  } else if (mediaId.startsWith(MediaKeys.Episode)) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const [_, podcastId, index] = /^Episode-(.+)-(\d+)$/.exec(mediaId)!
+    try {
+      loadEpisodeInPlayer(cachedEpisodes[podcastId][Number(index)], cachedPodcasts[podcastId])
+    } catch (e) {
+      errorLogger(_fileName, 'handlePlayRemoteMediaId', `[Android Auto] ${mediaId}, ${podcastId}, ${index}, ${e}`)
+    }
   } else {
-    console.log(`[remotePlay] TODO: ${mediaId}`)
+    errorLogger(_fileName, 'handlePlayRemoteMediaId', `[Android Auto] ${mediaId} format is not supported.`)
   }
 }
 
@@ -149,7 +160,7 @@ export const handleAndroidAutoPodcastsUpdate = () => {
 
 /* Podcast Episodes Tab */
 
-// TODO: Android implementation
+// See handleAABrowseMediaId's if (mediaId.startsWith(MediaKeys.Podcast))
 
 /* Queue Tab */
 
@@ -200,18 +211,4 @@ const refreshHistory = async () => {
       }
     })
   })
-}
-
-export const handleAndroidAutoHistoryUpdate = () => {
-  // TODO: Android implementation
-}
-
-/* Player Helpers */
-
-export const showAndroidAutoerForEpisode = async (episode: Episode, podcast: Podcast) => {
-  // TODO: Android implementation
-}
-
-export const showAndroidAutoerForNowPlayingItem = async (nowPlayingItem: NowPlayingItem) => {
-  // TODO: Android implementation
 }

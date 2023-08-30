@@ -87,7 +87,6 @@ class App extends Component<Props, State> {
     if (Platform.OS === 'android') {
       // initialize Android Auto Tabs with no content. Content will be updated as they are loaded to the global state.
       registerAndroidAutoModule()
-      console.debug('[Android Auto] registering event listeners...')
       PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleAndroidAutoQueueUpdate)
       PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY, handleAndroidAutoPodcastsUpdate)
     }
@@ -117,6 +116,7 @@ class App extends Component<Props, State> {
 
     // iOS CarPlay
     Platform.OS === 'ios' && unregisterCarModule(this.onConnect, this.onDisconnect)
+    // Android Auto
     if (Platform.OS === 'android') {
       PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, handleAndroidAutoQueueUpdate)
       PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY, handleAndroidAutoPodcastsUpdate)
