@@ -1,12 +1,16 @@
 import TrackPlayer, { AndroidAutoContentStyle, AndroidAutoBrowseTree } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
-import { Episode, NowPlayingItem, Podcast } from 'podverse-shared'
+import { Episode, NowPlayingItem, Podcast, convertNowPlayingItemToEpisode } from 'podverse-shared'
 
 import { translate } from '../i18n'
 import { readableDate } from '../utility'
-import { getEpisodesForPodcast } from './helpers'
+import { getHistoryItems } from '../../state/actions/userHistoryItem'
+import { errorLogger } from '../logger'
+import { getEpisodesForPodcast, loadEpisodeInPlayer } from './helpers'
 
 /* Constants */
+
+const _fileName = 'src/lib/carplay/PVCarPlay.android.ts'
 
 enum TabKeys {
   PodcastTab = 'PodcastTab',
@@ -61,11 +65,41 @@ export const handleAABrowseMediaId = async (mediaId: string) => {
         })
       })
     }
+  } else if (mediaId === TabKeys.HistoryTab) {
+    refreshHistory()
   }
 }
 
-export const handlePlayRemoteMediaId = (mediaId: string) => {
-  console.log(`[remotePlay] TODO: ${mediaId}`)
+export const handlePlayRemoteMediaId = async (mediaId: string) => {
+  if (mediaId.startsWith(MediaKeys.Queue)) {
+    const episodeId = mediaId.substring(MediaKeys.Queue.length + 1)
+    const foundEpisode = getQueue().filter((episode) => episode.episodeId === episodeId)
+    if (foundEpisode.length === 0) {
+      errorLogger(
+        _fileName,
+        'handlePlayRemoteMediaId',
+        `[Android Auto] ${mediaId} no longer exists in the current Queue.`
+      )
+      return
+    }
+    const convertedEpisode = convertNowPlayingItemToEpisode(foundEpisode[0])
+    loadEpisodeInPlayer(convertedEpisode, convertedEpisode.podcast)
+  } else if (mediaId.startsWith(MediaKeys.History)) {
+    const episodeId = mediaId.substring(MediaKeys.History.length + 1)
+    const foundEpisode = (await getHistory()).filter((episode) => episode.episodeId === episodeId)
+    if (foundEpisode.length === 0) {
+      errorLogger(
+        _fileName,
+        'handlePlayRemoteMediaId',
+        `[Android Auto] ${mediaId} no longer exists in the current History.`
+      )
+      return
+    }
+    const convertedEpisode = convertNowPlayingItemToEpisode(foundEpisode[0])
+    loadEpisodeInPlayer(convertedEpisode, convertedEpisode.podcast)
+  } else {
+    console.log(`[remotePlay] TODO: ${mediaId}`)
+  }
 }
 
 /* Initialize */
@@ -119,24 +153,54 @@ export const handleAndroidAutoPodcastsUpdate = () => {
 
 /* Queue Tab */
 
+const getQueue = (): NowPlayingItem[] => {
+  const { session } = getGlobal()
+  return session?.userInfo?.queueItems || []
+}
+
 export const handleAndroidAutoQueueUpdate = () => {
   // TODO: Android implementation
-  const { session } = getGlobal()
-  const updatedItems = session?.userInfo?.queueItems || []
+  const updatedItems = getQueue()
   updateAndroidAutoBrowseTree({
-    [TabKeys.QueueTab]: updatedItems.map((episode: any, index) => {
+    [TabKeys.QueueTab]: updatedItems.map((episode) => ({
+      title: episode.episodeTitle || translate('Untitled Episode'),
+      subtitle: episode.podcastTitle,
+      playable: '0',
+      iconUri: episode.episodeImageUrl,
+      mediaId: `${MediaKeys.Queue}-${episode.episodeId}`
+    }))
+  })
+}
+
+/* History Tab */
+
+const getHistory = async (): Promise<NowPlayingItem[]> => {
+  const page = 1
+  const existingItems: any[] = []
+  await getHistoryItems(page, existingItems)
+  const { session } = getGlobal()
+  return session?.userInfo?.historyItems || []
+}
+
+/**
+ * mirrors handleCarPlayHistoryUpdate. History is refreshed whenever entering the History tab.
+ */
+const refreshHistory = async () => {
+  const updatedItems = await getHistory()
+  // Limit historyItems to the most recent 20 items, for performance reasons.
+  const limitedItems = updatedItems.slice(0, 20)
+  updateAndroidAutoBrowseTree({
+    [TabKeys.HistoryTab]: limitedItems.map((episode: NowPlayingItem) => {
       return {
         title: episode.episodeTitle || translate('Untitled Episode'),
         subtitle: episode.podcastTitle,
         playable: '0',
         iconUri: episode.episodeImageUrl,
-        mediaId: `${MediaKeys.Queue}-${index}`
+        mediaId: `${MediaKeys.History}-${episode.episodeId}`
       }
     })
   })
 }
-
-/* History Tab */
 
 export const handleAndroidAutoHistoryUpdate = () => {
   // TODO: Android implementation
