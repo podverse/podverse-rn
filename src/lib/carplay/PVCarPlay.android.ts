@@ -30,6 +30,7 @@ const cachedPodcasts: { [key: string]: Podcast } = {}
 const cachedEpisodes: { [key: string]: Episode[] } = {}
 
 export let browseTree: AndroidAutoBrowseTree = { '/': [] }
+let historyRefreshDebounce = 0
 
 const updateAndroidAutoBrowseTree = (newContent: Partial<AndroidAutoBrowseTree>) => {
   browseTree = {
@@ -68,7 +69,14 @@ export const handleAABrowseMediaId = async (mediaId: string) => {
       })
     }
   } else if (mediaId === TabKeys.HistoryTab) {
-    refreshHistory()
+    // HACK: debounce this properly. TrackPlayer.setBrowseTree triggers broadcasting all onLoadChildren
+    // because contents are updated. Not debounced = infinite loop on refreshHistory.
+    // use an event emitter instead.
+    const currentTimeStamp = new Date().getTime()
+    if (currentTimeStamp - historyRefreshDebounce > 1000) {
+      refreshHistory()
+      historyRefreshDebounce = currentTimeStamp
+    }
   }
 }
 
