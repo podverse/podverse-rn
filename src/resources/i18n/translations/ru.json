@@ -179,7 +179,7 @@
     "OPML import and export": "OPML импорт и экспорт",
     "ARIA HINT - share this profile": "Поделиться профилем",
     "Go to Episode": "Перейти к эпизоду",
-    "minutes": "минуты",
+    "minutes": "Минуты",
     "ARIA HINT - episode duration": "Продолжительность эпизода",
     "ARIA HINT - pause playback": "Пауза воспроизведения",
     "ARIA HINT - show more info about this podcast": "Больше информации о подкасте",
@@ -239,7 +239,7 @@
     "Login / Register": "Войти или зарегистрироваться",
     "Subscribe to podcasts": "Подписка на подкасты",
     "hour": "час",
-    "hours": "часы",
+    "hours": "Часы",
     "In progress": "В процессе",
     "Invalid username or password": "Неверное имя пользователя или пароль",
     "Login to add to playlists": "Войдите, чтобы добавить плейлисты",
@@ -473,5 +473,9 @@
     "title of playlist": "Введите название плейлиста",
     "Tip: Titling your clips": "Совет: Присвоение клипам имен, способствует удобству поиска и организации.",
     "End time": "Время окончания",
-    "Remove end time": "Сброс время окончания"
+    "Remove end time": "Сброс время окончания",
+    "Show more": "Показать больше",
+    "Stop Timer": "Остановить таймер",
+    "Show less": "Скрыть",
+    "Start Timer": "Запуск таймера"
 }
