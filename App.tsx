@@ -43,9 +43,9 @@ import {
   unregisterCarModule
 } from './src/lib/carplay/PVCarPlay'
 import {
-  handleAndroidAutoPodcastsUpdate,
   handleAndroidAutoQueueUpdate,
-  registerAndroidAutoModule
+  registerAndroidAutoModule,
+  onAppInitialized
 } from './src/lib/carplay/PVCarPlay.android'
 
 LogBox.ignoreLogs(['EventEmitter.removeListener', 'Require cycle'])
@@ -88,7 +88,7 @@ class App extends Component<Props, State> {
       // initialize Android Auto Tabs with no content. Content will be updated as they are loaded to the global state.
       registerAndroidAutoModule()
       PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleAndroidAutoQueueUpdate)
-      PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY, handleAndroidAutoPodcastsUpdate)
+      PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY, onAppInitialized)
     }
 
     StatusBar.setBarStyle('light-content')
@@ -119,7 +119,7 @@ class App extends Component<Props, State> {
     // Android Auto
     if (Platform.OS === 'android') {
       PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, handleAndroidAutoQueueUpdate)
-      PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY, handleAndroidAutoPodcastsUpdate)
+      PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY, onAppInitialized)
     }
   }
 

@@ -1,6 +1,7 @@
 import TrackPlayer, { AndroidAutoContentStyle, AndroidAutoBrowseTree } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
 import { Episode, NowPlayingItem, Podcast, convertNowPlayingItemToEpisode } from 'podverse-shared'
+import { NativeModules } from 'react-native'
 
 import { translate } from '../i18n'
 import { readableDate } from '../utility'
@@ -31,8 +32,11 @@ const cachedEpisodes: { [key: string]: Episode[] } = {}
 
 export let browseTree: AndroidAutoBrowseTree = { '/': [] }
 let historyRefreshDebounce = 0
+let podcastRefreshDebounce = 0
 
 const updateAndroidAutoBrowseTree = (newContent: Partial<AndroidAutoBrowseTree>) => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   browseTree = {
     ...browseTree,
     ...newContent
@@ -41,10 +45,29 @@ const updateAndroidAutoBrowseTree = (newContent: Partial<AndroidAutoBrowseTree>)
 }
 
 export const handleAABrowseMediaId = async (mediaId: string) => {
-  if (mediaId.startsWith(MediaKeys.Podcast)) {
+  if (mediaId === TabKeys.HistoryTab) {
+    // HACK: debounce this properly. TrackPlayer.setBrowseTree triggers broadcasting all onLoadChildren
+    // because contents are updated. Not debounced = infinite loop on refreshHistory.
+    // use an event emitter instead.
+    const currentTimeStamp = new Date().getTime()
+    if (currentTimeStamp - historyRefreshDebounce > 1000) {
+      refreshHistory()
+      historyRefreshDebounce = currentTimeStamp
+    }
+  } else if (mediaId === TabKeys.PodcastTab) {
+    // HACK: debounce this properly. TrackPlayer.setBrowseTree triggers broadcasting all onLoadChildren
+    // because contents are updated. Not debounced = infinite loop on refreshHistory.
+    // use an event emitter instead.
+    const currentTimeStamp = new Date().getTime()
+    if (currentTimeStamp - podcastRefreshDebounce > 1000) {
+      handleAndroidAutoPodcastsUpdate()
+      podcastRefreshDebounce = currentTimeStamp
+    }
+  } else if (mediaId.startsWith(MediaKeys.Podcast)) {
     // mirrors handlePodcastsListOnSelect.
     // load podcast if content needs to be refreshed (?), or content is empty.
     // TODO: when is content needs to be refreshed? or always refresh?
+    // eslint-disable-next-line @typescript-eslint/tslint/config
     if (browseTree[mediaId] === undefined) {
       const index = mediaId.substring(MediaKeys.Podcast.length + 1)
       const { subscribedPodcasts } = getGlobal()
@@ -62,20 +85,11 @@ export const handleAABrowseMediaId = async (mediaId: string) => {
             title: episode.title || translate('Untitled Episode'),
             subtitle: pubDate,
             playable: '0',
-            iconUri: episode.imageUrl || podcast.imageUrl,
+            iconUri: episode.imageUrl || podcast.imageUrl || undefined,
             mediaId: `${MediaKeys.Episode}-${podcast.id}-${index}`
           }
         })
       })
-    }
-  } else if (mediaId === TabKeys.HistoryTab) {
-    // HACK: debounce this properly. TrackPlayer.setBrowseTree triggers broadcasting all onLoadChildren
-    // because contents are updated. Not debounced = infinite loop on refreshHistory.
-    // use an event emitter instead.
-    const currentTimeStamp = new Date().getTime()
-    if (currentTimeStamp - historyRefreshDebounce > 1000) {
-      refreshHistory()
-      historyRefreshDebounce = currentTimeStamp
     }
   }
 }
@@ -123,6 +137,12 @@ export const handlePlayRemoteMediaId = async (mediaId: string) => {
 
 /* Initialize */
 
+export const onAppInitialized = () => {
+  const { PVAndroidAutoModule } = NativeModules
+  PVAndroidAutoModule.turnOffShowWhenLocked()
+  handleAndroidAutoPodcastsUpdate()
+}
+
 export const registerAndroidAutoModule = (t: (val: string) => string = translate) => {
   const defaultBrowseTree = {
     '/': [
@@ -159,9 +179,9 @@ export const handleAndroidAutoPodcastsUpdate = () => {
       // mediaId: `${MediaKeys.Podcast}-${podcast.id}`,
       mediaId: `${MediaKeys.Podcast}-${index}`,
       playable: '1',
-      title: podcast.title,
+      title: podcast.title || translate('Untitled Podcast'),
       subtitle: podcast.subtitle,
-      iconUri: podcast.imageUrl
+      iconUri: podcast.imageUrl || undefined
     }))
   })
 }
