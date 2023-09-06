@@ -1,5 +1,5 @@
 {
-    "_translatorsField": "Onelex<mailto:onelex@disroot.org>",
+    "_translatorsField": "Pazen<mailto:pazengaz@porcod.io>",
     "_translatorsFieldExample": "Jane Doe<https://jane.doe.homepage>,Joe Bloggs,Juan Perez<https://some.socialmedia/juan>",
     "18 per year after that": "После 18$ в год",
     "A-Z": "А-Я",
@@ -486,5 +486,6 @@
     "TermsOfServiceScreenText3": "Все аудио и видеофайлы, найденные на podverse.fm хранятся и загружаются с сервера создателя подкаста, а не с Podverse.",
     "Verify email title": "Почта успешно подтверждена",
     "You should receive an email shortly The email may go to your Spam folder": "Вскоре вы должны получить письмо с ссылкой для подтверждения почты.\nЕсли письмо не пришло проверьте папку спам.",
-    "Verify email succeeded": "Теперь вы можете войти в свой аккаунт."
+    "Verify email succeeded": "Теперь вы можете войти в свой аккаунт.",
+    "Report a content issue": "Сообщить о проблеме с контентом"
 }
