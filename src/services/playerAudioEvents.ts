@@ -359,17 +359,42 @@ module.exports = async () => {
   })
 
   // Android Auto Handlers
-  PVAudioPlayer.addEventListener(Event.RemotePlayId, (e) => {
-    handlePlayRemoteMediaId(e.id)
-  })
-  PVAudioPlayer.addEventListener(Event.RemoteSkip, (e) => {
-    PVAudioPlayer.skip(e.index).then(() => PVAudioPlayer.play())
-  })
-  PVAudioPlayer.addEventListener(Event.RemoteBrowse, (e) => {
-    handleAABrowseMediaId(e.mediaId)
-  })
-  PVAudioPlayer.addEventListener(Event.RemotePlaySearch, (e) => {
-    // TODO: handle this
-    console.warn(e, 'not handled')
-  })
+  if (Platform.OS === 'android') {
+    PVAudioPlayer.addEventListener(Event.RemotePlayId, (e) => {
+      handlePlayRemoteMediaId(e.id)
+    })
+    PVAudioPlayer.addEventListener(Event.RemoteSkip, (e) => {
+      PVAudioPlayer.skip(e.index).then(() => PVAudioPlayer.play())
+    })
+    PVAudioPlayer.addEventListener(Event.RemoteBrowse, (e) => {
+      handleAABrowseMediaId(e.mediaId)
+    })
+    PVAudioPlayer.addEventListener(Event.RemotePlaySearch, (e) => {
+      // TODO: handle this
+      console.warn(e, 'not handled')
+    })
+
+    // TODO: handle skip next/previous via customActions in android auto
+    PVAudioPlayer.addEventListener(Event.RemoteCustomAction, (e) => {
+      console.log('Event.RemoteCustomAction', e)
+      switch (e.customAction) {
+        case 'customSkipPrev':
+          playerPlayPreviousChapterOrReturnToBeginningOfTrack()
+          break
+        case 'customSkipNext':
+          playerPlayNextChapterOrQueueItem()
+          break
+        case 'customJumpForward':
+          const { jumpBackwardsTime } = getGlobal()
+          audioJumpBackward(jumpBackwardsTime)
+          break
+        case 'customJumpBackward':
+          const { jumpForwardsTime } = getGlobal()
+          audioJumpForward(jumpForwardsTime)
+          break
+        default:
+          break
+      }
+    })
+  }
 }

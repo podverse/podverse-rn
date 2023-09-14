@@ -5,7 +5,8 @@ import TrackPlayer, {
   AppKilledPlaybackBehavior,
   Capability,
   IOSCategoryMode,
-  RepeatMode
+  RepeatMode,
+  UpdateOptions
 } from 'react-native-track-player'
 import { PVAudioPlayer } from './playerAudio'
 
@@ -41,7 +42,7 @@ export const PlayerAudioSetupService = async () => {
 export const audioUpdateTrackPlayerCapabilities = () => {
   const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
 
-  PVAudioPlayer.updateOptions({
+  const RNTPOptions: UpdateOptions = {
     capabilities: [
       Capability.JumpBackward,
       Capability.JumpForward,
@@ -51,25 +52,35 @@ export const audioUpdateTrackPlayerCapabilities = () => {
       Capability.SkipToNext,
       Capability.SkipToPrevious
     ],
-    compactCapabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo
-    ],
-    notificationCapabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo
-    ],
+    compactCapabilities: [Capability.Pause, Capability.Play, Capability.SeekTo],
+    notificationCapabilities: [Capability.Pause, Capability.Play, Capability.SeekTo],
     backwardJumpInterval: parseInt(jumpBackwardsTime, 10),
     forwardJumpInterval: parseInt(jumpForwardsTime, 10),
     progressUpdateEventInterval: 1,
     android: {
       appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
     }
-  })
+  }
+
+  // HACK: android < 13 doesnt show forward/backward buttons in adnroid auto?
+  // proposed solution is to resolve buttons all through custom actions
+  if (Platform.OS === 'android') {
+    RNTPOptions.customActions = {
+      customActionsList: ['customJumpForward', 'customJumpBackward', 'customSkipPrev', 'customSkipNext'],
+      customSkipPrev: require('../assets/icons/skip-prev.png'),
+      customSkipNext: require('../assets/icons/skip-next.png'),
+      customJumpForward: require('../assets/icons/forward-30.png'),
+      customJumpBackward: require('../assets/icons/replay-10.png')
+    }
+  } else {
+    RNTPOptions.notificationCapabilities = RNTPOptions.notificationCapabilities?.concat([
+      Capability.JumpBackward,
+      Capability.JumpForward
+    ])
+    RNTPOptions.compactCapabilities = RNTPOptions.compactCapabilities?.concat([
+      Capability.JumpBackward,
+      Capability.JumpForward
+    ])
+  }
+  PVAudioPlayer.updateOptions(RNTPOptions)
 }
