@@ -132,6 +132,8 @@ export class MoreScreen extends React.Component<Props, State> {
 
   _importOpml = async (uri?: string) => {
     try {
+      let name = ''
+      
       if (!uri) {
         const res = await DocumentPicker.pickSingle({
           type: [DocumentPicker.types.allFiles]
@@ -142,12 +144,15 @@ export class MoreScreen extends React.Component<Props, State> {
         }
 
         uri = res.uri
+        name = res.name
       }
 
-      const fileExtension = getExtensionFromUrl(uri)
-      if (!validOPMLFileExtensions.includes(fileExtension)) {
-        Alert.alert(translate('Error'), translate('OPML import error message wrong file type'))
-        return
+      if (name) {
+        const fileExtension = getExtensionFromUrl(name)
+        if (!validOPMLFileExtensions.includes(fileExtension)) {
+          Alert.alert(translate('Error'), translate('OPML import error message wrong file type'))
+          return
+        }
       }
 
       const contents = await RNFS.readFile(decodeURI(uri), 'utf8')

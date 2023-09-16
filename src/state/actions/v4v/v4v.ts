@@ -495,7 +495,8 @@ export const v4vConvertToBoostagramItem = (podcast?: Podcast, episode?: Episode)
       podcastIndexPodcastId: podcast.podcastIndexId || '',
       podcastShrunkImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
       podcastTitle: podcast.title || '',
-      podcastValue: podcast.value || []
+      podcastValue: podcast.value || [],
+      podcastGuid: podcast.podcastGuid || ''
     }
   } else if (podcast) {
     item = {
@@ -503,7 +504,8 @@ export const v4vConvertToBoostagramItem = (podcast?: Podcast, episode?: Episode)
       podcastIndexPodcastId: podcast.podcastIndexId || '',
       podcastShrunkImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
       podcastTitle: podcast.title || '',
-      podcastValue: podcast.value || []
+      podcastValue: podcast.value || [],
+      podcastGuid: podcast.podcastGuid || ''
     }
   } else if (nowPlayingItem) {
     item = {
@@ -516,7 +518,8 @@ export const v4vConvertToBoostagramItem = (podcast?: Podcast, episode?: Episode)
       podcastIndexPodcastId: nowPlayingItem.podcastIndexPodcastId || '',
       podcastShrunkImageUrl: nowPlayingItem.podcastShrunkImageUrl || nowPlayingItem.podcastImageUrl || '',
       podcastTitle: nowPlayingItem.podcastTitle || '',
-      podcastValue: nowPlayingItem.podcastValue || []
+      podcastValue: nowPlayingItem.podcastValue || [],
+      podcastGuid: nowPlayingItem.podcastGuid || ''
     }
   }
 
