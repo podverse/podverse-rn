@@ -175,7 +175,8 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
         activeProvider.key,
         boostagramItem.episodeGuid || '',
         activeValueTag?.remoteFeedGuid,
-        activeValueTag?.remoteItemGuid
+        activeValueTag?.remoteItemGuid,
+        boostagramItem.podcastGuid || ''
       )
 
       this.setState({

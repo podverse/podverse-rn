@@ -36,6 +36,7 @@ export type BoostagramItem = {
   podcastShrunkImageUrl: string
   podcastTitle: string
   podcastValue: ValueTag[]
+  podcastGuid?: string
 }
 
 /* Constants */
@@ -179,7 +180,8 @@ export const convertValueTagIntoValueTransactions = async (
   providerKey: string,
   episode_guid: string,
   remote_feed_guid?: string,
-  remote_item_guid?: string
+  remote_item_guid?: string,
+  guid?: string, // podcast guid
 ) => {
 
   const { method, type } = valueTag
@@ -244,7 +246,8 @@ export const convertValueTagIntoValueTransactions = async (
         providerKey,
         episode_guid,
         remote_feed_guid,
-        remote_item_guid
+        remote_item_guid,
+        guid
       )
 
       remainingTotalAmount = remainingTotalAmount - amount
@@ -295,7 +298,8 @@ export const convertValueTagIntoValueTransactions = async (
       providerKey,
       episode_guid,
       remote_feed_guid,
-      remote_item_guid
+      remote_item_guid,
+      guid
     )
 
     if (normalizedNonFeeValueTransaction) nonFeeValueTransactions.push(normalizedNonFeeValueTransaction)
@@ -315,7 +319,8 @@ export const convertValueTagIntoValueTransactions = async (
       providerKey,
       episode_guid,
       remote_feed_guid,
-      remote_item_guid
+      remote_item_guid,
+      guid
     )
 
     if (normalizedParentNonFeeValueTransaction) {
@@ -346,7 +351,8 @@ const convertValueTagIntoValueTransaction = async (
   providerKey: string,
   episode_guid: string,
   remote_feed_guid?: string,
-  remote_item_guid?: string
+  remote_item_guid?: string,
+  guid?: string, // podcast guid
 ) => {
   const timestamp = Date.now()
   const [speed, currentPlaybackPosition] = await Promise.all([playerGetRate(), playerGetPosition()])
@@ -368,7 +374,8 @@ const convertValueTagIntoValueTransaction = async (
     episode_guid,
     recipientAmount,
     remote_feed_guid,
-    remote_item_guid
+    remote_item_guid,
+    guid
   )
 
   return {
@@ -511,7 +518,8 @@ export const sendBoost = async (
     activeProvider.key,
     item?.episodeGuid || '',
     valueTag?.remoteFeedGuid,
-    valueTag?.remoteItemGuid
+    valueTag?.remoteItemGuid,
+    item?.podcastGuid || ''
   )
 
   const combinedNonFeeValueTransactions = nonFeeValueTransactions.concat(parentNonFeeValueTransactions)
@@ -523,6 +531,7 @@ export const sendBoost = async (
   // Run refresh wallet data in the background after transactions complete.
   v4vRefreshProviderWalletInfo(activeProvider?.key)
   
+  // We're not returning a result from sendBoost currently...
   // const totalAmountPaid = nonFeeAmountPaid + feeAmountPaid
   // return { transactions: combinedFeeValueTransactions, totalAmountPaid }
 }
@@ -750,7 +759,8 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
         providerKey,
         item?.episodeGuid || '',
         finalValueTag?.remoteFeedGuid,
-        finalValueTag?.remoteItemGuid
+        finalValueTag?.remoteItemGuid,
+        item?.podcastGuid || ''
       )
     ])
 
