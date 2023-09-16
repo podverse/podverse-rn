@@ -88,6 +88,7 @@ const addDLTask = (episode: any, podcast: any) =>
     episodeValue: episode.value,
     podcastCredentialsRequired: podcast.credentialsRequired,
     podcastFunding: podcast.funding,
+    podcastGuid: podcast.podcastGuid,
     podcastHasVideo: podcast.hasVideo,
     podcastHideDynamicAdsWarning: podcast.hideDynamicAdsWarning,
     podcastId: podcast.id,

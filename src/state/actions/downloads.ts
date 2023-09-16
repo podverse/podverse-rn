@@ -55,6 +55,7 @@ export type DownloadTaskState = {
   percent?: number
   podcastCredentialsRequired?: boolean
   podcastFunding?: any
+  podcastGuid?: string
   podcastHasVideo: boolean
   podcastHideDynamicAdsWarning?: boolean
   podcastId?: string
