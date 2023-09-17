@@ -199,7 +199,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation platform('com.google.firebase:firebase-bom:29.0.3')
 
-    implementation 'com.github.UnifiedPush:android-connector:2.2.0'
+    implementation 'com.github.UnifiedPush:android-connector:2.1.1'
     implementation "com.google.crypto.tink:apps-webpush:1.9.1"
     
     if (enableHermes) {
