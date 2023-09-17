@@ -11,6 +11,9 @@ import { getBuildNumber, getVersion } from 'react-native-device-info'
 import { translate } from './i18n'
 const uuidv4 = require('uuid/v4')
 
+// For more info about blip-0010 TLV records visit:
+// https://github.com/Podcastindex-org/podcast-namespace/blob/main/value/blip-0010.md?plain=1
+
 export const createSatoshiStreamStats = (
   podcastTitle: string,
   episodeTitle: string,
@@ -26,7 +29,8 @@ export const createSatoshiStreamStats = (
   episode_guid: string,
   recipientAmount: number,
   remote_feed_guid?: string,
-  remote_item_guid?: string
+  remote_item_guid?: string,
+  guid?: string, // podcast guid
 ) => {
   /* TLV records have a limit */
   const podcast = (podcastTitle || translate('Untitled Podcast')).substring(0, 60)
@@ -54,7 +58,8 @@ export const createSatoshiStreamStats = (
       name,
       sender_name: senderName,
       ...(remote_feed_guid ? { remote_feed_guid } : {}),
-      ...(remote_item_guid ? { remote_item_guid } : {})
+      ...(remote_item_guid ? { remote_item_guid } : {}),
+      guid
       // 7629169 "message" added elsewhere in app-logic
     },
     '7629175': podcastIndexId,

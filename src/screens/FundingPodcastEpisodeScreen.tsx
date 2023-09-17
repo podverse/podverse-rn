@@ -79,14 +79,16 @@ export class FundingPodcastEpisodeScreen extends React.Component<Props> {
         podcastFunding: podcast.funding || [],
         podcastShrunkImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
         podcastTitle: podcast.title || '',
-        podcastValue: podcast.value || []
+        podcastValue: podcast.value || [],
+        podcastGuid: podcast.podcastGuid || ''
       }
     } else if (podcast) {
       item = {
         podcastFunding: podcast.funding || [],
         podcastShrunkImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
         podcastTitle: podcast.title || '',
-        podcastValue: podcast.value || []
+        podcastValue: podcast.value || [],
+        podcastGuid: podcast.podcastGuid || ''
       }
     }
 
