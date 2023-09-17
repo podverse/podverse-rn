@@ -1,7 +1,7 @@
 import TrackPlayer, { AndroidAutoContentStyle, AndroidAutoBrowseTree } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
 import { Episode, NowPlayingItem, Podcast, convertNowPlayingItemToEpisode } from 'podverse-shared'
-import { NativeModules } from 'react-native'
+import { Alert, NativeModules } from 'react-native'
 
 import { translate } from '../i18n'
 import { readableDate } from '../utility'
@@ -141,6 +141,14 @@ export const onAppInitialized = () => {
   const { PVAndroidAutoModule } = NativeModules
   PVAndroidAutoModule.turnOffShowWhenLocked()
   handleAndroidAutoPodcastsUpdate()
+  // example dialog to prompt for android auto draw over apps permission.
+  PVAndroidAutoModule.getDrawOverAppsPermission().then((enabled: boolean) => {
+    if (enabled) return
+    Alert.alert('Permission Required', 'Please enable android auto draw over apps permission.', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'OK', onPress: () => PVAndroidAutoModule.askDrawOverAppsPermission() }
+    ])
+  })
 }
 
 export const registerAndroidAutoModule = (t: (val: string) => string = translate) => {
