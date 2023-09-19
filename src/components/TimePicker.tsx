@@ -68,7 +68,7 @@ export const TimePicker = (props: Props) => {
               handleUpdateSleepTimer(itemValue, currentMinute, currentSecond)
             }}
             selectedValue={currentHour}
-            style={styles.timeNumberColumn}>
+            style={[styles.timeNumberColumn, globalTheme.text]}>
             {hourItems}
           </Picker>
           <Text
@@ -88,7 +88,7 @@ export const TimePicker = (props: Props) => {
               handleUpdateSleepTimer(currentHour, itemValue, currentSecond)
             }}
             selectedValue={currentMinute}
-            style={styles.timeNumberColumn}>
+            style={[styles.timeNumberColumn, globalTheme.text]}>
             {minuteItems}
           </Picker>
           <Text
@@ -108,7 +108,7 @@ export const TimePicker = (props: Props) => {
               handleUpdateSleepTimer(currentHour, currentMinute, itemValue)
             }}
             selectedValue={currentSecond}
-            style={styles.timeNumberColumn}>
+            style={[styles.timeNumberColumn, globalTheme.text]}>
             {secondItems}
           </Picker>
           <Text
