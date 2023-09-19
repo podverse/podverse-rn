@@ -144,7 +144,7 @@ export const onAppInitialized = () => {
   // example dialog to prompt for android auto draw over apps permission.
   PVAndroidAutoModule.getDrawOverAppsPermission().then((enabled: boolean) => {
     if (enabled) return
-    Alert.alert('Permission Required', 'Please enable android auto draw over apps permission.', [
+    Alert.alert(translate('Android Auto Permission Title'), translate('Android Auto Permission Body'), [
       { text: 'Cancel', style: 'cancel' },
       { text: 'OK', onPress: () => PVAndroidAutoModule.askDrawOverAppsPermission() }
     ])
@@ -156,17 +156,17 @@ export const registerAndroidAutoModule = (t: (val: string) => string = translate
     '/': [
       {
         mediaId: TabKeys.PodcastTab,
-        title: t('AndroidAuto Podcast Title'),
+        title: t('Android Auto Podcast Title'),
         playable: '1'
       },
       {
         mediaId: TabKeys.QueueTab,
-        title: t('AndroidAuto Queue Title'),
+        title: t('Android Auto Queue Title'),
         playable: '1'
       },
       {
         mediaId: TabKeys.HistoryTab,
-        title: t('AndroidAuto History Title'),
+        title: t('Android Auto History Title'),
         playable: '1'
       }
     ]

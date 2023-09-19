@@ -52,8 +52,20 @@ export const audioUpdateTrackPlayerCapabilities = () => {
       Capability.SkipToNext,
       Capability.SkipToPrevious
     ],
-    compactCapabilities: [Capability.Pause, Capability.Play, Capability.SeekTo],
-    notificationCapabilities: [Capability.Pause, Capability.Play, Capability.SeekTo],
+    compactCapabilities: [
+      Capability.JumpBackward,
+      Capability.JumpForward,
+      Capability.Pause,
+      Capability.Play,
+      Capability.SeekTo
+    ],
+    notificationCapabilities: [
+      Capability.JumpBackward,
+      Capability.JumpForward,
+      Capability.Pause,
+      Capability.Play,
+      Capability.SeekTo
+    ],
     backwardJumpInterval: parseInt(jumpBackwardsTime, 10),
     forwardJumpInterval: parseInt(jumpForwardsTime, 10),
     progressUpdateEventInterval: 1,
@@ -65,22 +77,21 @@ export const audioUpdateTrackPlayerCapabilities = () => {
   // HACK: android < 13 doesnt show forward/backward buttons in adnroid auto?
   // proposed solution is to resolve buttons all through custom actions
   if (Platform.OS === 'android') {
-    RNTPOptions.customActions = {
-      customActionsList: ['customJumpForward', 'customJumpBackward', 'customSkipPrev', 'customSkipNext'],
-      customSkipPrev: require('../assets/icons/skip-prev.png'),
-      customSkipNext: require('../assets/icons/skip-next.png'),
-      customJumpForward: require('../assets/icons/forward-30.png'),
-      customJumpBackward: require('../assets/icons/replay-10.png')
+    if (Platform.Version > 32) {
+      RNTPOptions.customActions = {
+        customActionsList: ['customSkipPrev', 'customSkipNext'],
+        customSkipPrev: require('../resources/assets/icons/skip-prev.png'),
+        customSkipNext: require('../resources/assets/icons/skip-next.png')
+      }
+    } else {
+      RNTPOptions.customActions = {
+        customActionsList: ['customSkipPrev', 'customSkipNext', 'customJumpBackward', 'customJumpForward'],
+        customSkipPrev: require('../resources/assets/icons/skip-prev.png'),
+        customSkipNext: require('../resources/assets/icons/skip-next.png'),
+        customJumpForward: require('../resources/assets/icons/forward-30.png'),
+        customJumpBackward: require('../resources/assets/icons/replay-10.png')
+      }
     }
-  } else {
-    RNTPOptions.notificationCapabilities = RNTPOptions.notificationCapabilities?.concat([
-      Capability.JumpBackward,
-      Capability.JumpForward
-    ])
-    RNTPOptions.compactCapabilities = RNTPOptions.compactCapabilities?.concat([
-      Capability.JumpBackward,
-      Capability.JumpForward
-    ])
   }
   PVAudioPlayer.updateOptions(RNTPOptions)
 }
