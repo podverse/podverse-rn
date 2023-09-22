@@ -1,8 +1,11 @@
-import TrackPlayer, { AndroidAutoContentStyle, AndroidAutoBrowseTree } from 'react-native-track-player'
+import { AndroidAutoContentStyle, AndroidAutoBrowseTree } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
 import { Episode, NowPlayingItem, Podcast, convertNowPlayingItemToEpisode } from 'podverse-shared'
 import { Alert, NativeModules } from 'react-native'
 
+import { PVAudioPlayer } from 'src/services/playerAudio'
+import PVEventEmitter from 'src/services/eventEmitter'
+import { PV } from 'src/resources'
 import { translate } from '../i18n'
 import { readableDate } from '../utility'
 import { getHistoryItems } from '../../state/actions/userHistoryItem'
@@ -41,7 +44,7 @@ const updateAndroidAutoBrowseTree = (newContent: Partial<AndroidAutoBrowseTree>)
     ...browseTree,
     ...newContent
   }
-  TrackPlayer.setBrowseTree(browseTree)
+  PVAudioPlayer.setBrowseTree(browseTree)
 }
 
 export const handleAABrowseMediaId = async (mediaId: string) => {
@@ -172,7 +175,14 @@ export const registerAndroidAutoModule = (t: (val: string) => string = translate
     ]
   }
   updateAndroidAutoBrowseTree(defaultBrowseTree)
-  TrackPlayer.setBrowseTreeStyle(AndroidAutoContentStyle.CategoryGrid, AndroidAutoContentStyle.List)
+  PVAudioPlayer.setBrowseTreeStyle(AndroidAutoContentStyle.CategoryGrid, AndroidAutoContentStyle.List)
+  PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, handleAndroidAutoQueueUpdate)
+  PVEventEmitter.on(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY, onAppInitialized)
+}
+
+export const unregisterAndroidAutoModule = () => {
+  PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, handleAndroidAutoQueueUpdate)
+  PVEventEmitter.removeListener(PV.Events.APP_FINISHED_INITALIZING_FOR_CARPLAY, onAppInitialized)
 }
 
 /* Podcasts Tab */
