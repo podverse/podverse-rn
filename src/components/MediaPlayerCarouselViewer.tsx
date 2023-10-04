@@ -21,7 +21,7 @@ type State = {
 
 const testIDPrefix = 'media_player_carousel_viewer'
 
-export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State> {
+export class MediaPlayerCarouselViewer extends React.Component<Props, State> {
   constructor(props) {
     super(props)
     this.state = {

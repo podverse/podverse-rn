@@ -38,7 +38,7 @@ const getTestID = () => 'media_player_carousel_chapters'
 
 let lastPlayingChapter: any = null
 
-export class MediaPlayerCarouselChapters extends React.PureComponent<Props, State> {
+export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
   interval: ReturnType<typeof setInterval> | null = null
   listRef: any | null = null
   itemHeights: any[]

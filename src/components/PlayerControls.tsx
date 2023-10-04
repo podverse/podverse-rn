@@ -55,7 +55,7 @@ const debouncedPlayerJumpForward = debounce(loadChapterPlaybackInfo, 500, {
 
 const testIDPrefix = 'player_controls'
 
-export class PlayerControls extends React.PureComponent<Props, State> {
+export class PlayerControls extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
