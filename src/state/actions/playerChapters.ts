@@ -105,7 +105,9 @@ export const setChapterOnGlobalState = (newCurrentChapter: any, haptic?: boolean
       ReactNativeHapticFeedback.trigger('impactLight', PV.Haptic.options)
     }
     playerUpdateCurrentTrack(newCurrentChapter.title, newCurrentChapter.imageUrl)
+    console.log('f', Date.now())
     OmniAural.setCurrentChapter(newCurrentChapter)
+    console.log('g', Date.now())
   }
 }
 
