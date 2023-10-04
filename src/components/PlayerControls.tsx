@@ -1,8 +1,10 @@
 import debounce from 'lodash/debounce'
+import OmniAural from 'omniaural'
 import { checkIfVideoFileOrVideoLiveType } from 'podverse-shared'
 import { StyleSheet, View, Image, ImageSourcePropType } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
+import { CurrentChapter } from '../omniaural/currentChapter'
 import { PV } from '../resources'
 import {
   playerCheckIfStateIsBuffering,
@@ -36,6 +38,7 @@ type Props = {
 }
 
 type State = {
+  currentChapter: CurrentChapter
   progressValue: number
   showPlayerMoreActionSheet: boolean
 }
@@ -57,9 +60,13 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     super(props)
 
     this.state = {
+      // TODO: is this right?
+      currentChapter: OmniAural.state.currentChapter.value(),
       progressValue: 0,
       showPlayerMoreActionSheet: false
     }
+
+    OmniAural.register(this, ['currentChapter'])
   }
 
   _adjustSpeed = async () => {
@@ -120,9 +127,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { progressValue, showPlayerMoreActionSheet } = this.state
+    const { currentChapter, progressValue, showPlayerMoreActionSheet } = this.state
     const {
-      currentChapter,
       currentChapters,
       currentChaptersStartTimePositions,
       globalTheme,

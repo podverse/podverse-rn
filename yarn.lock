@@ -8111,6 +8111,11 @@ object.values@^1.1.1, object.values@^1.1.5:
     define-properties "^1.1.3"
     es-abstract "^1.19.1"
 
+omniaural@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/omniaural/-/omniaural-1.6.1.tgz#6279a0f29fa2efe19be1044a97c99ec358d22a5f"
+  integrity sha512-qPBArzeOpiPCVVzpdLOdZpS3L3JbcAcI8O5KAwLHRKQ3NKEeqwtts+JfG5LAqjY/2RZpfHdsVqwUwY6i4e7JKg==
+
 on-exit-leak-free@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/on-exit-leak-free/-/on-exit-leak-free-0.2.0.tgz#b39c9e3bf7690d890f4861558b0d7b90a442d209"

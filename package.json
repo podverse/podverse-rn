@@ -67,6 +67,7 @@
     "lodash.memoize": "4.1.2",
     "m3u8-parser": "^6.0.0",
     "moment": "^2.29.4",
+    "omniaural": "^1.6.1",
     "p-limit": "^4.0.0",
     "podverse-shared": "^4.13.15",
     "qs": "^6.11.0",

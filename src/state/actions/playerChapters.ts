@@ -1,3 +1,4 @@
+import OmniAural from 'omniaural'
 import { getMediaRefStartPosition, NowPlayingItem } from 'podverse-shared'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { getGlobal, setGlobal } from 'reactn'
@@ -13,11 +14,11 @@ export const clearChapterPlaybackInfo = async (nowPlayingItem?: NowPlayingItem) 
   }
 
   return new Promise((resolve) => {
+    OmniAural.setCurrentChapter(null)
     setGlobal(
       {
         currentChapters: [],
-        currentChaptersStartTimePositions: [],
-        currentChapter: null
+        currentChaptersStartTimePositions: []
       },
       () => {
         resolve(null)
@@ -98,15 +99,13 @@ const enrichChapterDataForPlayer = (chapters: any[]) => {
 }
 
 export const setChapterOnGlobalState = (newCurrentChapter: any, haptic?: boolean) => {
-  const globalState = getGlobal()
-  const { currentChapter } = globalState
-
+  const currentChapter = OmniAural.state.currentChapter.value()
   if (isNewChapter(currentChapter, newCurrentChapter)) {
     if (haptic) {
       ReactNativeHapticFeedback.trigger('impactLight', PV.Haptic.options)
     }
     playerUpdateCurrentTrack(newCurrentChapter.title, newCurrentChapter.imageUrl)
-    setGlobal({ currentChapter: newCurrentChapter })
+    OmniAural.setCurrentChapter(newCurrentChapter)
   }
 }
 
@@ -143,7 +142,8 @@ export const refreshChaptersWidth = () => {
 
 export const getChapterPrevious = () => {
   const globalState = getGlobal()
-  const { currentChapter, currentChapters } = globalState
+  const currentChapter = OmniAural.state.currentChapter.value()
+  const { currentChapters } = globalState
   if (currentChapter && currentChapters?.length && currentChapters.length > 1) {
     const currentIndex = currentChapters.findIndex((x: any) => x.id === currentChapter.id)
     const previousIndex = currentIndex - 1
@@ -154,7 +154,8 @@ export const getChapterPrevious = () => {
 
 export const getChapterNext = () => {
   const globalState = getGlobal()
-  const { currentChapter, currentChapters } = globalState
+  const currentChapter = OmniAural.state.currentChapter.value()
+  const { currentChapters } = globalState
   if (currentChapter && currentChapters?.length && currentChapters.length > 1) {
     const currentIndex = currentChapters.findIndex((x: any) => x.id === currentChapter.id)
     const nextIndex = currentIndex + 1

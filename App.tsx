@@ -41,6 +41,7 @@ import {
   showRootView,
   unregisterCarModule
 } from './src/lib/carplay/PVCarPlay'
+import './src/omniaural/init'
 
 LogBox.ignoreLogs(['EventEmitter.removeListener', "Require cycle"])
 

@@ -1,9 +1,11 @@
+import OmniAural from 'omniaural'
 import { checkIfVideoFileOrVideoLiveType, convertNowPlayingItemToEpisode } from 'podverse-shared'
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { navigateBackToRoot, navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { prefixClipLabel, readableClipTime } from '../lib/utility'
+import { CurrentChapter } from '../omniaural/currentChapter'
 import { PV } from '../resources'
 import { ActivityIndicator, FastImage, PressableWithOpacity, PVVideo, ScrollView, Text, TextTicker } from './'
 
@@ -13,12 +15,21 @@ type Props = {
   width: number
 }
 
+type State = {
+  currentChapter: CurrentChapter
+}
+
 const testIDPrefix = 'media_player_carousel_viewer'
 
-export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
+export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State> {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      // TODO: is this right?
+      currentChapter: OmniAural.state.currentChapter.value()
+    }
+
+    OmniAural.register(this, ['currentChapter'])
   }
 
   handlePodcastNavigation = () => {
@@ -52,7 +63,8 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
 
   render() {
     const { handlePressClipInfo, navigation, width } = this.props
-    const { currentChapter, player, screen, screenPlayer, screenReaderEnabled } = this.global
+    const { player, screen, screenPlayer, screenReaderEnabled } = this.global
+    const { currentChapter } = this.state
     const { screenWidth } = screen
     const { isLoading } = screenPlayer
 

@@ -1,9 +1,11 @@
+import OmniAural from 'omniaural'
 import { convertToNowPlayingItem } from 'podverse-shared'
 import { AppState, AppStateStatus, StyleSheet } from 'react-native'
 import React, { setGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor } from '../lib/utility'
+import { CurrentChapter } from '../omniaural/currentChapter'
 import { PV } from '../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
@@ -29,6 +31,7 @@ type Props = {
 type State = {
   activeChapterRowIndex: number | null
   autoScrollOn: boolean
+  currentChapter: CurrentChapter
 }
 
 const getTestID = () => 'media_player_carousel_chapters'
@@ -48,8 +51,12 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
 
     this.state = {
       activeChapterRowIndex: null,
-      autoScrollOn: false
+      autoScrollOn: false,
+      // TODO: is this right?
+      currentChapter: OmniAural.state.currentChapter.value()
     }
+
+    OmniAural.register(this, ['currentChapter'])
   }
 
   componentDidMount() {
@@ -126,7 +133,8 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     const playbackSpeed = await getPlaybackSpeed()
     const intervalTime = 1000 / playbackSpeed
     return setInterval(() => {
-      const { currentChapter, currentChapters } = this.global
+      const { currentChapter } = this.state
+      const { currentChapters } = this.global
       const itemHeightsReady = currentChapters.length === this.itemHeights.length
 
       if (currentChapter?.id && itemHeightsReady) {
@@ -183,7 +191,8 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
 
   _renderItem = ({ item, index }) => {
     const { navigation } = this.props
-    const { currentChapter, player } = this.global
+    const { currentChapter } = this.state
+    const { player } = this.global
     const { episode } = player
     const podcast = episode?.podcast || {}
     const testID = getTestID()

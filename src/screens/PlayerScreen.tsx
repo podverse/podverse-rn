@@ -1,3 +1,4 @@
+import OmniAural from 'omniaural'
 import {
   checkIfVideoFileOrVideoLiveType,
   convertNowPlayingItemToMediaRef,
@@ -26,6 +27,7 @@ import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { prefixClipLabel, safelyUnwrapNestedVariable } from '../lib/utility'
+import { CurrentChapter } from '../omniaural/currentChapter'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
@@ -41,14 +43,23 @@ type Props = {
   navigation?: any
 }
 
+type State = {
+  currentChapter: CurrentChapter
+}
+
 const testIDPrefix = 'player_screen'
 
 let eventListenerPlayerNewEpisodeLoaded: any
-export class PlayerScreen extends React.Component<Props> {
+export class PlayerScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    this.state = {}
+    this.state = {
+      // TODO: is this right?
+      currentChapter: OmniAural.state.currentChapter.value()
+    }
+
+    OmniAural.register(this, ['currentChapter'])
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -283,7 +294,8 @@ export class PlayerScreen extends React.Component<Props> {
 
   render() {
     const { navigation } = this.props
-    const { currentChapter, player, screenPlayer } = this.global
+    const { currentChapter } = this.state
+    const { player, screenPlayer } = this.global
     const { episode, nowPlayingItem } = player
     const { showShareActionSheet } = screenPlayer
     let { mediaRef } = player
