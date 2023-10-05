@@ -7,6 +7,7 @@ import React, { getGlobal, useGlobal } from 'reactn'
 import { useProgress } from 'react-native-track-player'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
+import { GlobalTheme } from '../resources/Interfaces'
 import { playerHandleSeekTo } from '../services/player'
 import {
   getChapterForTimeAndSetOnState,
@@ -22,7 +23,7 @@ type Props = {
   clipEndTime?: number | null
   clipStartTime?: number | null
   currentChaptersStartTimePositions?: number[]
-  globalTheme: any
+  globalTheme: GlobalTheme
   isLiveItem?: boolean
   isLoading?: boolean
   isMakeClipScreen?: boolean

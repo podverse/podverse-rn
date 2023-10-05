@@ -4,11 +4,12 @@ import { darkTheme } from '../../src/styles'
 import { translate } from '../lib/i18n'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
+import { GlobalTheme } from '../resources/Interfaces'
 import { NavItemIcon, NavItemWrapper } from './'
 
 type Props = {
   episode?: Episode
-  globalTheme: any
+  globalTheme: GlobalTheme
   navigation: any
   podcast?: Podcast
 }

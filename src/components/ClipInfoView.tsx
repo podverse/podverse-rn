@@ -3,6 +3,7 @@ import React, { Fragment } from 'reactn'
 import { translate } from '../lib/i18n'
 import { prefixClipLabel, readableClipTime, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
+import { GlobalTheme, PVStateSession } from '../resources/Interfaces'
 import { playerGetPosition, playerRestartNowPlayingItemClip } from '../services/player'
 import { button, core } from '../styles'
 import { ActivityIndicator, Divider, Icon, TableSectionSelectors, Text, TextLink } from './'
@@ -11,6 +12,7 @@ type Props = {
   createdAt: string
   episodeTitle?: string
   endTime?: number
+  globalTheme: GlobalTheme
   isLoading?: boolean
   isOfficialChapter?: boolean
   isOfficialSoundBite?: boolean
@@ -19,6 +21,7 @@ type Props = {
   ownerId?: string
   ownerIsPublic?: boolean
   ownerName?: string
+  session: PVStateSession
   startTime: number
   title?: string
 }
@@ -40,10 +43,9 @@ export class ClipInfoView extends React.PureComponent<Props> {
   }
 
   _handleEditPress = async () => {
-    const { isPublic, navigation } = this.props
+    const { globalTheme, isPublic, navigation, session } = this.props
     const initialProgressValue = await playerGetPosition()
-    const isLoggedIn = safelyUnwrapNestedVariable(() => this.global.session.isLoggedIn, false)
-    const globalTheme = safelyUnwrapNestedVariable(() => this.global.globalTheme, {})
+    const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
 
     navigation.navigate(PV.RouteNames.MakeClipScreen, {
       initialProgressValue,
@@ -64,9 +66,9 @@ export class ClipInfoView extends React.PureComponent<Props> {
       ownerIsPublic,
       ownerId,
       ownerName = translate('anonymous'),
+      session,
       startTime
     } = this.props
-    const { session } = this.global
     const userId = session?.userInfo?.id
 
     let { title } = this.props

@@ -4,15 +4,17 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { PVStatePlayer, PVStateScreenPlayer } from '../resources/Interfaces'
+import { GlobalTheme, PVStatePlayer, PVStateScreenPlayer, PVStateSession } from '../resources/Interfaces'
 import { TableSectionSelectors } from './TableSectionSelectors'
 import { ClipInfoView, HTMLScrollView, ScrollView, Text, TextLink, View } from './'
 
 type Props = {
+  globalTheme: GlobalTheme
   navigation?: any
   player: PVStatePlayer
   screenPlayer: PVStateScreenPlayer
   screenReaderEnabled: boolean
+  session: PVStateSession
   width: number
 }
 
@@ -36,7 +38,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
   }
 
   render() {
-    const { navigation, player, screenPlayer, screenReaderEnabled, width } = this.props
+    const { globalTheme, navigation, player, screenPlayer, screenReaderEnabled, session, width } = this.props
     const { showShortHtml } = this.state
     const { episode, nowPlayingItem } = player
     const { isLoading } = screenPlayer
@@ -57,6 +59,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
             createdAt={mediaRef.createdAt}
             endTime={mediaRef.endTime}
             episodeTitle={episode.title}
+            globalTheme={globalTheme}
             isLoading={isLoading}
             isOfficialChapter={mediaRef.isOfficialChapter}
             isOfficialSoundBite={mediaRef.isOfficialSoundBite}
@@ -65,6 +68,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
             {...(mediaRef.owner ? { ownerId: mediaRef.owner.id } : {})}
             {...(mediaRef.owner ? { ownerIsPublic: mediaRef.owner.isPublic } : {})}
             {...(mediaRef.owner ? { ownerName: mediaRef.owner.name } : {})}
+            session={session}
             startTime={mediaRef.startTime}
             {...(mediaRef.title ? { title: mediaRef.title } : {})}
           />

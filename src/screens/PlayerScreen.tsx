@@ -283,7 +283,7 @@ export class PlayerScreen extends React.Component<Props> {
 
   render() {
     const { navigation } = this.props
-    const { currentChapter, currentChapters, parsedTranscript, player, screen,
+    const { currentChapter, currentChapters, globalTheme, parsedTranscript, player, screen,
       screenPlayer, screenReaderEnabled, session } = this.global
     const { episode, nowPlayingItem } = player
     const { showShareActionSheet } = screenPlayer
@@ -315,6 +315,7 @@ export class PlayerScreen extends React.Component<Props> {
             <MediaPlayerCarousel
               currentChapter={currentChapter}
               currentChapters={currentChapters}
+              globalTheme={globalTheme}
               hasChapters={hasChapters}
               navigation={navigation}
               parsedTranscript={parsedTranscript}

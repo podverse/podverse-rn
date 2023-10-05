@@ -1,5 +1,6 @@
 import { Platform, StyleSheet } from 'react-native'
 import { PV } from './resources'
+import { GlobalTheme } from './resources/Interfaces'
 
 export const darkTheme = StyleSheet.create({
   actionSheetButton: {
@@ -965,7 +966,7 @@ export const iconStyles = {
   }
 }
 
-export const getMembershipTextStyle = (globalTheme: any, membershipStatus?: string) => {
+export const getMembershipTextStyle = (globalTheme: GlobalTheme, membershipStatus?: string) => {
   switch (membershipStatus) {
     case PV.MembershipStatus.FREE_TRIAL:
       return globalTheme.membershipTextPremium

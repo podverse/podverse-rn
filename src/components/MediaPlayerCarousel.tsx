@@ -5,7 +5,7 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { checkIfHasSupportedCommentTag, Episode, TranscriptRow } from 'podverse-shared'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { PVStateCurrentChapter, PVStateCurrentChapters, PVStatePlayer, PVStateScreen,
+import { GlobalTheme, PVStateCurrentChapter, PVStateCurrentChapters, PVStatePlayer, PVStateScreen,
   PVStateScreenPlayer, PVStateSession } from '../resources/Interfaces'
 import { playerCheckIfStateIsPlaying } from '../services/player'
 import { v4vGetPluralCurrencyUnitPerMinute } from '../services/v4v/v4v'
@@ -31,6 +31,7 @@ import {
 type Props = {
   currentChapter: PVStateCurrentChapter
   currentChapters: PVStateCurrentChapters
+  globalTheme: GlobalTheme
   hasChapters: boolean
   navigation: any
   parsedTranscript: TranscriptRow[] | null
@@ -68,6 +69,7 @@ type MediaPlayerCarouselComponentsState = {
   screenPlayer: PVStateScreenPlayer
   screenReaderEnabled: boolean
   screenWidth: number
+  session: PVStateSession
 }
 
 const testIDPrefix = 'media_player_carousel'
@@ -193,7 +195,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { currentChapter, currentChapters, navigation, parsedTranscript, player, screen,
+    const { currentChapter, currentChapters, globalTheme, navigation, parsedTranscript, player, screen,
       screenPlayer, screenReaderEnabled, session } = this.props
     const { accessibilityItemSelected, activeIndex, isReady, isReady2 } = this.state
     const { episode, nowPlayingItem, playbackState } = player
@@ -250,6 +252,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       accessibilityItemSelectedValue: accessibilityItemSelected?.value || null,
       currentChapter,
       currentChapters,
+      globalTheme,
       handlePressClipInfo: this._handlePressClipInfo,
       navigation,
       hasChapters,
@@ -264,6 +267,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       screenPlayer,
       screenReaderEnabled,
       screenWidth,
+      session
     })
 
     return (
@@ -413,9 +417,9 @@ const accessibilitySelectorItems = (
 
 // TODO: remove the need for this function or somehow improve it.
 const mediaPlayerCarouselComponents = (x: MediaPlayerCarouselComponentsState) => {
-  const { accessibilityItemSelectedValue, currentChapter, currentChapters, handlePressClipInfo, hasChapters,
-    hasChat, hasComments, hasTranscript, isReady, isReady2, navigation, parsedTranscript, player,
-    screen, screenPlayer, screenReaderEnabled, screenWidth } = x
+  const { accessibilityItemSelectedValue, currentChapter, currentChapters, globalTheme, handlePressClipInfo,
+    hasChapters, hasChat, hasComments, hasTranscript, isReady, isReady2, navigation, parsedTranscript, player,
+    screen, screenPlayer, screenReaderEnabled, screenWidth, session } = x
 
   return (
     <>
@@ -437,10 +441,12 @@ const mediaPlayerCarouselComponents = (x: MediaPlayerCarouselComponentsState) =>
             <>
               {accessibilityItemSelectedValue === _episodeSummaryKey && (
                 <MediaPlayerCarouselShowNotes
+                  globalTheme={globalTheme}
                   player={player}
                   screenPlayer={screenPlayer}
                   screenReaderEnabled={screenReaderEnabled}
                   navigation={navigation}
+                  session={session}
                   width={screenWidth} />
               )}
               {accessibilityItemSelectedValue === _chaptersKey && hasChapters && (
@@ -493,10 +499,12 @@ const mediaPlayerCarouselComponents = (x: MediaPlayerCarouselComponentsState) =>
           {isReady2 && (
             <>
               <MediaPlayerCarouselShowNotes
+                globalTheme={globalTheme}
                 navigation={navigation}
                 player={player}
                 screenPlayer={screenPlayer}
                 screenReaderEnabled={screenReaderEnabled}
+                session={session}
                 width={screenWidth} />
               {hasChapters && (
                 <MediaPlayerCarouselChapters
