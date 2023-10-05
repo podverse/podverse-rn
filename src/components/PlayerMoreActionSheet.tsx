@@ -9,6 +9,7 @@ import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
+import { GlobalTheme } from '../resources/Interfaces'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { playerPlayNextFromQueue } from '../services/player'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
@@ -17,6 +18,7 @@ import { actionSheetStyles, sliderStyles } from '../styles'
 import { ActionSheet, Icon, Text } from './'
 
 type Props = {
+  globalTheme: GlobalTheme
   handleDismiss: any
   initialVolume?: number
   navigation: any
@@ -108,7 +110,8 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
   }
 
   _headerActionSheetButtons = () => {
-    const { globalTheme, player, session } = this.global
+    const { globalTheme } = this.props
+    const { player, session } = this.global
 
     // nowPlayingItem will be undefined when loading from a deep link
     let { nowPlayingItem } = player
@@ -187,9 +190,8 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
   }
 
   render() {
-    const { handleDismiss, showModal, testID } = this.props
+    const { globalTheme, handleDismiss, showModal, testID } = this.props
     const { volume } = this.state
-    const { globalTheme } = this.global
     const items = this._headerActionSheetButtons()
 
     return (

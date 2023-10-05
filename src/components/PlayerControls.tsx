@@ -317,9 +317,11 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </View>
         </View>
         <PlayerMoreActionSheet
+          globalTheme={globalTheme}
           handleDismiss={this._hidePlayerMoreActionSheet}
           navigation={navigation}
           showModal={showPlayerMoreActionSheet}
+          testID={`${testIDPrefix}_player_controls_more_action_menu`}
         />
       </View>
     )
