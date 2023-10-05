@@ -3,8 +3,13 @@ import { AutoQueueSettingsPosition } from '../services/autoQueue'
 import { V4VProviderConnectedState, V4VSenderInfo, V4VSettings } from '../state/actions/v4v/v4v'
 import { AppModes } from './AppMode'
 
+// TODO: more refined props could be passed in for
+// InitialState['player']
+// InitialState['screenPlayer']
+// search for and replace with more specific props in components
+
 export type RenderProfileScreenTableCellParams = {
-  autoDownloadSettings: InitialState['downloadsActive']
+  autoDownloadSettings: InitialState['autoDownloadSettings']
   downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
   downloadedPodcastEpisodeCounts: InitialState['downloadedPodcastEpisodeCounts']
   downloadsActive: InitialState['downloadsActive']
@@ -16,7 +21,7 @@ export type RenderProfileScreenTableCellParams = {
 }
 
 export type RenderPodcastTableCellParams = {
-  autoDownloadSettings: InitialState['downloadsActive']
+  autoDownloadSettings: InitialState['autoDownloadSettings']
   downloadedPodcastEpisodeCounts: InitialState['downloadedPodcastEpisodeCounts']
   fontScaleMode: InitialState['fontScaleMode']
   hideNewEpisodesBadges: InitialState['hideNewEpisodesBadges']
