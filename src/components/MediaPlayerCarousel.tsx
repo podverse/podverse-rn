@@ -208,6 +208,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { currentChapter, currentChapters, downloadsActive, downloadedEpisodeIds,
       fontScaleMode, globalTheme, isLoggedIn, navigation, parsedTranscript, player, screen,
       screenPlayer, screenReaderEnabled, streamingValueOn, userId, valueTimeSplitIsActive } = this.props
+
+    console.log('TEST: MediaPlayerCarousel has re-rendered due to player object change to either the player.playbackState (play/pause) or player.playbackRate (speed button) keys.')
+    
     const { accessibilityItemSelected, activeIndex, isReady, isReady2 } = this.state
     const { episode, nowPlayingItem, playbackState } = player
     const { screenWidth } = screen
@@ -440,16 +443,7 @@ const mediaPlayerCarouselComponents = (x: MediaPlayerCarouselComponentsState) =>
       {screenReaderEnabled ? (
         <>
           {isReady && (accessibilityItemSelectedValue === _nowPlayingInfoKey || !accessibilityItemSelectedValue) && (
-            <MediaPlayerCarouselViewer
-              currentChapter={currentChapter}
-              handlePressClipInfo={handlePressClipInfo}
-              navigation={navigation}
-              player={player}
-              screen={screen}
-              screenPlayer={screenPlayer}
-              screenReaderEnabled={screenReaderEnabled}
-              width={screenWidth}
-            />
+            <MediaPlayerCarouselViewer playbackState={player.playbackState} />
           )}
           {isReady2 && (
             <>
@@ -503,16 +497,7 @@ const mediaPlayerCarouselComponents = (x: MediaPlayerCarouselComponentsState) =>
       ) : (
         <>
           {isReady && (
-            <MediaPlayerCarouselViewer
-              currentChapter={currentChapter}
-              handlePressClipInfo={handlePressClipInfo}
-              navigation={navigation}
-              player={player}
-              screen={screen}
-              screenPlayer={screenPlayer}
-              screenReaderEnabled={screenReaderEnabled}
-              width={screenWidth}
-            />
+            <MediaPlayerCarouselViewer playbackState={player.playbackState} />
           )}
           {isReady2 && (
             <>
