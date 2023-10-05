@@ -5,7 +5,7 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { checkIfHasSupportedCommentTag, Episode, TranscriptRow } from 'podverse-shared'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { GlobalTheme, PVStateCurrentChapter, PVStateCurrentChapters, PVStatePlayer, PVStateScreen,
+import { GlobalTheme, InitialState, PVStateCurrentChapter, PVStateCurrentChapters, PVStatePlayer, PVStateScreen,
   PVStateScreenPlayer, PVStateSession } from '../resources/Interfaces'
 import { playerCheckIfStateIsPlaying } from '../services/player'
 import { v4vGetPluralCurrencyUnitPerMinute } from '../services/v4v/v4v'
@@ -31,6 +31,9 @@ import {
 type Props = {
   currentChapter: PVStateCurrentChapter
   currentChapters: PVStateCurrentChapters
+  downloadsActive: InitialState['downloadsActive']
+  downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
+  fontScaleMode: InitialState['fontScaleMode']
   globalTheme: GlobalTheme
   hasChapters: boolean
   navigation: any
@@ -55,6 +58,10 @@ type MediaPlayerCarouselComponentsState = {
   accessibilityItemSelectedValue?: string | null
   currentChapter: PVStateCurrentChapter
   currentChapters: PVStateCurrentChapters
+  downloadsActive: InitialState['downloadsActive']
+  downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
+  fontScaleMode: InitialState['fontScaleMode']
+  globalTheme: GlobalTheme
   handlePressClipInfo: any
   hasChapters: boolean
   hasChat: boolean
@@ -195,7 +202,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { currentChapter, currentChapters, globalTheme, navigation, parsedTranscript, player, screen,
+    const { currentChapter, currentChapters, downloadsActive, downloadedEpisodeIds,
+      fontScaleMode, globalTheme, navigation, parsedTranscript, player, screen,
       screenPlayer, screenReaderEnabled, session } = this.props
     const { accessibilityItemSelected, activeIndex, isReady, isReady2 } = this.state
     const { episode, nowPlayingItem, playbackState } = player
@@ -252,6 +260,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       accessibilityItemSelectedValue: accessibilityItemSelected?.value || null,
       currentChapter,
       currentChapters,
+      downloadsActive,
+      downloadedEpisodeIds,
+      fontScaleMode,
       globalTheme,
       handlePressClipInfo: this._handlePressClipInfo,
       navigation,
@@ -417,7 +428,8 @@ const accessibilitySelectorItems = (
 
 // TODO: remove the need for this function or somehow improve it.
 const mediaPlayerCarouselComponents = (x: MediaPlayerCarouselComponentsState) => {
-  const { accessibilityItemSelectedValue, currentChapter, currentChapters, globalTheme, handlePressClipInfo,
+  const { accessibilityItemSelectedValue, currentChapter, currentChapters, downloadsActive,
+    downloadedEpisodeIds, fontScaleMode, globalTheme, handlePressClipInfo,
     hasChapters, hasChat, hasComments, hasTranscript, isReady, isReady2, navigation, parsedTranscript, player,
     screen, screenPlayer, screenReaderEnabled, screenWidth, session } = x
 
@@ -451,8 +463,11 @@ const mediaPlayerCarouselComponents = (x: MediaPlayerCarouselComponentsState) =>
               )}
               {accessibilityItemSelectedValue === _chaptersKey && hasChapters && (
                 <MediaPlayerCarouselChapters
+                  downloadsActive={downloadsActive}
+                  downloadedEpisodeIds={downloadedEpisodeIds}
                   currentChapter={currentChapter}
                   currentChapters={currentChapters}
+                  fontScaleMode={fontScaleMode}
                   navigation={navigation}
                   player={player}
                   screenPlayer={screenPlayer}
@@ -510,6 +525,9 @@ const mediaPlayerCarouselComponents = (x: MediaPlayerCarouselComponentsState) =>
                 <MediaPlayerCarouselChapters
                   currentChapter={currentChapter}
                   currentChapters={currentChapters}
+                  downloadsActive={downloadsActive}
+                  downloadedEpisodeIds={downloadedEpisodeIds}
+                  fontScaleMode={fontScaleMode}
                   navigation={navigation}
                   player={player}
                   screenPlayer={screenPlayer}

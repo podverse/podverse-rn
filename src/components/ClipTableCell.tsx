@@ -3,12 +3,16 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { prefixClipLabel, readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
+import { InitialState } from '../resources/Interfaces'
 import { images } from '../styles'
 import { IndicatorDownload } from './IndicatorDownload'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
 import { FastImage, PressableWithOpacity, Text, View } from './'
 
 type Props = {
+  downloadsActive: InitialState['downloadsActive']
+  downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
+  fontScaleMode: InitialState['fontScaleMode']
   handleMorePress: any
   hideImage?: boolean
   isNowPlayingItem?: boolean
@@ -18,6 +22,7 @@ type Props = {
   itemType?: 'chapter' | 'clip'
   navigation: any
   onLayout?: any
+  screenReaderEnabled: InitialState['screenReaderEnabled']
   showEpisodeInfo?: boolean
   showPodcastInfo?: boolean
   testID: string
@@ -31,6 +36,9 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
   render() {
     const {
+      downloadsActive,
+      downloadedEpisodeIds,
+      fontScaleMode,
       handleMorePress,
       hideImage,
       isChapter,
@@ -39,6 +47,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       itemType,
       loadChapterOnPlay,
       onLayout,
+      screenReaderEnabled,
       showEpisodeInfo,
       showPodcastInfo,
       testID,
@@ -56,7 +65,6 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const episodeTitle = item?.episode?.title?.trim() || translate('Untitled Episode')
     const podcastTitle = item?.episode?.podcast?.title?.trim() || translate('Untitled Podcast')
     const clipTime = readableClipTime(startTime, endTime)
-    const { downloadsActive, downloadedEpisodeIds, fontScaleMode, screenReaderEnabled } = this.global
     const isDownloaded = downloadedEpisodeIds[episodeId]
     const episodeDownloading = item?.episode?.id && !!downloadsActive[item.episode.id]
     const chapterImageStyle = item?.linkUrl ? [styles.chapterImage, styles.chapterImageBorder] : styles.chapterImage

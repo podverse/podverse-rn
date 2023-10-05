@@ -5,7 +5,7 @@ import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
-import { PVStateCurrentChapter, PVStateCurrentChapters,
+import { InitialState, PVStateCurrentChapter, PVStateCurrentChapters,
   PVStatePlayer, PVStateScreenPlayer } from '../resources/Interfaces'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
@@ -25,6 +25,9 @@ import {
 type Props = {
   currentChapter: PVStateCurrentChapter
   currentChapters: PVStateCurrentChapters
+  downloadsActive: InitialState['downloadsActive']
+  downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
+  fontScaleMode: InitialState['fontScaleMode']
   isChapters?: boolean
   navigation?: any
   player: PVStatePlayer
@@ -189,7 +192,8 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     })
 
   _renderItem = ({ item, index }) => {
-    const { currentChapter, navigation, player } = this.props
+    const { currentChapter, downloadsActive, downloadedEpisodeIds, fontScaleMode,
+      navigation, player, screenReaderEnabled } = this.props
     const { episode } = player
     const podcast = episode?.podcast || {}
     const testID = getTestID()
@@ -202,6 +206,9 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
 
     return item?.episode?.id ? (
       <ClipTableCell
+        downloadsActive={downloadsActive}
+        downloadedEpisodeIds={downloadedEpisodeIds}
+        fontScaleMode={fontScaleMode}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
         isChapter
         isNowPlayingItem={currentChapter && currentChapter.id === item.id}
@@ -210,6 +217,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
         loadChapterOnPlay
         navigation={navigation}
         onLayout={(item: any) => (this.itemHeights[index] = item.nativeEvent.layout.height)}
+        screenReaderEnabled={screenReaderEnabled}
         showPodcastInfo={false}
         testID={`${testID}_item_${index}`}
         transparent
