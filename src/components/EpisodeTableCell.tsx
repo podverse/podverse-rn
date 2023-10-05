@@ -73,9 +73,6 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       finalPubDate = liveItem.start
     }
 
-    const {
-
-    } = this.global
     const { userInfo } = session
     const { historyItemsIndex } = userInfo
 
