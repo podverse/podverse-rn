@@ -303,7 +303,8 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
               downloadedEpisodeIds,
               fontScaleMode,
               player,
-              screenReaderEnabled
+              screenReaderEnabled,
+              showLightningIcons
             })}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             transparent

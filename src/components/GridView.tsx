@@ -3,6 +3,7 @@ import React from 'reactn'
 import { StyleSheet, FlatList } from 'react-native'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
+import { InitialState } from '../resources/Interfaces'
 import { FastImage, PressableWithOpacity } from './'
 
 type Props = {
@@ -12,11 +13,12 @@ type Props = {
   ListHeaderComponent?: any
   onItemSelected: any
   onLongPressItem?: (arg0: Podcast) => void
+  showLightningIcons: InitialState['session']['v4v']['showLightningIcons']
   stickyHeader?: boolean
 }
 export class GridView extends React.PureComponent<Props> {
   render() {
-    const { stickyHeader, ListHeaderComponent } = this.props
+    const { stickyHeader, ListHeaderComponent, showLightningIcons } = this.props
     const { deviceType, newEpisodesCount, screen } = this.global
     const { orientation, screenWidth } = screen
     const shouldShowResults = this.props.data && this.props.data.length > 0
@@ -80,6 +82,7 @@ export class GridView extends React.PureComponent<Props> {
             newContentCount={newContentCount}
             placeholderLabel={item?.title || ''}
             resizeMode='cover'
+            showLightningIcons={showLightningIcons}
             showLiveIndicator={item?.latestLiveItemStatus === 'live'}
             source={item?.shrunkImageUrl || item?.imageUrl || ''}
             styles={imageThumbnailStyles}

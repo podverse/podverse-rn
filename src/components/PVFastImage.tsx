@@ -5,6 +5,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
 import { PV } from '../resources'
+import { InitialState } from '../resources/Interfaces'
 import { Icon, LightningIcon, LiveStatusBadge, NewContentBadge, Text } from '.'
 const PlaceholderImage = PV.Images.PLACEHOLDER.default
 
@@ -20,6 +21,7 @@ type Props = {
   newContentCount?: number
   placeholderLabel?: string
   resizeMode?: any
+  showLightningIcons?: InitialState['session']['v4v']['showLightningIcons']
   showLiveIndicator?: boolean
   source?: string
   styles?: any
@@ -109,14 +111,19 @@ export class PVFastImage extends React.PureComponent<Props, State> {
       newContentCount,
       placeholderLabel,
       resizeMode = 'contain',
+      showLightningIcons,
       showLiveIndicator,
       source,
       styles,
       valueTags
     } = this.props
     const { hasError, localImageSource } = this.state
-    const { hideNewEpisodesBadges, globalTheme, session, userAgent } = this.global
-    const showLightningIcons = session?.v4v?.showLightningIcons
+
+    // NOTE: It would be very tedious to inherit these properites,
+    // so this is an exception to our "no this.global in component" pattern
+    const { hideNewEpisodesBadges, globalTheme, userAgent } = this.global
+
+    // const showLightningIcons = session?.v4v?.showLightningIcons
     let imageSource = source
     let isValid = false
     if (localImageSource.exists) {

@@ -19,12 +19,13 @@ import { navigateToEpisodeScreenWithItem } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
+import { InitialState, RenderClipTableCellParams,
+  RenderEpisodeTableCellParams } from '../resources/Interfaces'
 import { trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { core } from '../styles'
 import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
-import { RenderClipTableCellParams, RenderEpisodeTableCellParams } from 'src/resources/Interfaces'
 
 type Props = {
   navigation?: any
@@ -141,7 +142,8 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
   _renderItem = ({ item, index }, { downloadedEpisodeIds,
     downloadsActive,
     fontScaleMode,
-    screenReaderEnabled, session }: RenderEpisodeTableCellParams | RenderClipTableCellParams) => {
+    historyItemsIndex,
+    screenReaderEnabled }: RenderEpisodeTableCellParams | RenderClipTableCellParams) => {
     const { navigation } = this.props
     if (item.startTime) {
       return item.episode && item.episode.podcast ? (
@@ -174,11 +176,11 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
             navigateToEpisodeScreenWithItem(navigation, convertToNowPlayingItem(item, null, null, userPlaybackPosition))
           }
           hideDivider
+          historyItemsIndex={historyItemsIndex as InitialState['session']['userInfo']['historyItemsIndex']}
           item={item}
           mediaFileDuration={mediaFileDuration}
           navigation={navigation}
           screenReaderEnabled={screenReaderEnabled}
-          session={session}
           showPodcastInfo
           testID={`${testIDPrefix}_episode_item_${index}`}
           userPlaybackPosition={userPlaybackPosition}
@@ -251,6 +253,7 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
       screenReaderEnabled,
       session
     } = this.global
+    const historyItemsIndex = safelyUnwrapNestedVariable(() => session?.userInfo?.historyItemsIndex, [])
     const playlist = screenPlaylist.playlist ? screenPlaylist.playlist : navigation.getParam('playlist')
     const flatListData = screenPlaylist.flatListData || []
     const flatListDataTotalCount = screenPlaylist.flatListDataTotalCount || 0
@@ -290,8 +293,8 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
               downloadedEpisodeIds,
               downloadsActive,
               fontScaleMode,
-              screenReaderEnabled,
-              session
+              historyItemsIndex,
+              screenReaderEnabled
             })}
           />
         )}

@@ -5,6 +5,7 @@ import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
+import { InitialState } from '../resources/Interfaces'
 import { ActivityIndicator, MessageWithAction, View, GridView, Divider } from './'
 
 type Props = {
@@ -51,6 +52,8 @@ type Props = {
   renderItem: any
   rightOpenValue?: number
   sections?: any
+  // showLightningIcons is only needed when using GridView
+  showLightningIcons?: InitialState['session']['v4v']['showLightningIcons']
   showNoInternetConnectionMessage?: boolean
   stickyHeader?: boolean
   stickySectionHeadersEnabled?: boolean

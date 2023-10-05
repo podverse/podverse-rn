@@ -3,6 +3,7 @@ import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
 import { HTMLScrollView, NavOfficialLinkIcon, PodcastTableHeader, View } from '../components'
 import { translate } from '../lib/i18n'
+import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { core } from '../styles'
@@ -64,6 +65,8 @@ export class PodcastInfoScreen extends React.Component<Props, State> {
   render() {
     const { podcast } = this.state
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
+    const { session } = this.global
+    const showLightningIcons = safelyUnwrapNestedVariable(() => session?.v4v?.showLightningIcons, false)
 
     return (
       <View style={styles.content} testID={`${testIDPrefix}_view`}>
@@ -72,6 +75,7 @@ export class PodcastInfoScreen extends React.Component<Props, State> {
           podcastImageUrl={podcast && (podcast.shrunkImageUrl || podcast.imageUrl)}
           podcastTitle={podcast && podcast.title}
           podcastValue={podcast?.value}
+          showLightningIcons={showLightningIcons}
           testID={testIDPrefix}
         />
         <HTMLScrollView

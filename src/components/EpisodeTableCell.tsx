@@ -1,10 +1,10 @@
-import { getTimeLabelText } from 'podverse-shared'
+import { ValueTag, getTimeLabelText } from 'podverse-shared'
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { generateEpisodeAccessibilityText, readableDate, removeAndDecodeHTMLInString } from '../lib/utility'
 import { PV } from '../resources'
-import { InitialState, PVStateSession } from '../resources/Interfaces'
+import { InitialState } from '../resources/Interfaces'
 import { playerCheckIfDownloadableFile } from '../services/player'
 import { images } from '../styles'
 import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
@@ -22,18 +22,20 @@ type Props = {
   hideControls?: boolean
   hideDivider?: boolean
   hideImage?: boolean
+  historyItemsIndex: InitialState['session']['userInfo']['historyItemsIndex']
   item?: any
   mediaFileDuration?: number
   navigation: any
   newEpisodesCount?: InitialState['newEpisodesCount']
   screenReaderEnabled: InitialState['screenReaderEnabled']
-  session: PVStateSession
+  selected?: boolean
   shouldHideCompleted?: boolean
+  showLightningIcons?: InitialState['session']['v4v']['showLightningIcons']
   showPodcastInfo?: boolean
   testID: string
   transparent?: boolean
   userPlaybackPosition?: number
-  selected?: boolean
+  valueTags: ValueTag[]
 }
 
 export class EpisodeTableCell extends React.PureComponent<Props> {
@@ -49,15 +51,17 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       handleNavigationPress,
       hideControls,
       hideImage,
+      historyItemsIndex,
       item,
       mediaFileDuration,
       screenReaderEnabled,
-      session,
       shouldHideCompleted,
+      showLightningIcons,
       showPodcastInfo,
       testID,
       userPlaybackPosition,
-      selected
+      selected,
+      valueTags
     } = this.props
 
     const { duration, id, liveItem, mediaUrl, pubDate = '', podcast = {} } = item
@@ -72,9 +76,6 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     if (liveItem?.start) {
       finalPubDate = liveItem.start
     }
-
-    const { userInfo } = session
-    const { historyItemsIndex } = userInfo
 
     const isDownloading = downloadsActive[id]
     const isDownloaded = item.addByRSSPodcastFeedUrl ? downloadedEpisodeIds[mediaUrl] : downloadedEpisodeIds[id]
@@ -114,9 +115,10 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           <FastImage
             isAddByRSSPodcast={!!podcast?.addByRSSPodcastFeedUrl}
             isSmall
+            showLightningIcons={showLightningIcons}
             source={imageUrl}
             styles={styles.image}
-            valueTags={podcast?.value}
+            valueTags={valueTags}
           />
         )}
         <RNView accessible={false} style={styles.textWrapper}>

@@ -19,9 +19,10 @@ import { downloadEpisode } from '../lib/downloader'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { getUniqueArrayByKey, safeKeyExtractor, setCategoryQueryProperty } from '../lib/utility'
+import { getUniqueArrayByKey, safeKeyExtractor, safelyUnwrapNestedVariable,
+  setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
-import { InitialState, RenderEpisodeTableCellParams } from '../resources/Interfaces'
+import { RenderEpisodeTableCellParams } from '../resources/Interfaces'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisodes } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
@@ -402,8 +403,8 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   _renderEpisodeItem = ({ item, index },
-    { downloadsActive, downloadedEpisodeIds, fontScaleMode, hideCompleted,
-      newEpisodesCount, screenReaderEnabled, session }: RenderEpisodeTableCellParams) => {
+    { downloadsActive, downloadedEpisodeIds, fontScaleMode, hideCompleted, historyItemsIndex,
+      newEpisodesCount, screenReaderEnabled, showLightningIcons }: RenderEpisodeTableCellParams) => {
     const { navigation } = this.props
     const { completed, mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
     const shouldHideCompleted = hideCompleted && completed
@@ -426,15 +427,17 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
             includeGoToPodcast: true
           })
         }}
+        historyItemsIndex={historyItemsIndex}
         mediaFileDuration={mediaFileDuration}
         navigation={navigation}
         newEpisodesCount={newEpisodesCount}
         screenReaderEnabled={screenReaderEnabled}
-        session={session}
         shouldHideCompleted={shouldHideCompleted}
+        showLightningIcons={showLightningIcons}
         showPodcastInfo
         testID={`${testIDPrefix}_episode_item_${index}`}
         userPlaybackPosition={userPlaybackPosition}
+        valueTags={item?.value || []}
       />
     )
   }
@@ -550,7 +553,9 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       screenReaderEnabled,
       session
     } = this.global
-    const { subscribedPodcastIds } = session?.userInfo
+    const historyItemsIndex = safelyUnwrapNestedVariable(() => session?.userInfo?.historyItemsIndex, [])
+    const showLightningIcons = safelyUnwrapNestedVariable(() => session?.v4v?.showLightningIcons, [])
+    const subscribedPodcastIds = safelyUnwrapNestedVariable(() => session?.userInfo?.subscribedPodcastIds, [])
 
     const noSubscribedPodcasts =
       queryFrom === PV.Filters._subscribedKey &&
@@ -605,9 +610,10 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
               downloadedEpisodeIds,
               fontScaleMode,
               hideCompleted,
+              historyItemsIndex,
               newEpisodesCount,
               screenReaderEnabled,
-              session
+              showLightningIcons
             })}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             stickyHeader

@@ -19,6 +19,7 @@ import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor, safelyUnwrapNestedVariable, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
+import { RenderClipTableCellParams } from '../resources/Interfaces'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import PVEventEmitter from '../services/eventEmitter'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
@@ -26,7 +27,6 @@ import { trackPageView } from '../services/tracking'
 import { getLoggedInUserMediaRefs } from '../services/user'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { core } from '../styles'
-import { RenderClipTableCellParams } from 'src/resources/Interfaces'
 
 const _fileName = 'src/screens/ClipsScreen.tsx'
 
@@ -280,7 +280,8 @@ export class ClipsScreen extends React.Component<Props, State> {
     downloadedEpisodeIds,
     downloadsActive,
     fontScaleMode,
-    screenReaderEnabled
+    screenReaderEnabled,
+    showLightningIcons
   }: RenderClipTableCellParams) => {
     const { navigation } = this.props
     return item?.episode?.id ? (
@@ -293,6 +294,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         navigation={navigation}
         screenReaderEnabled={screenReaderEnabled}
         showEpisodeInfo
+        showLightningIcons={showLightningIcons}
         showPodcastInfo
         testID={`${testIDPrefix}_clip_item_${index}`}
       />
@@ -442,6 +444,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       fontScaleMode,
       screenReaderEnabled, session } = this.global
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => session.userInfo.subscribedPodcastIds, '')
+    const showLightningIcons = safelyUnwrapNestedVariable(() => session.v4v.showLightningIcons, false)
 
     const noSubscribedPodcasts =
       queryFrom === PV.Filters._subscribedKey &&
@@ -490,7 +493,8 @@ export class ClipsScreen extends React.Component<Props, State> {
               downloadedEpisodeIds,
               downloadsActive,
               fontScaleMode,
-              screenReaderEnabled
+              screenReaderEnabled,
+              showLightningIcons
             })}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             stickyHeader

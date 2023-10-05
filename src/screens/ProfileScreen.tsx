@@ -37,6 +37,7 @@ import { getAuthUserInfo } from '../state/actions/auth'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { getPublicUser, toggleSubscribeToUser } from '../state/actions/user'
 import { core } from '../styles'
+import { RenderClipTableCellParams, RenderProfileScreenTableCellParams } from 'src/resources/Interfaces'
 
 const _fileName = 'src/screens/ProfileScreen.tsx'
 
@@ -409,7 +410,17 @@ export class ProfileScreen extends React.Component<Props, State> {
     await playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
-  _renderItem = ({ item, index }) => {
+  _renderItem = ({ item, index }, {
+    autoDownloadSettings,
+    downloadsActive,
+    downloadedEpisodeIds, 
+    downloadedPodcastEpisodeCounts,
+    fontScaleMode,
+    hideNewEpisodesBadges,
+    newEpisodesCount,
+    screenReaderEnabled,
+    showLightningIcons
+  }: RenderProfileScreenTableCellParams) => {
     const { navigation } = this.props
     const { viewType } = this.state
 
@@ -417,21 +428,32 @@ export class ProfileScreen extends React.Component<Props, State> {
       return (
         <PodcastTableCell
           addByRSSPodcastFeedUrl={item?.addByRSSPodcastFeedUrl}
+          autoDownloadSettings={autoDownloadSettings}
+          downloadedPodcastEpisodeCounts={downloadedPodcastEpisodeCounts}
+          fontScaleMode={fontScaleMode}
           hasZebraStripe={isOdd(index)}
+          hideNewEpisodesBadges={hideNewEpisodesBadges}
           id={item.id}
           lastEpisodePubDate={item.lastEpisodePubDate}
+          newEpisodesCount={newEpisodesCount}
           onPress={() => this._handlePodcastPress(item)}
           podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
+          showLightningIcons={showLightningIcons}
           {...(item.title ? { podcastTitle: item.title } : {})}
           testID={`${testIDPrefix}_podcast_item_${index}`}
+          valueTags={item.valueTags || []}
         />
       )
     } else if (viewType === PV.Filters._clipsKey) {
       const episode = item?.episode
       return episode?.id && episode?.podcast ? (
         <ClipTableCell
+          downloadedEpisodeIds={downloadedEpisodeIds}
+          downloadsActive={downloadsActive}
+          fontScaleMode={fontScaleMode}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           navigation={navigation}
+          screenReaderEnabled={screenReaderEnabled}
           showEpisodeInfo
           showPodcastInfo
           testID={`${testIDPrefix}_clip_item_${index}`}
@@ -474,10 +496,13 @@ export class ProfileScreen extends React.Component<Props, State> {
       viewType
     } = this.state
 
-    const { profile, session } = this.global
+    const { autoDownloadSettings, downloadedPodcastEpisodeCounts, downloadsActive,
+      downloadedEpisodeIds, fontScaleMode, hideNewEpisodesBadges, newEpisodesCount,
+      profile, screenReaderEnabled, session } = this.global
     const { user } = profile
     const { isLoggedIn, userInfo } = session
     const { id } = userInfo
+    const showLightningIcons = safelyUnwrapNestedVariable(() => this.global.session.v4v.showLightningIcons, false)
     const { navigation } = this.props
     const isLoggedInUserProfile = userId && id && userId === id
 
@@ -540,7 +565,17 @@ export class ProfileScreen extends React.Component<Props, State> {
                 keyExtractor={(item: any) => item.id}
                 noResultsMessage={noResultsMessage}
                 onEndReached={this._onEndReached}
-                renderItem={this._renderItem}
+                renderItem={(x: any) => this._renderItem(x, {
+                  autoDownloadSettings,
+                  downloadedEpisodeIds,
+                  downloadedPodcastEpisodeCounts,
+                  downloadsActive,
+                  fontScaleMode,
+                  hideNewEpisodesBadges,
+                  newEpisodesCount,
+                  screenReaderEnabled,
+                  showLightningIcons
+                })}
                 showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               />
             )}

@@ -4,21 +4,27 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
+import { InitialState } from '../resources/Interfaces'
 import { FastImage, IndicatorDownload, LiveStatusBadge, NewContentBadge, Text, View } from './'
 
 type Props = {
   addByRSSPodcastFeedUrl?: string
+  autoDownloadSettings: InitialState['autoDownloadSettings']
   downloadCount?: number
-  downloadedPodcastEpisodeCounts?: any
+  downloadedPodcastEpisodeCounts: InitialState['downloadedPodcastEpisodeCounts']
+  fontScaleMode: InitialState['fontScaleMode']
   hasZebraStripe?: boolean
+  hideNewEpisodesBadges: InitialState['hideNewEpisodesBadges']
   id: string
   lastEpisodePubDate?: string
   latestLiveItemStatus?: LiveItemStatus
+  newEpisodesCount: InitialState['newEpisodesCount']
   onPress?: any
   podcastImageUrl?: string
   podcastTitle?: string
   showAutoDownload?: boolean
   showDownloadCount?: boolean
+  showLightningIcons?: InitialState['session']['v4v']['showLightningIcons']
   testID: string
   valueTags: ValueTag[]
 }
@@ -27,24 +33,23 @@ export class PodcastTableCell extends React.PureComponent<Props> {
   render() {
     const {
       addByRSSPodcastFeedUrl,
+      autoDownloadSettings,
+      downloadedPodcastEpisodeCounts,
+      fontScaleMode,
+      hideNewEpisodesBadges,
       id,
       lastEpisodePubDate,
       latestLiveItemStatus,
+      newEpisodesCount,
       onPress,
       podcastImageUrl,
       podcastTitle = translate('Untitled Podcast'),
       showAutoDownload,
       showDownloadCount,
+      showLightningIcons,
       testID,
       valueTags
     } = this.props
-    const {
-      autoDownloadSettings,
-      downloadedPodcastEpisodeCounts,
-      fontScaleMode,
-      hideNewEpisodesBadges,
-      newEpisodesCount
-    } = this.global
 
     let downloadCount = 0
     if (showDownloadCount && downloadedPodcastEpisodeCounts) {
@@ -100,6 +105,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
         <View style={styles.wrapper}>
           <FastImage
             isAddByRSSPodcast={!!addByRSSPodcastFeedUrl}
+            showLightningIcons={showLightningIcons}
             source={podcastImageUrl}
             styles={PV.Table.cells.podcast.image}
             valueTags={valueTags}

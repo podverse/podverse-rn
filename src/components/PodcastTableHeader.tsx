@@ -4,6 +4,7 @@ import React, { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { removeAndDecodeHTMLInString } from '../lib/utility'
 import { PV } from '../resources'
+import { InitialState } from '../resources/Interfaces'
 import { core } from '../styles'
 import { IndicatorDownload } from './IndicatorDownload'
 import { ActivityIndicator, FastImage, SettingsButton, SubscribeButton, Text, View } from './'
@@ -24,6 +25,7 @@ type Props = {
   podcastImageUrl?: string
   podcastTitle: string
   podcastValue: ValueTag[]
+  showLightningIcons?: InitialState['session']['v4v']['showLightningIcons']
   showSettings?: boolean
   testID: string
 }
@@ -44,6 +46,7 @@ export const PodcastTableHeader = (props: Props) => {
     podcastImageUrl,
     podcastTitle = translate('Untitled Podcast'),
     podcastValue,
+    showLightningIcons,
     showSettings,
     testID
   } = props
@@ -65,6 +68,7 @@ export const PodcastTableHeader = (props: Props) => {
               <FastImage
                 allowFullView
                 isAddByRSSPodcast={!!addByRSSPodcastFeedUrl}
+                showLightningIcons={showLightningIcons}
                 source={podcastImageUrl}
                 styles={styles.image}
                 valueTags={podcastValue}

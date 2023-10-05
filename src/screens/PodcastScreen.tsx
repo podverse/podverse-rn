@@ -42,6 +42,8 @@ import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/ne
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
+import { InitialState, RenderClipTableCellParams,
+  RenderEpisodeTableCellParams } from '../resources/Interfaces'
 import { updateAutoQueueSettings } from '../state/actions/autoQueue'
 import PVEventEmitter from '../services/eventEmitter'
 import { getEpisodesAndLiveItems } from '../services/liveItem'
@@ -68,7 +70,6 @@ import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { markAsPlayedEpisodesAll, markAsPlayedEpisodesMultiple } from '../state/actions/userHistoryItem'
 import { core } from '../styles'
 import { checkIfLoggedIn } from '../services/auth'
-import { RenderClipTableCellParams, RenderEpisodeTableCellParams } from 'src/resources/Interfaces'
 
 const _fileName = 'src/screens/PodcastScreen.tsx'
 
@@ -559,7 +560,8 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _renderItem = ({ item, index }: RenderItemArg, { downloadsActive, downloadedEpisodeIds, fontScaleMode, hideCompleted,
-    newEpisodesCount, screenReaderEnabled, session }: RenderEpisodeTableCellParams | RenderClipTableCellParams) => {
+    historyItemsIndex, newEpisodesCount, screenReaderEnabled }
+    : RenderEpisodeTableCellParams | RenderClipTableCellParams) => {
     const { navigation } = this.props
     const { podcast, viewType } = this.state
 
@@ -634,13 +636,13 @@ export class PodcastScreen extends React.Component<Props, State> {
           }}
           hideControls={this.state.multiSelectEnabled}
           hideImage
+          historyItemsIndex={historyItemsIndex as InitialState['session']['userInfo']['historyItemsIndex']}
           item={episode}
           newEpisodesCount={newEpisodesCount}
           screenReaderEnabled={screenReaderEnabled}
           selected={this.state.multiSelectEnabled && this.state.selectedEpisodes.includes(episode.id)}
           mediaFileDuration={mediaFileDuration}
           navigation={navigation}
-          session={session}
           shouldHideCompleted={shouldHideCompleted}
           testID={testId}
           userPlaybackPosition={userPlaybackPosition}
@@ -1094,6 +1096,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     } = this.global
     
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
+    const showLightningIcons = safelyUnwrapNestedVariable(() => session?.v4v?.showLightningIcons, false)
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
 
     let isSubscribed = subscribedPodcastIds.some((x: string) => x === podcastId)
@@ -1135,6 +1138,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           podcastImageUrl={podcast && (podcast.shrunkImageUrl || podcast.imageUrl)}
           podcastTitle={podcast && podcast.title}
           podcastValue={podcast?.value}
+          showLightningIcons={showLightningIcons}
           showSettings={showSettings}
           testID={testIDPrefix}
         />

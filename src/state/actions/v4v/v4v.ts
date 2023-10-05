@@ -77,7 +77,7 @@ export const v4vSettingsDefault = {
 
 export const v4vInitialize = async () => {
   const globalState = getGlobal()
-  const showLightningIcons = await AsyncStorage.getItem(PV.Keys.V4V_SHOW_LIGHTNING_ICONS)
+  const showLightningIcons = await v4vGetShowLightningIcons()
   const savedSettings = await v4vGetSettings()
   const savedProviders = await v4vInitializeConnectedProviders()
   const savedSenderInfo = await v4vGetSenderInfo()
@@ -104,7 +104,7 @@ export const v4vInitialize = async () => {
 /* Lightning Icon helpers */
 
 export const v4vInitializeShowLightningIcon = async () => {
-  const showLightningIcons = await AsyncStorage.getItem(PV.Keys.V4V_SHOW_LIGHTNING_ICONS)
+  const showLightningIcons = await v4vGetShowLightningIcons()
   if (showLightningIcons) {
     await v4vSetShowLightningIcons(true)
   }
@@ -128,6 +128,11 @@ export const v4vSetShowLightningIcons = async (showLightningIcons: boolean) => {
       }
     }
   })
+}
+
+const v4vGetShowLightningIcons = async () => {
+  const showLightningIcons = await AsyncStorage.getItem(PV.Keys.V4V_SHOW_LIGHTNING_ICONS)
+  return !!showLightningIcons
 }
 
 /* V4VSettings helpers */

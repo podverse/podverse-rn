@@ -22,6 +22,7 @@ import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
 import { trackPageView } from '../services/tracking'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
+import { RenderPodcastTableCellParams } from 'src/resources/Interfaces'
 
 type Props = {
   navigation?: any
@@ -170,16 +171,28 @@ export class SearchScreen extends React.Component<Props, State> {
     // this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
   }
 
-  _renderPodcastItem = ({ item, index }) => (
+  _renderPodcastItem = ({ item, index }, {
+    autoDownloadSettings,
+    downloadedPodcastEpisodeCounts,
+    fontScaleMode,
+    hideNewEpisodesBadges,
+    newEpisodesCount
+  }: RenderPodcastTableCellParams) => (
     <PodcastTableCell
       addByRSSPodcastFeedUrl={item?.addByRSSPodcastFeedUrl}
+      autoDownloadSettings={autoDownloadSettings}
+      downloadedPodcastEpisodeCounts={downloadedPodcastEpisodeCounts}
+      fontScaleMode={fontScaleMode}
       hasZebraStripe={isOdd(index)}
+      hideNewEpisodesBadges={hideNewEpisodesBadges}
       id={item.id}
       lastEpisodePubDate={item.lastEpisodePubDate}
+      newEpisodesCount={newEpisodesCount}
       onPress={() => this._handleMorePress(item)}
       podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
       {...(item.title ? { podcastTitle: item.title } : {})}
       testID={`${testIDPrefix}_podcast_item_${index}`}
+      valueTags={item?.value || []}
     />
   )
 
@@ -233,6 +246,12 @@ export class SearchScreen extends React.Component<Props, State> {
       showActionSheet
     } = this.state
 
+    const { autoDownloadSettings,
+      downloadedPodcastEpisodeCounts,
+      fontScaleMode,
+      hideNewEpisodesBadges,
+      newEpisodesCount } = this.global
+    
     return (
       <View style={styles.view} testID={`${testIDPrefix}_view`}>
         <ButtonGroup
@@ -270,7 +289,13 @@ export class SearchScreen extends React.Component<Props, State> {
             noResultsMiddleActionTextAccessibilityHint={translate('ARIA HINT - add a podcast by its RSS feed')}
             noResultsTopActionText={!Config.DISABLE_QR_SCANNER ? translate('Scan RSS Feed QR Code') : ''}
             onEndReached={this._onEndReached}
-            renderItem={this._renderPodcastItem}
+            renderItem={(x: any) => this._renderPodcastItem(x, {
+              autoDownloadSettings,
+              downloadedPodcastEpisodeCounts,
+              fontScaleMode,
+              hideNewEpisodesBadges,
+              newEpisodesCount
+            })}
             testID={testIDPrefix}
           />
         )}

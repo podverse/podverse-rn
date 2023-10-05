@@ -49,9 +49,11 @@ import {
   GlobalPropertyCallbackFunction,
   getAppUserAgent,
   safeKeyExtractor,
+  safelyUnwrapNestedVariable,
   setCategoryQueryProperty
 } from '../lib/utility'
 import { PV } from '../resources'
+import { RenderPodcastTableCellParams } from '../resources/Interfaces'
 import { v4vAlbyCheckConnectDeepLink } from '../services/v4v/providers/alby'
 import { getAutoDownloadsLastRefreshDate, handleAutoDownloadEpisodes } from '../services/autoDownloads'
 import { handleAutoQueueEpisodes } from '../services/autoQueue'
@@ -983,12 +985,23 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _ItemSeparatorComponent = () => <Divider optional style={{ marginHorizontal: 10 }} />
 
-  _renderPodcastItem = ({ item, index }) => (
+  _renderPodcastItem = ({ item, index }, {
+    autoDownloadSettings,
+    downloadedPodcastEpisodeCounts,
+    fontScaleMode,
+    hideNewEpisodesBadges,
+    newEpisodesCount
+  }: RenderPodcastTableCellParams) => (
     <PodcastTableCell
       addByRSSPodcastFeedUrl={item?.addByRSSPodcastFeedUrl}
+      autoDownloadSettings={autoDownloadSettings}
+      downloadedPodcastEpisodeCounts={downloadedPodcastEpisodeCounts}
+      fontScaleMode={fontScaleMode}
+      hideNewEpisodesBadges={hideNewEpisodesBadges}
       id={item?.id}
       lastEpisodePubDate={item.lastEpisodePubDate}
       latestLiveItemStatus={item.latestLiveItemStatus}
+      newEpisodesCount={newEpisodesCount}
       onPress={() => this._onPodcastItemSelected(item)}
       podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
       {...(item.title ? { podcastTitle: item.title } : {})}
@@ -1216,7 +1229,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       showPodcastActionSheet
     } = this.state
     const { session, podcastsGridViewEnabled } = this.global
-    const { subscribedPodcastIds } = session?.userInfo
+    const subscribedPodcastIds = safelyUnwrapNestedVariable(() => session?.userInfo, [])
+    const showLightningIcons = safelyUnwrapNestedVariable(() => session?.v4v?.showLightningIcons, false)
 
     const noSubscribedPodcasts =
       queryFrom === PV.Filters._subscribedKey && (!subscribedPodcastIds || subscribedPodcastIds.length === 0)
@@ -1282,6 +1296,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderPodcastItem}
             rightOpenValue={PV.FlatList.hiddenItems.rightOpenValue.twoButtons}
+            showLightningIcons={showLightningIcons}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             stickyHeader
             testID={testIDPrefix}

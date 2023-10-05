@@ -24,6 +24,7 @@ type Props = {
   onLayout?: any
   screenReaderEnabled: InitialState['screenReaderEnabled']
   showEpisodeInfo?: boolean
+  showLightningIcons?: InitialState['session']['v4v']['showLightningIcons']
   showPodcastInfo?: boolean
   testID: string
   transparent?: boolean
@@ -49,6 +50,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       onLayout,
       screenReaderEnabled,
       showEpisodeInfo,
+      showLightningIcons,
       showPodcastInfo,
       testID,
       transparent
@@ -93,7 +95,13 @@ export class ClipTableCell extends React.PureComponent<Props> {
           {(showEpisodeInfo || showPodcastInfo) && (
             <RNView accessible={false} style={styles.imageAndTopRightTextWrapper}>
               {showPodcastInfo && !!podcastImageUrl && !hideImage && (
-                <FastImage isSmall source={podcastImageUrl} styles={styles.image} valueTags={podcastValue} />
+                <FastImage
+                  isSmall
+                  showLightningIcons={showLightningIcons}
+                  source={podcastImageUrl}
+                  styles={styles.image}
+                  valueTags={podcastValue}
+                />
               )}
               <RNView style={styles.textWrapper}>
                 {showPodcastInfo && podcastTitle && (
@@ -181,7 +189,11 @@ export class ClipTableCell extends React.PureComponent<Props> {
               accessible={false}
               activeOpacity={1}
               {...(item?.linkUrl ? { onPress: () => this.handleChapterLinkPress(item.linkUrl) } : {})}>
-              <FastImage isSmall source={chapterImageUrl || podcastImageUrl} styles={chapterImageStyle} />
+              <FastImage
+                isSmall
+                showLightningIcons={showLightningIcons}
+                source={chapterImageUrl || podcastImageUrl}
+                styles={chapterImageStyle} />
             </PressableWithOpacity>
           )}
         </View>

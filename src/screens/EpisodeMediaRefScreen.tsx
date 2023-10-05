@@ -6,10 +6,10 @@ import { getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
+import { RenderClipTableCellParams } from '../resources/Interfaces'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
 import { trackPageView } from '../services/tracking'
-import { RenderClipTableCellParams } from 'src/resources/Interfaces'
 
 type Props = {
   navigation: any

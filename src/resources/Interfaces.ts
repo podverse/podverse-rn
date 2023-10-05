@@ -87,14 +87,35 @@ export type PVStateScreen = {
   screenWidth: number
 }
 
+export type RenderProfileScreenTableCellParams = {
+  autoDownloadSettings: InitialState['downloadsActive']
+  downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
+  downloadedPodcastEpisodeCounts: InitialState['downloadedPodcastEpisodeCounts']
+  downloadsActive: InitialState['downloadsActive']
+  fontScaleMode: InitialState['fontScaleMode']
+  hideNewEpisodesBadges: InitialState['hideNewEpisodesBadges']
+  newEpisodesCount: InitialState['newEpisodesCount']
+  screenReaderEnabled: InitialState['screenReaderEnabled']
+  showLightningIcons: InitialState['session']['v4v']['showLightningIcons']
+}
+
+export type RenderPodcastTableCellParams = {
+  autoDownloadSettings: InitialState['downloadsActive']
+  downloadedPodcastEpisodeCounts: InitialState['downloadedPodcastEpisodeCounts']
+  fontScaleMode: InitialState['fontScaleMode']
+  hideNewEpisodesBadges: InitialState['hideNewEpisodesBadges']
+  newEpisodesCount: InitialState['newEpisodesCount']
+}
+
 export type RenderEpisodeTableCellParams = {
   downloadsActive: InitialState['downloadsActive']
   downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
   fontScaleMode: InitialState['fontScaleMode']
   hideCompleted: InitialState['hideCompleted']
+  historyItemsIndex: InitialState['session']['userInfo']['historyItemsIndex']
   newEpisodesCount: InitialState['newEpisodesCount']
   screenReaderEnabled: InitialState['screenReaderEnabled']
-  session: InitialState['session']
+  showLightningIcons: InitialState['session']['v4v']['showLightningIcons']
 }
 
 export type RenderClipTableCellParams = {
@@ -103,11 +124,12 @@ export type RenderClipTableCellParams = {
   downloadsActive: InitialState['downloadsActive']
   fontScaleMode: InitialState['fontScaleMode']
   hideCompleted?: InitialState['hideCompleted']
+  historyItemsIndex?: InitialState['session']['userInfo']['historyItemsIndex']
   newEpisodesCount?: InitialState['newEpisodesCount']
   player?: InitialState['player']
   screenPlayer?: InitialState['screenPlayer']
   screenReaderEnabled: InitialState['screenReaderEnabled']
-  session?: InitialState['session']
+  showLightningIcons?: InitialState['session']['v4v']['showLightningIcons']
 }
 
 export interface GlobalTheme {
