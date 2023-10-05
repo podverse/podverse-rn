@@ -283,7 +283,8 @@ export class PlayerScreen extends React.Component<Props> {
 
   render() {
     const { navigation } = this.props
-    const { currentChapter, player, screenPlayer } = this.global
+    const { currentChapter, currentChapters, parsedTranscript, player, screen,
+      screenPlayer, screenReaderEnabled, session } = this.global
     const { episode, nowPlayingItem } = player
     const { showShareActionSheet } = screenPlayer
     let { mediaRef } = player
@@ -311,7 +312,18 @@ export class PlayerScreen extends React.Component<Props> {
       <React.Fragment>
         <SafeAreaView style={styles.view}>
           <View style={styles.view} transparent testID='player_screen_view'>
-            <MediaPlayerCarousel hasChapters={hasChapters} navigation={navigation} />
+            <MediaPlayerCarousel
+              currentChapter={currentChapter}
+              currentChapters={currentChapters}
+              hasChapters={hasChapters}
+              navigation={navigation}
+              parsedTranscript={parsedTranscript}
+              player={player}
+              screen={screen}
+              screenPlayer={screenPlayer}
+              screenReaderEnabled={screenReaderEnabled}
+              session={session}
+            />
             <PlayerControls navigation={navigation} />
             <ActionSheet
               handleCancelPress={this._dismissShareActionSheet}

@@ -36,7 +36,7 @@ type State = {
 const testIDPrefix = 'v4v_providers_alby_screen'
 
 export class V4VProvidersAlbyScreen extends React.Component<Props, State> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
     const isLoadingWaitForEvent = !!this.props.navigation.getParam('isLoadingWaitForEvent')

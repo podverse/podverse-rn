@@ -2,6 +2,91 @@ import { TranscriptRow, ValueTransaction } from 'podverse-shared'
 import { AutoQueueSettingsPosition } from '../services/autoQueue'
 import { V4VProviderConnectedState, V4VSenderInfo, V4VSettings } from '../state/actions/v4v/v4v'
 import { AppModes } from './AppMode'
+
+export type PVStateScreenPlayer = {
+  endOfResultsReached: boolean
+  flatListData: any[]
+  flatListDataTotalCount: number | null
+  isLoading: boolean
+  isLoadingMore: boolean
+  isQuerying: boolean
+  liveStreamWasPaused: boolean
+  queryFrom: string | null
+  queryPage: number
+  querySort: string | null
+  selectedFromLabel?: string | null
+  selectedItem?: any
+  selectedSortLabel?: string | null
+  showFullClipInfo: boolean
+  showHeaderActionSheet: boolean
+  showMoreActionSheet: boolean
+  showNoInternetConnectionMessage: boolean
+  showShareActionSheet: boolean
+  viewType: string | null
+}
+
+export type PVStateCurrentChapter = {
+  endTime: number
+  hasCustomImage: boolean
+  id: string
+  imageUrl: string
+  isOfficialChapter: boolean
+  linkUrl: string | null
+  startTime: number
+  title: string
+} | null
+
+export type PVStateCurrentChapters = PVStateCurrentChapter[] | null
+
+export type PVStateSession = {
+  isLoggedIn: boolean
+  userInfo: UserInfo
+  v4v: {
+    showLightningIcons: boolean
+    settings: V4VSettings
+    providers: {
+      connected: V4VProviderConnectedState[]
+    }
+    streamingValueOn: boolean
+    previousTransactionErrors: {
+      boost: BannerInfoError[]
+      streaming: BannerInfoError[]
+    }
+    senderInfo: V4VSenderInfo
+    boostagramMessage: string
+    valueTimeSplitIsActive: boolean
+  }
+}
+
+export type PVStatePlayer = {
+  backupDuration?: number
+  hasErrored: boolean
+  nowPlayingItem: any
+  episode: any | null
+  playbackRate: number
+  showMakeClip: boolean
+  showMiniPlayer: boolean
+  shouldContinuouslyPlay: boolean
+  playbackState: any
+  sleepTimer: {
+    defaultTimeRemaining: number
+    isActive: boolean
+    timeRemaining: number
+  }
+  videoInfo: {
+    videoDuration: number
+    videoIsLoaded: boolean
+    videoPosition: number
+  }
+  hidePlaybackSpeedButton: boolean
+  remoteSkipButtonsAreTimeJumps: boolean
+}
+
+export type PVStateScreen = {
+  orientation: 'portrait' | 'landscape'
+  screenWidth: number
+}
+
 export interface GlobalTheme {
   actionSheetButton?: any
   actionSheetButtonCancel?: any
@@ -91,10 +176,7 @@ export interface UserInfo {
 export interface InitialState {
   isInMaintenanceMode: boolean
   deviceType: 'mobile' | 'tablet'
-  screen: {
-    orientation: 'portrait' | 'landscape'
-    screenWidth: number
-  }
+  screen: PVStateScreen
   globalTheme: GlobalTheme
   fontScale: number
   fontScaleMode: string | null
@@ -130,32 +212,10 @@ export interface InitialState {
   parsedTranscript: TranscriptRow[] | null
   clipIntervalActive: boolean
   chapterIntervalActive: boolean
-  currentChapter: any
-  currentChapters: any
+  currentChapter: PVStateCurrentChapter
+  currentChapters: PVStateCurrentChapters
   currentChaptersStartTimePositions: any
-  player: {
-    backupDuration?: number
-    hasErrored: boolean
-    nowPlayingItem: any
-    episode: any | null
-    playbackRate: number
-    showMakeClip: boolean
-    showMiniPlayer: boolean
-    shouldContinuouslyPlay: boolean
-    playbackState: any
-    sleepTimer: {
-      defaultTimeRemaining: number
-      isActive: boolean
-      timeRemaining: number
-    }
-    videoInfo: {
-      videoDuration: number
-      videoIsLoaded: boolean
-      videoPosition: number
-    }
-    hidePlaybackSpeedButton: boolean
-    remoteSkipButtonsAreTimeJumps: boolean
-  }
+  player: PVStatePlayer
   playlists: {
     myPlaylists: []
     subscribedPlaylists: []
@@ -181,51 +241,13 @@ export interface InitialState {
     transactionId: string
     transactionReceipt: string
   }
-  screenPlayer: {
-    endOfResultsReached: boolean
-    flatListData: any[]
-    flatListDataTotalCount: number | null
-    isLoading: boolean
-    isLoadingMore: boolean
-    isQuerying: boolean
-    liveStreamWasPaused: boolean
-    queryFrom: string | null
-    queryPage: number
-    querySort: string | null
-    selectedFromLabel?: string | null
-    selectedItem?: any
-    selectedSortLabel?: string | null
-    showFullClipInfo: boolean
-    showHeaderActionSheet: boolean
-    showMoreActionSheet: boolean
-    showNoInternetConnectionMessage: boolean
-    showShareActionSheet: boolean
-    viewType: string | null
-  }
+  screenPlayer: PVStateScreenPlayer
   screenPlaylist: {
     flatListData: []
     flatListDataTotalCount: number | null
     playlist?: any
   }
-  session: {
-    isLoggedIn: boolean
-    userInfo: UserInfo
-    v4v: {
-      showLightningIcons: boolean
-      settings: V4VSettings
-      providers: {
-        connected: V4VProviderConnectedState[]
-      }
-      streamingValueOn: boolean
-      previousTransactionErrors: {
-        boost: BannerInfoError[]
-        streaming: BannerInfoError[]
-      }
-      senderInfo: V4VSenderInfo
-      boostagramMessage: string
-      valueTimeSplitIsActive: boolean
-    }
-  }
+  session: PVStateSession
   subscribedPodcasts: []
   subscribedPodcastsTotalCount: number
   userAgent?: string

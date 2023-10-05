@@ -5,25 +5,30 @@ import { translate } from '../lib/i18n'
 import { navigateBackToRoot, navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { prefixClipLabel, readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
+import { PVStateCurrentChapter, PVStatePlayer, PVStateScreen, PVStateScreenPlayer } from '../resources/Interfaces'
 import { ActivityIndicator, FastImage, PressableWithOpacity, PVVideo, ScrollView, Text, TextTicker } from './'
 
 type Props = {
+  currentChapter: PVStateCurrentChapter
   handlePressClipInfo: any
   navigation?: any
+  player: PVStatePlayer
+  screen: PVStateScreen
+  screenPlayer: PVStateScreenPlayer
+  screenReaderEnabled: boolean
   width: number
 }
 
 const testIDPrefix = 'media_player_carousel_viewer'
 
 export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
     this.state = {}
   }
 
   handlePodcastNavigation = () => {
-    const { navigation } = this.props
-    const { player } = this.global
+    const { navigation, player } = this.props
     const item = player?.nowPlayingItem
     if (item) {
       navigateBackToRoot(navigation)
@@ -32,8 +37,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
   }
 
   handleEpisodeNavigation = () => {
-    const { navigation } = this.props
-    const { player } = this.global
+    const { navigation, player } = this.props
     const item = player?.nowPlayingItem
     if (item) {
       this.handlePodcastNavigation()
@@ -51,8 +55,8 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
   }
 
   render() {
-    const { handlePressClipInfo, navigation, width } = this.props
-    const { currentChapter, player, screen, screenPlayer, screenReaderEnabled } = this.global
+    const { currentChapter, handlePressClipInfo, navigation, player, screen,
+      screenPlayer, screenReaderEnabled, width } = this.props
     const { screenWidth } = screen
     const { isLoading } = screenPlayer
 

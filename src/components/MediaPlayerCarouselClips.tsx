@@ -7,6 +7,7 @@ import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
+import { PVStatePlayer, PVStateScreenPlayer } from '../resources/Interfaces'
 import PVEventEmitter from '../services/eventEmitter'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
@@ -14,6 +15,8 @@ import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, Table
 
 type Props = {
   navigation?: any
+  player: PVStatePlayer
+  screenPlayer: PVStateScreenPlayer
   width: number
 }
 
@@ -22,7 +25,7 @@ const getTestID = () => 'media_player_carousel_clips'
 export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   shouldLoad: boolean
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
     this.shouldLoad = true
   }
@@ -43,7 +46,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   _selectQueryFrom = (selectedKey: string) => {
     if (!selectedKey) return
 
-    const { querySort } = this.global.screenPlayer
+    const { querySort } = this.props.screenPlayer
     let sort = PV.Filters._topPastWeek
     if (selectedKey === PV.Filters._fromThisPodcastKey && querySort === PV.Filters._chronologicalKey) {
       sort = PV.Filters._chronologicalKey
@@ -55,7 +58,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     setGlobal(
       {
         screenPlayer: {
-          ...this.global.screenPlayer,
+          ...this.props.screenPlayer,
           endOfResultsReached: false,
           flatListData: [],
           flatListDataTotalCount: null,
@@ -71,7 +74,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
         const newState = await this._queryData()
         setGlobal({
           screenPlayer: {
-            ...this.global.screenPlayer,
+            ...this.props.screenPlayer,
             ...newState
           }
         })
@@ -87,7 +90,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     setGlobal(
       {
         screenPlayer: {
-          ...this.global.screenPlayer,
+          ...this.props.screenPlayer,
           endOfResultsReached: false,
           flatListData: [],
           flatListDataTotalCount: null,
@@ -101,7 +104,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
         const newState = await this._queryData()
         setGlobal({
           screenPlayer: {
-            ...this.global.screenPlayer,
+            ...this.props.screenPlayer,
             ...newState
           }
         })
@@ -110,7 +113,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
-    const { screenPlayer } = this.global
+    const { screenPlayer } = this.props
     const { endOfResultsReached, queryPage = 1 } = screenPlayer
     if (!endOfResultsReached && this.shouldLoad) {
       if (distanceFromEnd > -1) {
@@ -119,7 +122,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
         setGlobal(
           {
             screenPlayer: {
-              ...this.global.screenPlayer,
+              ...this.props.screenPlayer,
               isLoadingMore: true,
               queryPage: queryPage + 1
             }
@@ -128,7 +131,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
             const newState = await this._queryData()
             setGlobal({
               screenPlayer: {
-                ...this.global.screenPlayer,
+                ...this.props.screenPlayer,
                 ...newState
               }
             })
@@ -148,7 +151,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   _handleMorePress = (selectedItem: any) => {
     setGlobal({
       screenPlayer: {
-        ...this.global.screenPlayer,
+        ...this.props.screenPlayer,
         selectedItem,
         showMoreActionSheet: true
       }
@@ -160,7 +163,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
       setGlobal(
         {
           screenPlayer: {
-            ...this.global.screenPlayer,
+            ...this.props.screenPlayer,
             showMoreActionSheet: false
           }
         },
@@ -169,7 +172,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     })
 
   _handleDownloadPressed = () => {
-    const { selectedItem } = this.global.screenPlayer
+    const { selectedItem } = this.props.screenPlayer
     if (selectedItem) {
       const episode = convertNowPlayingItemToEpisode(selectedItem)
       downloadEpisode(episode, episode.podcast)
@@ -182,7 +185,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   }
 
   _deleteMediaRef = (mediaRefIdToDelete: string) => {
-    const { screenPlayer } = this.global
+    const { screenPlayer } = this.props
     let { flatListData, flatListDataTotalCount } = screenPlayer
 
     if (mediaRefIdToDelete) {
@@ -210,7 +213,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
 
             setGlobal({
               screenPlayer: {
-                ...this.global.screenPlayer,
+                ...this.props.screenPlayer,
                 flatListData,
                 flatListDataTotalCount,
                 isLoading: false
@@ -223,8 +226,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   }
 
   _renderItem = ({ item, index }) => {
-    const { navigation } = this.props
-    const { player, screenPlayer } = this.global
+    const { navigation, player, screenPlayer } = this.props
     const { episode } = player
     const podcast = episode?.podcast || {}
     const { queryFrom } = screenPlayer
@@ -256,8 +258,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   _ItemSeparatorComponent = () => <Divider />
 
   render() {
-    const { navigation, width } = this.props
-    const { screenPlayer } = this.global
+    const { navigation, screenPlayer, width } = this.props
     const {
       flatListData,
       flatListDataTotalCount,
@@ -331,7 +332,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   }
 
   _validSort = () => {
-    const { screenPlayer } = this.global
+    const { screenPlayer } = this.props
     const { queryFrom, querySort } = screenPlayer
 
     return !querySort || (queryFrom === PV.Filters._fromThisPodcastKey && querySort === PV.Filters._chronologicalKey)
@@ -340,7 +341,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   }
 
   _queryClips = async () => {
-    const { player, screenPlayer } = this.global
+    const { player, screenPlayer } = this.props
     const { nowPlayingItem } = player
     const { queryFrom, queryPage } = screenPlayer
 
@@ -366,7 +367,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   }
 
   _queryData = async () => {
-    const { screenPlayer } = this.global
+    const { screenPlayer } = this.props
     const { flatListData } = screenPlayer
     const newState = {
       isLoading: false,

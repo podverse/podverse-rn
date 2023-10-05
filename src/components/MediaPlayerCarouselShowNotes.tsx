@@ -4,11 +4,15 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
+import { PVStatePlayer, PVStateScreenPlayer } from '../resources/Interfaces'
 import { TableSectionSelectors } from './TableSectionSelectors'
 import { ClipInfoView, HTMLScrollView, ScrollView, Text, TextLink, View } from './'
 
 type Props = {
   navigation?: any
+  player: PVStatePlayer
+  screenPlayer: PVStateScreenPlayer
+  screenReaderEnabled: boolean
   width: number
 }
 
@@ -19,7 +23,7 @@ type State = {
 const testIDPrefix = 'media_player_carousel_show_notes'
 
 export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, State> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
     this.state = {
       showShortHtml: true
@@ -32,9 +36,8 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
   }
 
   render() {
-    const { navigation, width } = this.props
+    const { navigation, player, screenPlayer, screenReaderEnabled, width } = this.props
     const { showShortHtml } = this.state
-    const { player, screenPlayer, screenReaderEnabled } = this.global
     const { episode, nowPlayingItem } = player
     const { isLoading } = screenPlayer
 

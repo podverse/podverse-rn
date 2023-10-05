@@ -2,24 +2,25 @@ import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { WebView } from 'react-native-webview'
 import { translate } from '../lib/i18n'
+import { PVStatePlayer } from '../resources/Interfaces'
 import { TableSectionSelectors, View } from '.'
 
 type Props = {
   navigation?: any
+  player: PVStatePlayer
   width: number
 }
 
 const testIDPrefix = 'media_player_carousel_chat'
 
 export class MediaPlayerCarouselChatRoom extends React.PureComponent<Props> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
     this.state = {}
   }
 
   render() {
-    const { width } = this.props
-    const { player } = this.global
+    const { player, width } = this.props
     const liveItem = player?.episode?.liveItem
     const chatIRCURL = liveItem?.chatIRCURL || ''
 

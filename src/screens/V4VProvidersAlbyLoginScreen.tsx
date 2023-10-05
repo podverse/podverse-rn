@@ -19,7 +19,7 @@ type State = {
 const testIDPrefix = 'v4v_providers_alby_login_screen'
 
 export class V4VProvidersAlbyLoginScreen extends React.Component<Props, State> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {

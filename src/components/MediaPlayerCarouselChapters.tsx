@@ -5,6 +5,8 @@ import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
+import { PVStateCurrentChapter, PVStateCurrentChapters,
+  PVStatePlayer, PVStateScreenPlayer } from '../resources/Interfaces'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPlaybackSpeed } from '../services/player'
@@ -21,8 +23,13 @@ import {
 } from './'
 
 type Props = {
+  currentChapter: PVStateCurrentChapter
+  currentChapters: PVStateCurrentChapters
   isChapters?: boolean
   navigation?: any
+  player: PVStatePlayer
+  screenPlayer: PVStateScreenPlayer
+  screenReaderEnabled: boolean
   width: number
 }
 
@@ -41,7 +48,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   itemHeights: any[]
   appStateListenerChange: any
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
     this.itemHeights = []
@@ -126,7 +133,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     const playbackSpeed = await getPlaybackSpeed()
     const intervalTime = 1000 / playbackSpeed
     return setInterval(() => {
-      const { currentChapter, currentChapters } = this.global
+      const { currentChapter, currentChapters } = this.props
       const itemHeightsReady = currentChapters.length === this.itemHeights.length
 
       if (currentChapter?.id && itemHeightsReady) {
@@ -161,7 +168,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   _handleMorePress = (selectedItem: any) => {
     setGlobal({
       screenPlayer: {
-        ...this.global.screenPlayer,
+        ...this.props.screenPlayer,
         selectedItem,
         showMoreActionSheet: true
       }
@@ -173,7 +180,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
       setGlobal(
         {
           screenPlayer: {
-            ...this.global.screenPlayer,
+            ...this.props.screenPlayer,
             showMoreActionSheet: false
           }
         },
@@ -182,8 +189,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     })
 
   _renderItem = ({ item, index }) => {
-    const { navigation } = this.props
-    const { currentChapter, player } = this.global
+    const { currentChapter, navigation, player } = this.props
     const { episode } = player
     const podcast = episode?.podcast || {}
     const testID = getTestID()
@@ -220,7 +226,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   array is populated.
 */
   _getItemLayout = (data, index) => {
-    const { currentChapters } = this.global
+    const { currentChapters } = this.props
 
     let length = 80
     let offset = 80
@@ -236,9 +242,9 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   _ItemSeparatorComponent = () => <Divider />
 
   render() {
-    const { navigation, width } = this.props
+    const { currentChapters, navigation, screenPlayer,
+      screenReaderEnabled, width } = this.props
     const { autoScrollOn } = this.state
-    const { currentChapters, screenPlayer, screenReaderEnabled } = this.global
     const {
       isLoading,
       isLoadingMore,
@@ -307,7 +313,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   }
 
   _queryChapters = async () => {
-    const { player } = this.global
+    const { player } = this.props
     const { nowPlayingItem } = player
 
     if (nowPlayingItem && !nowPlayingItem.addByRSSPodcastFeedUrl) {
@@ -318,7 +324,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   }
 
   _queryData = async () => {
-    const { screenPlayer } = this.global
+    const { screenPlayer } = this.props
     const { flatListData } = screenPlayer
     const newState = {
       isLoading: false,

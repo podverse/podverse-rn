@@ -3,8 +3,10 @@ import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { checkIfHasSupportedCommentTag, Episode, TranscriptRow } from 'podverse-shared'
-import { PV } from '../resources'
 import { translate } from '../lib/i18n'
+import { PV } from '../resources'
+import { PVStateCurrentChapter, PVStateCurrentChapters, PVStatePlayer, PVStateScreen,
+  PVStateScreenPlayer, PVStateSession } from '../resources/Interfaces'
 import { playerCheckIfStateIsPlaying } from '../services/player'
 import { v4vGetPluralCurrencyUnitPerMinute } from '../services/v4v/v4v'
 import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
@@ -27,8 +29,16 @@ import {
 } from '.'
 
 type Props = {
+  currentChapter: PVStateCurrentChapter
+  currentChapters: PVStateCurrentChapters
   hasChapters: boolean
   navigation: any
+  parsedTranscript: TranscriptRow[] | null
+  player: PVStatePlayer
+  screen: PVStateScreen
+  screenPlayer: PVStateScreenPlayer
+  screenReaderEnabled: boolean
+  session: PVStateSession
 }
 
 type State = {
@@ -38,6 +48,26 @@ type State = {
   boostWasSent: boolean
   isReady: boolean
   isReady2: boolean
+}
+
+type MediaPlayerCarouselComponentsState = {
+  accessibilityItemSelectedValue?: string | null
+  currentChapter: PVStateCurrentChapter
+  currentChapters: PVStateCurrentChapters
+  handlePressClipInfo: any
+  hasChapters: boolean
+  hasChat: boolean
+  hasComments: boolean
+  hasTranscript: boolean
+  isReady?: boolean
+  isReady2?: boolean
+  navigation: any
+  parsedTranscript: TranscriptRow[]
+  player: PVStatePlayer
+  screen: PVStateScreen
+  screenPlayer: PVStateScreenPlayer
+  screenReaderEnabled: boolean
+  screenWidth: number
 }
 
 const testIDPrefix = 'media_player_carousel'
@@ -71,7 +101,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   scrollView: any
   handlePressClipInfo: any
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
@@ -105,7 +135,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   scrollToActiveIndex = (activeIndex: number, animated: boolean) => {
-    const { screenWidth } = this.global.screen
+    const { screenWidth } = this.props.screen
     setTimeout(() => {
       this.scrollView &&
         this.scrollView.scrollTo({
@@ -118,7 +148,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   onScrollEnd = ({ nativeEvent }) => {
-    const { screenWidth } = this.global.screen
+    const { screenWidth } = this.props.screen
     const { contentOffset } = nativeEvent
     const activeIndex = Math.round(contentOffset.x / screenWidth)
     this.setState({ activeIndex })
@@ -141,7 +171,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   _handleAccessibilitySelectChange = (selectedKey: string) => {
-    const { parsedTranscript, player } = this.global
+    const { parsedTranscript, player } = this.props
     const { episode } = player
     const hasChapters = checkIfHasChapters(episode)
     const hasComments = !!checkIfHasSupportedCommentTag(episode)
@@ -163,9 +193,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { navigation } = this.props
+    const { currentChapter, currentChapters, navigation, parsedTranscript, player, screen,
+      screenPlayer, screenReaderEnabled, session } = this.props
     const { accessibilityItemSelected, activeIndex, isReady, isReady2 } = this.state
-    const { parsedTranscript, player, screen, screenReaderEnabled, session } = this.global
     const { episode, nowPlayingItem, playbackState } = player
     const { screenWidth } = screen
     const hasChapters = checkIfHasChapters(episode)
@@ -216,20 +246,25 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
     const hasValueInfo = nowPlayingItem?.episodeValue?.length > 0 || nowPlayingItem?.podcastValue?.length > 0
 
-    const carouselComponents = mediaPlayerCarouselComponents(
-      this._handlePressClipInfo,
-      screenWidth,
+    const carouselComponents = mediaPlayerCarouselComponents({
+      accessibilityItemSelectedValue: accessibilityItemSelected?.value || null,
+      currentChapter,
+      currentChapters,
+      handlePressClipInfo: this._handlePressClipInfo,
       navigation,
       hasChapters,
       hasChat,
       hasComments,
       hasTranscript,
-      screenReaderEnabled,
-      this.global.parsedTranscript || [],
-      accessibilityItemSelected?.value || null,
       isReady,
-      isReady2
-    )
+      isReady2,
+      parsedTranscript: parsedTranscript || [],
+      player,
+      screen,
+      screenPlayer,
+      screenReaderEnabled,
+      screenWidth,
+    })
 
     return (
       <View style={styles.wrapper} transparent>
@@ -376,47 +411,67 @@ const accessibilitySelectorItems = (
   return items
 }
 
-const mediaPlayerCarouselComponents = (
-  handlePressClipInfo: any,
-  screenWidth: number,
-  navigation: any,
-  hasChapters: boolean,
-  hasChat: boolean,
-  hasComments: boolean,
-  hasTranscript: boolean,
-  screenReaderEnabled: boolean,
-  parsedTranscript: TranscriptRow[],
-  accessibilityItemSelectedValue?: string | null,
-  isReady?: boolean,
-  isReady2?: boolean
-) => {
+// TODO: remove the need for this function or somehow improve it.
+const mediaPlayerCarouselComponents = (x: MediaPlayerCarouselComponentsState) => {
+  const { accessibilityItemSelectedValue, currentChapter, currentChapters, handlePressClipInfo, hasChapters,
+    hasChat, hasComments, hasTranscript, isReady, isReady2, navigation, parsedTranscript, player,
+    screen, screenPlayer, screenReaderEnabled, screenWidth } = x
+
   return (
     <>
       {screenReaderEnabled ? (
         <>
           {isReady && (accessibilityItemSelectedValue === _nowPlayingInfoKey || !accessibilityItemSelectedValue) && (
             <MediaPlayerCarouselViewer
+              currentChapter={currentChapter}
               handlePressClipInfo={handlePressClipInfo}
               navigation={navigation}
+              player={player}
+              screen={screen}
+              screenPlayer={screenPlayer}
+              screenReaderEnabled={screenReaderEnabled}
               width={screenWidth}
             />
           )}
           {isReady2 && (
             <>
               {accessibilityItemSelectedValue === _episodeSummaryKey && (
-                <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
+                <MediaPlayerCarouselShowNotes
+                  player={player}
+                  screenPlayer={screenPlayer}
+                  screenReaderEnabled={screenReaderEnabled}
+                  navigation={navigation}
+                  width={screenWidth} />
               )}
               {accessibilityItemSelectedValue === _chaptersKey && hasChapters && (
-                <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />
+                <MediaPlayerCarouselChapters
+                  currentChapter={currentChapter}
+                  currentChapters={currentChapters}
+                  navigation={navigation}
+                  player={player}
+                  screenPlayer={screenPlayer}
+                  screenReaderEnabled={screenReaderEnabled}
+                  width={screenWidth} />
               )}
               {accessibilityItemSelectedValue === _commentsKey && hasComments && (
-                <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />
+                <MediaPlayerCarouselComments
+                  navigation={navigation}
+                  player={player}
+                  width={screenWidth} />
               )}
               {accessibilityItemSelectedValue === _transcriptKey && hasTranscript && (
-                <MediaPlayerCarouselTranscripts isNowPlaying parsedTranscript={parsedTranscript} width={screenWidth} />
+                <MediaPlayerCarouselTranscripts
+                  isNowPlaying
+                  parsedTranscript={parsedTranscript}
+                  screen={screen}
+                  screenReaderEnabled={screenReaderEnabled}
+                  width={screenWidth} />
               )}
               {accessibilityItemSelectedValue === _chatRoomKey && hasChat && (
-                <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />
+                <MediaPlayerCarouselChatRoom
+                  navigation={navigation}
+                  player={player}
+                  width={screenWidth} />
               )}
             </>
           )}
@@ -425,20 +480,54 @@ const mediaPlayerCarouselComponents = (
         <>
           {isReady && (
             <MediaPlayerCarouselViewer
+              currentChapter={currentChapter}
               handlePressClipInfo={handlePressClipInfo}
               navigation={navigation}
+              player={player}
+              screen={screen}
+              screenPlayer={screenPlayer}
+              screenReaderEnabled={screenReaderEnabled}
               width={screenWidth}
             />
           )}
           {isReady2 && (
             <>
-              <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
-              {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
-              {hasComments && <MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />}
-              {hasTranscript && (
-                <MediaPlayerCarouselTranscripts isNowPlaying parsedTranscript={parsedTranscript} width={screenWidth} />
+              <MediaPlayerCarouselShowNotes
+                navigation={navigation}
+                player={player}
+                screenPlayer={screenPlayer}
+                screenReaderEnabled={screenReaderEnabled}
+                width={screenWidth} />
+              {hasChapters && (
+                <MediaPlayerCarouselChapters
+                  currentChapter={currentChapter}
+                  currentChapters={currentChapters}
+                  navigation={navigation}
+                  player={player}
+                  screenPlayer={screenPlayer}
+                  screenReaderEnabled={screenReaderEnabled}
+                  width={screenWidth} />
               )}
-              {hasChat && <MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />}
+              {hasComments && (
+                <MediaPlayerCarouselComments
+                  navigation={navigation}
+                  player={player}
+                  width={screenWidth} />
+              )}
+              {hasTranscript && (
+                <MediaPlayerCarouselTranscripts
+                  isNowPlaying
+                  parsedTranscript={parsedTranscript}
+                  screen={screen}
+                  screenReaderEnabled={screenReaderEnabled}
+                  width={screenWidth} />
+              )}
+              {hasChat && (
+                <MediaPlayerCarouselChatRoom
+                  navigation={navigation}
+                  player={player}
+                  width={screenWidth} />
+              )}
             </>
           )}
         </>

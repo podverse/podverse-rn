@@ -3,6 +3,7 @@ import { AppState, AppStateStatus, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
+import { PVStateScreen } from '../resources/Interfaces'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPlaybackSpeed, playerGetPosition, playerHandleSeekTo } from '../services/player'
 import { PVSearchBar } from './PVSearchBar'
@@ -12,6 +13,8 @@ type Props = {
   isNowPlaying?: boolean
   navigation?: any
   parsedTranscript: TranscriptRow[]
+  screen: PVStateScreen
+  screenReaderEnabled: boolean
   width?: number
 }
 
@@ -151,12 +154,12 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
   }
 
   renderItem = ({ item, index }) => {
-    const { isNowPlaying } = this.props
+    const { isNowPlaying, screen } = this.props
+    const { screenWidth } = screen
     const { activeTranscriptRowIndexes } = this.state
     const transcriptionItem = item
     const { body, isEmptySpace, speaker, startTime, startTimeFormatted } = transcriptionItem
     const cellID = getCellID(transcriptionItem, index)
-    const { screenWidth } = this.global.screen
 
     if (speaker && speaker !== this.currentSpeaker) {
       this.currentSpeaker = speaker
@@ -218,10 +221,9 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
   }
 
   render() {
-    const { isNowPlaying, width } = this.props
+    const { isNowPlaying, screenReaderEnabled, width } = this.props
     let { parsedTranscript } = this.props
     const { autoScrollOn } = this.state
-    const { screenReaderEnabled } = this.global
 
     if (this.state.searchText) {
       parsedTranscript = this.state.searchResults || []
