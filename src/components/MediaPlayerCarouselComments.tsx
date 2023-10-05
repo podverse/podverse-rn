@@ -5,12 +5,12 @@ import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import { getEpisodeProxyActivityPub, getEpisodeProxyTwitter } from '../services/comment'
 import { PV } from '../resources'
-import { PVStatePlayer } from '../resources/Interfaces'
+import { InitialState } from '../resources/Interfaces'
 import { ActivityIndicator, Comment, ScrollView, TableSectionSelectors, Text, View } from './'
 
 type Props = {
   navigation?: any
-  player: PVStatePlayer
+  player: InitialState['player']
   width: number
 }
 

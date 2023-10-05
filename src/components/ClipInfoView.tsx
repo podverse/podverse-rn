@@ -3,7 +3,7 @@ import React, { Fragment } from 'reactn'
 import { translate } from '../lib/i18n'
 import { prefixClipLabel, readableClipTime, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
-import { GlobalTheme, PVStateSession } from '../resources/Interfaces'
+import { GlobalTheme, InitialState } from '../resources/Interfaces'
 import { playerGetPosition, playerRestartNowPlayingItemClip } from '../services/player'
 import { button, core } from '../styles'
 import { ActivityIndicator, Divider, Icon, TableSectionSelectors, Text, TextLink } from './'
@@ -21,7 +21,7 @@ type Props = {
   ownerId?: string
   ownerIsPublic?: boolean
   ownerName?: string
-  session: PVStateSession
+  session: InitialState['session']
   startTime: number
   title?: string
 }

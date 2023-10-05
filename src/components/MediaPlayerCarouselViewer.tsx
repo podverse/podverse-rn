@@ -5,16 +5,16 @@ import { translate } from '../lib/i18n'
 import { navigateBackToRoot, navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { prefixClipLabel, readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
-import { PVStateCurrentChapter, PVStatePlayer, PVStateScreen, PVStateScreenPlayer } from '../resources/Interfaces'
+import { InitialState } from '../resources/Interfaces'
 import { ActivityIndicator, FastImage, PressableWithOpacity, PVVideo, ScrollView, Text, TextTicker } from './'
 
 type Props = {
-  currentChapter: PVStateCurrentChapter
+  currentChapter: InitialState['currentChapter']
   handlePressClipInfo: any
   navigation?: any
-  player: PVStatePlayer
-  screen: PVStateScreen
-  screenPlayer: PVStateScreenPlayer
+  player: InitialState['player']
+  screen: InitialState['screen']
+  screenPlayer: InitialState['screenPlayer']
   screenReaderEnabled: boolean
   width: number
 }

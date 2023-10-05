@@ -5,8 +5,7 @@ import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
-import { InitialState, PVStateCurrentChapter, PVStateCurrentChapters,
-  PVStatePlayer, PVStateScreenPlayer, RenderClipTableCellParams } from '../resources/Interfaces'
+import { InitialState, RenderClipTableCellParams } from '../resources/Interfaces'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPlaybackSpeed } from '../services/player'
@@ -23,15 +22,15 @@ import {
 } from './'
 
 type Props = {
-  currentChapter: PVStateCurrentChapter
-  currentChapters: PVStateCurrentChapters
+  currentChapter: InitialState['currentChapter']
+  currentChapters: InitialState['currentChapters']
   downloadsActive: InitialState['downloadsActive']
   downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
   fontScaleMode: InitialState['fontScaleMode']
   isChapters?: boolean
   navigation?: any
-  player: PVStatePlayer
-  screenPlayer: PVStateScreenPlayer
+  player: InitialState['player']
+  screenPlayer: InitialState['screenPlayer']
   screenReaderEnabled: boolean
   width: number
 }

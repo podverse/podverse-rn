@@ -4,17 +4,17 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { GlobalTheme, PVStatePlayer, PVStateScreenPlayer, PVStateSession } from '../resources/Interfaces'
+import { GlobalTheme, InitialState } from '../resources/Interfaces'
 import { TableSectionSelectors } from './TableSectionSelectors'
 import { ClipInfoView, HTMLScrollView, ScrollView, Text, TextLink, View } from './'
 
 type Props = {
   globalTheme: GlobalTheme
   navigation?: any
-  player: PVStatePlayer
-  screenPlayer: PVStateScreenPlayer
+  player: InitialState['player']
+  screenPlayer: InitialState['screenPlayer']
   screenReaderEnabled: boolean
-  session: PVStateSession
+  session: InitialState['session']
   width: number
 }
 

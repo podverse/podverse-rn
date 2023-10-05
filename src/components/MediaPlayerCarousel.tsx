@@ -5,8 +5,7 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { checkIfHasSupportedCommentTag, Episode, TranscriptRow } from 'podverse-shared'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { GlobalTheme, InitialState, PVStateCurrentChapter, PVStateCurrentChapters, PVStatePlayer, PVStateScreen,
-  PVStateScreenPlayer, PVStateSession } from '../resources/Interfaces'
+import { GlobalTheme, InitialState } from '../resources/Interfaces'
 import { playerCheckIfStateIsPlaying } from '../services/player'
 import { v4vGetPluralCurrencyUnitPerMinute } from '../services/v4v/v4v'
 import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
@@ -29,8 +28,8 @@ import {
 } from '.'
 
 type Props = {
-  currentChapter: PVStateCurrentChapter
-  currentChapters: PVStateCurrentChapters
+  currentChapter: InitialState['currentChapter']
+  currentChapters: InitialState['currentChapters']
   downloadsActive: InitialState['downloadsActive']
   downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
   fontScaleMode: InitialState['fontScaleMode']
@@ -38,11 +37,11 @@ type Props = {
   hasChapters: boolean
   navigation: any
   parsedTranscript: TranscriptRow[] | null
-  player: PVStatePlayer
-  screen: PVStateScreen
-  screenPlayer: PVStateScreenPlayer
+  player: InitialState['player']
+  screen: InitialState['screen']
+  screenPlayer: InitialState['screenPlayer']
   screenReaderEnabled: boolean
-  session: PVStateSession
+  session: InitialState['session']
 }
 
 type State = {
@@ -56,8 +55,8 @@ type State = {
 
 type MediaPlayerCarouselComponentsState = {
   accessibilityItemSelectedValue?: string | null
-  currentChapter: PVStateCurrentChapter
-  currentChapters: PVStateCurrentChapters
+  currentChapter: InitialState['currentChapter']
+  currentChapters: InitialState['currentChapters']
   downloadsActive: InitialState['downloadsActive']
   downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
   fontScaleMode: InitialState['fontScaleMode']
@@ -71,12 +70,12 @@ type MediaPlayerCarouselComponentsState = {
   isReady2?: boolean
   navigation: any
   parsedTranscript: TranscriptRow[]
-  player: PVStatePlayer
-  screen: PVStateScreen
-  screenPlayer: PVStateScreenPlayer
+  player: InitialState['player']
+  screen: InitialState['screen']
+  screenPlayer: InitialState['screenPlayer']
   screenReaderEnabled: boolean
   screenWidth: number
-  session: PVStateSession
+  session: InitialState['session']
 }
 
 const testIDPrefix = 'media_player_carousel'

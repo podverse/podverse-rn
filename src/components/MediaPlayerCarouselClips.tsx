@@ -7,7 +7,7 @@ import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
-import { InitialState, PVStatePlayer, PVStateScreenPlayer, RenderClipTableCellParams } from '../resources/Interfaces'
+import { InitialState, RenderClipTableCellParams } from '../resources/Interfaces'
 import PVEventEmitter from '../services/eventEmitter'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
@@ -18,8 +18,8 @@ type Props = {
   downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
   fontScaleMode: InitialState['fontScaleMode']
   navigation?: any
-  player: PVStatePlayer
-  screenPlayer: PVStateScreenPlayer
+  player: InitialState['player']
+  screenPlayer: InitialState['screenPlayer']
   screenReaderEnabled: InitialState['screenReaderEnabled']
   width: number
 }

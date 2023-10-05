@@ -2,12 +2,12 @@ import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { WebView } from 'react-native-webview'
 import { translate } from '../lib/i18n'
-import { PVStatePlayer } from '../resources/Interfaces'
+import { InitialState } from '../resources/Interfaces'
 import { TableSectionSelectors, View } from '.'
 
 type Props = {
   navigation?: any
-  player: PVStatePlayer
+  player: InitialState['player']
   width: number
 }
 

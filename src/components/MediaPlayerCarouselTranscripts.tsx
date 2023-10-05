@@ -3,7 +3,7 @@ import { AppState, AppStateStatus, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { PVStateScreen } from '../resources/Interfaces'
+import { InitialState } from '../resources/Interfaces'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPlaybackSpeed, playerGetPosition, playerHandleSeekTo } from '../services/player'
 import { PVSearchBar } from './PVSearchBar'
@@ -13,7 +13,7 @@ type Props = {
   isNowPlaying?: boolean
   navigation?: any
   parsedTranscript: TranscriptRow[]
-  screen: PVStateScreen
+  screen: InitialState['screen']
   screenReaderEnabled: boolean
   width?: number
 }
