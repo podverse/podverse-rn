@@ -178,8 +178,9 @@ export function PlayerProgressBar(props: Props) {
           await playerHandleSeekTo(innerPosition)
           loadChapterPlaybackInfo()
           resumeChapterInterval()
-
           /*
+            slidingPositionOverride is required to make the currentTime label update with the slider's hhmmss value,
+            prior to the seekTo method being called on slide complete.
             Calling PVAudioPlayer.seekTo(innerPosition) in playerHandleSeekTo causes the progress bar
             to re-render with the *last* innerPosition, before finally seeking to the new innerPosition
             and then re-rendering with the new correct innerPosition. To workaround this, I am adding
@@ -188,11 +189,6 @@ export function PlayerProgressBar(props: Props) {
           setTimeout(() => {
             setLocalState({ ...localState, slidingPositionOverride: 0 })
           }, 1500)
-
-          const { currentChapters } = getGlobal()
-          if (currentChapters && currentChapters.length > 1) {
-            loadChapterPlaybackInfo()
-          }
         }}
         onValueChange={(newProgressValue) => {
           handleOnValueChange(newProgressValue, localState, setLocalState)
