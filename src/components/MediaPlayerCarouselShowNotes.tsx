@@ -10,11 +10,12 @@ import { ClipInfoView, HTMLScrollView, ScrollView, Text, TextLink, View } from '
 
 type Props = {
   globalTheme: GlobalTheme
+  isLoggedIn: InitialState['session']['isLoggedIn']
   navigation?: any
   player: InitialState['player']
   screenPlayer: InitialState['screenPlayer']
   screenReaderEnabled: boolean
-  session: InitialState['session']
+  userId: InitialState['session']['userInfo']['id']
   width: number
 }
 
@@ -38,7 +39,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
   }
 
   render() {
-    const { globalTheme, navigation, player, screenPlayer, screenReaderEnabled, session, width } = this.props
+    const { globalTheme, isLoggedIn, navigation, player, screenPlayer, screenReaderEnabled, userId, width } = this.props
     const { showShortHtml } = this.state
     const { episode, nowPlayingItem } = player
     const { isLoading } = screenPlayer
@@ -61,6 +62,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
             episodeTitle={episode.title}
             globalTheme={globalTheme}
             isLoading={isLoading}
+            isLoggedIn={isLoggedIn}
             isOfficialChapter={mediaRef.isOfficialChapter}
             isOfficialSoundBite={mediaRef.isOfficialSoundBite}
             isPublic={mediaRef.isPublic}
@@ -68,9 +70,9 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
             {...(mediaRef.owner ? { ownerId: mediaRef.owner.id } : {})}
             {...(mediaRef.owner ? { ownerIsPublic: mediaRef.owner.isPublic } : {})}
             {...(mediaRef.owner ? { ownerName: mediaRef.owner.name } : {})}
-            session={session}
             startTime={mediaRef.startTime}
             {...(mediaRef.title ? { title: mediaRef.title } : {})}
+            userId={userId}
           />
         )}
         <View style={styles.showNotesWrapper} transparent>

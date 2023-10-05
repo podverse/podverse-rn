@@ -294,6 +294,11 @@ export class PlayerScreen extends React.Component<Props> {
       mediaRef = convertNowPlayingItemToMediaRef(nowPlayingItem)
     }
 
+    const isLoggedIn = safelyUnwrapNestedVariable(() => session?.isLoggedIn, false)
+    const streamingValueOn = safelyUnwrapNestedVariable(() => session?.v4v?.streamingValueOn, false)
+    const userId = safelyUnwrapNestedVariable(() => session?.userInfo?.id, '')
+    const valueTimeSplitIsActive = safelyUnwrapNestedVariable(() => session?.v4v?.valueTimeSplitIsActive, false)
+
     const podcastId = nowPlayingItem ? nowPlayingItem.podcastId : null
     const episodeId = episode?.id || null
     const mediaRefId = mediaRef?.id || null
@@ -321,13 +326,16 @@ export class PlayerScreen extends React.Component<Props> {
               fontScaleMode={fontScaleMode}
               globalTheme={globalTheme}
               hasChapters={hasChapters}
+              isLoggedIn={isLoggedIn}
               navigation={navigation}
               parsedTranscript={parsedTranscript}
               player={player}
               screen={screen}
               screenPlayer={screenPlayer}
               screenReaderEnabled={screenReaderEnabled}
-              session={session}
+              streamingValueOn={streamingValueOn}
+              userId={userId}
+              valueTimeSplitIsActive={valueTimeSplitIsActive}
             />
             <PlayerControls navigation={navigation} />
             <ActionSheet

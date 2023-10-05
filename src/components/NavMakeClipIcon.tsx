@@ -20,6 +20,7 @@ export const NavMakeClipIcon = (props: Props) => {
   if (Config.DISABLE_MAKE_CLIP) return null
   
   const [session] = useGlobal("session")
+  
   const { addByRSSPodcastFeedUrl, getInitialProgressValue, navigation } = props
 
   const handlePress = async () => {
@@ -35,11 +36,10 @@ export const NavMakeClipIcon = (props: Props) => {
       const safeIsLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
 
       PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_DESTROY_PRIOR_PLAYERS)
-
       navigation.navigate(PV.RouteNames.MakeClipScreen, {
         initialProgressValue,
         initialPrivacy: isPublic,
-        safeIsLoggedIn,
+        isLoggedIn: safeIsLoggedIn,
         globalTheme
       })
     }

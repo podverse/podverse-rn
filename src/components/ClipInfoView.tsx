@@ -14,6 +14,7 @@ type Props = {
   endTime?: number
   globalTheme: GlobalTheme
   isLoading?: boolean
+  isLoggedIn: InitialState['session']['isLoggedIn']
   isOfficialChapter?: boolean
   isOfficialSoundBite?: boolean
   isPublic?: boolean
@@ -21,9 +22,9 @@ type Props = {
   ownerId?: string
   ownerIsPublic?: boolean
   ownerName?: string
-  session: InitialState['session']
   startTime: number
   title?: string
+  userId: InitialState['session']['userInfo']['id']
 }
 
 const testIDPrefix = 'clip_info_view'
@@ -43,9 +44,8 @@ export class ClipInfoView extends React.PureComponent<Props> {
   }
 
   _handleEditPress = async () => {
-    const { globalTheme, isPublic, navigation, session } = this.props
+    const { globalTheme, isLoggedIn, isPublic, navigation } = this.props
     const initialProgressValue = await playerGetPosition()
-    const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
 
     navigation.navigate(PV.RouteNames.MakeClipScreen, {
       initialProgressValue,
@@ -66,10 +66,9 @@ export class ClipInfoView extends React.PureComponent<Props> {
       ownerIsPublic,
       ownerId,
       ownerName = translate('anonymous'),
-      session,
-      startTime
+      startTime,
+      userId
     } = this.props
-    const userId = session?.userInfo?.id
 
     let { title } = this.props
     if (!title) {

@@ -35,13 +35,16 @@ type Props = {
   fontScaleMode: InitialState['fontScaleMode']
   globalTheme: GlobalTheme
   hasChapters: boolean
+  isLoggedIn: InitialState['session']['isLoggedIn']
   navigation: any
   parsedTranscript: TranscriptRow[] | null
   player: InitialState['player']
   screen: InitialState['screen']
   screenPlayer: InitialState['screenPlayer']
   screenReaderEnabled: boolean
-  session: InitialState['session']
+  streamingValueOn: InitialState['session']['v4v']['streamingValueOn']
+  userId: InitialState['session']['userInfo']['id']
+  valueTimeSplitIsActive: InitialState['session']['v4v']['valueTimeSplitIsActive']
 }
 
 type State = {
@@ -66,6 +69,7 @@ type MediaPlayerCarouselComponentsState = {
   hasChat: boolean
   hasComments: boolean
   hasTranscript: boolean
+  isLoggedIn: InitialState['session']['isLoggedIn']
   isReady?: boolean
   isReady2?: boolean
   navigation: any
@@ -75,7 +79,7 @@ type MediaPlayerCarouselComponentsState = {
   screenPlayer: InitialState['screenPlayer']
   screenReaderEnabled: boolean
   screenWidth: number
-  session: InitialState['session']
+  userId: InitialState['session']['userInfo']['id']
 }
 
 const testIDPrefix = 'media_player_carousel'
@@ -202,8 +206,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   render() {
     const { currentChapter, currentChapters, downloadsActive, downloadedEpisodeIds,
-      fontScaleMode, globalTheme, navigation, parsedTranscript, player, screen,
-      screenPlayer, screenReaderEnabled, session } = this.props
+      fontScaleMode, globalTheme, isLoggedIn, navigation, parsedTranscript, player, screen,
+      screenPlayer, screenReaderEnabled, streamingValueOn, userId, valueTimeSplitIsActive } = this.props
     const { accessibilityItemSelected, activeIndex, isReady, isReady2 } = this.state
     const { episode, nowPlayingItem, playbackState } = player
     const { screenWidth } = screen
@@ -216,7 +220,6 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       getBoostagramItemValueTags(nowPlayingItem)
     )
     const { streamingAmount } = activeProviderSettings || {}
-    const { streamingValueOn } = session.v4v
 
     const isPlaying = playerCheckIfStateIsPlaying(playbackState)
 
@@ -234,17 +237,16 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
     const streamingButtonSubTextStyles = streamingValueOn ? [styles.boostButtonSubText] : [styles.boostButtonSubText]
 
-    const boostagramButtonText = !!session?.v4v?.valueTimeSplitIsActive
+    const boostagramButtonText = !!valueTimeSplitIsActive
       ? translate('Time splits').toUpperCase()
       : translate('Boostagram').toUpperCase()
 
-    const boostagramButtonMainTextStyles = !!session?.v4v?.valueTimeSplitIsActive
+    const boostagramButtonMainTextStyles = !!valueTimeSplitIsActive
       ? [styles.boostagramButtonMainText, { color: PV.Colors.green }]
       : [styles.boostagramButtonMainText]
 
-    const boostagramIconColor = !!session?.v4v?.valueTimeSplitIsActive ? 'green' : 'white'
-
-    const boostagramIconName = !!session?.v4v?.valueTimeSplitIsActive ? 'clock' : 'comment-alt'
+    const boostagramIconColor = !!valueTimeSplitIsActive ? 'green' : 'white'
+    const boostagramIconName = !!valueTimeSplitIsActive ? 'clock' : 'comment-alt'
 
     const streamingIndicatorStyles =
       Platform.OS === 'ios'
@@ -269,6 +271,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       hasChat,
       hasComments,
       hasTranscript,
+      isLoggedIn,
       isReady,
       isReady2,
       parsedTranscript: parsedTranscript || [],
@@ -277,7 +280,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       screenPlayer,
       screenReaderEnabled,
       screenWidth,
-      session
+      userId
     })
 
     return (
@@ -429,8 +432,8 @@ const accessibilitySelectorItems = (
 const mediaPlayerCarouselComponents = (x: MediaPlayerCarouselComponentsState) => {
   const { accessibilityItemSelectedValue, currentChapter, currentChapters, downloadsActive,
     downloadedEpisodeIds, fontScaleMode, globalTheme, handlePressClipInfo,
-    hasChapters, hasChat, hasComments, hasTranscript, isReady, isReady2, navigation, parsedTranscript, player,
-    screen, screenPlayer, screenReaderEnabled, screenWidth, session } = x
+    hasChapters, hasChat, hasComments, hasTranscript, isLoggedIn, isReady, isReady2, navigation, parsedTranscript,
+    player, screen, screenPlayer, screenReaderEnabled, screenWidth, userId } = x
 
   return (
     <>
@@ -453,11 +456,12 @@ const mediaPlayerCarouselComponents = (x: MediaPlayerCarouselComponentsState) =>
               {accessibilityItemSelectedValue === _episodeSummaryKey && (
                 <MediaPlayerCarouselShowNotes
                   globalTheme={globalTheme}
+                  isLoggedIn={isLoggedIn}
+                  navigation={navigation}
                   player={player}
                   screenPlayer={screenPlayer}
                   screenReaderEnabled={screenReaderEnabled}
-                  navigation={navigation}
-                  session={session}
+                  userId={userId}
                   width={screenWidth} />
               )}
               {accessibilityItemSelectedValue === _chaptersKey && hasChapters && (
@@ -514,11 +518,12 @@ const mediaPlayerCarouselComponents = (x: MediaPlayerCarouselComponentsState) =>
             <>
               <MediaPlayerCarouselShowNotes
                 globalTheme={globalTheme}
+                isLoggedIn={isLoggedIn}
                 navigation={navigation}
                 player={player}
                 screenPlayer={screenPlayer}
                 screenReaderEnabled={screenReaderEnabled}
-                session={session}
+                userId={userId}
                 width={screenWidth} />
               {hasChapters && (
                 <MediaPlayerCarouselChapters
