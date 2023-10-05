@@ -346,7 +346,7 @@ export const audioTogglePlay = async () => {
 
 const audioHandleLoadClip = async (item: NowPlayingItem, shouldPlay: boolean) => {
   PVEventEmitter.emit(PV.Events.PLAYER_START_CLIP_TIMER)
-  await PVAudioPlayer.seekTo(item.clipStartTime || 0)
+  await audioHandleSeekTo(item.clipStartTime || 0)
   if (shouldPlay) {
     audioHandlePlayWithUpdate()
   }
