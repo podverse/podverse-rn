@@ -24,6 +24,7 @@ import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { core } from '../styles'
 import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
+import { RenderClipTableCellParams, RenderEpisodeTableCellParams } from 'src/resources/Interfaces'
 
 type Props = {
   navigation?: any
@@ -137,14 +138,21 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _ItemSeparatorComponent = () => <Divider optional />
 
-  _renderItem = ({ item, index }) => {
+  _renderItem = ({ item, index }, { downloadedEpisodeIds,
+    downloadsActive,
+    fontScaleMode,
+    screenReaderEnabled, session }: RenderEpisodeTableCellParams | RenderClipTableCellParams) => {
     const { navigation } = this.props
     if (item.startTime) {
       return item.episode && item.episode.podcast ? (
         <ClipTableCell
+          downloadedEpisodeIds={downloadedEpisodeIds}
+          downloadsActive={downloadsActive}
+          fontScaleMode={fontScaleMode}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           item={item}
           navigation={navigation}
+          screenReaderEnabled={screenReaderEnabled}
           showEpisodeInfo
           showPodcastInfo
           testID={`${testIDPrefix}_clip_item_${index}`}
@@ -157,6 +165,9 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
 
       return (
         <EpisodeTableCell
+          downloadsActive={downloadsActive}
+          downloadedEpisodeIds={downloadedEpisodeIds}
+          fontScaleMode={fontScaleMode}
           handleDownloadPress={() => this._handleDownloadPressed(item)}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null, userPlaybackPosition))}
           handleNavigationPress={() =>
@@ -166,6 +177,8 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
           item={item}
           mediaFileDuration={mediaFileDuration}
           navigation={navigation}
+          screenReaderEnabled={screenReaderEnabled}
+          session={session}
           showPodcastInfo
           testID={`${testIDPrefix}_episode_item_${index}`}
           userPlaybackPosition={userPlaybackPosition}
@@ -230,7 +243,14 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
       selectedItem,
       showActionSheet
     } = this.state
-    const { screenPlaylist, session } = this.global
+    const {
+      downloadedEpisodeIds,
+      downloadsActive,
+      fontScaleMode,
+      screenPlaylist,
+      screenReaderEnabled,
+      session
+    } = this.global
     const playlist = screenPlaylist.playlist ? screenPlaylist.playlist : navigation.getParam('playlist')
     const flatListData = screenPlaylist.flatListData || []
     const flatListDataTotalCount = screenPlaylist.flatListDataTotalCount || 0
@@ -266,7 +286,13 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
               safeKeyExtractor(testIDPrefix, index, item?.clipId || item?.episodeId || item?.id)
             }
             noResultsMessage={translate('No playlist items found')}
-            renderItem={this._renderItem}
+            renderItem={(x: any) => this._renderItem(x, {
+              downloadedEpisodeIds,
+              downloadsActive,
+              fontScaleMode,
+              screenReaderEnabled,
+              session
+            })}
           />
         )}
         <ActionSheet

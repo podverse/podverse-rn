@@ -9,6 +9,7 @@ import { PV } from '../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
 import { trackPageView } from '../services/tracking'
+import { RenderClipTableCellParams } from 'src/resources/Interfaces'
 
 type Props = {
   navigation: any
@@ -206,7 +207,12 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
       this.setState({ showActionSheet: false }, resolve)
     })
 
-  _renderItem = ({ item }) => {
+  _renderItem = ({ item, index }, {
+    downloadedEpisodeIds,
+    downloadsActive,
+    fontScaleMode,
+    screenReaderEnabled
+  }: RenderClipTableCellParams) => {
     const { navigation } = this.props
     const { viewType } = this.state
     const episode = this.props.navigation.getParam('episode') || {}
@@ -214,12 +220,17 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
 
     return (
       <ClipTableCell
+        downloadedEpisodeIds={downloadedEpisodeIds}
+        downloadsActive={downloadsActive}
+        fontScaleMode={fontScaleMode}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
         item={item}
         isChapter={viewType === PV.Filters._chaptersKey}
         navigation={navigation}
+        screenReaderEnabled={screenReaderEnabled}
         showEpisodeInfo={false}
         showPodcastInfo={false}
+        testID={`${testIDPrefix}_item_${index}`}
       />
     )
   }
@@ -227,6 +238,10 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const { flatListData, flatListDataTotalCount, isLoadingMore, selectedItem, showActionSheet, viewType } = this.state
+    const { downloadedEpisodeIds,
+      downloadsActive,
+      fontScaleMode,
+      screenReaderEnabled } = this.global
 
     return (
       <View style={styles.view}>
@@ -239,7 +254,12 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
           keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
           ListHeaderComponent={this._ListHeaderComponent}
           onEndReached={this._onEndReached}
-          renderItem={this._renderItem}
+          renderItem={(x: any) => this._renderItem(x, {
+            downloadedEpisodeIds,
+            downloadsActive,
+            fontScaleMode,
+            screenReaderEnabled
+          })}
         />
         <ActionSheet
           handleCancelPress={this._handleCancelPress}

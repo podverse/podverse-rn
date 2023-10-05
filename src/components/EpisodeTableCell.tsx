@@ -4,6 +4,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { generateEpisodeAccessibilityText, readableDate, removeAndDecodeHTMLInString } from '../lib/utility'
 import { PV } from '../resources'
+import { InitialState, PVStateSession } from '../resources/Interfaces'
 import { playerCheckIfDownloadableFile } from '../services/player'
 import { images } from '../styles'
 import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
@@ -11,6 +12,9 @@ import { TimeRemainingWidget } from './TimeRemainingWidget'
 import { FastImage, NewContentBadge, Text, View } from './'
 
 type Props = {
+  downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
+  downloadsActive: InitialState['downloadsActive']
+  fontScaleMode: InitialState['fontScaleMode']
   handleDeletePress?: any
   handleDownloadPress?: any
   handleMorePress?: any
@@ -21,6 +25,9 @@ type Props = {
   item?: any
   mediaFileDuration?: number
   navigation: any
+  newEpisodesCount?: InitialState['newEpisodesCount']
+  screenReaderEnabled: InitialState['screenReaderEnabled']
+  session: PVStateSession
   shouldHideCompleted?: boolean
   showPodcastInfo?: boolean
   testID: string
@@ -32,6 +39,10 @@ type Props = {
 export class EpisodeTableCell extends React.PureComponent<Props> {
   render() {
     const {
+      downloadedEpisodeIds,
+      downloadsActive,
+      fontScaleMode,
+      newEpisodesCount,
       handleDeletePress,
       handleDownloadPress,
       handleMorePress,
@@ -40,6 +51,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       hideImage,
       item,
       mediaFileDuration,
+      screenReaderEnabled,
+      session,
       shouldHideCompleted,
       showPodcastInfo,
       testID,
@@ -61,12 +74,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     }
 
     const {
-      downloadedEpisodeIds,
-      downloadsActive,
-      fontScaleMode,
-      newEpisodesCount,
-      screenReaderEnabled,
-      session
+
     } = this.global
     const { userInfo } = session
     const { historyItemsIndex } = userInfo

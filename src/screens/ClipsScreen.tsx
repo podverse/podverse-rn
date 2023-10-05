@@ -26,6 +26,7 @@ import { trackPageView } from '../services/tracking'
 import { getLoggedInUserMediaRefs } from '../services/user'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { core } from '../styles'
+import { RenderClipTableCellParams } from 'src/resources/Interfaces'
 
 const _fileName = 'src/screens/ClipsScreen.tsx'
 
@@ -275,13 +276,22 @@ export class ClipsScreen extends React.Component<Props, State> {
     })
   }
 
-  _renderClipItem = ({ item, index }) => {
+  _renderClipItem = ({ item, index }, {
+    downloadedEpisodeIds,
+    downloadsActive,
+    fontScaleMode,
+    screenReaderEnabled
+  }: RenderClipTableCellParams) => {
     const { navigation } = this.props
     return item?.episode?.id ? (
       <ClipTableCell
+        downloadedEpisodeIds={downloadedEpisodeIds}
+        downloadsActive={downloadsActive}
+        fontScaleMode={fontScaleMode}
         item={item}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.episode.podcast))}
         navigation={navigation}
+        screenReaderEnabled={screenReaderEnabled}
         showEpisodeInfo
         showPodcastInfo
         testID={`${testIDPrefix}_clip_item_${index}`}
@@ -427,7 +437,10 @@ export class ClipsScreen extends React.Component<Props, State> {
       showActionSheet,
       showNoInternetConnectionMessage
     } = this.state
-    const { session } = this.global
+    const { downloadedEpisodeIds,
+      downloadsActive,
+      fontScaleMode,
+      screenReaderEnabled, session } = this.global
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => session.userInfo.subscribedPodcastIds, '')
 
     const noSubscribedPodcasts =
@@ -473,7 +486,12 @@ export class ClipsScreen extends React.Component<Props, State> {
             }
             onEndReached={this._onEndReached}
             onRefresh={this._onRefresh}
-            renderItem={this._renderClipItem}
+            renderItem={(x: any) => this._renderClipItem(x, {
+              downloadedEpisodeIds,
+              downloadsActive,
+              fontScaleMode,
+              screenReaderEnabled
+            })}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             stickyHeader
           />

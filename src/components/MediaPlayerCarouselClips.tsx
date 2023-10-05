@@ -7,16 +7,20 @@ import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
-import { PVStatePlayer, PVStateScreenPlayer } from '../resources/Interfaces'
+import { InitialState, PVStatePlayer, PVStateScreenPlayer, RenderClipTableCellParams } from '../resources/Interfaces'
 import PVEventEmitter from '../services/eventEmitter'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from './'
 
 type Props = {
+  downloadsActive: InitialState['downloadsActive']
+  downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
+  fontScaleMode: InitialState['fontScaleMode']
   navigation?: any
   player: PVStatePlayer
   screenPlayer: PVStateScreenPlayer
+  screenReaderEnabled: InitialState['screenReaderEnabled']
   width: number
 }
 
@@ -225,11 +229,13 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     }
   }
 
-  _renderItem = ({ item, index }) => {
-    const { navigation, player, screenPlayer } = this.props
+  _renderItem = ({ item, index }, {
+    downloadsActive, downloadedEpisodeIds, fontScaleMode,
+    player, screenPlayer, screenReaderEnabled }: RenderClipTableCellParams) => {
+    const { navigation } = this.props
     const { episode } = player
     const podcast = episode?.podcast || {}
-    const { queryFrom } = screenPlayer
+    const queryFrom = screenPlayer?.queryFrom || null
     const testID = getTestID()
 
     if (queryFrom === PV.Filters._fromThisEpisodeKey) {
@@ -241,10 +247,14 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
 
     return item?.episode?.id ? (
       <ClipTableCell
+        downloadedEpisodeIds={downloadedEpisodeIds}
+        downloadsActive={downloadsActive}
+        fontScaleMode={fontScaleMode}
         item={item}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
         hideImage
         navigation={navigation}
+        screenReaderEnabled={screenReaderEnabled}
         showEpisodeInfo={queryFrom !== PV.Filters._fromThisEpisodeKey}
         showPodcastInfo={false}
         testID={`${testID}_item_${index}`}
@@ -258,7 +268,9 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   _ItemSeparatorComponent = () => <Divider />
 
   render() {
-    const { navigation, screenPlayer, width } = this.props
+    const {
+      downloadsActive, downloadedEpisodeIds, fontScaleMode, navigation,
+      player, screenPlayer, screenReaderEnabled, width } = this.props
     const {
       flatListData,
       flatListDataTotalCount,
@@ -305,7 +317,14 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
             keyExtractor={(item: any, index: number) => safeKeyExtractor(getTestID(), index, item?.id)}
             noResultsMessage={noResultsMessage}
             onEndReached={this._onEndReached}
-            renderItem={this._renderItem}
+            renderItem={(x: any) => this._renderItem(x, {
+              downloadsActive,
+              downloadedEpisodeIds,
+              fontScaleMode,
+              player,
+              screenPlayer,
+              screenReaderEnabled
+            })}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             transparent
           />

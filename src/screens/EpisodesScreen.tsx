@@ -21,6 +21,7 @@ import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { getUniqueArrayByKey, safeKeyExtractor, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
+import { InitialState, RenderEpisodeTableCellParams } from '../resources/Interfaces'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisodes } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
@@ -400,15 +401,18 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     }
   }
 
-  _renderEpisodeItem = ({ item, index }) => {
+  _renderEpisodeItem = ({ item, index },
+    { downloadsActive, downloadedEpisodeIds, fontScaleMode, hideCompleted,
+      newEpisodesCount, screenReaderEnabled, session }: RenderEpisodeTableCellParams) => {
     const { navigation } = this.props
     const { completed, mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
-
-    const { hideCompleted } = this.global
     const shouldHideCompleted = hideCompleted && completed
 
     return (
       <EpisodeTableCell
+        downloadsActive={downloadsActive}
+        downloadedEpisodeIds={downloadedEpisodeIds}
+        fontScaleMode={fontScaleMode}
         item={item}
         handleDeletePress={() => this._handleDeleteEpisode(item)}
         handleMorePress={() =>
@@ -424,6 +428,9 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
         }}
         mediaFileDuration={mediaFileDuration}
         navigation={navigation}
+        newEpisodesCount={newEpisodesCount}
+        screenReaderEnabled={screenReaderEnabled}
+        session={session}
         shouldHideCompleted={shouldHideCompleted}
         showPodcastInfo
         testID={`${testIDPrefix}_episode_item_${index}`}
@@ -535,7 +542,14 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       showNoInternetConnectionMessage
     } = this.state
     const { navigation } = this.props
-    const { session } = this.global
+    const { downloadsActive,
+      downloadedEpisodeIds,
+      fontScaleMode,
+      hideCompleted,
+      newEpisodesCount,
+      screenReaderEnabled,
+      session
+    } = this.global
     const { subscribedPodcastIds } = session?.userInfo
 
     const noSubscribedPodcasts =
@@ -586,7 +600,15 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
             }
             onEndReached={this._onEndReached}
             onRefresh={this._onRefresh}
-            renderItem={this._renderEpisodeItem}
+            renderItem={(x: any) => this._renderEpisodeItem(x, {
+              downloadsActive,
+              downloadedEpisodeIds,
+              fontScaleMode,
+              hideCompleted,
+              newEpisodesCount,
+              screenReaderEnabled,
+              session
+            })}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             stickyHeader
           />

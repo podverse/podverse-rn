@@ -68,6 +68,7 @@ import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { markAsPlayedEpisodesAll, markAsPlayedEpisodesMultiple } from '../state/actions/userHistoryItem'
 import { core } from '../styles'
 import { checkIfLoggedIn } from '../services/auth'
+import { RenderClipTableCellParams, RenderEpisodeTableCellParams } from 'src/resources/Interfaces'
 
 const _fileName = 'src/screens/PodcastScreen.tsx'
 
@@ -557,7 +558,8 @@ export class PodcastScreen extends React.Component<Props, State> {
     }
   }
 
-  _renderItem = ({ item, index }: RenderItemArg) => {
+  _renderItem = ({ item, index }: RenderItemArg, { downloadsActive, downloadedEpisodeIds, fontScaleMode, hideCompleted,
+    newEpisodesCount, screenReaderEnabled, session }: RenderEpisodeTableCellParams | RenderClipTableCellParams) => {
     const { navigation } = this.props
     const { podcast, viewType } = this.state
 
@@ -565,10 +567,14 @@ export class PodcastScreen extends React.Component<Props, State> {
       return (
         item?.episode?.id && (
           <ClipTableCell
+            downloadedEpisodeIds={downloadedEpisodeIds}
+            downloadsActive={downloadsActive}
+            fontScaleMode={fontScaleMode}
             handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
             hideImage
             item={item}
             navigation={navigation}
+            screenReaderEnabled={screenReaderEnabled}
             showEpisodeInfo
             showPodcastInfo={false}
             testID={`${testIDPrefix}_clip_item_${index}`}
@@ -593,13 +599,15 @@ export class PodcastScreen extends React.Component<Props, State> {
       }
       const { completed, mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item?.id)
 
-      const { hideCompleted } = this.global
       const shouldHideCompleted =
         (hideCompleted && viewType === PV.Filters._episodesKey && completed) ||
         (!hideCompleted && viewType === PV.Filters._hideCompletedKey && completed)
 
       return (
         <EpisodeTableCell
+          downloadedEpisodeIds={downloadedEpisodeIds}
+          downloadsActive={downloadsActive}
+          fontScaleMode={fontScaleMode}
           handleDeletePress={() => this._handleDeleteEpisode(item)}
           handleDownloadPress={() => this._handleDownloadPressed(item)}
           handleMorePress={() =>
@@ -627,9 +635,12 @@ export class PodcastScreen extends React.Component<Props, State> {
           hideControls={this.state.multiSelectEnabled}
           hideImage
           item={episode}
+          newEpisodesCount={newEpisodesCount}
+          screenReaderEnabled={screenReaderEnabled}
           selected={this.state.multiSelectEnabled && this.state.selectedEpisodes.includes(episode.id)}
           mediaFileDuration={mediaFileDuration}
           navigation={navigation}
+          session={session}
           shouldHideCompleted={shouldHideCompleted}
           testID={testId}
           userPlaybackPosition={userPlaybackPosition}
@@ -1071,6 +1082,17 @@ export class PodcastScreen extends React.Component<Props, State> {
       flatListData,
       flatListDataTotalCount
     } = this.state
+
+    const {
+      downloadsActive,
+      downloadedEpisodeIds,
+      fontScaleMode,
+      hideCompleted,
+      newEpisodesCount,
+      screenReaderEnabled,
+      session
+    } = this.global
+    
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
 
@@ -1280,7 +1302,15 @@ export class PodcastScreen extends React.Component<Props, State> {
                 ListHeaderComponent={this._ListHeaderComponent}
                 noResultsMessage={noResultsMessage}
                 onEndReached={this._onEndReached}
-                renderItem={this._renderItem}
+                renderItem={(x: any) => this._renderItem(x, { 
+                  downloadsActive,
+                  downloadedEpisodeIds,
+                  fontScaleMode,
+                  hideCompleted,
+                  newEpisodesCount,
+                  screenReaderEnabled,
+                  session
+                })}
                 listRef={(ref) => (this.listRef = ref)}
                 showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               />

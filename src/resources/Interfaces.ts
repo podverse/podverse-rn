@@ -87,6 +87,29 @@ export type PVStateScreen = {
   screenWidth: number
 }
 
+export type RenderEpisodeTableCellParams = {
+  downloadsActive: InitialState['downloadsActive']
+  downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
+  fontScaleMode: InitialState['fontScaleMode']
+  hideCompleted: InitialState['hideCompleted']
+  newEpisodesCount: InitialState['newEpisodesCount']
+  screenReaderEnabled: InitialState['screenReaderEnabled']
+  session: InitialState['session']
+}
+
+export type RenderClipTableCellParams = {
+  currentChapter?: InitialState['currentChapter']
+  downloadedEpisodeIds: InitialState['downloadedEpisodeIds']
+  downloadsActive: InitialState['downloadsActive']
+  fontScaleMode: InitialState['fontScaleMode']
+  hideCompleted?: InitialState['hideCompleted']
+  newEpisodesCount?: InitialState['newEpisodesCount']
+  player?: InitialState['player']
+  screenPlayer?: InitialState['screenPlayer']
+  screenReaderEnabled: InitialState['screenReaderEnabled']
+  session?: InitialState['session']
+}
+
 export interface GlobalTheme {
   actionSheetButton?: any
   actionSheetButtonCancel?: any

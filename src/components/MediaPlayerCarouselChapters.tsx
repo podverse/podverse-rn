@@ -6,7 +6,7 @@ import { hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import { InitialState, PVStateCurrentChapter, PVStateCurrentChapters,
-  PVStatePlayer, PVStateScreenPlayer } from '../resources/Interfaces'
+  PVStatePlayer, PVStateScreenPlayer, RenderClipTableCellParams } from '../resources/Interfaces'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPlaybackSpeed } from '../services/player'
@@ -191,9 +191,9 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
       )
     })
 
-  _renderItem = ({ item, index }) => {
-    const { currentChapter, downloadsActive, downloadedEpisodeIds, fontScaleMode,
-      navigation, player, screenReaderEnabled } = this.props
+  _renderItem = ({ item, index }, { currentChapter, downloadsActive, downloadedEpisodeIds,
+    fontScaleMode, player, screenReaderEnabled }: RenderClipTableCellParams) => {
+    const { navigation } = this.props
     const { episode } = player
     const podcast = episode?.podcast || {}
     const testID = getTestID()
@@ -211,7 +211,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
         fontScaleMode={fontScaleMode}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
         isChapter
-        isNowPlayingItem={currentChapter && currentChapter.id === item.id}
+        isNowPlayingItem={!!currentChapter && currentChapter.id === item.id}
         item={item}
         itemType='chapter'
         loadChapterOnPlay
@@ -250,8 +250,9 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   _ItemSeparatorComponent = () => <Divider />
 
   render() {
-    const { currentChapters, navigation, screenPlayer,
-      screenReaderEnabled, width } = this.props
+    const { currentChapter, currentChapters, downloadsActive, downloadedEpisodeIds,
+      fontScaleMode, navigation, player, screenPlayer, screenReaderEnabled,
+      width } = this.props
     const { autoScrollOn } = this.state
     const {
       isLoading,
@@ -296,7 +297,14 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
             noResultsMessage={noResultsMessage}
             noResultsSubMessage={noResultsSubMessage}
             onScrollBeginDrag={this.disableAutoscroll}
-            renderItem={this._renderItem}
+            renderItem={(x: any) => this._renderItem(x, {
+              currentChapter,
+              downloadsActive,
+              downloadedEpisodeIds,
+              fontScaleMode,
+              player,
+              screenReaderEnabled
+            })}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             transparent
           />
