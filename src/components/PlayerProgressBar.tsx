@@ -166,7 +166,7 @@ export function PlayerProgressBar(props: Props) {
           */
           setTimeout(() => {
             setGlobal({ slidingPositionOverride: null })
-          }, 1333)
+          }, 4333)
         }}
         onValueChange={(newProgressValue) => {
           handleOnValueChange(newProgressValue)
