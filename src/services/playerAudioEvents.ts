@@ -11,6 +11,7 @@ import {
   playerPlayNextChapterOrQueueItem,
   playerPlayPreviousChapterOrReturnToBeginningOfTrack
 } from '../state/actions/player'
+import { handleAABrowseMediaId, handlePlayRemoteMediaId } from '../lib/carplay/PVCarPlay.android'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
@@ -116,7 +117,7 @@ const syncDurationWithMetaData = async () => {
 
 export const audioHandleQueueEnded = (x: any) => {
   setTimeout(() => {
-    (async () => {
+    ;(async () => {
       PVEventEmitter.emit(PV.Events.PLAYER_DISMISS)
       await audioResetHistoryItemQueueEnded(x)
       await playerClearNowPlayingItem()
@@ -126,7 +127,7 @@ export const audioHandleQueueEnded = (x: any) => {
 
 export const audioHandleActiveTrackChanged = (x: any) => {
   setTimeout(() => {
-    (async () => {
+    ;(async () => {
       await audioResetHistoryItemActiveTrackChanged(x)
     })()
   }, 0)
@@ -198,7 +199,7 @@ module.exports = async () => {
   })
 
   PVAudioPlayer.addEventListener(Event.PlaybackState, (x) => {
-    (async () => {
+    ;(async () => {
       debugLogger('playback-state', x)
 
       // // Force global state to appear as playing since we expect it to play quickly,
@@ -321,7 +322,7 @@ module.exports = async () => {
   */
   let wasPausedByDuck = false
   PVAudioPlayer.addEventListener(Event.RemoteDuck, (x: any) => {
-    (async () => {
+    ;(async () => {
       debugLogger('remote-duck', x)
       const { paused, permanent } = x
       const currentState = await audioGetState()
@@ -356,4 +357,44 @@ module.exports = async () => {
     const isVideo = false
     debouncedHandleBackgroundTimerInterval(isVideo)
   })
+
+  // Android Auto Handlers
+  if (Platform.OS === 'android') {
+    PVAudioPlayer.addEventListener(Event.RemotePlayId, (e) => {
+      handlePlayRemoteMediaId(e.id)
+    })
+    PVAudioPlayer.addEventListener(Event.RemoteSkip, (e) => {
+      PVAudioPlayer.skip(e.index).then(() => PVAudioPlayer.play())
+    })
+    PVAudioPlayer.addEventListener(Event.RemoteBrowse, (e) => {
+      handleAABrowseMediaId(e.mediaId)
+    })
+    PVAudioPlayer.addEventListener(Event.RemotePlaySearch, (e) => {
+      // TODO: handle this
+      console.warn(e, 'not handled')
+    })
+
+    // TODO: handle skip next/previous via customActions in android auto
+    PVAudioPlayer.addEventListener(Event.RemoteCustomAction, (e) => {
+      console.log('Event.RemoteCustomAction', e)
+      switch (e.customAction) {
+        case 'customSkipPrev':
+          playerPlayPreviousChapterOrReturnToBeginningOfTrack()
+          break
+        case 'customSkipNext':
+          playerPlayNextChapterOrQueueItem()
+          break
+        case 'customJumpForward':
+          const { jumpBackwardsTime } = getGlobal()
+          audioJumpBackward(jumpBackwardsTime)
+          break
+        case 'customJumpBackward':
+          const { jumpForwardsTime } = getGlobal()
+          audioJumpForward(jumpForwardsTime)
+          break
+        default:
+          break
+      }
+    })
+  }
 }

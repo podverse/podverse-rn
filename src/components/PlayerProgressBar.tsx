@@ -3,13 +3,12 @@ import { convertSecToHHMMSS, getMediaRefStartPosition } from 'podverse-shared'
 import { useState } from 'react'
 import { Animated, StyleSheet, View } from 'react-native'
 import { Slider } from 'react-native-elements'
-import React, { getGlobal, useGlobal } from 'reactn'
+import React, { getGlobal, setGlobal, useGlobal } from 'reactn'
 import { useProgress } from 'react-native-track-player'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { playerHandleSeekTo } from '../services/player'
 import {
-  getChapterForTimeAndSetOnState,
   loadChapterPlaybackInfo,
   pauseChapterInterval,
   resumeChapterInterval
@@ -33,12 +32,12 @@ let parentScopeDuration = 0
 
 /* Only allow the onValueChange logic to run every 100 milliseconds */
 let lastOnValueChangeTime = Date.now()
-const handleOnValueChange = (newProgressValue: number, localState: any, setLocalState: any) => {
+const handleOnValueChange = (newProgressValue: number) => {
   const currentTime = Date.now()
   if (currentTime - 100 > lastOnValueChangeTime) {
     lastOnValueChangeTime = currentTime
     const slidingPositionOverride = newProgressValue * parentScopeDuration
-    setLocalState({ ...localState, slidingPositionOverride })
+    setGlobal({ slidingPositionOverride })
   }
 }
 
@@ -48,33 +47,11 @@ const debouncedOnValueChange = debounce(handleOnValueChange, 750, {
   trailing: true
 })
 
-/* Only allow the onValueChangeChapterTime logic to run every 500 milliseconds */
-let lastOnValueChangeChapterTime = Date.now()
-const handleOnValueChangeChapter = (newProgressValue: number) => {
-  const { currentChapters } = getGlobal()
-  if (currentChapters && currentChapters.length > 1) {
-    const currentTime = Date.now()
-    if (currentTime - 500 > lastOnValueChangeChapterTime) {
-      lastOnValueChangeChapterTime = currentTime
-      const innerPosition = newProgressValue * parentScopeDuration
-      const haptic = true
-      getChapterForTimeAndSetOnState(innerPosition, haptic)
-    }
-  }
-}
-
-/* Make sure the chapter is updated one more time after the last onValueChange event */
-const debouncedOnValueChangeChapterTime = debounce(handleOnValueChangeChapter, 750, {
-  leading: false,
-  trailing: true
-})
-
 export function PlayerProgressBar(props: Props) {
   let isAnimationRunning = false
 
   const [localState, setLocalState] = useState({
-    clipColorAnimation: new Animated.Value(0),
-    slidingPositionOverride: 0
+    clipColorAnimation: new Animated.Value(0)
   })
 
   const _handleAnimation = () => {
@@ -105,11 +82,11 @@ export function PlayerProgressBar(props: Props) {
     isLoading,
     isMakeClipScreen
   } = props
-  const { slidingPositionOverride } = localState
   const { position } = useProgress()
   const { duration } = useProgress()
   const [player] = useGlobal('player')
   const [screen] = useGlobal('screen')
+  const [slidingPositionOverride] = useGlobal('slidingPositionOverride')
   const { screenWidth } = screen
   const { videoDuration, videoPosition } = player.videoInfo
 
@@ -171,7 +148,7 @@ export function PlayerProgressBar(props: Props) {
         onSlidingStart={(newProgressValue) => {
           pauseChapterInterval()
           const slidingPositionOverride = newProgressValue * parentScopeDuration
-          setLocalState({ ...localState, slidingPositionOverride })
+          setGlobal({ slidingPositionOverride })
         }}
         onSlidingComplete={async (newProgressValue) => {
           const innerPosition = newProgressValue * parentScopeDuration
@@ -188,14 +165,12 @@ export function PlayerProgressBar(props: Props) {
             a 1.5 second delay before clearing the slidingPositionOverride from local state.
           */
           setTimeout(() => {
-            setLocalState({ ...localState, slidingPositionOverride: 0 })
-          }, 1500)
+            setGlobal({ slidingPositionOverride: null })
+          }, 1333)
         }}
         onValueChange={(newProgressValue) => {
-          handleOnValueChange(newProgressValue, localState, setLocalState)
-          debouncedOnValueChange(newProgressValue, localState, setLocalState)
-          handleOnValueChangeChapter(newProgressValue)
-          debouncedOnValueChangeChapterTime(newProgressValue)
+          handleOnValueChange(newProgressValue)
+          debouncedOnValueChange(newProgressValue)
         }}
         thumbStyle={sliderStyles.thumbStyle}
         thumbTintColor={PV.Colors.white}
