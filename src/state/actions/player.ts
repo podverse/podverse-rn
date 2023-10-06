@@ -179,7 +179,7 @@ const handleSlidingPositionOverride = (startTime: number) => {
   setGlobal({ slidingPositionOverride: startTime })
   setTimeout(() => {
     setGlobal({ slidingPositionOverride: null })
-  }, 3000)
+  }, 4000)
 }
 
 export const playerPlayPreviousChapterOrReturnToBeginningOfTrack = async () => {
