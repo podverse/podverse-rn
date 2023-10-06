@@ -108,7 +108,7 @@ const checkIfHasChat = (episode: Episode) => {
   return episode && episode.liveItem && !!episode.liveItem.chatIRCURL
 }
 
-export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
+class MediaPlayerCarouselClass extends React.PureComponent<Props, State> {
   carousel: any
   scrollView: any
   handlePressClipInfo: any
@@ -645,3 +645,7 @@ const styles = StyleSheet.create({
         : 0
   }
 })
+
+MediaPlayerCarouselClass.whyDidYouRender = true
+
+export const MediaPlayerCarousel = MediaPlayerCarouselClass
