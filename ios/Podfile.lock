@@ -309,7 +309,7 @@ PODS:
     - React-Core
   - react-native-safe-area-context (3.3.2):
     - React-Core
-  - react-native-track-player (3.2.0-32baacdfdcbf5edb81a8a3199fdf30896dcce0cc):
+  - react-native-track-player (4.0.0-rc03):
     - React-Core
     - SwiftAudioEx (= 1.0.0-rc.4)
   - react-native-tracking-transparency (0.1.1):
@@ -734,7 +734,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: 27f287f2d191693f3b9d01a4273137fcf91c3b5d
   react-native-orientation-locker: 851f6510d8046ea2f14aa169b1e01fcd309a94ba
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
-  react-native-track-player: 5bb26f5ebc2bdbeb0cdeb59c97b208c5907e8d80
+  react-native-track-player: 9026476d6e5c9416a7a6dc4e8b720fb44bef9330
   react-native-tracking-transparency: b2029ff756f1128b1f2c7c7c7f3003bc3c950f9f
   react-native-video: b2a6434fa0cc7a5381985ca2af8f8c570f110743
   react-native-webview: 994b9f8fbb504d6314dc40d83f94f27c6831b3bf
@@ -774,6 +774,6 @@ SPEC CHECKSUMS:
   Yoga: b316a990bb6d115afa1b436b5626ac7c61717d17
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 8c667910359b07eafcc3e8d25626c4fc4332e3f9
+PODFILE CHECKSUM: f6c32c75f5f0e4cd53f2649f8b4d0a4a9c475542
 
 COCOAPODS: 1.12.1

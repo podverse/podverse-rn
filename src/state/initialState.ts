@@ -184,7 +184,8 @@ const initialTheme: InitialState = {
   imageFullViewSourceUrl: '',
   imageFullViewShow: false,
   refreshSubscriptionsOnLaunch: true,
-  showPodcastsListPopover: false
+  showPodcastsListPopover: false,
+  slidingPositionOverride: null
 }
 
 export default initialTheme

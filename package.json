@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.13.9",
+  "version": "4.14.0",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "react-native start",
     "dev:android": "react-native run-android",
-    "dev:ios": "react-native run-ios --simulator 'iPhone 14 Pro Max'",
+    "dev:ios": "react-native run-ios --simulator 'iPhone 15 Pro Max'",
     "dev:ios:iPhoneSE": "react-native run-ios --simulator 'iPhone SE (2nd generation)'",
     "dev:ios:iPod": "react-native run-ios --simulator 'iPod touch (7th generation)'",
     "dev:ios:device": "react-native run-ios --device",
@@ -106,7 +106,7 @@
     "react-native-swipe-list-view": "3.2.9",
     "react-native-system-setting": "1.7.6",
     "react-native-text-ticker": "1.13.0",
-    "react-native-track-player": "3.2.0-32baacdfdcbf5edb81a8a3199fdf30896dcce0cc",
+    "react-native-track-player": "git+https://lovegaoshi@github.com/lovegaoshi/react-native-track-player.git#dev-podverse-aa",
     "react-native-tracking-transparency": "0.1.1",
     "react-native-vector-icons": "8.1.0",
     "react-native-video": "6.0.0-alpha.4",
@@ -146,6 +146,7 @@
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/eslint-plugin-tslint": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
+    "@welldone-software/why-did-you-render": "^7.0.1",
     "dotenv": "8.2.0",
     "eslint": "^7.19.0",
     "eslint-config-standard": "^16.0.2",

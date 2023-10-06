@@ -298,10 +298,10 @@
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
+				E7484F57279689FC00919ABB /* Embed App Extensions */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				FAB0AD72DAE5963CEAB6D7CF /* [CP] Copy Pods Resources */,
 				97E58DCFECA6A5D6338180D9 /* [CP-User] [RNFB] Core Configuration */,
-				E7484F57279689FC00919ABB /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
@@ -596,7 +596,7 @@
 				INFOPLIST_FILE = podverse/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 4.13.9;
+				MARKETING_VERSION = 4.14.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -636,7 +636,7 @@
 				INFOPLIST_FILE = podverse/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 4.13.9;
+				MARKETING_VERSION = 4.14.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

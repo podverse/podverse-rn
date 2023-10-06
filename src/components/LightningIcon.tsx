@@ -6,6 +6,8 @@ import { Text } from '.'
 
 type Props = {
   largeIcon?: boolean
+  // NOTE: showLightningIcons is only needed when
+  // valueTags is passed in as a prop. 
   showLightningIcons: boolean
   testID?: string
   valueTags?: ValueTag[] | null

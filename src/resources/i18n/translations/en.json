@@ -635,7 +635,7 @@
   "seconds": "seconds",
   "Select": "Select…",
   "Select a distributor": "Select a distributor",
-  "Select Multiple Episodes":"Select Multiple Episodes",
+  "Select Multiple Episodes": "Select Multiple Episodes",
   "Select episodes to mark as played": "Select episodes to mark as played",
   "Send": "Send",
   "Send Bitcoin donations and boostagrams": "Send donations (boosts)",
@@ -810,5 +810,10 @@
   "Your queue is empty": "Your queue is empty",
   "Your membership will not auto-renew": "Your membership will not auto-renew",
   "You are not being charged during your free trial": "You are not charged during or after the free trial.",
-  "You will not be charged for signing up for your free trial": "You are not charged for signing up or using your free trial. We hope you subscribe (manually) afterwards."
+  "You will not be charged for signing up for your free trial": "You are not charged for signing up or using your free trial. We hope you subscribe (manually) afterwards.",
+  "Android Auto Podcast Title": "Podcast",
+  "Android Auto Queue Title": "Queue",
+  "Android Auto History Title": "History",
+  "Android Auto Permission Title": "Permission Required",
+  "Android Auto Permission Body": "Please enable android auto draw over apps permission."
 }
