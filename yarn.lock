@@ -9306,9 +9306,9 @@ react-native-text-ticker@1.13.0:
   resolved "https://registry.yarnpkg.com/react-native-text-ticker/-/react-native-text-ticker-1.13.0.tgz#e96e9bd72a66e67353c12f95f17499506aee3560"
   integrity sha512-5Mh5vqZhfeIVQdXBFaUQw6I/uMyhi9ZlB/RQydqqtwoXZHEZkuz9250bfskpG0L/NkshOWHh1n2Xdlji0LxYzg==
 
-"react-native-track-player@git+https://lovegaoshi@github.com/lovegaoshi/react-native-track-player.git#dev-podverse-aa":
+"react-native-track-player@git+https://github.com/lovegaoshi/react-native-track-player.git#dev-podverse-aa":
   version "4.0.0-rc03"
-  resolved "git+https://lovegaoshi@github.com/lovegaoshi/react-native-track-player.git#76d2d53d6a7c09aaf44dbb65319191931a1a1daf"
+  resolved "git+https://github.com/lovegaoshi/react-native-track-player.git#76d2d53d6a7c09aaf44dbb65319191931a1a1daf"
 
 react-native-tracking-transparency@0.1.1:
   version "0.1.1"
