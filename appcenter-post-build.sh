@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+rm -rf /Users/runner/Library/Caches/Yarn/
+
 if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
 
     if [ "$APPCENTER_BRANCH" == "develop" ] ; then
