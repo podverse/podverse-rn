@@ -24,7 +24,7 @@
     "test:e2e:fdroid": "export $(cat .env | xargs) && DEVICE_TYPE=f-droid BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./functions/tests/e2e/index.js",
     "test:w:e2e:fdroid": "BROWSERSTACK_TEST_ENV='local' DEVICE_TYPE='f-droid' node ./functions/tests/e2e/index.js",
     "test:e2e:ios": "export $(cat .env | xargs) && DEVICE_TYPE=ios BROWSERSTACK_DEVICE='iPhone 12 Pro Max' BROWSERSTACK_OS_VERSION='13.0' node ./functions/tests/e2e/index.js",
-    "postinstall": "yarn && patch-package",
+    "postinstall": "patch-package",
     "version_update": "babel-node ./scripts/update_version.js"
   },
   "lint-staged": {
