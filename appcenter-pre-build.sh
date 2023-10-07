@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-yarn cache clean
+# NOTE: this is a 2nd yarn install that is needed to overcome a bug
+# related to loading a remote git+ branch as a dependency in package.json
+yarn
 
 if [ "$PLATFORM" == "ios" ] ; then
     cd ./ios && rm -rf Pods && pod cache clean --all && pod install && cd ..
