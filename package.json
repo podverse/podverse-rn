@@ -151,6 +151,7 @@
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/eslint-plugin-tslint": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
+    "@welldone-software/why-did-you-render": "^7.0.1",
     "dotenv": "8.2.0",
     "eslint": "^7.19.0",
     "eslint-config-standard": "^16.0.2",
