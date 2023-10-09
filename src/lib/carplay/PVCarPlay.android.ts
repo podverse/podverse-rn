@@ -11,6 +11,7 @@ import { readableDate } from '../utility'
 import { getHistoryItems } from '../../state/actions/userHistoryItem'
 import { errorLogger } from '../logger'
 import { getEpisodesForPodcast, loadEpisodeInPlayer } from './helpers'
+import AsyncStorage from '@react-native-community/async-storage'
 
 /* Constants */
 
@@ -145,12 +146,17 @@ export const onAppInitialized = () => {
   PVAndroidAutoModule.turnOffShowWhenLocked()
   handleAndroidAutoPodcastsUpdate()
   // example dialog to prompt for android auto draw over apps permission.
-  PVAndroidAutoModule.getDrawOverAppsPermission().then((enabled: boolean) => {
-    if (enabled) return
-    Alert.alert(translate('Android Auto Permission Title'), translate('Android Auto Permission Body'), [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'OK', onPress: () => PVAndroidAutoModule.askDrawOverAppsPermission() }
-    ])
+  PVAndroidAutoModule.getDrawOverAppsPermission().then(async (enabled: boolean) => {
+    const drawOverAppsPermissionAsked = await AsyncStorage.getItem('DRAW_OVER_APPS_PERMISSION_ASKED')
+
+    if (enabled || drawOverAppsPermissionAsked !== null) return
+    else {
+      AsyncStorage.setItem('DRAW_OVER_APPS_PERMISSION_ASKED', 'TRUE')
+      Alert.alert(translate('Android Auto Permission Title'), translate('Android Auto Permission Body'), [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'OK', onPress: () => PVAndroidAutoModule.askDrawOverAppsPermission() }
+      ])
+    }
   })
 }
 
