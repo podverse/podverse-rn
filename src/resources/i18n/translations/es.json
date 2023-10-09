@@ -354,7 +354,7 @@
     "Password requirements": "Requisitos de la contraseña:",
     "Pause": "Pausa",
     "Permission Denied": "Permiso denegado",
-    "Play": "Tocar",
+    "Play": "Reproducir",
     "Player": "Reproductor",
     "Playlist": "lista de reproducción",
     "Playlist Not Found": "Lista de reproducción no encontrada",
@@ -413,7 +413,7 @@
     "Reset Password": "Restablecer la contraseña",
     "Reset Password Sent": "Restablecer contraseña enviada",
     "Return to beginning of episode": "Volver al principio del episodio",
-    "Save": "Ahorrar",
+    "Save": "Salvar",
     "Save Clip": "Guardar vídeo",
     "Save Password": "Guardar contraseña",
     "Scan QR Code": "Escanear código QR",
@@ -424,7 +424,7 @@
     "Send Email": "Enviar correo electrónico",
     "Send Password Reset": "Enviar restablecimiento de contraseña",
     "Settings": "Ajustes",
-    "Share": "Cuota",
+    "Share": "Compartir",
     "Sign Up": "Inscribirse",
     "Sign Up Error": "Error de registro",
     "Sign up for a premium membership to use this feature": "Compre Podverse premium para usar esta función.",
@@ -629,5 +629,6 @@
     "All episodes in this podcast will be marked as played.": "Todos los episodios en este podcast serán marcados como reproducidos.",
     "App": "Aplicación",
     "ARIA HINT - auto queue new episodes position": "¿Colocar automáticamente al principio o final de las listas de reproducción?",
-    "All Channels": "Todos los canales"
+    "All Channels": "Todos los canales",
+    "Submit": "Enviar"
 }
