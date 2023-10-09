@@ -814,6 +814,6 @@
   "Android Auto Podcast Title": "Podcast",
   "Android Auto Queue Title": "Queue",
   "Android Auto History Title": "History",
-  "Android Auto Permission Title": "Permission Required",
-  "Android Auto Permission Body": "Please enable android auto draw over apps permission."
+  "Android Auto Permission Title": "Android AUTO Permission Request",
+  "Android Auto Permission Body": "If you'd like to use Android Auto, please grant Podverse the 'Draw over other Apps' permission."
 }
