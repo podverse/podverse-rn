@@ -177,6 +177,9 @@ export const darkTheme = StyleSheet.create({
   playerText: {
     color: PV.Colors.white
   },
+  sectionHeaderBackground: {
+    backgroundColor: PV.Colors.ink
+  },
   swipeRowBack: {
     backgroundColor: PV.Colors.skyLight,
     color: PV.Colors.white
@@ -388,6 +391,10 @@ export const lightTheme = StyleSheet.create({
   headerText: {
     color: PV.Colors.skyLight
   },
+  headerTextWithBackground: {
+    color: PV.Colors.skyLight,
+    backgroundColor: PV.Colors.white
+  },
   link: {
     color: PV.Colors.blueDarker
   },
@@ -443,6 +450,9 @@ export const lightTheme = StyleSheet.create({
   },
   playerText: {
     color: PV.Colors.black
+  },
+  sectionHeaderBackground: {
+    backgroundColor: PV.Colors.white
   },
   swipeRowBack: {
     backgroundColor: PV.Colors.skyLight,
@@ -691,6 +701,9 @@ export const core = StyleSheet.create({
   row: {
     backgroundColor: 'transparent',
     flexDirection: 'row'
+  },
+  seasonSectionHeaderText: {
+    fontSize: PV.Fonts.sizes.xxl
   },
   sectionHeaderText: {
     fontSize: PV.Fonts.sizes.xxxl
@@ -962,6 +975,10 @@ export const iconStyles = {
   lightRed: {
     color: PV.Colors.redLighter,
     underlayColor: PV.Colors.white
+  },
+  skyLight: {
+    color: PV.Colors.skyLight,
+    underlayColor: PV.Colors.skyLight
   }
 }
 
