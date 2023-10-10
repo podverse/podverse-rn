@@ -6,6 +6,7 @@ import {
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem,
   getAuthorityFeedUrlFromArray,
+  getSeasonOrSerialEpisodesData,
   getUsernameAndPasswordFromCredentials
 } from 'podverse-shared'
 import { Alert, Platform, StyleSheet, View as RNView } from 'react-native'
@@ -78,6 +79,12 @@ type Props = {
   navigation?: any
 }
 
+type SeasonSection = {
+  seasonKey: string
+  title: string
+  data: any[]
+}
+
 type State = {
   collapsedSectionsData: any
   downloadedEpisodeLimit?: string | null
@@ -98,10 +105,7 @@ type State = {
   querySort: string | null
   searchBarText: string
   searchTitle?: string
-  sections: Array<{
-    title: string
-    data: any[]
-  }> | null
+  sections: Section[] | null
   selectedFilterLabel?: string | null
   selectedSortLabel?: string | null
   selectedItem?: any
@@ -116,10 +120,7 @@ type State = {
   multiSelectEnabled: boolean
 }
 
-type RenderItemArg = { item: any; index: number }
-
 const testIDPrefix = 'podcast_screen'
-const _otherKey = 'other_key'
 
 const getScreenTitle = () => {
   const { appMode } = getGlobal()
@@ -486,7 +487,9 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _onEndReached = ({ distanceFromEnd }: { distanceFromEnd: number }) => {
-    const { endOfResultsReached, podcast, queryPage = 1, viewType } = this.state
+    const { endOfResultsReached, podcast, queryPage = 1, sections, viewType } = this.state
+    
+    if (!!sections?.length) return null 
 
     if (
       !podcast.addByRSSPodcastFeedUrl &&
@@ -1068,17 +1071,40 @@ export class PodcastScreen extends React.Component<Props, State> {
     }
   }
 
-  // TODO: this doesn't fully work yet
-  _setSeasonIsCollapsed = (seasonNumber: string, shouldCollapse: boolean) => {
+  _renderSectionHeader = ({ section }, { collapsedSectionsData, globalTheme }) => {
+    const sectionIsCollapsed = !!collapsedSectionsData?.[section.seasonKey]
+
+    return (
+      <PressableWithOpacity
+        onPress={() => {
+          this._setSeasonIsCollapsed(section.seasonKey, !sectionIsCollapsed)
+        }}>
+        <TableSectionSelectors
+          disableFilter
+          expandedIconColor={globalTheme.headerText.color}
+          expandedState={sectionIsCollapsed ? 'collapsed' : 'expanded'}
+          hideDropdown
+          includePadding
+          reducedHeight
+          selectedFilterLabel={section.title}
+          showDivider
+          textStyle={[globalTheme.headerText, core.seasonSectionHeaderText]}
+          viewStyle={[globalTheme.sectionHeaderBackground]}
+        />
+      </PressableWithOpacity>
+    )
+  }
+
+  _setSeasonIsCollapsed = (seasonKey: string, shouldCollapse: boolean) => {
     const { collapsedSectionsData, sections } = this.state
     if (shouldCollapse) {
       const section = sections?.find((s: any) => {
-        return s.seasonNumber === seasonNumber
+        return s.seasonKey === seasonKey
       })
       if (section) {
-        collapsedSectionsData[seasonNumber] = section.data
+        collapsedSectionsData[seasonKey] = section.data
         sections?.map((s: any) => {
-          if (s.seasonNumber === seasonNumber) {
+          if (s.seasonKey === seasonKey) {
             s.data = []
           }
           return s
@@ -1086,12 +1112,12 @@ export class PodcastScreen extends React.Component<Props, State> {
       }
     } else {
       sections?.map((s: any) => {
-        if (s.seasonNumber === seasonNumber) {
-          s.data = collapsedSectionsData[seasonNumber] || []
+        if (s.seasonKey === seasonKey) {
+          s.data = collapsedSectionsData[seasonKey] || []
         }
         return s
       })
-      collapsedSectionsData[seasonNumber] = []
+      delete collapsedSectionsData[seasonKey]
     }
 
     this.setState({ collapsedSectionsData, sections })
@@ -1101,6 +1127,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     const { navigation } = this.props
 
     const {
+      collapsedSectionsData,
       downloadedEpisodeLimit,
       isLoading,
       isLoadingMore,
@@ -1147,6 +1174,8 @@ export class PodcastScreen extends React.Component<Props, State> {
         viewType === PV.Filters._showCompletedKey) &&
         translate('No episodes found')) ||
       (viewType === PV.Filters._clipsKey && translate('No clips found'))
+
+    const disableNoResultsMessage = isLoadingMore || !!sections?.length
 
     return (
       <View style={styles.headerView} testID={`${testIDPrefix}_view`}>
@@ -1326,7 +1355,7 @@ export class PodcastScreen extends React.Component<Props, State> {
                 }}
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
-                disableNoResultsMessage={isLoadingMore}
+                disableNoResultsMessage={disableNoResultsMessage}
                 extraData={flatListData}
                 isLoadingMore={isLoadingMore}
                 isRefreshing={isRefreshing}
@@ -1338,25 +1367,7 @@ export class PodcastScreen extends React.Component<Props, State> {
                 noResultsMessage={noResultsMessage}
                 onEndReached={this._onEndReached}
                 renderItem={this._renderItem}
-                renderSectionHeader={({ section }) => (
-                  <PressableWithOpacity
-                    onPress={() => {
-                      this._setSeasonIsCollapsed(section.seasonNumber, !section.isCollapsed)
-                    }}>
-                    <TableSectionSelectors
-                      disableFilter
-                      expandedIconColor={globalTheme.headerText.color}
-                      expandedState={section.isCollapsed ? 'collapsed' : 'expanded'}
-                      hideDropdown
-                      includePadding
-                      reducedHeight
-                      selectedFilterLabel={section.title}
-                      showDivider
-                      textStyle={[globalTheme.headerText, core.seasonSectionHeaderText]}
-                      viewStyle={[globalTheme.sectionHeaderBackground]}
-                    />
-                  </PressableWithOpacity>
-                )}
+                renderSectionHeader={(obj) => this._renderSectionHeader(obj, { collapsedSectionsData, globalTheme })}
                 sections={sections}
                 showNoInternetConnectionMessage={showNoInternetConnectionMessage}
                 stickySectionHeadersEnabled
@@ -1459,66 +1470,22 @@ export class PodcastScreen extends React.Component<Props, State> {
   _handleSeasonOrSerialPodcastEpisodes = async (
     data: any[], querySort: string | null, newState: State,
     extraParams: any) => {
-    const seasons: any = {}
-    let sections = []
+    const { hasSeasons, querySort: newQuerySort, seasonSections } = getSeasonOrSerialEpisodesData({
+      data,
+      querySort,
+      extraParams,
+      translator: translate,
+      _oldestKey: PV.Filters._oldestKey,
+      _mostRecentKey: PV.Filters._mostRecentKey
+    })
 
-    if (extraParams.hasSeasons) {
-      newState.hasSeasons = true
-
-      for (const episode of data) {
-        const itunesSeason = parseInt(episode.itunesSeason, 10) >= 0 ? parseInt(episode.itunesSeason, 10) : null
-        const seasonNumber = itunesSeason || _otherKey
-        const seasonEpisodes = seasons[seasonNumber] || []
-        seasons[seasonNumber] = seasonEpisodes
-        seasonEpisodes.push(episode)
-        seasons[seasonNumber] = seasonEpisodes
-      }
-
-      let otherSection = {}
-  
-      for (const seasonNumber in seasons) {
-        if (seasons.hasOwnProperty(seasonNumber)) {
-          const title = seasonNumber === _otherKey
-            ? translate('Other')
-            : `${translate('Season')} ${seasonNumber}`
-          
-          const section = {
-            seasonNumber,
-            title,
-            data: seasons[seasonNumber],
-            isCollapsed: false
-          }
-
-          if (seasonNumber === _otherKey) {
-            otherSection = section
-          } else {
-            sections.push(section)
-          }
-        }
-      }
-
-      if (querySort === PV.Filters._mostRecentKey) {
-        sections = orderBy(sections, ['title'], ['desc'])
-      }
-      
-      if (querySort === PV.Filters._oldestKey) {
-        sections = orderBy(sections, ['title'], ['asc'])
-      }
-
-      if (otherSection?.data?.length > 0) {
-        sections.push(otherSection)
-      }
-
-      newState.selectedSortLabel = await getSelectedSortLabel(querySort)
-      newState.flatListData = []
-      newState.flatListDataTotalCount = 0
-      newState.sections = sections
-    }
-
-    if (!querySort && extraParams.isSerial) {
-      querySort = PV.Filters._oldestKey
-      newState.querySort = querySort
-    }
+    newState.hasSeasons = hasSeasons
+    newState.querySort = querySort
+    newState.sections = seasonSections
+    newState.selectedSortLabel = await getSelectedSortLabel(newQuerySort)
+    newState.flatListData = []
+    newState.flatListDataTotalCount = 0
+    newState.collapsedSectionsData = {}
   }
 
   _queryData = async (filterKey: string | null, queryOptions: { queryPage?: number; searchTitle?: string } = {}) => {

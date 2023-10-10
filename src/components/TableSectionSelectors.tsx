@@ -109,7 +109,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
                       <Icon
                         accessible={false}
                         color={iconStyles.skyLight.color}
-                        name='caret-down'
+                        name='caret-right'
                         size={19}
                         style={styles.expandButtonIcon}
                       />
@@ -122,7 +122,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
                       <Icon
                         accessible={false}
                         color={iconStyles.skyLight.color}
-                        name='caret-right'
+                        name='caret-down'
                         size={19}
                         style={styles.expandButtonIcon}
                       />
@@ -192,7 +192,8 @@ export class TableSectionSelectors extends React.Component<Props, State> {
 
 const styles = {
   expandButtonIcon: {
-    marginRight: 4
+    width: 20,
+    textAlign: 'center'
   },
   selectedFilterLabelIcon: {
     marginLeft: 8
