@@ -1479,13 +1479,16 @@ export class PodcastScreen extends React.Component<Props, State> {
       _mostRecentKey: PV.Filters._mostRecentKey
     })
 
-    newState.hasSeasons = hasSeasons
+    if (hasSeasons) {
+      newState.hasSeasons = hasSeasons
+      newState.sections = seasonSections
+      newState.selectedSortLabel = await getSelectedSortLabel(newQuerySort)
+      newState.flatListData = []
+      newState.flatListDataTotalCount = 0
+      newState.collapsedSectionsData = {}
+    }
+
     newState.querySort = querySort
-    newState.sections = seasonSections
-    newState.selectedSortLabel = await getSelectedSortLabel(newQuerySort)
-    newState.flatListData = []
-    newState.flatListDataTotalCount = 0
-    newState.collapsedSectionsData = {}
   }
 
   _queryData = async (filterKey: string | null, queryOptions: { queryPage?: number; searchTitle?: string } = {}) => {
