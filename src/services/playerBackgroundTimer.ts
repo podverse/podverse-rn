@@ -135,7 +135,7 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
 
 let chapterIntervalSecondCount = 0
 let updateUserPlaybackPositionSecondCount = 0
-export const handleBackgroundTimerInterval = (isVideo: boolean) => {
+const handleBackgroundTimerInterval = (isVideo: boolean) => {
   const { chapterIntervalActive, clipIntervalActive, player, session } = getGlobal()
   const { sleepTimer } = player
   const { v4v } = session
@@ -150,7 +150,7 @@ export const handleBackgroundTimerInterval = (isVideo: boolean) => {
 
   chapterIntervalSecondCount++
   try {
-    if (chapterIntervalSecondCount >= 4) {
+    if (chapterIntervalSecondCount >= 2) {
       chapterIntervalSecondCount = 0
       if (chapterIntervalActive) {
         loadChapterPlaybackInfo()
@@ -195,3 +195,9 @@ export const handleBackgroundTimerInterval = (isVideo: boolean) => {
     errorLogger(_fileName, 'handleBackgroundTimerInterval handleValueStreamingTimerIncrement', error?.message)
   }
 }
+
+export const debouncedHandleBackgroundTimerInterval = debounce(handleBackgroundTimerInterval, 1000, {
+  leading: false,
+  trailing: true,
+  maxWait: 1000 // this is crucial
+})

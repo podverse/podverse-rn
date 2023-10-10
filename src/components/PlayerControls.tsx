@@ -40,12 +40,12 @@ type State = {
   showPlayerMoreActionSheet: boolean
 }
 
-const debouncedPlayerJumpBackward = debounce(loadChapterPlaybackInfo, 500, {
+const debouncedPlayerJumpBackward = debounce(loadChapterPlaybackInfo, 333, {
   leading: true,
   trailing: true
 })
 
-const debouncedPlayerJumpForward = debounce(loadChapterPlaybackInfo, 500, {
+const debouncedPlayerJumpForward = debounce(loadChapterPlaybackInfo, 333, {
   leading: true,
   trailing: true
 })

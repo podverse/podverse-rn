@@ -5,7 +5,8 @@ import TrackPlayer, {
   AppKilledPlaybackBehavior,
   Capability,
   IOSCategoryMode,
-  RepeatMode
+  RepeatMode,
+  UpdateOptions
 } from 'react-native-track-player'
 import { PVAudioPlayer } from './playerAudio'
 
@@ -41,7 +42,7 @@ export const PlayerAudioSetupService = async () => {
 export const audioUpdateTrackPlayerCapabilities = () => {
   const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
 
-  PVAudioPlayer.updateOptions({
+  const RNTPOptions: UpdateOptions = {
     capabilities: [
       Capability.JumpBackward,
       Capability.JumpForward,
@@ -71,5 +72,26 @@ export const audioUpdateTrackPlayerCapabilities = () => {
     android: {
       appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
     }
-  })
+  }
+
+  // HACK: android < 13 doesnt show forward/backward buttons in adnroid auto?
+  // proposed solution is to resolve buttons all through custom actions
+  if (Platform.OS === 'android') {
+    if (Platform.Version > 32) {
+      RNTPOptions.customActions = {
+        customActionsList: ['customSkipPrev', 'customSkipNext'],
+        customSkipPrev: require('../resources/assets/icons/skip-prev.png'),
+        customSkipNext: require('../resources/assets/icons/skip-next.png')
+      }
+    } else {
+      RNTPOptions.customActions = {
+        customActionsList: ['customSkipPrev', 'customSkipNext', 'customJumpBackward', 'customJumpForward'],
+        customSkipPrev: require('../resources/assets/icons/skip-prev.png'),
+        customSkipNext: require('../resources/assets/icons/skip-next.png'),
+        customJumpForward: require('../resources/assets/icons/forward-30.png'),
+        customJumpBackward: require('../resources/assets/icons/replay-10.png')
+      }
+    }
+  }
+  PVAudioPlayer.updateOptions(RNTPOptions)
 }

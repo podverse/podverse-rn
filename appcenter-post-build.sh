@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Run appcenter-post-build.sh"
+
 if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
 
     if [ "$APPCENTER_BRANCH" == "develop" ] ; then

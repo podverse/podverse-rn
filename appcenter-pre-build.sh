@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Run appcenter-pre-build.sh"
+
 if [ "$PLATFORM" == "ios" ] ; then
     cd ./ios && rm -rf Pods && pod cache clean --all && pod install && cd ..
 else

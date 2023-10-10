@@ -10,12 +10,13 @@ import Orientation from 'react-native-orientation-locker'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
-import { 
-  UpdateRequiredOverlay, 
-  OverlayAlert, 
-  ImageFullView, 
-  BoostDropdownBanner, 
-  LoadingInterstitialView 
+
+import {
+  UpdateRequiredOverlay,
+  OverlayAlert,
+  ImageFullView,
+  BoostDropdownBanner,
+  LoadingInterstitialView
 } from './src/components'
 import { pvIsTablet } from './src/lib/deviceDetection'
 import { refreshDownloads } from './src/lib/downloader'
@@ -41,8 +42,9 @@ import {
   showRootView,
   unregisterCarModule
 } from './src/lib/carplay/PVCarPlay'
+import { registerAndroidAutoModule, unregisterAndroidAutoModule } from './src/lib/carplay/PVCarPlay.android'
 
-LogBox.ignoreLogs(['EventEmitter.removeListener', "Require cycle"])
+LogBox.ignoreLogs(['EventEmitter.removeListener', 'Require cycle'])
 
 type Props = any
 
@@ -77,7 +79,12 @@ class App extends Component<Props, State> {
   async componentDidMount() {
     TrackPlayer.registerPlaybackService(() => require('./src/services/playerAudioEvents'))
     await PlayerAudioSetupService()
-    
+    // Android Auto
+    if (Platform.OS === 'android') {
+      // initialize Android Auto Tabs with no content. Content will be updated as they are loaded to the global state.
+      registerAndroidAutoModule()
+    }
+
     StatusBar.setBarStyle('light-content')
     Platform.OS === 'android' && StatusBar.setBackgroundColor(PV.Colors.ink, true)
     const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
@@ -94,13 +101,17 @@ class App extends Component<Props, State> {
 
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
 
-    registerCarModule(this.onConnect, this.onDisconnect)
+    // iOS CarPlay
+    Platform.OS === 'ios' && registerCarModule(this.onConnect, this.onDisconnect)
   }
 
   componentWillUnmount() {
     this.unsubscribeNetListener && this.unsubscribeNetListener()
 
-    unregisterCarModule(this.onConnect, this.onDisconnect);
+    // iOS CarPlay
+    Platform.OS === 'ios' && unregisterCarModule(this.onConnect, this.onDisconnect)
+    // Android Auto
+    Platform.OS === 'android' && unregisterAndroidAutoModule()
   }
 
   onConnect = () => {
@@ -130,7 +141,7 @@ class App extends Component<Props, State> {
   }
 
   handleNetworkChange = () => {
-    (async () => {
+    ;(async () => {
       // isInternetReachable will be false
 
       await this.checkAppVersion()
@@ -154,14 +165,12 @@ class App extends Component<Props, State> {
     const appMode = await AsyncStorage.getItem(PV.Keys.APP_MODE)
     const fontScaleMode = determineFontScaleMode(fontScale)
 
-    setGlobal(
-      {
-        globalTheme: theme,
-        fontScaleMode,
-        fontScale,
-        appMode: appMode || PV.AppMode.podcasts
-      }
-    )
+    setGlobal({
+      globalTheme: theme,
+      fontScaleMode,
+      fontScale,
+      appMode: appMode || PV.AppMode.podcasts
+    })
   }
 
   checkAppVersion = async () => {
@@ -192,8 +201,8 @@ class App extends Component<Props, State> {
             opacity: 1
           }
         : {
-          flex: 1
-        }
+            flex: 1
+          }
 
     if (this.state.minVersionMismatch) {
       return <UpdateRequiredOverlay />
@@ -209,7 +218,7 @@ class App extends Component<Props, State> {
           <ImageFullView />
           <BoostDropdownBanner />
         </SafeAreaProvider>
-        <LoadingInterstitialView/>
+        <LoadingInterstitialView />
       </GestureHandlerRootView>
     ) : (
       this._renderIntersitial()

@@ -4,6 +4,7 @@ import { PV } from './PV'
 
 const _speedOneHalfKey = 0.5
 const _speedThreeQuartersKey = 0.75
+const _speedNineTenthsKey = 0.9
 const _speedNormalKey = 1.0
 const _speedOneAndAEighth = 1.12
 const _speedOneAndAQuarterKey = 1.25
@@ -20,6 +21,7 @@ const speeds = async () => {
   const arr = [
     _speedOneHalfKey,
     _speedThreeQuartersKey,
+    _speedNineTenthsKey,
     _speedNormalKey,
     _speedOneAndAEighth,
     _speedOneAndAQuarterKey,

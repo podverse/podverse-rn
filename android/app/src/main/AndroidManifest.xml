@@ -227,6 +227,10 @@
                     android:scheme="com.podverse"
                     android:host="callback_alby" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
@@ -239,6 +243,8 @@
                 <action android:name="org.unifiedpush.android.connector.REGISTRATION_REFUSED"/>
             </intent-filter>
         </receiver>
+        <meta-data android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc"/>
     </application>
 
 </manifest>
