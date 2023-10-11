@@ -72,6 +72,7 @@ import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { markAsPlayedEpisodesAll, markAsPlayedEpisodesMultiple } from '../state/actions/userHistoryItem'
 import { core } from '../styles'
 import { checkIfLoggedIn } from '../services/auth'
+import { SectionListStickyHeaders } from '../components/SectionListStickyHeaders'
 
 const _fileName = 'src/screens/PodcastScreen.tsx'
 
@@ -162,6 +163,7 @@ const getDefaultSelectedFilterLabel = () => {
 export class PodcastScreen extends React.Component<Props, State> {
   shouldLoad: boolean
   listRef = null
+  listStickyRef = null
 
   constructor(props: Props) {
     super()
@@ -382,6 +384,10 @@ export class PodcastScreen extends React.Component<Props, State> {
                 // The setTimeout is necessary for some render timing reason...
                 setTimeout(() => {
                   this.listRef?.scrollToOffset?.({
+                    animated: false,
+                    offset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset.y
+                  })
+                  this.listStickyRef?.scrollToOffset?.({
                     animated: false,
                     offset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset.y
                   })
@@ -1085,7 +1091,6 @@ export class PodcastScreen extends React.Component<Props, State> {
           expandedState={sectionIsCollapsed ? 'collapsed' : 'expanded'}
           hideDropdown
           includePadding
-          reducedHeight
           selectedFilterLabel={section.title}
           showDivider
           textStyle={[globalTheme.headerText, core.seasonSectionHeaderText]}
@@ -1129,6 +1134,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     const {
       collapsedSectionsData,
       downloadedEpisodeLimit,
+      hasSeasons,
       isLoading,
       isLoadingMore,
       isRefreshing,
@@ -1347,7 +1353,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         )}
         {!showSettings && (
           <View style={styles.view}>
-            {flatListData && podcast && (
+            {flatListData && podcast && !hasSeasons && (
               <FlatList
                 contentOffset={{
                   x: 0,
@@ -1371,6 +1377,27 @@ export class PodcastScreen extends React.Component<Props, State> {
                 sections={sections}
                 showNoInternetConnectionMessage={showNoInternetConnectionMessage}
                 // stickySectionHeadersEnabled
+              />
+            )}
+            {flatListData && podcast && hasSeasons && (
+              <SectionListStickyHeaders
+                contentOffset={{
+                  x: 0,
+                  y: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset.y
+                }}
+                disableNoResultsMessage={disableNoResultsMessage}
+                globalTheme={globalTheme}
+                isLoadingMore={isLoadingMore}
+                keyExtractor={(item: any, index: number) =>
+                  safeKeyExtractor(testIDPrefix, index, item?.id, !!item?.addedByRSS)
+                }
+                ListHeaderComponent={this._ListHeaderComponent}
+                listRef={(ref) => (this.listStickyRef = ref)}
+                noResultsMessage={noResultsMessage}
+                renderItem={this._renderItem}
+                renderSectionHeader={(obj) => this._renderSectionHeader(obj, { collapsedSectionsData, globalTheme })}
+                sections={sections || []}
+                showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               />
             )}
             <ActionSheet

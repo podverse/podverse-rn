@@ -23,7 +23,6 @@ type Props = {
   disableFilter?: boolean
   includePadding?: boolean
   navigation?: any
-  reducedHeight?: boolean
   screenName?: string
   selectedCategoryItemKey?: string | null
   selectedCategorySubItemKey?: string | null
@@ -74,7 +73,6 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       hasSeasons,
       hideDropdown,
       includePadding,
-      reducedHeight,
       screenName,
       selectedCategoryItemKey,
       selectedCategorySubItemKey,
@@ -92,10 +90,6 @@ export class TableSectionSelectors extends React.Component<Props, State> {
     const { flatCategoryItems } = this.state
     const { globalTheme } = this.global
     const wrapperStyle = includePadding ? { paddingHorizontal: 8 } : {}
-
-    if (reducedHeight) {
-      wrapperStyle.paddingVertical = 10
-    }
 
     return (
       <>
