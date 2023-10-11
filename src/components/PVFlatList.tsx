@@ -106,6 +106,10 @@ export const PVFlatList = (props: Props) => {
     sections,
     showNoInternetConnectionMessage,
     stickyHeader,
+    // NOTE: stickySectionHeadersEnabled is very buggy with sibling elements
+    // next to FlatList. Scrolling from the bottom does not work when enabled,
+    // equal to the height of the sibling elements. We shouldn't use
+    // stickySectionHeadersEnabled until we have a solution.
     stickySectionHeadersEnabled,
     testID,
     transparent
