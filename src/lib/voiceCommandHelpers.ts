@@ -20,6 +20,7 @@ export const cleanVoiceCommandQuery = (query?: string) => {
   query = query.toLowerCase()
   // including all the incorrect auto-corrects we've seen for "podverse"
   query = query.replace(/in podverse$|in pod verse$|in proverbs$|in poppers$|in toddlers$|in pod versus$/g, '')
+  query = query.replace(/on podverse$|on pod verse$|on proverbs$|on poppers$|on toddlers$|on pod versus$/g, '')
   query = query.trim()
   return query
 }
