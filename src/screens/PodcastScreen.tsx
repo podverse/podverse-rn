@@ -1370,7 +1370,7 @@ export class PodcastScreen extends React.Component<Props, State> {
                 renderSectionHeader={(obj) => this._renderSectionHeader(obj, { collapsedSectionsData, globalTheme })}
                 sections={sections}
                 showNoInternetConnectionMessage={showNoInternetConnectionMessage}
-                stickySectionHeadersEnabled
+                // stickySectionHeadersEnabled
               />
             )}
             <ActionSheet
