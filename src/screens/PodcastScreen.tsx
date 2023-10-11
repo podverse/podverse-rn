@@ -80,12 +80,6 @@ type Props = {
   navigation?: any
 }
 
-type SeasonSection = {
-  seasonKey: string
-  title: string
-  data: any[]
-}
-
 type State = {
   collapsedSectionsData: any
   downloadedEpisodeLimit?: string | null
