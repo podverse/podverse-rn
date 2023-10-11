@@ -3,6 +3,7 @@ import { NowPlayingItem, convertToNowPlayingItem } from "podverse-shared"
 import { PV } from '../resources'
 import { getEpisodesAndLiveItems } from '../services/liveItem'
 import { playerHandlePlayWithUpdate, playerLoadNowPlayingItem } from "../state/actions/player"
+import { getPodcasts } from '../services/podcast'
 import { getSubscribedPodcasts } from '../state/actions/podcast'
 import { getQueueItems, removeQueueItem } from "../state/actions/queue"
 
@@ -93,7 +94,7 @@ export const voicePlayNextSubscribedPodcast = async (query: string) => {
 
       const combinedEpisodes = results?.combinedEpisodes
       const episode = combinedEpisodes?.[0]?.[0]
-      
+
       if (episode) {
         const inheritedEpisode = null
         const inheritedPodcast = matchingPodcast
@@ -105,5 +106,36 @@ export const voicePlayNextSubscribedPodcast = async (query: string) => {
     }
   }
 
+  return shouldContinue
+}
+
+export const voicePlayPodcastFromSearchAPI = async (query: string) => {
+  let shouldContinue = true
+  const results = await getPodcasts({ searchTitle: query })
+  const podcasts = results?.[0]
+  const matchingPodcast = podcasts?.[0]
+  if (matchingPodcast) {
+    const results = await getEpisodesAndLiveItems(
+      {
+        sort: PV.Filters._mostRecentKey,
+        page: 1,
+        podcastId: matchingPodcast.id
+      },
+      matchingPodcast.id
+    )
+
+    const combinedEpisodes = results?.combinedEpisodes
+    const episode = combinedEpisodes?.[0]?.[0]
+
+    if (episode) {
+      const inheritedEpisode = null
+      const inheritedPodcast = matchingPodcast
+      const nowPlayingItem = convertToNowPlayingItem(episode, inheritedEpisode, inheritedPodcast)
+      await playerLoadNowPlayingItem(nowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+      await removeQueueItem(nowPlayingItem)
+      shouldContinue = false
+    }
+  }
+  
   return shouldContinue
 }

@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { Platform } from 'react-native'
 import { Event, State } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
-import { cleanVoiceCommandQuery, voicePlayNextQueuedItem, voicePlayNextSubscribedPodcast, voicePlayNowPlayingItem } from '../lib/voiceCommandHelpers'
+import { cleanVoiceCommandQuery, voicePlayNextQueuedItem, voicePlayNextSubscribedPodcast, voicePlayNowPlayingItem, voicePlayPodcastFromSearchAPI } from '../lib/voiceCommandHelpers'
 import { debugLogger, errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { downloadedEpisodeMarkForDeletion } from '../state/actions/downloads'
@@ -411,12 +411,11 @@ module.exports = async () => {
         }
 
         if (shouldContinue) {
-          // check subscribed podcasts for the first match, then get the most recent episode
           shouldContinue = await voicePlayNextSubscribedPodcast(cleanedQuery)
         }
 
         if (shouldContinue) {
-          // search for the podcast, then get the first match, then play the most recent episode
+          shouldContinue = await voicePlayPodcastFromSearchAPI(cleanedQuery)
         }
       })()
     })
