@@ -386,6 +386,15 @@ module.exports = async () => {
         }
       */
 
+      /*
+        the remote search command basically works like this:
+        1) no query, just play
+        2) query, check if the nowPlayingItem.podcastTitle matches the query, and if found, play it
+        3) query, search queue for a podcast title in the queue that includes that query, and if found, play the first match
+        4) query, search subscribed podcasts for a podcast title that includes that query, and if found, play the first match
+        5) query, search Podverse API for a podcast title that includes that query, and if found, play the first match
+      */
+
       console.log('Event.RemotePlaySearch', e)
 
       ;(async () => {
