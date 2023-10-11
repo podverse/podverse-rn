@@ -14,7 +14,7 @@ import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import { checkIfLiveItemIsLive } from '../../services/liveItem'
 import {
-  playerHandlePlayWithUpdate,
+  playerHandlePlayWithUpdate as playerHandlePlayWithUpdateService,
   playerLoadNowPlayingItem as playerLoadNowPlayingItemService,
   playerHandleSeekTo,
   playerSetPlaybackSpeed as playerSetPlaybackSpeedService,
@@ -221,9 +221,19 @@ const playerHandleLoadChapterForNowPlayingEpisode = async (item: NowPlayingItem)
     playerHandleSeekTo(item.clipStartTime)
     const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(item)
     await playerSetNowPlayingItem(nowPlayingItemEpisode, item.clipStartTime)
-    playerHandlePlayWithUpdate()
+    playerHandlePlayWithUpdateService()
     loadChapterPlaybackInfo()
   }
+}
+
+export const playerHandlePlayWithUpdate = () => {
+  playerHandlePlayWithUpdateService()
+  showMiniPlayer()
+}
+
+export const playerHandlePauseWithUpdate = () => {
+  playerHandlePlayWithUpdateService()
+  showMiniPlayer()
 }
 
 export const playerHandleResumeAfterClipHasEnded = async () => {

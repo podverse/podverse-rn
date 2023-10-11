@@ -91,6 +91,7 @@ export const generateSections = (options: any) => {
   const {
     addByRSSPodcastFeedUrl,
     flatCategoryItems,
+    hasSeasons,
     screenName,
     selectedCategoryItemKey,
     selectedCategorySubItemKey,
@@ -308,7 +309,14 @@ export const generateSections = (options: any) => {
         filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
           PV.FilterOptions.screenFilters.PodcastScreen.type.includes(item.value)
         )
-        sortItems = sortItems.filter((item) => PV.FilterOptions.screenFilters.PodcastScreen.sort.includes(item.value))
+
+        if (hasSeasons) {
+          sortItems = sortItems.filter((item) =>
+            PV.FilterOptions.screenFilters.PodcastScreen.seasonsSort.includes(item.value)
+          )
+        } else {
+          sortItems = sortItems.filter((item) => PV.FilterOptions.screenFilters.PodcastScreen.sort.includes(item.value))
+        }
       } else if (selectedFilterItemKey === PV.Filters._clipsKey) {
         filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
           PV.FilterOptions.screenFilters.PodcastScreen.type.includes(item.value)
