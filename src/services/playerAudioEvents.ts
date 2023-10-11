@@ -2,11 +2,13 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { Platform } from 'react-native'
 import { Event, State } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
+import { cleanVoiceCommandQuery, voicePlayNextQueuedItem, voicePlayNowPlayingItem } from '../lib/voiceCommandHelpers'
 import { debugLogger, errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { downloadedEpisodeMarkForDeletion } from '../state/actions/downloads'
 import {
   playerClearNowPlayingItem,
+  playerHandlePlayWithUpdate,
   playerHandleResumeAfterClipHasEnded,
   playerPlayNextChapterOrQueueItem,
   playerPlayPreviousChapterOrReturnToBeginningOfTrack
@@ -370,8 +372,50 @@ module.exports = async () => {
       handleAABrowseMediaId(e.mediaId)
     })
     PVAudioPlayer.addEventListener(Event.RemotePlaySearch, (e) => {
-      // TODO: handle this
-      console.warn(e, 'not handled')
+      /*
+        Sample event
+        {
+          "android.intent.extra.focus": "vnd.android.cursor.item/*",
+          "com.google.android.projection.gearhead.ignore_original_pkg": false,
+          "android.intent.extra.REFERRER_NAME":
+            "android-app://com.google.android.googlequicksearchbox/https/www.google.com",
+          "query": "Linux Unplugged in podverse",
+          "android.intent.extra.START_PLAYBACK": true,
+          "INTENT_EXTRA_INTENT_PKG_SENDER": "aap/com.google.android.googlequicksearchbox",
+          "opa_allow_launch_intent_on_lockscreen": true
+        }
+      */
+
+      ;(async () => {
+        const shouldPlay = e?.['android.intent.extra.START_PLAYBACK']
+  
+        if (!shouldPlay) {
+          return
+        }
+  
+        const cleanedQuery = cleanVoiceCommandQuery(e?.query)
+  
+        if (!cleanedQuery) {
+          playerHandlePlayWithUpdate()
+          return
+        }
+  
+        let shouldContinue = true
+
+        shouldContinue = voicePlayNowPlayingItem(cleanedQuery)
+
+        if (shouldContinue) {
+          shouldContinue = await voicePlayNextQueuedItem(cleanedQuery)
+        }
+
+        if (shouldContinue) {
+          // check subscribed podcasts for the first match, then get the most recent episode
+        }
+
+        if (shouldContinue) {
+          // search for the podcast, then get the first match, then play the most recent episode
+        }
+      })()
     })
 
     // TODO: handle skip next/previous via customActions in android auto
