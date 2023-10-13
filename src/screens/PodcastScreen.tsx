@@ -1602,7 +1602,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           dataCount = results[1]
         }
 
-        newState.flatListData = [...flatListData, data]
+        newState.flatListData = [...flatListData, ...data]
         newState.flatListData = this.cleanFlatListData(newState.flatListData, viewType)
         newState.endOfResultsReached = newState.flatListData.length >= dataCount
         newState.flatListDataTotalCount = dataCount
