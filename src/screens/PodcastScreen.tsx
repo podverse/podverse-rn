@@ -59,7 +59,6 @@ import {
 import { getPodcast } from '../services/podcast'
 import {
   PodcastScreenSavedQuery,
-  getSavedQueryPodcastScreen,
   updateSavedQueriesPodcastScreen
 } from '../services/savedQueryFilters'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
@@ -163,10 +162,9 @@ export class PodcastScreen extends React.Component<Props, State> {
     super()
 
     this.shouldLoad = true
-
     const podcast = props.navigation.getParam('podcast')
+
     const podcastId = podcast?.id || podcast?.addByRSSPodcastFeedUrl || props.navigation.getParam('podcastId')
-    const viewType = props.navigation.getParam('viewType') || PV.Filters._episodesKey
     const notificationsEnabled = checkIfNotificationsEnabledForPodcastId(podcastId)
 
     if (podcast?.id || podcast?.addByRSSPodcastFeedUrl) {
@@ -183,6 +181,8 @@ export class PodcastScreen extends React.Component<Props, State> {
       })
     }
 
+    const { querySort, viewType } = this.getDefaultFilters(props)
+
     this.state = {
       collapsedSectionsData: {},
       downloadedEpisodeLimit: null,
@@ -190,6 +190,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       flatListData: [],
       flatListDataTotalCount: null,
       hasInternetConnection: false,
+      hasSeasons: false,
       isLoading: false,
       isLoadingMore: true,
       isRefreshing: false,
@@ -199,7 +200,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       podcast,
       podcastId,
       queryPage: 1,
-      querySort: PV.Filters._mostRecentKey,
+      querySort,
       searchBarText: '',
       sections: null,
       selectedFilterLabel: getDefaultSelectedFilterLabel(),
@@ -261,18 +262,42 @@ export class PodcastScreen extends React.Component<Props, State> {
     } as NavigationStackOptions
   }
 
+  getDefaultFilters = (props: Props) => {
+    const { navigation } = props
+    const savedQuery = navigation.getParam('savedQuery')
+    const isSerial = navigation.getParam('isSerial')
+    const hasInternetConnection = navigation.getParam('hasInternetConnection')
+    const { isInMaintenanceMode } = this.global
+    let viewType = PV.Filters._episodesKey
+    let querySort = PV.Filters._mostRecentKey
+    const viewTypeOverride = navigation.getParam('viewType')
+    if (!hasInternetConnection || isInMaintenanceMode) {
+      viewType = PV.Filters._downloadedKey
+    } else if (viewTypeOverride) {
+      viewType = viewTypeOverride
+    } else if (savedQuery?.filterType) {
+      viewType = savedQuery.filterType
+    }
+    if (savedQuery?.sortType) {
+      querySort = savedQuery.sortType
+    } else if (isSerial) {
+      querySort = PV.Filters._oldestKey
+    }
+
+    return { querySort, viewType }
+  }
+
   async componentDidMount() {
     const { navigation } = this.props
-    const { podcastId } = this.state
-    const { isInMaintenanceMode } = this.global
+    const { podcastId, querySort, viewType } = this.state
+
     let podcast = navigation.getParam('podcast')
     const forceRequest = navigation.getParam('forceRequest')
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
+    const hasInternetConnection = navigation.getParam('hasInternetConnection')
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Events.PODCAST_START_PODCAST_FROM_TIME_SET, this.refreshStartPodcastFromTime)
     PVEventEmitter.on(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
-
-    const hasInternetConnection = await hasValidNetworkConnection()
 
     // If passed the addByRSSPodcastFeedUrl in the navigation,
     // use the podcast from local storage.
@@ -284,24 +309,13 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     this.refreshStartPodcastFromTime()
 
-    let savedQuery: PodcastScreenSavedQuery = {}
-    if (podcastId) {
-      savedQuery = await getSavedQueryPodcastScreen(podcastId)
-    }
-
-    const newViewType =
-      !hasInternetConnection || isInMaintenanceMode
-        ? PV.Filters._downloadedKey
-        : savedQuery?.filterType || this.state.viewType
-    const newSortType = savedQuery?.sortType || PV.Filters._mostRecentKey
-
-    const selectedFilterLabel = await getSelectedFilterLabel(newViewType)
-    const selectedSortLabel = await getSelectedSortLabel(newSortType)
+    const selectedFilterLabel = await getSelectedFilterLabel(viewType)
+    const selectedSortLabel = await getSelectedSortLabel(querySort)
 
     this.setState(
       {
-        querySort: newSortType,
-        viewType: newViewType,
+        querySort,
+        viewType,
         podcast,
         hasInternetConnection: !!hasInternetConnection,
         selectedFilterLabel,
@@ -1491,6 +1505,7 @@ export class PodcastScreen extends React.Component<Props, State> {
   _handleSeasonOrSerialPodcastEpisodes = async (
     data: any[], querySort: string | null, newState: State,
     extraParams: any) => {
+    
     const { hasSeasons, querySort: newQuerySort, seasonSections } = getSeasonOrSerialEpisodesData({
       data,
       querySort,
@@ -1509,7 +1524,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       newState.collapsedSectionsData = {}
     }
 
-    newState.querySort = querySort
+    newState.querySort = newQuerySort
   }
 
   _queryData = async (filterKey: string | null, queryOptions: { queryPage?: number; searchTitle?: string } = {}) => {
@@ -1587,7 +1602,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           dataCount = results[1]
         }
 
-        newState.flatListData = [...flatListData, data]
+        newState.flatListData = [...flatListData, ...data]
         newState.flatListData = this.cleanFlatListData(newState.flatListData, viewType)
         newState.endOfResultsReached = newState.flatListData.length >= dataCount
         newState.flatListDataTotalCount = dataCount
