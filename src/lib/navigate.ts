@@ -1,6 +1,8 @@
-import { convertNowPlayingItemToEpisode, NowPlayingItem } from 'podverse-shared'
+import { convertNowPlayingItemToEpisode, NowPlayingItem, Podcast } from 'podverse-shared'
 import { NavigationActions, StackActions } from 'react-navigation'
 import { PV } from '../resources'
+import { getSavedQueryPodcastScreen, PodcastScreenSavedQuery } from '../services/savedQueryFilters'
+import { hasValidNetworkConnection } from './network'
 
 /*
   Navigate to the EpisodeScreen located within the PodcastsStackNavigator.
@@ -11,13 +13,12 @@ export const navigateToEpisodeScreenInPodcastsStackNavigatorWithIds = (
   episodeId: string
 ) => {
   navigateBackToRoot(navigation)
-  navigation.navigate({
-    routeName: PV.RouteNames.PodcastScreen,
-    params: {
-      podcastId,
-      forceRequest: true
-    }
-  })
+  handlePodcastScreenNavigateWithParams(
+    navigation,
+    podcastId,
+    null,
+    { forceRequest: true }
+  )
   navigation.navigate({
     routeName: PV.RouteNames.EpisodeScreen,
     params: {
@@ -79,7 +80,16 @@ export const navigateToEpisodeScreenWithItemInCurrentStack = (
   Navigate to the PodcastScreen located within the PodcastsStackNavigator,
   and populate it with podcast data from an object of type NowPlayingItem.
  */
-export const navigateToPodcastScreenWithItem = (navigation: any, item: NowPlayingItem) => {
+export const navigateToPodcastScreenWithItem = async (navigation: any, item: NowPlayingItem) => {
+
+  let savedQuery: PodcastScreenSavedQuery = {}
+  if (item?.podcastId) {
+    savedQuery = await getSavedQueryPodcastScreen(item.podcastId)
+  }
+
+  const hasInternetConnection = await hasValidNetworkConnection()
+  const isSerial = item?.podcastItunesFeedType === 'serial'
+
   navigation.dismiss()
   navigation.dispatch(NavigationActions.navigate({ routeName: PV.RouteNames.PodcastsScreen }))
   navigation.dispatch(
@@ -93,7 +103,10 @@ export const navigateToPodcastScreenWithItem = (navigation: any, item: NowPlayin
           id: item?.podcastId,
           title: item?.podcastTitle,
           imageUrl: item?.podcastImageUrl
-        }
+        },
+        savedQuery,
+        isSerial,
+        hasInternetConnection
       }
     })
   )
@@ -103,7 +116,15 @@ export const navigateToPodcastScreenWithItem = (navigation: any, item: NowPlayin
   Navigate to the PodcastScreen located within the PodcastsStackNavigator,
   and populate it with podcast data from an object of type podcast.
  */
-export const navigateToPodcastScreenWithPodcast = (navigation: any, podcast: any, viewType?: string) => {
+export const navigateToPodcastScreenWithPodcast = async (navigation: any, podcast: any, viewType?: string) => {
+  let savedQuery: PodcastScreenSavedQuery = {}
+  if (podcast?.id) {
+    savedQuery = await getSavedQueryPodcastScreen(podcast.id)
+  }
+
+  const hasInternetConnection = await hasValidNetworkConnection()
+  const isSerial = podcast?.itunesFeedType === 'serial'
+
   navigation.dismiss()
   navigation.dispatch(NavigationActions.navigate({ routeName: PV.RouteNames.PodcastsScreen }))
   navigation.dispatch(
@@ -111,7 +132,10 @@ export const navigateToPodcastScreenWithPodcast = (navigation: any, podcast: any
       routeName: PV.RouteNames.PodcastScreen,
       params: {
         podcast,
-        viewType
+        viewType,
+        savedQuery,
+        isSerial,
+        hasInternetConnection
       }
     })
   )
@@ -125,4 +149,37 @@ export const navigateBackToRoot = (navigation: any) => {
   navigation.goBack(null)
   navigation.goBack(null)
   navigation.navigate(PV.RouteNames.PodcastsScreen)
+}
+
+/*
+  handlePodcastScreenNavigateWithParams
+  the PodcastScreen requires some params passed in the navigation header
+  in order to load with the correct filters on initial render
+*/
+type PodcastScreenNavigateWithParamsOptions = {
+  forceRequest?: boolean
+}
+export const handlePodcastScreenNavigateWithParams = async (
+  navigation: any,
+  podcastId: string,
+  podcast?: Podcast | null,
+  options?: PodcastScreenNavigateWithParamsOptions
+) => {
+  let savedQuery: PodcastScreenSavedQuery = {}
+  if (podcast?.id) {
+    savedQuery = await getSavedQueryPodcastScreen(podcast.id)
+  }
+
+  const hasInternetConnection = await hasValidNetworkConnection()
+  const isSerial = podcast?.itunesFeedType === 'serial'
+
+  navigation.navigate(PV.RouteNames.PodcastScreen, {
+    podcast,
+    podcastId,
+    addByRSSPodcastFeedUrl: podcast?.addByRSSPodcastFeedUrl,
+    savedQuery,
+    isSerial,
+    hasInternetConnection,
+    forceRequest: options?.forceRequest
+  })
 }

@@ -16,6 +16,7 @@ import {
 } from '../components'
 import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
+import { handlePodcastScreenNavigateWithParams } from '../lib/navigate'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { trackPageView } from '../services/tracking'
@@ -102,10 +103,12 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
 
             if (addByRSSSucceeded) {
               const podcast = await getAddByRSSPodcastLocally(url)
-              this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
-                podcast,
-                addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
-              })
+
+              handlePodcastScreenNavigateWithParams(
+                this.props.navigation,
+                podcast.id,
+                podcast
+              )
             }
             this.props.navigation.setParams({
               _savePodcastByRSSUrlIsLoading: false

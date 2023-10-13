@@ -95,6 +95,7 @@ const addDLTask = (episode: any, podcast: any) =>
     podcastImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
     podcastIsExplicit: podcast.isExplicit,
     podcastLinkUrl: podcast.linkUrl,
+    podcastItunesFeedType: podcast.itunesFeedType,
     podcastMedium: podcast.medium,
     podcastShrunkImageUrl: podcast.shrunkImageUrl,
     podcastSortableTitle: podcast.sortableTitle,
@@ -350,6 +351,7 @@ export const initDownloads = async () => {
         podcastId: podcast.id || '',
         podcastImageUrl: podcast.shrunkImageUrl || podcast.imageUrl || '',
         podcastIsExplicit: !!podcast.isExplicit,
+        podcastItunesFeedType: podcast.itunesFeedType,
         podcastSortableTitle: podcast.sortableTitle || '',
         podcastTitle: podcast.title || '',
         status: downloadTask.state
