@@ -18,7 +18,7 @@ import {
   BoostDropdownBanner,
   LoadingInterstitialView
 } from './src/components'
-import { pvIsTablet } from './src/lib/deviceDetection'
+import { checkIfFDroidAppVersion, pvIsTablet } from './src/lib/deviceDetection'
 import { registerAndroidAutoModule, requestDrawOverAppsPermission,
   unregisterAndroidAutoModule } from './src/lib/carplay/PVCarPlay.android'
 import { refreshDownloads } from './src/lib/downloader'
@@ -79,7 +79,7 @@ class App extends Component<Props, State> {
 
   async componentDidMount() {
     // Android Auto
-    if (Platform.OS === 'android') {
+    if (Platform.OS === 'android' && !checkIfFDroidAppVersion()) {
       // initialize Android Auto Tabs with no content. Content will be updated as they are loaded to the global state.
       registerAndroidAutoModule()
       await requestDrawOverAppsPermission()
