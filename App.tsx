@@ -19,6 +19,8 @@ import {
   LoadingInterstitialView
 } from './src/components'
 import { pvIsTablet } from './src/lib/deviceDetection'
+import { registerAndroidAutoModule, requestDrawOverAppsPermission,
+  unregisterAndroidAutoModule } from './src/lib/carplay/PVCarPlay.android'
 import { refreshDownloads } from './src/lib/downloader'
 import { PV } from './src/resources'
 import { determineFontScaleMode } from './src/resources/Fonts'
@@ -42,7 +44,6 @@ import {
   showRootView,
   unregisterCarModule
 } from './src/lib/carplay/PVCarPlay'
-import { registerAndroidAutoModule, unregisterAndroidAutoModule } from './src/lib/carplay/PVCarPlay.android'
 
 LogBox.ignoreLogs(['EventEmitter.removeListener', 'Require cycle'])
 
@@ -77,13 +78,15 @@ class App extends Component<Props, State> {
   }
 
   async componentDidMount() {
-    TrackPlayer.registerPlaybackService(() => require('./src/services/playerAudioEvents'))
-    await PlayerAudioSetupService()
     // Android Auto
     if (Platform.OS === 'android') {
       // initialize Android Auto Tabs with no content. Content will be updated as they are loaded to the global state.
       registerAndroidAutoModule()
+      await requestDrawOverAppsPermission()
     }
+    
+    TrackPlayer.registerPlaybackService(() => require('./src/services/playerAudioEvents'))
+    await PlayerAudioSetupService()
 
     StatusBar.setBarStyle('light-content')
     Platform.OS === 'android' && StatusBar.setBackgroundColor(PV.Colors.ink, true)
