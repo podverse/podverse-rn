@@ -141,29 +141,31 @@ export const handlePlayRemoteMediaId = async (mediaId: string) => {
 
 /* Initialize */
 
-export const requestDrawOverAppsPermission = () => {
+export const requestDrawOverAppsPermission = async () => {
   return new Promise<void>((resolve) => {
-    const { PVAndroidAutoModule } = NativeModules
-    PVAndroidAutoModule.getDrawOverAppsPermission().then(async (enabled: boolean) => {
-      const drawOverAppsPermissionAsked = await AsyncStorage.getItem('DRAW_OVER_APPS_PERMISSION_ASKED')
-  
-      if (enabled || drawOverAppsPermissionAsked !== null) {
-        resolve()
-        return
-      }
-      else {
-        AsyncStorage.setItem('DRAW_OVER_APPS_PERMISSION_ASKED', 'TRUE')
-        Alert.alert(translate('Android Auto Permission Title'), translate('Android Auto Permission Body'), [
-          { text: 'Cancel', style: 'cancel', onPress: () => {
-            resolve()
-          }},
-          { text: 'OK', onPress: () => {
-            PVAndroidAutoModule.askDrawOverAppsPermission()
-            resolve()
-          }}
-        ])
-      }
-    })
+    (async () => {
+      const { PVAndroidAutoModule } = NativeModules
+      // PVAndroidAutoModule.getDrawOverAppsPermission().then(async (enabled: boolean) => {
+        const drawOverAppsPermissionAsked = await AsyncStorage.getItem('DRAW_OVER_APPS_PERMISSION_ASKED')
+    
+        if (/* enabled || */ drawOverAppsPermissionAsked) {
+          resolve()
+          return
+        }
+        else {
+          await AsyncStorage.setItem('DRAW_OVER_APPS_PERMISSION_ASKED', 'TRUE')
+          Alert.alert(translate('Android Auto Permission Title'), translate('Android Auto Permission Body'), [
+            { text: 'Cancel', style: 'cancel', onPress: () => {
+              resolve()
+            }},
+            { text: 'OK', onPress: () => {
+              PVAndroidAutoModule.askDrawOverAppsPermission()
+              resolve()
+            }}
+          ])
+        }
+      // })
+    })()
   })
 }
 
