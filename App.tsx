@@ -114,7 +114,10 @@ class App extends Component<Props, State> {
     // iOS CarPlay
     Platform.OS === 'ios' && unregisterCarModule(this.onConnect, this.onDisconnect)
     // Android Auto
-    Platform.OS === 'android' && unregisterAndroidAutoModule()
+
+    if (Platform.OS === 'android' && !checkIfFDroidAppVersion()) {
+      unregisterAndroidAutoModule()
+    }
   }
 
   onConnect = () => {
