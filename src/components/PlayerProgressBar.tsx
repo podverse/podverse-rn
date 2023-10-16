@@ -9,6 +9,7 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { playerHandleSeekTo } from '../services/player'
 import {
+  getChapterForTimeAndSetOnState,
   loadChapterPlaybackInfo,
   pauseChapterInterval,
   resumeChapterInterval
@@ -43,6 +44,27 @@ const handleOnValueChange = (newProgressValue: number) => {
 
 /* Make sure the position is updated one more time after the last onValueChange event */
 const debouncedOnValueChange = debounce(handleOnValueChange, 750, {
+  leading: false,
+  trailing: true
+})
+
+/* Only allow the onValueChangeChapterTime logic to run every 500 milliseconds */
+let lastOnValueChangeChapterTime = Date.now()
+const handleOnValueChangeChapter = (newProgressValue: number) => {
+  const { currentChapters } = getGlobal()
+  if (currentChapters && currentChapters.length > 1) {
+    const currentTime = Date.now()
+    if (currentTime - 500 > lastOnValueChangeChapterTime) {
+      lastOnValueChangeChapterTime = currentTime
+      const innerPosition = newProgressValue * parentScopeDuration
+      const haptic = true
+      getChapterForTimeAndSetOnState(innerPosition, haptic)
+    }
+  }
+}
+
+/* Make sure the chapter is updated one more time after the last onValueChange event */
+const debouncedOnValueChangeChapterTime = debounce(handleOnValueChangeChapter, 750, {
   leading: false,
   trailing: true
 })
@@ -162,7 +184,7 @@ export function PlayerProgressBar(props: Props) {
             Calling PVAudioPlayer.seekTo(innerPosition) in playerHandleSeekTo causes the progress bar
             to re-render with the *last* innerPosition, before finally seeking to the new innerPosition
             and then re-rendering with the new correct innerPosition. To workaround this, I am adding
-            a 1.5 second delay before clearing the slidingPositionOverride from local state.
+            a 4.333 second delay before clearing the slidingPositionOverride from local state.
           */
           setTimeout(() => {
             setGlobal({ slidingPositionOverride: null })
@@ -171,6 +193,8 @@ export function PlayerProgressBar(props: Props) {
         onValueChange={(newProgressValue) => {
           handleOnValueChange(newProgressValue)
           debouncedOnValueChange(newProgressValue)
+          handleOnValueChangeChapter(newProgressValue)
+          debouncedOnValueChangeChapterTime(newProgressValue)
         }}
         thumbStyle={sliderStyles.thumbStyle}
         thumbTintColor={PV.Colors.white}

@@ -40,16 +40,6 @@ type State = {
   showPlayerMoreActionSheet: boolean
 }
 
-const debouncedPlayerJumpBackward = debounce(loadChapterPlaybackInfo, 333, {
-  leading: true,
-  trailing: true
-})
-
-const debouncedPlayerJumpForward = debounce(loadChapterPlaybackInfo, 333, {
-  leading: true,
-  trailing: true
-})
-
 const testIDPrefix = 'player_controls'
 
 export class PlayerControls extends React.PureComponent<Props, State> {
@@ -86,14 +76,14 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     const { jumpBackwardsTime } = this.global
     const progressValue = await playerJumpBackward(jumpBackwardsTime)
     this.setState({ progressValue })
-    debouncedPlayerJumpBackward()
+    loadChapterPlaybackInfo()
   }
 
   _playerJumpForward = async () => {
     const { jumpForwardsTime } = this.global
     const progressValue = await playerJumpForward(jumpForwardsTime)
     this.setState({ progressValue })
-    debouncedPlayerJumpForward()
+    loadChapterPlaybackInfo()
   }
 
   _hidePlayerMoreActionSheet = () => {

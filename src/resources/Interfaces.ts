@@ -42,6 +42,7 @@ export interface GlobalTheme {
   player?: any
   playerClipTimeFlag?: any
   playerText?: any
+  sectionHeaderBackground?: any
   selectorText?: any
   swipeRowBack?: any
   swipeRowBackMultiple?: any

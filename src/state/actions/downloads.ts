@@ -61,6 +61,7 @@ export type DownloadTaskState = {
   podcastId?: string
   podcastImageUrl?: string
   podcastIsExplicit?: boolean
+  podcastItunesFeedType?: string
   podcastLinkUrl?: string
   podcastMedium: PodcastMedium
   podcastShrunkImageUrl?: string

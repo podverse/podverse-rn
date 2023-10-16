@@ -42,7 +42,7 @@ import { checkIfFDroidAppVersion, isPortrait } from '../lib/deviceDetection'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
-import { navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
+import { handlePodcastScreenNavigateWithParams, navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { resetAllAppKeychain } from '../lib/secutity'
 import {
@@ -65,7 +65,7 @@ import { getAddByRSSPodcastsLocally, parseAllAddByRSSPodcasts } from '../service
 import { playerUpdateUserPlaybackPosition } from '../services/player'
 import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudioSetup'
 import { getPodcast, getPodcasts } from '../services/podcast'
-import { getSavedQueryPodcastsScreenSort, setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
+import { PodcastScreenSavedQuery, getSavedQueryPodcastScreen, getSavedQueryPodcastsScreenSort, setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
 import { getNowPlayingItem, getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
@@ -602,10 +602,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
             const episode = await getEpisode(id)
             if (episode) {
               const podcast = await getPodcast(episode.podcast?.id)
-              navigate(PV.RouteNames.PodcastScreen, {
-                podcast,
-                navToEpisodeWithId: id
-              })
+
+              handlePodcastScreenNavigateWithParams(
+                this.props.navigation,
+                podcast?.id,
+                podcast
+              )
               navigate(PV.RouteNames.EpisodeScreen, {
                 episode
               })
@@ -616,9 +618,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
               navToPlaylistWithId: id
             })
           } else if (path === PV.DeepLinks.Podcast.pathPrefix) {
-            await navigate(PV.RouteNames.PodcastScreen, {
-              podcastId: id
-            })
+            await handlePodcastScreenNavigateWithParams(
+              this.props.navigation,
+              id
+            )
           } else if (path === PV.DeepLinks.Profile.pathPrefix) {
             await navigate(PV.RouteNames.MyLibraryScreen)
             await navigate(PV.RouteNames.ProfilesScreen, {
@@ -999,11 +1002,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
     />
   )
 
-  _onPodcastItemSelected = (item) => {
-    this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
-      podcast: item,
-      addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl
-    })
+  _onPodcastItemSelected = (podcast: Podcast) => {
+    handlePodcastScreenNavigateWithParams(
+      this.props.navigation,
+      podcast.id,
+      podcast,
+      { forceRequest: false }
+    )
   }
 
   _onPodcastItemLongPressed = (item: Podcast) => {

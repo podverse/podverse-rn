@@ -39,7 +39,7 @@ export const NavMakeClipIcon = (props: Props) => {
       navigation.navigate(PV.RouteNames.MakeClipScreen, {
         initialProgressValue,
         initialPrivacy: isPublic,
-        safeIsLoggedIn,
+        isLoggedIn: safeIsLoggedIn,
         globalTheme
       })
     }

@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { AndroidAutoContentStyle, AndroidAutoBrowseTree } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
 import { Episode, NowPlayingItem, Podcast, convertNowPlayingItemToEpisode } from 'podverse-shared'
@@ -11,7 +12,6 @@ import { readableDate } from '../utility'
 import { getHistoryItems } from '../../state/actions/userHistoryItem'
 import { errorLogger } from '../logger'
 import { getEpisodesForPodcast, loadEpisodeInPlayer } from './helpers'
-import AsyncStorage from '@react-native-community/async-storage'
 
 /* Constants */
 
@@ -141,23 +141,38 @@ export const handlePlayRemoteMediaId = async (mediaId: string) => {
 
 /* Initialize */
 
+export const requestDrawOverAppsPermission = async () => {
+  return new Promise<void>((resolve) => {
+    (async () => {
+      const { PVAndroidAutoModule } = NativeModules
+      // PVAndroidAutoModule.getDrawOverAppsPermission().then(async (enabled: boolean) => {
+        const drawOverAppsPermissionAsked = await AsyncStorage.getItem('DRAW_OVER_APPS_PERMISSION_ASKED')
+    
+        if (/* enabled || */ drawOverAppsPermissionAsked) {
+          resolve()
+          return
+        }
+        else {
+          await AsyncStorage.setItem('DRAW_OVER_APPS_PERMISSION_ASKED', 'TRUE')
+          Alert.alert(translate('Android Auto Permission Title'), translate('Android Auto Permission Body'), [
+            { text: 'Cancel', style: 'cancel', onPress: () => {
+              resolve()
+            }},
+            { text: 'OK', onPress: () => {
+              PVAndroidAutoModule.askDrawOverAppsPermission()
+              resolve()
+            }}
+          ])
+        }
+      // })
+    })()
+  })
+}
+
 export const onAppInitialized = () => {
   const { PVAndroidAutoModule } = NativeModules
   PVAndroidAutoModule.turnOffShowWhenLocked()
   handleAndroidAutoPodcastsUpdate()
-  // example dialog to prompt for android auto draw over apps permission.
-  PVAndroidAutoModule.getDrawOverAppsPermission().then(async (enabled: boolean) => {
-    const drawOverAppsPermissionAsked = await AsyncStorage.getItem('DRAW_OVER_APPS_PERMISSION_ASKED')
-
-    if (enabled || drawOverAppsPermissionAsked !== null) return
-    else {
-      AsyncStorage.setItem('DRAW_OVER_APPS_PERMISSION_ASKED', 'TRUE')
-      Alert.alert(translate('Android Auto Permission Title'), translate('Android Auto Permission Body'), [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'OK', onPress: () => PVAndroidAutoModule.askDrawOverAppsPermission() }
-      ])
-    }
-  })
 }
 
 export const registerAndroidAutoModule = (t: (val: string) => string = translate) => {
