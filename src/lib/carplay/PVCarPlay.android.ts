@@ -160,7 +160,9 @@ export const requestDrawOverAppsPermission = async () => {
             }},
             { text: 'OK', onPress: () => {
               PVAndroidAutoModule.askDrawOverAppsPermission()
-              resolve()
+              setTimeout(() => {
+                resolve()
+              }, 3000)
             }}
           ])
         }
