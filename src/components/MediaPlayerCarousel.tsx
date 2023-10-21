@@ -11,6 +11,7 @@ import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../state/a
 import { toggleValueStreaming } from '../state/actions/valueTag'
 import { v4vAlbyHandleNavigation } from '../state/actions/v4v/providers/alby'
 import { MediaPlayerCarouselComments } from './MediaPlayerCarouselComments'
+import SwipeableContainer from './SwipeableContainer'
 import {
   ActivityIndicator,
   DropdownButtonSelect,
@@ -249,34 +250,17 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           </>
         )}
         {!screenReaderEnabled && (
-          <>
-            <ScrollView
-              bounces={false}
-              decelerationRate='fast'
-              horizontal
-              onMomentumScrollEnd={this.onScrollEnd}
-              pagingEnabled={false}
-              scrollViewRef={(ref: any) => (this.scrollView = ref)}
-              showsHorizontalScrollIndicator={false}
-              snapToInterval={screenWidth}
-              snapToStart
-              transparent>
-              {carouselComponents}
-            </ScrollView>
-            <View accessible={false} importantForAccessibility='no-hide-descendants'>
-              <Dots
-                active={activeIndex}
-                activeColor={PV.Colors.skyDark}
-                activeDotHeight={9}
-                activeDotWidth={9}
-                length={itemCount}
-                paddingVertical={12}
-                passiveColor={PV.Colors.grayLighter}
-                passiveDotHeight={8}
-                passiveDotWidth={8}
-              />
-            </View>
-          </>
+            <SwipeableContainer>
+              <View style={{ backgroundColor: 'red', flex: 1 }}>
+        <Text>Screen 1</Text>
+      </View>
+      <View style={{ backgroundColor: 'blue', flex: 1 }}>
+        <Text>Screen 2</Text>
+      </View>
+      <View style={{ backgroundColor: 'green', flex: 1 }}>
+        <Text>Screen 3</Text>
+      </View>
+            </SwipeableContainer>
         )}
         {!!activeProvider && hasValueInfo && (
           <View style={styles.maxWidthWrapper}>
