@@ -105,7 +105,7 @@ import { updateScreenReaderEnabledState } from '../state/actions/screenReader'
 import { initializeSettings, setPodcastsGridView } from '../state/actions/settings'
 import { setShouldshowPodcastsListPopover } from '../state/actions/podcasts-ui'
 import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
-import { v4vInitialize } from '../state/actions/v4v/v4v'
+import { v4vInitialize, v4vRefreshConnectedProviders } from '../state/actions/v4v/v4v'
 import { core } from '../styles'
 
 const { PVUnifiedPushModule } = NativeModules
@@ -485,6 +485,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
         updateDownloadedPodcasts()
         await playerUpdatePlaybackState()
+        v4vRefreshConnectedProviders()
       }
 
       if (nextAppState === 'background' || nextAppState === 'inactive') {

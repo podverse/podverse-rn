@@ -25,6 +25,11 @@ export class PurchaseListener extends React.Component<Props> {
   componentDidMount() {
     const { navigation } = this.props
 
+    // NOTE: This listener gets called twice in localhost at least...and I have no idea why :[
+    // It seems like a common issue with the library, and I'm not sure if it happens in production.
+    // It shouldn't result in 2 payments, but it may cause the screen to display "unsuccessful"
+    // even though the transaction was processed successfully.
+    // https://github.com/dooboolab-community/react-native-iap/issues/753
     const processPurchase = (purchase: InAppPurchase | Purchase) => {
       (async () => {
         const { productId, purchaseToken, transactionId, transactionReceipt } = purchase
