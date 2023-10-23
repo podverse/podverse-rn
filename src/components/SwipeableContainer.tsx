@@ -8,6 +8,7 @@ interface SwipeableProps {
 interface SwipeableState {
   currentIndex: number;
   pan: Animated.ValueXY;
+  transitioningIndex: number | null;
 }
 
 class Swipeable extends Component<SwipeableProps, SwipeableState> {
@@ -17,8 +18,9 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
     super(props);
 
     this.state = {
-      currentIndex: 0,
+      currentIndex: 1,
       pan: new Animated.ValueXY(),
+      transitioningIndex: null
     };
 
     this.panResponder = PanResponder.create({
@@ -38,14 +40,22 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
       onPanResponderRelease: (_, gesture) => {
         const screenWidth = Dimensions.get('window').width;
         if (Math.abs(gesture.dx) > screenWidth * 0.2) {
-          const newIndex = gesture.dx > 0 ? this.state.currentIndex - 1 : this.state.currentIndex + 1;
+          const isPanForward = gesture.dx < 0
+          const newIndex = isPanForward ? this.state.currentIndex + 1 : this.state.currentIndex - 1;
           if (newIndex >= 0 && newIndex < this.props.children.length) {
-            this.setState({ currentIndex: newIndex }, () => {
+            this.setState({ currentIndex: newIndex, transitioningIndex: this.state.currentIndex }, () => {
+              const animateToXValue = isPanForward ? -screenWidth : screenWidth
               Animated.timing(this.state.pan, {
-                toValue: { x: 0, y: 0 },
-                duration: 500,
+                toValue: { x: animateToXValue, y: 0 },
+                duration: 150,
                 useNativeDriver: true,
-              }).start();
+              }).start(() => {
+                this.setState({ transitioningIndex: null }, () => {
+                  Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }], {
+                    useNativeDriver: false,
+                  })(_, gesture)
+                })
+              });
             });
           } else {
             Animated.spring(this.state.pan, {
@@ -64,10 +74,11 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
   }
 
   render() {
-    const { currentIndex, pan } = this.state;
+    const { currentIndex, pan, transitioningIndex } = this.state;
+    const renderedIndex = transitioningIndex === null ? currentIndex : transitioningIndex
 
     const children = React.Children.map(this.props.children, (child, index) => {
-      if (index === currentIndex) {
+      if (index === renderedIndex) {
         return (
           <Animated.View
             style={[
@@ -81,7 +92,7 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
             {child}
           </Animated.View>
         );
-      } else if (index === currentIndex + 1 && currentIndex < this.props.children.length - 1) {
+      } else if (index === renderedIndex + 1 && renderedIndex < this.props.children.length - 1) {
         return (
           <Animated.View
             style={[
@@ -96,7 +107,7 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
             {child}
           </Animated.View>
         );
-      } else if (index === currentIndex - 1 && currentIndex > 0) {
+      } else if (index === renderedIndex - 1 && renderedIndex > 0) {
         return (
           <Animated.View
             style={[
