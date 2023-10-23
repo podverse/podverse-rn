@@ -31,7 +31,10 @@ export const androidHandleStatusCheck = async (purchase: Purchase) => {
       const { code } = response
       if (code === 0) {
         const isConsumable = true
-        await finishTransaction(purchase, isConsumable)
+        await finishTransaction({
+          purchase,
+          isConsumable
+        })
         await handleStatusSuccessful()
       } else if (code === 1) {
         handleStatusCancel()

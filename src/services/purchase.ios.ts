@@ -5,11 +5,11 @@ export const iosHandlePurchaseStatusCheck = async (purchase: Purchase) => {
   try {
     const { transactionReceipt } = purchase
     const response = await updateAppStorePurchaseStatus(transactionReceipt)
-    const { finishedTransactionIds } = response.data
-    if (finishedTransactionIds && Array.isArray(finishedTransactionIds)) {
-      for (const transactionId of finishedTransactionIds) {
+    const { processedPurchases } = response.data
+    if (processedPurchases && Array.isArray(processedPurchases)) {
+      for (const processedPurchase of processedPurchases) {
         const isConsumable = true
-        await finishTransaction({ transactionId } as any, isConsumable)
+        await finishTransaction({ purchase: processedPurchase, isConsumable })
       }
     }
   } catch (error) {
