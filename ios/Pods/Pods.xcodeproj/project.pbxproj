@@ -136,6 +136,7 @@
 		01F972468B42F0669FA5BF3A2366686A /* GULKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 74263D1E2F812FC3007EBEEB711C374A /* GULKeychainUtils.m */; };
 		027860BC9710F8F3286FAC19FCEDE4FD /* RNCWKProcessPoolManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A29C2D3AAE3D481E2D567025F94CB104 /* RNCWKProcessPoolManager.m */; };
 		0288C67ACC685EE977014E82AFBBE221 /* RNSVGUseManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 37CD6CDEFF5BD09D4E47915B575C1D55 /* RNSVGUseManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		02A668136B2102C9F9B4810CD28C243D /* RNIapIos-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 458332E76E31ABD7FF1EC8463DC5D93B /* RNIapIos-Bridging-Header.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		02BE6F9D9087161457E8E23A0700F7E0 /* FIRMessagingSyncMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E50EB3F0DE9255A92B1735833C4E2934 /* FIRMessagingSyncMessageManager.m */; };
 		02D708735A7E1521A75486508E959239 /* Singleton.h in Headers */ = {isa = PBXBuildFile; fileRef = AEA85143A41B00F5FFC6FBFCEE7DD5ED /* Singleton.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		02D96483B0615348F3B157FA4B747857 /* CustomizationPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D6C0105B1D153AAFC5E21879634303F /* CustomizationPoint.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -184,7 +185,6 @@
 		089648DA48132C9F4E50B7057431D7A1 /* MapUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 11B1BB356E3BACD76FDDF24CAA838E72 /* MapUtil.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		08A7D5B0F288977830DACD5FA942694C /* RCTScrollContentView.h in Headers */ = {isa = PBXBuildFile; fileRef = 84FFCB5661E3D81EF693051CC43F24B1 /* RCTScrollContentView.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		08AA721B9C903B345F015F543726CA5C /* RCTBaseTextShadowView.h in Headers */ = {isa = PBXBuildFile; fileRef = 9269C722EF61E8417AA7BB178ECD36B1 /* RCTBaseTextShadowView.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		08C61F35C2F982DA68CB47EBC395C681 /* RNIapIos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 477E5E6FBB7FB86BFCE867CEF29F4455 /* RNIapIos.swift */; };
 		08D550BEA9F6DFA5E2C3CB3260FB146F /* FIRMessagingAuthKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = C8279D5053F7F211A47D902C18D6C6D0 /* FIRMessagingAuthKeychain.m */; };
 		08E579AB3308E226DA48FC5628AA2FFF /* REAOperatorNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 988CDE3287BDDC4D1DCCB35D6B3F0347 /* REAOperatorNode.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		090404967C93B5CA7CA0345420464038 /* RCTTransformAnimatedNode.m in Sources */ = {isa = PBXBuildFile; fileRef = D5D52740FCDA374127B37CF4A8844FE1 /* RCTTransformAnimatedNode.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-nullability-completeness"; }; };
@@ -496,6 +496,7 @@
 		30013C675768A107D9A3C3FFFBD05E52 /* stop_watch.h in Headers */ = {isa = PBXBuildFile; fileRef = 25B4705676C75E813E1A81E558194996 /* stop_watch.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		304DB5C8D593A93664D7CB74C6D77261 /* RCTSwitch.h in Headers */ = {isa = PBXBuildFile; fileRef = 54A511AD4E0BBA036C25A375430F7FB6 /* RCTSwitch.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		304F7346C315985A7A4F2BC83658176A /* RNForceTouchHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 8550983EED0E409C04473D731F3129C9 /* RNForceTouchHandler.m */; };
+		30CA99C39229EDB7B68581F4E12CB455 /* RNIapIos.m in Sources */ = {isa = PBXBuildFile; fileRef = CA6BE03FCAF40FDA97C730B7BF0E2A1A /* RNIapIos.m */; };
 		30DBCA5DFA651E80C46BDB60C92EEAA2 /* EvictingCacheMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 75837DBA0D0BBDB7C242972068C6FD66 /* EvictingCacheMap.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		30FF04F8CFE75D278CDFC05D243D920A /* FIRComponentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CAAF09830708E101BB049914A8A2AE0 /* FIRComponentType.m */; };
 		311CA3C367EF09DD086A2BC8CDEDF055 /* ReactNativeConfigModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E84421CE5D9B80566E342CE9307F925 /* ReactNativeConfigModule.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -540,6 +541,7 @@
 		36CD3546AA8771EB2AA23F93202840E3 /* RCTErrorInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 2BADDE3F5636E2075E78D2E27FA31F02 /* RCTErrorInfo.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		3707C9C7063D30A0B1F1DA35CC70618F /* RCTNativeAnimatedModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96851E3AD076E9D2814B2F3FC1CDA171 /* RCTNativeAnimatedModule.mm */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-nullability-completeness"; }; };
 		3758C48607E07D909624EB94146B64F7 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419B67F8CF9DC3CF753FB6E5530F0B13 /* Track.swift */; };
+		3760BD2EAB77FD5DB8C758B401C73DCC /* RNIapIos.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD245625C16E44264C142EABD9B0CA8C /* RNIapIos.swift */; };
 		37997B606EDAADBE858DAE4E28BEC331 /* FIRMessagingTokenOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C8D3C9EA4AE478EFD6A3DBA600015648 /* FIRMessagingTokenOperation.m */; };
 		37A00BC7AB99B4AB8A9301543A44367D /* RCTReloadCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = 5C5B6941B97794AB5AC35ADBAD0FB780 /* RCTReloadCommand.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		38067BF9CABE19CB0CD9E8CC8C6C792D /* IOVec.h in Headers */ = {isa = PBXBuildFile; fileRef = 9A9508A210DC7F733AE0E53AA7B39A20 /* IOVec.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -567,7 +569,6 @@
 		3C05AA0FB64683D17B47E09C2E3CBE81 /* RNLongPressHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 16717F0F414816D123EA408C9AE9F4CA /* RNLongPressHandler.m */; };
 		3C2576FFD5DC2A554C265ED96B61EBE0 /* jsilib-posix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 221557A82CB4E0442D2D5D123212CC22 /* jsilib-posix.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
 		3C623E691CDA13A9604FDCC252CE31F6 /* RNShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C096A5E8BD46A88DC347F914DD12940 /* RNShare.m */; };
-		3C72C6A326AA629245ED030A3AE4E416 /* RNIap-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0BA6B0C7EAFD8E3FAE7AA1C0376FCD7F /* RNIap-dummy.m */; };
 		3C87C5AF329858F5A97528E63C93E940 /* UIViewController+RNScreens.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CB26FCAB037F300562533D17491C02D /* UIViewController+RNScreens.m */; };
 		3C9FACCCD744BF37F367248287B2B207 /* GDTCORStorageEventSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = 550513076E0C35C785581F0C27917A9A /* GDTCORStorageEventSelector.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		3CF4C0C443C6E611BDCDFE93072F574E /* RNFBMeta.h in Headers */ = {isa = PBXBuildFile; fileRef = E806D034CEC2D2EB695FA1B9A0FE59CF /* RNFBMeta.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -923,6 +924,7 @@
 		6A53D7E5939EE75F285E96C2D97461FC /* SysStat.h in Headers */ = {isa = PBXBuildFile; fileRef = DDE2BE663E87C557CD4E7684B0E2CAB4 /* SysStat.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		6A62087C4304F9CA359EBB06AFFE78EE /* RCTI18nManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 883E0A21E5FA21F9ADAB75FD3FF83603 /* RCTI18nManager.mm */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-nullability-completeness"; }; };
 		6A71D68F081DC04BDEDD415D5500FF1E /* REAModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 39E6E37D5561790FE4692E7AB39CD8DB /* REAModule.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -DRNVERSION=66 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
+		6A9EC267D0E875C8EDB9CF0F44C46DA6 /* RNIap-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 896F57C0E292AFB7C368DCB3ABDCF48E /* RNIap-dummy.m */; };
 		6AA5FBC00C3937B94F98115A278CBB84 /* RCTImageViewManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 74C281A382126C1D90079063E6C45B09 /* RCTImageViewManager.mm */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-nullability-completeness"; }; };
 		6AC7607D8947F740A353B43BB3876C49 /* RNSVGSvgView.h in Headers */ = {isa = PBXBuildFile; fileRef = CA0A82309B0D2E7D16B42BD9EAFF602F /* RNSVGSvgView.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		6AED2D7E0DE9083745108242E7736680 /* FirebaseCore-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = A7072E093676B00C863197C1D9F15893 /* FirebaseCore-dummy.m */; };
@@ -1000,7 +1002,6 @@
 		73E5B3ACCB14372F386B4A03D395B38C /* Utility.h in Headers */ = {isa = PBXBuildFile; fileRef = 946C524679F75E8274836018EC7772CE /* Utility.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		73FA0F8B978757FBE1E3E83A72E55D40 /* FIRMessagingAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = D8AD0ADCD337C69DAE7F58EA4B499444 /* FIRMessagingAnalytics.m */; };
 		74741BE4E8C981EF72C71D9F808EC827 /* YGNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 2787AAB5ECEFDB75C3B994EF269E7C2E /* YGNode.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		749EE14979055DF92886FCDFA087CC1B /* RNIap-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A60FD164C0A589581FA56B6213B8114 /* RNIap-umbrella.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		74A01BAC3507E517E6B505B68BA396F3 /* RCTJSStackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 692CFB0233C00F20E61287DEC03A0E58 /* RCTJSStackFrame.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
 		74A07D288793834677C57A843F7F0C04 /* SysResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A20E621FE247446C2CA7D133EEBD9D2 /* SysResource.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		74B310824C657C61B485395216555E1C /* RNCSafeAreaViewLocalData.h in Headers */ = {isa = PBXBuildFile; fileRef = 60AAE9557563289A52B1C94949754650 /* RNCSafeAreaViewLocalData.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -1073,7 +1074,6 @@
 		7DC0C6DE54F09CE8751FC139AC676E48 /* LongLivedObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BABDE8BD9B8BBB276BD23758302D82D /* LongLivedObject.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		7DC1E1497659ACAC68ECD66D5F64B87B /* RNSVGMarkerPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFC3FA531990A59434CBDAC87232211 /* RNSVGMarkerPosition.m */; };
 		7E02C6F56BDC63FBAAE9FCC341C0E240 /* FIRComponentContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 03F96103AD9DBE61637D56B4C1802360 /* FIRComponentContainer.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		7E10C670CE80483D6689878C77FC296B /* RNIapQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D03E95A48BBCC3C21ABAAD59A36AE17 /* RNIapQueue.swift */; };
 		7E1F36F98EBFCA884E61D9347A3C5971 /* RCTInterpolationAnimatedNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 75024CABB2350BE6EEF7CC3DAFEF61CF /* RCTInterpolationAnimatedNode.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		7E20E6E89DCFE75BA8B00A82ADE9821F /* SystraceSection.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DC9F0BFB2A2074E93C04C3A5187AC17 /* SystraceSection.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		7E2F20F32422AE1A8A0E900A38E8A583 /* RCTMaskedViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AC30EDC7DCA14936A8B170C4B3BEFF86 /* RCTMaskedViewManager.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
@@ -1803,7 +1803,6 @@
 		DA4B56816D34601560935D553E8486E3 /* RCTFrameUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE38E12A23CCD52A117D9B022CFA17F2 /* RCTFrameUpdate.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
 		DA6EE15CF46D27EECFE50EE3AA5A9E2D /* RNCSafeAreaViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F5DE38F40BA8C90B2261A6F2092AEEC /* RNCSafeAreaViewManager.m */; };
 		DA97A57EFB25938064228BD2F291C454 /* AVPlayerItemNotificationObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4860B10C2F379D5E708742B21FBEE377 /* AVPlayerItemNotificationObserver.swift */; };
-		DAA4EB6E5D585ECA93B946A087940E9C /* RNIapIos.m in Sources */ = {isa = PBXBuildFile; fileRef = 179E6FEE34BB7DD2C7EAD906015A79E6 /* RNIapIos.m */; };
 		DAAC47DC4AC37C81C6E28A4F0F04B9B6 /* RNGestureHandlerRegistry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D24AC88B4F14C8782350CF18BB10810 /* RNGestureHandlerRegistry.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		DAC35B7F9A722ECC20BB68099F28E676 /* FBLPromise+Wrap.m in Sources */ = {isa = PBXBuildFile; fileRef = 672C963CEC57B5A1964990A650C2B3CF /* FBLPromise+Wrap.m */; };
 		DAE0E121819507A41443C016B294BB7B /* React-RCTSettings-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 08DC11F8C3C25E2A68266239EF1694FE /* React-RCTSettings-dummy.m */; };
@@ -1927,6 +1926,7 @@
 		E83C2D88EA0CCED77BB81C1BCE7EC96F /* Yoga-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 622E3C7E7F5A4248DB14214E0322874B /* Yoga-umbrella.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		E83D277FF789CBCB573882F943B72108 /* small_vector.h in Headers */ = {isa = PBXBuildFile; fileRef = 70C7F88498BD2EB7A63DBBC7B258FEBD /* small_vector.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		E85A28EF70F893E86EA672284E5CCF89 /* RCTImageStoreManager.h in Headers */ = {isa = PBXBuildFile; fileRef = AC52106B96CE7DDDE5AFC51D00568C3F /* RCTImageStoreManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		E86F76C339CCC4E93EE5C5CA36AF9DA7 /* RNIap-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D99E73AA5FDC3D3A14DCC04A39D8606 /* RNIap-umbrella.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		E87E50997012999DA04CC1A278FF5DFF /* Enumerate.h in Headers */ = {isa = PBXBuildFile; fileRef = 06452DC5AC342E5D6C6EDC79F2FFC199 /* Enumerate.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		E895359A4C545403ABA0CABD9CFC7ADF /* RCTUIUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B6FB6079468FD821AE48F41849FB70F /* RCTUIUtils.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
 		E89D42585F30B436480D28CD7269EF46 /* RCTSourceCode.mm in Sources */ = {isa = PBXBuildFile; fileRef = DEC323DB3FC34999BF61FD8ED06DF133 /* RCTSourceCode.mm */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-nullability-completeness"; }; };
@@ -3838,13 +3838,6 @@
 			remoteGlobalIDString = 11989A5E568B3B69655EE0C13DCDA3F9;
 			remoteInfo = "React-RCTActionSheet";
 		};
-		D26552DBC81D9C23567D13D058230A7B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7ACAA9BE580DD31A5CB9D97C45D9492D;
-			remoteInfo = "React-Core";
-		};
 		D2EFCAC32A450F19E5377EC362644694 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
@@ -3914,6 +3907,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = DA0709CAAD589C6E7963495210438021;
 			remoteInfo = "React-jsiexecutor";
+		};
+		DB686116F0786AE258476A1A61C27E06 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7ACAA9BE580DD31A5CB9D97C45D9492D;
+			remoteInfo = "React-Core";
 		};
 		DC735D44FE67C320024BADABCCC411B4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -4361,7 +4361,6 @@
 		0B2CC80E5848D51D46C7C8DFD087EF79 /* Config.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Config.h; path = folly/portability/Config.h; sourceTree = "<group>"; };
 		0B8C720F04114718DC93B975142EDA1C /* RCTRefreshControl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTRefreshControl.h; sourceTree = "<group>"; };
 		0B95567FC6EA054B6C15FB618E5C25E3 /* RNSVGVectorEffect.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RNSVGVectorEffect.h; sourceTree = "<group>"; };
-		0BA6B0C7EAFD8E3FAE7AA1C0376FCD7F /* RNIap-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RNIap-dummy.m"; sourceTree = "<group>"; };
 		0C04E886DCABF4370E15286159858836 /* RNGestureHandlerRegistry.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RNGestureHandlerRegistry.m; path = ios/RNGestureHandlerRegistry.m; sourceTree = "<group>"; };
 		0C411047EF2D41E4236235A4B3A954BE /* file17.m4a */ = {isa = PBXFileReference; includeInIndex = 1; name = file17.m4a; path = docs/static/example/hls/whip/file17.m4a; sourceTree = "<group>"; };
 		0C4CAACD89D8A929C90A36E95A0D87F6 /* react-native-tracking-transparency.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = "react-native-tracking-transparency.podspec"; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -4435,10 +4434,10 @@
 		13C1CC759A5AC168B5F0DCA13B0A52EF /* _category_.json */ = {isa = PBXFileReference; includeInIndex = 1; name = _category_.json; path = "docs/versioned_docs/version-3.1/guides/_category_.json"; sourceTree = "<group>"; };
 		13C8C8B254851998F9289F71229B28A2 /* FirebaseInstallations */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = FirebaseInstallations; path = libFirebaseInstallations.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		13DF09BD9451C42338F83B6C9CB189AA /* RNSVGLength.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RNSVGLength.h; sourceTree = "<group>"; };
+		13E05178ADCD16FCF36C559CF2C0A583 /* RNIap.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = RNIap.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		1402E013313E1CD6C62E620DBCB0517F /* AppCenterReactNativeShared-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "AppCenterReactNativeShared-xcframeworks.sh"; sourceTree = "<group>"; };
 		140335AE713D3E806496B4DDA6C23F2D /* React-Core-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "React-Core-dummy.m"; sourceTree = "<group>"; };
 		14160B94EB158DAF84586BDEB8F7350B /* RTCSystemSetting.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RTCSystemSetting.h; path = ios/RTCSystemSetting.h; sourceTree = "<group>"; };
-		141E43388F3E06B22769C0A42A874B83 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
 		142844813CC5F6449E453E76F55190EF /* RCTTouchHandler.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTTouchHandler.m; sourceTree = "<group>"; };
 		142C693401E96967379F72322B2D9A0A /* RNSVGMarkerManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RNSVGMarkerManager.m; sourceTree = "<group>"; };
 		14419A2B9413F0A9138EA18656C99C37 /* React-CoreModules.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "React-CoreModules.release.xcconfig"; sourceTree = "<group>"; };
@@ -4478,7 +4477,6 @@
 		175DE7FE6E6E2A5094426DE592781431 /* yarn.lock */ = {isa = PBXFileReference; includeInIndex = 1; name = yarn.lock; path = docs/yarn.lock; sourceTree = "<group>"; };
 		1778BA96A0283894017AC9CA8C8B475B /* file23.m4a */ = {isa = PBXFileReference; includeInIndex = 1; name = file23.m4a; path = docs/static/example/hls/whip/file23.m4a; sourceTree = "<group>"; };
 		1798D142BFAE9805A130C490BCB5B4EE /* REACallFuncNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = REACallFuncNode.m; sourceTree = "<group>"; };
-		179E6FEE34BB7DD2C7EAD906015A79E6 /* RNIapIos.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RNIapIos.m; path = ios/RNIapIos.m; sourceTree = "<group>"; };
 		17B2BE2349BD497731011B76DFDE9B3F /* YGEnums.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = YGEnums.h; path = yoga/YGEnums.h; sourceTree = "<group>"; };
 		17B50B5AEF69B320E1BA59F9A5F8B72D /* react-native-track-player */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "react-native-track-player"; path = "libreact-native-track-player.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		17CE3C885AC280529A9EB9D693BADA8B /* React-perflogger.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = "React-perflogger.podspec"; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -4547,6 +4545,7 @@
 		1D6C0105B1D153AAFC5E21879634303F /* CustomizationPoint.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = CustomizationPoint.h; path = folly/lang/CustomizationPoint.h; sourceTree = "<group>"; };
 		1D96B0B6B3062F46F33D63B011E40949 /* react-native-in-app-review-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "react-native-in-app-review-umbrella.h"; sourceTree = "<group>"; };
 		1D989262184C0C99DEEEE27FA25CB9D0 /* GULNetwork.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = GULNetwork.m; path = GoogleUtilities/Network/GULNetwork.m; sourceTree = "<group>"; };
+		1D99E73AA5FDC3D3A14DCC04A39D8606 /* RNIap-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RNIap-umbrella.h"; sourceTree = "<group>"; };
 		1DB3760A835B8CAE332389FBF9B514A0 /* RCTDevSettings.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RCTDevSettings.h; path = React/CoreModules/RCTDevSettings.h; sourceTree = "<group>"; };
 		1DC66AC6FB5802B9BA94177EDB54263D /* RNCPicker */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = RNCPicker; path = libRNCPicker.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DFA5B8DD64C9D63B0700DA1B760EBDC /* React-RCTSettings.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = "React-RCTSettings.podspec"; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -4665,7 +4664,6 @@
 		2A47AB2032BBC734DF6A4E4345C8B90B /* NativeMethods.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = NativeMethods.mm; sourceTree = "<group>"; };
 		2A51C40C38EB1AFBAC71FD0C46B72A2F /* logging.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = logging.h; path = src/glog/logging.h; sourceTree = "<group>"; };
 		2A57270200A1ACA1C8A6D939EB6707C1 /* version-2.1-sidebars.json */ = {isa = PBXFileReference; includeInIndex = 1; name = "version-2.1-sidebars.json"; path = "docs/versioned_sidebars/version-2.1-sidebars.json"; sourceTree = "<group>"; };
-		2A60FD164C0A589581FA56B6213B8114 /* RNIap-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RNIap-umbrella.h"; sourceTree = "<group>"; };
 		2A953A2DA5A18891707F3E94632ACD38 /* GULNetworkConstants.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GULNetworkConstants.h; path = GoogleUtilities/Network/Public/GoogleUtilities/GULNetworkConstants.h; sourceTree = "<group>"; };
 		2AB087204FA7F911A256BD28E881D729 /* IPAddress.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = IPAddress.h; path = folly/detail/IPAddress.h; sourceTree = "<group>"; };
 		2AE1307BB940D8F8EC14A4DFECC09CFC /* React-RCTSettings.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "React-RCTSettings.debug.xcconfig"; sourceTree = "<group>"; };
@@ -4677,6 +4675,7 @@
 		2B42C47F9A319701D02310D4FA7EA909 /* react-native-webview.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "react-native-webview.release.xcconfig"; sourceTree = "<group>"; };
 		2B432F474E170B24BE18A6AF7586A6AB /* RNCWebView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RNCWebView.m; path = apple/RNCWebView.m; sourceTree = "<group>"; };
 		2B712810A9D2178F360EC2D6ABEE7A84 /* RCTScrollContentViewManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTScrollContentViewManager.m; sourceTree = "<group>"; };
+		2B82C422EF146B0D87D514942F4BC1AB /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
 		2BAA85ABD105903DECFBB40A48981030 /* RNFBMessaging+NSNotificationCenter.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "RNFBMessaging+NSNotificationCenter.m"; path = "ios/RNFBMessaging/RNFBMessaging+NSNotificationCenter.m"; sourceTree = "<group>"; };
 		2BADDE3F5636E2075E78D2E27FA31F02 /* RCTErrorInfo.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTErrorInfo.h; sourceTree = "<group>"; };
 		2BC1ADCCF14D91E52A296A0A603D3A1C /* RNIap */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = RNIap; path = libRNIap.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4685,7 +4684,6 @@
 		2C5E90BF043B2235B08DAEF3E1262666 /* VirtualExecutor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = VirtualExecutor.h; path = folly/VirtualExecutor.h; sourceTree = "<group>"; };
 		2C7A1D304199BA644E163E338E446770 /* Format-inl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "Format-inl.h"; path = "folly/Format-inl.h"; sourceTree = "<group>"; };
 		2CA542E00DEDB71C064EE97D5583C140 /* FIRMessagingUtilities.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FIRMessagingUtilities.h; path = FirebaseMessaging/Sources/FIRMessagingUtilities.h; sourceTree = "<group>"; };
-		2D03E95A48BBCC3C21ABAAD59A36AE17 /* RNIapQueue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RNIapQueue.swift; path = ios/RNIapQueue.swift; sourceTree = "<group>"; };
 		2D10648AFB1F774318315798DF76CF0A /* FIRCoreDiagnosticsConnector.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FIRCoreDiagnosticsConnector.h; path = FirebaseCore/Sources/Private/FIRCoreDiagnosticsConnector.h; sourceTree = "<group>"; };
 		2D2F5D4F358C129D87E2B9BEBA604EAB /* GDTCORMetrics+GDTCCTSupport.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "GDTCORMetrics+GDTCCTSupport.h"; path = "GoogleDataTransport/GDTCCTLibrary/Private/GDTCORMetrics+GDTCCTSupport.h"; sourceTree = "<group>"; };
 		2D32505F1C15670F44950C09431C1506 /* state.md */ = {isa = PBXFileReference; includeInIndex = 1; name = state.md; path = docs/docs/api/constants/state.md; sourceTree = "<group>"; };
@@ -4764,7 +4762,6 @@
 		334F159487478834A845C0567993FC9B /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
 		339D93B64B40B918DB95660CF4C895D0 /* Indestructible.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Indestructible.h; path = folly/Indestructible.h; sourceTree = "<group>"; };
 		33AE70246B8D7A78C912EAD586AC488B /* RCTRedBox.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RCTRedBox.h; path = React/CoreModules/RCTRedBox.h; sourceTree = "<group>"; };
-		33B1053BC8239C610D0A91A6F96D1B61 /* RNIap-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RNIap-prefix.pch"; sourceTree = "<group>"; };
 		33D70B48250C1AA5A820B842E3E56558 /* FBLPromise+Catch.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "FBLPromise+Catch.h"; path = "Sources/FBLPromises/include/FBLPromise+Catch.h"; sourceTree = "<group>"; };
 		33FB23582832D4E169843E607710C650 /* rating.md */ = {isa = PBXFileReference; includeInIndex = 1; name = rating.md; path = "docs/versioned_docs/version-3.2/api/constants/rating.md"; sourceTree = "<group>"; };
 		343B31A890B6C2480F8CCEEF54FBA58A /* intro.md */ = {isa = PBXFileReference; includeInIndex = 1; name = intro.md; path = "docs/versioned_docs/version-2.1/intro.md"; sourceTree = "<group>"; };
@@ -4974,6 +4971,7 @@
 		45194ED455BEED187FF69B0A716D24B3 /* FIRCoreDiagnosticsInterop.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FIRCoreDiagnosticsInterop.h; path = Interop/CoreDiagnostics/Public/FIRCoreDiagnosticsInterop.h; sourceTree = "<group>"; };
 		45635707DFEB6D8F0DC1237BE162C75B /* RCTBridgeMethod.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTBridgeMethod.h; sourceTree = "<group>"; };
 		456DD25F3F81490C7928D0D372642F14 /* Util.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Util.swift; path = ios/Util.swift; sourceTree = "<group>"; };
+		458332E76E31ABD7FF1EC8463DC5D93B /* RNIapIos-Bridging-Header.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "RNIapIos-Bridging-Header.h"; path = "ios/RNIapIos-Bridging-Header.h"; sourceTree = "<group>"; };
 		458479FF42A908377CE014FD006007DD /* Scheduler.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = Scheduler.h; sourceTree = "<group>"; };
 		459A3E52135EB5676897DD63C4C09FFF /* RNSVGSymbol.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RNSVGSymbol.h; sourceTree = "<group>"; };
 		459ED64EAC24AA94B524611DC80467E6 /* Pods-podverse-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-podverse-acknowledgements.plist"; sourceTree = "<group>"; };
@@ -4994,7 +4992,6 @@
 		4736E5DFB422234418354817EE231C54 /* RCTMultipartStreamReader.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTMultipartStreamReader.h; sourceTree = "<group>"; };
 		475B1626DFE470B176543DFF98F713B8 /* lifecycle.md */ = {isa = PBXFileReference; includeInIndex = 1; name = lifecycle.md; path = "docs/versioned_docs/version-3.2/api/functions/lifecycle.md"; sourceTree = "<group>"; };
 		47610E1A0D50671A3F9E9D1ED71103FC /* RCTAlertManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RCTAlertManager.h; path = React/CoreModules/RCTAlertManager.h; sourceTree = "<group>"; };
-		477E5E6FBB7FB86BFCE867CEF29F4455 /* RNIapIos.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RNIapIos.swift; path = ios/RNIapIos.swift; sourceTree = "<group>"; };
 		478F698A341EA4BB6E0FE66028078676 /* YGLayout.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = YGLayout.cpp; path = yoga/YGLayout.cpp; sourceTree = "<group>"; };
 		47E4167BA72ADB2BE248946071583700 /* FIRMessagingBackupExcludedPlist.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FIRMessagingBackupExcludedPlist.h; path = FirebaseMessaging/Sources/Token/FIRMessagingBackupExcludedPlist.h; sourceTree = "<group>"; };
 		4804572757678F9151BB4F99FE2BB4F6 /* react-native-config-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "react-native-config-prefix.pch"; sourceTree = "<group>"; };
@@ -5017,6 +5014,7 @@
 		490E53E832A5757D0087E3BB5140FA10 /* FIRFirebaseUserAgent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FIRFirebaseUserAgent.h; path = FirebaseCore/Sources/FIRFirebaseUserAgent.h; sourceTree = "<group>"; };
 		491633991171EFCE542A86D5194D0EFD /* RNPanHandler.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RNPanHandler.m; sourceTree = "<group>"; };
 		494B21AF25CC37AC5BF4CBF26D8D35CB /* getting-started.md */ = {isa = PBXFileReference; includeInIndex = 1; name = "getting-started.md"; path = "docs/versioned_docs/version-2.1/basics/getting-started.md"; sourceTree = "<group>"; };
+		497ED9EB70FCD11EDDD5039008A1F415 /* RNIap.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = RNIap.modulemap; sourceTree = "<group>"; };
 		49BA35C44488767BC8985F95FDCB5565 /* ConstexprMath.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ConstexprMath.h; path = folly/ConstexprMath.h; sourceTree = "<group>"; };
 		49C7DD0CB447FBC10D92908767EF42C9 /* UIView+Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIView+Private.h"; sourceTree = "<group>"; };
 		49CFA6E0984CA1AE23ADE42D4DC083E6 /* IPAddressV6.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = IPAddressV6.h; path = folly/IPAddressV6.h; sourceTree = "<group>"; };
@@ -5569,7 +5567,6 @@
 		80F7054C002D12AF5B8673B994B527D2 /* FIRInstallationsStore.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FIRInstallationsStore.m; path = FirebaseInstallations/Source/Library/InstallationsStore/FIRInstallationsStore.m; sourceTree = "<group>"; };
 		80FC961EE777DE35EC3D7C74EAA0DBDF /* FormatTraits.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FormatTraits.h; path = folly/FormatTraits.h; sourceTree = "<group>"; };
 		810A3CF4C7177642B9A3E063CEF40B1F /* RNGestureHandlerButton.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RNGestureHandlerButton.h; path = ios/RNGestureHandlerButton.h; sourceTree = "<group>"; };
-		81496F26CDB89E4E435D1CF7D346E7EE /* RNIap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RNIap.release.xcconfig; sourceTree = "<group>"; };
 		8187B1CAD9D9A53AE83590F55A744E32 /* RCTActivityIndicatorViewManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTActivityIndicatorViewManager.m; sourceTree = "<group>"; };
 		81907854BA951FFF95AAECFE3B7957D3 /* lifecycle.md */ = {isa = PBXFileReference; includeInIndex = 1; name = lifecycle.md; path = "docs/versioned_docs/version-2.1/api/functions/lifecycle.md"; sourceTree = "<group>"; };
 		819732D3BC48C5159062CCCFDC4A3A4E /* RCTModalManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTModalManager.h; sourceTree = "<group>"; };
@@ -5626,6 +5623,7 @@
 		85FB61054DB22F7BDE56D29EFF1D53A1 /* RCTSwitchManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTSwitchManager.m; sourceTree = "<group>"; };
 		860B1C910E1411D80992A5F6B4E64CE2 /* offline-playback.md */ = {isa = PBXFileReference; includeInIndex = 1; name = "offline-playback.md"; path = "docs/versioned_docs/version-2.1/guides/offline-playback.md"; sourceTree = "<group>"; };
 		862A9D39CF903E1981CDDEB8337C35B5 /* GULSecureCoding.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GULSecureCoding.h; path = GoogleUtilities/Environment/Public/GoogleUtilities/GULSecureCoding.h; sourceTree = "<group>"; };
+		864984443324D4EC562E1E348973DEF4 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
 		865C4356703D18839846217A1347F722 /* RCTDecayAnimation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTDecayAnimation.h; sourceTree = "<group>"; };
 		86687428ADFB5CDDF6E9F3B4F5D7FEF3 /* FIRMessagingTokenInfo.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FIRMessagingTokenInfo.m; path = FirebaseMessaging/Sources/Token/FIRMessagingTokenInfo.m; sourceTree = "<group>"; };
 		868E958099602E87A41EA1FFA54A4115 /* RCTDisplayWeakRefreshable.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RCTDisplayWeakRefreshable.h; path = Libraries/Image/RCTDisplayWeakRefreshable.h; sourceTree = "<group>"; };
@@ -5661,6 +5659,7 @@
 		8931B813A93E50D592F85721C91661B5 /* DEBUGGING.md */ = {isa = PBXFileReference; includeInIndex = 1; name = DEBUGGING.md; path = docs/DEBUGGING.md; sourceTree = "<group>"; };
 		89432E5E8BF0BFA5AFBBF71F8BAE5DAD /* REACallFuncNode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = REACallFuncNode.h; sourceTree = "<group>"; };
 		895960C51B1065C183CDF595CE1339D9 /* SpookyHashV2.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = SpookyHashV2.cpp; path = folly/hash/SpookyHashV2.cpp; sourceTree = "<group>"; };
+		896F57C0E292AFB7C368DCB3ABDCF48E /* RNIap-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RNIap-dummy.m"; sourceTree = "<group>"; };
 		8974DB6496676C5BCCB67D07659F61AB /* RNShareActivityItemSource.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RNShareActivityItemSource.h; path = ios/RNShareActivityItemSource.h; sourceTree = "<group>"; };
 		898C1B3C9B3F7F33159CB581E41425FD /* ViberShare.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = ViberShare.m; path = ios/ViberShare.m; sourceTree = "<group>"; };
 		8998273719FDD789E6F9C7541AFD0B33 /* RNVectorIcons */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = RNVectorIcons; path = libRNVectorIcons.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -5785,6 +5784,7 @@
 		946A0863F0DB992FDB07AE8AA9180F9B /* RCTConstants.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTConstants.m; sourceTree = "<group>"; };
 		946C524679F75E8274836018EC7772CE /* Utility.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Utility.h; path = folly/Utility.h; sourceTree = "<group>"; };
 		94843050D5C97FB333CAE8F4C2EF559E /* feedback.md */ = {isa = PBXFileReference; includeInIndex = 1; name = feedback.md; path = "docs/versioned_docs/version-2.1/api/objects/feedback.md"; sourceTree = "<group>"; };
+		94A3D439816B874A1DDB040C853FBCD9 /* RNIap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RNIap.debug.xcconfig; sourceTree = "<group>"; };
 		94DBAD8EF10150596F80B5601248C066 /* RCTI18nUtil.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTI18nUtil.m; sourceTree = "<group>"; };
 		94E882BFFC311E6E756EA6869E90F56F /* Promise+Validate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Promise+Validate.swift"; path = "Sources/Promises/Promise+Validate.swift"; sourceTree = "<group>"; };
 		94EFC3CA55EC17BE7954CE387ADEA49E /* appcenter-core.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = "appcenter-core.podspec"; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -5824,7 +5824,6 @@
 		9942C9B075F787629FB768F3DCDB76CA /* GDTCORClock.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = GDTCORClock.m; path = GoogleDataTransport/GDTCORLibrary/GDTCORClock.m; sourceTree = "<group>"; };
 		995C67F6494360D62898CBDF896451D6 /* RNLocalize-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RNLocalize-dummy.m"; sourceTree = "<group>"; };
 		998A65D0324DA6F5DC3893E46D2A3CEE /* GULKeychainUtils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GULKeychainUtils.h; path = GoogleUtilities/Environment/Public/GoogleUtilities/GULKeychainUtils.h; sourceTree = "<group>"; };
-		9A0C2A7553AAF37027FDDB01AD0FF5CB /* RNIap.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = RNIap.modulemap; sourceTree = "<group>"; };
 		9A0CF10FE48E871BF5C9378C17C775C0 /* posix.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = posix.h; path = include/fmt/posix.h; sourceTree = "<group>"; };
 		9A1314113A29424084FCCEEFBCEA789E /* Checksum.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Checksum.h; path = folly/hash/Checksum.h; sourceTree = "<group>"; };
 		9A1352F859E27F04A0A8B76F28400367 /* RNSVGSolidColorBrush.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RNSVGSolidColorBrush.h; sourceTree = "<group>"; };
@@ -6060,6 +6059,7 @@
 		AE3725756ECFB1844E60CF11B22FC04A /* RNSecureKeyStore.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = RNSecureKeyStore.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		AE388CEF1E5AFE7A87D509E934E13E30 /* FBLPromise+Validate.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "FBLPromise+Validate.h"; path = "Sources/FBLPromises/include/FBLPromise+Validate.h"; sourceTree = "<group>"; };
 		AE388EE3AA8DB4E3AC13E4EB6BE902B3 /* React-runtimeexecutor.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = "React-runtimeexecutor.podspec"; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		AE63AFDFA36F0E892A512B058DB5B2A0 /* RNIap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RNIap.release.xcconfig; sourceTree = "<group>"; };
 		AE654CF3119F86925AD1949F4CB1A897 /* GDTCORStorageMetadata.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GDTCORStorageMetadata.h; path = GoogleDataTransport/GDTCORLibrary/Private/GDTCORStorageMetadata.h; sourceTree = "<group>"; };
 		AE8E7D8D952CA8376F87D24CB4B60F8E /* react-native-background-downloader */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "react-native-background-downloader"; path = "libreact-native-background-downloader.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE95A6774FAD5F2168E4503627F799F4 /* RCTShadowView+Layout.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RCTShadowView+Layout.h"; sourceTree = "<group>"; };
@@ -6140,6 +6140,7 @@
 		B5DD246B19D87C84AC0A9DA758ADF364 /* hooks.md */ = {isa = PBXFileReference; includeInIndex = 1; name = hooks.md; path = "docs/versioned_docs/version-3.1/api/hooks.md"; sourceTree = "<group>"; };
 		B630FC1DDFED8E32DAC508989A199D30 /* GULLogger.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = GULLogger.m; path = GoogleUtilities/Logger/GULLogger.m; sourceTree = "<group>"; };
 		B637B398C75360E44D371010DA8585E5 /* Conv.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = Conv.cpp; path = folly/Conv.cpp; sourceTree = "<group>"; };
+		B64AD7FBCEA5EA907D94252F53AEF455 /* RNIap-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RNIap-prefix.pch"; sourceTree = "<group>"; };
 		B66D535F391052AE52D0AC2B618B3006 /* RCTSafeAreaShadowView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTSafeAreaShadowView.h; sourceTree = "<group>"; };
 		B683CEE0176CC6E97AD3110E16783296 /* FIRInstallationsErrorUtil.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FIRInstallationsErrorUtil.h; path = FirebaseInstallations/Source/Library/Errors/FIRInstallationsErrorUtil.h; sourceTree = "<group>"; };
 		B685CFA262629D49E43C46F461C513B7 /* JSCExecutorFactory.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = JSCExecutorFactory.h; sourceTree = "<group>"; };
@@ -6269,7 +6270,6 @@
 		C2F40C98310BB5DD9623F75A501EF969 /* ReanimatedSensor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ReanimatedSensor.h; sourceTree = "<group>"; };
 		C2FEF08067C21B8905CE49930851ABF0 /* RNCSafeAreaViewMode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RNCSafeAreaViewMode.m; path = ios/SafeAreaView/RNCSafeAreaViewMode.m; sourceTree = "<group>"; };
 		C317F97357F84E8E4AC34104FFE5548B /* RCTImageView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RCTImageView.h; path = Libraries/Image/RCTImageView.h; sourceTree = "<group>"; };
-		C32D37E3AC2FFD6CB40715EAB14A5E8A /* RNIap.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = RNIap.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		C34172F0D1F30C3256F1756C8A71D09A /* RCTComponent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTComponent.h; sourceTree = "<group>"; };
 		C344150AB9B2BC0493446E640C246206 /* AppCenterReactNativeShared.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenterReactNativeShared.release.xcconfig; sourceTree = "<group>"; };
 		C358498B1DD2DFEBB256133783B92ABA /* RCTImageUtils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RCTImageUtils.h; path = Libraries/Image/RCTImageUtils.h; sourceTree = "<group>"; };
@@ -6350,6 +6350,7 @@
 		CA3C8A9D09417A97035BD1848876ECF0 /* RNCPickerManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RNCPickerManager.h; path = ios/RNCPickerManager.h; sourceTree = "<group>"; };
 		CA67620236AE0B70BBF07142A6D4A862 /* Uploader.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = Uploader.h; sourceTree = "<group>"; };
 		CA6B3D4B01C118662F0DCB2FB5A3A10C /* RNSVGClipPathManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RNSVGClipPathManager.m; sourceTree = "<group>"; };
+		CA6BE03FCAF40FDA97C730B7BF0E2A1A /* RNIapIos.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RNIapIos.m; path = ios/RNIapIos.m; sourceTree = "<group>"; };
 		CA873A62DECB843EF763D9EC04411712 /* TurboCxxModule.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = TurboCxxModule.h; sourceTree = "<group>"; };
 		CA8CE0B4AB18E3AEE58E8119FE1BA5C2 /* UTF8String.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = UTF8String.h; path = folly/UTF8String.h; sourceTree = "<group>"; };
 		CA9B57669746594B363E3D3B7A900C77 /* FIRMessagingRmqManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FIRMessagingRmqManager.m; path = FirebaseMessaging/Sources/FIRMessagingRmqManager.m; sourceTree = "<group>"; };
@@ -6544,6 +6545,7 @@
 		DCE762B76EAFDACE3098598D41666CCA /* RNGHTouchEventType.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RNGHTouchEventType.h; path = ios/RNGHTouchEventType.h; sourceTree = "<group>"; };
 		DD095CFF4E10BC6774541F1D39985198 /* FBReactNativeSpec.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = FBReactNativeSpec.debug.xcconfig; sourceTree = "<group>"; };
 		DD1123342B68BDF9D429C00FA31C456D /* RCTVibration.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = RCTVibration.mm; sourceTree = "<group>"; };
+		DD245625C16E44264C142EABD9B0CA8C /* RNIapIos.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RNIapIos.swift; path = ios/RNIapIos.swift; sourceTree = "<group>"; };
 		DD359D976B93DEC20E63168480C0124B /* FIRMessagingTokenFetchOperation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FIRMessagingTokenFetchOperation.h; path = FirebaseMessaging/Sources/Token/FIRMessagingTokenFetchOperation.h; sourceTree = "<group>"; };
 		DD3A38531932A8945C697C3252B6FFEE /* Libgen.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Libgen.h; path = folly/portability/Libgen.h; sourceTree = "<group>"; };
 		DD71E2B3CD78E572CC76A21EE997026C /* FBLPromise+Await.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "FBLPromise+Await.m"; path = "Sources/FBLPromises/FBLPromise+Await.m"; sourceTree = "<group>"; };
@@ -6681,7 +6683,6 @@
 		E7AF9B4D5E310999C91BBD488B89CEEE /* GULURLSessionDataResponse.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = GULURLSessionDataResponse.m; path = GoogleUtilities/Environment/URLSessionPromiseWrapper/GULURLSessionDataResponse.m; sourceTree = "<group>"; };
 		E7B60BAAF8C338B8B1D2F6709FF57ECB /* JSCRuntime.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = JSCRuntime.h; sourceTree = "<group>"; };
 		E7C611C728AA14FE6828C203E734C042 /* RNSecureKeyStore.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RNSecureKeyStore.m; sourceTree = "<group>"; };
-		E7D5EC6CBB3D8F8B950010308E780D84 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
 		E7DD55DC1E40B6604F595C7D2F531B99 /* RCTPlayerOperations.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RCTPlayerOperations.swift; sourceTree = "<group>"; };
 		E7DF63D807CA5C1B6578FE84CBAF3D4E /* RNSVGBrush.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RNSVGBrush.m; sourceTree = "<group>"; };
 		E7F59D7DF2221466518057011E184FFA /* RCTShadowView+Internal.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RCTShadowView+Internal.m"; sourceTree = "<group>"; };
@@ -6791,7 +6792,6 @@
 		F2E7C88DFCD460A4B46B913ADEB8A641 /* React-jsiexecutor */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "React-jsiexecutor"; path = "libReact-jsiexecutor.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2ED298BD28E77A124BBE4E81693C5AE /* RCTFrameAnimation.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTFrameAnimation.m; sourceTree = "<group>"; };
 		F315B63259C1718A69C50EDB6807A606 /* RCTConvert+RNCarPlay.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "RCTConvert+RNCarPlay.m"; path = "ios/RCTConvert+RNCarPlay.m"; sourceTree = "<group>"; };
-		F349006DEDE99D720A2F51B7FD9FBC7F /* RNIap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RNIap.debug.xcconfig; sourceTree = "<group>"; };
 		F368FB42647B9A8E4347B84D900E770D /* player-options.md */ = {isa = PBXFileReference; includeInIndex = 1; name = "player-options.md"; path = "docs/docs/api/objects/player-options.md"; sourceTree = "<group>"; };
 		F38B6B3A135DA1564FC11263790C4DBB /* YGMacros.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = YGMacros.h; path = yoga/YGMacros.h; sourceTree = "<group>"; };
 		F39CDFCDDD65F268936DD0D47B783608 /* F14Table.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = F14Table.h; path = folly/container/detail/F14Table.h; sourceTree = "<group>"; };
@@ -7091,6 +7091,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		667CDFCEFDAED1F8B9B5A8419D5E6B68 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		697DE9F43BE7D707ED8BCC141FE751F6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -7398,13 +7405,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DE96CC54D8120D5D12E1263D986F3FEC /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		DE9E6EC4F90F90B4358A7F67A775BE5A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -7689,7 +7689,7 @@
 				80EACF9E874E25E0B3555F4A0C106FCA /* RNFBMessaging */,
 				DD878D17D7361FB4364715312926851C /* RNFS */,
 				47166A643DDA4D91D91CA6564DE72126 /* RNGestureHandler */,
-				26C90ECB3875091FC71A50E779F582CC /* RNIap */,
+				F04B34CC2EB82F9251CBEBDC337A99F6 /* RNIap */,
 				A10BD8653247917D97AEDDD626387A78 /* RNKeychain */,
 				BC598B59C1E016911E46D22B985B58FA /* RNLocalize */,
 				AFFCBF40DCE268B71E697EE7B23D459E /* RNPermissions */,
@@ -7982,16 +7982,6 @@
 			);
 			name = SwiftAudioEx;
 			path = SwiftAudioEx;
-			sourceTree = "<group>";
-		};
-		141AEBBCB000B2B166A9A4948D25F7C3 /* Pod */ = {
-			isa = PBXGroup;
-			children = (
-				E7D5EC6CBB3D8F8B950010308E780D84 /* LICENSE */,
-				141E43388F3E06B22769C0A42A874B83 /* README.md */,
-				C32D37E3AC2FFD6CB40715EAB14A5E8A /* RNIap.podspec */,
-			);
-			name = Pod;
 			sourceTree = "<group>";
 		};
 		143161F463EE03612966D137DB3CD53E /* Registries */ = {
@@ -8584,19 +8574,6 @@
 			);
 			name = "Support Files";
 			path = "../../../../ios/Pods/Target Support Files/React-RCTLinking";
-			sourceTree = "<group>";
-		};
-		26C90ECB3875091FC71A50E779F582CC /* RNIap */ = {
-			isa = PBXGroup;
-			children = (
-				179E6FEE34BB7DD2C7EAD906015A79E6 /* RNIapIos.m */,
-				477E5E6FBB7FB86BFCE867CEF29F4455 /* RNIapIos.swift */,
-				2D03E95A48BBCC3C21ABAAD59A36AE17 /* RNIapQueue.swift */,
-				141AEBBCB000B2B166A9A4948D25F7C3 /* Pod */,
-				5A5D53022E1857C5656BE66F64DB3F7A /* Support Files */,
-			);
-			name = RNIap;
-			path = "../../node_modules/react-native-iap";
 			sourceTree = "<group>";
 		};
 		27AD76525CB9C9D7D80C72CB0CA6578B /* Pod */ = {
@@ -9517,6 +9494,20 @@
 			name = Pod;
 			sourceTree = "<group>";
 		};
+		521A13692DFF95D1C4DE72F94630B1DE /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				497ED9EB70FCD11EDDD5039008A1F415 /* RNIap.modulemap */,
+				896F57C0E292AFB7C368DCB3ABDCF48E /* RNIap-dummy.m */,
+				B64AD7FBCEA5EA907D94252F53AEF455 /* RNIap-prefix.pch */,
+				1D99E73AA5FDC3D3A14DCC04A39D8606 /* RNIap-umbrella.h */,
+				94A3D439816B874A1DDB040C853FBCD9 /* RNIap.debug.xcconfig */,
+				AE63AFDFA36F0E892A512B058DB5B2A0 /* RNIap.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../../ios/Pods/Target Support Files/RNIap";
+			sourceTree = "<group>";
+		};
 		53B90A7EA10D3196CD05D594ACDFB30F /* Pod */ = {
 			isa = PBXGroup;
 			children = (
@@ -9591,20 +9582,6 @@
 			);
 			name = "Support Files";
 			path = "../Target Support Files/PromisesObjC";
-			sourceTree = "<group>";
-		};
-		5A5D53022E1857C5656BE66F64DB3F7A /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				9A0C2A7553AAF37027FDDB01AD0FF5CB /* RNIap.modulemap */,
-				0BA6B0C7EAFD8E3FAE7AA1C0376FCD7F /* RNIap-dummy.m */,
-				33B1053BC8239C610D0A91A6F96D1B61 /* RNIap-prefix.pch */,
-				2A60FD164C0A589581FA56B6213B8114 /* RNIap-umbrella.h */,
-				F349006DEDE99D720A2F51B7FD9FBC7F /* RNIap.debug.xcconfig */,
-				81496F26CDB89E4E435D1CF7D346E7EE /* RNIap.release.xcconfig */,
-			);
-			name = "Support Files";
-			path = "../../ios/Pods/Target Support Files/RNIap";
 			sourceTree = "<group>";
 		};
 		5B0CBD1D3671620E915A6EE3C39788DD /* TextInput */ = {
@@ -12308,6 +12285,16 @@
 			path = "../../ios/Pods/Target Support Files/RNPermissions";
 			sourceTree = "<group>";
 		};
+		CB12E1189035B78B9F157EC1EE3168ED /* Pod */ = {
+			isa = PBXGroup;
+			children = (
+				2B82C422EF146B0D87D514942F4BC1AB /* LICENSE */,
+				864984443324D4EC562E1E348973DEF4 /* README.md */,
+				13E05178ADCD16FCF36C559CF2C0A583 /* RNIap.podspec */,
+			);
+			name = Pod;
+			sourceTree = "<group>";
+		};
 		CBA0D6CC22C7543D636AD60D4D8815E7 /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -12878,6 +12865,19 @@
 			path = Tools;
 			sourceTree = "<group>";
 		};
+		F04B34CC2EB82F9251CBEBDC337A99F6 /* RNIap */ = {
+			isa = PBXGroup;
+			children = (
+				CA6BE03FCAF40FDA97C730B7BF0E2A1A /* RNIapIos.m */,
+				DD245625C16E44264C142EABD9B0CA8C /* RNIapIos.swift */,
+				458332E76E31ABD7FF1EC8463DC5D93B /* RNIapIos-Bridging-Header.h */,
+				CB12E1189035B78B9F157EC1EE3168ED /* Pod */,
+				521A13692DFF95D1C4DE72F94630B1DE /* Support Files */,
+			);
+			name = RNIap;
+			path = "../../node_modules/react-native-iap";
+			sourceTree = "<group>";
+		};
 		F0EB42B6349F5766FAAFE9D878B75055 /* react-native-in-app-review */ = {
 			isa = PBXGroup;
 			children = (
@@ -13286,14 +13286,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3FC4748B562F1C8FE9E81BEE8F400DF5 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				749EE14979055DF92886FCDFA087CC1B /* RNIap-umbrella.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		4607F6EAA9B5A6B848E081CF31DEF99C /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -13555,6 +13547,15 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		80EFE35CB9A9F3D7CB085995A4E13F3C /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E86F76C339CCC4E93EE5C5CA36AF9DA7 /* RNIap-umbrella.h in Headers */,
+				02A668136B2102C9F9B4810CD28C243D /* RNIapIos-Bridging-Header.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16400,17 +16401,17 @@
 		};
 		FD9911868EF2AB049F2D780B31F926C9 /* RNIap */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D9724F69D51F95AD1F990AA603A9B427 /* Build configuration list for PBXNativeTarget "RNIap" */;
+			buildConfigurationList = 8A0FC6499FAEC3FF9F81BA2841C7E5C9 /* Build configuration list for PBXNativeTarget "RNIap" */;
 			buildPhases = (
-				3FC4748B562F1C8FE9E81BEE8F400DF5 /* Headers */,
-				38734695EE29508193B2BC812A788478 /* Sources */,
-				DE96CC54D8120D5D12E1263D986F3FEC /* Frameworks */,
-				73AAEBF7FDD5660DEFA2FA115A8354E7 /* Copy generated compatibility header */,
+				80EFE35CB9A9F3D7CB085995A4E13F3C /* Headers */,
+				A3FD5B5AD5E4D0481549935D46A6FCD3 /* Sources */,
+				697DE9F43BE7D707ED8BCC141FE751F6 /* Frameworks */,
+				378938D28FC653C7A5AF1D7B03E896DD /* Copy generated compatibility header */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				F6C5CE04D9E9A265677E97CF261CA618 /* PBXTargetDependency */,
+				49B63A9E793ED437FAAEF53957F6A4C0 /* PBXTargetDependency */,
 			);
 			name = RNIap;
 			productName = RNIap;
@@ -16694,6 +16695,30 @@
 			shellPath = /bin/sh;
 			shellScript = "set -o pipefail\n\nbash -l -c 'SRCS_DIR='${PODS_TARGET_SRCROOT}/../../Libraries' MODULES_OUTPUT_DIR='${PODS_TARGET_SRCROOT}/../../React/FBReactNativeSpec/FBReactNativeSpec' MODULES_LIBRARY_NAME='FBReactNativeSpec' ${PODS_TARGET_SRCROOT}/../../scripts/generate-specs.sh' 2>&1 | tee \"${SCRIPT_OUTPUT_FILE_0}\"\n    ";
 		};
+		378938D28FC653C7A5AF1D7B03E896DD /* Copy generated compatibility header */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DERIVED_SOURCES_DIR}/${PRODUCT_MODULE_NAME}-Swift.h",
+				"${PODS_ROOT}/Headers/Public/RNIap/RNIap.modulemap",
+				"${PODS_ROOT}/Headers/Public/RNIap/RNIap-umbrella.h",
+			);
+			name = "Copy generated compatibility header";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}.modulemap",
+				"${BUILT_PRODUCTS_DIR}/RNIap-umbrella.h",
+				"${BUILT_PRODUCTS_DIR}/Swift Compatibility Header/${PRODUCT_MODULE_NAME}-Swift.h",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "COMPATIBILITY_HEADER_PATH=\"${BUILT_PRODUCTS_DIR}/Swift Compatibility Header/${PRODUCT_MODULE_NAME}-Swift.h\"\nMODULE_MAP_PATH=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}.modulemap\"\n\nditto \"${DERIVED_SOURCES_DIR}/${PRODUCT_MODULE_NAME}-Swift.h\" \"${COMPATIBILITY_HEADER_PATH}\"\nditto \"${PODS_ROOT}/Headers/Public/RNIap/RNIap.modulemap\" \"${MODULE_MAP_PATH}\"\nditto \"${PODS_ROOT}/Headers/Public/RNIap/RNIap-umbrella.h\" \"${BUILT_PRODUCTS_DIR}\"\nprintf \"\\n\\nmodule ${PRODUCT_MODULE_NAME}.Swift {\\n  header \\\"${COMPATIBILITY_HEADER_PATH}\\\"\\n  requires objc\\n}\\n\" >> \"${MODULE_MAP_PATH}\"\n";
+		};
 		5477D8328A23880B0756C227EFDB5C78 /* Copy generated compatibility header */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -16717,30 +16742,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "COMPATIBILITY_HEADER_PATH=\"${BUILT_PRODUCTS_DIR}/Swift Compatibility Header/${PRODUCT_MODULE_NAME}-Swift.h\"\nMODULE_MAP_PATH=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}.modulemap\"\n\nditto \"${DERIVED_SOURCES_DIR}/${PRODUCT_MODULE_NAME}-Swift.h\" \"${COMPATIBILITY_HEADER_PATH}\"\nditto \"${PODS_ROOT}/Headers/Public/Promises/PromisesSwift.modulemap\" \"${MODULE_MAP_PATH}\"\nditto \"${PODS_ROOT}/Headers/Public/Promises/PromisesSwift-umbrella.h\" \"${BUILT_PRODUCTS_DIR}\"\nprintf \"\\n\\nmodule ${PRODUCT_MODULE_NAME}.Swift {\\n  header \\\"${COMPATIBILITY_HEADER_PATH}\\\"\\n  requires objc\\n}\\n\" >> \"${MODULE_MAP_PATH}\"\n";
-		};
-		73AAEBF7FDD5660DEFA2FA115A8354E7 /* Copy generated compatibility header */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${DERIVED_SOURCES_DIR}/${PRODUCT_MODULE_NAME}-Swift.h",
-				"${PODS_ROOT}/Headers/Public/RNIap/RNIap.modulemap",
-				"${PODS_ROOT}/Headers/Public/RNIap/RNIap-umbrella.h",
-			);
-			name = "Copy generated compatibility header";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}.modulemap",
-				"${BUILT_PRODUCTS_DIR}/RNIap-umbrella.h",
-				"${BUILT_PRODUCTS_DIR}/Swift Compatibility Header/${PRODUCT_MODULE_NAME}-Swift.h",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "COMPATIBILITY_HEADER_PATH=\"${BUILT_PRODUCTS_DIR}/Swift Compatibility Header/${PRODUCT_MODULE_NAME}-Swift.h\"\nMODULE_MAP_PATH=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}.modulemap\"\n\nditto \"${DERIVED_SOURCES_DIR}/${PRODUCT_MODULE_NAME}-Swift.h\" \"${COMPATIBILITY_HEADER_PATH}\"\nditto \"${PODS_ROOT}/Headers/Public/RNIap/RNIap.modulemap\" \"${MODULE_MAP_PATH}\"\nditto \"${PODS_ROOT}/Headers/Public/RNIap/RNIap-umbrella.h\" \"${BUILT_PRODUCTS_DIR}\"\nprintf \"\\n\\nmodule ${PRODUCT_MODULE_NAME}.Swift {\\n  header \\\"${COMPATIBILITY_HEADER_PATH}\\\"\\n  requires objc\\n}\\n\" >> \"${MODULE_MAP_PATH}\"\n";
 		};
 		8202AD2873BF5424DF517EB3A2B1C87D /* Copy generated compatibility header */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -17304,17 +17305,6 @@
 				D451CE3EB2266DAC012BF6F248404BA5 /* RNFS-dummy.m in Sources */,
 				E7F7EF2D1F371788D39099C101D328DB /* RNFSManager.m in Sources */,
 				C1A3DF524F4FD3A33B1DD7A5D82EAD5D /* Uploader.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		38734695EE29508193B2BC812A788478 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3C72C6A326AA629245ED030A3AE4E416 /* RNIap-dummy.m in Sources */,
-				DAA4EB6E5D585ECA93B946A087940E9C /* RNIapIos.m in Sources */,
-				08C61F35C2F982DA68CB47EBC395C681 /* RNIapIos.swift in Sources */,
-				7E10C670CE80483D6689878C77FC296B /* RNIapQueue.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17887,6 +17877,16 @@
 				F186F99CC4471DA9B4DA879AE34D74F8 /* UIResponder+Reanimated.mm in Sources */,
 				C7748C5E25770AC60828DCB279A780A2 /* WorkletEventHandler.cpp in Sources */,
 				61098946A9CA12A2373C31D52C57FD69 /* WorkletsCache.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A3FD5B5AD5E4D0481549935D46A6FCD3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6A9EC267D0E875C8EDB9CF0F44C46DA6 /* RNIap-dummy.m in Sources */,
+				30CA99C39229EDB7B68581F4E12CB455 /* RNIapIos.m in Sources */,
+				3760BD2EAB77FD5DB8C758B401C73DCC /* RNIapIos.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18680,6 +18680,12 @@
 			name = RNFBApp;
 			target = 90D0DE2F3348233618414728C35311CA /* RNFBApp */;
 			targetProxy = CBEEA5625664DE9A75979E7BC6F6D9CF /* PBXContainerItemProxy */;
+		};
+		49B63A9E793ED437FAAEF53957F6A4C0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "React-Core";
+			target = 7ACAA9BE580DD31A5CB9D97C45D9492D /* React-Core */;
+			targetProxy = DB686116F0786AE258476A1A61C27E06 /* PBXContainerItemProxy */;
 		};
 		4C24BC6E60BA9DA8349B83E829001F23 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -19952,12 +19958,6 @@
 			name = "React-Core";
 			target = 7ACAA9BE580DD31A5CB9D97C45D9492D /* React-Core */;
 			targetProxy = 018BD05218922BABA67F896E5D220864 /* PBXContainerItemProxy */;
-		};
-		F6C5CE04D9E9A265677E97CF261CA618 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "React-Core";
-			target = 7ACAA9BE580DD31A5CB9D97C45D9492D /* React-Core */;
-			targetProxy = D26552DBC81D9C23567D13D058230A7B /* PBXContainerItemProxy */;
 		};
 		F7392A8B44A60A020C401345808C4939 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -22529,6 +22529,38 @@
 			};
 			name = Debug;
 		};
+		72B2A8CCDBCFCEA32F69F610948459B8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AE63AFDFA36F0E892A512B058DB5B2A0 /* RNIap.release.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
+				GCC_PREFIX_HEADER = "Target Support Files/RNIap/RNIap-prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MODULEMAP_FILE = Headers/Public/RNIap/RNIap.modulemap;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = RNIap;
+				PRODUCT_NAME = RNIap;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		750490586B8E5E32B9782E7A17C83A3B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1686FA95C3D38529B336B37584EB89E9 /* React-RCTVibration.debug.xcconfig */;
@@ -22601,37 +22633,6 @@
 				PRIVATE_HEADERS_FOLDER_PATH = "";
 				PRODUCT_MODULE_NAME = yoga;
 				PRODUCT_NAME = Yoga;
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		76340E98C19AAF1058E18D2254FEA536 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 81496F26CDB89E4E435D1CF7D346E7EE /* RNIap.release.xcconfig */;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				ENABLE_BITCODE = NO;
-				GCC_PREFIX_HEADER = "Target Support Files/RNIap/RNIap-prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
-				);
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MODULEMAP_FILE = Headers/Public/RNIap/RNIap.modulemap;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = RNIap;
-				PRODUCT_NAME = RNIap;
 				PUBLIC_HEADERS_FOLDER_PATH = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -23886,36 +23887,6 @@
 			};
 			name = Debug;
 		};
-		ABE14608A1DD48270CFA87CB47047BA1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F349006DEDE99D720A2F51B7FD9FBC7F /* RNIap.debug.xcconfig */;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				ENABLE_BITCODE = NO;
-				GCC_PREFIX_HEADER = "Target Support Files/RNIap/RNIap-prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
-				);
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MODULEMAP_FILE = Headers/Public/RNIap/RNIap.modulemap;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = RNIap;
-				PRODUCT_NAME = RNIap;
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
 		B28720CE2B8D7DB8504D3FC3F20FA7AE /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9A6521C8CA05EE329A72BF8FA57CABE3 /* GoogleDataTransport.release.xcconfig */;
@@ -24786,6 +24757,37 @@
 			};
 			name = Debug;
 		};
+		E867C0A49EE3E1DAA0C361B9E0B6F8B4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 94A3D439816B874A1DDB040C853FBCD9 /* RNIap.debug.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
+				GCC_PREFIX_HEADER = "Target Support Files/RNIap/RNIap-prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MODULEMAP_FILE = Headers/Public/RNIap/RNIap.modulemap;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = RNIap;
+				PRODUCT_NAME = RNIap;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		ECDB86B69453E6DA686A94FFEF96DF23 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 23F0122296F33B76D5BF1434EA50200E /* nanopb.debug.xcconfig */;
@@ -25544,6 +25546,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		8A0FC6499FAEC3FF9F81BA2841C7E5C9 /* Build configuration list for PBXNativeTarget "RNIap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E867C0A49EE3E1DAA0C361B9E0B6F8B4 /* Debug */,
+				72B2A8CCDBCFCEA32F69F610948459B8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8AD90BD251CAA22307B85BA189790A61 /* Build configuration list for PBXNativeTarget "GoogleDataTransport" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -25765,15 +25776,6 @@
 			buildConfigurations = (
 				2C92AFEF526FE8134B532D6FAFB33A66 /* Debug */,
 				D4C78EDE6604D161971AA8813A0ACF62 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		D9724F69D51F95AD1F990AA603A9B427 /* Build configuration list for PBXNativeTarget "RNIap" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				ABE14608A1DD48270CFA87CB47047BA1 /* Debug */,
-				76340E98C19AAF1058E18D2254FEA536 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
