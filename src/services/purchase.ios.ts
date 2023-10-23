@@ -9,7 +9,7 @@ export const iosHandlePurchaseStatusCheck = async (purchase: Purchase) => {
     if (finishedTransactionIds && Array.isArray(finishedTransactionIds)) {
       for (const transactionId of finishedTransactionIds) {
         const isConsumable = true
-        await finishTransaction({ transactionId } as any, isConsumable)
+        await finishTransaction({ transactionId, isConsumable })
       }
     }
   } catch (error) {
