@@ -1,3 +1,4 @@
+import deepEqual from 'fast-deep-equal'
 import { convertToNowPlayingItem } from 'podverse-shared'
 import { AppState, AppStateStatus, StyleSheet } from 'react-native'
 import React, { setGlobal } from 'reactn'
@@ -35,16 +36,13 @@ const getTestID = () => 'media_player_carousel_chapters'
 
 let lastPlayingChapter: any = null
 
-export class MediaPlayerCarouselChapters extends React.PureComponent<Props, State> {
+export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
   interval: ReturnType<typeof setInterval> | null = null
   listRef: any | null = null
-  itemHeights: any[]
   appStateListenerChange: any
 
   constructor(props) {
     super(props)
-
-    this.itemHeights = []
 
     this.state = {
       activeChapterRowIndex: null,
@@ -55,13 +53,20 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   componentDidMount() {
     this.appStateListenerChange = AppState.addEventListener('change', this._handleAppStateChange)
     PVEventEmitter.on(PV.Events.PLAYER_SPEED_UPDATED, this.updateAutoscroll)
-    this._queryData()
   }
 
   componentWillUnmount() {
     this.appStateListenerChange.remove()
     PVEventEmitter.removeListener(PV.Events.PLAYER_SPEED_UPDATED, this.updateAutoscroll)
     this.clearAutoScrollInterval()
+  }
+
+  shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>, nextContext: any): boolean {
+    if (deepEqual(nextProps, this.props) && deepEqual(nextState, this.state)) {
+      return false
+    }
+
+    return true
   }
 
   _handleAppStateChange = (nextAppStateStatus: AppStateStatus) => {
@@ -127,9 +132,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     const intervalTime = 1000 / playbackSpeed
     return setInterval(() => {
       const { currentChapter, currentChapters } = this.global
-      const itemHeightsReady = currentChapters.length === this.itemHeights.length
-
-      if (currentChapter?.id && itemHeightsReady) {
+      if (currentChapter?.id) {
         if (lastPlayingChapter && currentChapter.id === lastPlayingChapter.id) return
         lastPlayingChapter = currentChapter
 
@@ -203,7 +206,6 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
         itemType='chapter'
         loadChapterOnPlay
         navigation={navigation}
-        onLayout={(item: any) => (this.itemHeights[index] = item.nativeEvent.layout.height)}
         showPodcastInfo={false}
         testID={`${testID}_item_${index}`}
         transparent
@@ -212,28 +214,22 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
       <></>
     )
   }
-  /* 
-  Creating array of itemHeights to determine where to scroll, given the cells
-  have a dynamic height. The array can only be populated after the list
-  has rendered once, so we're returning a default placehold length and offset
-  for initial load, and not allowing autoscroll to happen until the itemHeights
-  array is populated.
-*/
-  _getItemLayout = (data, index) => {
-    const { currentChapters } = this.global
-
-    let length = 80
-    let offset = 80
-
-    if (currentChapters && currentChapters.length === this.itemHeights.length) {
-      length = this.itemHeights[index]
-      offset = this.itemHeights.slice(0, index).reduce((a, c) => a + c, 0)
-    }
-
-    return { length, offset, index }
-  }
 
   _ItemSeparatorComponent = () => <Divider />
+
+  _keyExtractor = (item: any, index: number) => safeKeyExtractor(getTestID(), index, item?.id)
+
+  onScrollToIndexFailed = (error) => {
+    const { currentChapters } = this.global
+    if (this.listRef !== null) {
+      this.listRef.scrollToOffset({ offset: error.averageItemLength * error.index, animated: false });
+      setTimeout(() => {
+        if (currentChapters.length !== 0 && this.listRef !== null) {
+          this.listRef.scrollToIndex({ index: error.index, animated: false });
+        }
+      }, 100);
+    }
+  }
 
   render() {
     const { navigation, width } = this.props
@@ -251,7 +247,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     const noResultsMessage = translate('No chapters found')
     const noResultsSubMessage = translate('Chapters are created by the podcaster')
     const testID = getTestID()
-
+    
     return (
       <View style={[styles.wrapper, { width }]} transparent>
         <TableSectionSelectors
@@ -269,19 +265,20 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
         {isLoading || (isQuerying && <ActivityIndicator fillSpace testID={getTestID()} />)}
         {!isLoading && !isQuerying && currentChapters && (
           <FlatList
+            customOptimizationProps={PV.FlatList.optimizationPropsFaster}
             data={currentChapters}
             dataTotalCount={currentChapters.length}
             extraData={currentChapters}
-            getItemLayout={this._getItemLayout}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
-            keyExtractor={(item: any, index: number) => safeKeyExtractor(getTestID(), index, item?.id)}
+            keyExtractor={this._keyExtractor}
             listRef={(ref: any) => {
               this.listRef = ref
             }}
             noResultsMessage={noResultsMessage}
             noResultsSubMessage={noResultsSubMessage}
             onScrollBeginDrag={this.disableAutoscroll}
+            onScrollToIndexFailed={this.onScrollToIndexFailed}
             renderItem={this._renderItem}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             transparent
@@ -304,46 +301,6 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
         />
       </View>
     )
-  }
-
-  _queryChapters = async () => {
-    const { player } = this.global
-    const { nowPlayingItem } = player
-
-    if (nowPlayingItem && !nowPlayingItem.addByRSSPodcastFeedUrl) {
-      return retrieveLatestChaptersForEpisodeId(nowPlayingItem.episodeId)
-    } else {
-      return [[], 0]
-    }
-  }
-
-  _queryData = async () => {
-    const { screenPlayer } = this.global
-    const { flatListData } = screenPlayer
-    const newState = {
-      isLoading: false,
-      isLoadingMore: false,
-      isQuerying: false,
-      showNoInternetConnectionMessage: false
-    } as any
-
-    const hasInternetConnection = await hasValidNetworkConnection()
-
-    if (!hasInternetConnection) {
-      newState.showNoInternetConnectionMessage = true
-      return newState
-    }
-
-    try {
-      const results = await this._queryChapters()
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-      newState.flatListDataTotalCount = results[1]
-
-      return newState
-    } catch (error) {
-      return newState
-    }
   }
 }
 

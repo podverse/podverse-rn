@@ -44,7 +44,7 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
       },
       onPanResponderRelease: (_, gesture) => {
         const screenWidth = Dimensions.get('window').width;
-        if (Math.abs(gesture.dx) > screenWidth * 0.2) {
+        if (Math.abs(gesture.dx) > screenWidth * 0.1) {
           const isPanForward = gesture.dx < 0
           const newIndex = isPanForward ? this.state.currentIndex + 1 : this.state.currentIndex - 1;
           if (newIndex >= 0 && newIndex < this.props.children.length) {
