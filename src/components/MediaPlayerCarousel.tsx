@@ -94,7 +94,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     https://stackoverflow.com/questions/46127753/react-native-react-navigation-slow-transitions-when-nesting-navigators
   */
     const timeout1 = Platform.OS === 'android' ? 50 : 0
-    const timeout2 = Platform.OS === 'android' ? 500 : 0
+    const timeout2 = Platform.OS === 'android' ? 333 : 0
 
     setTimeout(() => {
       this.setState({ isReady: true })
@@ -254,7 +254,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           </>
         )}
         {!screenReaderEnabled && (
-          <SwipeableContainer>
+          <SwipeableContainer totalChildren={itemCount}>
             {carouselComponents}
           </SwipeableContainer>
         )}
@@ -443,7 +443,8 @@ const mediaPlayerCarouselComponents = ({
             key='mpc_sr_comments'
             navigation={navigation}
             width={screenWidth}
-          />)
+          />
+        )
       }
       if(accessibilityItemSelectedValue === _transcriptKey && hasTranscript){
         components.push(
@@ -461,7 +462,8 @@ const mediaPlayerCarouselComponents = ({
             key='mpc_sr_chat_room'
             navigation={navigation}
             width={screenWidth}
-          />)
+          />
+        )
       }
     }
   } else {
@@ -472,19 +474,21 @@ const mediaPlayerCarouselComponents = ({
           key='mpc_viewer'
           navigation={navigation}
           width={screenWidth}
-        />)
-      }
+        />
+      )
+    }
 
-      if(isReady2) {
-        components.push(
-          <MediaPlayerCarouselShowNotes
-            key='mpc_show_notes'
-            navigation={navigation}
-            player={player}
-            screenPlayer={screenPlayer}
-            screenReaderEnabled={screenReaderEnabled}
-            width={screenWidth}
-          />)
+    if(isReady2) {
+      components.push(
+        <MediaPlayerCarouselShowNotes
+          key='mpc_show_notes'
+          navigation={navigation}
+          player={player}
+          screenPlayer={screenPlayer}
+          screenReaderEnabled={screenReaderEnabled}
+          width={screenWidth}
+        />
+      )
       
       if(hasChapters) {
         components.push(

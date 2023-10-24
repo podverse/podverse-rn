@@ -4,6 +4,7 @@ import DottedPagination from './PaginationDots';
 
 interface SwipeableProps {
   children: React.ReactNode[];
+  totalChildren: number // needed for pre-loading PaginationDots
 }
 
 interface SwipeableState {
@@ -199,7 +200,7 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
       <View style={styles.container}>
         {children}
       </View>
-      <DottedPagination currentIndex={this.state.currentIndex} totalDots={this.props.children?.length}/>
+      <DottedPagination currentIndex={this.state.currentIndex} totalDots={this.props.totalChildren}/>
     </View>);
   }
 }
