@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, PanResponder, Animated, Dimensions } from 'react-native';
+import DottedPagination from './PaginationDots';
 
 interface SwipeableProps {
   children: React.ReactNode[];
@@ -127,11 +128,22 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
       }
     });
 
-    return <View style={styles.container}>{children}</View>;
+    return (
+    <View style={styles.view}>
+      <View style={styles.container}>
+        {children}
+      </View>
+      <DottedPagination currentIndex={this.state.currentIndex} totalDots={this.props.children?.length}/>
+    </View>);
   }
 }
 
 const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+    width: '100%',
+    alignItems:"center"
+  },
   container: {
     flex: 1,
     flexDirection: 'row',
