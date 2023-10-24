@@ -10,6 +10,7 @@ interface SwipeableState {
   currentIndex: number;
   pan: Animated.ValueXY;
   transitioningIndex: number | null;
+  panEnabled: boolean;
 }
 
 class Swipeable extends Component<SwipeableProps, SwipeableState> {
@@ -21,11 +22,14 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
     this.state = {
       currentIndex: 1,
       pan: new Animated.ValueXY(),
-      transitioningIndex: null
+      transitioningIndex: null,
+      panEnabled: true,
     };
 
     this.panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, gesture) => {
+        return Math.abs(gesture.dx) > Math.abs(gesture.dy) && this.state.panEnabled;
+      },
       onPanResponderMove: (_, gesture) => {
         if (
           (gesture.dx > 0 && this.state.currentIndex === 0) ||
@@ -44,14 +48,18 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
           const isPanForward = gesture.dx < 0
           const newIndex = isPanForward ? this.state.currentIndex + 1 : this.state.currentIndex - 1;
           if (newIndex >= 0 && newIndex < this.props.children.length) {
-            this.setState({ currentIndex: newIndex, transitioningIndex: this.state.currentIndex }, () => {
+            this.setState({ 
+              currentIndex: newIndex, 
+              transitioningIndex: this.state.currentIndex, 
+              panEnabled: false 
+            }, () => {
               const animateToXValue = isPanForward ? -screenWidth : screenWidth
               Animated.timing(this.state.pan, {
                 toValue: { x: animateToXValue, y: 0 },
                 duration: 150,
                 useNativeDriver: true,
               }).start(() => {
-                this.setState({ transitioningIndex: null }, () => {
+                this.setState({ transitioningIndex: null, panEnabled:true }, () => {
                   Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }], {
                     useNativeDriver: false,
                   })(_, gesture)
@@ -62,13 +70,17 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
             Animated.spring(this.state.pan, {
               toValue: { x: 0, y: 0 },
               useNativeDriver: true,
-            }).start();
+            }).start(() => {
+              this.setState({ panEnabled: true });
+            });
           }
         } else {
           Animated.spring(this.state.pan, {
             toValue: { x: 0, y: 0 },
             useNativeDriver: true,
-          }).start();
+          }).start(() => {
+            this.setState({ panEnabled: true });
+          });
         }
       },
     });
