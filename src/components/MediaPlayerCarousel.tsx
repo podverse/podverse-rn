@@ -94,7 +94,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     https://stackoverflow.com/questions/46127753/react-native-react-navigation-slow-transitions-when-nesting-navigators
   */
     const timeout1 = Platform.OS === 'android' ? 50 : 0
-    const timeout2 = Platform.OS === 'android' ? 333 : 0
+    const timeout2 = Platform.OS === 'android' ? 100 : 0
 
     setTimeout(() => {
       this.setState({ isReady: true })
