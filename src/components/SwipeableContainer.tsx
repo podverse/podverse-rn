@@ -105,7 +105,8 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
             {child}
           </Animated.View>
         );
-      } else if (index === renderedIndex + 1 && renderedIndex < this.props.children.length - 1) {
+      } else if (index > renderedIndex && renderedIndex < this.props.children.length - 1) {
+        const left = `${(index - renderedIndex) * 100}%`
         return (
           <Animated.View
             style={[
@@ -113,14 +114,15 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
               {
                 transform: [{ translateX: pan.x }],
                 position: 'absolute',
-                left: '100%',
+                left,
               },
             ]}
           >
             {child}
           </Animated.View>
         );
-      } else if (index === renderedIndex - 1 && renderedIndex > 0) {
+      } else if (index < renderedIndex) {
+        const left = `${(index - renderedIndex) * 100}%`
         return (
           <Animated.View
             style={[
@@ -128,7 +130,7 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
               {
                 transform: [{ translateX: pan.x }],
                 position: 'absolute',
-                left: '-100%',
+                left,
               },
             ]}
           >
@@ -139,6 +141,58 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
         return null;
       }
     });
+
+    /*
+      const children = React.Children.map(this.props.children, (child, index) => {
+        if (index === renderedIndex) {
+          return (
+            <Animated.View
+              style={[
+                styles.swipeableContainer,
+                {
+                  transform: [{ translateX: pan.x }],
+                },
+              ]}
+              {...this.panResponder.panHandlers}
+            >
+              {child}
+            </Animated.View>
+          );
+        } else if (index === renderedIndex + 1 && renderedIndex < this.props.children.length - 1) {
+          return (
+            <Animated.View
+              style={[
+                styles.swipeableContainer,
+                {
+                  transform: [{ translateX: pan.x }],
+                  position: 'absolute',
+                  left: '100%',
+                },
+              ]}
+            >
+              {child}
+            </Animated.View>
+          );
+        } else if (index === renderedIndex - 1 && renderedIndex > 0) {
+          return (
+            <Animated.View
+              style={[
+                styles.swipeableContainer,
+                {
+                  transform: [{ translateX: pan.x }],
+                  position: 'absolute',
+                  left: '-100%',
+                },
+              ]}
+            >
+              {child}
+            </Animated.View>
+          );
+        } else {
+          return null;
+        }
+      });
+    */
 
     return (
     <View style={styles.view}>

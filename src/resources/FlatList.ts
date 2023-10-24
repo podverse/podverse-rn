@@ -36,7 +36,7 @@ export const FlatList = {
     initialNumToRender: 10,
     maxToRenderPerBatch: 10,
     removeClippedSubviews: true,
-    updateCellsBatchingPeriod: 100,
+    updateCellsBatchingPeriod: 200,
     windowSize: 4
   },
   optimizationPropsDefault: {

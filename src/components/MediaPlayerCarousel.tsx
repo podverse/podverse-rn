@@ -165,7 +165,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   render() {
     const { navigation } = this.props
     const { accessibilityItemSelected, activeIndex, isReady, isReady2 } = this.state
-    const { parsedTranscript, player, screen, screenPlayer, screenReaderEnabled, session } = this.global
+    const { currentChapter, currentChapters, parsedTranscript, player, screen, screenPlayer,
+      screenReaderEnabled, session } = this.global
     const { episode, nowPlayingItem, playbackState } = player
     const { screenWidth } = screen
     const hasChapters = checkIfHasChapters(episode)
@@ -216,8 +217,10 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
     const hasValueInfo = nowPlayingItem?.episodeValue?.length > 0 || nowPlayingItem?.podcastValue?.length > 0
 
-    const carouselComponents = mediaPlayerCarouselComponents(
-      this._handlePressClipInfo,
+    const carouselComponents = mediaPlayerCarouselComponents({
+      currentChapter,
+      currentChapters,
+      handlePressClipInfo: this._handlePressClipInfo,
       screenWidth,
       navigation,
       hasChapters,
@@ -227,11 +230,11 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       screenReaderEnabled,
       player,
       screenPlayer,
-      this.global.parsedTranscript || [],
-      accessibilityItemSelected?.value || null,
+      parsedTranscript: this.global.parsedTranscript || [],
+      accessibilityItemSelectedValue: accessibilityItemSelected?.value || null,
       isReady,
       isReady2
-    )
+    })
 
     return (
       <View style={styles.wrapper} transparent>
@@ -353,66 +356,120 @@ const accessibilitySelectorItems = (
   return items
 }
 
-const mediaPlayerCarouselComponents = (
-  handlePressClipInfo: any,
-  screenWidth: number,
-  navigation: any,
-  hasChapters: boolean,
-  hasChat: boolean,
-  hasComments: boolean,
-  hasTranscript: boolean,
-  screenReaderEnabled: boolean,
-  player: InitialState['player'],
-  screenPlayer: InitialState['screenPlayer'],
-  parsedTranscript: TranscriptRow[],
-  accessibilityItemSelectedValue?: string | null,
-  isReady?: boolean,
+type MPCComponents = {
+  accessibilityItemSelectedValue?: string | null
+  currentChapter?: InitialState['currentChapter']
+  currentChapters: InitialState['currentChapters']
+  handlePressClipInfo: any
+  hasChapters: boolean
+  hasChat: boolean
+  hasComments: boolean
+  hasTranscript: boolean
+  isReady?: boolean
   isReady2?: boolean
+  navigation: any,
+  parsedTranscript: TranscriptRow[]
+  player: InitialState['player']
+  screenPlayer: InitialState['screenPlayer']
+  screenReaderEnabled: boolean
+  screenWidth: number
+}
 
-) => {
+const mediaPlayerCarouselComponents = ({
+  accessibilityItemSelectedValue,
+  currentChapter,
+  currentChapters,
+  handlePressClipInfo,
+  hasChapters,
+  hasChat,
+  hasComments,
+  hasTranscript,
+  isReady,
+  isReady2,
+  navigation,
+  parsedTranscript,
+  player,
+  screenPlayer,
+  screenReaderEnabled,
+  screenWidth
+}: MPCComponents) => {
   const components = []
   if(screenReaderEnabled) {
     if(isReady && (accessibilityItemSelectedValue === _nowPlayingInfoKey || !accessibilityItemSelectedValue)) {
-      components.push(<MediaPlayerCarouselViewer
-        handlePressClipInfo={handlePressClipInfo}
-        navigation={navigation}
-        width={screenWidth}
-      />)
+      components.push(
+        <MediaPlayerCarouselViewer
+          handlePressClipInfo={handlePressClipInfo}
+          key='mpc_sr_viewer'
+          navigation={navigation}
+          width={screenWidth}
+        />
+      )
     }
     
     if(isReady2) {
       if(accessibilityItemSelectedValue === _episodeSummaryKey){
         components.push(
           <MediaPlayerCarouselShowNotes
+            key='mpc_sr_show_notes'
             navigation={navigation}
             player={player}
             screenPlayer={screenPlayer}
             screenReaderEnabled={screenReaderEnabled}
-            width={screenWidth} />
+            width={screenWidth}
+          />
         )
       }
       if(accessibilityItemSelectedValue === _chaptersKey && hasChapters){
-        components.push(<MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />)
+        components.push(
+          <MediaPlayerCarouselChapters
+            currentChapter={currentChapter}
+            currentChapters={currentChapters}
+            isLoading={screenPlayer?.isLoading}
+            isLoadingMore={screenPlayer?.isLoadingMore}
+            isQuerying={screenPlayer?.isQuerying}
+            key='mpc_chapters'
+            navigation={navigation}
+            screenReaderEnabled={screenReaderEnabled}
+            showMoreActionSheet={screenPlayer?.showMoreActionSheet}
+            showNoInternetConnectionMessage={screenPlayer?.showNoInternetConnectionMessage}
+            selectedItem={screenPlayer?.selectedItem}
+            width={screenWidth}
+          />
+        )
       }
       if(accessibilityItemSelectedValue === _commentsKey && hasComments){
-        components.push(<MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />)
+        components.push(
+          <MediaPlayerCarouselComments
+            key='mpc_sr_comments'
+            navigation={navigation}
+            width={screenWidth}
+          />)
       }
       if(accessibilityItemSelectedValue === _transcriptKey && hasTranscript){
-        components.push(<MediaPlayerCarouselTranscripts 
-          isNowPlaying 
-          parsedTranscript={parsedTranscript} 
-          width={screenWidth} 
+        components.push(
+          <MediaPlayerCarouselTranscripts 
+            key='mpc_sr_transcripts'
+            isNowPlaying 
+            parsedTranscript={parsedTranscript} 
+            width={screenWidth} 
           />
         )
       }
       if(accessibilityItemSelectedValue === _chatRoomKey && hasChat){
-        components.push(<MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />)
+        components.push(
+          <MediaPlayerCarouselChatRoom
+            key='mpc_sr_chat_room'
+            navigation={navigation}
+            width={screenWidth}
+          />)
       }
     }
   } else {
     if(isReady) {
-      components.push(<MediaPlayerCarouselViewer
+      components.push(
+        <MediaPlayerCarouselViewer
           handlePressClipInfo={handlePressClipInfo}
+          key='mpc_viewer'
           navigation={navigation}
           width={screenWidth}
         />)
@@ -421,6 +478,7 @@ const mediaPlayerCarouselComponents = (
       if(isReady2) {
         components.push(
           <MediaPlayerCarouselShowNotes
+            key='mpc_show_notes'
             navigation={navigation}
             player={player}
             screenPlayer={screenPlayer}
@@ -429,21 +487,50 @@ const mediaPlayerCarouselComponents = (
           />)
       
       if(hasChapters) {
-        components.push(<MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />)
+        components.push(
+          <MediaPlayerCarouselChapters
+            currentChapter={currentChapter}
+            currentChapters={currentChapters}
+            isLoading={screenPlayer?.isLoading}
+            isLoadingMore={screenPlayer?.isLoadingMore}
+            isQuerying={screenPlayer?.isQuerying}
+            key='mpc_chapters'
+            navigation={navigation}
+            screenReaderEnabled={screenReaderEnabled}
+            showMoreActionSheet={screenPlayer?.showMoreActionSheet}
+            showNoInternetConnectionMessage={screenPlayer?.showNoInternetConnectionMessage}
+            selectedItem={screenPlayer?.selectedItem}
+            width={screenWidth}
+          />
+        )
       }
       if(hasComments) {
-        components.push(<MediaPlayerCarouselComments navigation={navigation} width={screenWidth} />)
+        components.push(
+          <MediaPlayerCarouselComments
+            key='mpc_comments'
+            navigation={navigation}
+            width={screenWidth}
+          />
+        )
       }
       if(hasTranscript) {
-        components.push(<MediaPlayerCarouselTranscripts 
-          isNowPlaying 
-          parsedTranscript={parsedTranscript} 
-          width={screenWidth} 
+        components.push(
+          <MediaPlayerCarouselTranscripts 
+            isNowPlaying 
+            key='mpc_transcripts'
+            parsedTranscript={parsedTranscript} 
+            width={screenWidth} 
           />
         )
       }
       if(hasChat) {
-        components.push(<MediaPlayerCarouselChatRoom navigation={navigation} width={screenWidth} />)
+        components.push(
+          <MediaPlayerCarouselChatRoom
+            key='mpc_chat_room'
+            navigation={navigation}
+            width={screenWidth}
+          />
+        )
       }
     }
   }

@@ -1,10 +1,11 @@
 import deepEqual from 'fast-deep-equal'
-import { convertToNowPlayingItem } from 'podverse-shared'
+import { Episode, convertToNowPlayingItem } from 'podverse-shared'
 import { AppState, AppStateStatus, StyleSheet } from 'react-native'
-import React, { setGlobal } from 'reactn'
+import React, { getGlobal, setGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
+import { InitialState } from '../resources/Interfaces'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPlaybackSpeed } from '../services/player'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
@@ -20,8 +21,16 @@ import {
 } from './'
 
 type Props = {
-  isChapters?: boolean
+  currentChapter?: InitialState['currentChapter']
+  currentChapters: InitialState['currentChapters']
+  isLoading: InitialState['screenPlayer']['isLoading']
+  isLoadingMore: InitialState['screenPlayer']['isLoadingMore']
+  isQuerying: InitialState['screenPlayer']['isQuerying']
   navigation?: any
+  screenReaderEnabled: InitialState['screenReaderEnabled']
+  selectedItem: InitialState['screenPlayer']['selectedItem']
+  showMoreActionSheet: InitialState['screenPlayer']['showMoreActionSheet']
+  showNoInternetConnectionMessage: InitialState['screenPlayer']['showNoInternetConnectionMessage']
   width: number
 }
 
@@ -129,7 +138,7 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
     const playbackSpeed = await getPlaybackSpeed()
     const intervalTime = 1000 / playbackSpeed
     return setInterval(() => {
-      const { currentChapter, currentChapters } = this.global
+      const { currentChapter, currentChapters } = this.props
       if (currentChapter?.id) {
         if (lastPlayingChapter && currentChapter.id === lastPlayingChapter.id) return
         lastPlayingChapter = currentChapter
@@ -184,8 +193,8 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
 
   _renderItem = ({ item, index }) => {
     const { navigation } = this.props
-    const { currentChapter, player } = this.global
-    const { episode } = player
+    const { currentChapter } = this.props
+    const { episode } = getGlobal().player
     const podcast = episode?.podcast || {}
     const testID = getTestID()
 
@@ -218,7 +227,7 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
   _keyExtractor = (item: any, index: number) => safeKeyExtractor(getTestID(), index, item?.id)
 
   onScrollToIndexFailed = (error) => {
-    const { currentChapters } = this.global
+    const { currentChapters } = this.props
     if (this.listRef !== null) {
       this.listRef.scrollToOffset({ offset: error.averageItemLength * error.index, animated: false });
       setTimeout(() => {
@@ -230,17 +239,19 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
   }
 
   render() {
-    const { navigation, width } = this.props
-    const { autoScrollOn } = this.state
-    const { currentChapters, screenPlayer, screenReaderEnabled } = this.global
     const {
+      currentChapters,
       isLoading,
       isLoadingMore,
       isQuerying,
+      navigation,
       selectedItem,
       showMoreActionSheet,
-      showNoInternetConnectionMessage
-    } = screenPlayer
+      showNoInternetConnectionMessage,
+      screenReaderEnabled,
+      width
+    } = this.props
+    const { autoScrollOn } = this.state
 
     const noResultsMessage = translate('No chapters found')
     const noResultsSubMessage = translate('Chapters are created by the podcaster')
