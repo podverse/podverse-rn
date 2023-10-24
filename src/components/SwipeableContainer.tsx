@@ -20,7 +20,7 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
     super(props);
 
     this.state = {
-      currentIndex: 1,
+      currentIndex: 0,
       pan: new Animated.ValueXY(),
       transitioningIndex: null,
       panEnabled: true,
