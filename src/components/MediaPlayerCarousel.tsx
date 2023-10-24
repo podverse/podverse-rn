@@ -1,9 +1,9 @@
 import { Dimensions, Platform, StyleSheet } from 'react-native'
-import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { checkIfHasSupportedCommentTag, Episode, TranscriptRow } from 'podverse-shared'
 import { PV } from '../resources'
+import { InitialState } from '../resources/Interfaces'
 import { translate } from '../lib/i18n'
 import { playerCheckIfStateIsPlaying } from '../services/player'
 import { v4vGetPluralCurrencyUnitPerMinute } from '../services/v4v/v4v'
@@ -22,7 +22,6 @@ import {
   MediaPlayerCarouselTranscripts,
   MediaPlayerCarouselViewer,
   PressableWithOpacity,
-  ScrollView,
   Text,
   View
 } from '.'
@@ -166,7 +165,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   render() {
     const { navigation } = this.props
     const { accessibilityItemSelected, activeIndex, isReady, isReady2 } = this.state
-    const { parsedTranscript, player, screen, screenReaderEnabled, session } = this.global
+    const { parsedTranscript, player, screen, screenPlayer, screenReaderEnabled, session } = this.global
     const { episode, nowPlayingItem, playbackState } = player
     const { screenWidth } = screen
     const hasChapters = checkIfHasChapters(episode)
@@ -226,6 +225,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       hasComments,
       hasTranscript,
       screenReaderEnabled,
+      player,
+      screenPlayer,
       this.global.parsedTranscript || [],
       accessibilityItemSelected?.value || null,
       isReady,
@@ -361,10 +362,13 @@ const mediaPlayerCarouselComponents = (
   hasComments: boolean,
   hasTranscript: boolean,
   screenReaderEnabled: boolean,
+  player: InitialState['player'],
+  screenPlayer: InitialState['screenPlayer'],
   parsedTranscript: TranscriptRow[],
   accessibilityItemSelectedValue?: string | null,
   isReady?: boolean,
   isReady2?: boolean
+
 ) => {
   const components = []
   if(screenReaderEnabled) {
@@ -378,7 +382,14 @@ const mediaPlayerCarouselComponents = (
     
     if(isReady2) {
       if(accessibilityItemSelectedValue === _episodeSummaryKey){
-        components.push(<MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />)
+        components.push(
+          <MediaPlayerCarouselShowNotes
+            navigation={navigation}
+            player={player}
+            screenPlayer={screenPlayer}
+            screenReaderEnabled={screenReaderEnabled}
+            width={screenWidth} />
+        )
       }
       if(accessibilityItemSelectedValue === _chaptersKey && hasChapters){
         components.push(<MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />)
@@ -408,7 +419,14 @@ const mediaPlayerCarouselComponents = (
       }
 
       if(isReady2) {
-        components.push(<MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />)
+        components.push(
+          <MediaPlayerCarouselShowNotes
+            navigation={navigation}
+            player={player}
+            screenPlayer={screenPlayer}
+            screenReaderEnabled={screenReaderEnabled}
+            width={screenWidth}
+          />)
       
       if(hasChapters) {
         components.push(<MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />)
