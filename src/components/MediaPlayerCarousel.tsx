@@ -250,9 +250,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           </>
         )}
         {!screenReaderEnabled && (
-            <SwipeableContainer>
-              {carouselComponents}
-            </SwipeableContainer>
+          <SwipeableContainer>
+            {carouselComponents}
+          </SwipeableContainer>
         )}
         {!!activeProvider && hasValueInfo && (
           <View style={styles.maxWidthWrapper}>
