@@ -658,16 +658,22 @@ export const handleIntervalEnrichGlobalState = async (session: any) => {
   const valueTags = extractV4VValueTags(episodeValue, podcastValue)
   const activeValueTag = v4vGetActiveValueTag(
     valueTags, playerPositionState, activeProvider?.type, activeProvider?.method)
+    
   if (activeValueTag && activeProvider) {
-    setGlobal({
-      session: {
-        ...session,
-        v4v: {
-          ...session.v4v,
-          valueTimeSplitIsActive: !!activeValueTag?.activeValueTimeSplit?.isActive
+    const globalState = getGlobal()
+    const previousValueTimeSplitIsActive = globalState?.session?.v4v?.valueTimeSplitIsActive
+    const shouldUpdateState = previousValueTimeSplitIsActive !== !!activeValueTag?.activeValueTimeSplit?.isActive
+    if (shouldUpdateState) {
+      setGlobal({
+        session: {
+          ...session,
+          v4v: {
+            ...session.v4v,
+            valueTimeSplitIsActive: !!activeValueTag?.activeValueTimeSplit?.isActive
+          }
         }
-      }
-    })
+      })
+    }
   }
 }
 
