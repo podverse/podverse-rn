@@ -62,7 +62,7 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
               const animateToXValue = isPanForward ? -screenWidth : screenWidth
               Animated.timing(this.state.pan, {
                 toValue: { x: animateToXValue, y: 0 },
-                duration: 205,
+                duration: 150,
                 useNativeDriver: true,
               }).start(() => {
                 this.setState({ transitioningIndex: null, panEnabled:true }, () => {
