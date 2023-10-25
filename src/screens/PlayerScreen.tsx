@@ -194,8 +194,6 @@ export class PlayerScreen extends React.Component<Props> {
         // do nothing
       }
     }
-
-    loadChaptersForEpisode(episode)
   }
 
   _getEpisodeId = () => {

@@ -1,14 +1,19 @@
+import deepEqual from 'fast-deep-equal'
 import { convertNowPlayingItemToMediaRef } from 'podverse-shared'
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
+import { InitialState } from '../resources/Interfaces'
 import { TableSectionSelectors } from './TableSectionSelectors'
 import { ClipInfoView, HTMLScrollView, ScrollView, Text, TextLink, View } from './'
 
 type Props = {
   navigation?: any
+  player: InitialState['player']
+  screenPlayer: InitialState['screenPlayer']
+  screenReaderEnabled: InitialState['screenReaderEnabled']
   width: number
 }
 
@@ -18,12 +23,22 @@ type State = {
 
 const testIDPrefix = 'media_player_carousel_show_notes'
 
-export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, State> {
-  constructor(props) {
+export class MediaPlayerCarouselShowNotes extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props)
     this.state = {
       showShortHtml: true
     }
+  }
+
+  // Use shouldComponentUpdate to prevent excessive rendering issue / warning
+  // that happens with the HTMLScrollView
+  shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>): boolean {
+    if (deepEqual(nextProps, this.props) && deepEqual(nextState, this.state)) {
+      return false
+    }
+
+    return true
   }
 
   toggleShortHtml() {
@@ -32,9 +47,8 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
   }
 
   render() {
-    const { navigation, width } = this.props
+    const { navigation, width, player, screenPlayer, screenReaderEnabled } = this.props
     const { showShortHtml } = this.state
-    const { player, screenPlayer, screenReaderEnabled } = this.global
     const { episode, nowPlayingItem } = player
     const { isLoading } = screenPlayer
 

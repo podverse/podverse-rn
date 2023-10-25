@@ -46,6 +46,7 @@ type Props = {
   onGridItemLongPressed?: (arg0: Podcast) => void
   onRefresh?: any
   onScrollBeginDrag?: any
+  onScrollToIndexFailed?: any
   renderHiddenItem?: any
   renderSectionHeader?: any
   renderItem: any
@@ -99,6 +100,7 @@ export const PVFlatList = (props: Props) => {
     onGridItemLongPressed,
     onRefresh,
     onScrollBeginDrag,
+    onScrollToIndexFailed,
     renderHiddenItem,
     renderItem,
     renderSectionHeader,
@@ -229,6 +231,7 @@ export const PVFlatList = (props: Props) => {
                   )
                 }
               : {})}
+            onScrollToIndexFailed={onScrollToIndexFailed}
             renderHiddenItem={renderHiddenItem || _renderHiddenItem}
             renderSectionHeader={renderSectionHeader}
             renderItem={renderItem}
