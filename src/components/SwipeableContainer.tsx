@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, PanResponder, Animated, Dimensions } from 'react-native';
+import { PV } from '../resources';
+import PVEventEmitter from '../services/eventEmitter'
 import DottedPagination from './PaginationDots';
 
 interface SwipeableProps {
+  chaptersIndex?: number | null
   children: React.ReactNode[];
   totalChildren: number // needed for pre-loading PaginationDots
+  transcriptsIndex?: number | null
 }
 
 interface SwipeableState {
@@ -44,6 +48,7 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
         })(_, gesture);
       },
       onPanResponderRelease: (_, gesture) => {
+        const { chaptersIndex, transcriptsIndex } = this.props
         const screenWidth = Dimensions.get('window').width;
         if (Math.abs(gesture.dx) > screenWidth * 0.1) {
           const isPanForward = gesture.dx < 0
@@ -57,7 +62,7 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
               const animateToXValue = isPanForward ? -screenWidth : screenWidth
               Animated.timing(this.state.pan, {
                 toValue: { x: animateToXValue, y: 0 },
-                duration: 150,
+                duration: 205,
                 useNativeDriver: true,
               }).start(() => {
                 this.setState({ transitioningIndex: null, panEnabled:true }, () => {
@@ -74,6 +79,17 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
             }).start(() => {
               this.setState({ panEnabled: true });
             });
+          }
+
+          if (newIndex === chaptersIndex) {
+            PVEventEmitter.emit(PV.Events.MPC_TRANSCRIPTS_IN_VIEW, false)
+            PVEventEmitter.emit(PV.Events.MPC_CHAPTERS_IN_VIEW, true)
+          } else if (newIndex === transcriptsIndex) {
+            PVEventEmitter.emit(PV.Events.MPC_CHAPTERS_IN_VIEW, false)
+            PVEventEmitter.emit(PV.Events.MPC_TRANSCRIPTS_IN_VIEW, true)
+          } else {
+            PVEventEmitter.emit(PV.Events.MPC_CHAPTERS_IN_VIEW, false)
+            PVEventEmitter.emit(PV.Events.MPC_TRANSCRIPTS_IN_VIEW, false)
           }
         } else {
           Animated.spring(this.state.pan, {

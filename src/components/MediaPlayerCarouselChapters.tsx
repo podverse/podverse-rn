@@ -60,11 +60,13 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
   componentDidMount() {
     this.appStateListenerChange = AppState.addEventListener('change', this._handleAppStateChange)
     PVEventEmitter.on(PV.Events.PLAYER_SPEED_UPDATED, this.updateAutoscroll)
+    PVEventEmitter.on(PV.Events.MPC_CHAPTERS_IN_VIEW, this._inViewHandler)
   }
 
   componentWillUnmount() {
     this.appStateListenerChange.remove()
     PVEventEmitter.removeListener(PV.Events.PLAYER_SPEED_UPDATED, this.updateAutoscroll)
+    PVEventEmitter.removeListener(PV.Events.MPC_CHAPTERS_IN_VIEW, this._inViewHandler)
     this.clearAutoScrollInterval()
   }
 
@@ -81,6 +83,14 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
       this._handleFocus()
     } else if (nextAppStateStatus === 'background' || nextAppStateStatus === 'inactive') {
       this._handleBlur()
+    }
+  }
+
+  _inViewHandler = (isInView: boolean) => {
+    if (isInView) {
+      this.enableAutoscroll()
+    } else {
+      this.disableAutoscroll()
     }
   }
 

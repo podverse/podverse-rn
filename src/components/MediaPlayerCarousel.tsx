@@ -183,9 +183,17 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const isPlaying = playerCheckIfStateIsPlaying(playbackState)
 
     let itemCount = 2
-    if (hasChapters) itemCount++
+    let chaptersIndex = null
+    let transcriptsIndex = null
+    if (hasChapters) {
+      chaptersIndex = itemCount
+      itemCount++
+    }
     if (hasComments) itemCount++
-    if (hasTranscript) itemCount++
+    if (hasTranscript) {
+      transcriptsIndex = itemCount
+      itemCount++
+    }
     if (hasChat) itemCount++
 
     const satStreamText = streamingValueOn ? translate('Stream On') : translate('Stream Off')
@@ -254,7 +262,10 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           </>
         )}
         {!screenReaderEnabled && (
-          <SwipeableContainer totalChildren={itemCount}>
+          <SwipeableContainer
+            chaptersIndex={chaptersIndex}
+            transcriptsIndex={transcriptsIndex}
+            totalChildren={itemCount}>
             {carouselComponents}
           </SwipeableContainer>
         )}
