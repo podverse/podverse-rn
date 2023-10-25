@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, PanResponder, Animated, Dimensions } from 'react-native';
+import { View, StyleSheet, PanResponder, Animated, Dimensions, Easing } from 'react-native';
 import { PV } from '../resources';
 import PVEventEmitter from '../services/eventEmitter'
 import DottedPagination from './PaginationDots';
@@ -47,10 +47,10 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
           useNativeDriver: false,
         })(_, gesture);
       },
-      onPanResponderRelease: (_, gesture) => {
+      onPanResponderEnd: (_, gesture) => {
         const { chaptersIndex, transcriptsIndex } = this.props
         const screenWidth = Dimensions.get('window').width;
-        if (Math.abs(gesture.dx) > screenWidth * 0.1) {
+        if (Math.abs(gesture.dx) > screenWidth * 0.15) {
           const isPanForward = gesture.dx < 0
           const newIndex = isPanForward ? this.state.currentIndex + 1 : this.state.currentIndex - 1;
           if (newIndex >= 0 && newIndex < this.props.children.length) {
@@ -64,6 +64,7 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
                 toValue: { x: animateToXValue, y: 0 },
                 duration: 150,
                 useNativeDriver: true,
+                easing: Easing.linear
               }).start(() => {
                 this.setState({ transitioningIndex: null, panEnabled:true }, () => {
                   Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }], {
