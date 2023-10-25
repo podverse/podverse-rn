@@ -406,7 +406,7 @@ PODS:
     - React
   - RNGestureHandler (2.10.1):
     - React-Core
-  - RNIap (8.0.7):
+  - RNIap (10.1.3):
     - React-Core
   - RNKeychain (8.1.2):
     - React-Core
@@ -758,7 +758,7 @@ SPEC CHECKSUMS:
   RNFBMessaging: 4684a956af372f1aba27b4ef445232479d924e76
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
   RNGestureHandler: 42ec7c28dd02d540ed6c9159c57a98ff016492dc
-  RNIap: 0f95fd117338bd1846e0a77600a02d16056f7795
+  RNIap: 45c674b3f57d8c2a80bd926436015cefbf1d2dfd
   RNKeychain: a65256b6ca6ba6976132cc4124b238a5b13b3d9c
   RNLocalize: 82a569022724d35461e2dc5b5d015a13c3ca995b
   RNPermissions: ac5991487ad04ad1888b26896d44d969e65531b7

@@ -143,29 +143,35 @@ export const handlePlayRemoteMediaId = async (mediaId: string) => {
 
 export const requestDrawOverAppsPermission = async () => {
   return new Promise<void>((resolve) => {
-    (async () => {
-      const { PVAndroidAutoModule } = NativeModules
-      // PVAndroidAutoModule.getDrawOverAppsPermission().then(async (enabled: boolean) => {
-        const drawOverAppsPermissionAsked = await AsyncStorage.getItem('DRAW_OVER_APPS_PERMISSION_ASKED')
-    
-        if (/* enabled || */ drawOverAppsPermissionAsked) {
-          resolve()
-          return
-        }
-        else {
-          await AsyncStorage.setItem('DRAW_OVER_APPS_PERMISSION_ASKED', 'TRUE')
-          Alert.alert(translate('Android Auto Permission Title'), translate('Android Auto Permission Body'), [
-            { text: 'Cancel', style: 'cancel', onPress: () => {
+    const { PVAndroidAutoModule } = NativeModules
+    PVAndroidAutoModule.getDrawOverAppsPermission().then(async (enabled: boolean) => {
+      const drawOverAppsPermissionAsked = await AsyncStorage.getItem('DRAW_OVER_APPS_PERMISSION_ASKED_2')
+
+      if (enabled || drawOverAppsPermissionAsked) {
+        resolve()
+        return
+      } else {
+        await AsyncStorage.setItem('DRAW_OVER_APPS_PERMISSION_ASKED_2', 'TRUE')
+        Alert.alert(translate('Android Auto Permission Title'), translate('Android Auto Permission Body'), [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+            onPress: () => {
               resolve()
-            }},
-            { text: 'OK', onPress: () => {
+            }
+          },
+          {
+            text: 'OK',
+            onPress: () => {
               PVAndroidAutoModule.askDrawOverAppsPermission()
-              resolve()
-            }}
-          ])
-        }
-      // })
-    })()
+              setTimeout(() => {
+                resolve()
+              }, 3000)
+            }
+          }
+        ])
+      }
+    })
   })
 }
 
@@ -220,7 +226,8 @@ export const handleAndroidAutoPodcastsUpdate = () => {
       playable: '1',
       title: podcast.title || translate('Untitled Podcast'),
       subtitle: podcast.subtitle,
-      iconUri: podcast.imageUrl || undefined
+      iconUri: podcast.imageUrl || undefined,
+      contentStyle: String(AndroidAutoContentStyle.CategoryGrid)
     }))
   })
 }

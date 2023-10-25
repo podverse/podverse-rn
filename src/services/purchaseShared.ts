@@ -10,6 +10,6 @@ const itemSkus = Platform.select({
 const _premiumMembership1Year = itemSkus[0]
 
 export const buy1YearPremium = async () => {
-  await getProducts(itemSkus)
-  await requestPurchase(_premiumMembership1Year, false)
+  await getProducts({ skus: itemSkus })
+  await requestPurchase({ sku: _premiumMembership1Year })
 }

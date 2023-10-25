@@ -33,6 +33,7 @@ import { playerGetPosition, playerUpdateUserPlaybackPosition } from '../services
 import { trackPageView } from '../services/tracking'
 import { loadChaptersForEpisode } from '../state/actions/playerChapters'
 import { getHistoryItems } from '../state/actions/userHistoryItem'
+import { v4vRefreshConnectedProviders } from '../state/actions/v4v/v4v'
 import { core, navHeader } from '../styles'
 
 const _fileName = 'src/screens/PlayerScreen.tsx'
@@ -183,14 +184,16 @@ export class PlayerScreen extends React.Component<Props> {
               ...this.global.player,
               episode: fullEpisode
             }
+          }, () => {
+            // This function will refresh the v4v connected providers and update the global state,
+            // to ensure that the boost and streaming buttons appear when v4v is available and connected.
+            v4vRefreshConnectedProviders()
           })
         }
       } catch (error) {
         // do nothing
       }
     }
-
-    loadChaptersForEpisode(episode)
   }
 
   _getEpisodeId = () => {

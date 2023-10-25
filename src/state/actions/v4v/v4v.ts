@@ -79,9 +79,22 @@ export const v4vInitialize = async () => {
   const globalState = getGlobal()
   const showLightningIcons = await AsyncStorage.getItem(PV.Keys.V4V_SHOW_LIGHTNING_ICONS)
   const savedSettings = await v4vGetSettings()
-  const savedProviders = await v4vInitializeConnectedProviders()
   const savedSenderInfo = await v4vGetSenderInfo()
   const streamingValueOn = await getStreamingValueOn()
+
+  // NOTE: Previously I only had this running on app launch, but if the network request
+  // to the v4v provider fails for whatever reason, then the app would not render the
+  // boost or streaming buttons even after a connection would succeed.
+  // To help ensure the UI renders accurately, I am re-running v4vInitializeConnectedProviders
+  // at the end of the PlayerScreen componentDidMount.
+  let savedProviders = []
+  try {
+    savedProviders = await v4vInitializeConnectedProviders()
+  } catch (error) {
+    // NOTE: v4vInitializeConnectedProviders should probably have more nested try/catch handling,
+    // but for now, if v4vInitializeConnectedProviders fails for any reason, we at least catch
+    // the error and continue with v4vInitialize so the rest of the global state updates.
+  }
   
   setGlobal({
     session: {
@@ -242,6 +255,27 @@ export const v4vInitializeConnectedProviders = async () => {
   }
 
   return savedProviders
+}
+
+export const v4vRefreshConnectedProviders = async () => {
+  const savedProviders = await v4vGetProvidersConnected()
+  const globalState = getGlobal()
+  setGlobal({
+    session: {
+      ...globalState.session,
+      v4v: {
+        ...globalState.session.v4v,
+        providers: {
+          ...globalState.session.v4v.providers,
+          connected: savedProviders
+        }
+      }
+    }
+  }, () =>{
+    for (const savedProvider of savedProviders) {
+      v4vRefreshProviderWalletInfo(savedProvider?.key)
+    }
+  })
 }
 
 export const v4vGetConnectedProvider = (connectedProviders: V4VProviderConnectedState[], key: string) => {
@@ -624,16 +658,22 @@ export const handleIntervalEnrichGlobalState = async (session: any) => {
   const valueTags = extractV4VValueTags(episodeValue, podcastValue)
   const activeValueTag = v4vGetActiveValueTag(
     valueTags, playerPositionState, activeProvider?.type, activeProvider?.method)
+    
   if (activeValueTag && activeProvider) {
-    setGlobal({
-      session: {
-        ...session,
-        v4v: {
-          ...session.v4v,
-          valueTimeSplitIsActive: !!activeValueTag?.activeValueTimeSplit?.isActive
+    const globalState = getGlobal()
+    const previousValueTimeSplitIsActive = globalState?.session?.v4v?.valueTimeSplitIsActive
+    const shouldUpdateState = previousValueTimeSplitIsActive !== !!activeValueTag?.activeValueTimeSplit?.isActive
+    if (shouldUpdateState) {
+      setGlobal({
+        session: {
+          ...session,
+          v4v: {
+            ...session.v4v,
+            valueTimeSplitIsActive: !!activeValueTag?.activeValueTimeSplit?.isActive
+          }
         }
-      }
-    })
+      })
+    }
   }
 }
 

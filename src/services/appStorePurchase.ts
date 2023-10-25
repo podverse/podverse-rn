@@ -5,7 +5,7 @@ export const updateAppStorePurchaseStatus = async (transactionReceipt: any) => {
   const bearerToken = await getBearerToken()
 
   const response = await request({
-    endpoint: '/app-store/update-purchase-status',
+    endpoint: '/app-store/update-purchase-status-2',
     method: 'POST',
     headers: {
       ...(bearerToken ? { Authorization: bearerToken } : {}),
