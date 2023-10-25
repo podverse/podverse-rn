@@ -659,7 +659,7 @@ export const handleIntervalEnrichGlobalState = async (session: any) => {
   const activeValueTag = v4vGetActiveValueTag(
     valueTags, playerPositionState, activeProvider?.type, activeProvider?.method)
     
-    if (activeValueTag && activeProvider) {
+  if (activeValueTag && activeProvider) {
     const globalState = getGlobal()
     const previousValueTimeSplitIsActive = globalState?.session?.v4v?.valueTimeSplitIsActive
     const shouldUpdateState = previousValueTimeSplitIsActive !== !!activeValueTag?.activeValueTimeSplit?.isActive
