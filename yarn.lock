@@ -9310,7 +9310,7 @@ react-native-text-ticker@1.13.0:
 
 "react-native-track-player@github:podverse/lovegaoshi-react-native-track-player#dev-podverse-aa":
   version "4.0.0-rc03"
-  resolved "https://codeload.github.com/podverse/lovegaoshi-react-native-track-player/tar.gz/1c42368e71ffde744b083b008455e6e08784589f"
+  resolved "https://codeload.github.com/podverse/lovegaoshi-react-native-track-player/tar.gz/738e5331f95a34044239fb9d388be3729dd93cf0"
 
 react-native-tracking-transparency@0.1.1:
   version "0.1.1"
