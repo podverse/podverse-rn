@@ -53,7 +53,7 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
 
     this.state = {
       activeChapterRowIndex: null,
-      autoScrollOn: false
+      autoScrollOn: true
     }
   }
 

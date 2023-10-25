@@ -50,7 +50,7 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
       onPanResponderEnd: (_, gesture) => {
         const { chaptersIndex, transcriptsIndex } = this.props
         const screenWidth = Dimensions.get('window').width;
-        if (Math.abs(gesture.dx) > screenWidth * 0.15) {
+        if (Math.abs(gesture.dx) > screenWidth * 0.10) {
           const isPanForward = gesture.dx < 0
           const newIndex = isPanForward ? this.state.currentIndex + 1 : this.state.currentIndex - 1;
           if (newIndex >= 0 && newIndex < this.props.children.length) {
@@ -58,44 +58,45 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
               currentIndex: newIndex, 
               transitioningIndex: this.state.currentIndex, 
               panEnabled: false 
-            }, () => {
-              const animateToXValue = isPanForward ? -screenWidth : screenWidth
-              Animated.timing(this.state.pan, {
-                toValue: { x: animateToXValue, y: 0 },
-                duration: 150,
-                useNativeDriver: true,
-                easing: Easing.linear
-              }).start(() => {
-                this.setState({ transitioningIndex: null, panEnabled:true }, () => {
-                  Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }], {
-                    useNativeDriver: false,
-                  })(_, gesture)
-                })
-              });
+            })
+            const animateToXValue = isPanForward ? -screenWidth : screenWidth
+            Animated.timing(this.state.pan, {
+              toValue: { x: animateToXValue, y: 0 },
+              duration: 150,
+              useNativeDriver: false,
+              easing: Easing.linear
+            }).start(() => {
+              this.setState({ transitioningIndex: null, panEnabled:true }, () => {
+                Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }], {
+                  useNativeDriver: false,
+                })(_, gesture)
+              })
             });
           } else {
             Animated.spring(this.state.pan, {
               toValue: { x: 0, y: 0 },
-              useNativeDriver: true,
+              useNativeDriver: false,
             }).start(() => {
               this.setState({ panEnabled: true });
             });
           }
 
-          if (newIndex === chaptersIndex) {
-            PVEventEmitter.emit(PV.Events.MPC_TRANSCRIPTS_IN_VIEW, false)
-            PVEventEmitter.emit(PV.Events.MPC_CHAPTERS_IN_VIEW, true)
-          } else if (newIndex === transcriptsIndex) {
-            PVEventEmitter.emit(PV.Events.MPC_CHAPTERS_IN_VIEW, false)
-            PVEventEmitter.emit(PV.Events.MPC_TRANSCRIPTS_IN_VIEW, true)
-          } else {
-            PVEventEmitter.emit(PV.Events.MPC_CHAPTERS_IN_VIEW, false)
-            PVEventEmitter.emit(PV.Events.MPC_TRANSCRIPTS_IN_VIEW, false)
-          }
+          setTimeout(() => {
+            if (newIndex === chaptersIndex) {
+              PVEventEmitter.emit(PV.Events.MPC_TRANSCRIPTS_IN_VIEW, false)
+              PVEventEmitter.emit(PV.Events.MPC_CHAPTERS_IN_VIEW, true)
+            } else if (newIndex === transcriptsIndex) {
+              PVEventEmitter.emit(PV.Events.MPC_CHAPTERS_IN_VIEW, false)
+              PVEventEmitter.emit(PV.Events.MPC_TRANSCRIPTS_IN_VIEW, true)
+            } else {
+              PVEventEmitter.emit(PV.Events.MPC_CHAPTERS_IN_VIEW, false)
+              PVEventEmitter.emit(PV.Events.MPC_TRANSCRIPTS_IN_VIEW, false)
+            }
+          }, 200)
         } else {
           Animated.spring(this.state.pan, {
             toValue: { x: 0, y: 0 },
-            useNativeDriver: true,
+            useNativeDriver: false,
           }).start(() => {
             this.setState({ panEnabled: true });
           });
