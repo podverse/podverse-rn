@@ -26,17 +26,45 @@ export const clearChapterPlaybackInfo = async (nowPlayingItem?: NowPlayingItem) 
   })
 }
 
+// If an episode stream is slow to load, the duration will not be calculated yet,
+// so the currentChaptersStartTimePositions cannot be calculated, and the
+// PlayerProgressBar chapter flags will not appear. To work around this,
+// I'm creating an interval that re-runs until duration is available.
+let loadChaptersForEpisodeInterval: any = null
+let loadChaptersForEpisodeLimitCount = 0
 export const loadChaptersForEpisode = async (episode?: any) => {
   if (episode?.id) {
+    loadChaptersForEpisodeLimitCount = 0
     const currentChapters = await retriveNowPlayingItemChapters(episode.id)
-    setChaptersOnGlobalState(currentChapters)
+    loadChaptersForEpisodeInterval = setInterval(() => {
+      (async () => {
+        loadChaptersForEpisodeLimitCount++
+        const duration = await playerGetDuration()
+        if (duration > 0 && loadChaptersForEpisodeLimitCount < 20) {
+          clearInterval(loadChaptersForEpisodeInterval)
+          setChaptersOnGlobalState(currentChapters)
+        }
+      })()
+    }, 1000)
   }
 }
 
+let loadChaptersForNowPlayingItemInterval: any = null
+let loadChaptersForNowPlayingItemLimitCount = 0
 export const loadChaptersForNowPlayingItem = async (item?: NowPlayingItem) => {
   if (item?.episodeId) {
+    loadChaptersForNowPlayingItemLimitCount = 0
     const currentChapters = await retriveNowPlayingItemChapters(item.episodeId)
-    setChaptersOnGlobalState(currentChapters)
+    loadChaptersForNowPlayingItemInterval = setInterval(() => {
+      (async () => {
+        loadChaptersForNowPlayingItemLimitCount++
+        const duration = await playerGetDuration()
+        if (duration > 0 && loadChaptersForNowPlayingItemLimitCount < 20) {
+          clearInterval(loadChaptersForNowPlayingItemInterval)
+          setChaptersOnGlobalState(currentChapters)
+        }
+      })()
+    }, 1000)
   }
 }
 
@@ -110,6 +138,8 @@ export const setChapterOnGlobalState = (newCurrentChapter: any, haptic?: boolean
   }
 }
 
+// NOTE: setChaptersOnGlobalState must wait for the duration to be available!
+// otherwise the chapter time flags will not be calculated for the player progress bar.
 export const setChaptersOnGlobalState = async (currentChapters: any[]) => {
   const { screen } = getGlobal('screen')
   const { screenWidth } = screen
