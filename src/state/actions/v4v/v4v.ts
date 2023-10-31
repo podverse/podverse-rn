@@ -569,9 +569,9 @@ const convertValueTimeSplitsToAppConvertedSplits = (
 ) => {
   return {
     type,
-    startTime: oldValueTimeSplit.startTime,
+    startTime: Math.floor(oldValueTimeSplit.startTime),
     duration: oldValueTimeSplit.duration,
-    endTime: oldValueTimeSplit.startTime + oldValueTimeSplit.duration,
+    endTime: Math.floor(oldValueTimeSplit.startTime + oldValueTimeSplit.duration),
     remoteStartTime: oldValueTimeSplit.remoteStartTime,
     remotePercentage: oldValueTimeSplit.remotePercentage,
     remoteItem: oldValueTimeSplit.remoteItem,

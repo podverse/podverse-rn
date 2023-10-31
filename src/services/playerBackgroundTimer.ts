@@ -4,7 +4,7 @@ import { getGlobal } from 'reactn'
 import { Platform } from 'react-native'
 import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
-import { handleEnrichingPlayerState, playerUpdatePlaybackState } from '../state/actions/player'
+import { handleEnrichingPlayerState, playerUpdatePlaybackState, getSkipChapterInterval } from '../state/actions/player'
 import { clearChapterPlaybackInfo, loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { startCheckClipEndTime, stopClipInterval } from '../state/actions/playerClips'
 import { handleSleepTimerCountEvent } from '../state/actions/sleepTimer'
@@ -136,7 +136,7 @@ PVEventEmitter.on(PV.Events.PLAYER_START_CLIP_TIMER, debouncedHandlePlayerClipLo
 let chapterIntervalSecondCount = 0
 let updateUserPlaybackPositionSecondCount = 0
 const handleBackgroundTimerInterval = (isVideo: boolean) => {
-  const { chapterIntervalActive, clipIntervalActive, player, session } = getGlobal()
+  const { clipIntervalActive, player, session } = getGlobal()
   const { sleepTimer } = player
   const { v4v } = session
 
@@ -152,7 +152,10 @@ const handleBackgroundTimerInterval = (isVideo: boolean) => {
   try {
     if (chapterIntervalSecondCount >= 2) {
       chapterIntervalSecondCount = 0
-      if (chapterIntervalActive) {
+      /*
+        Skip the loadChapterPlaybackInfo after the user manually skips/previous a chapter.
+      */
+      if (!getSkipChapterInterval()) {
         loadChapterPlaybackInfo()
       }
     }

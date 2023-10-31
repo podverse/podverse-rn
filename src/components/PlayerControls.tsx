@@ -1,4 +1,3 @@
-import debounce from 'lodash/debounce'
 import { checkIfVideoFileOrVideoLiveType } from 'podverse-shared'
 import { StyleSheet, View, Image, ImageSourcePropType } from 'react-native'
 import React from 'reactn'
@@ -112,9 +111,9 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     const { navigation } = this.props
     const { progressValue, showPlayerMoreActionSheet } = this.state
     const {
-      currentChapter,
-      currentChapters,
-      currentChaptersStartTimePositions,
+      currentTocChapter,
+      currentTocChapters,
+      currentTocChaptersStartTimePositions,
       globalTheme,
       jumpBackwardsTime,
       jumpForwardsTime,
@@ -135,12 +134,12 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     }
 
     const isLastChapter =
-      currentChapter &&
-      currentChapters.length > 1 &&
-      currentChapters[currentChapters.length - 1] &&
-      currentChapters[currentChapters.length - 1].id === currentChapter.id
+      currentTocChapter &&
+      currentTocChapters.length > 1 &&
+      currentTocChapters[currentTocChapters.length - 1] &&
+      currentTocChapters[currentTocChapters.length - 1].id === currentTocChapter.id
 
-    const noNextQueueItem = currentChapter ? queueItems?.length === 0 && isLastChapter : queueItems?.length === 0
+    const noNextQueueItem = currentTocChapter ? queueItems?.length === 0 && isLastChapter : queueItems?.length === 0
 
     // nowPlayingItem will be undefined when loading from a deep link
     let { nowPlayingItem } = player
@@ -175,21 +174,21 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     }
 
     let { clipEndTime, clipStartTime } = nowPlayingItem
-    if (!clipStartTime && currentChapter?.startTime) {
-      clipStartTime = currentChapter?.startTime
-      clipEndTime = currentChapter?.endTime
+    if (!clipStartTime && currentTocChapter?.startTime) {
+      clipStartTime = currentTocChapter?.startTime
+      clipEndTime = currentTocChapter?.endTime
     }
 
     const jumpBackAccessibilityLabel = `${translate('Jump back')} ${jumpBackwardsTime} ${translate('seconds')}`
     const jumpForwardAccessibilityLabel = `${translate('Jump forward')} ${jumpForwardsTime} ${translate('seconds')}`
 
     const previousButtonAccessibilityLabel =
-      currentChapters && currentChapters.length > 1
+      currentTocChapters && currentTocChapters.length > 1
         ? translate('Go to previous chapter')
         : translate('Return to beginning of episode')
 
     const nextButtonAccessibilityLabel =
-      currentChapters && currentChapters.length > 1
+      currentTocChapters && currentTocChapters.length > 1
         ? translate('Go to next chapter')
         : translate('Skip to next item in your queue')
 
@@ -202,7 +201,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             backupDuration={backupDuration}
             clipEndTime={clipEndTime}
             clipStartTime={clipStartTime}
-            currentChaptersStartTimePositions={currentChaptersStartTimePositions}
+            currentTocChaptersStartTimePositions={currentTocChaptersStartTimePositions}
             globalTheme={globalTheme}
             isLiveItem={!!liveItem}
             isLoading={isLoading}

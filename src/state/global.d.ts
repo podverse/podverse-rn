@@ -37,10 +37,11 @@ declare module 'reactn/default' {
     }
     parsedTranscript: TranscriptRow[] | null
     clipIntervalActive: boolean
-    chapterIntervalActive: boolean
     currentChapter: any
     currentChapters: any
-    currentChaptersStartTimePositions: any
+    currentTocChapter: any
+    currentTocChapters: any
+    currentTocChaptersStartTimePositions: any
     player: {
       backupDuration?: number
       hasErrored: boolean

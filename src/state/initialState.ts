@@ -47,10 +47,11 @@ const initialTheme: InitialState = {
   },
   parsedTranscript: null,
   clipIntervalActive: false,
-  chapterIntervalActive: true,
   currentChapter: null,
   currentChapters: [],
-  currentChaptersStartTimePositions: [],
+  currentTocChapter: null,
+  currentTocChapters: [],
+  currentTocChaptersStartTimePositions: [],
   player: {
     hasErrored: false,
     episode: null,
