@@ -69,7 +69,7 @@
     "m3u8-parser": "^6.0.0",
     "moment": "^2.29.4",
     "p-limit": "^4.0.0",
-    "podverse-shared": "^4.14.8",
+    "podverse-shared": "^4.14.11",
     "qs": "^6.11.0",
     "react": "17.0.1",
     "react-native": "0.66.5",
@@ -125,7 +125,8 @@
     "transcriptator": "^1.1.0",
     "url": "^0.11.0",
     "validator": "13.7.0",
-    "wd": "1.14.0"
+    "wd": "1.14.0",
+    "word-wrap": "^1.2.5"
   },
   "devDependencies": {
     "@babel/core": "7.20.12",

@@ -1,5 +1,6 @@
-import { convertSecToHHMMSS, TranscriptRow } from 'podverse-shared'
+import { convertSecToHHMMSS, removeLinebreaks, TranscriptRow } from 'podverse-shared'
 import { convertFile, Options, TimestampFormatter } from 'transcriptator'
+import wordWrap from 'word-wrap'
 import { request } from '../services/request'
 import { errorLogger } from './logger'
 
@@ -19,9 +20,24 @@ const enrichTranscriptatorResult = (parsedTranscript: TranscriptRow[]) => {
   const enrichedTranscript = []
   let newIndex = 0
 
+  const limitLines = 100
+  let limitCount = 0
+
   for (const parsedRow of parsedTranscript) {
+    limitCount++
+    if (limitLines < limitCount) break
+
     const body = parsedRow.body || ''
     const hasSpeaker = !!parsedRow.speaker
+
+    const joinedBody = removeLinebreaks(body)
+
+    const results = wordWrap(joinedBody, {
+      width: 32,
+      indent: '',
+      trim: true
+    })
+    const splitResults = results.split('\n')
 
     if (hasSpeaker) {
       const emptySpaceValue = {
@@ -39,47 +55,22 @@ const enrichTranscriptatorResult = (parsedTranscript: TranscriptRow[]) => {
       newIndex++
     }
 
-    // Make sure we only split on a clean word-wrap.
-    const getSplitIndex = (body: string) => {
-      const isMoreThan1Line = body.length >= 33
-      if (isMoreThan1Line) {
-        const splitIndex = body.indexOf(' ', 32) || body.indexOf('-', 32)
-        if (splitIndex > 32) {
-          return splitIndex
-        } else {
-          const splitIndex = body.indexOf(' ', 24) || body.indexOf('-', 24)
-          return splitIndex
-        }
-      }
-      return 32
-    }
+    const lineCount = splitResults.length
 
-    const splitIndex = getSplitIndex(body)
-
-    const line2 = body.substring(splitIndex)
-    const hasTwoLines = body.length >= 33 && body.length >= splitIndex && line2?.trim().length > 0
-
-    const line1 = body.substring(0, splitIndex)
-    const line1Value = {
-      ...parsedRow,
-      body: line1.trim(),
-      speaker: '',
-      index: newIndex,
-      hasTwoLines
-    }
-    enrichedTranscript.push(line1Value)
-    newIndex++
-
-    if (hasTwoLines) {
-      const line2Value = {
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
+    for (let i = 0; i < splitResults.length; i++) {
+      const str = splitResults[i]
+      const line = {
         ...parsedRow,
-        body: line2.trim(),
+        body: str,
         speaker: '',
-        startTimeFormatted: '',
-        endTimeFormatted: '',
-        index: newIndex
+        index: newIndex,
+        lineCount,
+        ...(i > 0 ? { speaker: '' } : {}),
+        ...(i > 0 ? { startTimeFormatted: '' } : {}),
+        ...(i > 0 ? { endTimeFormatted: '' } : {})
       }
-      enrichedTranscript.push(line2Value)
+      enrichedTranscript.push(line)
       newIndex++
     }
   }
