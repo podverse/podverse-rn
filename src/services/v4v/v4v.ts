@@ -359,7 +359,7 @@ const convertValueTagIntoValueTransaction = async (
   const pubkey = 'podverse-pubkey'
   const recipientAmount = normalizedValueRecipient.amount
 
-  const satoshiStreamStats = createSatoshiStreamStats(
+  const satoshiStreamStats = await createSatoshiStreamStats(
     podcastTitle,
     episodeTitle,
     podcastIndexPodcastId,

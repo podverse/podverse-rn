@@ -5,16 +5,16 @@
 // 7629175: SatoshiStreamStatsPodcastIndexId // the Podcast Index feedId for the podcast
 
 import { SatoshiStreamStats } from 'podverse-shared'
-import { getGlobal } from 'reactn'
 import Config from 'react-native-config'
 import { getBuildNumber, getVersion } from 'react-native-device-info'
+import { v4vGetSenderInfo } from '../services/v4v/v4v'
 import { translate } from './i18n'
 const uuidv4 = require('uuid/v4')
 
 // For more info about blip-0010 TLV records visit:
 // https://github.com/Podcastindex-org/podcast-namespace/blob/main/value/blip-0010.md?plain=1
 
-export const createSatoshiStreamStats = (
+export const createSatoshiStreamStats = async (
   podcastTitle: string,
   episodeTitle: string,
   podcastIndexPodcastId: string,
@@ -38,7 +38,11 @@ export const createSatoshiStreamStats = (
   const podcastIndexId = (podcastIndexPodcastId && parseInt(podcastIndexPodcastId, 10)) || null
   const ts = parseInt(currentPlaybackPosition, 10)
 
-  const { name: senderName } = getGlobal().session.v4v.senderInfo
+  // Use await and grab from AsyncStorage because there seems to be a race-condition where
+  // the senderName gets passed as "Anonymous" if we grab senderName from globalState,
+  // even though the global.session.v4v.senderInfo.name field should have been set.
+  const senderInfo = await v4vGetSenderInfo()
+  const { name: senderName } = senderInfo
 
   return {
     '7629169': {
