@@ -42,7 +42,8 @@ import { checkIfFDroidAppVersion, isPortrait } from '../lib/deviceDetection'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
-import { handlePodcastScreenNavigateWithParams, navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
+import { handlePodcastScreenNavigateWithParams,
+  navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { resetAllAppKeychain } from '../lib/secutity'
 import {
