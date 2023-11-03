@@ -420,7 +420,7 @@ export const playerSyncPlayerWithQueue = async () => {
 export const playerUpdateTrackPlayerCapabilities = async () => {
   const playerType = await playerCheckActiveType()
   if (playerType === PV.Player.playerTypes.isAudio) {
-    audioUpdateTrackPlayerCapabilities()
+    await audioUpdateTrackPlayerCapabilities()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
     // NO CORRESPONDING VIDEO FUNCTION NEEDED
   }

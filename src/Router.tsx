@@ -52,10 +52,10 @@ import {
   SettingsScreen,
   SettingsScreenAccount,
   SettingsScreenAdvanced,
-  SettingsScreenOther,
   SettingsScreenDownloads,
   SettingsScreenHistory,
   SettingsScreenNotifications,
+  SettingsScreenOther,
   SettingsScreenPlayer,
   SettingsScreenQueue,
   SettingsScreenTracking,
@@ -70,7 +70,8 @@ import {
   V4VProvidersScreen,
   V4VProvidersAlbyScreen,
   V4VProvidersAlbyLoginScreen,
-  WebPageScreen
+  WebPageScreen,
+  SettingsScreenDebugging
 } from './screens'
 import { darkTheme } from './styles'
 import { PodcastInfoScreen } from './screens/PodcastInfoScreen'
@@ -203,10 +204,11 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.SettingsScreen]: SettingsScreen,
     [PV.RouteNames.SettingsScreenAccount]: SettingsScreenAccount,
     [PV.RouteNames.SettingsScreenAdvanced]: SettingsScreenAdvanced,
-    [PV.RouteNames.SettingsScreenOther]: SettingsScreenOther,
+    [PV.RouteNames.SettingsScreenDebugging]: SettingsScreenDebugging,
     [PV.RouteNames.SettingsScreenDownloads]: SettingsScreenDownloads,
     [PV.RouteNames.SettingsScreenHistory]: SettingsScreenHistory,
     [PV.RouteNames.SettingsScreenNotifications]: SettingsScreenNotifications,
+    [PV.RouteNames.SettingsScreenOther]: SettingsScreenOther,
     [PV.RouteNames.SettingsScreenPlayer]: SettingsScreenPlayer,
     [PV.RouteNames.SettingsScreenQueue]: SettingsScreenQueue,
     [PV.RouteNames.SettingsScreenTracking]: SettingsScreenTracking,
