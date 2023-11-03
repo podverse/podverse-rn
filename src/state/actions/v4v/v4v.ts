@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Episode, NowPlayingItem, Podcast, ValueTag,
-  ValueTimeSplit, checkIfIsLightningKeysendValueTag } from 'podverse-shared'
+  ValueTimeSplit, checkIfIsLightningKeysendValueTag, checkIfSameNowPlayingItems } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../../resources'
 import { playerGetPosition } from '../../../services/player'
@@ -583,6 +583,10 @@ const convertValueTimeSplitsToAppConvertedSplits = (
 
 export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
   if (!item) return
+
+  // We don't support enriched value tags for livestreams currently.
+  if (item.liveItem) return
+
   const oldValueTags = item.episodeValue || []
   const newValueTags: ValueTag[] = []
   
@@ -635,7 +639,9 @@ export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
     const playerState = getGlobal().player
     const nowPlayingItem = playerState?.nowPlayingItem
 
-    if (nowPlayingItem) {
+    const isCurrentNowPlayingItem = checkIfSameNowPlayingItems(item, nowPlayingItem)
+
+    if (isCurrentNowPlayingItem) {
       setGlobal({
         player: {
           ...playerState,
