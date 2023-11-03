@@ -375,6 +375,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         .then(this.handleInitialNotification)
     }
 
+    // DEBUG: Make sure remote debugging is disabled in the dev environment
+    // or else initialUrl will always return null.
     Linking.getInitialURL().then((initialUrl) => {
       if (initialUrl) {
         this._handleOpenURLEvent({ url: initialUrl })
@@ -604,14 +606,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
             if (episode) {
               const podcast = await getPodcast(episode.podcast?.id)
 
-              handlePodcastScreenNavigateWithParams(
+              if (!podcast?.id && !episode?.id) return
+
+              navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(
                 this.props.navigation,
                 podcast?.id,
-                podcast
+                episode.id
               )
-              navigate(PV.RouteNames.EpisodeScreen, {
-                episode
-              })
             }
           } else if (path === PV.DeepLinks.Playlist.pathPrefix) {
             await navigate(PV.RouteNames.MyLibraryScreen)
