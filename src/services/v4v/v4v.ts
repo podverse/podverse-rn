@@ -520,13 +520,19 @@ export const sendBoost = async (
     valueTag?.remoteFeedGuid,
     valueTag?.remoteItemGuid,
     item?.podcastGuid || ''
-  )
+  );
 
-  const combinedNonFeeValueTransactions = nonFeeValueTransactions.concat(parentNonFeeValueTransactions)
-  const combinedFeeValueTransactions = feeValueTransactions.concat(parentFeeValueTransactions)
-
-  await processSendValueTransactions(combinedNonFeeValueTransactions, action, includeMessage)
-  await processSendValueTransactions(combinedFeeValueTransactions, action, includeMessage)
+  /*
+  Process the value transactions in the background so the user receives
+  immediate "boost sent" feedback from the app. If errors occur, they will populate on
+  the boostagram screen as they are returned.
+  */
+ (async () => {
+    const combinedNonFeeValueTransactions = nonFeeValueTransactions.concat(parentNonFeeValueTransactions)
+    const combinedFeeValueTransactions = feeValueTransactions.concat(parentFeeValueTransactions)
+    await processSendValueTransactions(combinedNonFeeValueTransactions, action, includeMessage)
+    await processSendValueTransactions(combinedFeeValueTransactions, action, includeMessage)
+  })()
   
   // Run refresh wallet data in the background after transactions complete.
   v4vRefreshProviderWalletInfo(activeProvider?.key)
