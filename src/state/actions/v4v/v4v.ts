@@ -12,7 +12,6 @@ import {
   v4vDeleteProviderFromStorage,
   v4vGetActiveValueTag,
   v4vGetProvidersConnected,
-  v4vGetSenderInfo,
   v4vGetSettings,
   v4vGetTypeMethodKey,
   v4vSetProvidersConnected,
@@ -79,7 +78,6 @@ export const v4vInitialize = async () => {
   const globalState = getGlobal()
   const showLightningIcons = await AsyncStorage.getItem(PV.Keys.V4V_SHOW_LIGHTNING_ICONS)
   const savedSettings = await v4vGetSettings()
-  const savedSenderInfo = await v4vGetSenderInfo()
   const streamingValueOn = await getStreamingValueOn()
 
   // NOTE: Previously I only had this running on app launch, but if the network request
@@ -107,7 +105,6 @@ export const v4vInitialize = async () => {
           ...globalState.session.v4v.providers,
           connected: savedProviders
         },
-        senderInfo: savedSenderInfo,
         streamingValueOn: !!streamingValueOn
       }
     }
@@ -463,22 +460,7 @@ export const v4vClearPreviousTransactionErrors = () => {
 /* V4VSenderInfo helpers */
 
 export const v4vUpdateSenderInfoName = async (newName: string) => {
-  const globalState = getGlobal()
-
   await v4vSetSenderInfo({ name: newName })
-
-  setGlobal({
-    session: {
-      ...globalState.session,
-      v4v: {
-        ...globalState.session.v4v,
-        senderInfo: {
-          ...globalState.session.v4v.senderInfo,
-          name: newName
-        }
-      }
-    }
-  })
 }
 
 /* V4VBoostagramMessage helpers */

@@ -130,7 +130,6 @@ declare module 'reactn/default' {
           boost: V4VTransactionError[]
           streaming: V4VTransactionError[]
         }
-        senderInfo: V4VSenderInfo
         boostagramMessage: string
         valueTimeSplitIsActive: boolean
       }
