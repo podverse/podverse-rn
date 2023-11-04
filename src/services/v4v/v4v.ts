@@ -550,12 +550,19 @@ const sendValueTransactions = async (
   if (valueTransactions.length === 0) return
   let response: AlbyMultiKeySendResponse | null = null
 
+  // Remove valueTransactions with an amount <= 0 since those are invalid
+  // and could result in 400 Bad Request errors.
+  const filteredTransactions = valueTransactions.filter((valueTransaction) => {
+    const amount = Math.floor(valueTransaction?.normalizedValueRecipient?.amount) || 0
+    return amount > 0
+  })
+
   if (providerKey) {
     // Use require here to prevent circular dependencies issues.
     if (providerKey === 'alby') {
       const { v4vAlbySendKeysendPayments } = require('./providers/alby')
       response = await v4vAlbySendKeysendPayments(
-        valueTransactions,
+        filteredTransactions,
         includeMessage
       )
     }
