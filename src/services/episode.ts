@@ -43,7 +43,11 @@ export const getEpisode = async (id: string) => {
 
 export const retrieveLatestChaptersForEpisodeId = async (id: string) => {
   const response = await request({
-    endpoint: `/episode/${id}/retrieve-latest-chapters`
+    endpoint: `/episode/${id}/retrieve-latest-chapters`,
+    query: {
+      includeLightningKeysendVTS: true,
+      includeNonToc: true
+    }
   })
 
   return response && response.data

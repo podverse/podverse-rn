@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import { ScrollView, TableCell, Text, View } from '../components'
@@ -147,6 +147,22 @@ export class SettingsScreen extends React.Component<Props, State> {
               {translate('Other')}
             </Text>
           </TableCell>
+          {
+            Platform.OS === 'android' && (
+              <TableCell
+                accessibilityLabel={translate('Debugging')}
+                includeDivider
+                onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenDebugging)}
+                testIDPrefix={`${testIDPrefix}_debugging`}
+                testIDSuffix=''>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+                  {translate('Debugging')}
+                </Text>
+              </TableCell>
+            )
+          }
           {!Config.DISABLE_CUSTOM_DOMAINS && (
             <TableCell
               accessibilityLabel={translate('Advanced')}

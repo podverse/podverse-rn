@@ -181,55 +181,75 @@ export const v4vAlbyRequestAccessToken = async (code: string) => {
   }
 }
 
+/*
+  We must only call the Alby refresh access token one at a time,
+  or the wallet will disconnect! To guard against this, we're only allowing
+  one refresh access token promise to exist at a time.
+*/
+let albyRefreshAccessTokenPromise: Promise<void> | null = null
+
 export const v4vAlbyRefreshAccessToken = async () => {
-  const albyConnectedProvider = await v4vAlbyGetAccessData()
-  try {
-    if(albyConnectedProvider?.refresh_token) {
-
-      const body = {
-        refresh_token: albyConnectedProvider.refresh_token,
-        grant_type: 'refresh_token'
-      }
-      
-      const response = await albyRequest(
-        {
-          method: 'POST',
-          basicAuth, // TODO: remove from prod after alby updates!
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: qs.stringify(body)
-        },
-        `${albyApiPath}/oauth/token`
-      )
-      
-      if (response?.data) {
-        await RNKeychain.setInternetCredentials(
-          PV.Keys.V4V_PROVIDERS_ALBY_ACCESS_DATA,
-          credentialsPlaceholderUsername,
-          JSON.stringify(response?.data)
-          )
-      } else {
-        throw new Error('Alby missing response data for refresh_token endpoint')
-      }
-    } else {
-      throw new Error("Something went wrong with your Alby refresh token. Please reconnect your Alby wallet.")
-    }
-  } catch (error) {
-    errorLogger(_fileName, 'v4vAlbyRefreshAccessToken error:', error)
-    const statusNumber = error?.response?.status || 0
-
-    if (statusNumber.toString().startsWith('4')) {
-      await v4vDisconnectProvider(PV.V4V.providers.alby.key)
-      Alert.alert(
-        PV.Alerts.ALBY_UNAUTHORIZED_EXPIRED.title,
-        PV.Alerts.ALBY_UNAUTHORIZED_EXPIRED.message,
-        PV.Alerts.BUTTONS.OK
-      )
-    } else if (error) {
-      Alert.alert('Alby Error', error.message, PV.Alerts.BUTTONS.OK)
-    }
+  if (albyRefreshAccessTokenPromise) {
+    return albyRefreshAccessTokenPromise
   }
+
+  albyRefreshAccessTokenPromise = new Promise((resolve) => {
+    (async () => {
+      try {
+        const albyConnectedProvider = await v4vAlbyGetAccessData()
+        if(albyConnectedProvider?.refresh_token) {
+    
+          const body = {
+            refresh_token: albyConnectedProvider.refresh_token,
+            grant_type: 'refresh_token'
+          }
+          
+          const response = await albyRequest(
+            {
+              method: 'POST',
+              basicAuth, // TODO: remove from prod after alby updates!
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: qs.stringify(body)
+            },
+            `${albyApiPath}/oauth/token`
+          )
+          
+          if (response?.data) {
+            await RNKeychain.setInternetCredentials(
+              PV.Keys.V4V_PROVIDERS_ALBY_ACCESS_DATA,
+              credentialsPlaceholderUsername,
+              JSON.stringify(response?.data)
+              )
+          } else {
+            throw new Error('Alby missing response data for refresh_token endpoint')
+          }
+        } else {
+          throw new Error("Something went wrong with your Alby refresh token. Please reconnect your Alby wallet.")
+        }
+      } catch (error) {
+        errorLogger(_fileName, 'v4vAlbyRefreshAccessToken error:', error)
+        const statusNumber = error?.response?.status || 0
+    
+        if (statusNumber.toString().startsWith('4')) {
+          await v4vDisconnectProvider(PV.V4V.providers.alby.key)
+          Alert.alert(
+            PV.Alerts.ALBY_UNAUTHORIZED_EXPIRED.title,
+            PV.Alerts.ALBY_UNAUTHORIZED_EXPIRED.message,
+            PV.Alerts.BUTTONS.OK
+          )
+        } else if (error) {
+          Alert.alert('Alby Error', error.message, PV.Alerts.BUTTONS.OK)
+        }
+      }
+
+      albyRefreshAccessTokenPromise = null
+      resolve()
+    })()
+  })
+
+  return albyRefreshAccessTokenPromise
 }
 
 /* API request helpers */

@@ -5,7 +5,7 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { V4VProviderListItem, _albyKey } from '../resources/V4V'
 import { trackPageView } from '../services/tracking'
-import { v4vGetProviderListItems } from '../services/v4v/v4v'
+import { v4vGetProviderListItems, v4vGetSenderInfo } from '../services/v4v/v4v'
 import { V4VProviderConnectedState, v4vSetShowLightningIcons, v4vUpdateSenderInfoName } from '../state/actions/v4v/v4v'
 import { core, table } from '../styles'
 
@@ -38,8 +38,8 @@ export class V4VProvidersScreen extends React.Component<Props, State> {
     title: 'V4V'
   })
 
-  componentDidMount() {
-    const { name } = this.global.session.v4v.senderInfo
+  async componentDidMount() {
+    const { name } = await v4vGetSenderInfo()
     this.setState({ localSenderName: name })
     trackPageView('/value-for-value/providers', 'Value for Value - Providers')
   }

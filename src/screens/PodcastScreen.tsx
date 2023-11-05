@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import orderBy from 'lodash/orderBy'
 import {
   Episode,
   convertNowPlayingItemToEpisode,
@@ -9,7 +8,7 @@ import {
   getSeasonOrSerialEpisodesData,
   getUsernameAndPasswordFromCredentials
 } from 'podverse-shared'
-import { Alert, Platform, StyleSheet, View as RNView } from 'react-native'
+import { Alert, StyleSheet, View as RNView } from 'react-native'
 import { Config } from 'react-native-config'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { getGlobal } from 'reactn'
@@ -1468,7 +1467,8 @@ export class PodcastScreen extends React.Component<Props, State> {
         })
       }
 
-      return [downloadedEpisodes, downloadedEpisodes.length]
+      const extraParams = {}
+      return [[downloadedEpisodes, downloadedEpisodes.length], extraParams]
     } else {
       const results = await getEpisodesAndLiveItems(
         {

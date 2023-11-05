@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { getGlobal } from 'reactn'
 import { Platform } from 'react-native'
 import TrackPlayer, {
@@ -8,6 +9,7 @@ import TrackPlayer, {
   RepeatMode,
   UpdateOptions
 } from 'react-native-track-player'
+import { PV } from '../resources'
 import { PVAudioPlayer } from './playerAudio'
 
 const setupPlayer = async (options: Parameters<typeof TrackPlayer.setupPlayer>[0]) => {
@@ -35,12 +37,17 @@ export const PlayerAudioSetupService = async () => {
     // androidAudioContentType: AndroidAudioContentType.Speech
   })
 
-  audioUpdateTrackPlayerCapabilities()
+  await audioUpdateTrackPlayerCapabilities()
   PVAudioPlayer.setRepeatMode(RepeatMode.Off)
 }
 
-export const audioUpdateTrackPlayerCapabilities = () => {
+export const audioUpdateTrackPlayerCapabilities = async () => {
   const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
+
+  const appKilledContinuePlayback = await AsyncStorage.getItem(PV.Keys.SETTING_APP_KILLED_CONTINUE_PLAYBACK)
+  const appKilledPlaybackBehavior = !!appKilledContinuePlayback
+    ? AppKilledPlaybackBehavior.ContinuePlayback
+    : AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
 
   const RNTPOptions: UpdateOptions = {
     capabilities: [
@@ -70,7 +77,7 @@ export const audioUpdateTrackPlayerCapabilities = () => {
     forwardJumpInterval: parseInt(jumpForwardsTime, 10),
     progressUpdateEventInterval: 1,
     android: {
-      appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
+      appKilledPlaybackBehavior
     }
   }
 

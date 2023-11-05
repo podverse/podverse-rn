@@ -3569,10 +3569,10 @@ cross-spawn@^7.0.0, cross-spawn@^7.0.2:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-crypto-es@^1.2.7:
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/crypto-es/-/crypto-es-1.2.7.tgz#754a6d52319a94fb4eb1f119297f17196b360f88"
-  integrity sha512-UUqiVJ2gUuZFmbFsKmud3uuLcNP2+Opt+5ysmljycFCyhA0+T16XJmo1ev/t5kMChMqWh7IEvURNCqsg+SjZGQ==
+crypto-es@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/crypto-es/-/crypto-es-2.1.0.tgz#1095f324ffd7dc1ccab8e21d0960e17025da8ce9"
+  integrity sha512-C5Dbuv4QTPGuloy5c5Vv/FZHtmK+lobLAypFfuRaBbwCsk3qbCWWESCH3MUcBsrgXloRNMrzwUAiPg4U6+IaKA==
 
 crypto-random-string@^1.0.0:
   version "1.0.0"
@@ -8749,15 +8749,16 @@ podcast-partytime@^4.5.5:
     ramda "^0.27.1"
     tiny-invariant "^1.2.0"
 
-podverse-shared@^4.14.8:
-  version "4.14.8"
-  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.14.8.tgz#6d3a753435f8dfddb4b7560099e6b90c5112da62"
-  integrity sha512-7w1nFwSNDmuQ+tfhtKo3QMAKTVmquXzm7FgWqh2Ga43ahsMvYAW3w9w4JWI4Yu6c9KVIKj5heQbLVODWGS4YVw==
+podverse-shared@^4.14.14:
+  version "4.14.14"
+  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.14.14.tgz#416a15f7b2f0956fd29247d9f117bd3e942882d4"
+  integrity sha512-s/iIDOv3A1VwiXURwKcA/TGpNcQGEb8b49nxEOHK72ZIyI9YZIdZ96kao4wRdcvhQkmwFq0zIQmeuwyeQj+/rg==
   dependencies:
     "@types/lodash" "4.14.172"
     he "^1.2.0"
     html-entities "^2.3.2"
     lodash "4.17.21"
+    moment "^2.29.4"
     striptags "^3.2.0"
     typescript "3.9.7"
 
@@ -9310,7 +9311,7 @@ react-native-text-ticker@1.13.0:
 
 "react-native-track-player@github:podverse/lovegaoshi-react-native-track-player#dev-podverse-aa":
   version "4.0.0-rc03"
-  resolved "https://codeload.github.com/podverse/lovegaoshi-react-native-track-player/tar.gz/738e5331f95a34044239fb9d388be3729dd93cf0"
+  resolved "https://codeload.github.com/podverse/lovegaoshi-react-native-track-player/tar.gz/c3f6295cadca1cad4c8ba1a86404a8360c8bbbcf"
 
 react-native-tracking-transparency@0.1.1:
   version "0.1.1"
@@ -11693,6 +11694,11 @@ widest-line@^2.0.0:
   integrity sha512-Ba5m9/Fa4Xt9eb2ELXt77JxVDV8w7qQrH0zS/TWSJdLyAwQjWoOzpzj5lwVftDz6n/EOu3tNACS84v509qwnJA==
   dependencies:
     string-width "^2.1.1"
+
+word-wrap@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/word-wrap/-/word-wrap-1.2.5.tgz#d2c45c6dd4fbce621a66f136cbe328afd0410b34"
+  integrity sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==
 
 worker-farm@^1.6.0, worker-farm@^1.7.0:
   version "1.7.0"

@@ -164,8 +164,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { accessibilityItemSelected, activeIndex, isReady, isReady2 } = this.state
-    const { currentChapter, currentChapters, parsedTranscript, player, screen, screenPlayer,
+    const { accessibilityItemSelected, isReady, isReady2 } = this.state
+    const { currentTocChapter, currentTocChapters, parsedTranscript, player, screen, screenPlayer,
       screenReaderEnabled, session } = this.global
     const { episode, nowPlayingItem, playbackState } = player
     const { screenWidth } = screen
@@ -226,8 +226,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const hasValueInfo = nowPlayingItem?.episodeValue?.length > 0 || nowPlayingItem?.podcastValue?.length > 0
 
     const carouselComponents = mediaPlayerCarouselComponents({
-      currentChapter,
-      currentChapters,
+      currentTocChapter,
+      currentTocChapters,
       handlePressClipInfo: this._handlePressClipInfo,
       screenWidth,
       navigation,
@@ -369,8 +369,8 @@ const accessibilitySelectorItems = (
 
 type MPCComponents = {
   accessibilityItemSelectedValue?: string | null
-  currentChapter?: InitialState['currentChapter']
-  currentChapters: InitialState['currentChapters']
+  currentTocChapter?: InitialState['currentTocChapter']
+  currentTocChapters: InitialState['currentTocChapters']
   handlePressClipInfo: any
   hasChapters: boolean
   hasChat: boolean
@@ -388,8 +388,8 @@ type MPCComponents = {
 
 const mediaPlayerCarouselComponents = ({
   accessibilityItemSelectedValue,
-  currentChapter,
-  currentChapters,
+  currentTocChapter,
+  currentTocChapters,
   handlePressClipInfo,
   hasChapters,
   hasChat,
@@ -433,8 +433,8 @@ const mediaPlayerCarouselComponents = ({
       if(accessibilityItemSelectedValue === _chaptersKey && hasChapters){
         components.push(
           <MediaPlayerCarouselChapters
-            currentChapter={currentChapter}
-            currentChapters={currentChapters}
+            currentTocChapter={currentTocChapter}
+            currentTocChapters={currentTocChapters}
             isLoading={screenPlayer?.isLoading}
             isLoadingMore={screenPlayer?.isLoadingMore}
             isQuerying={screenPlayer?.isQuerying}
@@ -504,8 +504,8 @@ const mediaPlayerCarouselComponents = ({
       if(hasChapters) {
         components.push(
           <MediaPlayerCarouselChapters
-            currentChapter={currentChapter}
-            currentChapters={currentChapters}
+            currentTocChapter={currentTocChapter}
+            currentTocChapters={currentTocChapters}
             isLoading={screenPlayer?.isLoading}
             isLoadingMore={screenPlayer?.isLoadingMore}
             isQuerying={screenPlayer?.isQuerying}

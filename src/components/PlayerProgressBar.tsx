@@ -9,7 +9,7 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { playerHandleSeekTo } from '../services/player'
 import {
-  getChapterForTimeAndSetOnState,
+  loadChapterPlaybackInfoForTime,
   loadChapterPlaybackInfo,
   pauseChapterInterval,
   resumeChapterInterval
@@ -21,7 +21,7 @@ type Props = {
   backupDuration?: number | null
   clipEndTime?: number | null
   clipStartTime?: number | null
-  currentChaptersStartTimePositions?: number[]
+  currentTocChaptersStartTimePositions?: number[]
   globalTheme: any
   isLiveItem?: boolean
   isLoading?: boolean
@@ -58,7 +58,7 @@ const handleOnValueChangeChapter = (newProgressValue: number) => {
       lastOnValueChangeChapterTime = currentTime
       const innerPosition = newProgressValue * parentScopeDuration
       const haptic = true
-      getChapterForTimeAndSetOnState(innerPosition, haptic)
+      loadChapterPlaybackInfoForTime(innerPosition, haptic)
     }
   }
 }
@@ -99,7 +99,7 @@ export function PlayerProgressBar(props: Props) {
     backupDuration,
     clipEndTime,
     clipStartTime,
-    currentChaptersStartTimePositions,
+    currentTocChaptersStartTimePositions,
     isLiveItem,
     isLoading,
     isMakeClipScreen
@@ -143,8 +143,8 @@ export function PlayerProgressBar(props: Props) {
   }
 
   const components = []
-  if (currentChaptersStartTimePositions && currentChaptersStartTimePositions.length > 1) {
-    for (const currentChaptersStartTimePosition of currentChaptersStartTimePositions) {
+  if (currentTocChaptersStartTimePositions && currentTocChaptersStartTimePositions.length > 1) {
+    for (const currentChaptersStartTimePosition of currentTocChaptersStartTimePositions) {
       components.push(
         <View
           key={`player-progress-bar-chapter-flag-${currentChaptersStartTimePosition}`}

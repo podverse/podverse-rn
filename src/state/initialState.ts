@@ -47,10 +47,11 @@ const initialTheme: InitialState = {
   },
   parsedTranscript: null,
   clipIntervalActive: false,
-  chapterIntervalActive: true,
   currentChapter: null,
   currentChapters: [],
-  currentChaptersStartTimePositions: [],
+  currentTocChapter: null,
+  currentTocChapters: [],
+  currentTocChaptersStartTimePositions: [],
   player: {
     hasErrored: false,
     episode: null,
@@ -154,9 +155,6 @@ const initialTheme: InitialState = {
       previousTransactionErrors: {
         boost: [],
         streaming: []
-      },
-      senderInfo: {
-        name: translate('anonymous')
       },
       boostagramMessage: '',
       valueTimeSplitIsActive: false

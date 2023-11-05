@@ -42,7 +42,8 @@ import { checkIfFDroidAppVersion, isPortrait } from '../lib/deviceDetection'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
-import { handlePodcastScreenNavigateWithParams, navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
+import { handlePodcastScreenNavigateWithParams,
+  navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { resetAllAppKeychain } from '../lib/secutity'
 import {
@@ -65,7 +66,7 @@ import { getAddByRSSPodcastsLocally, parseAllAddByRSSPodcasts } from '../service
 import { playerUpdateUserPlaybackPosition } from '../services/player'
 import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudioSetup'
 import { getPodcast, getPodcasts } from '../services/podcast'
-import { PodcastScreenSavedQuery, getSavedQueryPodcastScreen, getSavedQueryPodcastsScreenSort, setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
+import { getSavedQueryPodcastsScreenSort, setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
 import { getNowPlayingItem, getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
@@ -375,6 +376,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         .then(this.handleInitialNotification)
     }
 
+    // DEBUG: Make sure remote debugging is disabled in the dev environment
+    // or else initialUrl will always return null.
     Linking.getInitialURL().then((initialUrl) => {
       if (initialUrl) {
         this._handleOpenURLEvent({ url: initialUrl })
@@ -494,7 +497,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         // on the lock screen.
         // Source: https://github.com/react-native-kit/react-native-track-player/issues/921#issuecomment-686806847
         if (Platform.OS === 'ios') {
-          audioUpdateTrackPlayerCapabilities()
+          await audioUpdateTrackPlayerCapabilities()
         }
       }
 
@@ -604,14 +607,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
             if (episode) {
               const podcast = await getPodcast(episode.podcast?.id)
 
-              handlePodcastScreenNavigateWithParams(
+              if (!podcast?.id && !episode?.id) return
+
+              navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(
                 this.props.navigation,
                 podcast?.id,
-                podcast
+                episode.id
               )
-              navigate(PV.RouteNames.EpisodeScreen, {
-                episode
-              })
             }
           } else if (path === PV.DeepLinks.Playlist.pathPrefix) {
             await navigate(PV.RouteNames.MyLibraryScreen)

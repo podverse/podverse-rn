@@ -4,6 +4,7 @@ import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../../services/episode'
 import { playerGetPosition, playerGetDuration, playerUpdateCurrentTrack } from '../../services/player'
+import { debouncedClearSkipChapterInterval, setSkipChapterInterval } from './player'
 
 export const clearChapterPlaybackInfo = async (nowPlayingItem?: NowPlayingItem) => { 
   if (nowPlayingItem) {
@@ -16,8 +17,10 @@ export const clearChapterPlaybackInfo = async (nowPlayingItem?: NowPlayingItem) 
     setGlobal(
       {
         currentChapters: [],
-        currentChaptersStartTimePositions: [],
-        currentChapter: null
+        currentTocChapters: [],
+        currentTocChaptersStartTimePositions: [],
+        currentChapter: null,
+        currentTocChapter: null
       },
       () => {
         resolve(null)
@@ -26,17 +29,41 @@ export const clearChapterPlaybackInfo = async (nowPlayingItem?: NowPlayingItem) 
   })
 }
 
+// If an episode stream is slow to load, the duration will not be calculated yet,
+// so the currentTocChaptersStartTimePositions cannot be calculated, and the
+// PlayerProgressBar chapter flags will not appear. To work around this,
+// I'm creating an interval that re-runs until duration is available.
 export const loadChaptersForEpisode = async (episode?: any) => {
   if (episode?.id) {
-    const currentChapters = await retriveNowPlayingItemChapters(episode.id)
-    setChaptersOnGlobalState(currentChapters)
+    const { currentChapters, currentTocChapters } = await retriveNowPlayingItemChapters(episode.id)
+    let limitCount = 0
+    const interval = setInterval(() => {
+      (async () => {
+        limitCount++
+        const duration = await playerGetDuration()
+        if (duration > 0 && limitCount < 10) {
+          clearInterval(interval)
+          setChaptersOnGlobalState(currentChapters, currentTocChapters)
+        }
+      })()
+    }, 2000)
   }
 }
 
 export const loadChaptersForNowPlayingItem = async (item?: NowPlayingItem) => {
   if (item?.episodeId) {
-    const currentChapters = await retriveNowPlayingItemChapters(item.episodeId)
-    setChaptersOnGlobalState(currentChapters)
+    const { currentChapters, currentTocChapters } = await retriveNowPlayingItemChapters(item.episodeId)
+    let limitCount = 0
+    const interval = setInterval(() => {
+      (async () => {
+        limitCount++
+        const duration = await playerGetDuration()
+        if (duration > 0 && limitCount < 10) {
+          clearInterval(interval)
+          setChaptersOnGlobalState(currentChapters, currentTocChapters)
+        }
+      })()
+    }, 2000)
   }
 }
 
@@ -52,7 +79,8 @@ export const loadChapterPlaybackInfo = () => {
     if (Array.isArray(currentChapters) && currentChapters.length > 1) {
       const playerPosition = await playerGetPosition()
       if ((playerPosition || playerPosition === 0)) {
-        const newCurrentChapter = getChapterForTime(playerPosition)
+        const tocOnly = false
+        const newCurrentChapter = getChapterForTime(playerPosition, tocOnly)
         setChapterOnGlobalState(newCurrentChapter)
       }
     }
@@ -68,33 +96,30 @@ const enrichChapterDataForPlayer = (chapters: any[]) => {
   const globalState = getGlobal()
   const { backupDuration } = globalState.player
   const enrichedChapters = []
-  let hasCustomImage = false
 
   if (Array.isArray(chapters) && chapters.length > 0) {
     for (let i = 0; i < chapters.length; i++) {
       const chapter = chapters[i]
-      const nextChapter = chapters[i + 1]
-      if (!chapter?.endTime && nextChapter) {
+      const remainingChapters = chapters.slice(i + 1)
+      const nextChapter = remainingChapters.find((chapter: any) => chapter?.isChapterToc !== false)
+      if (chapter?.endTime) {
+        // do nothing
+      } else if (!chapter?.endTime && nextChapter) {
         chapter.endTime = nextChapter.startTime
       } else if (!chapter?.endTime && backupDuration) {
         chapter.endTime = backupDuration
-      }
-      if (chapter && chapter.imageUrl) {
-        hasCustomImage = true
       }
       enrichedChapters.push(chapter)
     }
   }
 
-  const enrichedChaptersFinal = []
-  for (const enrichedChapter of enrichedChapters) {
-    if (hasCustomImage) {
-      enrichedChapter.hasCustomImage = true
-      enrichedChaptersFinal.push(enrichedChapter)
-    }
-  }
+  const currentChapters = enrichedChapters
+  const currentTocChapters = enrichedChapters.filter((chapter) => chapter?.isChapterToc !== false)
 
-  return enrichedChapters
+  return {
+    currentChapters,
+    currentTocChapters
+  }
 }
 
 export const setChapterOnGlobalState = (newCurrentChapter: any, haptic?: boolean) => {
@@ -105,30 +130,40 @@ export const setChapterOnGlobalState = (newCurrentChapter: any, haptic?: boolean
     if (haptic) {
       ReactNativeHapticFeedback.trigger('impactLight', PV.Haptic.options)
     }
+
+    const tocOnly = true
+    const newCurrentTocChapter = getChapterForTime(newCurrentChapter.startTime, tocOnly)
+
     playerUpdateCurrentTrack(newCurrentChapter.title, newCurrentChapter.imageUrl)
-    setGlobal({ currentChapter: newCurrentChapter })
+    setGlobal({
+      currentChapter: newCurrentChapter,
+      currentTocChapter: newCurrentTocChapter
+    })
   }
 }
 
-export const setChaptersOnGlobalState = async (currentChapters: any[]) => {
+// NOTE: setChaptersOnGlobalState must wait for the duration to be available!
+// otherwise the chapter time flags will not be calculated for the player progress bar.
+export const setChaptersOnGlobalState = async (currentChapters: any[], currentTocChapters: any[]) => {
   const { screen } = getGlobal('screen')
   const { screenWidth } = screen
   const sliderWidth = screenWidth - PV.Player.sliderStyles.wrapper.marginHorizontal * 2
   const duration = await playerGetDuration()
-  const currentChaptersStartTimePositions = [] as number[]
+  const currentTocChaptersStartTimePositions = [] as number[]
 
   if (sliderWidth && duration > 0) {
-    for (const chapter of currentChapters) {
-      if (chapter && chapter.startTime >= 0) {
-        const chapterStartTimePosition = getMediaRefStartPosition(chapter.startTime, sliderWidth, duration)
-        currentChaptersStartTimePositions.push(chapterStartTimePosition)
+    for (const tocChapter of currentTocChapters) {
+      if (tocChapter && tocChapter.startTime >= 0) {
+        const chapterStartTimePosition = getMediaRefStartPosition(tocChapter.startTime, sliderWidth, duration)
+        currentTocChaptersStartTimePositions.push(chapterStartTimePosition)
       }
     }
   }
 
   setGlobal({
     currentChapters,
-    currentChaptersStartTimePositions
+    currentTocChapters,
+    currentTocChaptersStartTimePositions
   }, () => {
     setTimeout(() => {
       loadChapterPlaybackInfo()
@@ -137,62 +172,85 @@ export const setChaptersOnGlobalState = async (currentChapters: any[]) => {
 }
 
 export const refreshChaptersWidth = () => {
-  const { currentChapters } = getGlobal()
-  setChaptersOnGlobalState(currentChapters)
+  const { currentChapters, currentTocChapters } = getGlobal()
+  setChaptersOnGlobalState(currentChapters, currentTocChapters)
 }
 
 export const getChapterPrevious = () => {
   const globalState = getGlobal()
-  const { currentChapter, currentChapters } = globalState
-  if (currentChapter && currentChapters?.length && currentChapters.length > 1) {
-    const currentIndex = currentChapters.findIndex((x: any) => x.id === currentChapter.id)
+  const { currentTocChapter, currentTocChapters } = globalState
+  if (currentTocChapters && currentTocChapters?.length && currentTocChapters.length > 1) {
+    const currentIndex = currentTocChapters.findIndex((x: any) => x.id === currentTocChapter.id)
     const previousIndex = currentIndex - 1
-    const previousChapter = currentChapters[previousIndex]
+    const previousChapter = currentTocChapters[previousIndex]
     return previousChapter
   }
 }
 
 export const getChapterNext = () => {
   const globalState = getGlobal()
-  const { currentChapter, currentChapters } = globalState
-  if (currentChapter && currentChapters?.length && currentChapters.length > 1) {
-    const currentIndex = currentChapters.findIndex((x: any) => x.id === currentChapter.id)
+  const { currentTocChapter, currentTocChapters } = globalState
+  if (currentTocChapter && currentTocChapters?.length && currentTocChapters.length > 1) {
+    const currentIndex = currentTocChapters.findIndex((x: any) => x.id === currentTocChapter.id)
     const nextIndex = currentIndex + 1
-    const nextChapter = currentChapters[nextIndex]
+    const nextChapter = currentTocChapters[nextIndex]
     return nextChapter
   }
 }
 
-export const getChapterForTime = (playerPosition: number) => {
+export const getChapterForTime = (playerPosition: number, tocOnly: boolean) => {
   const globalState = getGlobal()
   const { currentChapters, player } = globalState
   const { backupDuration } = player
   
+  // separate into vts, non-toc, and toc chapters
+  // loop through each until you find the first match between startTime and endTime
   let newCurrentChapter = null
-  if (currentChapters && currentChapters.length > 1) {
-    newCurrentChapter = currentChapters.find(
+  const filteredVtsChapters = !tocOnly && currentChapters.filter((chapter: any) => chapter.isChapterVts === true)
+  const filteredNonTocChapters = !tocOnly && currentChapters.filter((chapter: any) => chapter.isChapterToc === false)
+  const filteredTocChapters = currentChapters.filter((chapter: any) => chapter.isChapterToc !== false)
+
+  if (!tocOnly && filteredVtsChapters && filteredVtsChapters.length > 1) {
+    newCurrentChapter = filteredVtsChapters.find(
+      (chapter: any) => checkIfChapterInTimeRange(chapter, playerPosition, backupDuration)
+    )
+  }
+
+  if (!tocOnly && !newCurrentChapter && filteredNonTocChapters && filteredNonTocChapters.length > 1) {
+    newCurrentChapter = filteredNonTocChapters.find(
+      (chapter: any) => checkIfChapterInTimeRange(chapter, playerPosition, backupDuration)
+    )
+  }
+
+  if (!newCurrentChapter && filteredTocChapters && filteredTocChapters.length > 1) {
+    newCurrentChapter = filteredTocChapters.find(
       // If no chapter.endTime, then assume it is the last chapter, and use the duration instead
-      (chapter: any) =>
-        chapter.endTime
-          ? playerPosition >= chapter.startTime && playerPosition < chapter.endTime
-          : playerPosition >= chapter.startTime && backupDuration && playerPosition < backupDuration
+      (chapter: any) => checkIfChapterInTimeRange(chapter, playerPosition, backupDuration)
     )
   }
 
   return newCurrentChapter
 }
 
-export const getChapterForTimeAndSetOnState = async (time: number, haptic?: boolean) => {
-  const chapter = await getChapterForTime(time)
+const checkIfChapterInTimeRange = (chapter: any, playerPosition: number, backupDuration?: number) => {
+  // // If no chapter.endTime, then assume it is the last chapter, and use the duration instead
+  return chapter.endTime
+    ? playerPosition >= chapter.startTime && playerPosition < chapter.endTime
+    : playerPosition >= chapter.startTime && backupDuration && playerPosition < backupDuration
+}
+
+export const loadChapterPlaybackInfoForTime = async (time: number, haptic?: boolean) => {
+  const tocOnly = false
+  const chapter = await getChapterForTime(time, tocOnly)
   if (chapter) {
     setChapterOnGlobalState(chapter, haptic)
   }
 }
 
 export const pauseChapterInterval = () => {
-  setGlobal({ chapterIntervalActive: false })
+  setSkipChapterInterval()
 }
 
 export const resumeChapterInterval = () => {
-  setGlobal({ chapterIntervalActive: true })
+  debouncedClearSkipChapterInterval()
 }
