@@ -1,5 +1,7 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { errorLogger } from '../lib/logger'
 import { hasValidNetworkConnection } from '../lib/network'
+import { PV } from '../resources'
 import { request } from './request'
 
 const _fileName = 'src/services/episode.ts'
@@ -42,11 +44,13 @@ export const getEpisode = async (id: string) => {
 }
 
 export const retrieveLatestChaptersForEpisodeId = async (id: string) => {
+  const includeNonToc = await AsyncStorage.getItem(PV.Keys.SETTING_SHOULD_DISPLAY_NON_TOC_CHAPTERS)
+
   const response = await request({
     endpoint: `/episode/${id}/retrieve-latest-chapters`,
     query: {
       includeLightningKeysendVTS: true,
-      includeNonToc: true
+      includeNonToc: !!includeNonToc
     }
   })
 

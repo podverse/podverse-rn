@@ -236,6 +236,8 @@
   "chapter shared using brandName": " — chapter shared using Podverse",
   "Chapters": "Chapters",
   "Chapters are created by the podcaster": "Chapters are created by creators",
+  "Chapters Non-Table of Contents label": "Display non-table of contents chapters",
+  "Chapters Non-Table of Contents subtext": "Non-table of contents chapters appear in the Player, but get skipped over when you press the skip or previous button.",
   "Chat Room": "Chat Room",
   "Chat with us on Discord": "Chat with us on Discord",
   "Clear History": "Clear History",

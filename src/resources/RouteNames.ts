@@ -53,6 +53,7 @@ export const RouteNames = {
   SettingsScreen: 'SettingsScreen',
   SettingsScreenAccount: 'SettingsScreenAccount',
   SettingsScreenAdvanced: 'SettingsScreenAdvanced',
+  SettingsScreenChapters: 'SettingsScreenChapters',
   SettingsScreenDebugging: 'SettingsScreenDebugging',
   SettingsScreenDownloads: 'SettingsScreenDownloads',
   SettingsScreenHistory: 'SettingsScreenHistory',
