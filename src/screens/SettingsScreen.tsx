@@ -62,6 +62,18 @@ export class SettingsScreen extends React.Component<Props, State> {
             </TableCell>
           )}
           <TableCell
+            accessibilityLabel={translate('Chapters')}
+            includeDivider
+            onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenChapters)}
+            testIDPrefix={`${testIDPrefix}_chapters`}
+            testIDSuffix=''>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+              {translate('Chapters')}
+            </Text>
+          </TableCell>          
+          <TableCell
             accessibilityLabel={translate('Downloads')}
             includeDivider
             onPress={() => navigation.navigate(PV.RouteNames.SettingsScreenDownloads)}
