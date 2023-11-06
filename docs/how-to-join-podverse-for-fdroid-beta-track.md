@@ -15,3 +15,11 @@ In order to join the Podverse for F-Droid Beta track and automatically receive u
 11) Tap the Podverse Beta option, and install the latest Beta release. Note that the app's description contains the latest version's release notes (so you know what features and fixes are in the latest version).
 
 That's it! You should now automatically receive updates for new Podverse F-Droid Beta releases. Thank you for your help testing Podverse ❤️
+
+---
+
+Troubleshooting
+
+> I followed the steps, but I am still not seeing the Podverse Beta version when I search in F-Droid.
+
+You may need to disable the standard F-Droid repo on the Repositories screen, so only the Podverse F-Droid Repo is enabled, then repeat steps 8-11.
