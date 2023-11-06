@@ -211,7 +211,11 @@ export const getChapterForTime = (playerPosition: number, tocOnly: boolean) => {
   const filteredTocChapters = currentChapters.filter((chapter: any) => chapter.isChapterToc !== false)
 
   if (!tocOnly && filteredVtsChapters && filteredVtsChapters.length > 1) {
-    newCurrentChapter = filteredVtsChapters.find(
+    // reverse the value time splits order before finding, so that the items with the later
+    // matching startTime take precedence over the items with earlier startTimes.
+    // NOTE: see also services/v4v.ts file
+    const reverseVtsChapters = filteredVtsChapters.reverse()
+    newCurrentChapter = reverseVtsChapters.find(
       (chapter: any) => checkIfChapterInTimeRange(chapter, playerPosition, backupDuration)
     )
   }

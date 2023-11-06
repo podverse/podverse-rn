@@ -720,11 +720,15 @@ export const getFinalValueTag = (valueTag: ValueTag, playerPosition: number) => 
   if (valueTag?.valueTimeSplits && valueTag?.valueTimeSplits.length > 0) {
     const flooredPlayerPosition = Math.floor(playerPosition) || 0
     const valueTimeSplitsValueTags = valueTag.valueTimeSplits || []
-    const matchingValueTimeSplitsValueTag = valueTimeSplitsValueTags.find((v: ValueTimeSplit) => {
+    // reverse the value time splits order before finding, so that the items with the later
+    // matching startTime take precedence over the items with earlier startTimes.
+    // NOTE: see also state/actions/playerChapters.ts file
+    const reverseValueTimeSplitsValueTags = valueTimeSplitsValueTags.reverse()
+    const matchingValueTimeSplitsValueTag = reverseValueTimeSplitsValueTags.find((v: ValueTimeSplit) => {
       return flooredPlayerPosition >= v.startTime && flooredPlayerPosition < v.endTime
     })
 
-    if (matchingValueTimeSplitsValueTag?.valueTags?.length > 0) {
+    if (matchingValueTimeSplitsValueTag && matchingValueTimeSplitsValueTag?.valueTags?.length > 0) {
       for (const matchingValueTag of matchingValueTimeSplitsValueTag.valueTags) {
         if (checkIfIsLightningKeysendValueTag(matchingValueTag)) {
           finalValueTag = matchingValueTag
