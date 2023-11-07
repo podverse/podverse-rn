@@ -234,7 +234,7 @@ export class MoreScreen extends React.Component<Props, State> {
           renderItem={({ item }) => {
             const { appMode } = this.global
             let appModeSelectedText = translate('Podcasts')
-            if (appMode === PV.AppMode.videos) {
+            if (appMode === PV.AppMode.video) {
               appModeSelectedText = translate('Videos')
             }
             const modeLabel = `${translate('Mode')}: ${appModeSelectedText}`

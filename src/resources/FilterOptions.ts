@@ -51,7 +51,7 @@ const allFilterTypeItems = () => {
   let allPodcastsLabel = translate('All Podcasts')
   let episodesLabel = translate('Episodes')
 
-  if (appMode === PV.AppMode.videos) {
+  if (appMode === PV.AppMode.video) {
     allPodcastsLabel = translate('All Channels')
     episodesLabel = translate('Videos')
   }

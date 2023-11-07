@@ -65,7 +65,7 @@ const testIDPrefix = 'episodes_screen'
 const getScreenTitle = () => {
   const { appMode } = getGlobal()
   let screenTitle = translate('Episodes')
-  if (appMode === PV.AppMode.videos) {
+  if (appMode === PV.AppMode.video) {
     screenTitle = translate('Videos')
   }
 
@@ -75,7 +75,7 @@ const getScreenTitle = () => {
 const getSearchPlaceholder = () => {
   const { appMode } = getGlobal()
   let searchPlaceholder = translate('Search episodes')
-  if (appMode === PV.AppMode.videos) {
+  if (appMode === PV.AppMode.video) {
     searchPlaceholder = translate('Search videos')
   }
   return searchPlaceholder
@@ -641,7 +641,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       const { queryPage } = queryOptions
 
       const { appMode } = this.global
-      const hasVideo = appMode === PV.AppMode.videos
+      const hasVideo = appMode === PV.AppMode.video
       const isSubscribedSelected = filterKey === PV.Filters._subscribedKey || queryFrom === PV.Filters._subscribedKey
       const isDownloadedSelected = filterKey === PV.Filters._downloadedKey || queryFrom === PV.Filters._downloadedKey
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
@@ -742,7 +742,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
   _queryAllEpisodes = async (sort: string | null, page = 1) => {
     const { searchBarText: searchTitle } = this.state
     const { appMode } = this.global
-    const hasVideo = appMode === PV.AppMode.videos
+    const hasVideo = appMode === PV.AppMode.video
 
     const cleanedSort =
       sort === PV.Filters._mostRecentKey || sort === PV.Filters._randomKey ? PV.Filters._topPastWeek : sort
@@ -760,7 +760,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _queryEpisodesByCategory = async (categoryId?: string | null, sort?: string | null, page = 1) => {
     const { appMode } = this.global
-    const hasVideo = appMode === PV.AppMode.videos
+    const hasVideo = appMode === PV.AppMode.video
 
     const cleanedSort =
       sort === PV.Filters._mostRecentKey || sort === PV.Filters._randomKey ? PV.Filters._topPastWeek : sort

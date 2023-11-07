@@ -150,7 +150,7 @@ const dividerHeight = 1
 const getScreenTitle = () => {
   const { appMode } = getGlobal()
   let screenTitle = translate('Podcasts')
-  if (appMode === PV.AppMode.videos) {
+  if (appMode === PV.AppMode.video) {
     screenTitle = translate('Channels')
   }
   return screenTitle
@@ -159,7 +159,7 @@ const getScreenTitle = () => {
 const getSearchPlaceholder = () => {
   const { appMode } = getGlobal()
   let searchPlaceholder = translate('Search podcasts')
-  if (appMode === PV.AppMode.videos) {
+  if (appMode === PV.AppMode.video) {
     searchPlaceholder = translate('Search channels')
   }
   return searchPlaceholder
@@ -261,6 +261,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       await navigation.navigate(PV.RouteNames.TrackingConsentScreen)
     }
 
+    await this.handleMigrations()
+
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
       if (!appHasLaunched) {
@@ -269,7 +271,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5'),
           AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5'),
-          AsyncStorage.setItem(PV.Keys.APP_MODE, PV.AppMode.podcasts),
+          AsyncStorage.setItem(PV.Keys.APP_MODE, PV.AppMode.mixed),
           AsyncStorage.setItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT, 'TRUE'),
@@ -315,6 +317,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // this._unsubscribe?.()
 
     this.pvNativeEventSubscriptions.forEach((subscription) => subscription.remove())
+  }
+
+  handleMigrations = async () => {
+    // AppMode changed as of 4.14.3
+    const appMode = await AsyncStorage.getItem(PV.Keys.APP_MODE)
+    if (!appMode || appMode === 'podcasts' || appMode === 'videos') {
+      await AsyncStorage.setItem(PV.Keys.APP_MODE, PV.AppMode.mixed)
+    }
   }
 
   handleNoficationOpened = async (remoteMessage: any, goBackToRootScreen = false) => {
@@ -1401,7 +1411,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _queryAllPodcasts = async (sort: string | null, page = 1) => {
     const { searchBarText: searchTitle } = this.state
     const { appMode } = this.global
-    const hasVideo = appMode === PV.AppMode.videos
+    const hasVideo = appMode === PV.AppMode.video
 
     let localPodcasts = [] as any
     if (searchTitle && page === 1) {
@@ -1439,7 +1449,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _queryPodcastsByCategory = async (categoryId?: string | null, sort?: string | null, page = 1) => {
     const { appMode } = this.global
-    const hasVideo = appMode === PV.AppMode.videos
+    const hasVideo = appMode === PV.AppMode.video
     const results = await getPodcasts({
       categories: categoryId,
       sort,
@@ -1477,7 +1487,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       } = prevState
 
       const { appMode, isInMaintenanceMode } = this.global
-      const hasVideo = appMode === PV.AppMode.videos
+      const hasVideo = appMode === PV.AppMode.video
 
       const hasInternetConnection = await hasValidNetworkConnection()
       const isSubscribedSelected = filterKey === PV.Filters._subscribedKey || queryFrom === PV.Filters._subscribedKey

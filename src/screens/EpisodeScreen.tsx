@@ -51,7 +51,7 @@ const getScreenTitle = () => {
   const { appMode } = getGlobal()
   let screenTitle = translate('Episode')
 
-  if (appMode === PV.AppMode.videos) {
+  if (appMode === PV.AppMode.video) {
     screenTitle = translate('Video')
   }
 

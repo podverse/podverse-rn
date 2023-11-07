@@ -49,7 +49,7 @@ export class AppModeScreen extends React.Component<Props> {
           <TableCell
             accessibilityLabel={translate('Podcasts')}
             includeDivider
-            onPress={() => this._handleAppModeOnPress(PV.AppMode.podcasts)}
+            onPress={() => this._handleAppModeOnPress(PV.AppMode.mixed)}
             testIDPrefix={`${testIDPrefix}_podcasts`}
             testIDSuffix=''>
             <Text
@@ -57,14 +57,14 @@ export class AppModeScreen extends React.Component<Props> {
               style={[table.cellText, globalTheme.tableCellTextPrimary]}>
               {translate('Podcasts')}
             </Text>
-            {appMode === PV.AppMode.podcasts && (
+            {appMode === PV.AppMode.mixed && (
               <Icon name='check' size={24} style={styles.itemIcon} testID={`${testIDPrefix}_podcasts_check`} />
             )}
           </TableCell>
           <TableCell
             accessibilityLabel={translate('Videos')}
             includeDivider
-            onPress={() => this._handleAppModeOnPress(PV.AppMode.videos)}
+            onPress={() => this._handleAppModeOnPress(PV.AppMode.video)}
             testIDPrefix={`${testIDPrefix}_videos`}
             testIDSuffix=''>
             <Text
@@ -72,7 +72,7 @@ export class AppModeScreen extends React.Component<Props> {
               style={[table.cellText, globalTheme.tableCellTextPrimary]}>
               {translate('Videos')}
             </Text>
-            {appMode === PV.AppMode.videos && (
+            {appMode === PV.AppMode.video && (
               <Icon name='check' size={24} style={styles.itemIcon} testID={`${testIDPrefix}_podcasts_check`} />
             )}
           </TableCell>

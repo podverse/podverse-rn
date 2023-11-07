@@ -8749,10 +8749,10 @@ podcast-partytime@^4.5.5:
     ramda "^0.27.1"
     tiny-invariant "^1.2.0"
 
-podverse-shared@^4.14.14:
-  version "4.14.14"
-  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.14.14.tgz#416a15f7b2f0956fd29247d9f117bd3e942882d4"
-  integrity sha512-s/iIDOv3A1VwiXURwKcA/TGpNcQGEb8b49nxEOHK72ZIyI9YZIdZ96kao4wRdcvhQkmwFq0zIQmeuwyeQj+/rg==
+podverse-shared@^4.14.16:
+  version "4.14.16"
+  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.14.16.tgz#af2a3854e11d13da98818cb4c2ab3069f1e591ef"
+  integrity sha512-f9u5pZN5zo5zPmuenEcTPQg+id/eNujHXoRZErwKTYorLJE/BgxiNnqhN/aRC9JETBKTCVKibqw1jzHg9vY8pA==
   dependencies:
     "@types/lodash" "4.14.172"
     he "^1.2.0"

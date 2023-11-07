@@ -538,7 +538,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
       const { queryPage } = queryOptions
       const { appMode } = this.global
-      const hasVideo = appMode === PV.AppMode.videos
+      const hasVideo = appMode === PV.AppMode.video
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
@@ -609,7 +609,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   _queryAllMediaRefs = async (sort: string | null, page = 1) => {
     const { searchBarText: searchTitle } = this.state
     const { appMode } = this.global
-    const hasVideo = appMode === PV.AppMode.videos
+    const hasVideo = appMode === PV.AppMode.video
     const results = await getMediaRefs({
       sort,
       page,
@@ -624,7 +624,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   _queryMediaRefsByCategory = async (categoryId?: string | null, sort?: string | null, page = 1) => {
     const { searchBarText: searchTitle } = this.state
     const { appMode } = this.global
-    const hasVideo = appMode === PV.AppMode.videos
+    const hasVideo = appMode === PV.AppMode.video
     const results = await getMediaRefs({
       categories: categoryId,
       sort,

@@ -90,7 +90,8 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], sort
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
 
   const { appMode } = getGlobal()
-  const videoOnlyMode = appMode === PV.AppMode.videos
+  // TODO: handle music
+  const videoOnlyMode = appMode === PV.AppMode.video
 
   const query = {
     podcastIds: subscribedPodcastIds,
@@ -129,7 +130,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], sort
 
 export const combineWithAddByRSSPodcasts = async (sort?: string | null) => {
   const { appMode } = getGlobal()
-  const videoOnlyMode = appMode === PV.AppMode.videos
+  const videoOnlyMode = appMode === PV.AppMode.video
 
   const [subscribedPodcastsResults, addByRSSPodcastsResults] = await Promise.all([
     getSubscribedPodcastsLocally(),

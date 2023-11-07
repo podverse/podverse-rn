@@ -1,11 +1,13 @@
-export type AppModes = 'podcasts' | 'videos'
+export type AppModes = 'mixed' | 'video' | 'music'
 
 interface AppModeI {
-  podcasts: 'podcasts'
-  videos: 'videos'
+  mixed: 'mixed'
+  video: 'video'
+  music: 'music'
 }
 
 export const AppMode: AppModeI = {
-  podcasts: 'podcasts',
-  videos: 'videos'
+  mixed: 'mixed',
+  video: 'video',
+  music: 'music'
 }
