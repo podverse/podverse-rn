@@ -175,7 +175,7 @@ class App extends Component<Props, State> {
       globalTheme: theme,
       fontScaleMode,
       fontScale,
-      appMode: appMode || PV.AppMode.podcasts
+      appMode: appMode || PV.AppMode.mixed
     })
   }
 
