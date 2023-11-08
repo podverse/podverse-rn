@@ -50,7 +50,8 @@ export const getPodcasts = async (query: any = {}) => {
     ...(query.sort ? { sort: query.sort } : {}),
     ...(searchAuthor ? { searchAuthor } : {}),
     ...(searchTitle ? { searchTitle } : {}),
-    ...(query.hasVideo ? { hasVideo: query.hasVideo } : {})
+    ...(query.hasVideo ? { hasVideo: query.hasVideo } : {}),
+    ...(query.isMusic ? { isMusic: query.isMusic } : {})
   } as any
 
   if (query.categories) {
@@ -87,17 +88,18 @@ export const findPodcastsByFeedUrls = async (feedUrls: string[]) => {
 }
 
 export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], sort?: string | null) => {
-  const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
-
   const { appMode } = getGlobal()
-  // TODO: handle music
   const videoOnlyMode = appMode === PV.AppMode.video
+  const isMusic = appMode === PV.AppMode.music
+
+  const addByRSSPodcasts = await getAddByRSSPodcastsLocally(isMusic)
 
   const query = {
     podcastIds: subscribedPodcastIds,
     sort: sort ? sort : PV.Filters._alphabeticalKey,
     maxResults: true,
-    ...(videoOnlyMode ? { hasVideo: true } : {})
+    ...(videoOnlyMode ? { hasVideo: true } : {}),
+    ...(isMusic ? { isMusic: true } : {})
   }
   const isConnected = await hasValidNetworkConnection()
 
@@ -131,6 +133,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], sort
 export const combineWithAddByRSSPodcasts = async (sort?: string | null) => {
   const { appMode } = getGlobal()
   const videoOnlyMode = appMode === PV.AppMode.video
+  const isMusic = appMode === PV.AppMode.music
 
   const [subscribedPodcastsResults, addByRSSPodcastsResults] = await Promise.all([
     getSubscribedPodcastsLocally(),
@@ -143,6 +146,8 @@ export const combineWithAddByRSSPodcasts = async (sort?: string | null) => {
 
   if (videoOnlyMode) {
     addByRSSPodcasts = addByRSSPodcasts.filter((podcast: any) => podcast.hasVideo)
+  } else if (isMusic) {
+    addByRSSPodcasts = addByRSSPodcasts.filter((podcast: any) => podcast.medium === PV.AppMode.music)
   }
 
   const combinedPodcasts = [...subscribedPodcasts, ...addByRSSPodcasts]

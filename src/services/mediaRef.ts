@@ -51,7 +51,8 @@ export const getMediaRefs = async (query: any = {}) => {
     ...(searchTitle ? { searchTitle } : {}),
     ...(query.includeEpisode ? { includeEpisode: true } : {}),
     ...(query.includePodcast ? { includePodcast: true } : {}),
-    ...(query.hasVideo ? { hasVideo: true } : {})
+    ...(query.hasVideo ? { hasVideo: true } : {}),
+    ...(query.isMusic ? { isMusic: true } : {})
   } as any
 
   if (query.categories) {

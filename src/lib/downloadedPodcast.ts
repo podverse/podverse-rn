@@ -79,10 +79,11 @@ export const getDownloadedEpisodes = async (
   searchPodcastTitle?: string,
   searchEpisodeTitle?: string,
   hasVideo?: boolean,
-  sort?: string
+  sort?: string,
+  isMusic?: boolean
 ) => {
   const finalEpisodes = []
-  const downloadedPodcasts = await getDownloadedPodcasts(searchPodcastTitle, hasVideo)
+  const downloadedPodcasts = await getDownloadedPodcasts(searchPodcastTitle, hasVideo, isMusic)
 
   for (const podcast of downloadedPodcasts) {
     for (const episode of podcast.episodes) {
@@ -112,7 +113,7 @@ export const getDownloadedPodcast = async (podcastId: string) => {
   return downloadedPodcast
 }
 
-export const getDownloadedPodcasts = async (searchTitle?: string, hasVideo?: boolean) => {
+export const getDownloadedPodcasts = async (searchTitle?: string, hasVideo?: boolean, isMusic?: boolean) => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_PODCASTS)
     let items = itemsString ? JSON.parse(itemsString) : []
@@ -123,6 +124,8 @@ export const getDownloadedPodcasts = async (searchTitle?: string, hasVideo?: boo
 
     if (hasVideo) {
       items = items.filter((podcast: any) => podcast.hasVideo)
+    } else if (isMusic) {
+      items = items.filter((podcast: any) => podcast.medium === PV.AppMode.music)
     }
 
     return items

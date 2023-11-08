@@ -18,11 +18,15 @@ const getTabTitle = (tabKey: TabKey, appMode: AppModes) => {
     title = translate('Podcasts')
     if (appMode === PV.AppMode.video) {
       title = translate('Channels')
+    } else if (appMode === PV.AppMode.music) {
+      title = translate('Albums')
     }
   } else if (tabKey === 'Episodes') {
     title = translate('Episodes')
     if (appMode === PV.AppMode.video) {
       title = translate('Videos')
+    } else if (appMode === PV.AppMode.music) {
+      title = translate('New Tracks - music')
     }
   } else if (tabKey === 'Clips') {
     title = translate('Clips')

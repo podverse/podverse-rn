@@ -152,17 +152,14 @@ const getScreenTitle = () => {
   let screenTitle = translate('Podcasts')
   if (appMode === PV.AppMode.video) {
     screenTitle = translate('Channels')
+  } else if (appMode === PV.AppMode.music) {
+    screenTitle = translate('Albums')
   }
   return screenTitle
 }
 
 const getSearchPlaceholder = () => {
-  const { appMode } = getGlobal()
-  let searchPlaceholder = translate('Search podcasts')
-  if (appMode === PV.AppMode.video) {
-    searchPlaceholder = translate('Search channels')
-  }
-  return searchPlaceholder
+  return translate('Search podcasts')
 }
 
 export class PodcastsScreen extends React.Component<Props, State> {
@@ -1412,6 +1409,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { searchBarText: searchTitle } = this.state
     const { appMode } = this.global
     const hasVideo = appMode === PV.AppMode.video
+    const isMusic = appMode === PV.AppMode.music
 
     let localPodcasts = [] as any
     if (searchTitle && page === 1) {
@@ -1431,7 +1429,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       sort,
       page,
       ...(searchTitle ? { searchTitle } : {}),
-      ...(hasVideo ? { hasVideo: true } : {})
+      ...(hasVideo ? { hasVideo: true } : {}),
+      ...(isMusic ? { isMusic: true } : {})
     })
 
     if (searchTitle) {
@@ -1450,11 +1449,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _queryPodcastsByCategory = async (categoryId?: string | null, sort?: string | null, page = 1) => {
     const { appMode } = this.global
     const hasVideo = appMode === PV.AppMode.video
+    const isMusic = appMode === PV.AppMode.music
     const results = await getPodcasts({
       categories: categoryId,
       sort,
       page,
-      ...(hasVideo ? { hasVideo: true } : {})
+      ...(hasVideo ? { hasVideo: true } : {}),
+      ...(isMusic ? { isMusic: true } : {})
     })
     return results
   }
@@ -1488,6 +1489,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
       const { appMode, isInMaintenanceMode } = this.global
       const hasVideo = appMode === PV.AppMode.video
+      const isMusic = appMode === PV.AppMode.music
 
       const hasInternetConnection = await hasValidNetworkConnection()
       const isSubscribedSelected = filterKey === PV.Filters._subscribedKey || queryFrom === PV.Filters._subscribedKey
@@ -1497,7 +1499,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
       if (isDownloadedSelected) {
-        const podcasts = await getDownloadedPodcasts(searchTitle, hasVideo)
+        const podcasts = await getDownloadedPodcasts(searchTitle, hasVideo, isMusic)
         newState.flatListData = [...podcasts]
         newState.queryFrom = PV.Filters._downloadedKey
         newState.selectedFilterLabel = await getSelectedFilterLabel(PV.Filters._downloadedKey)
@@ -1529,7 +1531,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedCategorySub),
           sort: filterKey,
           ...(searchTitle ? { searchTitle } : {}),
-          ...(hasVideo ? { hasVideo: true } : {})
+          ...(hasVideo ? { hasVideo: true } : {}),
+          ...(isMusic ? { isMusic: true } : {})
         })
         newState.flatListData = results[0]
         newState.endOfResultsReached = results[0].length < 20

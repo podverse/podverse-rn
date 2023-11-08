@@ -62,6 +62,21 @@ export class AppModeScreen extends React.Component<Props> {
             )}
           </TableCell>
           <TableCell
+            accessibilityLabel={translate('Music')}
+            includeDivider
+            onPress={() => this._handleAppModeOnPress(PV.AppMode.music)}
+            testIDPrefix={`${testIDPrefix}_music`}
+            testIDSuffix=''>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+              {translate('Music')}
+            </Text>
+            {appMode === PV.AppMode.music && (
+              <Icon name='check' size={24} style={styles.itemIcon} testID={`${testIDPrefix}_music_check`} />
+            )}
+          </TableCell>
+          <TableCell
             accessibilityLabel={translate('Videos')}
             includeDivider
             onPress={() => this._handleAppModeOnPress(PV.AppMode.video)}
@@ -73,7 +88,7 @@ export class AppModeScreen extends React.Component<Props> {
               {translate('Videos')}
             </Text>
             {appMode === PV.AppMode.video && (
-              <Icon name='check' size={24} style={styles.itemIcon} testID={`${testIDPrefix}_podcasts_check`} />
+              <Icon name='check' size={24} style={styles.itemIcon} testID={`${testIDPrefix}_videos_check`} />
             )}
           </TableCell>
         </View>

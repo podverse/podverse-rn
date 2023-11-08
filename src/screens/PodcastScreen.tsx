@@ -121,24 +121,15 @@ const getScreenTitle = () => {
 
   if (appMode === PV.AppMode.video) {
     screenTitle = translate('Channel')
+  } else if (appMode === PV.AppMode.music) {
+    screenTitle = translate('Album')
   }
 
   return screenTitle
 }
 
-const getSearchPlaceholder = (viewType: string) => {
-  const { appMode } = getGlobal()
-  let searchPlaceholder = translate('Search episodes')
-
-  if (viewType === PV.Filters._clipsKey) {
-    searchPlaceholder = translate('Search clips')
-  } else {
-    if (appMode === PV.AppMode.video) {
-      searchPlaceholder = translate('Search videos')
-    }
-  }
-
-  return searchPlaceholder
+const getSearchPlaceholder = () => {
+  return translate('Search podcasts')
 }
 
 const getDefaultSelectedFilterLabel = () => {
@@ -147,6 +138,8 @@ const getDefaultSelectedFilterLabel = () => {
 
   if (appMode === PV.AppMode.video) {
     defaultSelectedFilterLabel = translate('Videos')
+  } else if (appMode === PV.AppMode.music) {
+    defaultSelectedFilterLabel = translate('Tracks - music')
   }
 
   return defaultSelectedFilterLabel

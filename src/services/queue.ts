@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { NowPlayingItem } from 'podverse-shared'
+import { NowPlayingItem, PodcastMedium } from 'podverse-shared'
 import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
@@ -7,6 +7,22 @@ import { playerSyncPlayerWithQueue } from './player'
 import { request } from './request'
 
 const _fileName = 'src/services/queue.ts'
+
+const getStorageKeyAndMedium = async () => {
+  const medium = await AsyncStorage.getItem(PV.Keys.APP_MODE) as PodcastMedium
+  let storageKey = ''
+  // medium = podcasts is deprecated, but including it for now anyway
+  if (!medium || medium === 'mixed' || medium === 'video' || medium === 'podcasts') {
+    storageKey = PV.Keys.QUEUE_ITEMS
+  } else {
+    storageKey = `${PV.Keys.QUEUE_ITEMS}_${medium}`
+  }
+
+  return {
+    medium,
+    storageKey
+  }
+}
 
 export const addQueueItemLast = async (item: NowPlayingItem) => {
   const useServerData = await checkIfShouldUseServerData()
@@ -96,6 +112,7 @@ export const addQueueItemToServer = async (item: NowPlayingItem, newPosition: nu
     throw new Error('A clipId or episodeId must be provided.')
   }
 
+  const { medium } = await getStorageKeyAndMedium()
   const bearerToken = await getBearerToken()
   const body = {
     episodeId: (!clipId && episodeId) || null,
@@ -104,13 +121,16 @@ export const addQueueItemToServer = async (item: NowPlayingItem, newPosition: nu
   }
 
   const response = await request({
-    endpoint: '/user-queue-item',
+    endpoint: '/user-queue-item/medium',
     method: 'PATCH',
     headers: {
       Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
     body,
+    query: {
+      medium
+    },
     opts: { credentials: 'include' }
   })
 
@@ -149,11 +169,15 @@ const getNextFromQueueLocally = async () => {
 }
 
 const getNextFromQueueFromServer = async () => {
+  const { medium } = await getStorageKeyAndMedium()
   const bearerToken = await getBearerToken()
   const response = await request({
-    endpoint: '/user-queue-item/pop-next',
+    endpoint: '/user-queue-item/medium/pop-next',
     method: 'GET',
     headers: { Authorization: bearerToken },
+    query: {
+      medium
+    },
     opts: { credentials: 'include' }
   })
 
@@ -162,7 +186,8 @@ const getNextFromQueueFromServer = async () => {
 
 export const getQueueItemsLocally = async () => {
   try {
-    const itemsString = await AsyncStorage.getItem(PV.Keys.QUEUE_ITEMS)
+    const { storageKey } = await getStorageKeyAndMedium()
+    const itemsString = await AsyncStorage.getItem(storageKey)
     return itemsString ? JSON.parse(itemsString) : []
   } catch (error) {
     return []
@@ -170,6 +195,7 @@ export const getQueueItemsLocally = async () => {
 }
 
 const getQueueItemsFromServer = async () => {
+  const { medium } = await getStorageKeyAndMedium()
   const bearerToken = await getBearerToken()
 
   /* If user membership is expired, we don't want the 401 error to crash the app,
@@ -182,9 +208,12 @@ const getQueueItemsFromServer = async () => {
 
   try {
     response = await request({
-      endpoint: '/user-queue-item',
+      endpoint: '/user-queue-item/medium',
       method: 'GET',
       headers: { Authorization: bearerToken },
+      query: {
+        medium
+      },
       opts: { credentials: 'include' }
     })
   } catch (error) {
@@ -204,22 +233,29 @@ const removeQueueItemLocally = async (item: NowPlayingItem) => {
 
 const removeQueueItemOnServer = async (item: NowPlayingItem) => {
   const { clipId, episodeId } = item
+  const { medium } = await getStorageKeyAndMedium()
   await removeQueueItemLocally(item)
   const bearerToken = await getBearerToken()
 
   if (clipId) {
     const response = await request({
-      endpoint: `/user-queue-item/mediaRef/${clipId}`,
+      endpoint: `/user-queue-item/medium/mediaRef/${clipId}`,
       method: 'DELETE',
       headers: { Authorization: bearerToken },
+      query: {
+        medium
+      },
       opts: { credentials: 'include' }
     })
     return response && response.data && response.data.userQueueItems
   } else if (episodeId) {
     const response = await request({
-      endpoint: `/user-queue-item/episode/${episodeId}`,
+      endpoint: `/user-queue-item/medium/episode/${episodeId}`,
       method: 'DELETE',
       headers: { Authorization: bearerToken },
+      query: {
+        medium
+      },
       opts: { credentials: 'include' }
     })
     return response && response.data && response.data.userQueueItems
@@ -229,8 +265,9 @@ const removeQueueItemOnServer = async (item: NowPlayingItem) => {
 }
 
 export const setAllQueueItemsLocally = async (items: NowPlayingItem[]) => {
+  const { storageKey } = await getStorageKeyAndMedium()
   if (Array.isArray(items)) {
-    await AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(items))
+    await AsyncStorage.setItem(storageKey, JSON.stringify(items))
   }
   return items
 }

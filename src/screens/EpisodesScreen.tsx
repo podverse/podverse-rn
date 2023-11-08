@@ -67,18 +67,15 @@ const getScreenTitle = () => {
   let screenTitle = translate('Episodes')
   if (appMode === PV.AppMode.video) {
     screenTitle = translate('Videos')
+  } else if (appMode === PV.AppMode.music) {
+    screenTitle = translate('Tracks - music')
   }
 
   return screenTitle
 }
 
 const getSearchPlaceholder = () => {
-  const { appMode } = getGlobal()
-  let searchPlaceholder = translate('Search episodes')
-  if (appMode === PV.AppMode.video) {
-    searchPlaceholder = translate('Search videos')
-  }
-  return searchPlaceholder
+  return translate('Search podcasts')
 }
 
 export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
@@ -642,6 +639,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
 
       const { appMode } = this.global
       const hasVideo = appMode === PV.AppMode.video
+      const isMusic = appMode === PV.AppMode.music
       const isSubscribedSelected = filterKey === PV.Filters._subscribedKey || queryFrom === PV.Filters._subscribedKey
       const isDownloadedSelected = filterKey === PV.Filters._downloadedKey || queryFrom === PV.Filters._downloadedKey
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
@@ -659,13 +657,14 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
             ...(searchTitle ? { searchTitle } : {}),
             subscribedOnly: true,
             includePodcast: true,
-            ...(hasVideo ? { hasVideo: true } : {})
+            ...(hasVideo ? { hasVideo: true } : {}),
+            ...(isMusic ? { isMusic: true } : {})
           })
         }
 
-        const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally()
+        const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally(isMusic)
         if (querySort === PV.Filters._mostRecentKey && hasAddByRSSEpisodes) {
-          results = await combineEpisodesWithAddByRSSEpisodesLocally(results, searchTitle, hasVideo)
+          results = await combineEpisodesWithAddByRSSEpisodesLocally(results, searchTitle, hasVideo, isMusic)
         }
 
         newState.flatListData = [...flatListData, ...results[0]]
@@ -680,7 +679,8 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
           podcastSearchTitle,
           searchTitle,
           hasVideo,
-          downloadedSort
+          downloadedSort,
+          isMusic
         )
         newState.flatListData = [...downloadedEpisodes]
         newState.endOfResultsReached = true
@@ -698,12 +698,13 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
           ...(searchTitle ? { searchTitle } : {}),
           subscribedOnly: queryFrom === PV.Filters._subscribedKey,
           includePodcast: true,
-          ...(hasVideo ? { hasVideo: true } : {})
+          ...(hasVideo ? { hasVideo: true } : {}),
+          ...(isMusic ? { isMusic: true } : {})
         })
 
-        const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally()
+        const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally(isMusic)
         if (queryFrom === PV.Filters._subscribedKey && filterKey === PV.Filters._mostRecentKey && hasAddByRSSEpisodes) {
-          results = await combineEpisodesWithAddByRSSEpisodesLocally(results, searchTitle)
+          results = await combineEpisodesWithAddByRSSEpisodesLocally(results, searchTitle, hasVideo, isMusic)
         }
 
         newState.flatListData = results[0]
@@ -743,6 +744,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     const { searchBarText: searchTitle } = this.state
     const { appMode } = this.global
     const hasVideo = appMode === PV.AppMode.video
+    const isMusic = appMode === PV.AppMode.music
 
     const cleanedSort =
       sort === PV.Filters._mostRecentKey || sort === PV.Filters._randomKey ? PV.Filters._topPastWeek : sort
@@ -752,7 +754,8 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       page,
       ...(searchTitle ? { searchTitle } : {}),
       includePodcast: true,
-      ...(hasVideo ? { hasVideo: true } : {})
+      ...(hasVideo ? { hasVideo: true } : {}),
+      ...(isMusic ? { isMusic: true } : {})
     })
 
     return results
@@ -761,6 +764,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
   _queryEpisodesByCategory = async (categoryId?: string | null, sort?: string | null, page = 1) => {
     const { appMode } = this.global
     const hasVideo = appMode === PV.AppMode.video
+    const isMusic = appMode === PV.AppMode.music
 
     const cleanedSort =
       sort === PV.Filters._mostRecentKey || sort === PV.Filters._randomKey ? PV.Filters._topPastWeek : sort
@@ -770,7 +774,8 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       sort: cleanedSort,
       page,
       includePodcast: true,
-      ...(hasVideo ? { hasVideo: true } : {})
+      ...(hasVideo ? { hasVideo: true } : {}),
+      ...(isMusic ? { isMusic: true } : {})
     })
     return results
   }

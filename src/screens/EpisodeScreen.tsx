@@ -53,6 +53,8 @@ const getScreenTitle = () => {
 
   if (appMode === PV.AppMode.video) {
     screenTitle = translate('Video')
+  } else if (appMode === PV.AppMode.music) {
+    screenTitle = translate('Track - music')
   }
 
   return screenTitle

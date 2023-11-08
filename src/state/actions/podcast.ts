@@ -21,8 +21,8 @@ const _fileName = 'src/state/actions/podcast.ts'
 
 const handleCombineWithAddByRSSPodcasts = async (searchTitle?: string, sort?: string | null) => {
   const { appMode } = getGlobal()
-  // TODO: handle music add by rss
   const videoOnlyMode = appMode === PV.AppMode.video
+  const isMusic = appMode === PV.AppMode.music
 
   const combinedPodcasts = await combineWithAddByRSSPodcastsService(sort)
   let finalPodcasts = []
@@ -35,6 +35,8 @@ const handleCombineWithAddByRSSPodcasts = async (searchTitle?: string, sort?: st
 
   if (videoOnlyMode) {
     finalPodcasts = finalPodcasts.filter((podcast) => podcast.hasVideo)
+  } else if (isMusic) {
+    finalPodcasts = finalPodcasts.filter((podcast) => podcast.medium === PV.AppMode.music)
   }
 
   return finalPodcasts

@@ -29,15 +29,16 @@ addByRSSPodcast: object {
 }
 */
 
-export const hasAddByRSSEpisodesLocally = async () => {
-  const results = await getAddByRSSEpisodesLocally()
+export const hasAddByRSSEpisodesLocally = async (isMusic?: boolean) => {
+  const results = await getAddByRSSEpisodesLocally(isMusic)
   return results.length > 0
 }
 
 export const combineEpisodesWithAddByRSSEpisodesLocally = async (
   results: any[],
   searchTitle?: string,
-  hasVideo?: boolean
+  hasVideo?: boolean,
+  isMusic?: boolean
 ) => {
   let mostRecentDate = ''
   let oldestDate = ''
@@ -63,8 +64,8 @@ export const combineEpisodesWithAddByRSSEpisodesLocally = async (
 
   let addByRSSEpisodes =
     results.length > 0
-      ? await getAddByRSSEpisodesLocallyByDateRange(new Date(mostRecentDate), new Date(oldestDate))
-      : await getAddByRSSEpisodesLocally()
+      ? await getAddByRSSEpisodesLocallyByDateRange(new Date(mostRecentDate), new Date(oldestDate), isMusic)
+      : await getAddByRSSEpisodesLocally(isMusic)
 
   if (searchTitle) {
     addByRSSEpisodes = addByRSSEpisodes.filter(
@@ -87,8 +88,8 @@ export const combineEpisodesWithAddByRSSEpisodesLocally = async (
   return [sortedResults, newCount]
 }
 
-export const getAddByRSSEpisodesLocally = async () => {
-  const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
+export const getAddByRSSEpisodesLocally = async (isMusic?: boolean) => {
+  const addByRSSPodcasts = await getAddByRSSPodcastsLocally(isMusic)
   const combinedEpisodes = [] as any[]
 
   for (const addByRSSPodcast of addByRSSPodcasts) {
@@ -101,8 +102,9 @@ export const getAddByRSSEpisodesLocally = async () => {
   return combinedEpisodes
 }
 
-export const getAddByRSSEpisodesLocallyByDateRange = async (mostRecentDate: Date, oldestDate: Date) => {
-  const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
+export const getAddByRSSEpisodesLocallyByDateRange = async (
+  mostRecentDate: Date, oldestDate: Date, isMusic?: boolean) => {
+  const addByRSSPodcasts = await getAddByRSSPodcastsLocally(isMusic)
   const combinedEpisodes = [] as any[]
 
   for (const addByRSSPodcast of addByRSSPodcasts) {
@@ -133,10 +135,16 @@ export const getAddByRSSPodcastLocally = async (feedUrl: string) => {
   return addByRSSPodcastFeedUrlPodcasts.find((x: any) => x.addByRSSPodcastFeedUrl === feedUrl)
 }
 
-export const getAddByRSSPodcastsLocally = async () => {
+export const getAddByRSSPodcastsLocally = async (isMusic?: boolean) => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCASTS)
-    return itemsString ? JSON.parse(itemsString) : []
+    let items = itemsString ? JSON.parse(itemsString) : []
+
+    if (isMusic) {
+      items = items.filter((addByRSSPodcast: any) => addByRSSPodcast.medium === 'music')
+    }
+
+    return items
   } catch (error) {
     errorLogger(_fileName, 'getAddByRSSPodcastsLocally', error)
     return []
@@ -359,6 +367,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
     podcast.language = meta.language
 
     podcast.linkUrl = meta.link
+    podcast.medium = meta.medium
     podcast.sortableTitle = convertToSortableTitle(title)
     podcast.subtitle = meta.subtitle && meta.subtitle.trim()
     podcast.title = title

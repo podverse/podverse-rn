@@ -253,7 +253,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           hideIcon
           icon='filter'
           onChangeText={this._handleSearchBarTextChange}
-          placeholder={translate('Search clips')}
+          placeholder={translate('Search podcasts')}
           testID={`${testIDPrefix}_filter_bar`}
           value={searchBarText}
         />
@@ -539,6 +539,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       const { queryPage } = queryOptions
       const { appMode } = this.global
       const hasVideo = appMode === PV.AppMode.video
+      const isMusic = appMode === PV.AppMode.music
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
@@ -550,7 +551,8 @@ export class ClipsScreen extends React.Component<Props, State> {
           ...(searchBarText ? { searchTitle: searchBarText } : {}),
           subscribedOnly: true,
           includePodcast: true,
-          ...(hasVideo ? { hasVideo: true } : {})
+          ...(hasVideo ? { hasVideo: true } : {}),
+          ...(isMusic ? { isMusic: true } : {})
         })
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = results[0].length < 20
@@ -568,7 +570,9 @@ export class ClipsScreen extends React.Component<Props, State> {
           sort: filterKey,
           ...(searchBarText ? { searchTitle: searchBarText } : {}),
           subscribedOnly: queryFrom === PV.Filters._subscribedKey,
-          includePodcast: true
+          includePodcast: true,
+          ...(hasVideo ? { hasVideo: true } : {}),
+          ...(isMusic ? { isMusic: true } : {})
         })
 
         newState.flatListData = results[0]
@@ -610,12 +614,14 @@ export class ClipsScreen extends React.Component<Props, State> {
     const { searchBarText: searchTitle } = this.state
     const { appMode } = this.global
     const hasVideo = appMode === PV.AppMode.video
+    const isMusic = appMode === PV.AppMode.music
     const results = await getMediaRefs({
       sort,
       page,
       ...(searchTitle ? { searchTitle } : {}),
       includePodcast: true,
-      ...(hasVideo ? { hasVideo: true } : {})
+      ...(hasVideo ? { hasVideo: true } : {}),
+      ...(isMusic ? { isMusic: true } : {})
     })
 
     return results
@@ -625,13 +631,15 @@ export class ClipsScreen extends React.Component<Props, State> {
     const { searchBarText: searchTitle } = this.state
     const { appMode } = this.global
     const hasVideo = appMode === PV.AppMode.video
+    const isMusic = appMode === PV.AppMode.music
     const results = await getMediaRefs({
       categories: categoryId,
       sort,
       page,
       ...(searchTitle ? { searchTitle } : {}),
       includePodcast: true,
-      ...(hasVideo ? { hasVideo: true } : {})
+      ...(hasVideo ? { hasVideo: true } : {}),
+      ...(isMusic ? { isMusic: true } : {})
     })
     return results
   }
