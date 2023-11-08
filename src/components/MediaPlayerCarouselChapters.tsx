@@ -21,8 +21,8 @@ import {
 } from './'
 
 type Props = {
-  currentChapter?: InitialState['currentChapter']
-  currentChapters: InitialState['currentChapters']
+  currentTocChapter?: InitialState['currentTocChapter']
+  currentTocChapters: InitialState['currentTocChapters']
   isLoading: InitialState['screenPlayer']['isLoading']
   isLoadingMore: InitialState['screenPlayer']['isLoadingMore']
   isQuerying: InitialState['screenPlayer']['isQuerying']
@@ -148,12 +148,12 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
     const playbackSpeed = await getPlaybackSpeed()
     const intervalTime = 1000 / playbackSpeed
     return setInterval(() => {
-      const { currentChapter, currentChapters } = this.props
-      if (currentChapter?.id) {
-        if (lastPlayingChapter && currentChapter.id === lastPlayingChapter.id) return
-        lastPlayingChapter = currentChapter
+      const { currentTocChapter, currentTocChapters } = this.props
+      if (currentTocChapter?.id) {
+        if (lastPlayingChapter && currentTocChapter.id === lastPlayingChapter.id) return
+        lastPlayingChapter = currentTocChapter
 
-        const index = currentChapters.findIndex((item: Record<string, any>) => item?.id === currentChapter.id)
+        const index = currentTocChapters.findIndex((item: Record<string, any>) => item?.id === currentTocChapter.id)
 
         if (index !== -1) {
           const indexBefore = index > 0 ? index - 1 : 0
@@ -203,7 +203,7 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
 
   _renderItem = ({ item, index }) => {
     const { navigation } = this.props
-    const { currentChapter } = this.props
+    const { currentTocChapter } = this.props
     const { episode } = getGlobal().player
     const podcast = episode?.podcast || {}
     const testID = getTestID()
@@ -218,7 +218,7 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
       <ClipTableCell
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
         isChapter
-        isNowPlayingItem={currentChapter && currentChapter.id === item.id}
+        isNowPlayingItem={currentTocChapter && currentTocChapter.id === item.id}
         item={item}
         itemType='chapter'
         loadChapterOnPlay
@@ -237,11 +237,11 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
   _keyExtractor = (item: any, index: number) => safeKeyExtractor(getTestID(), index, item?.id)
 
   onScrollToIndexFailed = (error) => {
-    const { currentChapters } = this.props
+    const { currentTocChapters } = this.props
     if (this.listRef !== null) {
       this.listRef.scrollToOffset({ offset: error.averageItemLength * error.index, animated: false });
       setTimeout(() => {
-        if (currentChapters.length !== 0 && this.listRef !== null) {
+        if (currentTocChapters.length !== 0 && this.listRef !== null) {
           this.listRef.scrollToIndex({ index: error.index, animated: false });
         }
       }, 100);
@@ -250,7 +250,7 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
 
   render() {
     const {
-      currentChapters,
+      currentTocChapters,
       isLoading,
       isLoadingMore,
       isQuerying,
@@ -282,12 +282,12 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
           selectedFilterAccessibilityHint={translate('ARIA HINT - This is a list of the chapters for this episode')}
         />
         {isLoading || (isQuerying && <ActivityIndicator fillSpace testID={getTestID()} />)}
-        {!isLoading && !isQuerying && currentChapters && (
+        {!isLoading && !isQuerying && currentTocChapters && (
           <FlatList
             customOptimizationProps={PV.FlatList.optimizationPropsFaster}
-            data={currentChapters}
-            dataTotalCount={currentChapters.length}
-            extraData={currentChapters}
+            data={currentTocChapters}
+            dataTotalCount={currentTocChapters.length}
+            extraData={currentTocChapters}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={this._keyExtractor}

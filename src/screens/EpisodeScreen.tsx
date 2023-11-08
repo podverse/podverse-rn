@@ -191,13 +191,13 @@ export class EpisodeScreen extends HistoryIndexListenerScreen<Props, State> {
         sort: PV.Filters._chronologicalKey
       })
 
-      const chapters = await retriveNowPlayingItemChapters(episode.id)
+      const { currentTocChapters } = await retriveNowPlayingItemChapters(episode.id)
 
       this.setState({
-        chapters,
+        chapters: currentTocChapters,
         clips,
         totalClips,
-        totalChapters: chapters && chapters.length,
+        totalChapters: currentTocChapters && currentTocChapters.length,
         hasInternetConnection: !!hasInternetConnection
       })
     }

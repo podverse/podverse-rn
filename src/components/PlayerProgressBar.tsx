@@ -9,7 +9,7 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { playerHandleSeekTo } from '../services/player'
 import {
-  getChapterForTimeAndSetOnState,
+  loadChapterPlaybackInfoForTime,
   loadChapterPlaybackInfo,
   pauseChapterInterval,
   resumeChapterInterval
@@ -21,7 +21,7 @@ type Props = {
   backupDuration?: number | null
   clipEndTime?: number | null
   clipStartTime?: number | null
-  currentChaptersStartTimePositions?: number[]
+  currentTocChaptersStartTimePositions?: number[]
   globalTheme: any
   isLiveItem?: boolean
   isLoading?: boolean
@@ -58,7 +58,7 @@ const handleOnValueChangeChapter = (newProgressValue: number) => {
       lastOnValueChangeChapterTime = currentTime
       const innerPosition = newProgressValue * parentScopeDuration
       const haptic = true
-      getChapterForTimeAndSetOnState(innerPosition, haptic)
+      loadChapterPlaybackInfoForTime(innerPosition, haptic)
     }
   }
 }
@@ -99,7 +99,7 @@ export function PlayerProgressBar(props: Props) {
     backupDuration,
     clipEndTime,
     clipStartTime,
-    currentChaptersStartTimePositions,
+    currentTocChaptersStartTimePositions,
     isLiveItem,
     isLoading,
     isMakeClipScreen
@@ -143,8 +143,8 @@ export function PlayerProgressBar(props: Props) {
   }
 
   const components = []
-  if (currentChaptersStartTimePositions && currentChaptersStartTimePositions.length > 1) {
-    for (const currentChaptersStartTimePosition of currentChaptersStartTimePositions) {
+  if (currentTocChaptersStartTimePositions && currentTocChaptersStartTimePositions.length > 1) {
+    for (const currentChaptersStartTimePosition of currentTocChaptersStartTimePositions) {
       components.push(
         <View
           key={`player-progress-bar-chapter-flag-${currentChaptersStartTimePosition}`}
@@ -184,11 +184,11 @@ export function PlayerProgressBar(props: Props) {
             Calling PVAudioPlayer.seekTo(innerPosition) in playerHandleSeekTo causes the progress bar
             to re-render with the *last* innerPosition, before finally seeking to the new innerPosition
             and then re-rendering with the new correct innerPosition. To workaround this, I am adding
-            a 4.333 second delay before clearing the slidingPositionOverride from local state.
+            a 3 second delay before clearing the slidingPositionOverride from local state.
           */
           setTimeout(() => {
             setGlobal({ slidingPositionOverride: null })
-          }, 4333)
+          }, 3000)
         }}
         onValueChange={(newProgressValue) => {
           handleOnValueChange(newProgressValue)

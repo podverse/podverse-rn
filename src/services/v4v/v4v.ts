@@ -359,7 +359,7 @@ const convertValueTagIntoValueTransaction = async (
   const pubkey = 'podverse-pubkey'
   const recipientAmount = normalizedValueRecipient.amount
 
-  const satoshiStreamStats = createSatoshiStreamStats(
+  const satoshiStreamStats = await createSatoshiStreamStats(
     podcastTitle,
     episodeTitle,
     podcastIndexPodcastId,
@@ -520,13 +520,19 @@ export const sendBoost = async (
     valueTag?.remoteFeedGuid,
     valueTag?.remoteItemGuid,
     item?.podcastGuid || ''
-  )
+  );
 
-  const combinedNonFeeValueTransactions = nonFeeValueTransactions.concat(parentNonFeeValueTransactions)
-  const combinedFeeValueTransactions = feeValueTransactions.concat(parentFeeValueTransactions)
-
-  await processSendValueTransactions(combinedNonFeeValueTransactions, action, includeMessage)
-  await processSendValueTransactions(combinedFeeValueTransactions, action, includeMessage)
+  /*
+  Process the value transactions in the background so the user receives
+  immediate "boost sent" feedback from the app. If errors occur, they will populate on
+  the boostagram screen as they are returned.
+  */
+ (async () => {
+    const combinedNonFeeValueTransactions = nonFeeValueTransactions.concat(parentNonFeeValueTransactions)
+    const combinedFeeValueTransactions = feeValueTransactions.concat(parentFeeValueTransactions)
+    await processSendValueTransactions(combinedNonFeeValueTransactions, action, includeMessage)
+    await processSendValueTransactions(combinedFeeValueTransactions, action, includeMessage)
+  })()
   
   // Run refresh wallet data in the background after transactions complete.
   v4vRefreshProviderWalletInfo(activeProvider?.key)
@@ -544,12 +550,19 @@ const sendValueTransactions = async (
   if (valueTransactions.length === 0) return
   let response: AlbyMultiKeySendResponse | null = null
 
+  // Remove valueTransactions with an amount <= 0 since those are invalid
+  // and could result in 400 Bad Request errors.
+  const filteredTransactions = valueTransactions.filter((valueTransaction) => {
+    const amount = Math.floor(valueTransaction?.normalizedValueRecipient?.amount) || 0
+    return amount > 0
+  })
+
   if (providerKey) {
     // Use require here to prevent circular dependencies issues.
     if (providerKey === 'alby') {
       const { v4vAlbySendKeysendPayments } = require('./providers/alby')
       response = await v4vAlbySendKeysendPayments(
-        valueTransactions,
+        filteredTransactions,
         includeMessage
       )
     }
@@ -707,11 +720,15 @@ export const getFinalValueTag = (valueTag: ValueTag, playerPosition: number) => 
   if (valueTag?.valueTimeSplits && valueTag?.valueTimeSplits.length > 0) {
     const flooredPlayerPosition = Math.floor(playerPosition) || 0
     const valueTimeSplitsValueTags = valueTag.valueTimeSplits || []
-    const matchingValueTimeSplitsValueTag = valueTimeSplitsValueTags.find((v: ValueTimeSplit) => {
+    // reverse the value time splits order before finding, so that the items with the later
+    // matching startTime take precedence over the items with earlier startTimes.
+    // NOTE: see also state/actions/playerChapters.ts file
+    const reverseValueTimeSplitsValueTags = valueTimeSplitsValueTags.reverse()
+    const matchingValueTimeSplitsValueTag = reverseValueTimeSplitsValueTags.find((v: ValueTimeSplit) => {
       return flooredPlayerPosition >= v.startTime && flooredPlayerPosition < v.endTime
     })
 
-    if (matchingValueTimeSplitsValueTag?.valueTags?.length > 0) {
+    if (matchingValueTimeSplitsValueTag && matchingValueTimeSplitsValueTag?.valueTags?.length > 0) {
       for (const matchingValueTag of matchingValueTimeSplitsValueTag.valueTags) {
         if (checkIfIsLightningKeysendValueTag(matchingValueTag)) {
           finalValueTag = matchingValueTag

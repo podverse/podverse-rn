@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Episode, NowPlayingItem, Podcast, ValueTag,
-  ValueTimeSplit, checkIfIsLightningKeysendValueTag } from 'podverse-shared'
+  ValueTimeSplit, checkIfIsLightningKeysendValueTag, checkIfSameNowPlayingItems } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../../resources'
 import { playerGetPosition } from '../../../services/player'
@@ -12,7 +12,6 @@ import {
   v4vDeleteProviderFromStorage,
   v4vGetActiveValueTag,
   v4vGetProvidersConnected,
-  v4vGetSenderInfo,
   v4vGetSettings,
   v4vGetTypeMethodKey,
   v4vSetProvidersConnected,
@@ -79,7 +78,6 @@ export const v4vInitialize = async () => {
   const globalState = getGlobal()
   const showLightningIcons = await AsyncStorage.getItem(PV.Keys.V4V_SHOW_LIGHTNING_ICONS)
   const savedSettings = await v4vGetSettings()
-  const savedSenderInfo = await v4vGetSenderInfo()
   const streamingValueOn = await getStreamingValueOn()
 
   // NOTE: Previously I only had this running on app launch, but if the network request
@@ -107,7 +105,6 @@ export const v4vInitialize = async () => {
           ...globalState.session.v4v.providers,
           connected: savedProviders
         },
-        senderInfo: savedSenderInfo,
         streamingValueOn: !!streamingValueOn
       }
     }
@@ -463,22 +460,7 @@ export const v4vClearPreviousTransactionErrors = () => {
 /* V4VSenderInfo helpers */
 
 export const v4vUpdateSenderInfoName = async (newName: string) => {
-  const globalState = getGlobal()
-
   await v4vSetSenderInfo({ name: newName })
-
-  setGlobal({
-    session: {
-      ...globalState.session,
-      v4v: {
-        ...globalState.session.v4v,
-        senderInfo: {
-          ...globalState.session.v4v.senderInfo,
-          name: newName
-        }
-      }
-    }
-  })
 }
 
 /* V4VBoostagramMessage helpers */
@@ -569,9 +551,9 @@ const convertValueTimeSplitsToAppConvertedSplits = (
 ) => {
   return {
     type,
-    startTime: oldValueTimeSplit.startTime,
+    startTime: Math.floor(oldValueTimeSplit.startTime),
     duration: oldValueTimeSplit.duration,
-    endTime: oldValueTimeSplit.startTime + oldValueTimeSplit.duration,
+    endTime: Math.floor(oldValueTimeSplit.startTime + oldValueTimeSplit.duration),
     remoteStartTime: oldValueTimeSplit.remoteStartTime,
     remotePercentage: oldValueTimeSplit.remotePercentage,
     remoteItem: oldValueTimeSplit.remoteItem,
@@ -583,6 +565,10 @@ const convertValueTimeSplitsToAppConvertedSplits = (
 
 export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
   if (!item) return
+
+  // We don't support enriched value tags for livestreams currently.
+  if (item.liveItem) return
+
   const oldValueTags = item.episodeValue || []
   const newValueTags: ValueTag[] = []
   
@@ -635,7 +621,9 @@ export const v4vEnrichValueTagDataIfNeeded = async (item: NowPlayingItem) => {
     const playerState = getGlobal().player
     const nowPlayingItem = playerState?.nowPlayingItem
 
-    if (nowPlayingItem) {
+    const isCurrentNowPlayingItem = checkIfSameNowPlayingItems(item, nowPlayingItem)
+
+    if (isCurrentNowPlayingItem) {
       setGlobal({
         player: {
           ...playerState,

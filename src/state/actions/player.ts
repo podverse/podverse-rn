@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import debounce from 'lodash/debounce'
 import {
   checkIfVideoFileOrVideoLiveType,
   convertNowPlayingItemClipToNowPlayingItemEpisode,
@@ -182,37 +183,61 @@ const handleSlidingPositionOverride = (startTime: number) => {
   }, 4333)
 }
 
+let skipChapterInterval = false
+export function setSkipChapterInterval() {
+  skipChapterInterval = true
+}
+
+export function getSkipChapterInterval() {
+  return skipChapterInterval
+}
+
+function clearSkipChapterInterval() {
+  skipChapterInterval = false
+}
+
+export const debouncedClearSkipChapterInterval = debounce(clearSkipChapterInterval, 2000, {
+  leading: false,
+  trailing: true
+})
+
 export const playerPlayPreviousChapterOrReturnToBeginningOfTrack = async () => {
   const globalState = getGlobal()
-  const { currentChapters } = globalState
+  const { currentTocChapters } = globalState
 
-  if (currentChapters && currentChapters.length > 1) {
+  if (currentTocChapters && currentTocChapters.length > 1) {
     const previousChapter = await getChapterPrevious()
     if (previousChapter) {
+      setSkipChapterInterval()
       await playerHandleSeekTo(previousChapter.startTime)
       setChapterOnGlobalState(previousChapter)
       handleSlidingPositionOverride(previousChapter.startTime)
+      debouncedClearSkipChapterInterval()
       return
     }
   }
 
+  debouncedClearSkipChapterInterval()
   await playerHandleSeekTo(0)
 }
 
 export const playerPlayNextChapterOrQueueItem = async () => {
   const globalState = getGlobal()
-  const { currentChapters } = globalState
+  const { currentTocChapters } = globalState
 
-  if (currentChapters && currentChapters.length > 1) {
+  if (currentTocChapters && currentTocChapters.length > 1) {
     const nextChapter = await getChapterNext()
     if (nextChapter) {
+      setSkipChapterInterval()
       await playerHandleSeekTo(nextChapter.startTime)
       setChapterOnGlobalState(nextChapter)
       handleSlidingPositionOverride(nextChapter.startTime)
+      debouncedClearSkipChapterInterval()
       return
     }
   }
   
+  debouncedClearSkipChapterInterval()
   await audioPlayNextFromQueue()
 }
 
@@ -252,7 +277,7 @@ export const playerLoadNowPlayingItem = async (
   shouldPlay: boolean,
   forceUpdateOrderDate: boolean,
   setCurrentItemNextInQueue: boolean
-) => { 
+) => {
   const globalState = getGlobal()
   const { nowPlayingItem: previousNowPlayingItem } = globalState.player
 

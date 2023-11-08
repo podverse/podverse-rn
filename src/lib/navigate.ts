@@ -19,12 +19,14 @@ export const navigateToEpisodeScreenInPodcastsStackNavigatorWithIds = (
     null,
     { forceRequest: true }
   )
-  navigation.navigate({
-    routeName: PV.RouteNames.EpisodeScreen,
-    params: {
-      episodeId
-    }
-  })
+  setTimeout(() => {
+    navigation.navigate({
+      routeName: PV.RouteNames.EpisodeScreen,
+      params: {
+        episodeId
+      }
+    })
+  }, 1000)
 }
 
 /*

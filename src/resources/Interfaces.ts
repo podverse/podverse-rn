@@ -130,10 +130,11 @@ export interface InitialState {
   }
   parsedTranscript: TranscriptRow[] | null
   clipIntervalActive: boolean
-  chapterIntervalActive: boolean
   currentChapter: any
   currentChapters: any
-  currentChaptersStartTimePositions: any
+  currentTocChapter: any
+  currentTocChapters: any
+  currentTocChaptersStartTimePositions: any
   player: {
     backupDuration?: number
     hasErrored: boolean
@@ -222,7 +223,6 @@ export interface InitialState {
         boost: BannerInfoError[]
         streaming: BannerInfoError[]
       }
-      senderInfo: V4VSenderInfo
       boostagramMessage: string
       valueTimeSplitIsActive: boolean
     }
