@@ -386,6 +386,7 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
           <SortableList
             data={queueItems}
             isEditing={isEditing}
+            keyUseIndex
             onDragEnd={this._onDragEnd}
             renderItem={this._renderQueueItemRow}
           />
