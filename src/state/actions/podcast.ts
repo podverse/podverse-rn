@@ -20,11 +20,11 @@ import { updateDownloadedPodcasts } from './downloads'
 const _fileName = 'src/state/actions/podcast.ts'
 
 const handleCombineWithAddByRSSPodcasts = async (
-  searchTitle?: string, sort?: string | null, medium?: PodcastMedium) => {
+  medium: PodcastMedium, searchTitle?: string, sort?: string | null) => {
   const hasVideo = medium === PV.Medium.video
   const isMusic = medium === PV.Medium.music
 
-  const combinedPodcasts = await combineWithAddByRSSPodcastsService(sort, medium)
+  const combinedPodcasts = await combineWithAddByRSSPodcastsService(medium, sort)
   let finalPodcasts = []
 
   if (searchTitle) {
@@ -43,16 +43,18 @@ const handleCombineWithAddByRSSPodcasts = async (
 }
 
 export const findCombineWithAddByRSSPodcasts = async (
+  medium: PodcastMedium,
   searchTitle?: string
 ) => {
-  return handleCombineWithAddByRSSPodcasts(searchTitle)
+  return handleCombineWithAddByRSSPodcasts(medium, searchTitle)
 }
 
 export const combineWithAddByRSSPodcasts = async (
+  medium: PodcastMedium,
   searchTitle?: string,
   sort?: string | null
 ) => {
-  const finalPodcasts = await handleCombineWithAddByRSSPodcasts(searchTitle, sort)
+  const finalPodcasts = await handleCombineWithAddByRSSPodcasts(medium, searchTitle, sort)
 
   setGlobal({
     subscribedPodcasts: finalPodcasts,
@@ -60,10 +62,10 @@ export const combineWithAddByRSSPodcasts = async (
   })
 }
 
-export const getSubscribedPodcasts = async (sort?: string | null, medium?: PodcastMedium) => {
+export const getSubscribedPodcasts = async (medium: PodcastMedium, sort?: string | null) => {
   const globalState = getGlobal() 
   const subscribedPodcastIds = globalState.session.userInfo.subscribedPodcastIds || []
-  const data = await getSubscribedPodcastsService(subscribedPodcastIds, sort, medium)
+  const data = await getSubscribedPodcastsService(medium, subscribedPodcastIds, sort)
   const subscribedPodcasts = data[0] || []
   const subscribedPodcastsTotalCount = data[1] || 0
 

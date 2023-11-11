@@ -65,7 +65,7 @@ export const voicePlayNextQueuedItem = async (query: string) => {
 
 export const voicePlayNextSubscribedPodcast = async (query: string) => {
   let shouldContinue = true
-  const podcasts = await getSubscribedPodcasts()
+  const podcasts = await getSubscribedPodcasts(PV.Medium.mixed)
 
   let matchingPodcast = null
   if (podcasts && podcasts.length > 0) {

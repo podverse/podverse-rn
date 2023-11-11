@@ -173,10 +173,10 @@ export const loginUser = async (credentials: Credentials) => {
         try {
           const callback = async (newUserInfo: UserInfo) => {
             await syncItemsWithLocalStorage(newUserInfo)
-            await getSubscribedPodcasts()
+            await getSubscribedPodcasts(PV.Medium.mixed)
             await askToSyncWithNowPlayingItem()
             await parseAllAddByRSSPodcasts()
-            await combineWithAddByRSSPodcasts()
+            await combineWithAddByRSSPodcasts(PV.Medium.mixed)
           }
           askToSyncLocalPodcastsWithServer(localUserInfo, serverUserInfo, callback)
         } catch (error) {

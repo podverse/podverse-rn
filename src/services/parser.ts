@@ -138,7 +138,7 @@ export const getAddByRSSPodcastLocally = async (feedUrl: string) => {
   return addByRSSPodcastFeedUrlPodcasts.find((x: any) => x.addByRSSPodcastFeedUrl === feedUrl)
 }
 
-export const getAddByRSSPodcastsLocally = async (medium: PodcastMedium | PV.Medium.mixed) => {
+export const getAddByRSSPodcastsLocally = async (medium: PodcastMedium) => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCASTS)
     let items = itemsString ? JSON.parse(itemsString) : []
@@ -529,7 +529,7 @@ export const removeAddByRSSPodcast = async (feedUrl: string) => {
   let addByRSSPodcastFeedUrls = await getAddByRSSPodcastFeedUrlsLocally()
   addByRSSPodcastFeedUrls = addByRSSPodcastFeedUrls.filter((x: string) => x !== feedUrl)
   await setAddByRSSPodcastFeedUrlsLocally(addByRSSPodcastFeedUrls)
-  const combinedPodcasts = await combineWithAddByRSSPodcasts()
+  const combinedPodcasts = await combineWithAddByRSSPodcasts(PV.Medium.mixed)
   return combinedPodcasts
 }
 

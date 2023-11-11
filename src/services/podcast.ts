@@ -87,13 +87,13 @@ export const findPodcastsByFeedUrls = async (feedUrls: string[]) => {
 }
 
 export const getSubscribedPodcasts = async (
+  medium: PodcastMedium,
   subscribedPodcastIds: string[],
-  sort?: string | null,
-  medium?: PodcastMedium
+  sort?: string | null
 ) => {
   const hasVideo = medium === 'video'
   const isMusic = medium === 'music'
-  const addByRSSPodcasts = await getAddByRSSPodcastsLocally(isMusic)
+  const addByRSSPodcasts = await getAddByRSSPodcastsLocally(medium)
 
   const query = {
     podcastIds: subscribedPodcastIds,
@@ -109,7 +109,7 @@ export const getSubscribedPodcasts = async (
   if (subscribedPodcastIds.length < 1 && addByRSSPodcasts.length > 0) {
     await handleAutoDownloadEpisodesAddByRSSPodcasts()
     await setSubscribedPodcasts([])
-    const combinedPodcasts = await combineWithAddByRSSPodcasts(sort)
+    const combinedPodcasts = await combineWithAddByRSSPodcasts(medium, sort)
     return [combinedPodcasts, combinedPodcasts.length]
   }
 
@@ -118,26 +118,26 @@ export const getSubscribedPodcasts = async (
       const data = await getPodcasts(query)
       let subscribedPodcasts = data[0] || []
       await setSubscribedPodcasts(subscribedPodcasts)
-      subscribedPodcasts = await combineWithAddByRSSPodcasts(sort)
+      subscribedPodcasts = await combineWithAddByRSSPodcasts(medium, sort)
       return [subscribedPodcasts, subscribedPodcasts.length]
     } catch (error) {
       errorLogger(_fileName, 'getSubscribedPodcasts', error)
-      const combinedPodcasts = await combineWithAddByRSSPodcasts(sort)
+      const combinedPodcasts = await combineWithAddByRSSPodcasts(medium, sort)
       return [combinedPodcasts, combinedPodcasts.length]
     }
   } else {
-    const combinedPodcasts = await combineWithAddByRSSPodcasts(sort)
+    const combinedPodcasts = await combineWithAddByRSSPodcasts(medium, sort)
     return [combinedPodcasts, combinedPodcasts.length]
   }
 }
 
-export const combineWithAddByRSSPodcasts = async (sort?: string | null, medium?: PodcastMedium) => {
+export const combineWithAddByRSSPodcasts = async (medium: PodcastMedium, sort?: string | null) => {
   const hasVideo = medium === 'video'
   const isMusic = medium === 'music'
 
   const [subscribedPodcastsResults, addByRSSPodcastsResults] = await Promise.all([
     getSubscribedPodcastsLocally(),
-    getAddByRSSPodcastsLocally()
+    getAddByRSSPodcastsLocally(medium)
   ])
 
   const subscribedPodcasts =

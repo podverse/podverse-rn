@@ -6,13 +6,14 @@
 import { Platform } from 'react-native'
 import Share, { Options } from 'react-native-share'
 import RNFS from 'react-native-fs'
+import { PV } from '../resources'
 import { getSubscribedPodcasts } from '../state/actions/podcast'
 import { errorLogger } from './logger'
 
 const _fileName = 'src/lib/opmlExport.ts'
 
 export const exportSubscribedPodcastsAsOPML = async () => {
-  const subscribedPodcasts = await getSubscribedPodcasts()
+  const subscribedPodcasts = await getSubscribedPodcasts(PV.Medium.mixed)
   const blob = opmlExport(subscribedPodcasts)
   await downloadOPMLExport(blob)
 }

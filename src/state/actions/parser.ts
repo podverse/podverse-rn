@@ -1,3 +1,4 @@
+import { PodcastMedium } from 'podverse-shared'
 import { Alert } from 'react-native'
 import { setGlobal } from 'reactn'
 import { errorLogger } from '../../lib/logger'
@@ -20,8 +21,8 @@ import { getSubscribedPodcasts } from './podcast'
 
 const _fileName = 'src/state/actions/parser.ts'
 
-const handleAddOrRemoveByRSSPodcast = async (feedUrl: string, shouldAdd: boolean, credentials?: string,
-  throwError?: boolean) => {
+const handleAddOrRemoveByRSSPodcast = async (medium: PodcastMedium,
+  feedUrl: string, shouldAdd: boolean, credentials?: string, throwError?: boolean) => {
   if (shouldAdd) {
     const podcast = await parseAddByRSSPodcast(feedUrl, credentials, throwError)
     if (podcast) {
@@ -34,7 +35,7 @@ const handleAddOrRemoveByRSSPodcast = async (feedUrl: string, shouldAdd: boolean
     await removeAddByRSSPodcastService(feedUrl)
   }
 
-  const parsedPodcasts = await getAddByRSSPodcastsLocally()
+  const parsedPodcasts = await getAddByRSSPodcastsLocally(medium)
   const latestSubscribedPodcasts = await getSubscribedPodcastsLocally()
   const combinedPodcasts = parsedPodcasts.concat(latestSubscribedPodcasts[0])
   const alphabetizedPodcasts = sortPodcastArrayAlphabetically(combinedPodcasts)
@@ -58,8 +59,8 @@ const addAddByRSSPodcastIfNotAlready = async (
 
 const addManyAddByRSSPodcastFeedUrlsLocally = async (urls: string[]) => {
   const { foundPodcastIds, notFoundFeedUrls } = await findPodcastsByFeedUrls(urls)
-  const alreadySubscribedPodcasts = await getSubscribedPodcasts()
-  const alreadyAddByRSSPodcasts = await getAddByRSSPodcastsLocally()
+  const alreadySubscribedPodcasts = await getSubscribedPodcasts(PV.Medium.mixed)
+  const alreadyAddByRSSPodcasts = await getAddByRSSPodcastsLocally(PV.Medium.mixed)
   
   /* Bypass autodownloading so episodes are not autodownloaded during import process. */  
   const skipDownloadOnce = true
@@ -82,9 +83,9 @@ export const addAddByRSSPodcasts = async (urls: string[]) => {
     }
 
     await getAuthUserInfo()
-    await getSubscribedPodcasts()
+    await getSubscribedPodcasts(PV.Medium.mixed)
     await parseAllAddByRSSPodcasts()
-    await getSubscribedPodcasts()
+    await getSubscribedPodcasts(PV.Medium.mixed)
     
     PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
   } catch (error) {

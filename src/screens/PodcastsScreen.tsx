@@ -654,7 +654,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // before getting the latest from server and parsing the addByPodcastFeedUrls in getAuthUserInfo.
     await getAuthenticatedUserInfoLocally()
     const savedQuerySort = await getSavedQueryPodcastsScreenSort()
-    await combineWithAddByRSSPodcasts(searchBarText, savedQuerySort)
+    await combineWithAddByRSSPodcasts(PV.Medium.mixed, searchBarText, savedQuerySort)
 
     /* Navigate to custom screen on app launch */
     const customLaunchScreen = await getCustomLaunchScreenKey()
@@ -1332,14 +1332,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _querySubscribedPodcasts = async (preventAutoDownloading?: boolean, preventParseCustomRSSFeeds?: boolean) => {
     const { querySort, searchBarText } = this.state
-    await getSubscribedPodcasts(querySort)
+    await getSubscribedPodcasts(PV.Medium.mixed, querySort)
 
     await handleUpdateNewEpisodesCount()
 
     if (!preventParseCustomRSSFeeds) {
       if (!searchBarText && preventAutoDownloading) await parseAllAddByRSSPodcasts()
 
-      await combineWithAddByRSSPodcasts(searchBarText, querySort)
+      await combineWithAddByRSSPodcasts(PV.Medium.mixed, searchBarText, querySort)
     }
 
     if (!preventAutoDownloading) {
@@ -1358,7 +1358,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _queryCustomFeeds = async () => {
-    const customFeeds = await getAddByRSSPodcastsLocally()
+    const customFeeds = await getAddByRSSPodcastsLocally(PV.Medium.mixed)
     return customFeeds
   }
 
@@ -1366,7 +1366,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { searchBarText: searchTitle } = this.state
     let localPodcasts = [] as any
     if (searchTitle && page === 1) {
-      localPodcasts = await findCombineWithAddByRSSPodcasts(searchTitle)
+      localPodcasts = await findCombineWithAddByRSSPodcasts(PV.Medium.mixed, searchTitle)
       this.setState({
         queryFrom: PV.Filters._allPodcastsKey,
         flatListData: localPodcasts,
@@ -1443,7 +1443,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
       if (isDownloadedSelected) {
-        const podcasts = await getDownloadedPodcasts('all', searchTitle)
+        const podcasts = await getDownloadedPodcasts(PV.Medium.mixed, searchTitle)
         newState.flatListData = [...podcasts]
         newState.queryFrom = PV.Filters._downloadedKey
         newState.selectedFilterLabel = await getSelectedFilterLabel(PV.Filters._downloadedKey)
