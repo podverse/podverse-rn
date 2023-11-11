@@ -42,8 +42,10 @@ import { checkIfFDroidAppVersion, isPortrait } from '../lib/deviceDetection'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
-import { handlePodcastScreenNavigateWithParams,
-  navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
+import {
+  handlePodcastScreenNavigateWithParams,
+  navigateToEpisodeScreenInPodcastsStackNavigatorWithIds
+} from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { resetAllAppKeychain } from '../lib/secutity'
 import {
@@ -584,11 +586,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
               if (!podcast?.id && !episode?.id) return
 
-              navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(
-                this.props.navigation,
-                podcast?.id,
-                episode.id
-              )
+              navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(this.props.navigation, podcast?.id, episode.id)
             }
           } else if (path === PV.DeepLinks.Playlist.pathPrefix) {
             await navigate(PV.RouteNames.MyLibraryScreen)
@@ -596,10 +594,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               navToPlaylistWithId: id
             })
           } else if (path === PV.DeepLinks.Podcast.pathPrefix) {
-            await handlePodcastScreenNavigateWithParams(
-              this.props.navigation,
-              id
-            )
+            await handlePodcastScreenNavigateWithParams(this.props.navigation, id)
           } else if (path === PV.DeepLinks.Profile.pathPrefix) {
             await navigate(PV.RouteNames.MyLibraryScreen)
             await navigate(PV.RouteNames.ProfilesScreen, {
@@ -981,12 +976,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   )
 
   _onPodcastItemSelected = (podcast: Podcast) => {
-    handlePodcastScreenNavigateWithParams(
-      this.props.navigation,
-      podcast.id,
-      podcast,
-      { forceRequest: false }
-    )
+    handlePodcastScreenNavigateWithParams(this.props.navigation, podcast.id, podcast, { forceRequest: false })
   }
 
   _onPodcastItemLongPressed = (item: Podcast) => {

@@ -130,7 +130,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
           activeTranscriptRowIndexes.push(firstMatchingIndex)
 
           const activeItem = firstMatchingIndex >= 0 ? parsedTranscript[firstMatchingIndex] : null
-          
+
           const lineCount = activeItem?.lineCount || 0
 
           for (let i = 1; i < lineCount; i++) {

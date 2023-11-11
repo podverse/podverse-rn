@@ -239,12 +239,12 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
   onScrollToIndexFailed = (error) => {
     const { currentTocChapters } = this.props
     if (this.listRef !== null) {
-      this.listRef.scrollToOffset({ offset: error.averageItemLength * error.index, animated: false });
+      this.listRef.scrollToOffset({ offset: error.averageItemLength * error.index, animated: false })
       setTimeout(() => {
         if (currentTocChapters.length !== 0 && this.listRef !== null) {
-          this.listRef.scrollToIndex({ index: error.index, animated: false });
+          this.listRef.scrollToIndex({ index: error.index, animated: false })
         }
-      }, 100);
+      }, 100)
     }
   }
 
@@ -266,7 +266,7 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
     const noResultsMessage = translate('No chapters found')
     const noResultsSubMessage = translate('Chapters are created by the podcaster')
     const testID = getTestID()
-    
+
     return (
       <View style={[styles.wrapper, { width }]} transparent>
         <TableSectionSelectors

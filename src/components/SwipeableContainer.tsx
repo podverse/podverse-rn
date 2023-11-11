@@ -1,63 +1,63 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, PanResponder, Animated, Dimensions, Easing } from 'react-native';
-import { PV } from '../resources';
+import React, { Component } from 'react'
+import { View, StyleSheet, PanResponder, Animated, Dimensions, Easing } from 'react-native'
+import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
-import DottedPagination from './PaginationDots';
+import DottedPagination from './PaginationDots'
 
 interface SwipeableProps {
   chaptersIndex?: number | null
-  children: React.ReactNode[];
+  children: React.ReactNode[]
   totalChildren: number // needed for pre-loading PaginationDots
   transcriptsIndex?: number | null
 }
 
 interface SwipeableState {
-  currentIndex: number;
-  pan: Animated.ValueXY;
-  transitioningIndex: number | null;
-  panEnabled: boolean;
+  currentIndex: number
+  pan: Animated.ValueXY
+  transitioningIndex: number | null
+  panEnabled: boolean
 }
 
 class Swipeable extends Component<SwipeableProps, SwipeableState> {
-  panResponder: any;
+  panResponder: any
 
   constructor(props: SwipeableProps) {
-    super(props);
+    super(props)
 
     this.state = {
       currentIndex: 0,
       pan: new Animated.ValueXY(),
       transitioningIndex: null,
-      panEnabled: true,
-    };
+      panEnabled: true
+    }
 
     this.panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (_, gesture) => {
-        return Math.abs(gesture.dx) > Math.abs(gesture.dy) && this.state.panEnabled;
+        return Math.abs(gesture.dx) > Math.abs(gesture.dy) && this.state.panEnabled
       },
       onPanResponderMove: (_, gesture) => {
         if (
           (gesture.dx > 0 && this.state.currentIndex === 0) ||
           (gesture.dx < 0 && this.state.currentIndex === this.props.children.length - 1)
         ) {
-          return;
+          return
         }
 
         Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }], {
-          useNativeDriver: false,
-        })(_, gesture);
+          useNativeDriver: false
+        })(_, gesture)
       },
       onPanResponderEnd: (_, gesture) => {
         const { chaptersIndex, transcriptsIndex } = this.props
-        const screenWidth = Dimensions.get('window').width;
-        if (Math.abs(gesture.dx) > screenWidth * 0.10) {
+        const screenWidth = Dimensions.get('window').width
+        if (Math.abs(gesture.dx) > screenWidth * 0.1) {
           const isPanForward = gesture.dx < 0
-          const newIndex = isPanForward ? this.state.currentIndex + 1 : this.state.currentIndex - 1;
+          const newIndex = isPanForward ? this.state.currentIndex + 1 : this.state.currentIndex - 1
           if (newIndex >= 0 && newIndex < this.props.children.length) {
-            this.setState({ 
-              currentIndex: newIndex, 
-              transitioningIndex: this.state.currentIndex, 
-              panEnabled: false 
+            this.setState({
+              currentIndex: newIndex,
+              transitioningIndex: this.state.currentIndex,
+              panEnabled: false
             })
             const animateToXValue = isPanForward ? -screenWidth : screenWidth
             Animated.timing(this.state.pan, {
@@ -66,19 +66,19 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
               useNativeDriver: false,
               easing: Easing.linear
             }).start(() => {
-              this.setState({ transitioningIndex: null, panEnabled:true }, () => {
+              this.setState({ transitioningIndex: null, panEnabled: true }, () => {
                 Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }], {
-                  useNativeDriver: false,
+                  useNativeDriver: false
                 })(_, gesture)
               })
-            });
+            })
           } else {
             Animated.spring(this.state.pan, {
               toValue: { x: 0, y: 0 },
-              useNativeDriver: false,
+              useNativeDriver: false
             }).start(() => {
-              this.setState({ panEnabled: true });
-            });
+              this.setState({ panEnabled: true })
+            })
           }
 
           setTimeout(() => {
@@ -96,17 +96,17 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
         } else {
           Animated.spring(this.state.pan, {
             toValue: { x: 0, y: 0 },
-            useNativeDriver: false,
+            useNativeDriver: false
           }).start(() => {
-            this.setState({ panEnabled: true });
-          });
+            this.setState({ panEnabled: true })
+          })
         }
-      },
-    });
+      }
+    })
   }
 
   render() {
-    const { currentIndex, pan, transitioningIndex } = this.state;
+    const { currentIndex, pan, transitioningIndex } = this.state
     const renderedIndex = transitioningIndex === null ? currentIndex : transitioningIndex
 
     const children = React.Children.map(this.props.children, (child, index) => {
@@ -116,14 +116,13 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
             style={[
               styles.swipeableContainer,
               {
-                transform: [{ translateX: pan.x }],
-              },
+                transform: [{ translateX: pan.x }]
+              }
             ]}
-            {...this.panResponder.panHandlers}
-          >
+            {...this.panResponder.panHandlers}>
             {child}
           </Animated.View>
-        );
+        )
       } else if (index > renderedIndex && renderedIndex < this.props.children.length - 1) {
         const left = `${(index - renderedIndex) * 100}%`
         return (
@@ -133,13 +132,12 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
               {
                 transform: [{ translateX: pan.x }],
                 position: 'absolute',
-                left,
-              },
-            ]}
-          >
+                left
+              }
+            ]}>
             {child}
           </Animated.View>
-        );
+        )
       } else if (index < renderedIndex) {
         const left = `${(index - renderedIndex) * 100}%`
         return (
@@ -149,17 +147,16 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
               {
                 transform: [{ translateX: pan.x }],
                 position: 'absolute',
-                left,
-              },
-            ]}
-          >
+                left
+              }
+            ]}>
             {child}
           </Animated.View>
-        );
+        )
       } else {
-        return null;
+        return null
       }
-    });
+    })
 
     /*
       const children = React.Children.map(this.props.children, (child, index) => {
@@ -214,12 +211,11 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
     */
 
     return (
-    <View style={styles.view}>
-      <View style={styles.container}>
-        {children}
+      <View style={styles.view}>
+        <View style={styles.container}>{children}</View>
+        <DottedPagination currentIndex={this.state.currentIndex} totalDots={this.props.totalChildren} />
       </View>
-      <DottedPagination currentIndex={this.state.currentIndex} totalDots={this.props.totalChildren}/>
-    </View>);
+    )
   }
 }
 
@@ -227,19 +223,19 @@ const styles = StyleSheet.create({
   view: {
     flex: 1,
     width: '100%',
-    alignItems:"center"
+    alignItems: 'center'
   },
   container: {
     flex: 1,
     flexDirection: 'row',
     width: '100%',
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
   swipeableContainer: {
     flex: 1,
     width: '100%',
-    height: '100%',
-  },
-});
+    height: '100%'
+  }
+})
 
-export default Swipeable;
+export default Swipeable

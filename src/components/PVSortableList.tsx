@@ -22,7 +22,11 @@ export class PVSortableList extends React.Component<Props> {
         data={data}
         keyExtractor={(item: any, index: number) => {
           const safeKey = safeKeyExtractor(
-            'sortable_list', index, item?.clipId || item?.episodeId || item?.id, keyUseIndex)
+            'sortable_list',
+            index,
+            item?.clipId || item?.episodeId || item?.id,
+            keyUseIndex
+          )
           return `draggable-item-${safeKey}-${isEditing ? 'isEditing' : 'isNotEditing'}`
         }}
         onDragEnd={onDragEnd}

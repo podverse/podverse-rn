@@ -16,7 +16,8 @@ const featureRequestBody = 'Please describe the feature you would like added to 
 const podcastRequestSubject = 'Podcast Request: '
 const podcastRequestBody = 'Please provide the name of the podcast, and the name of the host if you know it.'
 const reportAContentIssueSubject = 'Content Issue Report: '
-const reportAContentIssueBody = 'To help expedite our response, please provide a link on Podverse to the content that you are reporting.'
+const reportAContentIssueBody =
+  'To help expedite our response, please provide a link on Podverse to the content that you are reporting.'
 const generalSubject = ''
 
 export const Emails = {

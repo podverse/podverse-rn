@@ -97,32 +97,24 @@ export class TableSectionSelectors extends React.Component<Props, State> {
           <View style={styles.tableSectionHeaderTitleWrapper}>
             {!!selectedFilterLabel && (
               <View style={styles.expandIndicatorWrapper}>
-                {
-                  (
-                    expandedState === 'collapsed' && (
-                      <Icon
-                        accessible={false}
-                        color={iconStyles.skyLight.color}
-                        name='caret-right'
-                        size={19}
-                        style={styles.expandButtonIcon}
-                      />
-                    )
-                  )
-                }
-                {
-                  (
-                    expandedState === 'expanded' && (
-                      <Icon
-                        accessible={false}
-                        color={iconStyles.skyLight.color}
-                        name='caret-down'
-                        size={19}
-                        style={styles.expandButtonIcon}
-                      />
-                    )
-                  )
-                }
+                {expandedState === 'collapsed' && (
+                  <Icon
+                    accessible={false}
+                    color={iconStyles.skyLight.color}
+                    name='caret-right'
+                    size={19}
+                    style={styles.expandButtonIcon}
+                  />
+                )}
+                {expandedState === 'expanded' && (
+                  <Icon
+                    accessible={false}
+                    color={iconStyles.skyLight.color}
+                    name='caret-down'
+                    size={19}
+                    style={styles.expandButtonIcon}
+                  />
+                )}
                 <Text
                   accessible={accessible}
                   accessibilityHint={

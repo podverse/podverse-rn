@@ -13,12 +13,7 @@ export const navigateToEpisodeScreenInPodcastsStackNavigatorWithIds = (
   episodeId: string
 ) => {
   navigateBackToRoot(navigation)
-  handlePodcastScreenNavigateWithParams(
-    navigation,
-    podcastId,
-    null,
-    { forceRequest: true }
-  )
+  handlePodcastScreenNavigateWithParams(navigation, podcastId, null, { forceRequest: true })
   setTimeout(() => {
     navigation.navigate({
       routeName: PV.RouteNames.EpisodeScreen,
@@ -83,7 +78,6 @@ export const navigateToEpisodeScreenWithItemInCurrentStack = (
   and populate it with podcast data from an object of type NowPlayingItem.
  */
 export const navigateToPodcastScreenWithItem = async (navigation: any, item: NowPlayingItem) => {
-
   let savedQuery: PodcastScreenSavedQuery = {}
   if (item?.podcastId) {
     savedQuery = await getSavedQueryPodcastScreen(item.podcastId)

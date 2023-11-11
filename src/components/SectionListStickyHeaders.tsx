@@ -33,14 +33,12 @@ class ListFooterComponent extends React.Component<ListFooterComponentProps> {
 
     if (isLoadingMore) {
       return (
-        <View
-          accessible={false}
-          style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}>
+        <View accessible={false} style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}>
           <ActivityIndicator accessible={false} testID={testID} />
         </View>
       )
     }
-  
+
     return <></>
   }
 }
@@ -62,8 +60,7 @@ export const SectionListStickyHeaders = (props: Props) => {
     testID
   } = props
 
-  const shouldShowNoResultsFoundMessage = !disableNoResultsMessage
-    && !isLoadingMore && !showNoInternetConnectionMessage
+  const shouldShowNoResultsFoundMessage = !disableNoResultsMessage && !isLoadingMore && !showNoInternetConnectionMessage
 
   return (
     <>
@@ -71,13 +68,9 @@ export const SectionListStickyHeaders = (props: Props) => {
         contentOffset={contentOffset}
         keyExtractor={keyExtractor}
         ItemSeparatorComponent={() => <Divider optional />}
-        ListFooterComponent={(
-          <ListFooterComponent
-            globalTheme={globalTheme}
-            isLoadingMore={isLoadingMore}
-            testID={testID}
-          />
-        )}
+        ListFooterComponent={
+          <ListFooterComponent globalTheme={globalTheme} isLoadingMore={isLoadingMore} testID={testID} />
+        }
         ListHeaderComponent={ListHeaderComponent}
         ref={listRef}
         renderItem={renderItem}
@@ -85,9 +78,7 @@ export const SectionListStickyHeaders = (props: Props) => {
         sections={sections}
         stickySectionHeadersEnabled
       />
-      {shouldShowNoResultsFoundMessage && (
-        <MessageWithAction message={noResultsMessage} testID={testID} />
-      )}
+      {shouldShowNoResultsFoundMessage && <MessageWithAction message={noResultsMessage} testID={testID} />}
     </>
   )
 }

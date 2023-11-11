@@ -32,7 +32,9 @@ export class SettingsScreenDebugging extends React.Component<Props, State> {
   })
 
   async componentDidMount() {
-    const [appKilledContinuePlayback] = await Promise.all([AsyncStorage.getItem(PV.Keys.SETTING_APP_KILLED_CONTINUE_PLAYBACK)])
+    const [appKilledContinuePlayback] = await Promise.all([
+      AsyncStorage.getItem(PV.Keys.SETTING_APP_KILLED_CONTINUE_PLAYBACK)
+    ])
 
     this.setState({
       appKilledContinuePlayback: !!appKilledContinuePlayback
@@ -55,7 +57,7 @@ export class SettingsScreenDebugging extends React.Component<Props, State> {
 
   render() {
     const { appKilledContinuePlayback } = this.state
-    
+
     return (
       <ScrollView
         contentContainerStyle={styles.scrollViewContentContainer}

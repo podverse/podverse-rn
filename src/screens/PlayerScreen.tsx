@@ -179,16 +179,19 @@ export class PlayerScreen extends React.Component<Props> {
       try {
         const fullEpisode = await getEpisode(episode.id)
         if (fullEpisode && fullEpisode.description) {
-          setGlobal({
-            player: {
-              ...this.global.player,
-              episode: fullEpisode
+          setGlobal(
+            {
+              player: {
+                ...this.global.player,
+                episode: fullEpisode
+              }
+            },
+            () => {
+              // This function will refresh the v4v connected providers and update the global state,
+              // to ensure that the boost and streaming buttons appear when v4v is available and connected.
+              v4vRefreshConnectedProviders()
             }
-          }, () => {
-            // This function will refresh the v4v connected providers and update the global state,
-            // to ensure that the boost and streaming buttons appear when v4v is available and connected.
-            v4vRefreshConnectedProviders()
-          })
+          )
         }
       } catch (error) {
         // do nothing

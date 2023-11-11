@@ -1,18 +1,24 @@
 import { getGlobal } from 'reactn'
-import { NowPlayingItem, convertToNowPlayingItem } from "podverse-shared"
+import { NowPlayingItem, convertToNowPlayingItem } from 'podverse-shared'
 import { PV } from '../resources'
 import { getEpisodesAndLiveItems } from '../services/liveItem'
-import { playerHandlePlayWithUpdate, playerLoadNowPlayingItem } from "../state/actions/player"
+import { playerHandlePlayWithUpdate, playerLoadNowPlayingItem } from '../state/actions/player'
 import { getPodcasts } from '../services/podcast'
 import { getSubscribedPodcasts } from '../state/actions/podcast'
-import { getQueueItems, removeQueueItem } from "../state/actions/queue"
+import { getQueueItems, removeQueueItem } from '../state/actions/queue'
 
 const shouldPlay = true
 const forceUpdateOrderDate = false
 const setCurrentItemNextInQueue = true
 
 const checkIfQueryMatch = (query?: string, title?: string) => {
-  return query && title?.toLowerCase()?.trim()?.includes(query)
+  return (
+    query &&
+    title
+      ?.toLowerCase()
+      ?.trim()
+      ?.includes(query)
+  )
 }
 
 export const cleanVoiceCommandQuery = (query?: string) => {
@@ -47,7 +53,7 @@ export const voicePlayNextQueuedItem = async (query: string) => {
   const queueItem = queueItems.find(({ podcastTitle }: NowPlayingItem) => {
     return checkIfQueryMatch(query, podcastTitle)
   })
-  
+
   if (queueItem) {
     await playerLoadNowPlayingItem(queueItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
     await removeQueueItem(queueItem)
@@ -60,7 +66,7 @@ export const voicePlayNextQueuedItem = async (query: string) => {
 export const voicePlayNextSubscribedPodcast = async (query: string) => {
   let shouldContinue = true
   const podcasts = await getSubscribedPodcasts()
-  
+
   let matchingPodcast = null
   if (podcasts && podcasts.length > 0) {
     for (const podcast of podcasts) {
@@ -137,6 +143,6 @@ export const voicePlayPodcastFromSearchAPI = async (query: string) => {
       shouldContinue = false
     }
   }
-  
+
   return shouldContinue
 }

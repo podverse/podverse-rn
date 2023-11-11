@@ -30,7 +30,7 @@ export const createSatoshiStreamStats = async (
   recipientAmount: number,
   remote_feed_guid?: string,
   remote_item_guid?: string,
-  guid?: string, // podcast guid
+  guid?: string // podcast guid
 ) => {
   /* TLV records have a limit */
   const podcast = (podcastTitle || translate('Untitled Podcast')).substring(0, 60)

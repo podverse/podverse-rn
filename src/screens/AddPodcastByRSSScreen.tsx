@@ -104,11 +104,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
             if (addByRSSSucceeded) {
               const podcast = await getAddByRSSPodcastLocally(url)
 
-              handlePodcastScreenNavigateWithParams(
-                this.props.navigation,
-                podcast.id,
-                podcast
-              )
+              handlePodcastScreenNavigateWithParams(this.props.navigation, podcast.id, podcast)
             }
             this.props.navigation.setParams({
               _savePodcastByRSSUrlIsLoading: false

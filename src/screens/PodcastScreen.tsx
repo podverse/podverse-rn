@@ -56,10 +56,7 @@ import {
   savePodcastCredentials
 } from '../services/parser'
 import { getPodcast } from '../services/podcast'
-import {
-  PodcastScreenSavedQuery,
-  updateSavedQueriesPodcastScreen
-} from '../services/savedQueryFilters'
+import { PodcastScreenSavedQuery, updateSavedQueriesPodcastScreen } from '../services/savedQueryFilters'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import * as DownloadState from '../state/actions/downloads'
@@ -478,8 +475,8 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _onEndReached = ({ distanceFromEnd }: { distanceFromEnd: number }) => {
     const { endOfResultsReached, podcast, queryPage = 1, sections, viewType } = this.state
-    
-    if (!!sections?.length) return null 
+
+    if (!!sections?.length) return null
 
     if (
       !podcast.addByRSSPodcastFeedUrl &&
@@ -525,10 +522,11 @@ export class PodcastScreen extends React.Component<Props, State> {
   _ListHeaderComponent = () => {
     const { searchBarText, viewType, flatListDataTotalCount, sections } = this.state
     const placeholder = getSearchPlaceholder(viewType)
-    const shouldShowSearchBar =
-      !!(searchBarText
-        || (flatListDataTotalCount && flatListDataTotalCount > 3)
-        || (sections && sections.length >= 1))
+    const shouldShowSearchBar = !!(
+      searchBarText ||
+      (flatListDataTotalCount && flatListDataTotalCount > 3) ||
+      (sections && sections.length >= 1)
+    )
 
     return (
       <>
@@ -1480,9 +1478,11 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _handleSeasonOrSerialPodcastEpisodes = async (
-    data: any[], querySort: string | null, newState: State,
-    extraParams: any) => {
-    
+    data: any[],
+    querySort: string | null,
+    newState: State,
+    extraParams: any
+  ) => {
     const { hasSeasons, querySort: newQuerySort, seasonSections } = getSeasonOrSerialEpisodesData({
       data,
       querySort,

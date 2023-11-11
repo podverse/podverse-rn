@@ -103,7 +103,10 @@ export const getAddByRSSEpisodesLocally = async (isMusic?: boolean) => {
 }
 
 export const getAddByRSSEpisodesLocallyByDateRange = async (
-  mostRecentDate: Date, oldestDate: Date, isMusic?: boolean) => {
+  mostRecentDate: Date,
+  oldestDate: Date,
+  isMusic?: boolean
+) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally(isMusic)
   const combinedEpisodes = [] as any[]
 

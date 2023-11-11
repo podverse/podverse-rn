@@ -18,8 +18,8 @@ type Props = {
 
 export const NavMakeClipIcon = (props: Props) => {
   if (Config.DISABLE_MAKE_CLIP) return null
-  
-  const [session] = useGlobal("session")
+
+  const [session] = useGlobal('session')
   const { addByRSSPodcastFeedUrl, getInitialProgressValue, navigation } = props
 
   const handlePress = async () => {

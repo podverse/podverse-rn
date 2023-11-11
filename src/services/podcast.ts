@@ -88,7 +88,10 @@ export const findPodcastsByFeedUrls = async (feedUrls: string[]) => {
 }
 
 export const getSubscribedPodcasts = async (
-  subscribedPodcastIds: string[], sort?: string | null, medium?: PodcastMedium) => {
+  subscribedPodcastIds: string[],
+  sort?: string | null,
+  medium?: PodcastMedium
+) => {
   const hasVideo = medium === 'video'
   const isMusic = medium === 'music'
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally(isMusic)

@@ -654,12 +654,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
         const downloadedSort = PV.FilterOptions.screenFilters.EpisodesScreen.sort.some((option) => option === filterKey)
           ? filterKey
           : querySort
-        const downloadedEpisodes = await getDownloadedEpisodes(
-          'all',
-          podcastSearchTitle,
-          searchTitle,
-          downloadedSort
-        )
+        const downloadedEpisodes = await getDownloadedEpisodes('all', podcastSearchTitle, searchTitle, downloadedSort)
         newState.flatListData = [...downloadedEpisodes]
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = downloadedEpisodes.length

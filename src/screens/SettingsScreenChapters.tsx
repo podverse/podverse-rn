@@ -32,7 +32,9 @@ export class SettingsScreenChapters extends React.Component<Props, State> {
   })
 
   async componentDidMount() {
-    const [shouldDisplayNonTocChapters] = await Promise.all([AsyncStorage.getItem(PV.Keys.SETTING_SHOULD_DISPLAY_NON_TOC_CHAPTERS)])
+    const [shouldDisplayNonTocChapters] = await Promise.all([
+      AsyncStorage.getItem(PV.Keys.SETTING_SHOULD_DISPLAY_NON_TOC_CHAPTERS)
+    ])
 
     this.setState({
       shouldDisplayNonTocChapters: !!shouldDisplayNonTocChapters
@@ -55,7 +57,7 @@ export class SettingsScreenChapters extends React.Component<Props, State> {
 
   render() {
     const { shouldDisplayNonTocChapters } = this.state
-    
+
     return (
       <ScrollView
         contentContainerStyle={styles.scrollViewContentContainer}

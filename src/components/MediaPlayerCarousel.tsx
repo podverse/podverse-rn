@@ -165,8 +165,16 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   render() {
     const { navigation } = this.props
     const { accessibilityItemSelected, isReady, isReady2 } = this.state
-    const { currentTocChapter, currentTocChapters, parsedTranscript, player, screen, screenPlayer,
-      screenReaderEnabled, session } = this.global
+    const {
+      currentTocChapter,
+      currentTocChapters,
+      parsedTranscript,
+      player,
+      screen,
+      screenPlayer,
+      screenReaderEnabled,
+      session
+    } = this.global
     const { episode, nowPlayingItem, playbackState } = player
     const { screenWidth } = screen
     const hasChapters = checkIfHasChapters(episode)
@@ -378,7 +386,7 @@ type MPCComponents = {
   hasTranscript: boolean
   isReady?: boolean
   isReady2?: boolean
-  navigation: any,
+  navigation: any
   parsedTranscript: TranscriptRow[]
   player: InitialState['player']
   screenPlayer: InitialState['screenPlayer']
@@ -405,8 +413,8 @@ const mediaPlayerCarouselComponents = ({
   screenWidth
 }: MPCComponents) => {
   const components = []
-  if(screenReaderEnabled) {
-    if(isReady && (accessibilityItemSelectedValue === _nowPlayingInfoKey || !accessibilityItemSelectedValue)) {
+  if (screenReaderEnabled) {
+    if (isReady && (accessibilityItemSelectedValue === _nowPlayingInfoKey || !accessibilityItemSelectedValue)) {
       components.push(
         <MediaPlayerCarouselViewer
           handlePressClipInfo={handlePressClipInfo}
@@ -416,9 +424,9 @@ const mediaPlayerCarouselComponents = ({
         />
       )
     }
-    
-    if(isReady2) {
-      if(accessibilityItemSelectedValue === _episodeSummaryKey){
+
+    if (isReady2) {
+      if (accessibilityItemSelectedValue === _episodeSummaryKey) {
         components.push(
           <MediaPlayerCarouselShowNotes
             key='mpc_sr_show_notes'
@@ -430,7 +438,7 @@ const mediaPlayerCarouselComponents = ({
           />
         )
       }
-      if(accessibilityItemSelectedValue === _chaptersKey && hasChapters){
+      if (accessibilityItemSelectedValue === _chaptersKey && hasChapters) {
         components.push(
           <MediaPlayerCarouselChapters
             currentTocChapter={currentTocChapter}
@@ -448,37 +456,29 @@ const mediaPlayerCarouselComponents = ({
           />
         )
       }
-      if(accessibilityItemSelectedValue === _commentsKey && hasComments){
+      if (accessibilityItemSelectedValue === _commentsKey && hasComments) {
         components.push(
-          <MediaPlayerCarouselComments
-            key='mpc_sr_comments'
-            navigation={navigation}
-            width={screenWidth}
-          />
+          <MediaPlayerCarouselComments key='mpc_sr_comments' navigation={navigation} width={screenWidth} />
         )
       }
-      if(accessibilityItemSelectedValue === _transcriptKey && hasTranscript){
+      if (accessibilityItemSelectedValue === _transcriptKey && hasTranscript) {
         components.push(
-          <MediaPlayerCarouselTranscripts 
+          <MediaPlayerCarouselTranscripts
             key='mpc_sr_transcripts'
-            isNowPlaying 
-            parsedTranscript={parsedTranscript} 
-            width={screenWidth} 
+            isNowPlaying
+            parsedTranscript={parsedTranscript}
+            width={screenWidth}
           />
         )
       }
-      if(accessibilityItemSelectedValue === _chatRoomKey && hasChat){
+      if (accessibilityItemSelectedValue === _chatRoomKey && hasChat) {
         components.push(
-          <MediaPlayerCarouselChatRoom
-            key='mpc_sr_chat_room'
-            navigation={navigation}
-            width={screenWidth}
-          />
+          <MediaPlayerCarouselChatRoom key='mpc_sr_chat_room' navigation={navigation} width={screenWidth} />
         )
       }
     }
   } else {
-    if(isReady) {
+    if (isReady) {
       components.push(
         <MediaPlayerCarouselViewer
           handlePressClipInfo={handlePressClipInfo}
@@ -489,7 +489,7 @@ const mediaPlayerCarouselComponents = ({
       )
     }
 
-    if(isReady2) {
+    if (isReady2) {
       components.push(
         <MediaPlayerCarouselShowNotes
           key='mpc_show_notes'
@@ -500,8 +500,8 @@ const mediaPlayerCarouselComponents = ({
           width={screenWidth}
         />
       )
-      
-      if(hasChapters) {
+
+      if (hasChapters) {
         components.push(
           <MediaPlayerCarouselChapters
             currentTocChapter={currentTocChapter}
@@ -519,33 +519,21 @@ const mediaPlayerCarouselComponents = ({
           />
         )
       }
-      if(hasComments) {
-        components.push(
-          <MediaPlayerCarouselComments
-            key='mpc_comments'
-            navigation={navigation}
-            width={screenWidth}
-          />
-        )
+      if (hasComments) {
+        components.push(<MediaPlayerCarouselComments key='mpc_comments' navigation={navigation} width={screenWidth} />)
       }
-      if(hasTranscript) {
+      if (hasTranscript) {
         components.push(
-          <MediaPlayerCarouselTranscripts 
-            isNowPlaying 
+          <MediaPlayerCarouselTranscripts
+            isNowPlaying
             key='mpc_transcripts'
-            parsedTranscript={parsedTranscript} 
-            width={screenWidth} 
-          />
-        )
-      }
-      if(hasChat) {
-        components.push(
-          <MediaPlayerCarouselChatRoom
-            key='mpc_chat_room'
-            navigation={navigation}
+            parsedTranscript={parsedTranscript}
             width={screenWidth}
           />
         )
+      }
+      if (hasChat) {
+        components.push(<MediaPlayerCarouselChatRoom key='mpc_chat_room' navigation={navigation} width={screenWidth} />)
       }
     }
   }

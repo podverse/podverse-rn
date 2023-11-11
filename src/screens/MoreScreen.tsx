@@ -133,7 +133,7 @@ export class MoreScreen extends React.Component<Props, State> {
   _importOpml = async (uri?: string) => {
     try {
       let name = ''
-      
+
       if (!uri) {
         const res = await DocumentPicker.pickSingle({
           type: [DocumentPicker.types.allFiles]
@@ -232,10 +232,7 @@ export class MoreScreen extends React.Component<Props, State> {
           contentContainerStyle={{ paddingBottom: 16 }}
           ItemSeparatorComponent={() => <Divider optional />}
           renderItem={({ item }) => {
-            const accessibilityLabel =
-              item.key === _membershipKey
-                ? membershipAccessibilityLabel
-                : item.title
+            const accessibilityLabel = item.key === _membershipKey ? membershipAccessibilityLabel : item.title
 
             return (
               <TableCell

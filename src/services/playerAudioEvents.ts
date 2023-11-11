@@ -2,7 +2,13 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { Platform } from 'react-native'
 import { Event, State } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
-import { cleanVoiceCommandQuery, voicePlayNextQueuedItem, voicePlayNextSubscribedPodcast, voicePlayNowPlayingItem, voicePlayPodcastFromSearchAPI } from '../lib/voiceCommandHelpers'
+import {
+  cleanVoiceCommandQuery,
+  voicePlayNextQueuedItem,
+  voicePlayNextSubscribedPodcast,
+  voicePlayNowPlayingItem,
+  voicePlayPodcastFromSearchAPI
+} from '../lib/voiceCommandHelpers'
 import { debugLogger, errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { downloadedEpisodeMarkForDeletion } from '../state/actions/downloads'
@@ -119,7 +125,7 @@ const syncDurationWithMetaData = async () => {
 
 export const audioHandleQueueEnded = (x: any) => {
   setTimeout(() => {
-    ;(async () => {
+    (async () => {
       PVEventEmitter.emit(PV.Events.PLAYER_DISMISS)
       await audioResetHistoryItemQueueEnded(x)
       await playerClearNowPlayingItem()
@@ -129,7 +135,7 @@ export const audioHandleQueueEnded = (x: any) => {
 
 export const audioHandleActiveTrackChanged = (x: any) => {
   setTimeout(() => {
-    ;(async () => {
+    (async () => {
       await audioResetHistoryItemActiveTrackChanged(x)
     })()
   }, 0)
@@ -201,7 +207,7 @@ module.exports = async () => {
   })
 
   PVAudioPlayer.addEventListener(Event.PlaybackState, (x) => {
-    ;(async () => {
+    (async () => {
       debugLogger('playback-state', x)
 
       // // Force global state to appear as playing since we expect it to play quickly,
@@ -324,7 +330,7 @@ module.exports = async () => {
   */
   let wasPausedByDuck = false
   PVAudioPlayer.addEventListener(Event.RemoteDuck, (x: any) => {
-    ;(async () => {
+    (async () => {
       debugLogger('remote-duck', x)
       const { paused, permanent } = x
       const currentState = await audioGetState()
@@ -396,21 +402,20 @@ module.exports = async () => {
       */
 
       console.log('Event.RemotePlaySearch', e)
-
       ;(async () => {
         const shouldPlay = e?.['android.intent.extra.START_PLAYBACK']
-  
+
         if (!shouldPlay) {
           return
         }
-  
+
         const cleanedQuery = cleanVoiceCommandQuery(e?.query)
-  
+
         if (!cleanedQuery) {
           playerHandlePlayWithUpdate()
           return
         }
-  
+
         let shouldContinue = true
 
         shouldContinue = voicePlayNowPlayingItem(cleanedQuery)
