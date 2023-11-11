@@ -1,12 +1,10 @@
-export type AppModes = 'mixed' | 'video' | 'music'
-
-interface AppModeI {
+interface MediumsSupported {
   mixed: 'mixed'
   video: 'video'
   music: 'music'
 }
 
-export const AppMode: AppModeI = {
+export const Medium: MediumsSupported = {
   mixed: 'mixed',
   video: 'video',
   music: 'music'

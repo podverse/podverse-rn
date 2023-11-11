@@ -1,4 +1,4 @@
-import { checkIfContainsStringMatch } from 'podverse-shared'
+import { PodcastMedium, checkIfContainsStringMatch } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { errorLogger } from '../../lib/logger'
 import { safelyUnwrapNestedVariable } from '../../lib/utility'
@@ -19,12 +19,12 @@ import { updateDownloadedPodcasts } from './downloads'
 
 const _fileName = 'src/state/actions/podcast.ts'
 
-const handleCombineWithAddByRSSPodcasts = async (searchTitle?: string, sort?: string | null) => {
-  const { appMode } = getGlobal()
-  const videoOnlyMode = appMode === PV.AppMode.video
-  const isMusic = appMode === PV.AppMode.music
+const handleCombineWithAddByRSSPodcasts = async (
+  searchTitle?: string, sort?: string | null, medium?: PodcastMedium) => {
+  const hasVideo = medium === PV.Medium.video
+  const isMusic = medium === PV.Medium.music
 
-  const combinedPodcasts = await combineWithAddByRSSPodcastsService(sort)
+  const combinedPodcasts = await combineWithAddByRSSPodcastsService(sort, medium)
   let finalPodcasts = []
 
   if (searchTitle) {
@@ -33,10 +33,10 @@ const handleCombineWithAddByRSSPodcasts = async (searchTitle?: string, sort?: st
     finalPodcasts = combinedPodcasts
   }
 
-  if (videoOnlyMode) {
+  if (hasVideo) {
     finalPodcasts = finalPodcasts.filter((podcast) => podcast.hasVideo)
   } else if (isMusic) {
-    finalPodcasts = finalPodcasts.filter((podcast) => podcast.medium === PV.AppMode.music)
+    finalPodcasts = finalPodcasts.filter((podcast) => podcast.medium === PV.Medium.music)
   }
 
   return finalPodcasts
@@ -60,10 +60,10 @@ export const combineWithAddByRSSPodcasts = async (
   })
 }
 
-export const getSubscribedPodcasts = async (sort?: string | null) => {
+export const getSubscribedPodcasts = async (sort?: string | null, medium?: PodcastMedium) => {
   const globalState = getGlobal() 
   const subscribedPodcastIds = globalState.session.userInfo.subscribedPodcastIds || []
-  const data = await getSubscribedPodcastsService(subscribedPodcastIds, sort)
+  const data = await getSubscribedPodcastsService(subscribedPodcastIds, sort, medium)
   const subscribedPodcasts = data[0] || []
   const subscribedPodcastsTotalCount = data[1] || 0
 

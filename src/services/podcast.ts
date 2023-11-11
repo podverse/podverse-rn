@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { getAuthorityFeedUrlFromArray, Podcast } from 'podverse-shared'
+import { getAuthorityFeedUrlFromArray, Podcast, PodcastMedium } from 'podverse-shared'
 import { getGlobal } from 'reactn'
 import { setItemWithStorageCapacityCheck } from '../lib/asyncStorage'
 import { setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
@@ -87,18 +87,17 @@ export const findPodcastsByFeedUrls = async (feedUrls: string[]) => {
   return response && response.data
 }
 
-export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], sort?: string | null) => {
-  const { appMode } = getGlobal()
-  const videoOnlyMode = appMode === PV.AppMode.video
-  const isMusic = appMode === PV.AppMode.music
-
+export const getSubscribedPodcasts = async (
+  subscribedPodcastIds: string[], sort?: string | null, medium?: PodcastMedium) => {
+  const hasVideo = medium === 'video'
+  const isMusic = medium === 'music'
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally(isMusic)
 
   const query = {
     podcastIds: subscribedPodcastIds,
     sort: sort ? sort : PV.Filters._alphabeticalKey,
     maxResults: true,
-    ...(videoOnlyMode ? { hasVideo: true } : {}),
+    ...(hasVideo ? { hasVideo: true } : {}),
     ...(isMusic ? { isMusic: true } : {})
   }
   const isConnected = await hasValidNetworkConnection()
@@ -130,10 +129,9 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], sort
   }
 }
 
-export const combineWithAddByRSSPodcasts = async (sort?: string | null) => {
-  const { appMode } = getGlobal()
-  const videoOnlyMode = appMode === PV.AppMode.video
-  const isMusic = appMode === PV.AppMode.music
+export const combineWithAddByRSSPodcasts = async (sort?: string | null, medium?: PodcastMedium) => {
+  const hasVideo = medium === 'video'
+  const isMusic = medium === 'music'
 
   const [subscribedPodcastsResults, addByRSSPodcastsResults] = await Promise.all([
     getSubscribedPodcastsLocally(),
@@ -144,10 +142,10 @@ export const combineWithAddByRSSPodcasts = async (sort?: string | null) => {
     subscribedPodcastsResults[0] && Array.isArray(subscribedPodcastsResults[0]) ? subscribedPodcastsResults[0] : []
   let addByRSSPodcasts = Array.isArray(addByRSSPodcastsResults) ? addByRSSPodcastsResults : []
 
-  if (videoOnlyMode) {
+  if (hasVideo) {
     addByRSSPodcasts = addByRSSPodcasts.filter((podcast: any) => podcast.hasVideo)
   } else if (isMusic) {
-    addByRSSPodcasts = addByRSSPodcasts.filter((podcast: any) => podcast.medium === PV.AppMode.music)
+    addByRSSPodcasts = addByRSSPodcasts.filter((podcast: any) => podcast.medium === PV.Medium.music)
   }
 
   const combinedPodcasts = [...subscribedPodcasts, ...addByRSSPodcasts]

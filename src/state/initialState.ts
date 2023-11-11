@@ -165,7 +165,6 @@ const initialTheme: InitialState = {
   urlsAPI: null,
   urlsWeb: null,
   userAgent: '',
-  appMode: 'mixed',
   bannerInfo: {
     show: false,
     description: ''

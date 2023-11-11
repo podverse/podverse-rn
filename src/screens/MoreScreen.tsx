@@ -232,20 +232,9 @@ export class MoreScreen extends React.Component<Props, State> {
           contentContainerStyle={{ paddingBottom: 16 }}
           ItemSeparatorComponent={() => <Divider optional />}
           renderItem={({ item }) => {
-            const { appMode } = this.global
-            let appModeSelectedText = translate('Podcasts')
-            if (appMode === PV.AppMode.video) {
-              appModeSelectedText = translate('Videos')
-            } else if (appMode === PV.AppMode.music) {
-              appModeSelectedText = translate('Music')
-            }
-            const modeLabel = `${translate('Mode')}: ${appModeSelectedText}`
-
             const accessibilityLabel =
               item.key === _membershipKey
                 ? membershipAccessibilityLabel
-                : item.key === _appModeKey
-                ? modeLabel
                 : item.title
 
             return (
@@ -255,14 +244,6 @@ export class MoreScreen extends React.Component<Props, State> {
                 testIDPrefix={`${testIDPrefix}_${item.key}`}
                 testIDSuffix=''>
                 <>
-                  {item.key === _appModeKey && (
-                    <Text
-                      accessibilityLabel={modeLabel}
-                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                      style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                      {modeLabel}
-                    </Text>
-                  )}
                   {item.key === _membershipKey && (
                     <>
                       {!isLoggedIn && (
@@ -281,7 +262,7 @@ export class MoreScreen extends React.Component<Props, State> {
                       )}
                     </>
                   )}
-                  {item.key !== _appModeKey && item.key !== _membershipKey && (
+                  {item.key !== _membershipKey && (
                     <Text
                       fontSizeLargestScale={PV.Fonts.largeSizes.md}
                       style={[table.cellText, globalTheme.tableCellTextPrimary]}>
@@ -321,7 +302,6 @@ export class MoreScreen extends React.Component<Props, State> {
 
 const _aboutKey = 'About'
 const _addPodcastByRSSKey = 'AddPodcastByRSS'
-const _appModeKey = 'AppMode'
 const _contactKey = 'Contact'
 const _loginKey = 'Login'
 const _logoutKey = 'Logout'
@@ -354,11 +334,6 @@ const allMoreFeatures = [
     title: translate('Settings'),
     key: _settingsKey,
     routeName: PV.RouteNames.SettingsScreen
-  },
-  {
-    title: translate('Mode'),
-    key: _appModeKey,
-    routeName: PV.RouteNames.AppModeScreen
   },
   {
     title: translate('Import OPML'),

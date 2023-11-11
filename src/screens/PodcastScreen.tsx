@@ -116,15 +116,7 @@ type State = {
 const testIDPrefix = 'podcast_screen'
 
 const getScreenTitle = () => {
-  const { appMode } = getGlobal()
-  let screenTitle = translate('Podcast')
-
-  if (appMode === PV.AppMode.video) {
-    screenTitle = translate('Channel')
-  } else if (appMode === PV.AppMode.music) {
-    screenTitle = translate('Album')
-  }
-
+  const screenTitle = translate('Podcast')
   return screenTitle
 }
 
@@ -133,15 +125,7 @@ const getSearchPlaceholder = () => {
 }
 
 const getDefaultSelectedFilterLabel = () => {
-  const { appMode } = getGlobal()
-  let defaultSelectedFilterLabel = translate('Episodes')
-
-  if (appMode === PV.AppMode.video) {
-    defaultSelectedFilterLabel = translate('Videos')
-  } else if (appMode === PV.AppMode.music) {
-    defaultSelectedFilterLabel = translate('Tracks - music')
-  }
-
+  const defaultSelectedFilterLabel = translate('Episodes')
   return defaultSelectedFilterLabel
 }
 

@@ -125,7 +125,7 @@ export const getDownloadedPodcasts = async (searchTitle?: string, hasVideo?: boo
     if (hasVideo) {
       items = items.filter((podcast: any) => podcast.hasVideo)
     } else if (isMusic) {
-      items = items.filter((podcast: any) => podcast.medium === PV.AppMode.music)
+      items = items.filter((podcast: any) => podcast.medium === PV.Medium.music)
     }
 
     return items

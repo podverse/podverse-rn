@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { encode as btoa } from 'base-64'
 import pLimit from 'p-limit'
-import { checkIfContainsStringMatch, isValidDate } from 'podverse-shared'
+import { PodcastMedium, checkIfContainsStringMatch, isValidDate } from 'podverse-shared'
 import * as RNKeychain from 'react-native-keychain'
 import { getGlobal } from 'reactn'
 import { setItemWithStorageCapacityCheck } from '../lib/asyncStorage'
@@ -37,8 +37,7 @@ export const hasAddByRSSEpisodesLocally = async (isMusic?: boolean) => {
 export const combineEpisodesWithAddByRSSEpisodesLocally = async (
   results: any[],
   searchTitle?: string,
-  hasVideo?: boolean,
-  isMusic?: boolean
+  medium?: PodcastMedium
 ) => {
   let mostRecentDate = ''
   let oldestDate = ''
@@ -64,8 +63,8 @@ export const combineEpisodesWithAddByRSSEpisodesLocally = async (
 
   let addByRSSEpisodes =
     results.length > 0
-      ? await getAddByRSSEpisodesLocallyByDateRange(new Date(mostRecentDate), new Date(oldestDate), isMusic)
-      : await getAddByRSSEpisodesLocally(isMusic)
+      ? await getAddByRSSEpisodesLocallyByDateRange(new Date(mostRecentDate), new Date(oldestDate), medium)
+      : await getAddByRSSEpisodesLocally(medium)
 
   if (searchTitle) {
     addByRSSEpisodes = addByRSSEpisodes.filter(
@@ -73,6 +72,7 @@ export const combineEpisodesWithAddByRSSEpisodesLocally = async (
     )
   }
 
+  const hasVideo = medium === PV.Medium.video
   if (hasVideo) {
     addByRSSEpisodes = addByRSSEpisodes.filter((episode) => episode.hasVideo)
   }
