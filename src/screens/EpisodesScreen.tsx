@@ -655,6 +655,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
           ? filterKey
           : querySort
         const downloadedEpisodes = await getDownloadedEpisodes(
+          'all',
           podcastSearchTitle,
           searchTitle,
           downloadedSort

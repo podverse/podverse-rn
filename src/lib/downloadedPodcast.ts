@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { checkIfContainsStringMatch, getExtensionFromUrl } from 'podverse-shared'
+import { PodcastMedium, checkIfContainsStringMatch, getExtensionFromUrl } from 'podverse-shared'
 import RNFS from 'react-native-fs'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
@@ -13,7 +13,7 @@ import { setItemWithStorageCapacityCheck } from './asyncStorage'
 const _fileName = 'src/lib/downloadedPodcast.ts'
 export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) => {
   delete episode.podcast
-  let downloadedPodcasts = await getDownloadedPodcasts()
+  let downloadedPodcasts = await getDownloadedPodcasts('all')
 
   const podcastIndex = downloadedPodcasts.findIndex((x: any) => x.id === podcast.id)
   if (podcastIndex === -1) {
@@ -55,7 +55,7 @@ export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) =>
 
 export const getDownloadedEpisodeIds = async () => {
   const episodeIds = {}
-  const downloadedPodcasts = await getDownloadedPodcasts()
+  const downloadedPodcasts = await getDownloadedPodcasts('all')
   for (const podcast of downloadedPodcasts) {
     for (const episode of podcast.episodes) {
       episodeIds[episode.id] = true
@@ -66,7 +66,7 @@ export const getDownloadedEpisodeIds = async () => {
 
 export const getDownloadedPodcastEpisodeCounts = async () => {
   const podcastEpisodeCounts = {}
-  const downloadedPodcasts = await getDownloadedPodcasts()
+  const downloadedPodcasts = await getDownloadedPodcasts('all')
   for (const podcast of downloadedPodcasts) {
     const length = (podcast.episodes && podcast.episodes.length) || 0
     podcastEpisodeCounts[podcast.id] = length
@@ -76,14 +76,13 @@ export const getDownloadedPodcastEpisodeCounts = async () => {
 }
 
 export const getDownloadedEpisodes = async (
+  medium: PodcastMedium | 'all',
   searchPodcastTitle?: string,
   searchEpisodeTitle?: string,
-  hasVideo?: boolean,
-  sort?: string,
-  isMusic?: boolean
+  sort?: string
 ) => {
   const finalEpisodes = []
-  const downloadedPodcasts = await getDownloadedPodcasts(searchPodcastTitle, hasVideo, isMusic)
+  const downloadedPodcasts = await getDownloadedPodcasts(medium, searchPodcastTitle)
 
   for (const podcast of downloadedPodcasts) {
     for (const episode of podcast.episodes) {
@@ -103,17 +102,17 @@ export const getDownloadedEpisodes = async (
 }
 
 export const getDownloadedEpisode = async (episodeId: string) => {
-  const episodes = await getDownloadedEpisodes()
+  const episodes = await getDownloadedEpisodes('all')
   return episodes.find((x) => x.id === episodeId)
 }
 
 export const getDownloadedPodcast = async (podcastId: string) => {
-  const downloadedPodcasts = await getDownloadedPodcasts()
+  const downloadedPodcasts = await getDownloadedPodcasts('all')
   const downloadedPodcast = downloadedPodcasts.find((x: any) => x.id === podcastId)
   return downloadedPodcast
 }
 
-export const getDownloadedPodcasts = async (searchTitle?: string, hasVideo?: boolean, isMusic?: boolean) => {
+export const getDownloadedPodcasts = async (medium: PodcastMedium | 'all', searchTitle?: string) => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_PODCASTS)
     let items = itemsString ? JSON.parse(itemsString) : []
@@ -122,6 +121,8 @@ export const getDownloadedPodcasts = async (searchTitle?: string, hasVideo?: boo
       items = items.filter((podcast: any) => checkIfContainsStringMatch(searchTitle, podcast.title))
     }
 
+    const hasVideo = medium === PV.Medium.video
+    const isMusic = medium === PV.Medium.music
     if (hasVideo) {
       items = items.filter((podcast: any) => podcast.hasVideo)
     } else if (isMusic) {
@@ -135,14 +136,14 @@ export const getDownloadedPodcasts = async (searchTitle?: string, hasVideo?: boo
 }
 
 export const refreshDownloadedPodcasts = async () => {
-  const downloadedPodcasts = await getDownloadedPodcasts()
+  const downloadedPodcasts = await getDownloadedPodcasts('all')
   await setDownloadedPodcasts(downloadedPodcasts)
 }
 
 export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
   const newPodcasts = []
   const newDownloadedEpisodeIds = {}
-  const podcasts = await getDownloadedPodcasts()
+  const podcasts = await getDownloadedPodcasts('all')
   for (const podcast of podcasts) {
     const newEpisodes = []
     for (const episode of podcast.episodes) {
@@ -178,7 +179,7 @@ export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
 }
 
 export const removeDownloadedPodcast = async (podcastId: string) => {
-  const downloadedPodcasts = await getDownloadedPodcasts()
+  const downloadedPodcasts = await getDownloadedPodcasts('all')
   const downloadedPodcast = downloadedPodcasts.find((x: any) => x.id === podcastId)
   const episodes = (downloadedPodcast && downloadedPodcast.episodes) || []
   let clearedNowPlayingItem = false
@@ -193,7 +194,7 @@ export const removeDownloadedPodcast = async (podcastId: string) => {
 }
 
 export const removeAllDownloadedPodcasts = async () => {
-  const downloadedPodcasts = await getDownloadedPodcasts()
+  const downloadedPodcasts = await getDownloadedPodcasts('all')
   for (const podcast of downloadedPodcasts) {
     await removeDownloadedPodcast(podcast.id)
   }
@@ -207,7 +208,7 @@ const setDownloadedPodcasts = async (podcasts: any[]) => {
 }
 
 export const removeDownloadedPodcastsFromInternalStorage = async () => {
-  const podcasts = await getDownloadedPodcasts()
+  const podcasts = await getDownloadedPodcasts('all')
   for (const podcast of podcasts) {
     for (const episode of podcast.episodes) {
       try {
@@ -222,7 +223,7 @@ export const removeDownloadedPodcastsFromInternalStorage = async () => {
 
 export const moveDownloadedPodcastsToExternalStorage = async () => {
   const [podcasts, downloader, destinationFolder] = await Promise.all([
-    getDownloadedPodcasts(),
+    getDownloadedPodcasts('all'),
     BackgroundDownloader(),
     AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
   ])

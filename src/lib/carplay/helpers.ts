@@ -11,7 +11,7 @@ import { hasValidNetworkConnection } from '../network';
 export const getEpisodesForPodcast = async (podcast: Podcast): Promise<any[]> => {
   const hasInternetConnection = await hasValidNetworkConnection()
   if (!hasInternetConnection) {
-    return getDownloadedEpisodes(podcast)
+    return getDownloadedEpisodesCarplay(podcast)
   } else {
     const liveEnabledPodcastStatuses = ['pending', 'live', 'ended']
     if (liveEnabledPodcastStatuses.includes(podcast.latestLiveItemStatus)) {
@@ -36,7 +36,7 @@ export const getEpisodesForPodcast = async (podcast: Podcast): Promise<any[]> =>
   }
 }
 
-const getDownloadedEpisodes = (podcast: Podcast) => {
+const getDownloadedEpisodesCarplay = (podcast: Podcast) => {
   let podcastId = podcast.id
   if (podcast.addByRSSPodcastFeedUrl) {
     podcastId = podcast.addByRSSPodcastFeedUrl
