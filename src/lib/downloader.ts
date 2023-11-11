@@ -139,7 +139,7 @@ export const downloadEpisode = async (
     const downloadingEpisodes = await getDownloadingEpisodes()
     if (downloadingEpisodes.some((x: any) => x.id === episode.id)) return
 
-    const downloadedPodcasts = await getDownloadedPodcasts('all')
+    const downloadedPodcasts = await getDownloadedPodcasts(PV.Medium.mixed)
     for (const downloadedPodcast of downloadedPodcasts) {
       const episodes = safelyUnwrapNestedVariable(() => downloadedPodcast.episodes, [])
       if (episodes.some((x: any) => x.id === episode.id)) return

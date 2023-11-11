@@ -29,15 +29,15 @@ addByRSSPodcast: object {
 }
 */
 
-export const hasAddByRSSEpisodesLocally = async (isMusic?: boolean) => {
-  const results = await getAddByRSSEpisodesLocally(isMusic)
+export const hasAddByRSSEpisodesLocally = async (medium: PodcastMedium) => {
+  const results = await getAddByRSSEpisodesLocally(medium)
   return results.length > 0
 }
 
 export const combineEpisodesWithAddByRSSEpisodesLocally = async (
   results: any[],
-  searchTitle?: string,
-  medium?: PodcastMedium
+  medium: PodcastMedium,
+  searchTitle?: string
 ) => {
   let mostRecentDate = ''
   let oldestDate = ''
@@ -88,8 +88,8 @@ export const combineEpisodesWithAddByRSSEpisodesLocally = async (
   return [sortedResults, newCount]
 }
 
-export const getAddByRSSEpisodesLocally = async (isMusic?: boolean) => {
-  const addByRSSPodcasts = await getAddByRSSPodcastsLocally(isMusic)
+export const getAddByRSSEpisodesLocally = async (medium: PodcastMedium) => {
+  const addByRSSPodcasts = await getAddByRSSPodcastsLocally(medium)
   const combinedEpisodes = [] as any[]
 
   for (const addByRSSPodcast of addByRSSPodcasts) {
@@ -105,9 +105,9 @@ export const getAddByRSSEpisodesLocally = async (isMusic?: boolean) => {
 export const getAddByRSSEpisodesLocallyByDateRange = async (
   mostRecentDate: Date,
   oldestDate: Date,
-  isMusic?: boolean
+  medium: PodcastMedium
 ) => {
-  const addByRSSPodcasts = await getAddByRSSPodcastsLocally(isMusic)
+  const addByRSSPodcasts = await getAddByRSSPodcastsLocally(medium)
   const combinedEpisodes = [] as any[]
 
   for (const addByRSSPodcast of addByRSSPodcasts) {
@@ -134,17 +134,18 @@ export const getAddByRSSEpisodesLocallyByDateRange = async (
 }
 
 export const getAddByRSSPodcastLocally = async (feedUrl: string) => {
-  const addByRSSPodcastFeedUrlPodcasts = await getAddByRSSPodcastsLocally()
+  const addByRSSPodcastFeedUrlPodcasts = await getAddByRSSPodcastsLocally(PV.Medium.mixed)
   return addByRSSPodcastFeedUrlPodcasts.find((x: any) => x.addByRSSPodcastFeedUrl === feedUrl)
 }
 
-export const getAddByRSSPodcastsLocally = async (isMusic?: boolean) => {
+export const getAddByRSSPodcastsLocally = async (medium: PodcastMedium | PV.Medium.mixed) => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCASTS)
     let items = itemsString ? JSON.parse(itemsString) : []
 
+    const isMusic = medium === PV.Medium.music
     if (isMusic) {
-      items = items.filter((addByRSSPodcast: any) => addByRSSPodcast.medium === 'music')
+      items = items.filter((addByRSSPodcast: any) => addByRSSPodcast.medium === PV.Medium.music)
     }
 
     return items
@@ -204,14 +205,14 @@ export const parseAllAddByRSSPodcasts = async () => {
           parsedPodcasts.push(parsedPodcast)
         }
       } catch (error) {
-        errorLogger(_fileName, 'parseAllAddByRSSPodcasts url', url, error)
+        errorLogger(_fileName, `parseAllAddByRSSPodcasts ${url}`, error)
       }
     })
   })
 
   await Promise.all(promises)
 
-  const localPodcasts = await getAddByRSSPodcastsLocally()
+  const localPodcasts = await getAddByRSSPodcastsLocally(PV.Medium.mixed)
   for (const parsedPodcast of parsedPodcasts) {
     const index = localPodcasts.findIndex(
       (localPodcast: any) => localPodcast.addByRSSPodcastFeedUrl === parsedPodcast.addByRSSPodcastFeedUrl
@@ -462,7 +463,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
 }
 
 const addParsedAddByRSSPodcastLocally = async (parsedPodcast: any) => {
-  const rssPodcasts = await getAddByRSSPodcastsLocally()
+  const rssPodcasts = await getAddByRSSPodcastsLocally(PV.Medium.mixed)
   const index = rssPodcasts.findIndex(
     (rssPodcast: any) => rssPodcast.addByRSSPodcastFeedUrl === parsedPodcast.addByRSSPodcastFeedUrl
   )
@@ -521,7 +522,7 @@ export const removeAddByRSSPodcast = async (feedUrl: string) => {
     await removeAddByRSSPodcastFeedUrlOnServer(feedUrl)
   }
 
-  let podcasts = await getAddByRSSPodcastsLocally()
+  let podcasts = await getAddByRSSPodcastsLocally(PV.Medium.mixed)
   podcasts = podcasts.filter((x: any) => x.addByRSSPodcastFeedUrl !== feedUrl)
   await setAddByRSSPodcastsLocally(podcasts)
   await removePodcastCredentials(feedUrl)

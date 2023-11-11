@@ -146,7 +146,7 @@ export const initDownloads = async () => {
     initDownloadsService(),
     getDownloadedEpisodeIdsService(),
     getDownloadedPodcastEpisodeCountsService(),
-    getDownloadedPodcastsService('all'),
+    getDownloadedPodcastsService(PV.Medium.mixed),
     getAutoDownloadSettingsService(),
     AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT),
     AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
@@ -222,7 +222,7 @@ export const updateDownloadedPodcasts = async (cb?: any) => {
   const [downloadedEpisodeIds, downloadedPodcastEpisodeCounts, downloadedPodcasts] = await Promise.all([
     getDownloadedEpisodeIdsService(),
     getDownloadedPodcastEpisodeCountsService(),
-    getDownloadedPodcastsService('all')
+    getDownloadedPodcastsService(PV.Medium.mixed)
   ])
 
   setGlobal(
