@@ -2,7 +2,6 @@ import { getGlobal } from 'reactn'
 import Config from 'react-native-config'
 import { translate } from '../lib/i18n'
 import { Filters } from './Filters'
-import { PV } from './PV'
 
 const {
   _subscribedKey,

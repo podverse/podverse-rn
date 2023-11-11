@@ -3,7 +3,7 @@ import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podvers
 import { StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import { NavigationStackOptions } from 'react-navigation-stack'
-import React, { getGlobal } from 'reactn'
+import React from 'reactn'
 import {
   ActionSheet,
   ActivityIndicator,

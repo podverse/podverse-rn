@@ -1,5 +1,5 @@
 import deepEqual from 'fast-deep-equal'
-import { Episode, convertToNowPlayingItem } from 'podverse-shared'
+import { convertToNowPlayingItem } from 'podverse-shared'
 import { AppState, AppStateStatus, StyleSheet } from 'react-native'
 import React, { getGlobal, setGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
@@ -70,7 +70,7 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
     this.clearAutoScrollInterval()
   }
 
-  shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>, nextContext: any): boolean {
+  shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>): boolean {
     if (deepEqual(nextProps, this.props) && deepEqual(nextState, this.state)) {
       return false
     }

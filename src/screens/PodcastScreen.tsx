@@ -32,8 +32,7 @@ import {
   TableSectionSelectors,
   Text,
   View,
-  PressableWithOpacity,
-  Icon
+  PressableWithOpacity
 } from '../components'
 import { errorLogger } from '../lib/logger'
 import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'

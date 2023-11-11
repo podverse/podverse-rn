@@ -41,7 +41,7 @@ export const PVAudioPlayer = TrackPlayer
 //   return true
 // }
 
-PVAudioPlayer.getTrackPosition = async () => {
+PVAudioPlayer.getTrackPosition = () => {
   // const serviceRunningResult = await checkServiceRunning(0)
 
   // if (serviceRunningResult !== true) {
@@ -51,7 +51,7 @@ PVAudioPlayer.getTrackPosition = async () => {
   return PVAudioPlayer.getPosition()
 }
 
-PVAudioPlayer.getCurrentLoadedTrack = async () => {
+PVAudioPlayer.getCurrentLoadedTrack = () => {
   // const serviceRunningResult = await checkServiceRunning()
 
   // if (serviceRunningResult !== true) {
@@ -61,7 +61,7 @@ PVAudioPlayer.getCurrentLoadedTrack = async () => {
   return PVAudioPlayer.getActiveTrackIndex()
 }
 
-PVAudioPlayer.getTrackDuration = async () => {
+PVAudioPlayer.getTrackDuration = () => {
   // const serviceRunningResult = await checkServiceRunning(0)
   // if (serviceRunningResult !== true) {
   //   return serviceRunningResult

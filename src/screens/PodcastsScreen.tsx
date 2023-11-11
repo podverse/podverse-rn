@@ -20,7 +20,7 @@ import { CarPlay } from 'react-native-carplay'
 import Config from 'react-native-config'
 import { endConnection as iapEndConnection, initConnection as iapInitConnection } from 'react-native-iap'
 import { NavigationStackOptions } from 'react-navigation-stack'
-import React, { getGlobal, addCallback } from 'reactn'
+import React, { addCallback } from 'reactn'
 import Popover from 'react-native-popover-view'
 import {
   ActionSheet,

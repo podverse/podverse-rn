@@ -72,7 +72,7 @@ const debouncedOnValueChangeChapterTime = debounce(handleOnValueChangeChapter, 7
 export function PlayerProgressBar(props: Props) {
   let isAnimationRunning = false
 
-  const [localState, setLocalState] = useState({
+  const [localState] = useState({
     clipColorAnimation: new Animated.Value(0)
   })
 

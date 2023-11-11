@@ -127,7 +127,7 @@ export const handlePlayRemoteMediaId = async (mediaId: string) => {
     await loadEpisodeInPlayer(convertedEpisode, convertedEpisode.podcast)
     refreshHistory()
   } else if (mediaId.startsWith(MediaKeys.Episode)) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unused-vars
     const [_, podcastId, index] = /^Episode-(.+)-(\d+)$/.exec(mediaId)!
     try {
       loadEpisodeInPlayer(cachedEpisodes[podcastId][Number(index)], cachedPodcasts[podcastId])
