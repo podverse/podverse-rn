@@ -1131,22 +1131,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleSearchNavigation = () => {
-    this.props.navigation.navigate(PV.RouteNames.SearchScreen)
-  }
-
-  _handleScanQRCodeNavigation = () => {
-    // this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
-  }
-
-  _handleNoResultsTopAction = () => {
-    if (Config.DEFAULT_ACTION_NO_SUBSCRIBED_PODCASTS === PV.Keys.DEFAULT_ACTION_BUTTON_SCAN_QR_CODE) {
-      this._handleScanQRCodeNavigation()
-    } else {
-      this._handleSearchNavigation()
-    }
-  }
-
   _handleDataSettingsWifiOnly = () => {
     AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
     this._initializeScreenData()
