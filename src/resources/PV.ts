@@ -1,7 +1,6 @@
 import { ActionSheet } from './ActionSheet'
 import { Alerts } from './Alerts'
 import { AlertStatuses } from './AlertStatuses'
-import { AppMode } from './AppMode'
 import { Colors } from './Colors'
 import { CustomLaunchScreen } from './CustomLaunchScreen'
 import { CustomRSS } from './CustomRSS'
@@ -38,7 +37,6 @@ export const PV = {
   ActionSheet,
   Alerts,
   AlertStatuses,
-  AppMode,
   Colors,
   CustomLaunchScreen,
   CustomRSS,

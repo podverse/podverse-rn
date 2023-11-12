@@ -63,21 +63,12 @@ type State = {
 const testIDPrefix = 'episodes_screen'
 
 const getScreenTitle = () => {
-  const { appMode } = getGlobal()
-  let screenTitle = translate('Episodes')
-  if (appMode === PV.AppMode.videos) {
-    screenTitle = translate('Videos')
-  }
-
+  const screenTitle = translate('Episodes')
   return screenTitle
 }
 
 const getSearchPlaceholder = () => {
-  const { appMode } = getGlobal()
-  let searchPlaceholder = translate('Search episodes')
-  if (appMode === PV.AppMode.videos) {
-    searchPlaceholder = translate('Search videos')
-  }
+  const searchPlaceholder = translate('Search episodes')
   return searchPlaceholder
 }
 
@@ -133,7 +124,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     })
 
     PVEventEmitter.on(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
-    PVEventEmitter.on(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
     PVEventEmitter.on(PV.Events.DOWNLOADED_EPISODE_REFRESH, this._handleDownloadEpisodeFinishedEvent)
     PVEventEmitter.on(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
 
@@ -169,7 +159,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
   componentWillUnmount() {
     super.componentWillUnmount()
     PVEventEmitter.removeListener(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
-    PVEventEmitter.removeListener(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
     PVEventEmitter.removeListener(PV.Events.DOWNLOADED_EPISODE_REFRESH, this._handleDownloadEpisodeFinishedEvent)
     PVEventEmitter.removeListener(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
     // this._unsubscribe?.()
@@ -181,13 +170,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     if (queryFrom !== PV.Filters._downloadedKey) {
       this.handleSelectFilterItem(PV.Filters._downloadedKey)
     }
-  }
-
-  _handleAppModeChanged = () => {
-    this._onRefresh()
-    this.props.navigation.setParams({
-      _screenTitle: getScreenTitle()
-    })
   }
 
   _handleToggleSubscribeEvent = () => {
@@ -640,8 +622,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
       const { queryPage } = queryOptions
 
-      const { appMode } = this.global
-      const hasVideo = appMode === PV.AppMode.videos
       const isSubscribedSelected = filterKey === PV.Filters._subscribedKey || queryFrom === PV.Filters._subscribedKey
       const isDownloadedSelected = filterKey === PV.Filters._downloadedKey || queryFrom === PV.Filters._downloadedKey
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
@@ -658,8 +638,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
             podcastId,
             ...(searchTitle ? { searchTitle } : {}),
             subscribedOnly: true,
-            includePodcast: true,
-            ...(hasVideo ? { hasVideo: true } : {})
+            includePodcast: true
           })
         }
 
@@ -741,8 +720,6 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _queryAllEpisodes = async (sort: string | null, page = 1) => {
     const { searchBarText: searchTitle } = this.state
-    const { appMode } = this.global
-    const hasVideo = appMode === PV.AppMode.videos
 
     const cleanedSort =
       sort === PV.Filters._mostRecentKey || sort === PV.Filters._randomKey ? PV.Filters._topPastWeek : sort
@@ -751,17 +728,13 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       sort: cleanedSort,
       page,
       ...(searchTitle ? { searchTitle } : {}),
-      includePodcast: true,
-      ...(hasVideo ? { hasVideo: true } : {})
+      includePodcast: true
     })
 
     return results
   }
 
   _queryEpisodesByCategory = async (categoryId?: string | null, sort?: string | null, page = 1) => {
-    const { appMode } = this.global
-    const hasVideo = appMode === PV.AppMode.videos
-
     const cleanedSort =
       sort === PV.Filters._mostRecentKey || sort === PV.Filters._randomKey ? PV.Filters._topPastWeek : sort
 
@@ -769,8 +742,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       categories: categoryId,
       sort: cleanedSort,
       page,
-      includePodcast: true,
-      ...(hasVideo ? { hasVideo: true } : {})
+      includePodcast: true
     })
     return results
   }

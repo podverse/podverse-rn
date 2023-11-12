@@ -48,13 +48,7 @@ type State = {
 const testIDPrefix = 'episode_screen'
 
 const getScreenTitle = () => {
-  const { appMode } = getGlobal()
-  let screenTitle = translate('Episode')
-
-  if (appMode === PV.AppMode.videos) {
-    screenTitle = translate('Video')
-  }
-
+  const screenTitle = translate('Episode')
   return screenTitle
 }
 

@@ -116,39 +116,17 @@ type State = {
 const testIDPrefix = 'podcast_screen'
 
 const getScreenTitle = () => {
-  const { appMode } = getGlobal()
-  let screenTitle = translate('Podcast')
-
-  if (appMode === PV.AppMode.videos) {
-    screenTitle = translate('Channel')
-  }
-
+  const screenTitle = translate('Podcast')
   return screenTitle
 }
 
-const getSearchPlaceholder = (viewType: string) => {
-  const { appMode } = getGlobal()
-  let searchPlaceholder = translate('Search episodes')
-
-  if (viewType === PV.Filters._clipsKey) {
-    searchPlaceholder = translate('Search clips')
-  } else {
-    if (appMode === PV.AppMode.videos) {
-      searchPlaceholder = translate('Search videos')
-    }
-  }
-
+const getSearchPlaceholder = () => {
+  const searchPlaceholder = translate('Search episodes')
   return searchPlaceholder
 }
 
 const getDefaultSelectedFilterLabel = () => {
-  const { appMode } = getGlobal()
-  let defaultSelectedFilterLabel = translate('Episodes')
-
-  if (appMode === PV.AppMode.videos) {
-    defaultSelectedFilterLabel = translate('Videos')
-  }
-
+  const defaultSelectedFilterLabel = translate('Episodes')
   return defaultSelectedFilterLabel
 }
 

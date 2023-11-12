@@ -10,7 +10,6 @@ import {
   AboutScreen,
   AddPodcastByRSSAuthScreen,
   AddPodcastByRSSScreen,
-  AppModeScreen,
   AuthScreen,
   ClipsScreen,
   ContactScreen,
@@ -218,7 +217,6 @@ const MoreNavigator = createStackNavigator(
       screen: MembershipScreen,
       path: PV.DeepLinks.Membership.path
     },
-    [PV.RouteNames.AppModeScreen]: AppModeScreen,
     [PV.RouteNames.ContactScreen]: {
       screen: ContactScreen,
       path: PV.DeepLinks.Contact.path

@@ -96,20 +96,9 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { queryFrom } = this.state
-
-    PVEventEmitter.on(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
-
     const newState = await this._queryData(queryFrom)
     this.setState(newState)
     trackPageView('/clips', 'Clips Screen')
-  }
-
-  componentWillUnmount() {
-    PVEventEmitter.removeListener(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
-  }
-
-  _handleAppModeChanged = () => {
-    this._onRefresh()
   }
 
   handleSelectFilterItem = async (selectedKey: string, keepSearchTitle?: boolean) => {
@@ -537,8 +526,6 @@ export class ClipsScreen extends React.Component<Props, State> {
       const { queryFrom, querySort, searchBarText, selectedCategory, selectedCategorySub } = this.state
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
       const { queryPage } = queryOptions
-      const { appMode } = this.global
-      const hasVideo = appMode === PV.AppMode.videos
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
@@ -549,8 +536,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           podcastId,
           ...(searchBarText ? { searchTitle: searchBarText } : {}),
           subscribedOnly: true,
-          includePodcast: true,
-          ...(hasVideo ? { hasVideo: true } : {})
+          includePodcast: true
         })
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = results[0].length < 20
@@ -608,14 +594,11 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   _queryAllMediaRefs = async (sort: string | null, page = 1) => {
     const { searchBarText: searchTitle } = this.state
-    const { appMode } = this.global
-    const hasVideo = appMode === PV.AppMode.videos
     const results = await getMediaRefs({
       sort,
       page,
       ...(searchTitle ? { searchTitle } : {}),
-      includePodcast: true,
-      ...(hasVideo ? { hasVideo: true } : {})
+      includePodcast: true
     })
 
     return results
@@ -623,15 +606,12 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   _queryMediaRefsByCategory = async (categoryId?: string | null, sort?: string | null, page = 1) => {
     const { searchBarText: searchTitle } = this.state
-    const { appMode } = this.global
-    const hasVideo = appMode === PV.AppMode.videos
     const results = await getMediaRefs({
       categories: categoryId,
       sort,
       page,
       ...(searchTitle ? { searchTitle } : {}),
-      includePodcast: true,
-      ...(hasVideo ? { hasVideo: true } : {})
+      includePodcast: true
     })
     return results
   }

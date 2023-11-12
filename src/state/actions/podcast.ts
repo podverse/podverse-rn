@@ -20,9 +20,6 @@ import { updateDownloadedPodcasts } from './downloads'
 const _fileName = 'src/state/actions/podcast.ts'
 
 const handleCombineWithAddByRSSPodcasts = async (searchTitle?: string, sort?: string | null) => {
-  const { appMode } = getGlobal()
-  const videoOnlyMode = appMode === PV.AppMode.videos
-
   const combinedPodcasts = await combineWithAddByRSSPodcastsService(sort)
   let finalPodcasts = []
 
@@ -30,10 +27,6 @@ const handleCombineWithAddByRSSPodcasts = async (searchTitle?: string, sort?: st
     finalPodcasts = combinedPodcasts.filter((podcast) => checkIfContainsStringMatch(searchTitle, podcast.title))
   } else {
     finalPodcasts = combinedPodcasts
-  }
-
-  if (videoOnlyMode) {
-    finalPodcasts = finalPodcasts.filter((podcast) => podcast.hasVideo)
   }
 
   return finalPodcasts

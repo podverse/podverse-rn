@@ -47,14 +47,8 @@ const sortChronologicalItem = {
 }
 
 const allFilterTypeItems = () => {
-  const { appMode } = getGlobal()
-  let allPodcastsLabel = translate('All Podcasts')
-  let episodesLabel = translate('Episodes')
-
-  if (appMode === PV.AppMode.videos) {
-    allPodcastsLabel = translate('All Channels')
-    episodesLabel = translate('Videos')
-  }
+  const allPodcastsLabel = translate('All Podcasts')
+  const episodesLabel = translate('Episodes')
 
   return [
     {

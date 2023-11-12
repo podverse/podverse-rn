@@ -148,20 +148,12 @@ const horizontalRowHeight = 98
 const dividerHeight = 1
 
 const getScreenTitle = () => {
-  const { appMode } = getGlobal()
-  let screenTitle = translate('Podcasts')
-  if (appMode === PV.AppMode.videos) {
-    screenTitle = translate('Channels')
-  }
+  const screenTitle = translate('Podcasts')
   return screenTitle
 }
 
 const getSearchPlaceholder = () => {
-  const { appMode } = getGlobal()
-  let searchPlaceholder = translate('Search podcasts')
-  if (appMode === PV.AppMode.videos) {
-    searchPlaceholder = translate('Search channels')
-  }
+  const searchPlaceholder = translate('Search podcasts')
   return searchPlaceholder
 }
 
@@ -251,7 +243,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     PVEventEmitter.on(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED, this._handleTrackingTermsAcknowledged)
-    PVEventEmitter.on(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
     PVEventEmitter.on(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
 
     updateScreenReaderEnabledState()
@@ -269,7 +260,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5'),
           AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5'),
-          AsyncStorage.setItem(PV.Keys.APP_MODE, PV.AppMode.podcasts),
           AsyncStorage.setItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT, 'TRUE'),
@@ -310,7 +300,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       this._handleNavigateToAddPodcastByRSSAuthScreen
     )
     PVEventEmitter.removeListener(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
-    PVEventEmitter.removeListener(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
     PVEventEmitter.removeListener(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
     // this._unsubscribe?.()
 
@@ -411,20 +400,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         }
       }
     )
-  }
-
-  _handleAppModeChanged = () => {
-    const { queryFrom } = this.state
-
-    if (queryFrom === PV.Filters._episodesKey) {
-      this.handleSelectFilterItem(PV.Filters._allPodcastsKey)
-    } else {
-      this._onRefresh()
-    }
-
-    this.props.navigation.setParams({
-      _screenTitle: getScreenTitle()
-    })
   }
 
   _handleOrientationChange = () => {
@@ -1400,8 +1375,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _queryAllPodcasts = async (sort: string | null, page = 1) => {
     const { searchBarText: searchTitle } = this.state
-    const { appMode } = this.global
-    const hasVideo = appMode === PV.AppMode.videos
 
     let localPodcasts = [] as any
     if (searchTitle && page === 1) {
@@ -1420,8 +1393,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const results = await getPodcasts({
       sort,
       page,
-      ...(searchTitle ? { searchTitle } : {}),
-      ...(hasVideo ? { hasVideo: true } : {})
+      ...(searchTitle ? { searchTitle } : {})
     })
 
     if (searchTitle) {
@@ -1438,13 +1410,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _queryPodcastsByCategory = async (categoryId?: string | null, sort?: string | null, page = 1) => {
-    const { appMode } = this.global
-    const hasVideo = appMode === PV.AppMode.videos
     const results = await getPodcasts({
       categories: categoryId,
       sort,
-      page,
-      ...(hasVideo ? { hasVideo: true } : {})
+      page
     })
     return results
   }
@@ -1476,8 +1445,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         selectedCategorySub
       } = prevState
 
-      const { appMode, isInMaintenanceMode } = this.global
-      const hasVideo = appMode === PV.AppMode.videos
+      const { isInMaintenanceMode } = this.global
 
       const hasInternetConnection = await hasValidNetworkConnection()
       const isSubscribedSelected = filterKey === PV.Filters._subscribedKey || queryFrom === PV.Filters._subscribedKey

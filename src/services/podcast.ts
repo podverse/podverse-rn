@@ -89,14 +89,10 @@ export const findPodcastsByFeedUrls = async (feedUrls: string[]) => {
 export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], sort?: string | null) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
 
-  const { appMode } = getGlobal()
-  const videoOnlyMode = appMode === PV.AppMode.videos
-
   const query = {
     podcastIds: subscribedPodcastIds,
     sort: sort ? sort : PV.Filters._alphabeticalKey,
-    maxResults: true,
-    ...(videoOnlyMode ? { hasVideo: true } : {})
+    maxResults: true
   }
   const isConnected = await hasValidNetworkConnection()
 
@@ -128,9 +124,6 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[], sort
 }
 
 export const combineWithAddByRSSPodcasts = async (sort?: string | null) => {
-  const { appMode } = getGlobal()
-  const videoOnlyMode = appMode === PV.AppMode.videos
-
   const [subscribedPodcastsResults, addByRSSPodcastsResults] = await Promise.all([
     getSubscribedPodcastsLocally(),
     getAddByRSSPodcastsLocally()
@@ -138,11 +131,7 @@ export const combineWithAddByRSSPodcasts = async (sort?: string | null) => {
 
   const subscribedPodcasts =
     subscribedPodcastsResults[0] && Array.isArray(subscribedPodcastsResults[0]) ? subscribedPodcastsResults[0] : []
-  let addByRSSPodcasts = Array.isArray(addByRSSPodcastsResults) ? addByRSSPodcastsResults : []
-
-  if (videoOnlyMode) {
-    addByRSSPodcasts = addByRSSPodcasts.filter((podcast: any) => podcast.hasVideo)
-  }
+  const addByRSSPodcasts = Array.isArray(addByRSSPodcastsResults) ? addByRSSPodcastsResults : []
 
   const combinedPodcasts = [...subscribedPodcasts, ...addByRSSPodcasts]
 
