@@ -55,9 +55,9 @@ export const findCombineWithAddByRSSPodcasts = async (
 
 export const combineWithAddByRSSPodcasts = async (
   medium: PodcastMedium,
+  returnLocalDataType: 'mixed' | 'podcast' | 'music' | 'video',
   searchTitle?: string,
-  sort?: string | null,
-  returnPodcastsOnly?: boolean
+  sort?: string | null
 ) => {
   const finalPodcasts = await handleCombineWithAddByRSSPodcasts(medium, searchTitle, sort)
 
@@ -66,8 +66,12 @@ export const combineWithAddByRSSPodcasts = async (
     subscribedPodcastsTotalCount: finalPodcasts?.length
   })
 
-  if (returnPodcastsOnly) {
+  if (returnLocalDataType === 'podcast') {
     return finalPodcasts.filter((podcast: Podcast) => podcast.medium === PV.Medium.podcast)
+  } else if (returnLocalDataType === 'music') {
+    return finalPodcasts.filter((podcast: Podcast) => podcast.medium === PV.Medium.music)
+  } else if (returnLocalDataType === 'video') {
+    return finalPodcasts.filter((podcast: Podcast) => podcast.hasVideo)
   } else {
     return finalPodcasts
   }
@@ -75,9 +79,9 @@ export const combineWithAddByRSSPodcasts = async (
 
 // getSubscribedPodcasts should only be called when you want to get the latest EVERYTHING subscribed
 // and set on global state. Individual screens should not render global subscribedPodcasts though.
-// returnPodcastsOnly is only for rendering the PodcastsScreen.
+// returnLocalDataType is only for rendering the PodcastsScreen.
 export const getSubscribedPodcasts = async (
-  medium: PodcastMedium, sort?: string | null, returnPodcastsOnly?: boolean) => {
+  medium: PodcastMedium, sort?: string | null, returnLocalDataType?: boolean) => {
   const globalState = getGlobal() 
   const subscribedPodcastIds = globalState.session.userInfo.subscribedPodcastIds || []
   const data = await getSubscribedPodcastsService(medium, subscribedPodcastIds, sort)
@@ -89,7 +93,7 @@ export const getSubscribedPodcasts = async (
     subscribedPodcastsTotalCount
   })
 
-  if (returnPodcastsOnly) {
+  if (returnLocalDataType) {
     return subscribedPodcasts.filter((subscribedPodcast: Podcast) => subscribedPodcast.medium === PV.Medium.podcast)
   } else {
     return subscribedPodcasts

@@ -176,7 +176,7 @@ export const loginUser = async (credentials: Credentials) => {
             await getSubscribedPodcasts(PV.Medium.mixed)
             await askToSyncWithNowPlayingItem()
             await parseAllAddByRSSPodcasts()
-            await combineWithAddByRSSPodcasts(PV.Medium.mixed)
+            await combineWithAddByRSSPodcasts(PV.Medium.mixed, PV.Medium.mixed)
           }
           askToSyncLocalPodcastsWithServer(localUserInfo, serverUserInfo, callback)
         } catch (error) {
