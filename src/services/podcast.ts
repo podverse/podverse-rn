@@ -50,7 +50,9 @@ export const getPodcasts = async (query: any = {}) => {
     ...(query.sort ? { sort: query.sort } : {}),
     ...(searchAuthor ? { searchAuthor } : {}),
     ...(searchTitle ? { searchTitle } : {}),
-    ...(query.hasVideo ? { hasVideo: query.hasVideo } : {})
+    ...(query.hasVideo ? { hasVideo: true } : {}),
+    ...(query.isMusic ? { isMusic: true } : {}),
+    ...(query.podcastsOnly ? { podcastsOnly: true } : {})
   } as any
 
   if (query.categories) {

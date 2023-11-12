@@ -244,6 +244,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED, this._handleTrackingTermsAcknowledged)
     PVEventEmitter.on(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
+    PVEventEmitter.on(PV.Events.USER_LOGGED_IN, this._handleUserLoggedIn)
 
     updateScreenReaderEnabledState()
 
@@ -301,9 +302,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
     PVEventEmitter.removeListener(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
     PVEventEmitter.removeListener(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
+    PVEventEmitter.removeListener(PV.Events.USER_LOGGED_IN, this._handleUserLoggedIn)
     // this._unsubscribe?.()
 
     this.pvNativeEventSubscriptions.forEach((subscription) => subscription.remove())
+  }
+
+  _handleUserLoggedIn = () => {
+    this.handleSelectFilterItem(PV.Filters._subscribedKey)
   }
 
   handleNoficationOpened = async (remoteMessage: any, goBackToRootScreen = false) => {
@@ -1154,27 +1160,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     Linking.openURL(createEmailLinkUrl(PV.Emails.PODCAST_REQUEST))
   }
 
-  _getFlatListData = () => {
-    const { isLoadingMore, queryFrom } = this.state
-    const { subscribedPodcasts = [], subscribedPodcastsTotalCount = 0 } = this.global
-    let flatListData = []
-    let flatListDataTotalCount = null
-    if (isLoadingMore && queryFrom === PV.Filters._subscribedKey) {
-      // do nothing
-    } else if (queryFrom === PV.Filters._subscribedKey) {
-      flatListData = subscribedPodcasts
-      flatListDataTotalCount = subscribedPodcastsTotalCount
-    } else {
-      flatListData = this.state?.flatListData || []
-      flatListDataTotalCount = this.state?.flatListDataTotalCount || []
-    }
-
-    return {
-      flatListData,
-      flatListDataTotalCount
-    }
-  }
-
   _getItemLayout = (_: any, index: number) => {
     return {
       length: horizontalRowHeight + dividerHeight,
@@ -1186,6 +1171,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const {
+      flatListData,
+      flatListDataTotalCount,
       isInitialLoadFinished,
       isLoadingMore,
       isRefreshing,
@@ -1206,8 +1193,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       queryFrom === PV.Filters._subscribedKey && (!subscribedPodcastIds || subscribedPodcastIds.length === 0)
 
     const isCategoryScreen = queryFrom === PV.Filters._categoryKey
-
-    const { flatListData, flatListDataTotalCount } = this._getFlatListData()
 
     const hasANotch = hasNotch() || hasDynamicIsland()
     const popoverYOffset = hasANotch ? 100 : 40
@@ -1398,7 +1383,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const results = await getPodcasts({
       sort,
       page,
-      ...(searchTitle ? { searchTitle } : {})
+      ...(searchTitle ? { searchTitle } : {}),
+      ...(!searchTitle ? { podcastsOnly: true } : {})
     })
 
     if (searchTitle) {
@@ -1418,7 +1404,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const results = await getPodcasts({
       categories: categoryId,
       sort,
-      page
+      page,
+      podcastsOnly: true
     })
     return results
   }
@@ -1495,7 +1482,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedCategorySub),
           sort: filterKey,
           ...(searchTitle ? { searchTitle } : {}),
-          ...(hasVideo ? { hasVideo: true } : {})
+          ...(!searchTitle ? { podcastsOnly: true } : {})
         })
         newState.flatListData = results[0]
         newState.endOfResultsReached = results[0].length < 20

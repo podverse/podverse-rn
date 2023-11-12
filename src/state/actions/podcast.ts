@@ -48,6 +48,8 @@ export const combineWithAddByRSSPodcasts = async (
     subscribedPodcasts: finalPodcasts,
     subscribedPodcastsTotalCount: finalPodcasts?.length
   })
+
+  return finalPodcasts
 }
 
 export const getSubscribedPodcasts = async (sort?: string | null) => {
