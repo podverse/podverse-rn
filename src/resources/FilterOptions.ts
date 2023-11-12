@@ -195,11 +195,10 @@ export const FilterOptions = {
   sortItems,
   screenFilters: {
     AlbumScreen: {
-      type: [_downloadedKey, _tracksKey, _hideCompletedKey, _showCompletedKey, _clipsKey],
+      type: [_downloadedKey, _tracksKey],
       sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
       addByPodcastRSSFeedURLType: [_downloadedKey, _tracksKey],
-      addByPodcastRSSFeedURLSort: [_mostRecentKey, _oldestKey],
-      seasonsSort: [_mostRecentKey, _oldestKey]
+      addByPodcastRSSFeedURLSort: [_mostRecentKey, _oldestKey]
     },
     AlbumsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _customFeedsKey],

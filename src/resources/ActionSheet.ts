@@ -326,10 +326,13 @@ const mediaMoreButtons = (
   }
 
   if ((includeGoToEpisodeInEpisodesStack || includeGoToEpisodeInCurrentStack) && buttons.length < 8) {
+    const text = itemType === 'track'
+      ? translate('Go to Track')
+      : translate('Go to Episode')
     buttons.push({
-      accessibilityLabel: translate('Go to Episode'),
+      accessibilityLabel: text,
       key: PV.Keys.go_to_episode,
-      text: translate('Go to Episode'),
+      text,
       onPress: async () => {
         await handleDismiss()
         if (includeGoToEpisodeInEpisodesStack) {
