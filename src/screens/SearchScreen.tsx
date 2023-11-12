@@ -1,3 +1,6 @@
+
+/* NOTE: the SearchScreen is currently not included / navigable in the app */
+
 import debounce from 'lodash/debounce'
 import { createEmailLinkUrl, isOdd } from 'podverse-shared'
 import { Alert, Linking, StyleSheet } from 'react-native'
