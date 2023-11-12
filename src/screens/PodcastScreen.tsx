@@ -121,7 +121,7 @@ const getScreenTitle = () => {
 }
 
 const getSearchPlaceholder = () => {
-  const searchPlaceholder = translate('Search episodes')
+  const searchPlaceholder = translate('Search podcasts')
   return searchPlaceholder
 }
 

@@ -242,7 +242,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           hideIcon
           icon='filter'
           onChangeText={this._handleSearchBarTextChange}
-          placeholder={translate('Search clips')}
+          placeholder={translate('Search podcasts')}
           testID={`${testIDPrefix}_filter_bar`}
           value={searchBarText}
         />
