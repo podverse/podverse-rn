@@ -1343,15 +1343,18 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _querySubscribedPodcasts = async (preventAutoDownloading?: boolean, preventParseCustomRSSFeeds?: boolean) => {
     const { querySort, searchBarText } = this.state
-    await getSubscribedPodcasts(querySort)
+    
+    let subscribedPodcastsAllMediums = await getSubscribedPodcasts(querySort)
 
     await handleUpdateNewEpisodesCount()
 
     if (!preventParseCustomRSSFeeds) {
       if (!searchBarText && preventAutoDownloading) await parseAllAddByRSSPodcasts()
 
-      await combineWithAddByRSSPodcasts(searchBarText, querySort)
+      subscribedPodcastsAllMediums = await combineWithAddByRSSPodcasts(searchBarText, querySort)
     }
+
+    const subscribedPodcasts = subscribedPodcastsAllMediums.filter((podcast: Podcast) => podcast.medium === 'podcast')
 
     if (!preventAutoDownloading) {
       try {
@@ -1366,6 +1369,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     // let syncing with server history data run in the background
     syncNewEpisodesCountWithHistory()
+
+    return subscribedPodcasts
   }
 
   _queryCustomFeeds = async () => {
@@ -1466,7 +1471,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
           await getAuthUserInfo() // get the latest subscribedPodcastIds first
           shouldCleanFlatListData = false
         }
-        await this._querySubscribedPodcasts(preventAutoDownloading, preventParseCustomRSSFeeds)
+        const subscribedPodcasts = await this._querySubscribedPodcasts(
+          preventAutoDownloading, preventParseCustomRSSFeeds)
+        newState.flatListData = [...subscribedPodcasts]
+        newState.flatListDataTotalCount = subscribedPodcasts.length
       } else if (isCustomFeedsSelected) {
         const podcasts = await this._queryCustomFeeds()
         newState.flatListData = [...podcasts]
