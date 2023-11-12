@@ -1,4 +1,4 @@
-import { PodcastMedium, checkIfContainsStringMatch } from 'podverse-shared'
+import { Podcast, PodcastMedium, checkIfContainsStringMatch } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { errorLogger } from '../../lib/logger'
 import { safelyUnwrapNestedVariable } from '../../lib/utility'
@@ -23,6 +23,7 @@ const handleCombineWithAddByRSSPodcasts = async (
   medium: PodcastMedium, searchTitle?: string, sort?: string | null) => {
   const hasVideo = medium === PV.Medium.video
   const isMusic = medium === PV.Medium.music
+  const podcastsOnly = medium === PV.Medium.podcast
 
   const combinedPodcasts = await combineWithAddByRSSPodcastsService(medium, sort)
   let finalPodcasts = []
@@ -37,6 +38,9 @@ const handleCombineWithAddByRSSPodcasts = async (
     finalPodcasts = finalPodcasts.filter((podcast) => podcast.hasVideo)
   } else if (isMusic) {
     finalPodcasts = finalPodcasts.filter((podcast) => podcast.medium === PV.Medium.music)
+  } else if (podcastsOnly) {
+    finalPodcasts = finalPodcasts.filter(
+      (podcast) => !podcast.hasVideo && podcast.medium !== PV.Medium.music)
   }
 
   return finalPodcasts
@@ -52,7 +56,8 @@ export const findCombineWithAddByRSSPodcasts = async (
 export const combineWithAddByRSSPodcasts = async (
   medium: PodcastMedium,
   searchTitle?: string,
-  sort?: string | null
+  sort?: string | null,
+  returnPodcastsOnly?: boolean
 ) => {
   const finalPodcasts = await handleCombineWithAddByRSSPodcasts(medium, searchTitle, sort)
 
@@ -60,9 +65,19 @@ export const combineWithAddByRSSPodcasts = async (
     subscribedPodcasts: finalPodcasts,
     subscribedPodcastsTotalCount: finalPodcasts?.length
   })
+
+  if (returnPodcastsOnly) {
+    return finalPodcasts.filter((podcast: Podcast) => podcast.medium === PV.Medium.podcast)
+  } else {
+    return finalPodcasts
+  }
 }
 
-export const getSubscribedPodcasts = async (medium: PodcastMedium, sort?: string | null) => {
+// getSubscribedPodcasts should only be called when you want to get the latest EVERYTHING subscribed
+// and set on global state. Individual screens should not render global subscribedPodcasts though.
+// returnPodcastsOnly is only for rendering the PodcastsScreen.
+export const getSubscribedPodcasts = async (
+  medium: PodcastMedium, sort?: string | null, returnPodcastsOnly?: boolean) => {
   const globalState = getGlobal() 
   const subscribedPodcastIds = globalState.session.userInfo.subscribedPodcastIds || []
   const data = await getSubscribedPodcastsService(medium, subscribedPodcastIds, sort)
@@ -73,7 +88,12 @@ export const getSubscribedPodcasts = async (medium: PodcastMedium, sort?: string
     subscribedPodcasts,
     subscribedPodcastsTotalCount
   })
-  return subscribedPodcasts
+
+  if (returnPodcastsOnly) {
+    return subscribedPodcasts.filter((subscribedPodcast: Podcast) => subscribedPodcast.medium === PV.Medium.podcast)
+  } else {
+    return subscribedPodcasts
+  }
 }
 
 export const toggleSubscribeToPodcast = async (id: string) => {

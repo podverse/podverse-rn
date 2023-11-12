@@ -73,8 +73,11 @@ export const combineEpisodesWithAddByRSSEpisodesLocally = async (
   }
 
   const hasVideo = medium === PV.Medium.video
+  const podcastsOnly = medium === PV.Medium.podcast
   if (hasVideo) {
     addByRSSEpisodes = addByRSSEpisodes.filter((episode) => episode.hasVideo)
+  } else if (podcastsOnly) {
+    addByRSSEpisodes = addByRSSEpisodes.filter((episode) => !episode.hasVideo)
   }
 
   const sortedResults = [...results[0], ...addByRSSEpisodes].sort((a: any, b: any) => {
@@ -144,8 +147,11 @@ export const getAddByRSSPodcastsLocally = async (medium: PodcastMedium) => {
     let items = itemsString ? JSON.parse(itemsString) : []
 
     const isMusic = medium === PV.Medium.music
+    const podcastsOnly = medium === PV.Medium.podcast
     if (isMusic) {
       items = items.filter((addByRSSPodcast: any) => addByRSSPodcast.medium === PV.Medium.music)
+    } else if (podcastsOnly) {
+      items = items.filter((addByRSSPodcast: any) => addByRSSPodcast.medium !== PV.Medium.music)
     }
 
     return items

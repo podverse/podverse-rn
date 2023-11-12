@@ -641,9 +641,9 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
           })
         }
 
-        const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally(PV.Medium.mixed)
+        const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally(PV.Medium.podcast)
         if (querySort === PV.Filters._mostRecentKey && hasAddByRSSEpisodes) {
-          results = await combineEpisodesWithAddByRSSEpisodesLocally(results, PV.Medium.mixed, searchTitle)
+          results = await combineEpisodesWithAddByRSSEpisodesLocally(results, PV.Medium.podcast, searchTitle)
         }
 
         newState.flatListData = [...flatListData, ...results[0]]
@@ -654,7 +654,8 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
         const downloadedSort = PV.FilterOptions.screenFilters.EpisodesScreen.sort.some((option) => option === filterKey)
           ? filterKey
           : querySort
-        const downloadedEpisodes = await getDownloadedEpisodes(PV.Medium.mixed, podcastSearchTitle, searchTitle, downloadedSort)
+        const downloadedEpisodes = await getDownloadedEpisodes(
+          PV.Medium.podcast, podcastSearchTitle, searchTitle, downloadedSort)
         newState.flatListData = [...downloadedEpisodes]
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = downloadedEpisodes.length
@@ -673,9 +674,9 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
           includePodcast: true
         })
 
-        const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally(PV.Medium.mixed)
+        const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally(PV.Medium.podcast)
         if (queryFrom === PV.Filters._subscribedKey && filterKey === PV.Filters._mostRecentKey && hasAddByRSSEpisodes) {
-          results = await combineEpisodesWithAddByRSSEpisodesLocally(results, PV.Medium.mixed, searchTitle)
+          results = await combineEpisodesWithAddByRSSEpisodesLocally(results, PV.Medium.podcast, searchTitle)
         }
 
         newState.flatListData = results[0]

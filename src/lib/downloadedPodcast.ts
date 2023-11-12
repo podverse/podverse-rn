@@ -123,10 +123,13 @@ export const getDownloadedPodcasts = async (medium: PodcastMedium, searchTitle?:
 
     const hasVideo = medium === PV.Medium.video
     const isMusic = medium === PV.Medium.music
+    const podcastsOnly = medium === PV.Medium.podcast
     if (hasVideo) {
       items = items.filter((podcast: any) => podcast.hasVideo)
     } else if (isMusic) {
       items = items.filter((podcast: any) => podcast.medium === PV.Medium.music)
+    } else if (podcastsOnly) {
+      items = items.filter((podcast: any) => !podcast.hasVideo && podcast.medium !== PV.Medium.music)
     }
 
     return items

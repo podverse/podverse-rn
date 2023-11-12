@@ -1143,27 +1143,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     Linking.openURL(createEmailLinkUrl(PV.Emails.PODCAST_REQUEST))
   }
 
-  _getFlatListData = () => {
-    const { isLoadingMore, queryFrom } = this.state
-    const { subscribedPodcasts = [], subscribedPodcastsTotalCount = 0 } = this.global
-    let flatListData = []
-    let flatListDataTotalCount = null
-    if (isLoadingMore && queryFrom === PV.Filters._subscribedKey) {
-      // do nothing
-    } else if (queryFrom === PV.Filters._subscribedKey) {
-      flatListData = subscribedPodcasts
-      flatListDataTotalCount = subscribedPodcastsTotalCount
-    } else {
-      flatListData = this.state?.flatListData || []
-      flatListDataTotalCount = this.state?.flatListDataTotalCount || []
-    }
-
-    return {
-      flatListData,
-      flatListDataTotalCount
-    }
-  }
-
   _getItemLayout = (_: any, index: number) => {
     return {
       length: horizontalRowHeight + dividerHeight,
@@ -1175,6 +1154,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const {
+      flatListData,
+      flatListDataTotalCount,
       isInitialLoadFinished,
       isLoadingMore,
       isRefreshing,
@@ -1195,8 +1176,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       queryFrom === PV.Filters._subscribedKey && (!subscribedPodcastIds || subscribedPodcastIds.length === 0)
 
     const isCategoryScreen = queryFrom === PV.Filters._categoryKey
-
-    const { flatListData, flatListDataTotalCount } = this._getFlatListData()
 
     const hasANotch = hasNotch() || hasDynamicIsland()
     const popoverYOffset = hasANotch ? 100 : 40
@@ -1332,14 +1311,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _querySubscribedPodcasts = async (preventAutoDownloading?: boolean, preventParseCustomRSSFeeds?: boolean) => {
     const { querySort, searchBarText } = this.state
-    await getSubscribedPodcasts(PV.Medium.mixed, querySort)
+    let localSubscribedPodcasts = await getSubscribedPodcasts(PV.Medium.mixed, querySort)
 
     await handleUpdateNewEpisodesCount()
 
     if (!preventParseCustomRSSFeeds) {
       if (!searchBarText && preventAutoDownloading) await parseAllAddByRSSPodcasts()
-
-      await combineWithAddByRSSPodcasts(PV.Medium.mixed, searchBarText, querySort)
+      localSubscribedPodcasts = await combineWithAddByRSSPodcasts(PV.Medium.mixed, searchBarText, querySort)
     }
 
     if (!preventAutoDownloading) {
@@ -1355,10 +1333,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     // let syncing with server history data run in the background
     syncNewEpisodesCountWithHistory()
+
+    return localSubscribedPodcasts
   }
 
   _queryCustomFeeds = async () => {
-    const customFeeds = await getAddByRSSPodcastsLocally(PV.Medium.mixed)
+    const customFeeds = await getAddByRSSPodcastsLocally(PV.Medium.podcast)
     return customFeeds
   }
 
@@ -1366,7 +1346,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { searchBarText: searchTitle } = this.state
     let localPodcasts = [] as any
     if (searchTitle && page === 1) {
-      localPodcasts = await findCombineWithAddByRSSPodcasts(PV.Medium.mixed, searchTitle)
+      localPodcasts = await findCombineWithAddByRSSPodcasts(PV.Medium.podcast, searchTitle)
       this.setState({
         queryFrom: PV.Filters._allPodcastsKey,
         flatListData: localPodcasts,
@@ -1381,7 +1361,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const results = await getPodcasts({
       sort,
       page,
-      ...(searchTitle ? { searchTitle } : {})
+      ...(searchTitle ? { searchTitle } : {}),
+      ...(!searchTitle ? { podcastsOnly: true } : {})
     })
 
     if (searchTitle) {
@@ -1401,7 +1382,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const results = await getPodcasts({
       categories: categoryId,
       sort,
-      page
+      page,
+      podcastsOnly: true
     })
     return results
   }
@@ -1443,18 +1425,21 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
       if (isDownloadedSelected) {
-        const podcasts = await getDownloadedPodcasts(PV.Medium.mixed, searchTitle)
+        const podcasts = await getDownloadedPodcasts(PV.Medium.podcast, searchTitle)
         newState.flatListData = [...podcasts]
+        newState.flatListDataTotalCount = podcasts.length
         newState.queryFrom = PV.Filters._downloadedKey
         newState.selectedFilterLabel = await getSelectedFilterLabel(PV.Filters._downloadedKey)
         newState.endOfResultsReached = true
-        newState.flatListDataTotalCount = podcasts.length
       } else if (isSubscribedSelected) {
         if (!preventParseCustomRSSFeeds) {
           await getAuthUserInfo() // get the latest subscribedPodcastIds first
           shouldCleanFlatListData = false
         }
-        await this._querySubscribedPodcasts(preventAutoDownloading, preventParseCustomRSSFeeds)
+        const localPodcastsData = await this._querySubscribedPodcasts(
+          preventAutoDownloading, preventParseCustomRSSFeeds)
+        newState.flatListData = [...localPodcastsData]
+        newState.flatListDataTotalCount = localPodcastsData.length
       } else if (isCustomFeedsSelected) {
         const podcasts = await this._queryCustomFeeds()
         newState.flatListData = [...podcasts]
@@ -1474,7 +1459,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const results = await getPodcasts({
           ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedCategorySub),
           sort: filterKey,
-          ...(searchTitle ? { searchTitle } : {})
+          ...(searchTitle ? { searchTitle } : {}),
+          ...(!searchTitle ? { podcastsOnly: true } : {})
         })
         newState.flatListData = results[0]
         newState.endOfResultsReached = results[0].length < 20
