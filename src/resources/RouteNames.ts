@@ -2,6 +2,7 @@ export const RouteNames = {
   AboutScreen: 'AboutScreen',
   AddPodcastByRSSAuthScreen: 'AddPodcastByRSSAuthScreen',
   AddPodcastByRSSScreen: 'AddPodcastByRSSScreen',
+  AlbumsScreen: 'AlbumsScreen',
   AuthNavigator: 'AuthNavigator',
   AuthScreen: 'AuthScreen',
   ClipsScreen: 'ClipsScreen',

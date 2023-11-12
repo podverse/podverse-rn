@@ -2,7 +2,6 @@ import { getGlobal } from 'reactn'
 import Config from 'react-native-config'
 import { translate } from '../lib/i18n'
 import { Filters } from './Filters'
-import { PV } from './PV'
 
 const {
   _subscribedKey,
@@ -193,6 +192,11 @@ export const FilterOptions = {
   getTypeItems,
   sortItems,
   screenFilters: {
+    AlbumsScreen: {
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _customFeedsKey],
+      sort: [..._top],
+      subscribedSort: [_alphabeticalKey, _mostRecentKey]
+    },
     ClipsScreen: {
       type: [_subscribedKey, _allPodcastsKey, _categoryKey],
       sort: [_mostRecentKey, ..._top]

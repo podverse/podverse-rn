@@ -10,6 +10,7 @@ import {
   AboutScreen,
   AddPodcastByRSSAuthScreen,
   AddPodcastByRSSScreen,
+  AlbumsScreen,
   AuthScreen,
   ClipsScreen,
   ContactScreen,
@@ -285,6 +286,10 @@ const MyLibraryNavigator = createStackNavigator(
     [PV.RouteNames.ProfileScreen]: {
       screen: ProfileScreen,
       path: PV.DeepLinks.Profile.path
+    },
+    [PV.RouteNames.AlbumsScreen]: {
+      screen: AlbumsScreen,
+      path: PV.DeepLinks.Albums.path
     }
   },
   {

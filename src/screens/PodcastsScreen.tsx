@@ -1352,7 +1352,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     let localPodcasts = [] as any
     if (searchTitle && page === 1) {
-      localPodcasts = await findCombineWithAddByRSSPodcasts(searchTitle)
+      // When searching on the PodcastsScreen, we want to return ALL podcast results,
+      // including music and video.
+      const medium = searchTitle ? PV.Medium.mixed : PV.Medium.podcast
+      localPodcasts = await findCombineWithAddByRSSPodcasts(medium, searchTitle)
       this.setState({
         queryFrom: PV.Filters._allPodcastsKey,
         flatListData: localPodcasts,
@@ -1431,7 +1434,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
       if (isDownloadedSelected) {
-        const podcasts = await getDownloadedPodcasts(searchTitle, hasVideo)
+        const podcasts = await getDownloadedPodcasts(searchTitle)
         newState.flatListData = [...podcasts]
         newState.queryFrom = PV.Filters._downloadedKey
         newState.selectedFilterLabel = await getSelectedFilterLabel(PV.Filters._downloadedKey)
