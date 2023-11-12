@@ -592,6 +592,7 @@ export class ProfileScreen extends React.Component<Props, State> {
 
         let results = [[], 0]
         if (this.global.profile.user.subscribedPodcastIds.length > 0) {
+          // TODO: add medium handling to query and UI
           results = await getPodcasts(query)
         }
 
