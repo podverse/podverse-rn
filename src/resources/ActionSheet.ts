@@ -33,7 +33,7 @@ const mediaMoreButtons = (
     includeGoToEpisodeInEpisodesStack?: boolean | string
     includeGoToEpisodeInCurrentStack?: boolean
   },
-  itemType: 'podcast' | 'episode' | 'clip' | 'chapter' | 'playlist' | 'profile'
+  itemType: 'podcast' | 'episode' | 'clip' | 'chapter' | 'playlist' | 'profile' | 'track'
 ) => {
   if (!item || !item.episodeId) return
 
@@ -116,8 +116,10 @@ const mediaMoreButtons = (
         itemType === 'episode'
           ? translate('ARIA HINT - stream this episode')
           : itemType === 'chapter'
-          ? translate('ARIA HINT - stream this chapter')
-          : translate('ARIA HINT - stream this clip'),
+            ? translate('ARIA HINT - stream this chapter')
+            : itemType === 'track'
+              ? translate('ARIA HINT - stream this track')
+              : translate('ARIA HINT - stream this clip'),
       accessibilityLabel: translate('Stream'),
       key: PV.Keys.stream,
       text: translate('Stream'),
@@ -163,8 +165,10 @@ const mediaMoreButtons = (
           itemType === 'episode'
             ? translate('ARIA HINT - add this episode next in your queue')
             : itemType === 'clip'
-            ? translate('ARIA HINT - add this clip next in your queue')
-            : translate('ARIA HINT - add this chapter next in your queue'),
+              ? translate('ARIA HINT - add this clip next in your queue')
+              : itemType === 'track'
+                ? translate('ARIA HINT - add this track next in your queue')
+                : translate('ARIA HINT - add this chapter next in your queue'),
         accessibilityLabel: translate('ARIA LABEL - Queue Next'),
         key: PV.Keys.queue_next,
         text: translate('Queue Next'),
@@ -178,8 +182,10 @@ const mediaMoreButtons = (
           itemType === 'episode'
             ? translate('ARIA HINT - add this episode last in your queue')
             : itemType === 'clip'
-            ? translate('ARIA HINT - add this clip last in your queue')
-            : translate('ARIA HINT - add this chapter last in your queue'),
+              ? translate('ARIA HINT - add this clip last in your queue')
+              : itemType === 'track'
+                ? translate('ARIA HINT - add this track last in your queue')
+                : translate('ARIA HINT - add this chapter last in your queue'),
         accessibilityLabel: translate('ARIA LABEL - Queue Last'),
         key: PV.Keys.queue_last,
         text: translate('Queue Last'),
@@ -196,8 +202,10 @@ const mediaMoreButtons = (
           itemType === 'episode'
             ? translate('ARIA HINT - add this episode to a playlist')
             : itemType === 'clip'
-            ? translate('ARIA HINT - add this clip to a playlist')
-            : translate('ARIA HINT - add this chapter to a playlist'),
+              ? translate('ARIA HINT - add this clip to a playlist')
+              : itemType === 'track'
+                ? translate('ARIA HINT - add this track to a playlist')
+                : translate('ARIA HINT - add this chapter to a playlist'),
         accessibilityLabel: translate('Add to Playlist'),
         key: PV.Keys.add_to_playlist,
         text: translate('Add to Playlist'),
@@ -217,16 +225,18 @@ const mediaMoreButtons = (
       itemType === 'podcast'
         ? translate('ARIA HINT - share this podcast')
         : itemType === 'episode'
-        ? translate('ARIA HINT - share this episode')
-        : itemType === 'clip'
-        ? translate('ARIA HINT - share this clip')
-        : itemType === 'chapter'
-        ? translate('ARIA HINT - share this chapter')
-        : itemType === 'playlist'
-        ? translate('ARIA HINT - share this playlist')
-        : itemType === 'profile'
-        ? translate('ARIA HINT - share this profile')
-        : translate('ARIA HINT - share this item')
+          ? translate('ARIA HINT - share this episode')
+          : itemType === 'clip'
+            ? translate('ARIA HINT - share this clip')
+            : itemType === 'chapter'
+              ? translate('ARIA HINT - share this chapter')
+              : itemType === 'playlist'
+                ? translate('ARIA HINT - share this playlist')
+                : itemType === 'profile'
+                  ? translate('ARIA HINT - share this profile')
+                  : itemType === 'track'
+                    ? translate('ARIA HINT - share this track')
+                    : translate('ARIA HINT - share this item')
     buttons.push({
       accessibilityHint,
       accessibilityLabel: translate('Share'),
@@ -260,11 +270,17 @@ const mediaMoreButtons = (
   }
 
   if (isDownloaded) {
+    const text = itemType === 'track'
+      ? translate('Music - Delete Track')
+      : translate('Delete Episode')
+    const accessibilityHint = itemType === 'track'
+      ? translate('ARIA HINT - delete this downloaded track')
+      : translate('ARIA HINT - delete this downloaded episode')
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - delete this downloaded episode'),
-      accessibilityLabel: translate('Delete Episode'),
+      accessibilityHint,
+      accessibilityLabel: text,
       key: PV.Keys.delete_episode,
-      text: translate('Delete Episode'),
+      text,
       onPress: async () => {
         removeDownloadedPodcastEpisode(item.episodeId)
         await handleDismiss()

@@ -27,7 +27,7 @@ import { errorLogger } from '../lib/logger'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
-import { handlePodcastScreenNavigateWithParams } from '../lib/navigate'
+import { handleAlbumScreenNavigateWithParams } from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import {
   GlobalPropertyCallbackFunction,
@@ -429,7 +429,7 @@ export class AlbumsScreen extends React.Component<Props, State> {
   )
 
   _onPodcastItemSelected = (podcast: Podcast) => {
-    handlePodcastScreenNavigateWithParams(
+    handleAlbumScreenNavigateWithParams(
       this.props.navigation,
       podcast.id,
       podcast,

@@ -23,6 +23,7 @@ const {
   _allEpisodesKey,
   _podcastsKey,
   _episodesKey,
+  _tracksKey,
   _hideCompletedKey,
   _showCompletedKey,
   _clipsKey,
@@ -46,9 +47,6 @@ const sortChronologicalItem = {
 }
 
 const allFilterTypeItems = () => {
-  const allPodcastsLabel = translate('All Podcasts')
-  const episodesLabel = translate('Episodes')
-
   return [
     {
       label: translate('Subscribed'),
@@ -59,7 +57,7 @@ const allFilterTypeItems = () => {
       value: _downloadedKey
     },
     {
-      label: allPodcastsLabel,
+      label: translate('All Podcasts'),
       value: _allPodcastsKey
     },
     {
@@ -83,8 +81,12 @@ const allFilterTypeItems = () => {
       value: _podcastsKey
     },
     {
-      label: episodesLabel,
+      label: translate('Episodes'),
       value: _episodesKey
+    },
+    {
+      label: translate('Music - Tracks'),
+      value: _tracksKey
     },
     {
       label: translate('Hide Completed'),
@@ -192,6 +194,13 @@ export const FilterOptions = {
   getTypeItems,
   sortItems,
   screenFilters: {
+    AlbumScreen: {
+      type: [_downloadedKey, _tracksKey, _hideCompletedKey, _showCompletedKey, _clipsKey],
+      sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
+      addByPodcastRSSFeedURLType: [_downloadedKey, _tracksKey],
+      addByPodcastRSSFeedURLSort: [_mostRecentKey, _oldestKey],
+      seasonsSort: [_mostRecentKey, _oldestKey]
+    },
     AlbumsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _customFeedsKey],
       sort: [..._top],

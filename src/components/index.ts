@@ -1,3 +1,4 @@
+export { AlbumTableHeader } from './AlbumTableHeader'
 export { AutoScrollToggle } from './AutoScrollToggle'
 export { BoostDropdownBanner } from './BoostDropdownBanner'
 export { ClipInfoView } from './ClipInfoView'

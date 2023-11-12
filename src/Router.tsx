@@ -72,7 +72,8 @@ import {
   V4VProvidersAlbyLoginScreen,
   WebPageScreen,
   SettingsScreenDebugging,
-  SettingsScreenChapters
+  SettingsScreenChapters,
+  AlbumScreen
 } from './screens'
 import { darkTheme } from './styles'
 import { PodcastInfoScreen } from './screens/PodcastInfoScreen'
@@ -290,6 +291,10 @@ const MyLibraryNavigator = createStackNavigator(
     [PV.RouteNames.AlbumsScreen]: {
       screen: AlbumsScreen,
       path: PV.DeepLinks.Albums.path
+    },
+    [PV.RouteNames.AlbumScreen]: {
+      screen: AlbumScreen,
+      path: PV.DeepLinks.Album.path
     }
   },
   {

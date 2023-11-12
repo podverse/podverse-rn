@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { getAuthorityFeedUrlFromArray, Podcast } from 'podverse-shared'
-import { getGlobal } from 'reactn'
 import { setItemWithStorageCapacityCheck } from '../lib/asyncStorage'
 import { setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedPodcast, removeDownloadedPodcast } from '../lib/downloadedPodcast'

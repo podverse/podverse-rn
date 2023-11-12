@@ -110,6 +110,13 @@ export const getDefaultSortForFilter = (options: any) => {
   } = options
   let newSelectedSortItemKey = selectedSortItemKey
   switch (screenName) {
+    case PV.RouteNames.AlbumScreen:
+      if (addByRSSPodcastFeedUrl) {
+        newSelectedSortItemKey = selectedSortItemKey ? selectedSortItemKey : PV.Filters._mostRecentKey
+      } else if (selectedFilterItemKey === PV.Filters._downloadedKey) {
+        newSelectedSortItemKey = selectedSortItemKey ? selectedSortItemKey : PV.Filters._mostRecentKey
+      }
+      break
     case PV.RouteNames.AlbumsScreen:
       newSelectedSortItemKey = getPodcastsTypeSortFilter('AlbumsScreen', selectedFilterItemKey, selectedSortItemKey)
       break
@@ -207,11 +214,52 @@ export const generateSections = (options: any) => {
       !PV.FilterOptions.screenFilters[screenName].type.includes(selectedFilterItemKey))
 
   switch (screenName) {
+    case PV.RouteNames.AlbumScreen:
+      if (addByRSSPodcastFeedUrl) {
+        filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
+          PV.FilterOptions.screenFilters.AlbumScreen.addByPodcastRSSFeedURLType.includes(item.value)
+        )
+        sortItems = sortItems.filter((item) =>
+          PV.FilterOptions.screenFilters.AlbumScreen.addByPodcastRSSFeedURLSort.includes(item.value)
+        )
+      } else if (selectedFilterItemKey === PV.Filters._downloadedKey) {
+        filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
+          PV.FilterOptions.screenFilters.AlbumScreen.type.includes(item.value)
+        )
+        sortItems = sortItems.filter(
+          (item) => item.value === PV.Filters._mostRecentKey || item.value === PV.Filters._oldestKey
+        )
+      } else if (selectedFilterItemKey === PV.Filters._tracksKey) {
+        filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
+          PV.FilterOptions.screenFilters.AlbumScreen.type.includes(item.value)
+        )
+        sortItems = sortItems.filter((item) => PV.FilterOptions.screenFilters.AlbumScreen.sort.includes(item.value))
+      }
+
+      sections = [
+        {
+          title: translate('Filter'),
+          data: filterItems,
+          value: PV.Filters._sectionFilterKey,
+          accessibilityHint: translate(filterAccessibilityHint),
+          accessibilityRole: 'header'
+        },
+        {
+          title: translate('Sort'),
+          data: sortItems,
+          value: PV.Filters._sectionSortKey,
+          accessibilityHint: translate(sortingFilterAccessibilityHint),
+          accessibilityRole: 'header'
+        }
+      ]
+
+      break
     case PV.RouteNames.AlbumsScreen:
       const albumsScreenData = generatePodcastsTypeSections(
         'AlbumsScreen', selectedFilterItemKey, flatCategoryItems, includeCategories)
       sortItems = albumsScreenData.sortItems
       filterItems = albumsScreenData.filterItems
+      sections = albumsScreenData.sections
       newSelectedCategoryItemKey = albumsScreenData.newSelectedCategoryItemKey
       newSelectedCategorySubItemKey = albumsScreenData.newSelectedCategorySubItemKey
       break
@@ -386,6 +434,7 @@ export const generateSections = (options: any) => {
       ]
 
       break
+    // TODO: This should be reused for VideoScreen
     case PV.RouteNames.PodcastScreen:
       if (addByRSSPodcastFeedUrl) {
         filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
@@ -447,6 +496,7 @@ export const generateSections = (options: any) => {
         'PodcastsScreen', selectedFilterItemKey, flatCategoryItems, includeCategories)
       sortItems = podcastsScreenData.sortItems
       filterItems = podcastsScreenData.filterItems
+      sections = podcastsScreenData.sections
       newSelectedCategoryItemKey = podcastsScreenData.newSelectedCategoryItemKey
       newSelectedCategorySubItemKey = podcastsScreenData.newSelectedCategorySubItemKey
       break
@@ -524,7 +574,7 @@ export const getSelectedFilterLabel = async (
   selectedCategoryItemKey?: string | null,
   selectedCategorySubItemKey?: string | null
 ) => {
-  let selectedFilterItem
+  let selectedFilterItem = null
   if (!selectedCategoryItemKey && !selectedCategorySubItemKey) {
     selectedFilterItem = PV.FilterOptions.getTypeItems().find((item) => {
       return item.value === selectedFilterItemKey

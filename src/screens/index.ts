@@ -1,6 +1,7 @@
 export { AboutScreen } from './AboutScreen'
 export { AddPodcastByRSSAuthScreen } from './AddPodcastByRSSAuthScreen'
 export { AddPodcastByRSSScreen } from './AddPodcastByRSSScreen'
+export { AlbumScreen } from './AlbumScreen'
 export { AlbumsScreen } from './AlbumsScreen'
 export { AuthScreen } from './AuthScreen'
 export { ClipsScreen } from './ClipsScreen'

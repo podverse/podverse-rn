@@ -12,6 +12,9 @@ export const DeepLinks = {
     path: 'podcast-by-feed-url/add*',
     pathPrefix: 'podcast-by-feed-url'
   },
+  Album: {
+    path: 'album'
+  },
   Albums: {
     path: 'albums'
   },
