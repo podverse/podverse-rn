@@ -423,7 +423,7 @@ export class AlbumsScreen extends React.Component<Props, State> {
       showAutoDownload
       showDownloadCount
       // TODO: change
-      testID={`${testIDPrefix}_podcast_item_${index}`}
+      testID={`${testIDPrefix}_album_item_${index}`}
       valueTags={item.value}
     />
   )
@@ -471,7 +471,7 @@ export class AlbumsScreen extends React.Component<Props, State> {
       }
     ]
 
-    return <SwipeRowBackMultipleButtons buttons={buttons} testID={`${testIDPrefix}_podcast_item_hidden_${index}`} />
+    return <SwipeRowBackMultipleButtons buttons={buttons} testID={`${testIDPrefix}_album_item_hidden_${index}`} />
   }
 
   _handleHiddenItemPress = async (selectedId, addByRSSPodcastFeedUrl) => {
