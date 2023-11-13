@@ -196,7 +196,8 @@ const styles = {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 12
+    paddingVertical: 12,
+    height: 58
   },
   tableSectionHeaderTitleText: {
     flex: 0,
