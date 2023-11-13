@@ -3,8 +3,6 @@ import { createEmailLinkUrl, Podcast, NowPlayingItem } from 'podverse-shared'
 import {
   Alert,
   Linking,
-  NativeEventEmitter,
-  NativeModules,
   StyleSheet,
   View as RNView
 } from 'react-native'
@@ -15,7 +13,7 @@ import {
   ActionSheet,
   Divider,
   FlatList,
-  NavPodcastsViewIcon,
+  // NavPodcastsViewIcon,
   PodcastTableCell,
   SearchBar,
   SwipeRowBackMultipleButtons,
@@ -143,15 +141,15 @@ export class AlbumsScreen extends React.Component<Props, State> {
 
   static navigationOptions = ({ navigation }) => {
     const _screenTitle = navigation.getParam('_screenTitle')
-    const _hasSubscribedPodcasts = navigation.getParam('_hasSubscribedPodcasts')
+    // const _hasSubscribedPodcasts = navigation.getParam('_hasSubscribedPodcasts')
     return {
       title: _screenTitle,
-      headerRight: () =>
-        _hasSubscribedPodcasts ? (
-          <RNView style={core.row}>
-            <NavPodcastsViewIcon />
-          </RNView>
-        ) : null
+      // headerRight: () =>
+      //   _hasSubscribedPodcasts ? (
+      //     <RNView style={core.row}>
+      //       <NavPodcastsViewIcon />
+      //     </RNView>
+      //   ) : null
     } as NavigationStackOptions
   }
 
