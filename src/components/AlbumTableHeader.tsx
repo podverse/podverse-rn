@@ -1,16 +1,17 @@
-import { ValueTag } from 'podverse-shared'
-import { Pressable, StyleSheet, Switch, View as RNView } from 'react-native'
+import { Author, Episode, Podcast, ValueTag, generateAuthorsText } from 'podverse-shared'
+import { StyleSheet, View as RNView } from 'react-native'
 import React, { useGlobal } from 'reactn'
+import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
-import { removeAndDecodeHTMLInString } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
-import { IndicatorDownload } from './IndicatorDownload'
-import { ActivityIndicator, FastImage, SettingsButton, SubscribeButton, Text, View } from './'
+import { ActivityIndicator, FastImage, Icon, SettingsButton, SubscribeButton, Text, View } from './'
 
 type Props = {
   addByRSSPodcastFeedUrl?: string
+  authors: Author[]
   description?: string
+  episodes: Episode[]
   handleNavigateToPodcastInfoScreen?: any
   handleToggleAutoDownload?: any
   handleToggleSettings?: any
@@ -19,7 +20,7 @@ type Props = {
   isNotFound?: boolean
   isSubscribed?: boolean
   isSubscribing?: boolean
-  podcast?: any
+  podcast: Podcast
   podcastImageUrl?: string
   podcastTitle: string
   podcastValue: ValueTag[]
@@ -27,17 +28,31 @@ type Props = {
   testID: string
 }
 
+const downloadAllTracks = (episodes: Episode[], podcast: Podcast,
+  downloadedEpisodeIds: string[], downloadsActive: string[]) => {
+  if (!episodes || episodes.length === 0) return
+  for (const episode of episodes) {
+    const episodeId = episode?.id
+    const episodeDownloaded = !!(episodeId && !!downloadedEpisodeIds[episodeId])
+    const episodeDownloading = !!(episodeId && !!downloadsActive[episodeId])
+    if (!episodeDownloaded && !episodeDownloading) {
+      downloadEpisode(episode, podcast)
+    }
+  }
+}
+
 export const AlbumTableHeader = (props: Props) => {
   const {
     addByRSSPodcastFeedUrl,
-    description,
-    handleNavigateToPodcastInfoScreen,
+    authors = [],
+    episodes,
     handleToggleSettings,
     handleToggleSubscribe,
     isLoading,
     isNotFound,
     isSubscribed,
     isSubscribing,
+    podcast,
     podcastImageUrl,
     podcastTitle = translate('Untitled Podcast'),
     podcastValue,
@@ -45,8 +60,10 @@ export const AlbumTableHeader = (props: Props) => {
     testID
   } = props
   const [fontScaleMode] = useGlobal('fontScaleMode')
+  const [downloadedEpisodeIds] = useGlobal('downloadedEpisodeIds')
+  const [downloadsActive] = useGlobal('downloadsActive')
   const titleNumberOfLines = [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ? 1 : 2
-  const finalDescription = description ? removeAndDecodeHTMLInString(description) : ''
+  const authorNames = generateAuthorsText(authors)
 
   return (
     <View style={core.row}>
@@ -68,15 +85,20 @@ export const AlbumTableHeader = (props: Props) => {
               />
               <View style={styles.contentWrapper}>
                 <View style={styles.contentWrapperTop}>
-                  <Text
-                    accessibilityHint={translate('ARIA HINT - This is the podcast title')}
-                    accessibilityLabel={podcastTitle}
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    numberOfLines={titleNumberOfLines}
-                    selectable
-                    style={styles.title}>
-                    {podcastTitle}
-                  </Text>
+                  <RNView style={styles.contentWrapperTopText}>
+                    <Text
+                      accessibilityHint={translate('ARIA HINT - This is the podcast title')}
+                      accessibilityLabel={podcastTitle}
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                      numberOfLines={titleNumberOfLines}
+                      selectable
+                      style={styles.title}>
+                      {podcastTitle}
+                    </Text>
+                    <Text isSecondary style={styles.authorNames}>
+                      {authorNames}
+                    </Text>
+                  </RNView>
                   {isSubscribed && (
                     <SettingsButton
                       accessibilityHint={
@@ -102,36 +124,29 @@ export const AlbumTableHeader = (props: Props) => {
                   )}
                 </View>
                 <View style={styles.contentWrapperBottom}>
-                  {!!handleToggleSubscribe && (
-                    <SubscribeButton
-                      handleToggleSubscribe={handleToggleSubscribe}
-                      isSubscribed={isSubscribed}
-                      isSubscribing={isSubscribing}
-                      testID={testID}
-                    />
-                  )}
+                  <SubscribeButton
+                    handleToggleSubscribe={handleToggleSubscribe}
+                    isSubscribed={isSubscribed}
+                    isSubscribing={isSubscribing}
+                    testID={testID}
+                  />
+                  <Icon
+                    accessibilityHint={translate('ARIA HINT - download this album')}
+                    accessibilityLabel={translate('Download')}
+                    accessibilityRole='button'
+                    color={PV.Colors.white}
+                    name='download'
+                    onPress={() => {
+                      downloadAllTracks(episodes, podcast, downloadedEpisodeIds, downloadsActive)
+                    }}
+                    size={21}
+                    style={styles.downloadButton}
+                    testID={`${testID}_download_button_icon`}
+                  />
                 </View>
               </View>
             </View>
           )}
-          {/* {!isNotFound && !!finalDescription && (
-            <View style={styles.descriptionWrapper}>
-              <Pressable
-                accessibilityHint={translate('ARIA HINT - show more info about this podcast')}
-                accessibilityLabel={finalDescription}
-                onPress={handleNavigateToPodcastInfoScreen}>
-                <RNView>
-                  <Text
-                    numberOfLines={2}
-                    selectable
-                    style={styles.descriptionText}
-                    testID={`${testID}_description_text`}>
-                    {finalDescription}
-                  </Text>
-                </RNView>
-              </Pressable>
-            </View>
-          )} */}
           {isNotFound && (
             <View style={[styles.wrapper, core.view]}>
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title}>
@@ -149,21 +164,24 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 0,
     flexDirection: 'row',
-    minHeight: PV.Table.cells.podcast.wrapper.height,
+    minHeight: PV.Table.cells.album.wrapper.height,
     paddingHorizontal: 10,
-    paddingVertical: 15,
+    paddingVertical: 14,
     backgroundColor: PV.Colors.velvet,
     width: '100%'
   },
   image: {
-    height: PV.Table.cells.podcast.image.height,
-    width: PV.Table.cells.podcast.image.width,
+    height: PV.Table.cells.album.image.height,
+    width: PV.Table.cells.album.image.width,
     marginRight: 16
   },
   contentWrapper: {
     flex: 1,
     backgroundColor: 'transparent',
     justifyContent: 'space-between'
+  },
+  contentWrapperTopText: {
+    flexDirection: 'column'
   },
   contentWrapperBottom: {
     backgroundColor: 'transparent',
@@ -189,7 +207,18 @@ const styles = StyleSheet.create({
   title: {
     flexWrap: 'wrap',
     fontSize: PV.Fonts.sizes.xxl,
-    fontWeight: PV.Fonts.weights.bold,
-    maxWidth: 250
+    fontWeight: PV.Fonts.weights.bold
+  },
+  authorNames: {
+    fontSize: PV.Fonts.sizes.sm,
+    fontWeight: PV.Fonts.weights.semibold,
+    color: PV.Colors.skyLight,
+    marginTop: 4
+  },
+  downloadButton: {
+    height: 36,
+    lineHeight: 36,
+    width: 36,
+    textAlign: 'center'
   }
 })

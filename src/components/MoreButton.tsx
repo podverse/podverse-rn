@@ -9,18 +9,17 @@ type Props = {
   accessible: boolean
   handleMorePress: any
   isLoading?: boolean
-  itemType: 'episode' | 'clip' | 'chapter'
   testID: string
 }
 
 export const MoreButton = (props: Props) => {
-  const { accessible = true, handleMorePress, isLoading, itemType, testID } = props
+  const { accessible = true, handleMorePress, isLoading, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <PressableWithOpacity
       accessible={accessible}
-      accessibilityHint={`${translate('ARIA HINT - show more options for this')} ${translate(itemType)}`}
+      accessibilityHint={`${translate('ARIA HINT - show more options for this')}`}
       accessibilityLabel={translate('More')}
       accessibilityRole='button'
       hitSlop={{

@@ -21,6 +21,7 @@ import {
   SwitchWithText,
   TableSectionSelectors,
   Text,
+  TrackTableCell,
   View
 } from '../components'
 import { errorLogger } from '../lib/logger'
@@ -441,25 +442,12 @@ export class AlbumScreen extends React.Component<Props, State> {
     const userPlaybackPosition = 0
 
     return (
-      <EpisodeTableCell
-        handleDeletePress={() => this._handleDeleteEpisode(item)}
-        handleDownloadPress={() => this._handleDownloadPressed(item)}
+      <TrackTableCell
+        episode={episode}
         handleMorePress={() =>
           this._handleMorePress(convertToNowPlayingItem(item, null, podcast, userPlaybackPosition))
         }
-        handleNavigationPress={() => {
-          const { hasInternetConnection } = this.state
-          this.props.navigation.navigate(PV.RouteNames.AlbumScreen, {
-            episode,
-            podcast,
-            addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
-            hasInternetConnection
-          })
-        }}
-        hideImage
-        item={episode}
-        mediaFileDuration={mediaFileDuration}
-        navigation={navigation}
+        hideImage={false}
         testID={testId}
       />
     )
@@ -473,7 +461,8 @@ export class AlbumScreen extends React.Component<Props, State> {
   }
 
   _handleToggleDeleteDownloadedEpisodesDialog = () => {
-    const DOWNLOADED_EPISODES_DELETE = PV.Alerts.DOWNLOADED_EPISODES_DELETE(() => this._handleDeleteDownloadedEpisodes)
+    const DOWNLOADED_EPISODES_DELETE = PV.Alerts.DOWNLOADED_EPISODES_DELETE(
+      this._handleDeleteDownloadedEpisodesForThisPodcast)
     Alert.alert(
       DOWNLOADED_EPISODES_DELETE.title,
       DOWNLOADED_EPISODES_DELETE.message,
@@ -481,7 +470,7 @@ export class AlbumScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleDeleteDownloadedEpisodes = async () => {
+  _handleDeleteDownloadedEpisodesForThisPodcast = async () => {
     const { podcast, podcastId } = this.state
     const id = podcast?.id || podcastId
     try {
@@ -675,7 +664,9 @@ export class AlbumScreen extends React.Component<Props, State> {
       <View style={styles.headerView} testID={`${testIDPrefix}_view`}>
         <AlbumTableHeader
           addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
+          authors={podcast?.authors}
           description={podcast && podcast.description}
+          episodes={flatListData}
           handleNavigateToPodcastInfoScreen={this._handleNavigateToPodcastInfoScreen}
           handleToggleSettings={this._handleToggleSettings}
           handleToggleSubscribe={this._toggleSubscribeToPodcast}
@@ -683,6 +674,7 @@ export class AlbumScreen extends React.Component<Props, State> {
           isNotFound={!isLoadingMore && !podcast}
           isSubscribed={isSubscribed}
           isSubscribing={isSubscribing}
+          podcast={podcast}
           podcastImageUrl={podcast && (podcast.shrunkImageUrl || podcast.imageUrl)}
           podcastTitle={podcast && podcast.title}
           podcastValue={podcast?.value}
@@ -734,7 +726,6 @@ export class AlbumScreen extends React.Component<Props, State> {
                 )}
               </View>
             )}
-            <Divider style={styles.divider} />
             <Button
               accessibilityHint={translate('ARIA HINT - delete all the episodes you have downloaded for this podcast')}
               accessibilityLabel={translate('Delete Downloaded Episodes')}
@@ -776,8 +767,7 @@ export class AlbumScreen extends React.Component<Props, State> {
                   navigation,
                   {
                     handleDismiss: this._handleCancelPress,
-                    handleDownload: () => this._handleDownloadPressed(convertNowPlayingItemToEpisode(selectedItem)),
-                    includeGoToEpisodeInCurrentStack: true
+                    handleDownload: () => this._handleDownloadPressed(convertNowPlayingItemToEpisode(selectedItem))
                   },
                   'track'
                 )
@@ -826,7 +816,8 @@ export class AlbumScreen extends React.Component<Props, State> {
         {
           sort,
           page,
-          podcastId
+          podcastId,
+          maxResults: true
         },
         podcastId
       )
