@@ -356,38 +356,6 @@ export class AlbumScreen extends React.Component<Props, State> {
     )
   }
 
-  _onEndReached = ({ distanceFromEnd }: { distanceFromEnd: number }) => {
-    const { endOfResultsReached, podcast, queryPage = 1, sections, viewType } = this.state
-    
-    if (!!sections?.length) return null 
-
-    if (
-      !podcast.addByRSSPodcastFeedUrl &&
-      viewType !== PV.Filters._downloadedKey &&
-      !endOfResultsReached &&
-      this.shouldLoad
-    ) {
-      if (distanceFromEnd > -1) {
-        this.shouldLoad = false
-        this.setState(
-          {
-            isLoadingMore: true
-          },
-          () => {
-            (async () => {
-              const newState = await this._queryData(viewType, {
-                queryPage: queryPage + 1
-              })
-              this.setState(newState)
-            })()
-          }
-        )
-      }
-    }
-
-    return
-  }
-
   _onRefresh = () => {
     const { viewType } = this.state
     this.setState(
@@ -611,15 +579,12 @@ export class AlbumScreen extends React.Component<Props, State> {
       <TableSectionSelectors
         addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
         filterScreenTitle={getScreenTitle()}
-        handleSelectFilterItem={this.handleSelectFilterItem}
-        handleSelectSortItem={this.handleSelectSortItem}
+        hideDropdown
         includePadding
         navigation={navigation}
         screenName='AlbumScreen'
         selectedFilterItemKey={viewType}
         selectedFilterLabel={selectedFilterLabel}
-        selectedSortItemKey={querySort}
-        selectedSortLabel={selectedSortLabel}
         testID={testIDPrefix}
       />
     )
@@ -752,7 +717,6 @@ export class AlbumScreen extends React.Component<Props, State> {
                 }
                 listRef={(ref) => (this.listRef = ref)}
                 noResultsMessage={noResultsMessage}
-                onEndReached={this._onEndReached}
                 renderItem={this._renderItem}
                 sections={sections}
                 showNoInternetConnectionMessage={showNoInternetConnectionMessage}
