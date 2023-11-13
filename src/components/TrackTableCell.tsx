@@ -1,4 +1,4 @@
-import { Author, Episode } from 'podverse-shared'
+import { Episode } from 'podverse-shared'
 import { StyleSheet, View as RNView, Pressable } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
@@ -8,7 +8,8 @@ import { FastImage, IndicatorDownload, MoreButton, Text } from '.'
 
 type Props = {
   episode: Episode
-  handleMorePress?: any
+  handleMorePress: any
+  handlePlayPress: any
   hideImage?: boolean
   testID: string
 }
@@ -18,6 +19,7 @@ export class TrackTableCell extends React.PureComponent<Props> {
     const {
       episode,
       handleMorePress,
+      handlePlayPress,
       hideImage = true,
       testID
     } = this.props
@@ -42,12 +44,12 @@ export class TrackTableCell extends React.PureComponent<Props> {
 
     return (
       <RNView style={styles.outerWrapper}>
-        <RNView
+        <Pressable
           accessible={screenReaderEnabled}
           accessibilityHint={accessibilityHint}
           accessibilityLabel={accessibilityLabel}
           importantForAccessibility={screenReaderEnabled ? 'yes' : 'no-hide-descendants'}
-          onPress={screenReaderEnabled ? handleMorePress : null}
+          onPress={handlePlayPress}
           style={styles.pressablePlayWrapper}>
           {
             !hideImage && (
@@ -65,7 +67,7 @@ export class TrackTableCell extends React.PureComponent<Props> {
               <IndicatorDownload style={styles.autoDownloadIcon} />
             )}
           </RNView>
-        </RNView>
+        </Pressable>
         <RNView style={styles.buttonWrapper}>
           {!!handleMorePress && (
             <MoreButton

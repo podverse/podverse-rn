@@ -12,8 +12,6 @@ import {
   ActionSheet,
   AlbumTableHeader,
   Button,
-  Divider,
-  EpisodeTableCell,
   FlatList,
   NavFundingIcon,
   NavShareIcon,
@@ -42,9 +40,9 @@ import {
 } from '../services/parser'
 import { getPodcast } from '../services/podcast'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
-import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import * as DownloadState from '../state/actions/downloads'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
@@ -391,7 +389,6 @@ export class AlbumScreen extends React.Component<Props, State> {
   }
 
   _renderItem = ({ item, index }) => {
-    const { navigation } = this.props
     const { podcast, viewType } = this.state
 
     const episode = {
@@ -406,15 +403,22 @@ export class AlbumScreen extends React.Component<Props, State> {
       testId = `${testIDPrefix}_track_item_${index}`
     }
 
-    const { mediaFileDuration } = getHistoryItemIndexInfoForEpisode(item?.id)
     const userPlaybackPosition = 0
+    const newNowPlayingItem = convertToNowPlayingItem(item, null, podcast, userPlaybackPosition)
 
     return (
       <TrackTableCell
         episode={episode}
         handleMorePress={() =>
-          this._handleMorePress(convertToNowPlayingItem(item, null, podcast, userPlaybackPosition))
+          this._handleMorePress(newNowPlayingItem)
         }
+        handlePlayPress={async () => {
+          const forceUpdateOrderDate = false
+          const shouldPlay = true
+          const setCurrentItemNextInQueue = true
+          await playerLoadNowPlayingItem(newNowPlayingItem,
+            shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)    
+        }}
         hideImage={false}
         testID={testId}
       />
