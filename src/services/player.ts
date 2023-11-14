@@ -196,17 +196,23 @@ export const playerUpdateUserPlaybackPosition = async (skipSetNowPlaying?: boole
   }
 }
 
+type PlayerLoadNowPlayingItemOptions = {
+  forceUpdateOrderDate: boolean
+  itemToSetNextInQueue: NowPlayingItem | null
+  previousNowPlayingItem: NowPlayingItem | null
+  shouldPlay: boolean
+}
+
 export const playerLoadNowPlayingItem = async (
   item: NowPlayingItem,
-  shouldPlay: boolean,
-  forceUpdateOrderDate: boolean,
-  itemToSetNextInQueue: NowPlayingItem | null,
-  previousNowPlayingItem: NowPlayingItem | null
+  options: PlayerLoadNowPlayingItemOptions
 ) => {
   try {
     if (!item) {
       return
     }
+
+    const { forceUpdateOrderDate, itemToSetNextInQueue, previousNowPlayingItem, shouldPlay } = options
 
     const skipSetNowPlaying = true
     await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
