@@ -34,7 +34,6 @@ import {
   getUserPlaylists
 } from '../services/user'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { getPublicUser, toggleSubscribeToUser } from '../state/actions/user'
 import { core } from '../styles'
 
