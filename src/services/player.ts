@@ -218,11 +218,7 @@ export const playerLoadNowPlayingItem = async (
     await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
 
     if (!checkIfVideoFileOrVideoLiveType(itemToSetNextInQueue?.episodeMediaType)) {
-      if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
-        await audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
-      } else {
-        audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
-      }
+      await audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
     }
 
     if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
