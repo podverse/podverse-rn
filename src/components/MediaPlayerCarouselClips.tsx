@@ -138,13 +138,6 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     }
   }
 
-  _handleNavigationPress = (selectedItem: any) => {
-    const shouldPlay = true
-    const forceUpdateOrderDate = false
-    const setCurrentItemNextInQueue = false
-    playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
-  }
-
   _handleMorePress = (selectedItem: any) => {
     setGlobal({
       screenPlayer: {

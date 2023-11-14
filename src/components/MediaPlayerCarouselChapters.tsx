@@ -105,13 +105,6 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
     this.disableAutoscroll()
   }
 
-  _handleNavigationPress = (selectedItem: any) => {
-    const shouldPlay = true
-    const forceUpdateOrderDate = false
-    const setCurrentItemNextInQueue = false
-    playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
-  }
-
   disableAutoscroll = () => {
     if (this.interval) {
       this.setState(
