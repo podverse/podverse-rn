@@ -145,6 +145,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
     const { liveItem } = nowPlayingItem
+    const isMusic = nowPlayingItem.podcastMedium === PV.Medium.music
 
     let playButtonIcon = <Icon name='play' size={20} testID={`${testIDPrefix}_play_button`} />
     let playButtonAdjust = { paddingLeft: 2 } as any
@@ -277,7 +278,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 <Icon name='moon' size={20} solid testID={`${testIDPrefix}_sleep_timer`} />
               </View>
             </PressableWithOpacity>
-            {!liveItem && !hidePlaybackSpeedButton && (
+            {!liveItem && !hidePlaybackSpeedButton && !isMusic && (
               <PressableWithOpacity
                 accessibilityHint={translate('ARIA HINT - current playback speed')}
                 accessibilityLabel={`${playbackRate}X`}
