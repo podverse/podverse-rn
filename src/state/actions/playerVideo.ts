@@ -31,10 +31,11 @@ export const videoInitializePlayer = async (item: NowPlayingItem) => {
       }
     }
 
-    const shouldPlay = false
-    const forceUpdateOrderDate = false
-    const setCurrentItemNextInQueue = true
-    await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    await playerLoadNowPlayingItem(item, {
+      forceUpdateOrderDate: false,
+      setCurrentItemNextInQueue: true,
+      shouldPlay: false
+    })
   }
 
   const globalState = getGlobal()

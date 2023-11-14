@@ -272,12 +272,17 @@ export const playerHandleResumeAfterClipHasEnded = async () => {
   playerSetNowPlayingItem(nowPlayingItemEpisode, playbackPosition)
 }
 
+type PlayerLoadNowPlayingItemOptions = {
+  forceUpdateOrderDate: boolean
+  setCurrentItemNextInQueue: boolean
+  shouldPlay: boolean
+}
+
 export const playerLoadNowPlayingItem = async (
   item: NowPlayingItem,
-  shouldPlay: boolean,
-  forceUpdateOrderDate: boolean,
-  setCurrentItemNextInQueue: boolean
+  options: PlayerLoadNowPlayingItemOptions
 ) => {
+  const { forceUpdateOrderDate, setCurrentItemNextInQueue, shouldPlay } = options
   const globalState = getGlobal()
   const { nowPlayingItem: previousNowPlayingItem } = globalState.player
 
@@ -305,10 +310,12 @@ export const playerLoadNowPlayingItem = async (
 
     await playerLoadNowPlayingItemService(
       item,
-      shouldPlay,
-      !!forceUpdateOrderDate,
-      itemToSetNextInQueue,
-      previousNowPlayingItem
+      {
+        shouldPlay,
+        forceUpdateOrderDate: !!forceUpdateOrderDate,
+        itemToSetNextInQueue,
+        previousNowPlayingItem
+      }
     )
 
     showMiniPlayer()
@@ -335,10 +342,11 @@ export const goToCurrentLiveTime = () => {
   if (checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType)) {
     PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_LIVE_GO_TO_CURRENT_TIME)
   } else {
-    const shouldPlay = true
-    const forceUpdateOrderDate = true
-    const setCurrentItemNextInQueue = false
-    playerLoadNowPlayingItem(nowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    playerLoadNowPlayingItem(nowPlayingItem, {
+      forceUpdateOrderDate: true,
+      setCurrentItemNextInQueue: false,
+      shouldPlay: true
+    })
   }
 }
 

@@ -413,11 +413,11 @@ export class AlbumScreen extends React.Component<Props, State> {
           this._handleMorePress(newNowPlayingItem)
         }
         handlePlayPress={async () => {
-          const forceUpdateOrderDate = false
-          const shouldPlay = true
-          const setCurrentItemNextInQueue = true
-          await playerLoadNowPlayingItem(newNowPlayingItem,
-            shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)    
+          await playerLoadNowPlayingItem(newNowPlayingItem, {
+            forceUpdateOrderDate: false,
+            setCurrentItemNextInQueue: true,
+            shouldPlay: true
+          })    
         }}
         hideImage={false}
         testID={testId}

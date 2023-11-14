@@ -8,6 +8,12 @@ import { playerHandlePlayWithUpdate, playerTogglePlay } from '../../services/pla
 import { getHistoryItemIndexInfoForEpisode } from '../../services/userHistoryItem';
 import { hasValidNetworkConnection } from '../network';
 
+const playerLoadNowPlayingItemOptions = {
+  forceUpdateOrderDate: true,
+  setCurrentItemNextInQueue: false,
+  shouldPlay: true
+}
+
 export const getEpisodesForPodcast = async (podcast: Podcast): Promise<any[]> => {
   const hasInternetConnection = await hasValidNetworkConnection()
   if (!hasInternetConnection) {
@@ -56,10 +62,7 @@ export const loadEpisodeInPlayer = async (episode: Episode, podcast: Podcast) =>
     } else {
         const { userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(episode?.id)
         const newNowPlayingItem = convertToNowPlayingItem(episode, null, podcast, userPlaybackPosition)
-        const shouldPlay = true
-        const forceUpdateOrderDate = true
-        const setCurrentItemNextInQueue = false // TODO: Determine correctly
-        await playerLoadNowPlayingItem(newNowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+        await playerLoadNowPlayingItem(newNowPlayingItem, playerLoadNowPlayingItemOptions)
     }
 }
 
@@ -75,10 +78,7 @@ export const loadNowPlayingItemInPlayer = async (newNowPlayingItem: NowPlayingIt
     } else {
       const { userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(newNowPlayingItem.episodeId)
       newNowPlayingItem.userPlaybackPosition = userPlaybackPosition
-      const shouldPlay = true
-      const forceUpdateOrderDate = true
-      const setCurrentItemNextInQueue = false // TODO: Determine correctly
-      await playerLoadNowPlayingItem(newNowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+      await playerLoadNowPlayingItem(newNowPlayingItem, playerLoadNowPlayingItemOptions)
     }
   }
 }

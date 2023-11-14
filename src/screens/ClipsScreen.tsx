@@ -391,10 +391,11 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _handleNavigationPress = async (selectedItem: any) => {
-    const shouldPlay = true
-    const forceUpdateOrderDate = false
-    const setCurrentItemNextInQueue = true
-    await playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    await playerLoadNowPlayingItem(selectedItem, {
+      forceUpdateOrderDate: false,
+      setCurrentItemNextInQueue: true,
+      shouldPlay: true
+    })
   }
 
   render() {
