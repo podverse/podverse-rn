@@ -361,11 +361,13 @@ export const setLiveStreamWasPausedState = (bool: boolean) => {
 }
 
 export const handleEnrichingPlayerState = (item: NowPlayingItem) => {
-  // Be careful not to cause async issues when updating global state with these function calls.
-  trackPlayerScreenPageView(item)
-  loadChaptersForNowPlayingItem(item)
-  enrichParsedTranscript(item)
-  v4vEnrichValueTagDataIfNeeded(item)
+  if (item) {
+    // Be careful not to cause async issues when updating global state with these function calls.
+    trackPlayerScreenPageView(item)
+    loadChaptersForNowPlayingItem(item)
+    enrichParsedTranscript(item)
+    v4vEnrichValueTagDataIfNeeded(item)
+  }
 }
 
 const enrichParsedTranscript = (item: NowPlayingItem) => {
