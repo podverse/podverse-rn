@@ -309,6 +309,7 @@ export interface IFilters {
   _sectionMyPlaylistsKey: string
   _sectionSortKey: string
   _sectionSubscribedPlaylistsKey: string
+  _episodeNumberAscKey: string
 }
 
 interface IFontLargeSizes {
