@@ -12,6 +12,7 @@ import {
   login,
   signUp
 } from '../../services/auth'
+import PVEventEmitter from '../../services/eventEmitter'
 import { checkIfNotificationsEnabled } from '../../services/notifications'
 import { getPodcastCredentials, parseAllAddByRSSPodcasts,
   setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
@@ -177,6 +178,7 @@ export const loginUser = async (credentials: Credentials) => {
             await askToSyncWithNowPlayingItem()
             await parseAllAddByRSSPodcasts()
             await combineWithAddByRSSPodcasts()
+            PVEventEmitter.emit(PV.Events.USER_LOGGED_IN)
           }
           askToSyncLocalPodcastsWithServer(localUserInfo, serverUserInfo, callback)
         } catch (error) {

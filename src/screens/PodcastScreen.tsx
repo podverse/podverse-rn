@@ -121,7 +121,7 @@ const getScreenTitle = () => {
 }
 
 const getSearchPlaceholder = () => {
-  const searchPlaceholder = translate('Search episodes')
+  const searchPlaceholder = translate('Search podcasts')
   return searchPlaceholder
 }
 
@@ -658,7 +658,8 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _handleToggleDeleteDownloadedEpisodesDialog = () => {
-    const DOWNLOADED_EPISODES_DELETE = PV.Alerts.DOWNLOADED_EPISODES_DELETE(() => this._handleDeleteDownloadedEpisodes)
+    const DOWNLOADED_EPISODES_DELETE = PV.Alerts.DOWNLOADED_EPISODES_DELETE(
+      this._handleDeleteDownloadedEpisodesForThisPodcast)
     Alert.alert(
       DOWNLOADED_EPISODES_DELETE.title,
       DOWNLOADED_EPISODES_DELETE.message,
@@ -666,7 +667,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleDeleteDownloadedEpisodes = async () => {
+  _handleDeleteDownloadedEpisodesForThisPodcast = async () => {
     const { podcast, podcastId } = this.state
     const id = podcast?.id || podcastId
     try {

@@ -223,6 +223,7 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
     podcastCredentialsRequired,
     podcastId,
     podcastImageUrl,
+    podcastMedium,
     podcastShrunkImageUrl,
     podcastTitle = 'Untitled Podcast'
   } = item
@@ -253,7 +254,9 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
     const type = isHLS ? 'hls' : 'default'
 
     let initialTime = enrichedNowPlayingItem?.userPlaybackPosition
-    if (item?.clipId) {
+    if (podcastMedium === PV.Medium.music) {
+      initialTime = 0
+    } else if (item?.clipId) {
       initialTime = item.clipStartTime || 0
     } else if (startPodcastFromTime && !initialTime) {
       initialTime = startPodcastFromTime

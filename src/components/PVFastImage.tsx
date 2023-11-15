@@ -14,7 +14,6 @@ type Props = {
   cache?: string
   isAddByRSSPodcast?: boolean
   isAddByRSSPodcastLarger?: boolean
-  isSmall?: boolean
   isTabletGridView?: boolean
   linkButtonUrl?: string
   newContentCount?: number

@@ -15,7 +15,7 @@ type Props = {
   fontSizeLargestScale?: number
   importantForAccessibility?: ImportantForAccessibility
   isNowPlaying?: boolean
-  isSecondary?: any
+  isSecondary?: boolean
   numberOfLines?: number
   onPress?: any
   selectable?: boolean

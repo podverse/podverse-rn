@@ -10,6 +10,7 @@ import {
   AboutScreen,
   AddPodcastByRSSAuthScreen,
   AddPodcastByRSSScreen,
+  AlbumsScreen,
   AuthScreen,
   ClipsScreen,
   ContactScreen,
@@ -71,7 +72,8 @@ import {
   V4VProvidersAlbyLoginScreen,
   WebPageScreen,
   SettingsScreenDebugging,
-  SettingsScreenChapters
+  SettingsScreenChapters,
+  AlbumScreen
 } from './screens'
 import { darkTheme } from './styles'
 import { PodcastInfoScreen } from './screens/PodcastInfoScreen'
@@ -285,6 +287,14 @@ const MyLibraryNavigator = createStackNavigator(
     [PV.RouteNames.ProfileScreen]: {
       screen: ProfileScreen,
       path: PV.DeepLinks.Profile.path
+    },
+    [PV.RouteNames.AlbumsScreen]: {
+      screen: AlbumsScreen,
+      path: PV.DeepLinks.Albums.path
+    },
+    [PV.RouteNames.AlbumScreen]: {
+      screen: AlbumScreen,
+      path: PV.DeepLinks.Album.path
     }
   },
   {

@@ -1,13 +1,13 @@
 export type ValidMediums = {
   mixed: 'mixed'
-  podcasts: 'podcasts'
-  videos: 'videos'
+  podcast: 'podcast'
+  video: 'video'
   music: 'music'
 }
 
 export const Medium: ValidMediums = {
   mixed: 'mixed',
-  podcasts: 'podcasts',
-  videos: 'videos',
+  podcast: 'podcast',
+  video: 'video',
   music: 'music'
 }

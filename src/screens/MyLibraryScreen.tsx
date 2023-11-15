@@ -145,6 +145,7 @@ const _myClipsKey = 'MyClips'
 const _myProfileKey = 'MyProfile'
 const _playlistsKey = 'Playlists'
 const _profilesKey = 'Profiles'
+const _musicKey = 'Music'
 
 const allMyLibraryFeatures = [
   {
@@ -161,6 +162,11 @@ const allMyLibraryFeatures = [
     title: translate('Active Downloads'),
     key: _downloadsKey,
     routeName: PV.RouteNames.DownloadsScreen
+  },
+  {
+    title: translate('Music'),
+    key: _musicKey,
+    routeName: PV.RouteNames.AlbumsScreen
   },
   {
     title: translate('My Clips'),
