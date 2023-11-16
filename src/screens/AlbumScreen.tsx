@@ -25,7 +25,7 @@ import {
 import { errorLogger } from '../lib/logger'
 import { removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
-import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
+import { getSelectedFilterLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
@@ -65,10 +65,8 @@ type State = {
   podcast?: any
   podcastId?: string
   queryPage: number
-  querySort: string | null
   sections: Section[] | null
   selectedFilterLabel?: string | null
-  selectedSortLabel?: string | null
   selectedItem?: any
   showActionSheet: boolean
   showNoInternetConnectionMessage?: boolean
@@ -115,7 +113,7 @@ export class AlbumScreen extends React.Component<Props, State> {
       })
     }
 
-    const { querySort, viewType } = this.getDefaultFilters(props)
+    const { viewType } = this.getDefaultFilters(props)
 
     this.state = {
       endOfResultsReached: false,
@@ -130,10 +128,8 @@ export class AlbumScreen extends React.Component<Props, State> {
       podcast,
       podcastId,
       queryPage: 1,
-      querySort,
       sections: null,
       selectedFilterLabel: getDefaultSelectedFilterLabel(),
-      selectedSortLabel: translate('Recent'),
       showActionSheet: false,
       showSettings: false,
       showUsernameAndPassword: false,
@@ -180,7 +176,6 @@ export class AlbumScreen extends React.Component<Props, State> {
     const hasInternetConnection = navigation.getParam('hasInternetConnection')
     const { isInMaintenanceMode } = this.global
     let viewType = PV.Filters._tracksKey
-    const querySort = PV.Filters._mostRecentKey
     const viewTypeOverride = navigation.getParam('viewType')
     if (!hasInternetConnection || isInMaintenanceMode) {
       viewType = PV.Filters._downloadedKey
@@ -188,12 +183,12 @@ export class AlbumScreen extends React.Component<Props, State> {
       viewType = viewTypeOverride
     }
 
-    return { querySort, viewType }
+    return { viewType }
   }
 
   async componentDidMount() {
     const { navigation } = this.props
-    const { podcastId, querySort, viewType } = this.state
+    const { podcastId, viewType } = this.state
 
     let podcast = navigation.getParam('podcast')
     const forceRequest = navigation.getParam('forceRequest')
@@ -211,16 +206,13 @@ export class AlbumScreen extends React.Component<Props, State> {
     }
 
     const selectedFilterLabel = await getSelectedFilterLabel(viewType)
-    const selectedSortLabel = await getSelectedSortLabel(querySort)
 
     this.setState(
       {
-        querySort,
         viewType,
         podcast,
         hasInternetConnection: !!hasInternetConnection,
-        selectedFilterLabel,
-        selectedSortLabel
+        selectedFilterLabel
       },
       () => {
         this._initializePageData()
@@ -329,31 +321,6 @@ export class AlbumScreen extends React.Component<Props, State> {
     )
   }
 
-  handleSelectSortItem = async (selectedKey: string) => {
-    if (!selectedKey) return
-
-    const selectedSortLabel = await getSelectedSortLabel(selectedKey)
-
-    this.setState(
-      {
-        endOfResultsReached: false,
-        flatListData: [],
-        flatListDataTotalCount: null,
-        isLoadingMore: true,
-        queryPage: 1,
-        querySort: selectedKey,
-        sections: null,
-        selectedSortLabel
-      },
-      () => {
-        (async () => {
-          const newState = await this._queryData(selectedKey)
-          this.setState(newState)
-        })()
-      }
-    )
-  }
-
   _onRefresh = () => {
     const { viewType } = this.state
     this.setState(
@@ -413,11 +380,11 @@ export class AlbumScreen extends React.Component<Props, State> {
           this._handleMorePress(newNowPlayingItem)
         }
         handlePlayPress={async () => {
-          const forceUpdateOrderDate = false
-          const shouldPlay = true
-          const setCurrentItemNextInQueue = true
-          await playerLoadNowPlayingItem(newNowPlayingItem,
-            shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)    
+          await playerLoadNowPlayingItem(newNowPlayingItem, {
+            forceUpdateOrderDate: false,
+            setCurrentItemNextInQueue: true,
+            shouldPlay: true
+          })    
         }}
         hideImage={false}
         testID={testId}
@@ -576,7 +543,7 @@ export class AlbumScreen extends React.Component<Props, State> {
 
   _renderTableInnerHeader = () => {
     const { navigation } = this.props
-    const { querySort, selectedFilterLabel, selectedSortLabel, viewType } = this.state
+    const { selectedFilterLabel, viewType } = this.state
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
     return (
@@ -757,32 +724,25 @@ export class AlbumScreen extends React.Component<Props, State> {
     return episodes
   }
 
-  _queryEpisodes = async (viewType: string, sort: string | null, page = 1) => {
+  _queryEpisodes = async (viewType: string, page = 1) => {
     const { podcast, podcastId } = this.state
 
     if (podcast?.addByRSSPodcastFeedUrl) {
-      const { addByRSSEpisodes, addByRSSEpisodesCount } = this._queryAddByRSSEpisodes(viewType, sort)
+      const { addByRSSEpisodes, addByRSSEpisodesCount } = this._queryAddByRSSEpisodes(viewType)
       return [addByRSSEpisodes, addByRSSEpisodesCount]
     } else if (viewType === PV.Filters._downloadedKey) {
       let downloadedEpisodes = this._filterDownloadedEpisodes()
 
-      // Use spread operator with sort to prevent mutate in place
-      if (sort === PV.Filters._oldestKey) {
-        downloadedEpisodes = [...downloadedEpisodes].sort(function(a, b) {
-          return new Date(a.pubDate) - new Date(b.pubDate)
-        })
-      } else if (sort === PV.Filters._mostRecentKey) {
-        downloadedEpisodes = [...downloadedEpisodes].sort(function(a, b) {
-          return new Date(b.pubDate) - new Date(a.pubDate)
-        })
-      }
+      downloadedEpisodes = [...downloadedEpisodes].sort(function(a, b) {
+        return b.itunesEpisode - a.itunesEpisode
+      })
 
       const extraParams = {}
       return [[downloadedEpisodes, downloadedEpisodes.length], extraParams]
     } else {
       const results = await getEpisodesAndLiveItems(
         {
-          sort,
+          sort: PV.Filters._episodeNumberAscKey,
           page,
           podcastId,
           maxResults: true
@@ -798,7 +758,7 @@ export class AlbumScreen extends React.Component<Props, State> {
   }
 
   _queryData = async (filterKey: string | null, queryOptions: { queryPage?: number } = {}) => {
-    const { flatListData, podcast, querySort, viewType } = this.state
+    const { flatListData, podcast, viewType } = this.state
     const newState = {
       isLoadingMore: false,
       isRefreshing: false,
@@ -820,7 +780,7 @@ export class AlbumScreen extends React.Component<Props, State> {
         podcast &&
         podcast.addByRSSPodcastFeedUrl
       ) {
-        const { addByRSSEpisodes, addByRSSEpisodesCount } = this._queryAddByRSSEpisodes(filterKey, querySort)
+        const { addByRSSEpisodes, addByRSSEpisodesCount } = this._queryAddByRSSEpisodes(filterKey)
         newState.flatListData = addByRSSEpisodes || []
         newState.flatListDataTotalCount = addByRSSEpisodesCount
       } else if (
@@ -828,7 +788,7 @@ export class AlbumScreen extends React.Component<Props, State> {
         (filterKey === PV.Filters._downloadedKey ||
           filterKey === PV.Filters._tracksKey)
       ) {
-        const results = await this._queryEpisodes(filterKey, querySort, queryOptions.queryPage)
+        const results = await this._queryEpisodes(filterKey, queryOptions.queryPage)
         const episodes = results[0]?.[0]
         const episodesCount = results[0]?.[1]
         const extraParams = results[1]
@@ -836,27 +796,6 @@ export class AlbumScreen extends React.Component<Props, State> {
         newState.flatListData = this.cleanFlatListData(newState.flatListData, filterKey)
         newState.endOfResultsReached = newState.flatListData.length >= extraParams
         newState.flatListDataTotalCount = episodesCount
-      } else if (PV.FilterOptions.screenFilters.AlbumScreen.sort.some((option) => option === filterKey)) {
-        let data = []
-        let dataCount = 0
-
-        if (podcast?.addByRSSPodcastFeedUrl) {
-          const { addByRSSEpisodes, addByRSSEpisodesCount } = this._queryAddByRSSEpisodes(viewType, filterKey)
-          newState.flatListData = addByRSSEpisodes || []
-          newState.flatListDataTotalCount = addByRSSEpisodesCount
-        } else if (
-          viewType === PV.Filters._downloadedKey ||
-          viewType === PV.Filters._tracksKey
-        ) {
-          const results = await this._queryEpisodes(viewType, filterKey)
-          data = results[0]?.[0]
-          dataCount = results[0]?.[1]
-        }
-
-        newState.flatListData = [...flatListData, ...data]
-        newState.flatListData = this.cleanFlatListData(newState.flatListData, viewType)
-        newState.endOfResultsReached = newState.flatListData.length >= dataCount
-        newState.flatListDataTotalCount = dataCount
       }
       newState.queryPage = queryOptions.queryPage || 1
 
@@ -877,7 +816,7 @@ export class AlbumScreen extends React.Component<Props, State> {
     }
   }
 
-  _queryAddByRSSEpisodes = (viewType: string, querySort: string | null) => {
+  _queryAddByRSSEpisodes = (viewType: string) => {
     const { podcast } = this.state
 
     if (!Array.isArray(podcast?.episodes)) {
@@ -894,16 +833,10 @@ export class AlbumScreen extends React.Component<Props, State> {
       addByRSSEpisodes = this._filterDownloadedEpisodes()
     }
 
-    // Use spread operator with sort to prevent mutate in place
-    if (querySort === PV.Filters._oldestKey) {
-      addByRSSEpisodes = [...addByRSSEpisodes].sort(function(a, b) {
-        return new Date(a.pubDate) - new Date(b.pubDate)
-      })
-    } else if (querySort === PV.Filters._mostRecentKey) {
-      addByRSSEpisodes = [...addByRSSEpisodes].sort(function(a, b) {
-        return new Date(b.pubDate) - new Date(a.pubDate)
-      })
-    }
+
+    addByRSSEpisodes = [...addByRSSEpisodes].sort(function(a, b) {
+      return b.itunesEpisode - a.itunesEpisode
+    })
 
     const addByRSSEpisodesCount = addByRSSEpisodes.length
 

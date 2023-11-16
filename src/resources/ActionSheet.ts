@@ -66,10 +66,11 @@ const mediaMoreButtons = (
           const { darkTheme } = require('../styles')
           const isDarkMode = globalState.globalTheme === darkTheme
           await handleDismiss()
-          const shouldPlay = false
-          const forceUpdateOrderDate = false
-          const setCurrentItemNextInQueue = true
-          await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+          await playerLoadNowPlayingItem(item, {
+            forceUpdateOrderDate: false,
+            setCurrentItemNextInQueue: true,
+            shouldPlay: false
+          })
           await navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
           setTimeout(() => {
             (async () => {
@@ -104,10 +105,11 @@ const mediaMoreButtons = (
       text: translate('Play'),
       onPress: async () => {
         await handleDismiss()
-        const shouldPlay = true
-        const forceUpdateOrderDate = false
-        const setCurrentItemNextInQueue = true
-        await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+        await playerLoadNowPlayingItem(item, {
+          forceUpdateOrderDate: false,
+          setCurrentItemNextInQueue: true,
+          shouldPlay: true
+        })
       }
     })
   } else {
@@ -128,10 +130,11 @@ const mediaMoreButtons = (
         if (showAlert) return
 
         await handleDismiss()
-        const shouldPlay = true
-        const forceUpdateOrderDate = false
-        const setCurrentItemNextInQueue = true
-        await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+        await playerLoadNowPlayingItem(item, {
+          forceUpdateOrderDate: false,
+          setCurrentItemNextInQueue: true,
+          shouldPlay: true
+        })
       }
     })
 

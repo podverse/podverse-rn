@@ -40,7 +40,7 @@ import {
   audioHandlePauseWithUpdate,
   audioPlayNextFromQueue,
   audioHandleSeekToWithUpdate,
-  audioSyncPlayerWithQueue,
+  debouncedAudioSyncPlayerWithQueue,
   audioUpdateCurrentTrack,
   audioTogglePlay
 } from './playerAudio'
@@ -196,27 +196,29 @@ export const playerUpdateUserPlaybackPosition = async (skipSetNowPlaying?: boole
   }
 }
 
+type PlayerLoadNowPlayingItemOptions = {
+  forceUpdateOrderDate: boolean
+  itemToSetNextInQueue: NowPlayingItem | null
+  previousNowPlayingItem: NowPlayingItem | null
+  shouldPlay: boolean
+}
+
 export const playerLoadNowPlayingItem = async (
   item: NowPlayingItem,
-  shouldPlay: boolean,
-  forceUpdateOrderDate: boolean,
-  itemToSetNextInQueue: NowPlayingItem | null,
-  previousNowPlayingItem: NowPlayingItem | null
+  options: PlayerLoadNowPlayingItemOptions
 ) => {
   try {
     if (!item) {
       return
     }
 
+    const { forceUpdateOrderDate, itemToSetNextInQueue, previousNowPlayingItem, shouldPlay } = options
+
     const skipSetNowPlaying = true
     await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
 
     if (!checkIfVideoFileOrVideoLiveType(itemToSetNextInQueue?.episodeMediaType)) {
-      if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
-        await audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
-      } else {
-        audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
-      }
+      await audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
     }
 
     if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
@@ -319,7 +321,7 @@ export const getPlaybackSpeed = async () => {
 
     const nowPlayingItem = getGlobal().player?.nowPlayingItem
 
-    if (rate && !nowPlayingItem?.liveItem) {
+    if (rate && !nowPlayingItem?.liveItem && nowPlayingItem?.podcastMedium !== 'music') {
       return parseFloat(rate)
     } else {
       return 1.0
@@ -410,7 +412,7 @@ export const playerPlayNextFromQueue = async () => {
 export const playerSyncPlayerWithQueue = async () => {
   const playerType = await playerCheckActiveType()
   if (playerType === PV.Player.playerTypes.isAudio) {
-    await audioSyncPlayerWithQueue()
+    await debouncedAudioSyncPlayerWithQueue()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
     // NO CORRESPONDING VIDEO FUNCTION NEEDED
     // QUEUE CURRENTLY DISABLED FOR VIDEO

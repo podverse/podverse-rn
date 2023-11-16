@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
   text: {
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.semibold,
-    flex: 1
+    flex: 1,
+    lineHeight: images.small.height
   },
   textWrapper: {
     alignItems: 'center',

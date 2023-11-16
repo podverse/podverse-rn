@@ -38,5 +38,6 @@ export const Filters: IFilters = {
   _sectionFromKey: 'section-from',
   _sectionMyPlaylistsKey: 'section-my-playlists',
   _sectionSortKey: 'section-sort',
-  _sectionSubscribedPlaylistsKey: 'section-subscribed-playlists'
+  _sectionSubscribedPlaylistsKey: 'section-subscribed-playlists',
+  _episodeNumberAscKey: 'episode-number-asc'
 }

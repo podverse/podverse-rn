@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from 'podverse-shared'
+import TrackPlayer, { RepeatMode } from 'react-native-track-player'
 import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
@@ -233,4 +234,34 @@ export const setAllQueueItemsLocally = async (items: NowPlayingItem[]) => {
     await AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(items))
   }
   return items
+}
+
+export type QueueRepeatModeMusic = 'off' | 'track' | 'queue'
+
+export const getQueueRepeatModeMusic = async () => {
+  return AsyncStorage.getItem(PV.Keys.QUEUE_REPEAT_MODE_MUSIC)
+}
+
+export const setQueueRepeatModeMusic = async (repeatMode: QueueRepeatModeMusic) => {
+  if (repeatMode === 'queue') {
+    TrackPlayer.setRepeatMode(RepeatMode.Queue)
+    await AsyncStorage.setItem(PV.Keys.QUEUE_REPEAT_MODE_MUSIC, repeatMode)
+  } else if (repeatMode === 'track') {
+    TrackPlayer.setRepeatMode(RepeatMode.Track)
+    await AsyncStorage.setItem(PV.Keys.QUEUE_REPEAT_MODE_MUSIC, repeatMode)
+  } else {
+    TrackPlayer.setRepeatMode(RepeatMode.Off)
+    await AsyncStorage.removeItem(PV.Keys.QUEUE_REPEAT_MODE_MUSIC)
+  }
+}
+
+export const setRNTPRepeatMode = async (isMusic: boolean) => {
+  const repeatMode = await getQueueRepeatModeMusic()
+  if (isMusic && repeatMode === 'queue') {
+    TrackPlayer.setRepeatMode(RepeatMode.Queue)
+  } else if (isMusic && repeatMode === 'track') {
+    TrackPlayer.setRepeatMode(RepeatMode.Track)
+  } else {
+    TrackPlayer.setRepeatMode(RepeatMode.Off)
+  }
 }

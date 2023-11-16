@@ -541,10 +541,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
           const mediaRef = await getMediaRef(mediaRefId)
           if (mediaRef) {
             const newItem = convertToNowPlayingItem(mediaRef, null, null)
-            const shouldPlay = true
-            const forceUpdateOrderDate = false
-            const setCurrentItemNextInQueue = true
-            await playerLoadNowPlayingItem(newItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+            await playerLoadNowPlayingItem(newItem, {
+              forceUpdateOrderDate: false,
+              setCurrentItemNextInQueue: true,
+              shouldPlay: true
+            })
           }
         }
 

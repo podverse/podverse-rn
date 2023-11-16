@@ -214,9 +214,6 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _handlePlayItem = async (item: NowPlayingItem) => {
     try {
-      const shouldPlay = true
-      const forceUpdateOrderDate = false
-      const setCurrentItemNextInQueue = true
       if (item && !item?.clipId) {
         const { episodes } = await getHistoryItemsIndex()
         if (episodes) {
@@ -227,7 +224,11 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
         }
       }
 
-      await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+      await playerLoadNowPlayingItem(item, {
+        forceUpdateOrderDate: false,
+        setCurrentItemNextInQueue: true,
+        shouldPlay: true
+      })
       await getQueueItems()
       this.setState({ isLoading: false })
     } catch (error) {
