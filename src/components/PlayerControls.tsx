@@ -117,7 +117,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     if (queueRepeatModeMusic === 'queue') {
       props = {
         repeatModeAriaLabel: translate('ARIA LABEL - repeat mode - queue'),
-        repeatModeMaterialIconName: 'repeat-on'
+        repeatModeMaterialIconName: 'repeat'
       }
     } else if (queueRepeatModeMusic === 'track') {
       props = {
@@ -309,6 +309,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                     materialIconName={repeatModeMaterialIconName}
                     size={28}
                     solid
+                    {...(queueRepeatModeMusic === 'queue' ? { color: PV.Colors.blueLighter } : {})}
                     testID={`${testIDPrefix}_repeat_mode`} />
                 </View>
               </PressableWithOpacity>
