@@ -72,7 +72,8 @@ const initialTheme: InitialState = {
       videoPosition: 0
     },
     hidePlaybackSpeedButton: false,
-    remoteSkipButtonsAreTimeJumps: true
+    remoteSkipButtonsAreTimeJumps: true,
+    queueRepeatModeMusic: 'off'
   },
   playlists: {
     myPlaylists: [],

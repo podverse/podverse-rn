@@ -7,7 +7,7 @@ import {
   convertNowPlayingItemToMediaRef,
   NowPlayingItem
 } from 'podverse-shared'
-import { State } from 'react-native-track-player'
+import TrackPlayer, { State } from 'react-native-track-player'
 import { getGlobal, setGlobal } from 'reactn'
 import { errorLogger } from '../../lib/logger'
 import { getEpisodeProxyTranscript, getParsedTranscript } from '../../lib/transcriptHelpers'
@@ -25,7 +25,7 @@ import {
   getRemoteSkipButtonsTimeJumpOverride,
   playerGetPosition
 } from '../../services/player'
-import { getNextFromQueue } from '../../services/queue'
+import { getNextFromQueue, getQueueRepeatModeMusic } from '../../services/queue'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 import { trackPlayerScreenPageView } from '../../services/tracking'
 import { addOrUpdateHistoryItem } from '../../services/userHistoryItem'
@@ -454,16 +454,22 @@ export const initializePlayerSettings = async () => {
   const [
     playbackSpeedString,
     hidePlaybackSpeedButton,
-    remoteSkipButtonsAreTimeJumps
+    remoteSkipButtonsAreTimeJumps,
+    queueRepeatModeMusic
   ] = await Promise.all([
     AsyncStorage.getItem(PV.Keys.PLAYER_PLAYBACK_SPEED),
     AsyncStorage.getItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON),
-    getRemoteSkipButtonsTimeJumpOverride()
+    getRemoteSkipButtonsTimeJumpOverride(),
+    getQueueRepeatModeMusic()
   ])
 
   let playbackSpeed = 1
   if (playbackSpeedString) {
     playbackSpeed = JSON.parse(playbackSpeedString)
+  }
+
+  if (queueRepeatModeMusic === 'queue' || queueRepeatModeMusic === 'track') {
+    TrackPlayer.repeatMode(queueRepeatModeMusic)
   }
 
   const globalState = getGlobal()
@@ -472,7 +478,8 @@ export const initializePlayerSettings = async () => {
       ...globalState.player,
       playbackRate: playbackSpeed,
       hidePlaybackSpeedButton: !!hidePlaybackSpeedButton,
-      remoteSkipButtonsAreTimeJumps: !!remoteSkipButtonsAreTimeJumps
+      remoteSkipButtonsAreTimeJumps: !!remoteSkipButtonsAreTimeJumps,
+      queueRepeatModeMusic
     }
   })
 }

@@ -1,5 +1,5 @@
 import { checkIfVideoFileOrVideoLiveType, convertToNowPlayingItem, Episode, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
-import TrackPlayer, { PitchAlgorithm, State, Track } from 'react-native-track-player'
+import TrackPlayer, { PitchAlgorithm, RepeatMode, State, Track } from 'react-native-track-player'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
@@ -13,7 +13,7 @@ import PVEventEmitter from './eventEmitter'
 import { getPodcastCredentialsHeader } from './parser'
 import { playerSetRateWithLatestPlaybackSpeed, playerUpdateUserPlaybackPosition } from './player'
 import { getPodcastFeedUrlAuthority } from './podcast'
-import { addQueueItemNext, filterItemFromQueueItems, getQueueItems, getQueueItemsLocally } from './queue'
+import { addQueueItemNext, filterItemFromQueueItems, getQueueItems, getQueueItemsLocally, setRNTPRepeatMode } from './queue'
 import { addOrUpdateHistoryItem, getHistoryItemIndexInfoForEpisode, getHistoryItemsIndexLocally } from './userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage } from './userNowPlayingItem'
 import { getSecondaryQueueEpisodesForPodcastId } from './secondaryQueue'
@@ -227,6 +227,10 @@ export const audioSyncPlayerWithQueue = async () => {
     */
 
     const nowPlayingItem = getGlobal()?.player?.nowPlayingItem
+
+    const isMusic = nowPlayingItem?.podcastMedium === 'music'
+    await setRNTPRepeatMode(isMusic)
+
     // todo: handle retry in case not on global state yet?
     if (nowPlayingItem) {
       const { episodeId, podcastId } = nowPlayingItem
