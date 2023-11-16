@@ -25,6 +25,7 @@ import {
 } from '../../services/autoDownloads'
 import { getEpisodes } from '../../services/episode'
 import { getPodcastCredentials, parseAddByRSSPodcast } from '../../services/parser'
+import { getPodcast } from '../../services/podcast'
 import { getHistoryItemIndexInfoForEpisode } from '../../services/userHistoryItem'
 import { clearNowPlayingItem } from '../../services/userNowPlayingItem'
 
@@ -185,6 +186,11 @@ export const updateAutoDownloadSettings = (podcastId: string, autoDownloadOn: bo
       const newAutoDownloadSettings = await updateAutoDownloadSettingsService(podcastId)
       setGlobal({ autoDownloadSettings: newAutoDownloadSettings }, async () => {
         if(autoDownloadOn && !skipDownloadOnce) {
+          const podcast = await getPodcast(podcastId)
+          if (podcast?.medium === PV.Medium.music) {
+            return
+          }
+          
           const [serverEpisodes, episodesCount] = await getEpisodes({ 
             sort:"most-recent", 
             podcastId, 
