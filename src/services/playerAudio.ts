@@ -118,6 +118,22 @@ const audioRemovePreviousTracks = async () => {
   }
 }
 
+export const audioRemovePreviousPrimaryQueueItemTracks = async () => {
+  const currentIndex = await PVAudioPlayer.getActiveTrackIndex()
+  if (currentIndex >= 1) {
+    const queueItems = await PVAudioPlayer.getQueue()
+    const previousQueueItems = queueItems.slice(0, currentIndex)
+    if (previousQueueItems && previousQueueItems.length > 1) {
+      for (let i = 0; i < currentIndex; i++) {
+        const previousQueueItem = previousQueueItems[i]
+        if (previousQueueItem?.isPrimaryQueueItem) {
+          await audioRemoveTrack(i)
+        }
+      }
+    }
+  }
+}
+
 const audioRemoveUpcomingTracks = async () => {
   await PVAudioPlayer.removeUpcomingTracks()
   // if (Platform.OS === 'ios') {
@@ -165,12 +181,13 @@ export const audioLoadNowPlayingItem = async (
   const currentId = await audioGetCurrentLoadedTrackId()
   if (currentId) {
     await audioRemoveUpcomingTracks()
-    const track = (await audioCreateTrack(item)) as Track
+    // do we want to pass in isPrimaryQueueItem true sometimes?
+    const track = (await audioCreateTrack(item, { isPrimaryQueueItem: false })) as Track
     await PVAudioPlayer.add([track])
     await PVAudioPlayer.skipToNext()
     await audioRemovePreviousTracks()
   } else {
-    const track = (await audioCreateTrack(item)) as Track
+    const track = (await audioCreateTrack(item, { isPrimaryQueueItem: false })) as Track
     await PVAudioPlayer.add([track])
   }
 
@@ -239,13 +256,14 @@ export const audioSyncPlayerWithQueue = async () => {
         await audioRemovePreviousTracks()
         await audioRemoveUpcomingTracks()
 
-        const queueItemTracks = await audioCreateTracks(pvQueueItems)
+        const queueItemTracks = await audioCreateTracks(pvQueueItems, { isPrimaryQueueItem: true })
         await PVAudioPlayer.add(queueItemTracks)
 
-        const nextSecondaryQueueTracks = await audioCreateTracks(nextNowPlayingItems)
+        const nextSecondaryQueueTracks = await audioCreateTracks(nextNowPlayingItems, { isPrimaryQueueItem: false })
         await PVAudioPlayer.add(nextSecondaryQueueTracks)
 
-        const previousSecondaryQueueTracks = await audioCreateTracks(previousNowPlayingItems)
+        const previousSecondaryQueueTracks = await audioCreateTracks(
+          previousNowPlayingItems, { isPrimaryQueueItem: false })
         const previousInsertBeforeIndex = 0
         await PVAudioPlayer.add(previousSecondaryQueueTracks, previousInsertBeforeIndex)
       }
@@ -276,7 +294,11 @@ export const audioUpdateCurrentTrack = async (trackTitle?: string, artworkUrl?: 
   }
 }
 
-export const audioCreateTrack = async (item: NowPlayingItem) => {
+type AudioCreateTrackOptions = {
+  isPrimaryQueueItem: boolean
+}
+
+export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreateTrackOptions) => {
   if (!item) return
 
   const {
@@ -293,6 +315,9 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
     podcastShrunkImageUrl,
     podcastTitle = 'Untitled Podcast'
   } = item
+
+  const { isPrimaryQueueItem } = options
+
   let track = null
   const imageUrl = podcastShrunkImageUrl ? podcastShrunkImageUrl : podcastImageUrl
 
@@ -340,7 +365,8 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
         type,
         initialTime,
         ...(initialTime ? { iosInitialTime: initialTime } : {}),
-        isClip: !!item?.clipId
+        isClip: !!item?.clipId,
+        isPrimaryQueueItem
       }
     } else {
       const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
@@ -361,7 +387,8 @@ export const audioCreateTrack = async (item: NowPlayingItem) => {
         type,
         initialTime,
         ...(initialTime ? { iosInitialTime: initialTime } : {}),
-        isClip: !!item?.clipId
+        isClip: !!item?.clipId,
+        isPrimaryQueueItem
       }
     }
   }
@@ -382,7 +409,7 @@ export const audioMovePlayerItemToNewPosition = async (id: string, newIndex: num
         (x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id)
       )
       if (itemToMove) {
-        const track = (await audioCreateTrack(itemToMove)) as any
+        const track = (await audioCreateTrack(itemToMove, { isPrimaryQueueItem: true })) as any
         await PVAudioPlayer.add([track], newIndex)
       }
     } catch (error) {
@@ -488,10 +515,10 @@ export const audioCheckIfStateIsBuffering = (playbackState: any) =>
   playbackState === 6 ||
   playbackState === 8
 
-export const audioCreateTracks = async (items: NowPlayingItem[]) => {
+export const audioCreateTracks = async (items: NowPlayingItem[], options: AudioCreateTrackOptions) => {
   const tracks = [] as Track[]
   for (const item of items) {
-    const track = (await audioCreateTrack(item)) as Track
+    const track = (await audioCreateTrack(item, options)) as Track
     tracks.push(track)
   }
 
