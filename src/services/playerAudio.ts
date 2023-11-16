@@ -275,7 +275,8 @@ export const audioSyncPlayerWithQueue = async () => {
         // next secondary queue tracks, I am adding a placeholder track in front of the active track,
         // then inserting the previous tracks, then removing the placeholder track :-(
         const endOfQueueBugWorkaround =
-          queueItemTracks.length === 0
+          Platform.OS === 'ios'
+          && queueItemTracks.length === 0
           && nextSecondaryQueueTracks.length === 0
           && previousNowPlayingItems.length > 0
 
