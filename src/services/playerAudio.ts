@@ -551,9 +551,6 @@ export const audioAddNowPlayingItemNextInQueue = async (
 
 export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
   try {
-    const queueItems = await getQueueItems()
-    let filteredItems = [] as any
-
     if (item && !checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
       /* TODO: fix this
          Use the item from history to make sure we have the same
@@ -572,12 +569,6 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
         if (!!localStorageItem) {
           item = localStorageItem
         }
-      }
-      filteredItems = filterItemFromQueueItems(queueItems, item)
-
-      if (filteredItems.length > 0) {
-        const tracks = await audioCreateTracks(filteredItems)
-        await PVAudioPlayer.add(tracks)
       }
     }
   } catch (error) {
