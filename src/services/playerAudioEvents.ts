@@ -2,7 +2,8 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { Platform } from 'react-native'
 import { Event, State } from 'react-native-track-player'
 import { getGlobal } from 'reactn'
-import { cleanVoiceCommandQuery, voicePlayNextQueuedItem, voicePlayNextSubscribedPodcast, voicePlayNowPlayingItem, voicePlayPodcastFromSearchAPI } from '../lib/voiceCommandHelpers'
+import { cleanVoiceCommandQuery, voicePlayNextQueuedItem, voicePlayNextSubscribedPodcast,
+  voicePlayNowPlayingItem, voicePlayPodcastFromSearchAPI } from '../lib/voiceCommandHelpers'
 import { debugLogger, errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { downloadedEpisodeMarkForDeletion } from '../state/actions/downloads'
@@ -33,7 +34,8 @@ import {
   audioGetState,
   audioCheckIfIsPlaying,
   audioGetLoadedTrackIdByIndex,
-  audioGetTrackDuration
+  audioGetTrackDuration,
+  audioRemovePreviousPrimaryQueueItemTracks
 } from './playerAudio'
 import { debouncedHandleBackgroundTimerInterval, syncAudioNowPlayingItemWithTrack } from './playerBackgroundTimer'
 import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
@@ -134,6 +136,7 @@ export const audioHandleActiveTrackChanged = (x: any) => {
   setTimeout(() => {
     ;(async () => {
       await audioResetHistoryItemActiveTrackChanged(x)
+      await audioRemovePreviousPrimaryQueueItemTracks()
     })()
   }, 0)
 }
