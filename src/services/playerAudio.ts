@@ -1,3 +1,4 @@
+import debounce from 'lodash/debounce'
 import { checkIfVideoFileOrVideoLiveType, convertToNowPlayingItem, Episode, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
 import TrackPlayer, { PitchAlgorithm, RepeatMode, State, Track } from 'react-native-track-player'
 import { Platform } from 'react-native'
@@ -192,7 +193,7 @@ export const audioLoadNowPlayingItem = async (
     await PVAudioPlayer.add([track])
   }
 
-  await audioSyncPlayerWithQueue()
+  await debouncedAudioSyncPlayerWithQueue()
   
   if (item && !item.clipId && shouldPlay) {
     if (Platform.OS === 'android') {
@@ -207,7 +208,11 @@ export const audioLoadNowPlayingItem = async (
   return item
 }
 
-export const audioSyncPlayerWithQueue = async () => {
+// use a debounce that runs on leading and trailing
+
+
+
+const audioSyncPlayerWithQueue = async () => {
   try {
     /*
       1. get the nowPlayingItem from global player state.
@@ -301,6 +306,12 @@ export const audioSyncPlayerWithQueue = async () => {
     errorLogger(_fileName, 'audioSyncPlayerWithQueue', error)
   }
 }
+
+// Prevent audioSyncPlayerWithQueue from being called many times rapidly
+export const debouncedAudioSyncPlayerWithQueue = debounce(audioSyncPlayerWithQueue, 3000, {
+  leading: true,
+  trailing: false
+})
 
 export const audioUpdateCurrentTrack = async (trackTitle?: string, artworkUrl?: string) => {
   try {

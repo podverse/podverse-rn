@@ -40,7 +40,7 @@ import {
   audioHandlePauseWithUpdate,
   audioPlayNextFromQueue,
   audioHandleSeekToWithUpdate,
-  audioSyncPlayerWithQueue,
+  debouncedAudioSyncPlayerWithQueue,
   audioUpdateCurrentTrack,
   audioTogglePlay
 } from './playerAudio'
@@ -412,7 +412,7 @@ export const playerPlayNextFromQueue = async () => {
 export const playerSyncPlayerWithQueue = async () => {
   const playerType = await playerCheckActiveType()
   if (playerType === PV.Player.playerTypes.isAudio) {
-    await audioSyncPlayerWithQueue()
+    await debouncedAudioSyncPlayerWithQueue()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
     // NO CORRESPONDING VIDEO FUNCTION NEEDED
     // QUEUE CURRENTLY DISABLED FOR VIDEO
