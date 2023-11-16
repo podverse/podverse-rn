@@ -294,7 +294,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               accessibilityRole='button'
               hitSlop={hitSlop}
               onPress={this._navToStopWatchScreen}>
-              <View style={styles.playerControlsBottomButton}>
+              <View style={[styles.playerControlsBottomButton, { marginTop: 2 }]}>
                 <Icon name='moon' size={20} solid testID={`${testIDPrefix}_sleep_timer`} />
               </View>
             </PressableWithOpacity>
@@ -304,10 +304,10 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 accessibilityRole='button'
                 hitSlop={hitSlop}
                 onPress={this._changeQueueRepeatModeMusic}>
-                <View style={styles.playerControlsBottomButton}>
+                <View style={[styles.playerControlsBottomButton, { marginTop: -2 }]}>
                   <Icon
                     materialIconName={repeatModeMaterialIconName}
-                    size={28}
+                    size={26}
                     solid
                     {...(queueRepeatModeMusic === 'queue' ? { color: PV.Colors.blueLighter } : {})}
                     testID={`${testIDPrefix}_repeat_mode`} />
