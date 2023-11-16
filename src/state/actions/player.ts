@@ -468,10 +468,6 @@ export const initializePlayerSettings = async () => {
     playbackSpeed = JSON.parse(playbackSpeedString)
   }
 
-  if (queueRepeatModeMusic === 'queue' || queueRepeatModeMusic === 'track') {
-    TrackPlayer.repeatMode(queueRepeatModeMusic)
-  }
-
   const globalState = getGlobal()
   setGlobal({
     player: {
