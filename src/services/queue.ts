@@ -262,6 +262,6 @@ export const setRNTPRepeatMode = async (isMusic: boolean) => {
   } else if (isMusic && repeatMode === 'track') {
     TrackPlayer.setRepeatMode(RepeatMode.Track)
   } else {
-    TrackPlayer.setRepeatMode('off')
+    TrackPlayer.setRepeatMode(RepeatMode.Off)
   }
 }
