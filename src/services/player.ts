@@ -321,7 +321,7 @@ export const getPlaybackSpeed = async () => {
 
     const nowPlayingItem = getGlobal().player?.nowPlayingItem
 
-    if (rate && !nowPlayingItem?.liveItem) {
+    if (rate && !nowPlayingItem?.liveItem && nowPlayingItem?.podcastMedium !== 'music') {
       return parseFloat(rate)
     } else {
       return 1.0
