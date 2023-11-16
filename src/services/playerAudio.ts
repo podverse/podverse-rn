@@ -208,10 +208,6 @@ export const audioLoadNowPlayingItem = async (
   return item
 }
 
-// use a debounce that runs on leading and trailing
-
-
-
 const audioSyncPlayerWithQueue = async () => {
   try {
     /*
