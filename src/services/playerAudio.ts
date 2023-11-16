@@ -181,11 +181,12 @@ export const audioLoadNowPlayingItem = async (
   const currentId = await audioGetCurrentLoadedTrackId()
   if (currentId) {
     await audioRemoveUpcomingTracks()
+    await audioRemovePreviousTracks()
+    
     // do we want to pass in isPrimaryQueueItem true sometimes?
-    const track = (await audioCreateTrack(item, { isPrimaryQueueItem: false })) as Track
+    const track = (await audioCreateTrack(item, { isPrimaryQueueItem: false })) as Track 
     await PVAudioPlayer.add([track])
     await PVAudioPlayer.skipToNext()
-    await audioRemovePreviousTracks()
   } else {
     const track = (await audioCreateTrack(item, { isPrimaryQueueItem: false })) as Track
     await PVAudioPlayer.add([track])
@@ -260,16 +261,39 @@ export const audioSyncPlayerWithQueue = async () => {
         await audioRemovePreviousTracks()
         await audioRemoveUpcomingTracks()
 
-        const queueItemTracks = await audioCreateTracks(pvQueueItems, { isPrimaryQueueItem: true })
+        const queueItemTracks = await audioCreateTracks(pvQueueItems, { isPrimaryQueueItem: true })        
         await PVAudioPlayer.add(queueItemTracks)
 
         const nextSecondaryQueueTracks = await audioCreateTracks(nextNowPlayingItems, { isPrimaryQueueItem: false })
         await PVAudioPlayer.add(nextSecondaryQueueTracks)
 
+        // NOTE: There is an extremely weird bug on iOS with RNTP where if you insert tracks
+        // before the 0 position of the queue, while the active track has no queue items ahead of it,
+        // then the activeIndex gets stuck at 0, and does not change to 0 + X the previous inserted tracks
+        // This causes a myriad of problems across the app anywhere the activeIndex must be accurate. 
+        // To workaround this bug, if a track has previous secondary queue tracks, but has no 
+        // next secondary queue tracks, I am adding a placeholder track in front of the active track,
+        // then inserting the previous tracks, then removing the placeholder track :-(
+        const endOfQueueBugWorkaround =
+          queueItemTracks.length === 0
+          && nextSecondaryQueueTracks.length === 0
+          && previousNowPlayingItems.length > 0
+
         const previousSecondaryQueueTracks = await audioCreateTracks(
           previousNowPlayingItems, { isPrimaryQueueItem: false })
+
+        if (endOfQueueBugWorkaround) {
+          const bugWorkaroundTrack = previousSecondaryQueueTracks[0]
+          await PVAudioPlayer.add(bugWorkaroundTrack)
+        }
+
         const previousInsertBeforeIndex = 0
         await PVAudioPlayer.add(previousSecondaryQueueTracks, previousInsertBeforeIndex)
+
+        if (endOfQueueBugWorkaround) {
+          const removeBugWorkaroundIndex = await TrackPlayer.getActiveTrackIndex()
+          await PVAudioPlayer.remove(removeBugWorkaroundIndex + 1)
+        }
       }
     }
   } catch (error) {
