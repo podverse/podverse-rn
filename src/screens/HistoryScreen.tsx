@@ -127,10 +127,11 @@ export class HistoryScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _handlePlayItem = async (item: NowPlayingItem) => {
     try {
-      const shouldPlay = true
-      const forceUpdateOrderDate = false
-      const setCurrentItemNextInQueue = true
-      await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+      await playerLoadNowPlayingItem(item, {
+        forceUpdateOrderDate: false,
+        setCurrentItemNextInQueue: true,
+        shouldPlay: true
+      })
     } catch (error) {
       // Error Loading and playing item
     }

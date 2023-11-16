@@ -147,10 +147,11 @@ export const TimeRemainingWidget = (props: Props) => {
     } else if (isNowPlayingItem) {
       playerTogglePlay()
     } else {
-      const forceUpdateOrderDate = false
-      const shouldPlay = true
-      const setCurrentItemNextInQueue = true
-      await playerLoadNowPlayingItem(convertedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+      await playerLoadNowPlayingItem(convertedItem, {
+        forceUpdateOrderDate: false,
+        setCurrentItemNextInQueue: true,
+        shouldPlay: true
+      })
 
       setTimeout(() => {
         setForceRerender(!forceRerender)

@@ -16,10 +16,11 @@ export const audioInitializePlayerQueue = async (item?: NowPlayingItem) => {
   }
 
   if (item && !checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
-    const shouldPlay = false
-    const forceUpdateOrderDate = false
-    const setCurrentItemNextInQueue = true
-    await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    await playerLoadNowPlayingItem(item, {
+      forceUpdateOrderDate: false,
+      setCurrentItemNextInQueue: true,
+      shouldPlay: false
+    })
   }
 
   await audioInitializePlayerQueueService(item)

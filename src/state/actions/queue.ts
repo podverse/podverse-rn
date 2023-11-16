@@ -9,7 +9,9 @@ import {
   getQueueItems as getQueueItemsService,
   getQueueItemsLocally,
   removeQueueItem as removeQueueItemService,
-  setAllQueueItems as setAllQueueItemsService
+  setAllQueueItems as setAllQueueItemsService,
+  setQueueRepeatModeMusic as setQueueRepeatModeMusicService,
+  QueueRepeatModeMusic
 } from '../../services/queue'
 
 export const addQueueItemLast = async (queueItem: NowPlayingItem) => {
@@ -119,4 +121,16 @@ export const setAllQueueItemsLocally = async (queueItems: NowPlayingItem[]) => {
   })
 
   return results
+}
+
+export const setQueueRepeatModeMusic = async (repeatMode: QueueRepeatModeMusic) => {
+  const globalState = getGlobal()
+  await setQueueRepeatModeMusicService(repeatMode)
+
+  setGlobal({
+    player: {
+      ...globalState.player,
+      queueRepeatModeMusic: repeatMode
+    }
+  })
 }

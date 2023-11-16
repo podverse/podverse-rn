@@ -1,7 +1,6 @@
 import { ActionSheet } from './ActionSheet'
 import { Alerts } from './Alerts'
 import { AlertStatuses } from './AlertStatuses'
-import { AppMode } from './AppMode'
 import { Colors } from './Colors'
 import { CustomLaunchScreen } from './CustomLaunchScreen'
 import { CustomRSS } from './CustomRSS'
@@ -19,6 +18,7 @@ import { HTML } from './HTML'
 import { Icons } from './Icons'
 import { Images } from './Images'
 import { Keys } from './Keys'
+import { Medium } from './Medium'
 import { MembershipStatus } from './MembershipStatus'
 import { Navigation } from './Navigation'
 import { Player } from './Player'
@@ -38,7 +38,6 @@ export const PV = {
   ActionSheet,
   Alerts,
   AlertStatuses,
-  AppMode,
   Colors,
   CustomLaunchScreen,
   CustomRSS,
@@ -56,6 +55,7 @@ export const PV = {
   Icons,
   Images,
   Keys,
+  Medium,
   MembershipStatus,
   Navigation,
   Player,

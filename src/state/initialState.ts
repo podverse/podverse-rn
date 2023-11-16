@@ -72,7 +72,8 @@ const initialTheme: InitialState = {
       videoPosition: 0
     },
     hidePlaybackSpeedButton: false,
-    remoteSkipButtonsAreTimeJumps: true
+    remoteSkipButtonsAreTimeJumps: true,
+    queueRepeatModeMusic: 'off'
   },
   playlists: {
     myPlaylists: [],
@@ -165,7 +166,6 @@ const initialTheme: InitialState = {
   urlsAPI: null,
   urlsWeb: null,
   userAgent: '',
-  appMode: 'podcasts',
   bannerInfo: {
     show: false,
     description: ''

@@ -185,3 +185,28 @@ export const handlePodcastScreenNavigateWithParams = async (
     forceRequest: options?.forceRequest
   })
 }
+
+/*
+  handleAlbumScreenNavigateWithParams
+  the AlbumScreen requires some params passed in the navigation header
+  in order to load with the correct filters on initial render
+*/
+type AlbumScreenNavigateWithParamsOptions = {
+  forceRequest?: boolean
+}
+export const handleAlbumScreenNavigateWithParams = async (
+  navigation: any,
+  podcastId: string,
+  podcast?: Podcast | null,
+  options?: AlbumScreenNavigateWithParamsOptions
+) => {
+  const hasInternetConnection = await hasValidNetworkConnection()
+
+  navigation.navigate(PV.RouteNames.AlbumScreen, {
+    podcast,
+    podcastId,
+    addByRSSPodcastFeedUrl: podcast?.addByRSSPodcastFeedUrl,
+    hasInternetConnection,
+    forceRequest: options?.forceRequest
+  })
+}

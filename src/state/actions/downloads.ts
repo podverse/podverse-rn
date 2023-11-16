@@ -25,6 +25,7 @@ import {
 } from '../../services/autoDownloads'
 import { getEpisodes } from '../../services/episode'
 import { getPodcastCredentials, parseAddByRSSPodcast } from '../../services/parser'
+import { getPodcast } from '../../services/podcast'
 import { getHistoryItemIndexInfoForEpisode } from '../../services/userHistoryItem'
 import { clearNowPlayingItem } from '../../services/userNowPlayingItem'
 
@@ -60,6 +61,9 @@ export type DownloadTaskState = {
   podcastHideDynamicAdsWarning?: boolean
   podcastId?: string
   podcastImageUrl?: string
+  // NOTE: Use podcastIndexPodcastId, because DownloadTaskState needs to match
+  // the properties of NowPlayingItem.
+  podcastIndexPodcastId?: string
   podcastIsExplicit?: boolean
   podcastItunesFeedType?: string
   podcastLinkUrl?: string
@@ -74,9 +78,11 @@ export type DownloadTaskState = {
 export const convertDownloadTaskStateToPodcast = (downloadTaskState: any) => {
   const {
     addByRSSPodcastFeedUrl,
+    podcastGuid,
     podcastId,
     podcastImageUrl,
     podcastIsExplicit,
+    podcastIndexPodcastId,
     podcastSortableTitle,
     podcastTitle
   } = downloadTaskState
@@ -86,6 +92,8 @@ export const convertDownloadTaskStateToPodcast = (downloadTaskState: any) => {
     id: podcastId,
     imageUrl: podcastImageUrl,
     isExplicit: podcastIsExplicit,
+    podcastGuid,
+    podcastIndexId: podcastIndexPodcastId,
     sortableTitle: podcastSortableTitle,
     title: podcastTitle
   }
@@ -95,6 +103,7 @@ export const convertDownloadTaskStateToEpisode = (downloadTaskState: any) => {
   const {
     episodeDescription,
     episodeDuration,
+    episodeGuid,
     episodeId,
     episodeImageUrl,
     episodeMediaUrl,
@@ -106,6 +115,7 @@ export const convertDownloadTaskStateToEpisode = (downloadTaskState: any) => {
   return {
     description: episodeDescription,
     duration: episodeDuration,
+    guid: episodeGuid,
     id: episodeId,
     imageUrl: episodeImageUrl,
     mediaUrl: episodeMediaUrl,
@@ -176,6 +186,11 @@ export const updateAutoDownloadSettings = (podcastId: string, autoDownloadOn: bo
       const newAutoDownloadSettings = await updateAutoDownloadSettingsService(podcastId)
       setGlobal({ autoDownloadSettings: newAutoDownloadSettings }, async () => {
         if(autoDownloadOn && !skipDownloadOnce) {
+          const podcast = await getPodcast(podcastId)
+          if (podcast?.medium === PV.Medium.music) {
+            return
+          }
+          
           const [serverEpisodes, episodesCount] = await getEpisodes({ 
             sort:"most-recent", 
             podcastId, 

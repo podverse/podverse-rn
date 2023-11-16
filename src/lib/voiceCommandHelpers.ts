@@ -7,9 +7,11 @@ import { getPodcasts } from '../services/podcast'
 import { getSubscribedPodcasts } from '../state/actions/podcast'
 import { getQueueItems, removeQueueItem } from "../state/actions/queue"
 
-const shouldPlay = true
-const forceUpdateOrderDate = false
-const setCurrentItemNextInQueue = true
+const playerLoadNowPlayingItemOptions = {
+  forceUpdateOrderDate: false,
+  setCurrentItemNextInQueue: true,
+  shouldPlay: true
+}
 
 const checkIfQueryMatch = (query?: string, title?: string) => {
   return query && title?.toLowerCase()?.trim()?.includes(query)
@@ -49,7 +51,7 @@ export const voicePlayNextQueuedItem = async (query: string) => {
   })
   
   if (queueItem) {
-    await playerLoadNowPlayingItem(queueItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    await playerLoadNowPlayingItem(queueItem, playerLoadNowPlayingItemOptions)
     await removeQueueItem(queueItem)
     shouldContinue = false
   }
@@ -78,7 +80,7 @@ export const voicePlayNextSubscribedPodcast = async (query: string) => {
         const inheritedEpisode = null
         const inheritedPodcast = matchingPodcast
         const nowPlayingItem = convertToNowPlayingItem(episode, inheritedEpisode, inheritedPodcast)
-        await playerLoadNowPlayingItem(nowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+        await playerLoadNowPlayingItem(nowPlayingItem, playerLoadNowPlayingItemOptions)
         await removeQueueItem(nowPlayingItem)
         shouldContinue = false
       }
@@ -100,7 +102,7 @@ export const voicePlayNextSubscribedPodcast = async (query: string) => {
         const inheritedEpisode = null
         const inheritedPodcast = matchingPodcast
         const nowPlayingItem = convertToNowPlayingItem(episode, inheritedEpisode, inheritedPodcast)
-        await playerLoadNowPlayingItem(nowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+        await playerLoadNowPlayingItem(nowPlayingItem, playerLoadNowPlayingItemOptions)
         await removeQueueItem(nowPlayingItem)
         shouldContinue = false
       }
@@ -132,7 +134,7 @@ export const voicePlayPodcastFromSearchAPI = async (query: string) => {
       const inheritedEpisode = null
       const inheritedPodcast = matchingPodcast
       const nowPlayingItem = convertToNowPlayingItem(episode, inheritedEpisode, inheritedPodcast)
-      await playerLoadNowPlayingItem(nowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+      await playerLoadNowPlayingItem(nowPlayingItem, playerLoadNowPlayingItemOptions)
       await removeQueueItem(nowPlayingItem)
       shouldContinue = false
     }

@@ -9,7 +9,6 @@ import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
-import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from './'
 
 type Props = {
@@ -136,13 +135,6 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
         )
       }
     }
-  }
-
-  _handleNavigationPress = (selectedItem: any) => {
-    const shouldPlay = true
-    const forceUpdateOrderDate = false
-    const setCurrentItemNextInQueue = false
-    playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   _handleMorePress = (selectedItem: any) => {

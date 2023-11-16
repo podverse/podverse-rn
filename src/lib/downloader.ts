@@ -68,8 +68,8 @@ const debouncePlayerSyncPlayerWithQueue = debounce(
   }
 )
 
-const addDLTask = (episode: any, podcast: any) =>
-  DownloadState.addDownloadTask({
+const addDLTask = (episode: any, podcast: any) => {
+  return DownloadState.addDownloadTask({
     addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
     episodeChaptersUrl: episode.chaptersUrl,
     episodeCredentialsRequired: episode.credentialsRequired,
@@ -93,6 +93,7 @@ const addDLTask = (episode: any, podcast: any) =>
     podcastHideDynamicAdsWarning: podcast.hideDynamicAdsWarning,
     podcastId: podcast.id,
     podcastImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
+    podcastIndexPodcastId: podcast.podcastIndexId,
     podcastIsExplicit: podcast.isExplicit,
     podcastLinkUrl: podcast.linkUrl,
     podcastItunesFeedType: podcast.itunesFeedType,
@@ -102,6 +103,7 @@ const addDLTask = (episode: any, podcast: any) =>
     podcastTitle: podcast.title,
     podcastValue: podcast.value
   })
+}
 
 // NOTE: I was unable to get BackgroundDownloader to successfully resume tasks that were
 // retrieved from checkForExistingDownloads, so as a workaround, I am forcing those existing tasks

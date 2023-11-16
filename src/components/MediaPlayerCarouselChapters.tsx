@@ -1,5 +1,5 @@
 import deepEqual from 'fast-deep-equal'
-import { Episode, convertToNowPlayingItem } from 'podverse-shared'
+import { convertToNowPlayingItem } from 'podverse-shared'
 import { AppState, AppStateStatus, StyleSheet } from 'react-native'
 import React, { getGlobal, setGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
@@ -8,7 +8,6 @@ import { PV } from '../resources'
 import { InitialState } from '../resources/Interfaces'
 import PVEventEmitter from '../services/eventEmitter'
 import { getPlaybackSpeed } from '../services/player'
-import { playerLoadNowPlayingItem } from '../state/actions/player'
 import {
   ActionSheet,
   ActivityIndicator,
@@ -103,13 +102,6 @@ export class MediaPlayerCarouselChapters extends React.Component<Props, State> {
 
   _handleBlur = () => {
     this.disableAutoscroll()
-  }
-
-  _handleNavigationPress = (selectedItem: any) => {
-    const shouldPlay = true
-    const forceUpdateOrderDate = false
-    const setCurrentItemNextInQueue = false
-    playerLoadNowPlayingItem(selectedItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
   }
 
   disableAutoscroll = () => {
