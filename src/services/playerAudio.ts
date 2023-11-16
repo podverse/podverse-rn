@@ -14,8 +14,9 @@ import PVEventEmitter from './eventEmitter'
 import { getPodcastCredentialsHeader } from './parser'
 import { playerSetRateWithLatestPlaybackSpeed, playerUpdateUserPlaybackPosition } from './player'
 import { getPodcastFeedUrlAuthority } from './podcast'
-import { addQueueItemNext, filterItemFromQueueItems, getQueueItems, getQueueItemsLocally, setRNTPRepeatMode } from './queue'
-import { addOrUpdateHistoryItem, getHistoryItemIndexInfoForEpisode, getHistoryItemsIndexLocally } from './userHistoryItem'
+import { addQueueItemNext, getQueueItemsLocally, setRNTPRepeatMode } from './queue'
+import { addOrUpdateHistoryItem, getHistoryItemIndexInfoForEpisode,
+  getHistoryItemsIndexLocally } from './userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage } from './userNowPlayingItem'
 import { getSecondaryQueueEpisodesForPodcastId } from './secondaryQueue'
 
