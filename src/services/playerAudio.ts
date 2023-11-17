@@ -1,6 +1,7 @@
 import debounce from 'lodash/debounce'
-import { checkIfVideoFileOrVideoLiveType, convertToNowPlayingItem, Episode, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
-import TrackPlayer, { PitchAlgorithm, RepeatMode, State, Track } from 'react-native-track-player'
+import { checkIfVideoFileOrVideoLiveType, convertToNowPlayingItem, Episode, getExtensionFromUrl,
+  NowPlayingItem } from 'podverse-shared'
+import TrackPlayer, { PitchAlgorithm, State, Track } from 'react-native-track-player'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
