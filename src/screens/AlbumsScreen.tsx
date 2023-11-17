@@ -529,11 +529,13 @@ export class AlbumsScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleSearchBarTextQuery = () => {
+  _handleSearchBarTextQuery = async () => {
     const { queryFrom, querySort, searchBarText, tempQueryEnabled } = this.state
+
     if (!searchBarText) {
       this._handleRestoreSavedQuery()
     } else {
+      const hasInternetConnection = await hasValidNetworkConnection()
       const tempQueryObj: any = !tempQueryEnabled
         ? {
             tempQueryEnabled: true,
@@ -542,7 +544,7 @@ export class AlbumsScreen extends React.Component<Props, State> {
           }
         : {}
       this.setState(tempQueryObj, () => {
-        const queryFrom = PV.Filters._allPodcastsKey
+        const queryFrom = !hasInternetConnection ? PV.Filters._downloadedKey : PV.Filters._allPodcastsKey
         const keepSearchTitle = true
         this.handleSelectFilterItem(queryFrom, keepSearchTitle)
       })
