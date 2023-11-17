@@ -578,7 +578,6 @@ export class AlbumScreen extends React.Component<Props, State> {
       showSettings,
       showUsernameAndPassword,
       username,
-      viewType,
       flatListData,
       flatListDataTotalCount
     } = this.state
