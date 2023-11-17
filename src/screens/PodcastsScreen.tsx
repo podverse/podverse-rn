@@ -667,7 +667,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // before getting the latest from server and parsing the addByPodcastFeedUrls in getAuthUserInfo.
     await getAuthenticatedUserInfoLocally()
     const savedQuerySort = await getSavedQueryPodcastsScreenSort()
-    await combineWithAddByRSSPodcasts(searchBarText, savedQuerySort)
+
+    // Set the subscribedPodcasts immediately on state, without waiting for local parsing,
+    // then update subscribedPodcasts again combined with addByRSS feeds.
+    const initialPodcastsAllMediums = await combineWithAddByRSSPodcasts(searchBarText, savedQuerySort)
+    const initalPodcasts = initialPodcastsAllMediums.filter((podcast: Podcast) => podcast.medium === 'podcast')
+    this.setState({
+      flatListData: initalPodcasts || [],
+      flatListDataTotalCount: initalPodcasts?.length || 0
+    })
 
     /* Navigate to custom screen on app launch */
     const customLaunchScreen = await getCustomLaunchScreenKey()
@@ -730,7 +738,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { isInMaintenanceMode } = this.global
     if (!isInMaintenanceMode) {
       const isConnected = await hasValidNetworkConnection()
-      const preventIsLoading = true
+      const preventIsLoading = false
       const preventAutoDownloading = false
       const keepSearchTitle = false
       if (isConnected) {
@@ -1320,7 +1328,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     if (!preventParseCustomRSSFeeds) {
       if (!searchBarText && preventAutoDownloading) await parseAllAddByRSSPodcasts()
-
       subscribedPodcastsAllMediums = await combineWithAddByRSSPodcasts(searchBarText, querySort)
     }
 
