@@ -635,6 +635,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
           } else if (path === PV.DeepLinks.XMPP.path) {
             await navigate(PV.RouteNames.MoreScreen)
             await navigate(PV.RouteNames.ContactXMPPChatScreen)
+          } else if (path === PV.DeepLinks.Albums.path) {
+            await navigate(PV.RouteNames.MyLibraryScreen)
+            await navigate(PV.RouteNames.AlbumsScreen)
+          } else if (path === PV.DeepLinks.Album.pathPrefix) {
+            await navigate(PV.RouteNames.MyLibraryScreen)
+            setTimeout(() => {
+              navigate(PV.RouteNames.AlbumsScreen)
+              setTimeout(() => {
+                navigate(PV.RouteNames.AlbumScreen, {
+                  podcastId: id
+                })
+              }, 333)
+            }, 333)
           }
 
           // V4V PROVIDERS:
