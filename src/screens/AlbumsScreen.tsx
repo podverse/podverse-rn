@@ -191,7 +191,6 @@ export class AlbumsScreen extends React.Component<Props, State> {
   _initializeScreenData = async () => {
     await this._handleInitialDefaultQuery()
     await this._setDownloadedDataIfOffline()
-    this.setState({ isLoadingMore: false })
     trackPageView('/albums', 'Albums Screen')
   }
 
