@@ -71,6 +71,7 @@
     "p-limit": "^4.0.0",
     "podverse-shared": "^4.14.17",
     "qs": "^6.11.0",
+    "queue-promise": "^2.2.1",
     "react": "17.0.1",
     "react-native": "0.66.5",
     "react-native-background-downloader": "^2.3.4",
