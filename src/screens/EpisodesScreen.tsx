@@ -652,12 +652,14 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
         newState.flatListDataTotalCount = results[1]
       } else if (isDownloadedSelected) {
         const podcastSearchTitle = ''
+        const hasVideo = false
         const downloadedSort = PV.FilterOptions.screenFilters.EpisodesScreen.sort.some((option) => option === filterKey)
           ? filterKey
           : querySort
         const downloadedEpisodes = await getDownloadedEpisodes(
           podcastSearchTitle,
           searchTitle,
+          hasVideo,
           downloadedSort
         )
         newState.flatListData = [...downloadedEpisodes]
