@@ -163,20 +163,6 @@ export const getSubscribedPodcastsLocally = async () => {
   }
 }
 
-export const searchPodcasts = async (title?: string, author?: string) => {
-  const response = await request({
-    endpoint: '/podcast',
-    query: {
-      sort: PV.Filters._alphabeticalKey,
-      ...(title ? { title } : {}),
-      ...(author ? { author } : {}),
-      page: 1
-    }
-  })
-
-  return response && response.data
-}
-
 export const subscribeToPodcastIfNotAlready = async (
   alreadySubscribedPodcasts: any,
   podcastId: string,

@@ -644,7 +644,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
 
         const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally()
         if (querySort === PV.Filters._mostRecentKey && hasAddByRSSEpisodes) {
-          results = await combineEpisodesWithAddByRSSEpisodesLocally(results, searchTitle, hasVideo)
+          results = await combineEpisodesWithAddByRSSEpisodesLocally(results, searchTitle)
         }
 
         newState.flatListData = [...flatListData, ...results[0]]
@@ -652,6 +652,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
         newState.flatListDataTotalCount = results[1]
       } else if (isDownloadedSelected) {
         const podcastSearchTitle = ''
+        const hasVideo = false
         const downloadedSort = PV.FilterOptions.screenFilters.EpisodesScreen.sort.some((option) => option === filterKey)
           ? filterKey
           : querySort
@@ -676,8 +677,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
           sort: filterKey,
           ...(searchTitle ? { searchTitle } : {}),
           subscribedOnly: queryFrom === PV.Filters._subscribedKey,
-          includePodcast: true,
-          ...(hasVideo ? { hasVideo: true } : {})
+          includePodcast: true
         })
 
         const hasAddByRSSEpisodes = await hasAddByRSSEpisodesLocally()

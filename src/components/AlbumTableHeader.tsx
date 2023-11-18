@@ -59,10 +59,9 @@ export const AlbumTableHeader = (props: Props) => {
     showSettings,
     testID
   } = props
-  const [fontScaleMode] = useGlobal('fontScaleMode')
   const [downloadedEpisodeIds] = useGlobal('downloadedEpisodeIds')
   const [downloadsActive] = useGlobal('downloadsActive')
-  const titleNumberOfLines = [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ? 1 : 2
+  const titleNumberOfLines = 1
   const authorNames = generateAuthorsText(authors)
 
   return (
@@ -95,7 +94,7 @@ export const AlbumTableHeader = (props: Props) => {
                       style={styles.title}>
                       {podcastTitle}
                     </Text>
-                    <Text isSecondary style={styles.authorNames}>
+                    <Text isSecondary style={styles.authorNames} numberOfLines={1}>
                       {authorNames}
                     </Text>
                   </RNView>
@@ -181,7 +180,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   contentWrapperTopText: {
-    flexDirection: 'column'
+    flexDirection: 'column',
+    flex: 1
   },
   contentWrapperBottom: {
     backgroundColor: 'transparent',
@@ -192,20 +192,11 @@ const styles = StyleSheet.create({
   },
   contentWrapperTop: {
     flexDirection: 'row',
+    flex: 1,
     backgroundColor: 'transparent',
     justifyContent: 'space-between'
   },
-  descriptionWrapper: {
-    flex: 0,
-    paddingBottom: 15,
-    backgroundColor: PV.Colors.velvet
-  },
-  descriptionText: {
-    fontSize: PV.Fonts.sizes.sm,
-    marginHorizontal: 8
-  },
   title: {
-    flexWrap: 'wrap',
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.bold
   },

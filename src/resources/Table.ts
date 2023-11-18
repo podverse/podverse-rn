@@ -15,11 +15,11 @@ export const Table = {
     },
     album: {
       wrapper: {
-        height: 122
+        height: 118
       },
       image: {
-        height: 98,
-        width: 98
+        height: 94,
+        width: 94
       }
     }
   },

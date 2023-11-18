@@ -1,6 +1,8 @@
 import debounce from 'lodash/debounce'
-import { checkIfVideoFileOrVideoLiveType, convertToNowPlayingItem, Episode, getExtensionFromUrl, NowPlayingItem } from 'podverse-shared'
-import TrackPlayer, { PitchAlgorithm, RepeatMode, State, Track } from 'react-native-track-player'
+import { checkIfVideoFileOrVideoLiveType, convertToNowPlayingItem, Episode, getExtensionFromUrl,
+  MediaRef,
+  NowPlayingItem } from 'podverse-shared'
+import TrackPlayer, { PitchAlgorithm, State, Track } from 'react-native-track-player'
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
@@ -18,7 +20,7 @@ import { addQueueItemNext, getQueueItemsLocally, setRNTPRepeatMode } from './que
 import { addOrUpdateHistoryItem, getHistoryItemIndexInfoForEpisode,
   getHistoryItemsIndexLocally } from './userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage } from './userNowPlayingItem'
-import { getSecondaryQueueEpisodesForPodcastId } from './secondaryQueue'
+import { getSecondaryQueueEpisodesForPlaylist, getSecondaryQueueEpisodesForPodcastId } from './secondaryQueue'
 
 declare module 'react-native-track-player' {
   export function getCurrentLoadedTrack(): Promise<string>
@@ -161,7 +163,10 @@ const audioRemoveUpcomingTracks = async () => {
 export const audioLoadNowPlayingItem = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
-  forceUpdateOrderDate: boolean
+  forceUpdateOrderDate: boolean,
+  // assign this to the track so that we can use the playlistId later
+  // in audioSyncPlayerWithQueue.
+  secondaryQueuePlaylistId?: string
 ) => {
   /*
     Call .stop() instead of .pause() to avoid a race-condition in the Event.PlaybackState listener
@@ -186,11 +191,13 @@ export const audioLoadNowPlayingItem = async (
     await audioRemovePreviousTracks()
     
     // do we want to pass in isPrimaryQueueItem true sometimes?
-    const track = (await audioCreateTrack(item, { isPrimaryQueueItem: false })) as Track 
+    const track = (await audioCreateTrack(item, {
+      isPrimaryQueueItem: false, secondaryQueuePlaylistId })) as Track 
     await PVAudioPlayer.add([track])
     await PVAudioPlayer.skipToNext()
   } else {
-    const track = (await audioCreateTrack(item, { isPrimaryQueueItem: false })) as Track
+    const track = (await audioCreateTrack(item, {
+      isPrimaryQueueItem: false, secondaryQueuePlaylistId })) as Track
     await PVAudioPlayer.add([track])
   }
 
@@ -236,24 +243,65 @@ const audioSyncPlayerWithQueue = async () => {
 
     // todo: handle retry in case not on global state yet?
     if (nowPlayingItem) {
-      const { episodeId, podcastId } = nowPlayingItem
+      const { clipId, episodeId, podcastId } = nowPlayingItem
 
-      const secondaryQueueData = await getSecondaryQueueEpisodesForPodcastId(episodeId, podcastId)
-      const { previousEpisodes, nextEpisodes, inheritedPodcast } = secondaryQueueData
+      const activeTrack = await TrackPlayer.getActiveTrack()
+      const secondaryQueuePlaylistId = activeTrack?.secondaryQueuePlaylistId
 
-      const previousNowPlayingItems = previousEpisodes.map((previousEpisode: Episode) => {
-        const userPlaybackPosition = inheritedPodcast?.medium === PV.Medium.music
+      let previousNowPlayingItems = []
+      let nextNowPlayingItems = []
+
+      if (episodeId) {
+        if (secondaryQueuePlaylistId) {
+          const secondaryQueueData = await getSecondaryQueueEpisodesForPlaylist(
+            secondaryQueuePlaylistId, clipId || episodeId)
+          const { previousEpisodesAndMediaRefs, nextEpisodesAndMediaRefs } = secondaryQueueData
+          previousNowPlayingItems = previousEpisodesAndMediaRefs.map((
+            previousEpisodeOrMediaRef: Episode | MediaRef) => {
+            const isMediaRef = previousEpisodeOrMediaRef?.startTime === 0 || previousEpisodeOrMediaRef?.startTime > 0
+            const previousEpisode = previousEpisodeOrMediaRef?.episode || previousEpisodeOrMediaRef
+            const podcast = previousEpisode?.podcast
+            
+            const userPlaybackPosition = isMediaRef
+              ? previousEpisodeOrMediaRef.startTime
+              : podcast?.medium === PV.Medium.music
+                ? 0
+                : getHistoryItemIndexInfoForEpisode(previousEpisode?.id)?.userPlaybackPosition || 0
+            return convertToNowPlayingItem(previousEpisodeOrMediaRef, null, null, userPlaybackPosition)
+          }) 
+    
+          nextNowPlayingItems = nextEpisodesAndMediaRefs.map((
+            nextEpisodeOrMediaRef: Episode | MediaRef) => {
+            const isMediaRef = nextEpisodeOrMediaRef?.startTime === 0 || nextEpisodeOrMediaRef?.startTime > 0
+            const previousEpisode = nextEpisodeOrMediaRef?.episode || nextEpisodeOrMediaRef
+            const podcast = previousEpisode?.podcast
+            
+            const userPlaybackPosition = isMediaRef
+              ? nextEpisodeOrMediaRef.startTime
+              : podcast?.medium === PV.Medium.music
+                ? 0
+                : getHistoryItemIndexInfoForEpisode(previousEpisode?.id)?.userPlaybackPosition || 0
+            return convertToNowPlayingItem(nextEpisodeOrMediaRef, null, null, userPlaybackPosition)
+          }) 
+        } else {
+          const secondaryQueueData = await getSecondaryQueueEpisodesForPodcastId(episodeId, podcastId)
+          const { previousEpisodes, nextEpisodes, inheritedPodcast } = secondaryQueueData
+  
+          previousNowPlayingItems = previousEpisodes.map((previousEpisode: Episode) => {
+            const userPlaybackPosition = inheritedPodcast?.medium === PV.Medium.music
+                ? 0
+                : getHistoryItemIndexInfoForEpisode(previousEpisode?.id)?.userPlaybackPosition || 0
+            return convertToNowPlayingItem(previousEpisode, null, inheritedPodcast, userPlaybackPosition)
+          }) 
+    
+          nextNowPlayingItems = nextEpisodes.map((nextEpisode: Episode) => {
+            const userPlaybackPosition = inheritedPodcast?.medium === PV.Medium.music
             ? 0
-            : getHistoryItemIndexInfoForEpisode(previousEpisode?.id)?.userPlaybackPosition || 0
-        return convertToNowPlayingItem(previousEpisode, null, inheritedPodcast, userPlaybackPosition)
-      }) 
-
-      const nextNowPlayingItems = nextEpisodes.map((nextEpisode: Episode) => {
-        const userPlaybackPosition = inheritedPodcast?.medium === PV.Medium.music
-        ? 0
-        : getHistoryItemIndexInfoForEpisode(nextEpisode?.id)?.userPlaybackPosition || 0
-        return convertToNowPlayingItem(nextEpisode, null, inheritedPodcast, userPlaybackPosition)
-      }) 
+            : getHistoryItemIndexInfoForEpisode(nextEpisode?.id)?.userPlaybackPosition || 0
+            return convertToNowPlayingItem(nextEpisode, null, inheritedPodcast, userPlaybackPosition)
+          }) 
+        }
+      }
 
       const pvQueueItems = await getQueueItemsLocally()
 
@@ -266,7 +314,8 @@ const audioSyncPlayerWithQueue = async () => {
         const queueItemTracks = await audioCreateTracks(pvQueueItems, { isPrimaryQueueItem: true })        
         await PVAudioPlayer.add(queueItemTracks)
 
-        const nextSecondaryQueueTracks = await audioCreateTracks(nextNowPlayingItems, { isPrimaryQueueItem: false })
+        const nextSecondaryQueueTracks = await audioCreateTracks(nextNowPlayingItems, {
+          isPrimaryQueueItem: false, secondaryQueuePlaylistId })
         await PVAudioPlayer.add(nextSecondaryQueueTracks)
 
         // NOTE: There is an extremely weird bug on iOS with RNTP where if you insert tracks
@@ -283,7 +332,7 @@ const audioSyncPlayerWithQueue = async () => {
           && previousNowPlayingItems.length > 0
 
         const previousSecondaryQueueTracks = await audioCreateTracks(
-          previousNowPlayingItems, { isPrimaryQueueItem: false })
+          previousNowPlayingItems, { isPrimaryQueueItem: false, secondaryQueuePlaylistId })
 
         if (endOfQueueBugWorkaround) {
           const bugWorkaroundTrack = previousSecondaryQueueTracks[0]
@@ -333,6 +382,7 @@ export const audioUpdateCurrentTrack = async (trackTitle?: string, artworkUrl?: 
 
 type AudioCreateTrackOptions = {
   isPrimaryQueueItem: boolean
+  secondaryQueuePlaylistId?: string
 }
 
 export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreateTrackOptions) => {
@@ -353,7 +403,7 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
     podcastTitle = 'Untitled Podcast'
   } = item
 
-  const { isPrimaryQueueItem } = options
+  const { isPrimaryQueueItem, secondaryQueuePlaylistId } = options
 
   let track = null
   const imageUrl = podcastShrunkImageUrl ? podcastShrunkImageUrl : podcastImageUrl
@@ -403,7 +453,8 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
         initialTime,
         ...(initialTime ? { iosInitialTime: initialTime } : {}),
         isClip: !!item?.clipId,
-        isPrimaryQueueItem
+        isPrimaryQueueItem,
+        secondaryQueuePlaylistId
       }
     } else {
       const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
@@ -425,7 +476,8 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
         initialTime,
         ...(initialTime ? { iosInitialTime: initialTime } : {}),
         isClip: !!item?.clipId,
-        isPrimaryQueueItem
+        isPrimaryQueueItem,
+        secondaryQueuePlaylistId
       }
     }
   }
@@ -560,6 +612,10 @@ export const audioCreateTracks = async (items: NowPlayingItem[], options: AudioC
   }
 
   return tracks
+}
+
+export const audioPlayPreviousFromQueue = async () => {
+  await PVAudioPlayer.skipToPrevious()
 }
 
 export const audioPlayNextFromQueue = async () => {

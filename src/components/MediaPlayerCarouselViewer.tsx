@@ -2,7 +2,8 @@ import { checkIfVideoFileOrVideoLiveType, convertNowPlayingItemToEpisode } from 
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { navigateBackToRoot, navigateToPodcastScreenWithItem } from '../lib/navigate'
+import { navigateBackToRoot, navigateToAlbumScreenInMyLibraryStackNavigator, 
+  navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { prefixClipLabel, readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { ActivityIndicator, FastImage, PressableWithOpacity, PVVideo, ScrollView, Text, TextTicker } from './'
@@ -26,8 +27,13 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     const { player } = this.global
     const item = player?.nowPlayingItem
     if (item) {
-      navigateBackToRoot(navigation)
-      navigateToPodcastScreenWithItem(navigation, item)
+      if (item?.podcastMedium === 'music' && item?.podcastId) {
+        navigateToAlbumScreenInMyLibraryStackNavigator(navigation, item)
+      } else {
+        navigateBackToRoot(navigation)
+        navigateToPodcastScreenWithItem(navigation, item)
+      }
+
     }
   }
 
@@ -36,17 +42,21 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     const { player } = this.global
     const item = player?.nowPlayingItem
     if (item) {
-      this.handlePodcastNavigation()
-      const episode = convertNowPlayingItemToEpisode(item)
-      const includeGoToPodcast = true
-      navigation.navigate({
-        routeName: PV.RouteNames.EpisodeScreen,
-        params: {
-          episodeId: item.episodeId,
-          episode,
-          includeGoToPodcast
-        }
-      })
+      if (item?.podcastMedium === 'music' && item?.podcastId) {
+        navigateToAlbumScreenInMyLibraryStackNavigator(navigation, item)
+      } else {
+        this.handlePodcastNavigation()
+        const episode = convertNowPlayingItemToEpisode(item)
+        const includeGoToPodcast = true
+        navigation.navigate({
+          routeName: PV.RouteNames.EpisodeScreen,
+          params: {
+            episodeId: item.episodeId,
+            episode,
+            includeGoToPodcast
+          }
+        })
+      }
     }
   }
 

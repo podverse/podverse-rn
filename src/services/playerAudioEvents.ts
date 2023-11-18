@@ -43,59 +43,60 @@ import { getEnrichedNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } f
 
 const _fileName = 'src/services/playerAudioEvents.ts'
 
-const audioResetHistoryItemByTrackId = async (loadedTrackId: string, position: number) => {
-  const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(loadedTrackId)
-  if (metaEpisode) {
-    const { mediaFileDuration } = metaEpisode
-    const isWithin2MinutesOfEnd = mediaFileDuration && mediaFileDuration - 120 < position
-    const isLessThanOneMinute = mediaFileDuration <= 60
-    if (isWithin2MinutesOfEnd || isLessThanOneMinute || !mediaFileDuration) {
-      const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(loadedTrackId)
-      if (currentNowPlayingItem) {
-        const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
-        if (autoDeleteEpisodeOnEnd && currentNowPlayingItem?.episodeId) {
-          downloadedEpisodeMarkForDeletion(currentNowPlayingItem.episodeId)
-        }
-
-        const retriesLimit = 5
-        for (let i = 0; i < retriesLimit; i++) {
-          try {
-            const forceUpdateOrderDate = false
-            const skipSetNowPlaying = true
-            const completed = true
-            await addOrUpdateHistoryItem(
-              currentNowPlayingItem,
-              0,
-              null,
-              forceUpdateOrderDate,
-              skipSetNowPlaying,
-              completed
-            )
-            break
-          } catch (error) {
-            // Maybe the network request failed due to poor internet.
-            // continue to try again.
-            continue
+const audioResetHistoryItemByTrack = async (x: any, position: number) => {
+  if (x?.lastTrack?.id) {
+    const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(x.lastTrack.id)
+    if (metaEpisode) {
+      const { mediaFileDuration } = metaEpisode
+      const isWithin2MinutesOfEnd = mediaFileDuration && mediaFileDuration - 120 < position
+      const isLessThanOneMinute = mediaFileDuration <= 60
+      if (isWithin2MinutesOfEnd || isLessThanOneMinute) {
+        const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(x.lastTrack.id)
+        if (currentNowPlayingItem) {
+          const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+          if (autoDeleteEpisodeOnEnd && currentNowPlayingItem?.episodeId) {
+            downloadedEpisodeMarkForDeletion(currentNowPlayingItem.episodeId)
+          }
+  
+          const retriesLimit = 5
+          for (let i = 0; i < retriesLimit; i++) {
+            try {
+              const forceUpdateOrderDate = false
+              const skipSetNowPlaying = true
+              const completed = true
+              await addOrUpdateHistoryItem(
+                currentNowPlayingItem,
+                0,
+                null,
+                forceUpdateOrderDate,
+                skipSetNowPlaying,
+                completed
+              )
+              break
+            } catch (error) {
+              // Maybe the network request failed due to poor internet.
+              // continue to try again.
+              continue
+            }
           }
         }
       }
     }
   }
+
 }
 
 export const audioResetHistoryItemActiveTrackChanged = async (x: any) => {
-  const { lastPosition, lastIndex } = x
-  const loadedTrackId = await audioGetLoadedTrackIdByIndex(lastIndex)
-  if (loadedTrackId) {
-    await audioResetHistoryItemByTrackId(loadedTrackId, lastPosition)
+  const { lastPosition, lastTrack } = x
+  if (lastTrack?.id) {
+    await audioResetHistoryItemByTrack(x, lastPosition)
   }
 }
 
 export const audioResetHistoryItemQueueEnded = async (x: any) => {
   const { position, track } = x
-  const loadedTrackId = await audioGetLoadedTrackIdByIndex(track)
-  if (loadedTrackId) {
-    await audioResetHistoryItemByTrackId(loadedTrackId, position)
+  if (track?.id) {
+    await audioResetHistoryItemByTrack(x, position)
   }
 }
 

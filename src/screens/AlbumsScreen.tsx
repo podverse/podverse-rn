@@ -191,7 +191,6 @@ export class AlbumsScreen extends React.Component<Props, State> {
   _initializeScreenData = async () => {
     await this._handleInitialDefaultQuery()
     await this._setDownloadedDataIfOffline()
-    this.setState({ isLoadingMore: false })
     trackPageView('/albums', 'Albums Screen')
   }
 
@@ -530,11 +529,13 @@ export class AlbumsScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleSearchBarTextQuery = () => {
+  _handleSearchBarTextQuery = async () => {
     const { queryFrom, querySort, searchBarText, tempQueryEnabled } = this.state
+
     if (!searchBarText) {
       this._handleRestoreSavedQuery()
     } else {
+      const hasInternetConnection = await hasValidNetworkConnection()
       const tempQueryObj: any = !tempQueryEnabled
         ? {
             tempQueryEnabled: true,
@@ -543,7 +544,7 @@ export class AlbumsScreen extends React.Component<Props, State> {
           }
         : {}
       this.setState(tempQueryObj, () => {
-        const queryFrom = PV.Filters._allPodcastsKey
+        const queryFrom = !hasInternetConnection ? PV.Filters._downloadedKey : PV.Filters._allPodcastsKey
         const keepSearchTitle = true
         this.handleSelectFilterItem(queryFrom, keepSearchTitle)
       })
@@ -797,7 +798,10 @@ export class AlbumsScreen extends React.Component<Props, State> {
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
       if (isDownloadedSelected) {
-        const podcasts = await getDownloadedPodcasts(searchTitle)
+        const podcasts = await getDownloadedPodcasts({
+          searchTitle,
+          isMusic: true
+        })
         newState.flatListData = [...podcasts]
         newState.queryFrom = PV.Filters._downloadedKey
         newState.selectedFilterLabel = await getSelectedFilterLabel(PV.Filters._downloadedKey)

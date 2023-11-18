@@ -9,7 +9,7 @@ import {
   playerJumpBackward,
   playerJumpForward,
   playerPlayNextFromQueue,
-  playerHandleSeekTo
+  playerPlayPreviousFromQueue
 } from '../services/player'
 import { QueueRepeatModeMusic } from '../services/queue'
 import {
@@ -236,7 +236,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               <PressableWithOpacity
                 accessibilityLabel={previousButtonAccessibilityLabel}
                 accessibilityRole='button'
-                onLongPress={() => playerHandleSeekTo(0)}
+                onLongPress={playerPlayPreviousFromQueue}
                 onPress={playerPlayPreviousChapterOrReturnToBeginningOfTrack}
                 style={[playerStyles.icon, { flexDirection: 'row' }]}>
                 {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
