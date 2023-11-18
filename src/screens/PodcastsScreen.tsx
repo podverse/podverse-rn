@@ -635,6 +635,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
           } else if (path === PV.DeepLinks.XMPP.path) {
             await navigate(PV.RouteNames.MoreScreen)
             await navigate(PV.RouteNames.ContactXMPPChatScreen)
+          } else if (path === PV.DeepLinks.Albums.path) {
+            await navigate(PV.RouteNames.MyLibraryScreen)
+            await navigate(PV.RouteNames.AlbumsScreen)
+          } else if (path === PV.DeepLinks.Album.pathPrefix) {
+            await navigate(PV.RouteNames.MyLibraryScreen)
+            setTimeout(() => {
+              navigate(PV.RouteNames.AlbumsScreen)
+              setTimeout(() => {
+                navigate(PV.RouteNames.AlbumScreen, {
+                  podcastId: id
+                })
+              }, 333)
+            }, 333)
           }
 
           // V4V PROVIDERS:
@@ -667,7 +680,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // before getting the latest from server and parsing the addByPodcastFeedUrls in getAuthUserInfo.
     await getAuthenticatedUserInfoLocally()
     const savedQuerySort = await getSavedQueryPodcastsScreenSort()
-    await combineWithAddByRSSPodcasts(searchBarText, savedQuerySort)
+
+    // Set the subscribedPodcasts immediately on state, without waiting for local parsing,
+    // then update subscribedPodcasts again combined with addByRSS feeds.
+    const initialPodcastsAllMediums = await combineWithAddByRSSPodcasts(searchBarText, savedQuerySort)
+    const initalPodcasts = initialPodcastsAllMediums.filter((podcast: Podcast) => podcast.medium === 'podcast')
+    this.setState({
+      flatListData: initalPodcasts || [],
+      flatListDataTotalCount: initalPodcasts?.length || 0
+    })
 
     /* Navigate to custom screen on app launch */
     const customLaunchScreen = await getCustomLaunchScreenKey()
@@ -730,7 +751,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { isInMaintenanceMode } = this.global
     if (!isInMaintenanceMode) {
       const isConnected = await hasValidNetworkConnection()
-      const preventIsLoading = true
+      const preventIsLoading = false
       const preventAutoDownloading = false
       const keepSearchTitle = false
       if (isConnected) {
@@ -1092,11 +1113,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleSearchBarTextQuery = () => {
+  _handleSearchBarTextQuery = async () => {
     const { queryFrom, querySort, searchBarText, tempQueryEnabled } = this.state
     if (!searchBarText) {
       this._handleRestoreSavedQuery()
     } else {
+      const hasInternetConnection = await hasValidNetworkConnection()
       const tempQueryObj: any = !tempQueryEnabled
         ? {
             tempQueryEnabled: true,
@@ -1105,7 +1127,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           }
         : {}
       this.setState(tempQueryObj, () => {
-        const queryFrom = PV.Filters._allPodcastsKey
+        const queryFrom = !hasInternetConnection ? PV.Filters._downloadedKey : PV.Filters._allPodcastsKey
         const preventIsLoading = false
         const preventAutoDownloading = true
         const keepSearchTitle = true
@@ -1320,7 +1342,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     if (!preventParseCustomRSSFeeds) {
       if (!searchBarText && preventAutoDownloading) await parseAllAddByRSSPodcasts()
-
       subscribedPodcastsAllMediums = await combineWithAddByRSSPodcasts(searchBarText, querySort)
     }
 
@@ -1435,7 +1456,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
       if (isDownloadedSelected) {
-        const podcasts = await getDownloadedPodcasts(searchTitle)
+        const podcasts = await getDownloadedPodcasts({
+          searchTitle,
+          podcastsOnly: searchTitle ? false : true
+        })
         newState.flatListData = [...podcasts]
         newState.queryFrom = PV.Filters._downloadedKey
         newState.selectedFilterLabel = await getSelectedFilterLabel(PV.Filters._downloadedKey)

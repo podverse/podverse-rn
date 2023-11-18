@@ -139,12 +139,15 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _renderItem = ({ item, index }) => {
     const { navigation } = this.props
+    const { playlistId } = this.state
+
     if (item.startTime) {
       return item.episode && item.episode.podcast ? (
         <ClipTableCell
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           item={item}
           navigation={navigation}
+          playlistId={playlistId}
           showEpisodeInfo
           showPodcastInfo
           testID={`${testIDPrefix}_clip_item_${index}`}
@@ -154,7 +157,6 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
       )
     } else {
       const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
-
       return (
         <EpisodeTableCell
           handleDownloadPress={() => this._handleDownloadPressed(item)}
@@ -166,6 +168,7 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
           item={item}
           mediaFileDuration={mediaFileDuration}
           navigation={navigation}
+          playlistId={playlistId}
           showPodcastInfo
           testID={`${testIDPrefix}_episode_item_${index}`}
           userPlaybackPosition={userPlaybackPosition}

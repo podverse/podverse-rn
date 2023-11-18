@@ -210,3 +210,35 @@ export const handleAlbumScreenNavigateWithParams = async (
     forceRequest: options?.forceRequest
   })
 }
+
+/*
+  Navigate to the AlbumScreen located within the MyLibraryStackNavigator.
+ */
+  export const navigateToAlbumScreenInMyLibraryStackNavigator = async (
+    navigation: any,
+    item: NowPlayingItem
+  ) => {
+    const hasInternetConnection = await hasValidNetworkConnection()
+    const episode = convertNowPlayingItemToEpisode(item)
+    const podcast = episode?.podcast
+
+    navigateBackToRoot(navigation)
+
+    navigation.navigate({ routeName: PV.RouteNames.MyLibraryScreen })
+    setTimeout(() => {
+      navigation.navigate({ routeName: PV.RouteNames.AlbumsScreen })
+      setTimeout(() => {
+        navigation.navigate({
+          routeName: PV.RouteNames.AlbumScreen,
+          params: {
+            podcast,
+            podcastId: podcast?.id,
+            podcastTitle: podcast?.title,
+            addByRSSPodcastFeedUrl: item?.addByRSSPodcastFeedUrl,
+            hasInternetConnection,
+            forceRequest: false
+          }
+        })
+      }, 333)
+    }, 333)
+  }

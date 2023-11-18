@@ -5,11 +5,9 @@ import SystemSetting from 'react-native-system-setting'
 import React from 'reactn'
 import { toggleMarkAsPlayed } from '../state/actions/userHistoryItem'
 import { translate } from '../lib/i18n'
-import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
-import { getAddByRSSPodcastLocally } from '../services/parser'
 import { playerPlayNextFromQueue } from '../services/player'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { checkIfSubscribedToPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
@@ -94,19 +92,6 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     }
   }
 
-  _handlePodcastPagePress = async () => {
-    const { navigation } = this.props
-    const { player } = this.global
-    const { episode, nowPlayingItem } = player
-    let podcast = episode?.podcast || {}
-
-    if (nowPlayingItem && nowPlayingItem.addByRSSPodcastFeedUrl) {
-      podcast = await getAddByRSSPodcastLocally(nowPlayingItem.addByRSSPodcastFeedUrl)
-    }
-
-    navigateToPodcastScreenWithPodcast(navigation, podcast)
-  }
-
   _headerActionSheetButtons = () => {
     const { globalTheme, player, session } = this.global
 
@@ -133,17 +118,6 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
           style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}
           testID={`${testIDPrefix}_toggle_subscribe`}>
           {isSubscribed ? translate('Unsubscribe') : translate('Subscribe')}
-        </Text>
-      </TouchableHighlight>,
-      <TouchableHighlight
-        key='podcastPage'
-        onPress={this._handlePodcastPagePress}
-        style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
-        underlayColor={safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonUnderlay.backgroundColor, '')}>
-        <Text
-          style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}
-          testID={`${testIDPrefix}_go_to_podcast`}>
-          {translate('Go to Podcast')}
         </Text>
       </TouchableHighlight>
     ]
