@@ -201,6 +201,7 @@ type PlayerLoadNowPlayingItemOptions = {
   itemToSetNextInQueue: NowPlayingItem | null
   previousNowPlayingItem: NowPlayingItem | null
   shouldPlay: boolean
+  secondaryQueuePlaylistId?: string
 }
 
 export const playerLoadNowPlayingItem = async (
@@ -212,7 +213,8 @@ export const playerLoadNowPlayingItem = async (
       return
     }
 
-    const { forceUpdateOrderDate, itemToSetNextInQueue, previousNowPlayingItem, shouldPlay } = options
+    const { forceUpdateOrderDate, itemToSetNextInQueue, previousNowPlayingItem,
+      secondaryQueuePlaylistId, shouldPlay } = options
 
     const skipSetNowPlaying = true
     await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
@@ -224,7 +226,7 @@ export const playerLoadNowPlayingItem = async (
     if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
       await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, previousNowPlayingItem)
     } else {
-      await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
+      await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, secondaryQueuePlaylistId)
     }
   } catch (error) {
     errorLogger(_fileName, 'playerLoadNowPlayingItem service', error)

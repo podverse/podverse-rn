@@ -276,13 +276,14 @@ type PlayerLoadNowPlayingItemOptions = {
   forceUpdateOrderDate: boolean
   setCurrentItemNextInQueue: boolean
   shouldPlay: boolean
+  secondaryQueuePlaylistId?: string
 }
 
 export const playerLoadNowPlayingItem = async (
   item: NowPlayingItem,
   options: PlayerLoadNowPlayingItemOptions
 ) => {
-  const { forceUpdateOrderDate, setCurrentItemNextInQueue, shouldPlay } = options
+  const { forceUpdateOrderDate, setCurrentItemNextInQueue, shouldPlay, secondaryQueuePlaylistId } = options
   const globalState = getGlobal()
   const { nowPlayingItem: previousNowPlayingItem } = globalState.player
 
@@ -314,7 +315,8 @@ export const playerLoadNowPlayingItem = async (
         shouldPlay,
         forceUpdateOrderDate: !!forceUpdateOrderDate,
         itemToSetNextInQueue,
-        previousNowPlayingItem
+        previousNowPlayingItem,
+        secondaryQueuePlaylistId
       }
     )
 

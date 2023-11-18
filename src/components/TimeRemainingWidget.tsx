@@ -28,6 +28,7 @@ type Props = {
   itemType: 'episode' | 'clip' | 'chapter'
   loadChapterOnPlay?: boolean
   mediaFileDuration?: number | undefined
+  playlistId?: string
   progressFullWidth?: boolean
   style?: any
   testID: string
@@ -92,6 +93,7 @@ export const TimeRemainingWidget = (props: Props) => {
     itemType,
     loadChapterOnPlay,
     mediaFileDuration,
+    playlistId,
     progressFullWidth,
     style,
     testID,
@@ -150,7 +152,8 @@ export const TimeRemainingWidget = (props: Props) => {
       await playerLoadNowPlayingItem(convertedItem, {
         forceUpdateOrderDate: false,
         setCurrentItemNextInQueue: true,
-        shouldPlay: true
+        shouldPlay: true,
+        secondaryQueuePlaylistId: playlistId
       })
 
       setTimeout(() => {
