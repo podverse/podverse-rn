@@ -42,7 +42,8 @@ import {
   audioHandleSeekToWithUpdate,
   debouncedAudioSyncPlayerWithQueue,
   audioUpdateCurrentTrack,
-  audioTogglePlay
+  audioTogglePlay,
+  audioPlayPreviousFromQueue
 } from './playerAudio'
 import { audioUpdateTrackPlayerCapabilities } from './playerAudioSetup'
 import { saveOrResetCurrentlyPlayingItemInHistory } from './userHistoryItem'
@@ -389,6 +390,15 @@ export const playerGetRate = async () => {
     playerRate = videoGetRate()
   }
   return playerRate
+}
+
+export const playerPlayPreviousFromQueue = async () => {
+  const playerType = await playerCheckActiveType()
+  if (playerType === PV.Player.playerTypes.isAudio) {
+    await audioPlayPreviousFromQueue()
+  } else if (playerType === PV.Player.playerTypes.isVideo) {
+    // NO CORRESPONDING VIDEO FUNCTION NEEDED
+  }
 }
 
 export const playerPlayNextFromQueue = async () => {

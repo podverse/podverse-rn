@@ -25,6 +25,7 @@ import {
   getRemoteSkipButtonsTimeJumpOverride,
   playerGetPosition
 } from '../../services/player'
+import { audioPlayPreviousFromQueue } from '../../services/playerAudio'
 import { getNextFromQueue, getQueueRepeatModeMusic } from '../../services/queue'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 import { trackPlayerScreenPageView } from '../../services/tracking'
@@ -218,7 +219,7 @@ export const playerPlayPreviousChapterOrReturnToBeginningOfTrack = async () => {
   }
 
   debouncedClearSkipChapterInterval()
-  await playerHandleSeekTo(0)
+  await audioPlayPreviousFromQueue()
 }
 
 export const playerPlayNextChapterOrQueueItem = async () => {
