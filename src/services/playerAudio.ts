@@ -431,14 +431,19 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
     const isHLS = fileExtension === 'm3u8'
     const type = isHLS ? 'hls' : 'default'
 
+    const isMusic = podcastMedium === PV.Medium.music
+    const isClip = !!item?.clipId
+
     let initialTime = enrichedNowPlayingItem?.userPlaybackPosition
-    if (podcastMedium === PV.Medium.music) {
+    if (isMusic) {
       initialTime = 0
-    } else if (item?.clipId) {
+    } else if (isClip) {
       initialTime = item.clipStartTime || 0
     } else if (startPodcastFromTime && !initialTime) {
       initialTime = startPodcastFromTime
     }
+
+    const pitchAlgorithm = isMusic ? PitchAlgorithm.Music : PitchAlgorithm.Voice
 
     if (isDownloadedFile) {
       track = {
@@ -448,11 +453,11 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
         artist: podcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
         userAgent: getAppUserAgent(),
-        pitchAlgorithm: PitchAlgorithm.Voice,
+        pitchAlgorithm,
         type,
         initialTime,
         ...(initialTime ? { iosInitialTime: initialTime } : {}),
-        isClip: !!item?.clipId,
+        isClip,
         isPrimaryQueueItem,
         secondaryQueuePlaylistId
       }
@@ -466,7 +471,7 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
         artist: podcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
         userAgent: getAppUserAgent(),
-        pitchAlgorithm: PitchAlgorithm.Voice,
+        pitchAlgorithm,
         isLiveStream: Platform.OS === 'ios' && liveItem ? true : false,
         headers: {
           ...(Authorization ? { Authorization } : {}),
@@ -475,7 +480,7 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
         type,
         initialTime,
         ...(initialTime ? { iosInitialTime: initialTime } : {}),
-        isClip: !!item?.clipId,
+        isClip,
         isPrimaryQueueItem,
         secondaryQueuePlaylistId
       }
