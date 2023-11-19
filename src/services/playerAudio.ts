@@ -238,7 +238,7 @@ const audioSyncPlayerWithQueue = async () => {
 
     const nowPlayingItem = getGlobal()?.player?.nowPlayingItem
 
-    const isMusic = nowPlayingItem?.podcastMedium === 'music'
+    const isMusic = nowPlayingItem?.podcastMedium === PV.Medium.music
     await setRNTPRepeatMode(isMusic)
 
     // todo: handle retry in case not on global state yet?
@@ -637,7 +637,13 @@ export const audioAddNowPlayingItemNextInQueue = async (
 ) => {
   const { addCurrentItemNextInQueue } = getGlobal()
 
-  if (addCurrentItemNextInQueue && itemToSetNextInQueue && item.episodeId !== itemToSetNextInQueue.episodeId) {
+  if (
+    addCurrentItemNextInQueue
+    && itemToSetNextInQueue
+    && item.episodeId !== itemToSetNextInQueue.episodeId
+    && itemToSetNextInQueue.podcastMedium !== PV.Medium.music
+    && !itemToSetNextInQueue.podcastHasVideo
+    ) {
     await addQueueItemNext(itemToSetNextInQueue)
   }
 }

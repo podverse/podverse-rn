@@ -684,7 +684,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // Set the subscribedPodcasts immediately on state, without waiting for local parsing,
     // then update subscribedPodcasts again combined with addByRSS feeds.
     const initialPodcastsAllMediums = await combineWithAddByRSSPodcasts(searchBarText, savedQuerySort)
-    const initalPodcasts = initialPodcastsAllMediums.filter((podcast: Podcast) => podcast.medium === 'podcast')
+    const initalPodcasts = initialPodcastsAllMediums.filter((podcast: Podcast) => podcast.medium === PV.Medium.podcast)
     this.setState({
       flatListData: initalPodcasts || [],
       flatListDataTotalCount: initalPodcasts?.length || 0
@@ -1345,7 +1345,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       subscribedPodcastsAllMediums = await combineWithAddByRSSPodcasts(searchBarText, querySort)
     }
 
-    const subscribedPodcasts = subscribedPodcastsAllMediums.filter((podcast: Podcast) => podcast.medium === 'podcast')
+    const subscribedPodcasts = subscribedPodcastsAllMediums.filter(
+      (podcast: Podcast) => podcast.medium === PV.Medium.podcast)
 
     if (!preventAutoDownloading) {
       try {
