@@ -620,7 +620,12 @@ export const audioCreateTracks = async (items: NowPlayingItem[], options: AudioC
 }
 
 export const audioPlayPreviousFromQueue = async () => {
-  await PVAudioPlayer.skipToPrevious()
+  const currentPosition = PVAudioPlayer.getPosition()
+  if (currentPosition > 4) {
+    await PVAudioPlayer.seekTo(0)
+  } else {
+    await PVAudioPlayer.skipToPrevious()
+  }
 }
 
 export const audioPlayNextFromQueue = async () => {
