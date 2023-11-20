@@ -20,7 +20,7 @@ import { CarPlay } from 'react-native-carplay'
 import Config from 'react-native-config'
 import { endConnection as iapEndConnection, initConnection as iapInitConnection } from 'react-native-iap'
 import { NavigationStackOptions } from 'react-navigation-stack'
-import React, { getGlobal, addCallback } from 'reactn'
+import React, { setGlobal, addCallback } from 'reactn'
 import Popover from 'react-native-popover-view'
 import {
   ActionSheet,
@@ -370,6 +370,31 @@ export class PodcastsScreen extends React.Component<Props, State> {
       messaging()
         .getInitialNotification()
         .then(this.handleInitialNotification)
+
+      messaging().onMessage((notification) => {
+        const data = notification.data
+        const { podcastId, episodeId, notificationType, episodeTitle,
+          podcastTitle, title: notificationTitle } = data || {}
+        const image = data?.fcm_options?.image
+        const title = podcastTitle
+        const description = notificationType === 'live'
+          ? notificationTitle
+          : episodeTitle
+
+        if(AppState.currentState === "active") {
+          setGlobal({
+            bannerInfo: {
+              podcastId,
+              episodeId,
+              show: true,
+              title,
+              description,
+              imageUrl: image,
+              type: 'NOTIFICATION'
+            }
+          })
+        }
+      })
     }
 
     // DEBUG: Make sure remote debugging is disabled in the dev environment
