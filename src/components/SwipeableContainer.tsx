@@ -108,6 +108,9 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
   render() {
     const { currentIndex, pan, transitioningIndex } = this.state;
     const renderedIndex = transitioningIndex === null ? currentIndex : transitioningIndex
+    
+    // Hide the DottedPagination if there is only one child in the carousel.
+    const totalDots = this.props.totalChildren === 1 ? 0 : this.props.totalChildren
 
     const children = React.Children.map(this.props.children, (child, index) => {
       if (index === renderedIndex) {
@@ -218,7 +221,7 @@ class Swipeable extends Component<SwipeableProps, SwipeableState> {
       <View style={styles.container}>
         {children}
       </View>
-      <DottedPagination currentIndex={this.state.currentIndex} totalDots={this.props.totalChildren}/>
+      <DottedPagination currentIndex={this.state.currentIndex} totalDots={totalDots}/>
     </View>);
   }
 }
