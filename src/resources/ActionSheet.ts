@@ -33,7 +33,7 @@ const mediaMoreButtons = (
     includeGoToEpisodeInEpisodesStack?: boolean | string
     includeGoToEpisodeInCurrentStack?: boolean
   },
-  itemType: 'podcast' | 'episode' | 'clip' | 'chapter' | 'playlist' | 'profile' | 'track'
+  itemType: 'album' | 'podcast' | 'episode' | 'clip' | 'chapter' | 'playlist' | 'profile' | 'track'
 ) => {
   if (!item || !item.episodeId) return
 
@@ -250,15 +250,19 @@ const mediaMoreButtons = (
           const urlsWeb = safelyUnwrapNestedVariable(() => globalState.urlsWeb, {})
           let url = ''
           let title = ''
+          const isMusic = item?.podcastMedium === 'music'
 
-          if (item.clipId) {
-            url = urlsWeb.clip + item.clipId
-            title = item.clipTitle ? item.clipTitle : prefixClipLabel(item.episodeTitle)
-            title += ` – ${item?.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
+          if (isMusic && item.episodeId) {
+            url = urlsWeb.track + item.episodeId
+            title += `${item?.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`
           } else if (item.episodeId) {
             url = urlsWeb.episode + item.episodeId
             title += `${item?.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`
-          }
+          } else if (item.clipId) {
+            url = urlsWeb.clip + item.clipId
+            title = item.clipTitle ? item.clipTitle : prefixClipLabel(item.episodeTitle)
+            title += ` – ${item?.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
+          } 
           await Share.open({
             title,
             subject: title,

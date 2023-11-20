@@ -157,7 +157,7 @@ export class AlbumScreen extends React.Component<Props, State> {
             <NavFundingIcon globalTheme={globalTheme} navigation={navigation} podcast={podcast} />
           )}
           {!addByRSSPodcastFeedUrl && (
-            <NavShareIcon podcastTitle={podcastTitle} urlId={podcastId} urlPath={PV.URLs.webPaths.podcast} />
+            <NavShareIcon podcastTitle={podcastTitle} urlId={podcastId} urlPath={PV.URLs.webPaths.album} />
           )}
           {!!addByRSSPodcastFeedUrl && podcast?.linkUrl && (
             <NavShareIcon
