@@ -43,6 +43,7 @@ import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { handlePodcastScreenNavigateWithParams,
+  navigateToAlbumScreenWithPodcast,
   navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { resetAllAppKeychain } from '../lib/secutity'
@@ -1038,12 +1039,18 @@ export class PodcastsScreen extends React.Component<Props, State> {
   )
 
   _onPodcastItemSelected = (podcast: Podcast) => {
-    handlePodcastScreenNavigateWithParams(
-      this.props.navigation,
-      podcast.id,
-      podcast,
-      { forceRequest: false }
-    )
+    const { navigation } = this.props
+    const isMusic = podcast?.medium === PV.Medium.music
+    if (isMusic) {
+      navigateToAlbumScreenWithPodcast(navigation, podcast)
+    } else {
+      handlePodcastScreenNavigateWithParams(
+        navigation,
+        podcast.id,
+        podcast,
+        { forceRequest: false }
+      )
+    }
   }
 
   _onPodcastItemLongPressed = (item: Podcast) => {
