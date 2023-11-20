@@ -709,7 +709,8 @@ export class AlbumsScreen extends React.Component<Props, State> {
     const { querySort, searchBarText } = this.state
     let subscribedPodcastsAllMediums = await getSubscribedPodcasts(querySort)
     subscribedPodcastsAllMediums = await combineWithAddByRSSPodcasts(searchBarText, querySort)
-    const subscribedPodcasts = subscribedPodcastsAllMediums.filter((podcast: Podcast) => podcast.medium === 'music')
+    const subscribedPodcasts = subscribedPodcastsAllMediums.filter(
+      (podcast: Podcast) => podcast.medium === PV.Medium.music)
     return subscribedPodcasts
   }
 

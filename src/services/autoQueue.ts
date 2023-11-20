@@ -79,7 +79,9 @@ export const handleAutoQueueEpisodes = async (dateISOString: string) => {
 
   const unsortedNowPlayingItems: NowPlayingItem[] = []
   for (const episode of limitedAutoQueueEpisodes) {
-    unsortedNowPlayingItems.push(convertToNowPlayingItem(episode))
+    if (episode?.podcast?.medium !== PV.Medium.music) {
+      unsortedNowPlayingItems.push(convertToNowPlayingItem(episode))
+    }
   }
 
   const autoQueueSettingsPosition = await getAutoQueueSettingsPosition()

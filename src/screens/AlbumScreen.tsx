@@ -541,26 +541,6 @@ export class AlbumScreen extends React.Component<Props, State> {
     })
   }
 
-  _renderTableInnerHeader = () => {
-    const { navigation } = this.props
-    const { selectedFilterLabel, viewType } = this.state
-    const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
-
-    return (
-      <TableSectionSelectors
-        addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
-        filterScreenTitle={getScreenTitle()}
-        hideDropdown
-        includePadding
-        navigation={navigation}
-        screenName='AlbumScreen'
-        selectedFilterItemKey={viewType}
-        selectedFilterLabel={selectedFilterLabel}
-        testID={testIDPrefix}
-      />
-    )
-  }
-
   render() {
     const { navigation } = this.props
 
@@ -616,9 +596,7 @@ export class AlbumScreen extends React.Component<Props, State> {
           showSettings={showSettings}
           testID={testIDPrefix}
         />
-        {!showSettings ? (
-          this._renderTableInnerHeader()
-        ) : (
+        {showSettings && (
           <ScrollView style={styles.settingsView}>
             <Text accessibilityRole='header' style={styles.settingsTitle}>
               {translate('Settings')}

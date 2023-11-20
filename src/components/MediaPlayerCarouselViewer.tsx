@@ -27,7 +27,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     const { player } = this.global
     const item = player?.nowPlayingItem
     if (item) {
-      if (item?.podcastMedium === 'music' && item?.podcastId) {
+      if (item?.podcastMedium === PV.Medium.music && item?.podcastId) {
         navigateToAlbumScreenInMyLibraryStackNavigator(navigation, item)
       } else {
         navigateBackToRoot(navigation)
@@ -42,7 +42,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     const { player } = this.global
     const item = player?.nowPlayingItem
     if (item) {
-      if (item?.podcastMedium === 'music' && item?.podcastId) {
+      if (item?.podcastMedium === PV.Medium.music && item?.podcastId) {
         navigateToAlbumScreenInMyLibraryStackNavigator(navigation, item)
       } else {
         this.handlePodcastNavigation()
