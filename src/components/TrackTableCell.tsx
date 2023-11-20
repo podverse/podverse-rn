@@ -45,6 +45,14 @@ export class TrackTableCell extends React.PureComponent<Props> {
     const episodeDownloaded = !!(episodeId && !!downloadedEpisodeIds[episodeId])
     const episodeDownloading = !!(episodeId && !!downloadsActive[episodeId])
 
+    const textStyle = showArtist
+      ? [styles.text, { marginTop: 1 }]
+      : [styles.text]
+
+    const textWrapperStyle = showArtist
+      ? [styles.textWrapper]
+      : [styles.textWrapper, { justifyContent: 'center' }]
+
     return (
       <RNView style={styles.outerWrapper}>
         <Pressable
@@ -64,8 +72,8 @@ export class TrackTableCell extends React.PureComponent<Props> {
               />
             )
           }
-          <RNView style={styles.textWrapper}>
-            <Text numberOfLines={1} style={styles.text}>{trackTitle}</Text>
+          <RNView style={textWrapperStyle}>
+            <Text numberOfLines={1} style={textStyle}>{trackTitle}</Text>
             {showArtist && (<Text numberOfLines={1} style={styles.subText}>{authorNames}</Text>)}
           </RNView>          
           {!!episodeDownloaded && (
@@ -117,18 +125,17 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.semibold,
-    marginVertical: 1
+    fontWeight: PV.Fonts.weights.semibold
   },
   subText: {
     fontSize: PV.Fonts.sizes.xs,
     color: PV.Colors.skyLight,
     fontWeight: PV.Fonts.weights.thin,
-    marginVertical: 1
+    marginTop: 2
   },
   textWrapper: {
     alignItems: 'flex-start',
     flex: 1,
-    justifyContent: 'flex-start'
+    height: images.small.height
   }
 })
