@@ -212,8 +212,6 @@ class App extends Component<Props, State> {
       return <UpdateRequiredOverlay />
     }
 
-    const navigation = this.props?.navigation
-
     return this.state.appReady ? (
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider initialMetrics={initialWindowMetrics} style={wrapperStyle}>
@@ -223,7 +221,7 @@ class App extends Component<Props, State> {
           </View>
           <ImageFullView />
           <BoostDropdownBanner />
-          <NotificationBanner navigation={navigation} on />
+          <NotificationBanner on />
         </SafeAreaProvider>
         <LoadingInterstitialView />
       </GestureHandlerRootView>
