@@ -569,8 +569,8 @@ export const images = StyleSheet.create({
     width: Platform.OS === 'ios' ? 64 : 74
   },
   small: {
-    height: Platform.OS === 'ios' ? 48 : 56,
-    width: Platform.OS === 'ios' ? 48 : 56
+    height: 48,
+    width: 48
   }
 })
 
