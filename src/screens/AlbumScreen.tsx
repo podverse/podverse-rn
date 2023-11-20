@@ -386,7 +386,7 @@ export class AlbumScreen extends React.Component<Props, State> {
             shouldPlay: true
           })    
         }}
-        hideImage={false}
+        hideImage
         testID={testId}
       />
     )
