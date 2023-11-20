@@ -54,6 +54,10 @@ const accessibilityNowPlayingInfo = {
   value: _nowPlayingInfoKey
 }
 
+const checkIfHasSummary = (episode: Episode) => {
+  return episode?.podcast?.medium !== PV.Medium.music
+}
+
 const checkIfHasChapters = (episode: Episode) => {
   return !!episode?.chaptersUrl
 }
@@ -143,11 +147,12 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   _handleAccessibilitySelectChange = (selectedKey: string) => {
     const { parsedTranscript, player } = this.global
     const { episode } = player
+    const hasSummary = checkIfHasSummary(episode)
     const hasChapters = checkIfHasChapters(episode)
     const hasComments = !!checkIfHasSupportedCommentTag(episode)
     const hasTranscript = checkIfHasTranscript(parsedTranscript)
     const hasChat = checkIfHasChat(episode)
-    const items = accessibilitySelectorItems(hasChapters, hasComments, hasTranscript, hasChat)
+    const items = accessibilitySelectorItems(hasSummary, hasChapters, hasComments, hasTranscript, hasChat)
     const accessibilityItemSelected = items.find((x) => x.value === selectedKey)
     this.setState({ accessibilityItemSelected })
   }
@@ -169,6 +174,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       screenReaderEnabled, session } = this.global
     const { episode, nowPlayingItem, playbackState } = player
     const { screenWidth } = screen
+    const hasSummary = checkIfHasSummary(episode)
     const hasChapters = checkIfHasChapters(episode)
     const hasComments = !!checkIfHasSupportedCommentTag(episode)
     const hasTranscript = checkIfHasTranscript(parsedTranscript)
@@ -182,9 +188,13 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
     const isPlaying = playerCheckIfStateIsPlaying(playbackState)
 
-    let itemCount = 2
+    let itemCount = 1
     let chaptersIndex = null
     let transcriptsIndex = null
+
+    if (hasSummary) {
+      itemCount++
+    }
     if (hasChapters) {
       chaptersIndex = itemCount
       itemCount++
@@ -231,6 +241,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       handlePressClipInfo: this._handlePressClipInfo,
       screenWidth,
       navigation,
+      hasSummary,
       hasChapters,
       hasChat,
       hasComments,
@@ -250,7 +261,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           <>
             <DropdownButtonSelect
               accessibilityHint={translate('ARIA HINT - This is the now playing info selector')}
-              items={accessibilitySelectorItems(hasChapters, hasComments, hasTranscript, hasChat)}
+              items={accessibilitySelectorItems(hasSummary, hasChapters, hasComments, hasTranscript, hasChat)}
               label={accessibilityItemSelected?.label}
               onValueChange={this._handleAccessibilitySelectChange}
               placeholder={placeholderItem}
@@ -323,18 +334,20 @@ const placeholderItem = {
 }
 
 const accessibilitySelectorItems = (
+  hasSummary: boolean,
   hasChapters: boolean,
   hasComments: boolean,
   hasTranscript: boolean,
   hasChat: boolean
 ) => {
-  const items = [
-    accessibilityNowPlayingInfo,
-    {
+  const items = [accessibilityNowPlayingInfo]
+
+  if (hasSummary) {
+    items.push(  {
       label: translate('Episode Summary'),
       value: _episodeSummaryKey
-    }
-  ]
+    })
+  }
 
   if (hasChapters) {
     items.push({
@@ -372,6 +385,7 @@ type MPCComponents = {
   currentTocChapter?: InitialState['currentTocChapter']
   currentTocChapters: InitialState['currentTocChapters']
   handlePressClipInfo: any
+  hasSummary: boolean
   hasChapters: boolean
   hasChat: boolean
   hasComments: boolean
@@ -394,6 +408,7 @@ const mediaPlayerCarouselComponents = ({
   hasChapters,
   hasChat,
   hasComments,
+  hasSummary,
   hasTranscript,
   isReady,
   isReady2,
@@ -418,7 +433,7 @@ const mediaPlayerCarouselComponents = ({
     }
     
     if(isReady2) {
-      if(accessibilityItemSelectedValue === _episodeSummaryKey){
+      if(accessibilityItemSelectedValue === _episodeSummaryKey && hasSummary){
         components.push(
           <MediaPlayerCarouselShowNotes
             key='mpc_sr_show_notes'
@@ -490,16 +505,18 @@ const mediaPlayerCarouselComponents = ({
     }
 
     if(isReady2) {
-      components.push(
-        <MediaPlayerCarouselShowNotes
-          key='mpc_show_notes'
-          navigation={navigation}
-          player={player}
-          screenPlayer={screenPlayer}
-          screenReaderEnabled={screenReaderEnabled}
-          width={screenWidth}
-        />
-      )
+      if (hasSummary) {
+        components.push(
+          <MediaPlayerCarouselShowNotes
+            key='mpc_show_notes'
+            navigation={navigation}
+            player={player}
+            screenPlayer={screenPlayer}
+            screenReaderEnabled={screenReaderEnabled}
+            width={screenWidth}
+          />
+        )
+      }
       
       if(hasChapters) {
         components.push(

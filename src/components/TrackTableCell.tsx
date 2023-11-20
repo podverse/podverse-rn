@@ -1,4 +1,4 @@
-import { Episode } from 'podverse-shared'
+import { Episode, generateAuthorsText } from 'podverse-shared'
 import { StyleSheet, View as RNView, Pressable } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
@@ -11,6 +11,7 @@ type Props = {
   handleMorePress: any
   handlePlayPress: any
   hideImage?: boolean
+  showArtist?: boolean
   testID: string
 }
 
@@ -21,6 +22,7 @@ export class TrackTableCell extends React.PureComponent<Props> {
       handleMorePress,
       handlePlayPress,
       hideImage = true,
+      showArtist,
       testID
     } = this.props
 
@@ -35,6 +37,7 @@ export class TrackTableCell extends React.PureComponent<Props> {
     const isAddByRSSPodcast = !!podcast?.addByRSSPodcastFeedUrl
     const imageUrl = podcast?.shrunkImageUrl || podcast?.imageUrl
     const valueTags = podcast?.value
+    const authorNames = generateAuthorsText(podcast?.authors)
     const trackTitle = episode.title || translate('Untitled Track')
     const accessibilityLabel = trackTitle
     const accessibilityHint = translate('ARIA HINT - tap to play this track')
@@ -63,10 +66,11 @@ export class TrackTableCell extends React.PureComponent<Props> {
           }
           <RNView style={styles.textWrapper}>
             <Text numberOfLines={1} style={styles.text}>{trackTitle}</Text>
-            {episodeDownloaded && (
-              <IndicatorDownload style={styles.autoDownloadIcon} />
-            )}
-          </RNView>
+            {showArtist && (<Text numberOfLines={1} style={styles.subText}>{authorNames}</Text>)}
+          </RNView>          
+          {!episodeDownloaded && (
+            <IndicatorDownload style={styles.autoDownloadIcon} />
+          )}
         </Pressable>
         <RNView style={styles.buttonWrapper}>
           {!!handleMorePress && (
@@ -102,22 +106,28 @@ const styles = StyleSheet.create({
   },
   outerWrapper: {
     flexDirection: 'row',
-    paddingHorizontal: 8,
-    paddingVertical: 8
   },
   pressablePlayWrapper: {
     flexDirection: 'row',
-    flex: 1
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 10
   },
   text: {
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.semibold,
-    flex: 1,
-    lineHeight: images.small.height
+    marginVertical: 1
+  },
+  subText: {
+    fontSize: PV.Fonts.sizes.xs,
+    color: PV.Colors.skyLight,
+    fontWeight: PV.Fonts.weights.thin,
+    marginVertical: 1
   },
   textWrapper: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     flex: 1,
-    flexDirection: 'row'
+    justifyContent: 'flex-start'
   }
 })

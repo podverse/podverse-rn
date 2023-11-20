@@ -128,11 +128,11 @@ export const getDownloadedPodcasts = async (options?: GetDownloadedPodcastsParam
     let items = itemsString ? JSON.parse(itemsString) : []
 
     if (isMusic) {
-      items = items.filter((podcast: any) => podcast.medium === 'music')
+      items = items.filter((podcast: any) => podcast.medium === PV.Medium.music)
     } else if (hasVideo) {
       items = items.filter((podcast: any) => podcast.hasVideo)
     } else if (podcastsOnly) {
-      items = items.filter((podcast: any) => podcast.medium === 'podcast')
+      items = items.filter((podcast: any) => podcast.medium === PV.Medium.podcast)
     }
 
     if (searchTitle) {

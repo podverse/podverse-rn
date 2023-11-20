@@ -37,7 +37,7 @@ import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCate
 import PVEventEmitter from '../services/eventEmitter'
 import { getAddByRSSPodcastsLocally, parseAllAddByRSSPodcasts } from '../services/parser'
 import { getPodcasts } from '../services/podcast'
-import { getSavedQueryAlbumsScreenSort, setSavedQueryAlbumsScreenSort } from '../services/savedQueryFilters'
+import { getSavedQueryAlbumsScreenFilter, getSavedQueryAlbumsScreenSort, setSavedQueryAlbumsScreenFilter, setSavedQueryAlbumsScreenSort } from '../services/savedQueryFilters'
 import { trackPageView } from '../services/tracking'
 import { removeDownloadedPodcast } from '../state/actions/downloads'
 import { clearEpisodesCountForPodcast } from '../state/actions/newEpisodesCount'
@@ -201,9 +201,10 @@ export class AlbumsScreen extends React.Component<Props, State> {
       const keepSearchTitle = false
       if (isConnected) {
         const savedQuerySort = await getSavedQueryAlbumsScreenSort()
+        const savedQueryFilter = await getSavedQueryAlbumsScreenFilter()
         this.setState({ querySort: savedQuerySort }, () => {
           this.handleSelectFilterItem(
-            PV.Filters._subscribedKey,
+            savedQueryFilter || PV.Filters._allPodcastsKey,
             keepSearchTitle
           )
         })
@@ -227,6 +228,8 @@ export class AlbumsScreen extends React.Component<Props, State> {
       selectedFilterItemKey: selectedKey,
       selectedSortItemKey: querySort
     })
+
+    await setSavedQueryAlbumsScreenFilter(selectedKey)
 
     const selectedFilterLabel = await getSelectedFilterLabel(selectedKey)
     const selectedSortLabel = getSelectedSortLabel(sort)
@@ -272,11 +275,7 @@ export class AlbumsScreen extends React.Component<Props, State> {
       return
     }
 
-    const { queryFrom } = this.state
-
-    if (queryFrom === PV.Filters._subscribedKey) {
-      await setSavedQueryAlbumsScreenSort(selectedKey)
-    }
+    await setSavedQueryAlbumsScreenSort(selectedKey)
 
     const selectedSortLabel = getSelectedSortLabel(selectedKey)
 
@@ -709,7 +708,8 @@ export class AlbumsScreen extends React.Component<Props, State> {
     const { querySort, searchBarText } = this.state
     let subscribedPodcastsAllMediums = await getSubscribedPodcasts(querySort)
     subscribedPodcastsAllMediums = await combineWithAddByRSSPodcasts(searchBarText, querySort)
-    const subscribedPodcasts = subscribedPodcastsAllMediums.filter((podcast: Podcast) => podcast.medium === 'music')
+    const subscribedPodcasts = subscribedPodcastsAllMediums.filter(
+      (podcast: Podcast) => podcast.medium === PV.Medium.music)
     return subscribedPodcasts
   }
 

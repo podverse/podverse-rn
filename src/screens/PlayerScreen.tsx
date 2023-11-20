@@ -41,6 +41,16 @@ type Props = {
   navigation?: any
 }
 
+type HandleShareParams = {
+  chapterId?: string | null
+  customRSSPodcastLink?: string | null
+  customRSSEpisodeLink?: string | null
+  episodeId?: string | null
+  isMusic?: boolean | null
+  mediaRefId?: string | null
+  podcastId?: string | null
+}
+
 const testIDPrefix = 'player_screen'
 
 let eventListenerPlayerNewEpisodeLoaded: any
@@ -232,14 +242,9 @@ export class PlayerScreen extends React.Component<Props> {
     })
   }
 
-  _handleShare = async (
-    podcastId?: string,
-    episodeId?: string,
-    mediaRefId?: string,
-    chapterId?: string,
-    customRSSPodcastLink?: string,
-    customRSSEpisodeLink?: string
-  ) => {
+  _handleShare = async (options: HandleShareParams) => {
+    const { chapterId, customRSSEpisodeLink, customRSSPodcastLink, episodeId, isMusic,
+      mediaRefId, podcastId } = options
     let { nowPlayingItem } = this.global.player
     nowPlayingItem = nowPlayingItem || {}
     let url = ''
@@ -252,10 +257,10 @@ export class PlayerScreen extends React.Component<Props> {
       url = customRSSEpisodeLink
       title = `${nowPlayingItem?.podcastTitle} – ${nowPlayingItem?.episodeTitle}`
     } else if (podcastId) {
-      url = this.global.urlsWeb.podcast + podcastId
+      url = isMusic ? this.global.urlsWeb.album + podcastId : this.global.urlsWeb.podcast + podcastId
       title = `${nowPlayingItem?.podcastTitle}${translate('shared using brandName')}`
     } else if (episodeId) {
-      url = this.global.urlsWeb.episode + episodeId
+      url = isMusic ?  this.global.urlsWeb.track + episodeId : this.global.urlsWeb.episode + episodeId
       title = `${nowPlayingItem?.podcastTitle} – ${nowPlayingItem?.episodeTitle} ${translate('shared using brandName')}`
     } else if (chapterId) {
       url = this.global.urlsWeb.clip + chapterId
@@ -295,6 +300,7 @@ export class PlayerScreen extends React.Component<Props> {
     }
 
     const podcastId = nowPlayingItem ? nowPlayingItem.podcastId : null
+    const isMusic = nowPlayingItem?.podcastMedium === 'music'
     const episodeId = episode?.id || null
     const mediaRefId = mediaRef?.id || null
     const chapterId = currentTocChapter?.id || null
@@ -317,15 +323,16 @@ export class PlayerScreen extends React.Component<Props> {
             <PlayerControls navigation={navigation} />
             <ActionSheet
               handleCancelPress={this._dismissShareActionSheet}
-              items={shareActionSheetButtons(
+              items={shareActionSheetButtons({
                 podcastId,
                 episodeId,
                 mediaRefId,
                 chapterId,
-                this._handleShare,
+                handleShare: this._handleShare,
                 customRSSPodcastLink,
-                customRSSEpisodeLink
-              )}
+                customRSSEpisodeLink,
+                isMusic
+              })}
               showModal={showShareActionSheet}
               testID={`${testIDPrefix}_share`}
             />
@@ -336,65 +343,69 @@ export class PlayerScreen extends React.Component<Props> {
   }
 }
 
-const shareActionSheetButtons = (
-  podcastId: string,
-  episodeId: string,
-  mediaRefId: string,
-  chapterId: string,
-  handleShare: any,
-  customRSSPodcastLink: string,
+type ShareActionSheetButtonsParams = {
+  chapterId: string
   customRSSEpisodeLink: string
-) => {
+  customRSSPodcastLink: string
+  episodeId: string
+  handleShare: any
+  isMusic: boolean
+  mediaRefId: string
+  podcastId: string
+}
+
+const shareActionSheetButtons = (options: ShareActionSheetButtonsParams) => {
+
+  const { chapterId, customRSSEpisodeLink, customRSSPodcastLink, episodeId, handleShare,
+   isMusic, mediaRefId, podcastId } = options
+
   let items: any[] = []
+
+  const sharePodcastText = isMusic ? translate('Share Album') : translate('Share Podcast')
+  const shareEpisodeText = isMusic ? translate('Share Track') : translate('Share Episode')
 
   if (customRSSPodcastLink || customRSSEpisodeLink) {
     if (customRSSPodcastLink) {
       items.push({
-        accessibilityHint: translate('ARIA HINT - share this podcast'),
         key: 'customRSSPodcastLink',
-        text: translate('Share Podcast'),
-        onPress: () => handleShare(null, null, null, null, customRSSPodcastLink, null)
+        text: sharePodcastText,
+        onPress: () => handleShare({ customRSSPodcastLink })
       })
     }
     if (customRSSEpisodeLink) {
       items.push({
-        accessibilityHint: translate('ARIA HINT - share this episode'),
         key: 'customRSSEpisodeLink',
-        text: translate('Share Episode'),
-        onPress: () => handleShare(null, null, null, null, null, customRSSEpisodeLink)
+        text: shareEpisodeText,
+        onPress: () => handleShare({ customRSSEpisodeLink })
       })
     }
   } else {
     items = [
       {
-        accessibilityHint: translate('ARIA HINT - share this podcast'),
         key: 'podcast',
-        text: translate('Share Podcast'),
-        onPress: () => handleShare(podcastId, null, null)
+        text: sharePodcastText,
+        onPress: () => handleShare({ podcastId, isMusic })
       },
       {
-        accessibilityHint: translate('ARIA HINT - share this episode'),
         key: 'episode',
-        text: translate('Share Episode'),
-        onPress: () => handleShare(null, episodeId, null)
+        text: shareEpisodeText,
+        onPress: () => handleShare({ episodeId, isMusic })
       }
     ]
 
     if (mediaRefId) {
       items.push({
-        accessibilityHint: translate('ARIA HINT - share this clip'),
         key: 'clip',
         text: translate('Share Clip'),
-        onPress: () => handleShare(null, null, mediaRefId)
+        onPress: () => handleShare({ mediaRefId })
       })
     }
 
     if (!mediaRefId && chapterId) {
       items.push({
-        accessibilityHint: translate('ARIA HINT - share this chapter'),
         key: 'chapter',
         text: translate('Share Chapter'),
-        onPress: () => handleShare(null, null, null, chapterId)
+        onPress: () => handleShare({ chapterId })
       })
     }
   }

@@ -7,6 +7,7 @@ import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import {
+  navigateToAlbumScreenWithNowPlayingItem,
   navigateToEpisodeScreenWithItem,
   navigateToEpisodeScreenWithItemInCurrentStack,
   navigateToPodcastScreenWithItem
@@ -33,7 +34,7 @@ const mediaMoreButtons = (
     includeGoToEpisodeInEpisodesStack?: boolean | string
     includeGoToEpisodeInCurrentStack?: boolean
   },
-  itemType: 'podcast' | 'episode' | 'clip' | 'chapter' | 'playlist' | 'profile' | 'track'
+  itemType: 'album' | 'podcast' | 'episode' | 'clip' | 'chapter' | 'playlist' | 'profile' | 'track'
 ) => {
   if (!item || !item.episodeId) return
 
@@ -250,15 +251,19 @@ const mediaMoreButtons = (
           const urlsWeb = safelyUnwrapNestedVariable(() => globalState.urlsWeb, {})
           let url = ''
           let title = ''
+          const isMusic = item?.podcastMedium === 'music'
 
-          if (item.clipId) {
-            url = urlsWeb.clip + item.clipId
-            title = item.clipTitle ? item.clipTitle : prefixClipLabel(item.episodeTitle)
-            title += ` – ${item?.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
+          if (isMusic && item.episodeId) {
+            url = urlsWeb.track + item.episodeId
+            title += `${item?.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`
           } else if (item.episodeId) {
             url = urlsWeb.episode + item.episodeId
             title += `${item?.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`
-          }
+          } else if (item.clipId) {
+            url = urlsWeb.clip + item.clipId
+            title = item.clipTitle ? item.clipTitle : prefixClipLabel(item.episodeTitle)
+            title += ` – ${item?.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
+          } 
           await Share.open({
             title,
             subject: title,
@@ -317,21 +322,30 @@ const mediaMoreButtons = (
   // Limit the action sheet to 8 items, so all items appear even on smaller screens.
   // Since this action sheet can't be scrollable, we're just hiding the less important buttons.
   if (includeGoToPodcast && buttons.length < 8) {
+    const text = itemType === 'album'
+      ? translate('Go to Album')
+      : translate('Go to Podcast')
     buttons.push({
-      accessibilityLabel: translate('Go to Podcast'),
+      accessibilityLabel: text,
       key: PV.Keys.go_to_podcast,
-      text: translate('Go to Podcast'),
+      text,
       onPress: async () => {
         await handleDismiss()
-        navigateToPodcastScreenWithItem(navigation, item)
+        if (itemType === 'album') {
+          navigateToAlbumScreenWithNowPlayingItem(navigation, item)
+        } else {
+          navigateToPodcastScreenWithItem(navigation, item)
+        }
       }
     })
   }
 
-  if ((includeGoToEpisodeInEpisodesStack || includeGoToEpisodeInCurrentStack) && buttons.length < 8) {
-    const text = itemType === 'track'
-      ? translate('Go to Track')
-      : translate('Go to Episode')
+  if ((itemType !== 'album'
+    && includeGoToEpisodeInEpisodesStack
+    || includeGoToEpisodeInCurrentStack)
+    && buttons.length < 8
+  ) {
+    const text = translate('Go to Episode')
     buttons.push({
       accessibilityLabel: text,
       key: PV.Keys.go_to_episode,
