@@ -1,4 +1,4 @@
-import { checkIfVideoFileOrVideoLiveType } from 'podverse-shared'
+import { checkIfVideoFileOrVideoLiveType, generateAuthorsText } from 'podverse-shared'
 import { Pressable, StyleSheet, View } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
@@ -24,6 +24,10 @@ export class MiniPlayer extends React.PureComponent<Props> {
 
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
+    const isMusic = nowPlayingItem?.podcastMedium === PV.Medium.music
+    const podcastTitle = isMusic
+      ? generateAuthorsText(nowPlayingItem.podcastAuthors)
+      : nowPlayingItem?.podcastTitle
 
     let playButtonAdjust = { paddingLeft: 2, paddingTop: 2 } as any
     let playButtonIcon = (
@@ -58,7 +62,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
     }
 
     let nowPlayingAccessibilityLabel = `${translate('ARIA HINT - Now playing')}. `
-    nowPlayingAccessibilityLabel += `${nowPlayingItem?.podcastTitle}. `
+    nowPlayingAccessibilityLabel += `${podcastTitle}. `
     nowPlayingAccessibilityLabel += `${nowPlayingItem?.episodeTitle}.`
 
     const episodeTitleComponent = (
@@ -145,13 +149,6 @@ export class MiniPlayer extends React.PureComponent<Props> {
                   />
                 )}
                 <View style={styles.textWrapper}>
-                  <Text
-                    allowFontScaling={false}
-                    numberOfLines={1}
-                    style={[styles.podcastTitle, globalTheme.playerText]}
-                    testID={`${testIDPrefix}_podcast_title`}>
-                    {nowPlayingItem?.podcastTitle}
-                  </Text>
                   {!screenReaderEnabled ? (
                     <TextTicker
                       accessible={false}
@@ -159,12 +156,20 @@ export class MiniPlayer extends React.PureComponent<Props> {
                       bounce
                       importantForAccessibility='no-hide-descendants'
                       loop
+                      styles={styles.episodeTitle}
                       textLength={nowPlayingItem?.episodeTitle?.length}>
                       {episodeTitleComponent}
                     </TextTicker>
                   ) : (
                     episodeTitleComponent
                   )}
+                  <Text
+                    allowFontScaling={false}
+                    numberOfLines={1}
+                    style={[globalTheme.playerText, styles.podcastTitle]}
+                    testID={`${testIDPrefix}_podcast_title`}>
+                    {podcastTitle}
+                  </Text>
                 </View>
               </View>
             </Pressable>
@@ -201,10 +206,9 @@ const styles = StyleSheet.create({
     paddingVertical: 6
   },
   episodeTitle: {
-    alignItems: 'center',
-    flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.semibold
+    marginTop: 6,
+    flexShrink: 1,
   },
   image: {
     height: 60,
@@ -213,23 +217,22 @@ const styles = StyleSheet.create({
   player: {
     borderBottomWidth: 0,
     flex: 1,
-    flexDirection: 'row',
-    minHeight: 61
+    flexDirection: 'row'
   },
   playerInnerWrapper: {
     borderTopWidth: 1,
     flexDirection: 'row'
   },
   podcastTitle: {
-    fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.semibold
+    fontSize: PV.Fonts.sizes.sm,
+    fontWeight: PV.Fonts.weights.semibold,
+    flexShrink: 1,
+    color: PV.Colors.skyLight,
+    marginTop: 5,
+    flexWrap: 'wrap'
   },
   textWrapper: {
     flex: 1,
-    justifyContent: 'space-around',
-    marginLeft: 10,
-    marginRight: 2,
-    marginBottom: 4,
-    marginTop: 3
+    marginLeft: 10
   }
 })

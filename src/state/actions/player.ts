@@ -458,12 +458,14 @@ export const initializePlayerSettings = async () => {
     playbackSpeedString,
     hidePlaybackSpeedButton,
     remoteSkipButtonsAreTimeJumps,
-    queueRepeatModeMusic
+    queueRepeatModeMusic,
+    queueEnabledWhileMusicIsPlaying
   ] = await Promise.all([
     AsyncStorage.getItem(PV.Keys.PLAYER_PLAYBACK_SPEED),
     AsyncStorage.getItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON),
     getRemoteSkipButtonsTimeJumpOverride(),
-    getQueueRepeatModeMusic()
+    getQueueRepeatModeMusic(),
+    AsyncStorage.getItem(PV.Keys.QUEUE_ENABLED_WHILE_MUSIC_IS_PLAYING)
   ])
 
   let playbackSpeed = 1
@@ -478,7 +480,8 @@ export const initializePlayerSettings = async () => {
       playbackRate: playbackSpeed,
       hidePlaybackSpeedButton: !!hidePlaybackSpeedButton,
       remoteSkipButtonsAreTimeJumps: !!remoteSkipButtonsAreTimeJumps,
-      queueRepeatModeMusic
+      queueRepeatModeMusic,
+      queueEnabledWhileMusicIsPlaying
     }
   })
 }

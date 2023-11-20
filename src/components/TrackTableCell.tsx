@@ -106,13 +106,13 @@ const styles = StyleSheet.create({
   },
   outerWrapper: {
     flexDirection: 'row',
-    paddingHorizontal: 8,
-    paddingVertical: 10
   },
   pressablePlayWrapper: {
     flexDirection: 'row',
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 10
   },
   text: {
     fontSize: PV.Fonts.sizes.lg,

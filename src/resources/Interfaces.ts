@@ -159,6 +159,7 @@ export interface InitialState {
     hidePlaybackSpeedButton: boolean
     remoteSkipButtonsAreTimeJumps: boolean
     queueRepeatModeMusic: QueueRepeatModeMusic
+    queueEnabledWhileMusicIsPlaying: boolean
   }
   playlists: {
     myPlaylists: []

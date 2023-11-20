@@ -311,8 +311,11 @@ const audioSyncPlayerWithQueue = async () => {
         await audioRemovePreviousTracks()
         await audioRemoveUpcomingTracks()
 
-        const queueItemTracks = await audioCreateTracks(pvQueueItems, { isPrimaryQueueItem: true })        
-        await PVAudioPlayer.add(queueItemTracks)
+        let queueItemTracks = []
+        if (isMusic && getGlobal()?.player?.queueEnabledWhileMusicIsPlaying) {
+          queueItemTracks = await audioCreateTracks(pvQueueItems, { isPrimaryQueueItem: true })        
+          await PVAudioPlayer.add(queueItemTracks)
+        }
 
         const nextSecondaryQueueTracks = await audioCreateTracks(nextNowPlayingItems, {
           isPrimaryQueueItem: false, secondaryQueuePlaylistId })
@@ -620,7 +623,7 @@ export const audioCreateTracks = async (items: NowPlayingItem[], options: AudioC
 }
 
 export const audioPlayPreviousFromQueue = async () => {
-  const currentPosition = PVAudioPlayer.getPosition()
+  const currentPosition = await PVAudioPlayer.getPosition()
   if (currentPosition > 4) {
     await PVAudioPlayer.seekTo(0)
   } else {

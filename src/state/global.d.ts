@@ -63,7 +63,8 @@ declare module 'reactn/default' {
       }
       hidePlaybackSpeedButton: boolean
       remoteSkipButtonsAreTimeJumps: boolean
-      queueRepeatModeMusic: QueueRepeatModeMusic
+      queueRepeatModeMusic: QueueRepeatModeMusic,
+      queueEnabledWhileMusicIsPlaying: boolean
     }
     playlists: {
       myPlaylists: []
