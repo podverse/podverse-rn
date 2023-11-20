@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.semibold,
     flexShrink: 1,
     color: PV.Colors.skyLight,
-    marginTop: 5,
+    marginTop: Platform.OS === 'android' ? 2 : 5,
     flexWrap: 'wrap'
   },
   textWrapper: {
