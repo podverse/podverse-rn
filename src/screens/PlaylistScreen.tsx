@@ -167,7 +167,8 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
             await playerLoadNowPlayingItem(convertToNowPlayingItem(item), {
               forceUpdateOrderDate: false,
               setCurrentItemNextInQueue: true,
-              shouldPlay: true
+              shouldPlay: true,
+              secondaryQueuePlaylistId: playlistId
             })    
           }}
           hideImage={false}
