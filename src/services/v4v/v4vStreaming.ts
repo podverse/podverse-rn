@@ -92,7 +92,8 @@ export const handleValueStreamingTimerIncrement = (isVideo?: boolean) => {
               description: translate('Streaming Value Sent'),
               errors,
               transactions,
-              totalAmount: totalAmountPaid
+              totalAmount: totalAmountPaid,
+              type: "BOOST"
             }
           })
         }

@@ -73,7 +73,8 @@ const initialTheme: InitialState = {
     },
     hidePlaybackSpeedButton: false,
     remoteSkipButtonsAreTimeJumps: true,
-    queueRepeatModeMusic: 'off'
+    queueRepeatModeMusic: 'off',
+    queueEnabledWhileMusicIsPlaying: false
   },
   playlists: {
     myPlaylists: [],

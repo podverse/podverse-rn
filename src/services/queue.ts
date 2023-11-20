@@ -265,3 +265,11 @@ export const setRNTPRepeatMode = async (isMusic: boolean) => {
     TrackPlayer.setRepeatMode(RepeatMode.Off)
   }
 }
+
+export const setQueueEnabledWhileMusicIsPlaying = async (val: boolean) => {
+  if (val) {
+    await AsyncStorage.setItem(PV.Keys.QUEUE_ENABLED_WHILE_MUSIC_IS_PLAYING, 'TRUE')
+  } else {
+    await AsyncStorage.removeItem(PV.Keys.QUEUE_ENABLED_WHILE_MUSIC_IS_PLAYING)
+  }
+}

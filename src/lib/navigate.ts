@@ -214,14 +214,18 @@ export const handleAlbumScreenNavigateWithParams = async (
 /*
   Navigate to the AlbumScreen located within the MyLibraryStackNavigator.
  */
-  export const navigateToAlbumScreenInMyLibraryStackNavigator = async (
+  export const navigateToAlbumScreenWithNowPlayingItem = (
     navigation: any,
     item: NowPlayingItem
   ) => {
-    const hasInternetConnection = await hasValidNetworkConnection()
     const episode = convertNowPlayingItemToEpisode(item)
     const podcast = episode?.podcast
+    navigateToAlbumScreenWithPodcast(navigation, podcast, item.addByRSSPodcastFeedUrl)
+  }
 
+  export const navigateToAlbumScreenWithPodcast =
+    async (navigation: any, podcast: any, addByRSSPodcastFeedUrl?: string) => {
+    const hasInternetConnection = await hasValidNetworkConnection()
     navigateBackToRoot(navigation)
 
     navigation.navigate({ routeName: PV.RouteNames.MyLibraryScreen })
@@ -234,7 +238,7 @@ export const handleAlbumScreenNavigateWithParams = async (
             podcast,
             podcastId: podcast?.id,
             podcastTitle: podcast?.title,
-            addByRSSPodcastFeedUrl: item?.addByRSSPodcastFeedUrl,
+            addByRSSPodcastFeedUrl,
             hasInternetConnection,
             forceRequest: false
           }

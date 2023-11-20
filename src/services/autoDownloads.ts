@@ -39,6 +39,8 @@ export const handleAutoDownloadEpisodes = async (dateISOString: string) => {
   setTimeout(() => {
     (async () => {
       for (const episode of autoDownloadEpisodes) {
+        // Auto-downloading episode.medium === PV.Medium.music is not currently supported.
+        if (episode?.podcast?.medium === PV.Medium.music) continue
         const podcast = {
           id: episode?.podcast?.id,
           imageUrl: episode?.podcast?.shrunkImageUrl || episode?.podcast?.imageUrl,

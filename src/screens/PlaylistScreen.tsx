@@ -11,6 +11,7 @@ import {
   FlatList,
   NavShareIcon,
   PlaylistTableHeader,
+  TrackTableCell,
   View
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
@@ -21,6 +22,7 @@ import { safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
+import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { core } from '../styles'
 import { HistoryIndexListenerScreen } from './HistoryIndexListenerScreen'
@@ -155,6 +157,24 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
       ) : (
         <></>
       )
+    } else if (item.podcast?.medium === PV.Medium.music) {
+      const userPlaybackPosition = 0
+      return (
+        <TrackTableCell
+          episode={item}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null, userPlaybackPosition))}
+          handlePlayPress={async () => {
+            await playerLoadNowPlayingItem(convertToNowPlayingItem(item), {
+              forceUpdateOrderDate: false,
+              setCurrentItemNextInQueue: true,
+              shouldPlay: true
+            })    
+          }}
+          hideImage={false}
+          showArtist
+          testID={`${testIDPrefix}_track_item_${index}`}
+        />
+      )
     } else {
       const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
       return (
@@ -284,7 +304,11 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
                 includeGoToPodcast: true,
                 includeGoToEpisodeInEpisodesStack: true
               },
-              !!selectedItem?.startTime ? 'clip' : 'episode'
+              selectedItem?.podcastMedium === PV.Medium.music
+                ? 'album'
+                : !!selectedItem?.startTime
+                    ? 'clip'
+                    : 'episode'
             )
           }
           showModal={showActionSheet}

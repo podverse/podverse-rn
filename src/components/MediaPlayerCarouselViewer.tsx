@@ -1,8 +1,8 @@
-import { checkIfVideoFileOrVideoLiveType, convertNowPlayingItemToEpisode } from 'podverse-shared'
+import { checkIfVideoFileOrVideoLiveType, convertNowPlayingItemToEpisode, generateAuthorsText } from 'podverse-shared'
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { navigateBackToRoot, navigateToAlbumScreenInMyLibraryStackNavigator, 
+import { navigateBackToRoot, navigateToAlbumScreenWithNowPlayingItem, 
   navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { prefixClipLabel, readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
@@ -27,8 +27,9 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     const { player } = this.global
     const item = player?.nowPlayingItem
     if (item) {
-      if (item?.podcastMedium === 'music' && item?.podcastId) {
-        navigateToAlbumScreenInMyLibraryStackNavigator(navigation, item)
+      const isMusic = item?.podcastMedium === PV.Medium.music
+      if (isMusic && item?.podcastId) {
+        navigateToAlbumScreenWithNowPlayingItem(navigation, item)
       } else {
         navigateBackToRoot(navigation)
         navigateToPodcastScreenWithItem(navigation, item)
@@ -42,8 +43,9 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     const { player } = this.global
     const item = player?.nowPlayingItem
     if (item) {
-      if (item?.podcastMedium === 'music' && item?.podcastId) {
-        navigateToAlbumScreenInMyLibraryStackNavigator(navigation, item)
+      const isMusic = item?.podcastMedium === PV.Medium.music
+      if (isMusic && item?.podcastId) {
+        navigateToAlbumScreenWithNowPlayingItem(navigation, item)
       } else {
         this.handlePodcastNavigation()
         const episode = convertNowPlayingItemToEpisode(item)
@@ -122,7 +124,11 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
         : [styles.carouselImageWrapper, { width: width * 0.9 }]
 
     const allowFullView = !currentChapter?.linkUrl
-
+    const isMusic = nowPlayingItem?.podcastMedium === PV.Medium.music
+    const podcastTitle =  isMusic
+      ? generateAuthorsText(nowPlayingItem?.podcastAuthors)
+      : nowPlayingItem.podcastTitle
+    
     return (
       <ScrollView scrollEnabled={false} contentContainerStyle={outerWrapperStyle}>
         <RNView
@@ -158,7 +164,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
                     numberOfLines={1}
                     style={styles.podcastTitle}
                     testID='media_player_carousel_viewer_podcast_title'>
-                    {nowPlayingItem?.podcastTitle}
+                    {podcastTitle}
                   </Text>
                 </PressableWithOpacity>
               </RNView>

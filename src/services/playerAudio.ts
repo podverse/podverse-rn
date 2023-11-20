@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { checkIfVideoFileOrVideoLiveType, convertToNowPlayingItem, Episode, getExtensionFromUrl,
+import { checkIfVideoFileOrVideoLiveType, convertToNowPlayingItem, Episode, generateAuthorsText, getExtensionFromUrl,
   MediaRef,
   NowPlayingItem } from 'podverse-shared'
 import TrackPlayer, { PitchAlgorithm, State, Track } from 'react-native-track-player'
@@ -238,7 +238,7 @@ const audioSyncPlayerWithQueue = async () => {
 
     const nowPlayingItem = getGlobal()?.player?.nowPlayingItem
 
-    const isMusic = nowPlayingItem?.podcastMedium === 'music'
+    const isMusic = nowPlayingItem?.podcastMedium === PV.Medium.music
     await setRNTPRepeatMode(isMusic)
 
     // todo: handle retry in case not on global state yet?
@@ -311,8 +311,11 @@ const audioSyncPlayerWithQueue = async () => {
         await audioRemovePreviousTracks()
         await audioRemoveUpcomingTracks()
 
-        const queueItemTracks = await audioCreateTracks(pvQueueItems, { isPrimaryQueueItem: true })        
-        await PVAudioPlayer.add(queueItemTracks)
+        let queueItemTracks = []
+        if (isMusic && getGlobal()?.player?.queueEnabledWhileMusicIsPlaying) {
+          queueItemTracks = await audioCreateTracks(pvQueueItems, { isPrimaryQueueItem: true })        
+          await PVAudioPlayer.add(queueItemTracks)
+        }
 
         const nextSecondaryQueueTracks = await audioCreateTracks(nextNowPlayingItems, {
           isPrimaryQueueItem: false, secondaryQueuePlaylistId })
@@ -395,6 +398,7 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
     episodeMediaUrl = '',
     episodeTitle = 'Untitled Episode',
     liveItem,
+    podcastAuthors,
     podcastCredentialsRequired,
     podcastId,
     podcastImageUrl,
@@ -431,28 +435,34 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
     const isHLS = fileExtension === 'm3u8'
     const type = isHLS ? 'hls' : 'default'
 
+    const isMusic = podcastMedium === PV.Medium.music
+    const isClip = !!item?.clipId
+
     let initialTime = enrichedNowPlayingItem?.userPlaybackPosition
-    if (podcastMedium === PV.Medium.music) {
+    if (isMusic) {
       initialTime = 0
-    } else if (item?.clipId) {
+    } else if (isClip) {
       initialTime = item.clipStartTime || 0
     } else if (startPodcastFromTime && !initialTime) {
       initialTime = startPodcastFromTime
     }
+
+    const pitchAlgorithm = isMusic ? PitchAlgorithm.Music : PitchAlgorithm.Voice
+    const finalPodcastTitle = isMusic ? generateAuthorsText(podcastAuthors) : podcastTitle
 
     if (isDownloadedFile) {
       track = {
         id,
         url: `file://${filePath}`,
         title: episodeTitle,
-        artist: podcastTitle,
+        artist: finalPodcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
         userAgent: getAppUserAgent(),
-        pitchAlgorithm: PitchAlgorithm.Voice,
+        pitchAlgorithm,
         type,
         initialTime,
         ...(initialTime ? { iosInitialTime: initialTime } : {}),
-        isClip: !!item?.clipId,
+        isClip,
         isPrimaryQueueItem,
         secondaryQueuePlaylistId
       }
@@ -463,10 +473,10 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
         id,
         url: episodeMediaUrl,
         title: episodeTitle,
-        artist: podcastTitle,
+        artist: finalPodcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
         userAgent: getAppUserAgent(),
-        pitchAlgorithm: PitchAlgorithm.Voice,
+        pitchAlgorithm,
         isLiveStream: Platform.OS === 'ios' && liveItem ? true : false,
         headers: {
           ...(Authorization ? { Authorization } : {}),
@@ -475,7 +485,7 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
         type,
         initialTime,
         ...(initialTime ? { iosInitialTime: initialTime } : {}),
-        isClip: !!item?.clipId,
+        isClip,
         isPrimaryQueueItem,
         secondaryQueuePlaylistId
       }
@@ -615,7 +625,12 @@ export const audioCreateTracks = async (items: NowPlayingItem[], options: AudioC
 }
 
 export const audioPlayPreviousFromQueue = async () => {
-  await PVAudioPlayer.skipToPrevious()
+  const currentPosition = await PVAudioPlayer.getPosition()
+  if (currentPosition > 4) {
+    await PVAudioPlayer.seekTo(0)
+  } else {
+    await PVAudioPlayer.skipToPrevious()
+  }
 }
 
 export const audioPlayNextFromQueue = async () => {
@@ -637,7 +652,13 @@ export const audioAddNowPlayingItemNextInQueue = async (
 ) => {
   const { addCurrentItemNextInQueue } = getGlobal()
 
-  if (addCurrentItemNextInQueue && itemToSetNextInQueue && item.episodeId !== itemToSetNextInQueue.episodeId) {
+  if (
+    addCurrentItemNextInQueue
+    && itemToSetNextInQueue
+    && item.episodeId !== itemToSetNextInQueue.episodeId
+    && itemToSetNextInQueue.podcastMedium !== PV.Medium.music
+    && !itemToSetNextInQueue.podcastHasVideo
+    ) {
     await addQueueItemNext(itemToSetNextInQueue)
   }
 }
