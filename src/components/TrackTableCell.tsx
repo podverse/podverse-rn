@@ -68,7 +68,7 @@ export class TrackTableCell extends React.PureComponent<Props> {
             <Text numberOfLines={1} style={styles.text}>{trackTitle}</Text>
             {showArtist && (<Text numberOfLines={1} style={styles.subText}>{authorNames}</Text>)}
           </RNView>          
-          {!episodeDownloaded && (
+          {!!episodeDownloaded && (
             <IndicatorDownload style={styles.autoDownloadIcon} />
           )}
         </Pressable>
@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
   },
   outerWrapper: {
     flexDirection: 'row',
+    alignItems: 'center'
   },
   pressablePlayWrapper: {
     flexDirection: 'row',
