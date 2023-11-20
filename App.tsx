@@ -2,7 +2,7 @@ import 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo, { NetInfoSubscription } from '@react-native-community/netinfo'
 import React, { Component } from 'react'
-import { Image, LogBox, Platform, StatusBar, View } from 'react-native'
+import { Image, LogBox, Platform, StatusBar, View, AppState } from 'react-native'
 import Config from 'react-native-config'
 import { getFontScale } from 'react-native-device-info'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
@@ -10,13 +10,16 @@ import Orientation from 'react-native-orientation-locker'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
+import messaging from '@react-native-firebase/messaging'
+
 
 import {
   UpdateRequiredOverlay,
   OverlayAlert,
   ImageFullView,
   BoostDropdownBanner,
-  LoadingInterstitialView
+  LoadingInterstitialView,
+  NotificationBanner
 } from './src/components'
 import { checkIfFDroidAppVersion, pvIsTablet } from './src/lib/deviceDetection'
 import { registerAndroidAutoModule, requestDrawOverAppsPermission,
@@ -106,6 +109,21 @@ class App extends Component<Props, State> {
 
     // iOS CarPlay
     Platform.OS === 'ios' && registerCarModule(this.onConnect, this.onDisconnect)
+
+    messaging().onMessage((notification) => {
+      console.log("Notification: ", notification)
+      if(AppState.currentState === "active") {
+        setGlobal({
+          bannerInfo: {
+            show: true,
+            title: 'Podcast',
+            description: 'Episode ',
+            imageUrl: 'https://www.doerfelverse.com/art/bloodshot-lies-acoustic.png',
+            type: 'NOTIFICATION'
+          }
+        })
+      }
+    })
   }
 
   componentWillUnmount() {
@@ -221,6 +239,7 @@ class App extends Component<Props, State> {
           </View>
           <ImageFullView />
           <BoostDropdownBanner />
+          <NotificationBanner />
         </SafeAreaProvider>
         <LoadingInterstitialView />
       </GestureHandlerRootView>

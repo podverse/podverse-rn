@@ -20,7 +20,7 @@ import { CarPlay } from 'react-native-carplay'
 import Config from 'react-native-config'
 import { endConnection as iapEndConnection, initConnection as iapInitConnection } from 'react-native-iap'
 import { NavigationStackOptions } from 'react-navigation-stack'
-import React, { getGlobal, addCallback } from 'reactn'
+import React, { setGlobal, addCallback } from 'reactn'
 import Popover from 'react-native-popover-view'
 import {
   ActionSheet,
@@ -1295,6 +1295,20 @@ export class PodcastsScreen extends React.Component<Props, State> {
             testID={`${testIDPrefix}_clear_all_new_episode_indicators`}
             text={translate('Mark All As Seen')}
             wrapperStyles={[core.button, styles.markAllAsSeenButton]}
+          />
+          <Button
+            text='show notif banner'
+            onPress={() => {
+              setGlobal({
+                bannerInfo: {
+                  show: true,
+                  title: 'Podcast',
+                  description: 'Episode ',
+                  imageUrl: 'https://www.doerfelverse.com/art/bloodshot-lies-acoustic.png',
+                  type: 'NOTIFICATION'
+                }
+              })
+            }}
           />
         </Popover>
       </View>

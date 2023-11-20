@@ -13,6 +13,7 @@ export const fcmTokenGetLocally = () => {
 
 export const saveOrUpdateFCMDevice = async (newFCMToken: string) => {
   const lastUsedFCMToken = await fcmTokenGetLocally()
+  console.log(newFCMToken)
   if (newFCMToken === lastUsedFCMToken) {
     // do nothing
   } else if (!lastUsedFCMToken) {
