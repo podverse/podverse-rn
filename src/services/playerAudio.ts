@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { checkIfVideoFileOrVideoLiveType, convertToNowPlayingItem, Episode, getExtensionFromUrl,
+import { checkIfVideoFileOrVideoLiveType, convertToNowPlayingItem, Episode, generateAuthorsText, getExtensionFromUrl,
   MediaRef,
   NowPlayingItem } from 'podverse-shared'
 import TrackPlayer, { PitchAlgorithm, State, Track } from 'react-native-track-player'
@@ -398,6 +398,7 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
     episodeMediaUrl = '',
     episodeTitle = 'Untitled Episode',
     liveItem,
+    podcastAuthors,
     podcastCredentialsRequired,
     podcastId,
     podcastImageUrl,
@@ -447,13 +448,14 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
     }
 
     const pitchAlgorithm = isMusic ? PitchAlgorithm.Music : PitchAlgorithm.Voice
+    const finalPodcastTitle = isMusic ? generateAuthorsText(podcastAuthors) : podcastTitle
 
     if (isDownloadedFile) {
       track = {
         id,
         url: `file://${filePath}`,
         title: episodeTitle,
-        artist: podcastTitle,
+        artist: finalPodcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
         userAgent: getAppUserAgent(),
         pitchAlgorithm,
@@ -471,7 +473,7 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
         id,
         url: episodeMediaUrl,
         title: episodeTitle,
-        artist: podcastTitle,
+        artist: finalPodcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
         userAgent: getAppUserAgent(),
         pitchAlgorithm,
