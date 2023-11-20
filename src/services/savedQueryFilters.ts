@@ -26,6 +26,28 @@ export const setSavedQueryPodcastsScreenSort = async (sort: string | null) => {
   }
 }
 
+export const getSavedQueryAlbumsScreenFilter = async () => {
+  let savedQuery = null
+  try {
+    savedQuery = await AsyncStorage.getItem(PV.Keys.SAVED_QUERY_ALBUMS_SCREEN_FILTER)
+  } catch (error) {
+    errorLogger(_fileName, 'getSavedQueryAlbumsScreenFilter', error)
+  }
+  return savedQuery
+}
+
+export const setSavedQueryAlbumsScreenFilter = async (filter: string | null) => {
+  try {
+    if (filter) {
+      await AsyncStorage.setItem(PV.Keys.SAVED_QUERY_ALBUMS_SCREEN_FILTER, filter)
+    } else {
+      await AsyncStorage.removeItem(PV.Keys.SAVED_QUERY_ALBUMS_SCREEN_FILTER)
+    }
+  } catch (error) {
+    errorLogger(_fileName, 'setSavedQueryAlbumsScreenFilter', error)
+  }
+}
+
 export const getSavedQueryAlbumsScreenSort = async () => {
   let savedQuery = null
   try {
