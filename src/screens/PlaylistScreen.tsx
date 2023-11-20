@@ -304,7 +304,11 @@ export class PlaylistScreen extends HistoryIndexListenerScreen<Props, State> {
                 includeGoToPodcast: true,
                 includeGoToEpisodeInEpisodesStack: true
               },
-              !!selectedItem?.startTime ? 'clip' : 'episode'
+              selectedItem?.podcastMedium === PV.Medium.music
+                ? 'album'
+                : !!selectedItem?.startTime
+                    ? 'clip'
+                    : 'episode'
             )
           }
           showModal={showActionSheet}

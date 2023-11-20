@@ -7,6 +7,7 @@ import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import {
+  navigateToAlbumScreenWithNowPlayingItem,
   navigateToEpisodeScreenWithItem,
   navigateToEpisodeScreenWithItemInCurrentStack,
   navigateToPodcastScreenWithItem
@@ -321,21 +322,30 @@ const mediaMoreButtons = (
   // Limit the action sheet to 8 items, so all items appear even on smaller screens.
   // Since this action sheet can't be scrollable, we're just hiding the less important buttons.
   if (includeGoToPodcast && buttons.length < 8) {
+    const text = itemType === 'album'
+      ? translate('Go to Album')
+      : translate('Go to Podcast')
     buttons.push({
-      accessibilityLabel: translate('Go to Podcast'),
+      accessibilityLabel: text,
       key: PV.Keys.go_to_podcast,
-      text: translate('Go to Podcast'),
+      text,
       onPress: async () => {
         await handleDismiss()
-        navigateToPodcastScreenWithItem(navigation, item)
+        if (itemType === 'album') {
+          navigateToAlbumScreenWithNowPlayingItem(navigation, item)
+        } else {
+          navigateToPodcastScreenWithItem(navigation, item)
+        }
       }
     })
   }
 
-  if ((includeGoToEpisodeInEpisodesStack || includeGoToEpisodeInCurrentStack) && buttons.length < 8) {
-    const text = itemType === 'track'
-      ? translate('Go to Track')
-      : translate('Go to Episode')
+  if ((itemType !== 'album'
+    && includeGoToEpisodeInEpisodesStack
+    || includeGoToEpisodeInCurrentStack)
+    && buttons.length < 8
+  ) {
+    const text = translate('Go to Episode')
     buttons.push({
       accessibilityLabel: text,
       key: PV.Keys.go_to_episode,
