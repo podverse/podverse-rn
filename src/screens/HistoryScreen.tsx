@@ -235,15 +235,15 @@ export class HistoryScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   _queryData = async (page = 1) => {
-    const { historyItemsCount, historyItems = [] } = this.global.session.userInfo
+    const { historyItems = [] } = this.global.session.userInfo
     const newState = {
       isLoading: false,
       isLoadingMore: false
     } as State
 
     try {
-      const newHistoryItems = await getHistoryItems(page || 1, historyItems)
-      newState.endOfResultsReached = newHistoryItems.length >= historyItemsCount
+      const endOfResultsReached = await getHistoryItems(page || 1, historyItems)
+      newState.endOfResultsReached = endOfResultsReached
       newState.queryPage = page
       this.shouldLoad = true
       return newState

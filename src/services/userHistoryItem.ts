@@ -265,16 +265,14 @@ const getHistoryItemsFromServer = async (page: number) => {
     errorLogger(_fileName, 'getHistoryItemsFromServer', error)
   }
 
-  const { userHistoryItems, userHistoryItemsCount } = response.data
-
-  const combinedUserHistoryItems = unionBy(userHistoryItems, localUserHistoryItems, 'episodeId') as NowPlayingItem[]
-  const countDifference = userHistoryItems.length + localUserHistoryItems.length - combinedUserHistoryItems.length
-  const combinedUserHistoryItemsCount = userHistoryItemsCount + localUserHistoryItems.length - countDifference
+  const { userHistoryItems: nextUserHistoryItems } = response.data
+  const combinedUserHistoryItems = unionBy(localUserHistoryItems, nextUserHistoryItems, 'episodeId') as NowPlayingItem[]
+  
   await setAllHistoryItemsLocally(combinedUserHistoryItems)
 
   return {
     userHistoryItems: combinedUserHistoryItems,
-    userHistoryItemsCount: combinedUserHistoryItemsCount
+    userHistoryItemsCount: combinedUserHistoryItems?.length || 0
   }
 }
 
@@ -389,6 +387,14 @@ const removeHistoryItemOnServer = async (episodeId?: string, mediaRefId?: string
 }
 
 export const setAllHistoryItemsLocally = async (items: NowPlayingItem[]) => {
+  // NOTE: there is a bug somewhere that is resulting in empty objects
+  // sometimes making their way into the local historyItems storage.
+  // An object with some of the fields of NowPlayingItem gets saved,
+  // but all of the fields it has are empty strings or arrays.
+  // To workaround this bug, I am always filtering the historyItems before
+  // saving them to history, to make sure invalid objects do not get saved.
+  items = items.filter((item: NowPlayingItem) => !!item?.episodeId)
+
   if (Array.isArray(items)) {
     await AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(items))
     const newHistoryItemsIndex = generateHistoryItemsIndex(items)
