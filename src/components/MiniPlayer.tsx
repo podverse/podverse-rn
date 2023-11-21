@@ -1,5 +1,5 @@
 import { checkIfVideoFileOrVideoLiveType, generateAuthorsText } from 'podverse-shared'
-import { Pressable, StyleSheet, View } from 'react-native'
+import { Platform, Pressable, StyleSheet, View } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
@@ -228,11 +228,11 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.semibold,
     flexShrink: 1,
     color: PV.Colors.skyLight,
-    marginTop: Platform.OS === 'android' ? 2 : 5,
+    marginTop: Platform.OS === 'android' ? 2 : 4,
     flexWrap: 'wrap'
   },
   textWrapper: {
     flex: 1,
-    marginLeft: 10
+    marginLeft: 12
   }
 })
