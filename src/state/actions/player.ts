@@ -47,7 +47,7 @@ import { v4vEnrichValueTagDataIfNeeded } from './v4v/v4v'
 const _fileName = 'src/state/actions/player.ts'
 
 export const initializePlayer = async () => {
-  let item = await getNowPlayingItemLocally()
+  let item = {}
   const isLiveItem = !!item?.liveItem
 
   if (isLiveItem && item?.episodeId) {
@@ -288,7 +288,9 @@ export const playerLoadNowPlayingItem = async (
   const globalState = getGlobal()
   const { nowPlayingItem: previousNowPlayingItem } = globalState.player
 
-  if (item) {
+  if (!!item?.episodeId) {
+    showMiniPlayer()
+
     await clearEnrichedPodcastDataIfNewEpisode(previousNowPlayingItem, item)
 
     if (item.clipIsOfficialChapter) {
@@ -320,8 +322,6 @@ export const playerLoadNowPlayingItem = async (
         secondaryQueuePlaylistId
       }
     )
-
-    showMiniPlayer()
   }
 
   setGlobal(

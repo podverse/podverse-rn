@@ -210,7 +210,7 @@ export const playerLoadNowPlayingItem = async (
   options: PlayerLoadNowPlayingItemOptions
 ) => {
   try {
-    if (!item) {
+    if (!item?.episodeId) {
       return
     }
 
