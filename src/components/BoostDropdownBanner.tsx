@@ -42,36 +42,39 @@ export const BoostDropdownBanner = () => {
   }
 
   return (
-    <DropdownBanner canExpand show={bannerInfo.show} onExpand={onExpand} onClose={onClose}>
+    <DropdownBanner
+      canExpand
+      closeBannerDismissTime={3000}
+      onClose={onClose}
+      onExpand={onExpand}
+      show={bannerInfo.show}>
       <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollViewContainer}
-            showsVerticalScrollIndicator={false}>
-              <V4VRecipientsInfoView
-                erroringTransactions={erroringTransactions}
-                isReceipt
-                testID='boost_dropdown_banner'
-                totalAmount={bannerInfo.totalAmount}
-                feeTransactions={[]}
-                nonFeeTransactions={transactions}
-                parentFeeTransactions={[]}
-                parentNonFeeTransactions={[]}
-              />
-            
-          </ScrollView>
-          <View style={styles.container}>
-            <Text style={styles.descriptionStyle} testID='banner_text'>
-              {bannerInfo.description}
-            </Text>
-            {!!bannerInfo.errors?.length && (
-              <PVIcon
-                testID='boost_pay_banner_icon'
-                name='exclamation-triangle'
-                size={30}
-                color={PV.Colors.redLighter}
-              />
-            )}
-        </View>
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContainer}
+        showsVerticalScrollIndicator={false}>
+        <V4VRecipientsInfoView
+          erroringTransactions={erroringTransactions}
+          isReceipt
+          testID='boost_dropdown_banner'
+          totalAmount={bannerInfo.totalAmount}
+          feeTransactions={[]}
+          nonFeeTransactions={transactions}
+          parentFeeTransactions={[]}
+          parentNonFeeTransactions={[]}/>
+      </ScrollView>
+      <View style={styles.container}>
+        <Text style={styles.descriptionStyle} testID='banner_text'>
+          {bannerInfo.description}
+        </Text>
+        {!!bannerInfo.errors?.length && (
+          <PVIcon
+            testID='boost_pay_banner_icon'
+            name='exclamation-triangle'
+            size={30}
+            color={PV.Colors.redLighter}
+          />
+        )}
+      </View>
     </DropdownBanner>
   )
 }
