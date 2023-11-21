@@ -182,17 +182,11 @@ const handleBackgroundTimerInterval = (isVideo: boolean) => {
   }
 
   try {
-    if (v4v?.streamingValueOn) {
-      handleValueStreamingTimerIncrement(isVideo)
-    }
-  } catch (error) {
-    errorLogger(_fileName, 'handleBackgroundTimerInterval handleValueStreamingTimerIncrement', error?.message)
-  }
-
-  try {
     if (!!v4v) {
       handleIntervalEnrichGlobalState(session)
-      handleValueStreamingTimerIncrement(isVideo)
+      if (v4v?.streamingValueOn) {
+        handleValueStreamingTimerIncrement(isVideo)
+      }
     }
   } catch (error) {
     errorLogger(_fileName, 'handleBackgroundTimerInterval handleValueStreamingTimerIncrement', error?.message)
