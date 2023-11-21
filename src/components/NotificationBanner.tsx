@@ -37,7 +37,7 @@ export const NotificationBanner = () => {
   }
   
   return (
-    <DropdownBanner show={bannerInfo.show}>
+    <DropdownBanner closeBannerDismissTime={10000} show={bannerInfo.show}>
       <PressableWithOpacity onPress={() => handleInAppNotificationPressed(episodeId)} style={styles.container}>
         <PVFastImage source={bannerInfo.imageUrl} styles={styles.image}/>
         <View style={styles.textWrapper}>

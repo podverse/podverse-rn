@@ -1,5 +1,5 @@
 import { checkIfVideoFileOrVideoLiveType, generateAuthorsText } from 'podverse-shared'
-import { Pressable, StyleSheet, View } from 'react-native'
+import { Platform, Pressable, StyleSheet, View } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
@@ -28,6 +28,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
     const podcastTitle = isMusic
       ? generateAuthorsText(nowPlayingItem.podcastAuthors)
       : nowPlayingItem?.podcastTitle
+    const nowPlayingItemStillLoading = !nowPlayingItem?.episodeId
 
     let playButtonAdjust = { paddingLeft: 2, paddingTop: 2 } as any
     let playButtonIcon = (
@@ -42,7 +43,11 @@ export class MiniPlayer extends React.PureComponent<Props> {
         wrapperStyle={[playerStyles.icon, playButtonAdjust]}
       />
     )
-    if (playerCheckIfStateIsPlaying(playbackState)) {
+
+    if (playerCheckIfStateIsBuffering(playbackState) || nowPlayingItemStillLoading) {
+      playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
+      playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
+    } else if (playerCheckIfStateIsPlaying(playbackState)) {
       playButtonIcon = (
         <Icon
           accessibilityHint={translate('ARIA HINT - pause playback')}
@@ -56,9 +61,6 @@ export class MiniPlayer extends React.PureComponent<Props> {
         />
       )
       playButtonAdjust = {}
-    } else if (playerCheckIfStateIsBuffering(playbackState)) {
-      playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
-      playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
     }
 
     let nowPlayingAccessibilityLabel = `${translate('ARIA HINT - Now playing')}. `
@@ -115,80 +117,78 @@ export class MiniPlayer extends React.PureComponent<Props> {
             </View>
           )
         } */}
-        {nowPlayingItem && (
-          <View style={[styles.playerInnerWrapper, globalTheme.player]}>
-            <Pressable
-              accessibilityLabel={nowPlayingAccessibilityLabel}
-              accessibilityHint={translate('ARIA HINT - open the full player screen')}
-              onPress={() => {
-                handleNavigateToPlayerScreen(
-                  navigation,
-                  nowPlayingItem,
-                  nowPlayingItem?.addByRSSPodcastFeedUrl,
-                  isDarkMode
-                )
-              }}
-              style={{ flex: 1 }}
-              testID={testIDPrefix.prependTestId()}>
-              <View style={[styles.player, globalTheme.player]}>
-                {!!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
-                  <View style={styles.image}>
-                    <PVVideo isMiniPlayer navigation={navigation} />
-                  </View>
-                )}
-                {!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
-                  <FastImage
-                    isSmall
-                    resizeMode='contain'
-                    source={
-                      nowPlayingItem.episodeImageUrl ||
-                      nowPlayingItem.podcastShrunkImageUrl ||
-                      nowPlayingItem.podcastImageUrl
-                    }
-                    styles={styles.image}
-                  />
-                )}
-                <View style={styles.textWrapper}>
-                  {!screenReaderEnabled ? (
-                    <TextTicker
-                      accessible={false}
-                      allowFontScaling={false}
-                      bounce
-                      importantForAccessibility='no-hide-descendants'
-                      loop
-                      styles={styles.episodeTitle}
-                      textLength={nowPlayingItem?.episodeTitle?.length}>
-                      {episodeTitleComponent}
-                    </TextTicker>
-                  ) : (
-                    episodeTitleComponent
-                  )}
-                  <Text
-                    allowFontScaling={false}
-                    numberOfLines={1}
-                    style={[globalTheme.playerText, styles.podcastTitle]}
-                    testID={`${testIDPrefix}_podcast_title`}>
-                    {podcastTitle}
-                  </Text>
+        <View style={[styles.playerInnerWrapper, globalTheme.player]}>
+          <Pressable
+            accessibilityLabel={nowPlayingAccessibilityLabel}
+            accessibilityHint={translate('ARIA HINT - open the full player screen')}
+            onPress={() => {
+              handleNavigateToPlayerScreen(
+                navigation,
+                nowPlayingItem,
+                nowPlayingItem?.addByRSSPodcastFeedUrl,
+                isDarkMode
+              )
+            }}
+            style={{ flex: 1 }}
+            testID={testIDPrefix.prependTestId()}>
+            <View style={[styles.player, globalTheme.player]}>
+              {!nowPlayingItemStillLoading && !!checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
+                <View style={styles.image}>
+                  <PVVideo isMiniPlayer navigation={navigation} />
                 </View>
-              </View>
-            </Pressable>
-            <View style={{ flex: 0, justifyContent: 'center', height: 60, width: 60 }}>
-              {!hasErrored && playButtonIcon}
-              {hasErrored && (
-                <Icon
-                  accessible
-                  accessibilityLabel={translate('ARIA HINT - Error something went wrong with playing this item')}
-                  color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
-                  name={'exclamation-triangle'}
-                  size={26}
-                  testID={`${testIDPrefix}_error`}
-                  wrapperStyle={[playerStyles.icon, playButtonAdjust]}
+              )}
+              {!nowPlayingItemStillLoading && !checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType) && (
+                <FastImage
+                  isSmall
+                  resizeMode='contain'
+                  source={
+                    nowPlayingItem.episodeImageUrl ||
+                    nowPlayingItem.podcastShrunkImageUrl ||
+                    nowPlayingItem.podcastImageUrl
+                  }
+                  styles={styles.image}
                 />
               )}
+              <View style={styles.textWrapper}>
+                {!screenReaderEnabled ? (
+                  <TextTicker
+                    accessible={false}
+                    allowFontScaling={false}
+                    bounce
+                    importantForAccessibility='no-hide-descendants'
+                    loop
+                    styles={styles.episodeTitle}
+                    textLength={nowPlayingItem?.episodeTitle?.length}>
+                    {episodeTitleComponent}
+                  </TextTicker>
+                ) : (
+                  episodeTitleComponent
+                )}
+                <Text
+                  allowFontScaling={false}
+                  numberOfLines={1}
+                  style={[globalTheme.playerText, styles.podcastTitle]}
+                  testID={`${testIDPrefix}_podcast_title`}>
+                  {podcastTitle}
+                </Text>
+              </View>
             </View>
+          </Pressable>
+          <View style={{ flex: 0, justifyContent: 'center', height: 60, width: 60 }}>
+            {!hasErrored && playButtonIcon}
+            {hasErrored && (
+              <Icon
+                accessible
+                accessibilityLabel={translate('ARIA HINT - Error something went wrong with playing this item')}
+                color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
+                name={'exclamation-triangle'}
+                size={26}
+                testID={`${testIDPrefix}_error`}
+                wrapperStyle={[playerStyles.icon, playButtonAdjust]}
+              />
+            )}
           </View>
-        )}
+        </View>
       </View>
     )
   }
@@ -228,11 +228,11 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.semibold,
     flexShrink: 1,
     color: PV.Colors.skyLight,
-    marginTop: Platform.OS === 'android' ? 2 : 5,
+    marginTop: Platform.OS === 'android' ? 2 : 4,
     flexWrap: 'wrap'
   },
   textWrapper: {
     flex: 1,
-    marginLeft: 10
+    marginLeft: 12
   }
 })

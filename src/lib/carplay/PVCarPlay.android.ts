@@ -261,8 +261,7 @@ export const handleAndroidAutoQueueUpdate = () => {
 
 const getHistory = async (): Promise<NowPlayingItem[]> => {
   const page = 1
-  const existingItems: any[] = []
-  await getHistoryItems(page, existingItems)
+  await getHistoryItems(page)
   const { session } = getGlobal()
   return session?.userInfo?.historyItems || []
 }

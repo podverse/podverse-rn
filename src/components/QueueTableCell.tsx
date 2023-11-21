@@ -1,4 +1,4 @@
-import { getTimeLabelText, LiveItem } from 'podverse-shared'
+import { getTimeLabelText, LiveItem, PodcastMedium } from 'podverse-shared'
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
@@ -26,6 +26,7 @@ type Props = {
   mediaFileDuration?: number
   onPress?: any
   podcastImageUrl?: string
+  podcastMedium?: PodcastMedium
   podcastTitle?: string
   showMoveButton?: boolean
   showRemoveButton?: boolean
@@ -52,6 +53,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
       mediaFileDuration,
       onPress,
       podcastImageUrl,
+      podcastMedium,
       podcastTitle = translate('Untitled Podcast'),
       showMoveButton,
       showRemoveButton,
@@ -104,6 +106,8 @@ export class QueueTableCell extends React.PureComponent<Props> {
       !!episodeTitle ? `${episodeTitleText}, ` : ''
     } ${!!finalPubDate ? `${pubDateText}` : ''} ${!isClip ? `, ${timeLabelText}` : `, ${clipTitle.trim()}`}`
 
+    const isMusic = podcastMedium === PV.Medium.music
+
     return (
       <View style={viewStyle} transparent={transparent} testID={testID}>
         <RNView style={styles.wrapperTop}>
@@ -129,6 +133,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                     {podcastTitleText}
                   </Text>
                 )}
+                {!!isMusic && (<View style={{ height: 4, width: '100%' }}></View>)}
                 {!!episodeTitle && (
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -138,7 +143,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                     {episodeTitleText}
                   </Text>
                 )}
-                {!!finalPubDate && (
+                {!!finalPubDate && !isMusic && (
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     isSecondary
@@ -190,7 +195,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                 )}
               </>
             )}
-            {!isClip && (
+            {!isClip && !isMusic && (
               <TimeRemainingWidget
                 episodeCompleted={episodeCompleted}
                 forceShowProgressBar
