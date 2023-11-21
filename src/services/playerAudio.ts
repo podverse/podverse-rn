@@ -21,6 +21,7 @@ import { addOrUpdateHistoryItem, getHistoryItemIndexInfoForEpisode,
   getHistoryItemsIndexLocally } from './userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage } from './userNowPlayingItem'
 import { getSecondaryQueueEpisodesForPlaylist, getSecondaryQueueEpisodesForPodcastId } from './secondaryQueue'
+import { audioUpdateTrackPlayerCapabilities } from './playerAudioSetup'
 
 declare module 'react-native-track-player' {
   export function getCurrentLoadedTrack(): Promise<string>
@@ -240,6 +241,16 @@ const audioSyncPlayerWithQueue = async () => {
 
     const isMusic = nowPlayingItem?.podcastMedium === PV.Medium.music
     await setRNTPRepeatMode(isMusic)
+
+    /*
+      possibly uncomment this later
+      // NOTE: I'm updating the player settings every time audioSyncPlayerWithQueue.
+      // This may not be the best place to be doing this, but audioSyncPlayerWithQueue
+      // generally happens every time *after* an item changes in the player. So
+      // audioSyncPlayerWithQueue seems to be a reliable place to put things that are
+      // important for playing a new item, but can happen after the other player loading steps complete.
+      await audioUpdateTrackPlayerCapabilities()
+    */
 
     // todo: handle retry in case not on global state yet?
     if (nowPlayingItem) {
