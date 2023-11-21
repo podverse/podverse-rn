@@ -47,7 +47,7 @@ import { v4vEnrichValueTagDataIfNeeded } from './v4v/v4v'
 const _fileName = 'src/state/actions/player.ts'
 
 export const initializePlayer = async () => {
-  let item = {}
+  let item = await getNowPlayingItemLocally()
   const isLiveItem = !!item?.liveItem
 
   if (isLiveItem && item?.episodeId) {
