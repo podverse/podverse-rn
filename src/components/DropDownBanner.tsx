@@ -34,7 +34,6 @@ export const DropdownBanner = ({children, canExpand = false,
   const [animatedValue] = useState(new Animated.Value(-POPOUT_SIZE))
 
   let timeoutId: null | ReturnType<typeof setTimeout> = null
-
   useEffect(() => {
     Animated.timing(animatedValue, {
       toValue: !show ? -POPOUT_SIZE : 0,
@@ -42,7 +41,6 @@ export const DropdownBanner = ({children, canExpand = false,
       useNativeDriver: true
     }).start(() => {
       if (!!show) {
-        closeBanner()
         timeoutId = setTimeout(() => {
           closeBanner()
         }, closeBannerDismissTime)
