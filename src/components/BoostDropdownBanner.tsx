@@ -42,7 +42,12 @@ export const BoostDropdownBanner = () => {
   }
 
   return (
-    <DropdownBanner canExpand show={bannerInfo.show} onExpand={onExpand} onClose={onClose}>
+    <DropdownBanner
+      canExpand
+      closeBannerDismissTime={3000}
+      onClose={onClose}
+      onExpand={onExpand}
+      show={bannerInfo.show}>
       <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollViewContainer}

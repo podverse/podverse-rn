@@ -14,6 +14,7 @@ import { PV } from '../resources'
 
 type Props = {
     children: React.ReactNode
+    closeBannerDismissTime: number
     canExpand: boolean
     show: boolean
     onExpand?: () => void
@@ -22,14 +23,14 @@ type Props = {
 
 const SIZE = Dimensions.get('window').height
 const POPOUT_SIZE = 140
-const DISMISS_TIME = 50000 //3000
 
 const AnimatedSafeArea = Animated.createAnimatedComponent(SafeAreaView)
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true)
 }
 
-export const DropdownBanner = ({children, canExpand = false, show, onExpand, onClose}: Props) => {
+export const DropdownBanner = ({children, canExpand = false,
+  closeBannerDismissTime, show, onExpand, onClose}: Props) => {
   const [animatedValue] = useState(new Animated.Value(-POPOUT_SIZE))
 
   let timeoutId: null | ReturnType<typeof setTimeout> = null
@@ -41,9 +42,10 @@ export const DropdownBanner = ({children, canExpand = false, show, onExpand, onC
       useNativeDriver: true
     }).start(() => {
       if (!!show) {
+        closeBanner()
         timeoutId = setTimeout(() => {
           closeBanner()
-        }, DISMISS_TIME)
+        }, closeBannerDismissTime)
       }
     })
   }, [show])
