@@ -106,7 +106,7 @@ export class HistoryScreen extends HistoryIndexListenerScreen<Props, State> {
     })
 
     try {
-      await getHistoryItems(1, [])
+      await getHistoryItems(1)
       this.setState({
         isLoading: false
       })
@@ -235,14 +235,13 @@ export class HistoryScreen extends HistoryIndexListenerScreen<Props, State> {
   }
 
   _queryData = async (page = 1) => {
-    const { historyItems = [] } = this.global.session.userInfo
     const newState = {
       isLoading: false,
       isLoadingMore: false
     } as State
 
     try {
-      const endOfResultsReached = await getHistoryItems(page || 1, historyItems)
+      const endOfResultsReached = await getHistoryItems(page || 1)
       newState.endOfResultsReached = endOfResultsReached
       newState.queryPage = page
       this.shouldLoad = true

@@ -204,7 +204,7 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
         await getQueueItems()
         this.setState({ isLoading: false, isLoadingMore: false })
       } else if (x === _historyKey) {
-        await getHistoryItems(1, [])
+        await getHistoryItems(1)
         this.setState({ isLoading: false, isLoadingMore: false })
       }
     } catch (error) {
@@ -423,7 +423,7 @@ export class QueueScreen extends HistoryIndexListenerScreen<Props, State> {
       const endOfResultsReached = historyItems && historyItems.length <= historyItemsCount
 
       if (endOfResultsReached) {
-        await getHistoryItems(queryPage + 1, historyItems || [])
+        await getHistoryItems(queryPage + 1)
         const endOfResultsReached = historyItems && historyItems.length >= historyItemsCount
         this.shouldLoad = true
         this.setState({ isLoading: false, isLoadingMore: false, endOfResultsReached })

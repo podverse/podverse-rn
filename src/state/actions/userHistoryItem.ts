@@ -42,7 +42,7 @@ export const clearHistoryItems = async () => {
   return []
 }
 
-export const getHistoryItems = async (page: number, existingItems: any[]) => {
+export const getHistoryItems = async (page: number) => {
   const globalState = getGlobal()
 
   const { userHistoryItems: newUserHistoryItems, userHistoryItemsCount } = await getHistoryItemsService(page)
