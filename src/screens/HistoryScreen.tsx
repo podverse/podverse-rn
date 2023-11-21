@@ -160,6 +160,7 @@ export class HistoryScreen extends HistoryIndexListenerScreen<Props, State> {
           }
         }}
         podcastImageUrl={item?.podcastImageUrl}
+        podcastMedium={item?.podcastMedium}
         {...(item?.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
         showRemoveButton={isEditing}
         testID={`${testIDPrefix}_history_item_${index}`}

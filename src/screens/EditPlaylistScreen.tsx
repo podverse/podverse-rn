@@ -174,6 +174,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
           isActive={isActive}
           isPlaylistScreen
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
+          podcastMedium={item?.episode?.podcast?.medium}
           {...(item.episode.podcast.title ? { podcastTitle: item.episode.podcast.title } : {})}
           showMoveButton={!isEditing}
           showRemoveButton={isEditing}
@@ -189,6 +190,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
           handleRemovePress={() => this._handleRemovePlaylistItemPress(item)}
           isActive={isActive}
           podcastImageUrl={(item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl)) || ''}
+          podcastMedium={item?.podcast?.medium}
           {...(item.podcast && item.podcast.title ? { podcastTitle: item.podcast.title } : {})}
           showMoveButton={!isEditing}
           showRemoveButton={isEditing}
