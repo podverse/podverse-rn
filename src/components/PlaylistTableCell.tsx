@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { getGlobal } from 'reactn'
 import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { ActivityIndicator, Text, View } from './'
+import { ActivityIndicator, Icon, Text, View } from './'
 
 type Props = {
   accessibilityHint?: string
@@ -10,6 +10,8 @@ type Props = {
   hasZebraStripe?: boolean
   isSaving?: boolean
   itemCount?: number
+  itemId?: string
+  itemsOrder?: string[]
   onPress?: any
   testID: string
   title?: string
@@ -23,10 +25,13 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
       hasZebraStripe,
       isSaving,
       itemCount = 0,
+      itemId,
+      itemsOrder,
       onPress,
       testID,
       title = translate('Untitled Playlist')
     } = this.props
+    const globalTheme = getGlobal()?.globalTheme
 
     const wrapperLeftStyles = [styles.wrapperLeft]
     if (createdBy) wrapperLeftStyles.push(styles.wrapperLeftWithCreatedBy)
@@ -35,7 +40,9 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
     const itemsCount = `${translate('items')} ${itemCount}`
     const byText = `${translate('by')} ${createdBy}`
     const accessibilityLabel = `${trimmedTitle}, ${itemsCount} ${createdBy ? `,${byText}` : ''}`
-
+    const isAdded = itemId && itemsOrder?.includes(itemId)
+    const addedIndicatorStyles = [styles.addedIndicator, globalTheme.buttonActive]
+    
     return (
       <Pressable
         accessibilityHint={accessibilityHint}
@@ -76,6 +83,8 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
           </RNView>
           <RNView style={styles.wrapperRight}>
             {isSaving && <ActivityIndicator styles={styles.activityIndicator} testID={testID} />}
+            {!isSaving && isAdded && <Icon isSecondary name={'check'}
+              size={20} solid style={addedIndicatorStyles} testID={`${testID}_is_added`} />}
           </RNView>
         </View>
       </Pressable>
@@ -86,6 +95,9 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
 const styles = StyleSheet.create({
   activityIndicator: {
     flex: 0
+  },
+  addedIndicator: {
+    paddingHorizontal: 12
   },
   createdBy: {
     alignContent: 'flex-start',
@@ -108,7 +120,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flexDirection: 'row',
-    minHeight: PV.Table.cells.standard.height,
+    minHeight: PV.Table.cells.standard.height + 4,
     paddingLeft: 8,
     paddingRight: 8,
     alignItems: 'center'

@@ -108,6 +108,7 @@ import { updateScreenReaderEnabledState } from '../state/actions/screenReader'
 import { initializeSettings, setPodcastsGridView } from '../state/actions/settings'
 import { setShouldshowPodcastsListPopover } from '../state/actions/podcasts-ui'
 import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
+import { getLoggedInUserPlaylistsCombined } from '../state/actions/user'
 import { v4vInitialize, v4vRefreshConnectedProviders } from '../state/actions/v4v/v4v'
 import { core } from '../styles'
 
@@ -764,6 +765,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // as the nowPlayingItem may affect when v4v buttons
     // are rendered on the PlayerScreen
     await v4vInitialize()
+
+    // This is an initialization step that can happen in the background.
+    // We need playlists in global state at all times so we can determine
+    // when an item is already in one of your playlists.
+    getLoggedInUserPlaylistsCombined()
 
     this._setDownloadedDataIfOffline()
     downloadedEpisodeDeleteMarked()

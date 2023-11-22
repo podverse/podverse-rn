@@ -177,6 +177,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             <RNView style={styles.imageContainer}>
               <FastImage
                 allowFullView={allowFullView}
+                currentChapter={currentChapter}
                 isAddByRSSPodcast={!!addByRSSPodcastFeedUrl}
                 isAddByRSSPodcastLarger
                 key={imageUrl}

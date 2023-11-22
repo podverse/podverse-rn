@@ -25,6 +25,27 @@ export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: st
   return response && response.data
 }
 
+export const addOrRemovePlaylistItemToDefaultPlaylist = async (episodeId?: string, mediaRefId?: string) => {
+  const bearerToken = await getBearerToken()
+  const data = {
+    ...(!mediaRefId ? { episodeId } : { mediaRefId })
+  }
+
+  const response = await request({
+    endpoint: '/playlist/default/add-or-remove',
+    method: 'PATCH',
+    headers: {
+      Authorization: bearerToken,
+      'Content-Type': 'application/json'
+    },
+    body: data,
+    opts: { credentials: 'include' },
+    shouldShowAuthAlert: true
+  })
+
+  return response && response.data
+}
+
 export const createPlaylist = async (data: any) => {
   const bearerToken = await getBearerToken()
   const response = await request({
