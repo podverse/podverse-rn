@@ -14,7 +14,8 @@ import {
   setQueueRepeatModeMusic as setQueueRepeatModeMusicService,
   QueueRepeatModeMusic,
   setQueueEnabledWhileMusicIsPlaying as setQueueEnabledWhileMusicIsPlayingService,
-  setAutoPlayEpisodesFromPodcast as setAutoPlayEpisodesFromPodcastService
+  setAutoPlayEpisodesFromPodcast as setAutoPlayEpisodesFromPodcastService,
+  setRNTPRepeatMode
 } from '../../services/queue'
 
 export const addQueueItemLast = async (queueItem: NowPlayingItem) => {
@@ -135,6 +136,9 @@ export const setQueueRepeatModeMusic = async (repeatMode: QueueRepeatModeMusic) 
       ...globalState.player,
       queueRepeatModeMusic: repeatMode
     }
+  }, () => {
+    const isMusic = globalState?.player?.nowPlayingItem?.podcastMedium === 'music'
+    setRNTPRepeatMode(isMusic)
   })
 }
 

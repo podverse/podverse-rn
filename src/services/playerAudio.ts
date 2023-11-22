@@ -243,6 +243,8 @@ const audioSyncPlayerWithQueue = async () => {
     const isMusic = nowPlayingItem?.podcastMedium === PV.Medium.music
     const autoPlayEpisodesFromPodcast = globalState?.player?.autoPlayEpisodesFromPodcast
 
+    // Call setRNTPRepeatMode at the beginning AND end of the queue sync
+    // (this is to workaround an RNTP issue with repeatMode="queue" and single track queues)
     await setRNTPRepeatMode(isMusic)
 
     /*
@@ -375,6 +377,11 @@ const audioSyncPlayerWithQueue = async () => {
           const removeBugWorkaroundIndex = await TrackPlayer.getActiveTrackIndex()
           await PVAudioPlayer.remove(removeBugWorkaroundIndex + 1)
         }
+
+        // Call setRNTPRepeatMode at the beginning AND end of the queue sync
+        // (this is to workaround an RNTP issue with repeatMode="queue" and single track queues)
+        const repeatTrackWorkaround = true
+        await setRNTPRepeatMode(isMusic, repeatTrackWorkaround)
       }
     }
   } catch (error) {

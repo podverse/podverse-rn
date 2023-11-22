@@ -256,9 +256,25 @@ export const setQueueRepeatModeMusic = async (repeatMode: QueueRepeatModeMusic) 
   }
 }
 
-export const setRNTPRepeatMode = async (isMusic: boolean) => {
+export const setRNTPRepeatMode = async (isMusic: boolean, repeatTrackWorkaround?: boolean) => {
   const repeatMode = await getQueueRepeatModeMusic()
-  if (isMusic && repeatMode === 'queue') {
+
+  /*
+    If repeatMode should be on, but there is only one item in the queue,
+    then the "repeat queue" feature appears to not work consisently on iOS.
+    To work around this, I am using RepeatMode.Track only in the situations
+    where isMusic, repeatMode is on, and only one item is in the queue.
+  */
+ 
+  const queueItems = await TrackPlayer.getQueue()
+  const shouldUseWorkAround = repeatTrackWorkaround
+    && isMusic
+    && queueItems?.length === 1
+    && repeatMode === 'queue'
+
+  if (shouldUseWorkAround) {
+    TrackPlayer.setRepeatMode(RepeatMode.Queue)
+  } else if (isMusic && repeatMode === 'queue') {
     TrackPlayer.setRepeatMode(RepeatMode.Queue)
   } else if (isMusic && repeatMode === 'track') {
     TrackPlayer.setRepeatMode(RepeatMode.Track)
