@@ -12,6 +12,7 @@ type Props = {
   addByRSSPodcastFeedUrl?: boolean
   getEpisodeId: any
   getMediaRefId: any
+  getMedium: any
   globalTheme?: GlobalTheme
   isModal?: boolean
   navigation: any
@@ -31,21 +32,22 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
   }
 
   _handleIconPress = () => {
-    const { addByRSSPodcastFeedUrl, getEpisodeId, getMediaRefId, navigation } = this.props
+    const { addByRSSPodcastFeedUrl, getEpisodeId, getMediaRefId, getMedium, navigation } = this.props
 
     if (addByRSSPodcastFeedUrl) {
       Alert.alert(
         PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE('disabled add to playlist').title,
         PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE().message
       )
-    } else if (getEpisodeId && getMediaRefId) {
+    } else if (getEpisodeId && getMediaRefId && getMedium) {
       const episodeId = getEpisodeId()
       const mediaRefId = getMediaRefId()
+      const medium = getMedium()
       if (mediaRefId) {
         this.setState({ showActionSheet: !this.state.showActionSheet })
       } else if (episodeId) {
         this._dismissActionSheet()
-        navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, { episodeId })
+        navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, { episodeId, medium })
       }
     }
   }

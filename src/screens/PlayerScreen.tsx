@@ -64,6 +64,7 @@ export class PlayerScreen extends React.Component<Props> {
   static navigationOptions = ({ navigation }) => {
     const _getEpisodeId = navigation.getParam('_getEpisodeId')
     const _getMediaRefId = navigation.getParam('_getMediaRefId')
+    const _getMedium = navigation.getParam('_getMedium')
     const _showShareActionSheet = navigation.getParam('_showShareActionSheet')
     const _getInitialProgressValue = navigation.getParam('_getInitialProgressValue')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
@@ -110,6 +111,7 @@ export class PlayerScreen extends React.Component<Props> {
                 <NavAddToPlaylistIcon
                   addByRSSPodcastFeedUrl={!!addByRSSPodcastFeedUrl}
                   getEpisodeId={_getEpisodeId}
+                  getMedium={_getMedium}
                   getMediaRefId={_getMediaRefId}
                   globalTheme={globalTheme}
                   navigation={navigation}
@@ -134,6 +136,7 @@ export class PlayerScreen extends React.Component<Props> {
       _getEpisodeId: this._getEpisodeId,
       _getInitialProgressValue: this._getInitialProgressValue,
       _getMediaRefId: this._getMediaRefId,
+      _getMedium: this._getMedium,
       _showShareActionSheet: this._showShareActionSheet
     })
 
@@ -213,6 +216,11 @@ export class PlayerScreen extends React.Component<Props> {
   _getMediaRefId = () => {
     const { nowPlayingItem } = this.global.player
     return nowPlayingItem && nowPlayingItem.clipId
+  }
+
+  _getMedium = () => {
+    const { nowPlayingItem } = this.global.player
+    return nowPlayingItem && nowPlayingItem.podcastMedium
   }
 
   _getInitialProgressValue = async () => {
