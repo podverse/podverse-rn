@@ -183,6 +183,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
                 isAddByRSSPodcastLarger
                 key={imageUrl}
                 linkButtonUrl={clipUrl}
+                navigation={navigation}
                 source={imageUrl}
                 styles={styles.image}
               />

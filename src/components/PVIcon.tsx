@@ -18,6 +18,7 @@ type Props = {
   isSecondary?: boolean
   materialIconName?: string
   name: string
+  onLongPress?: any
   onPress?: any
   size: number
   solid?: boolean
@@ -38,6 +39,7 @@ export const PVIcon = (props: Props) => {
     isSecondary,
     materialIconName,
     name,
+    onLongPress,
     onPress,
     size,
     solid,
@@ -90,6 +92,7 @@ export const PVIcon = (props: Props) => {
             right: 8,
             top: 8
           }}
+          onLongPress={onLongPress}
           onPress={onPress}
           {...(testID ? { testID: `${testID}_icon_button`.prependTestId() } : {})}>
           <RNView style={wrapperStyle}>{icon}</RNView>
