@@ -317,8 +317,8 @@ const defaultStyles = StyleSheet.create({
   heartButton: {
     position: 'absolute',
     zIndex: 1000001,
-    left: 24,
-    bottom: 7,
+    right: 24,
+    top: 7,
     backgroundColor: PV.Colors.blackOpaque,
     width: 48,
     height: 48,
