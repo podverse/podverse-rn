@@ -124,7 +124,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
         ? [styles.carouselImageWrapper, { width: width * 0.9 }, { height: '50%' }]
         : [styles.carouselImageWrapper, { width: width * 0.9 }]
 
-    const allowFullView = !currentChapter?.linkUrl
+    const allowFullView = true // !currentChapter?.linkUrl
     const isMusic = nowPlayingItem?.podcastMedium === PV.Medium.music
     const podcastTitle =  isMusic
       ? generateAuthorsText(nowPlayingItem?.podcastAuthors)
@@ -183,6 +183,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
                 isAddByRSSPodcastLarger
                 key={imageUrl}
                 linkButtonUrl={clipUrl}
+                navigation={navigation}
                 source={imageUrl}
                 styles={styles.image}
               />

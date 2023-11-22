@@ -5,8 +5,8 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { downloadImageFile, getSavedImageUri } from '../lib/storage'
 import { PV } from '../resources'
+import { getEpisode } from '../services/episode'
 import { addOrRemovePlaylistItemToDefaultPlaylist } from '../state/actions/playlist'
-
 import { Icon, LightningIcon, LiveStatusBadge, NewContentBadge, Text } from '.'
 const PlaceholderImage = PV.Images.PLACEHOLDER.default
 
@@ -19,6 +19,7 @@ type Props = {
   isAddByRSSPodcastLarger?: boolean
   isTabletGridView?: boolean
   linkButtonUrl?: string
+  navigation?: any
   newContentCount?: number
   placeholderLabel?: string
   resizeMode?: any
@@ -121,9 +122,28 @@ export class PVFastImage extends React.PureComponent<Props, State> {
   }
 
   handleLikePress = async () => {
-    const { currentChapter } = this.props
-    if (currentChapter?.remoteEpisodeId) {
+    const { currentChapter, navigation } = this.props
+
+    const isVTS = this.checkIfVTS()
+    let isInDefaultPlaylist = false
+    if (isVTS) {
+      isInDefaultPlaylist = this.checkIfVTSIsInDefaultPlaylist()
+    }
+
+    if (isInDefaultPlaylist && currentChapter?.remoteEpisodeId) {
+      const episode = await getEpisode(currentChapter.remoteEpisodeId)
+      navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, { episode })
+    } else if (!isInDefaultPlaylist && currentChapter?.remoteEpisodeId) {
       await addOrRemovePlaylistItemToDefaultPlaylist(currentChapter.remoteEpisodeId)
+    }
+  }
+
+  handleLikeLongPress = async () => {
+    const { currentChapter, navigation } = this.props
+
+    if (currentChapter?.remoteEpisodeId) {
+      const episode = await getEpisode(currentChapter.remoteEpisodeId)
+      navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, { episode })
     }
   }
 
@@ -211,6 +231,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
                 accessible={false}
                 name='heart'
                 onPress={this.handleLikePress}
+                onLongPress={this.handleLikeLongPress}
                 solid={isInDefaultPlaylist}
                 size={14}
                 style={heartButtonIconStyles}
@@ -317,8 +338,8 @@ const defaultStyles = StyleSheet.create({
   heartButton: {
     position: 'absolute',
     zIndex: 1000001,
-    left: 24,
-    bottom: 7,
+    right: 24,
+    top: 7,
     backgroundColor: PV.Colors.blackOpaque,
     width: 48,
     height: 48,

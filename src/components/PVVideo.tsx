@@ -118,11 +118,11 @@ export class PVVideo extends React.PureComponent<Props, State> {
       finalUri = filePath
     }
 
-    let hlsManifest = null
-    if (!isDownloadedFile && fileType === 'hls') {
-      hlsManifest = await hlsGetParsedManifest(finalUri, selectedResolution)
-      finalUri = hlsManifest?.selectedPlaylist?.uri ? hlsManifest?.selectedPlaylist?.uri : finalUri
-    }
+    const hlsManifest = null
+    // if (!isDownloadedFile && fileType === 'hls') {
+    //   hlsManifest = await hlsGetParsedManifest(finalUri, selectedResolution)
+    //   finalUri = hlsManifest?.selectedPlaylist?.uri ? hlsManifest?.selectedPlaylist?.uri : finalUri
+    // }
 
     this.setState({
       Authorization,
@@ -361,7 +361,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
       destroyPlayer,
       fileType,
       finalUri,
-      hlsManifest,
+      // hlsManifest,
       isFullscreen,
       isReadyToPlay,
       showSettingsActionSheet
@@ -373,14 +373,17 @@ export class PVVideo extends React.PureComponent<Props, State> {
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
 
-    const hasExtraResolutions = hlsManifest?.playlists?.length && hlsManifest.playlists.length > 1
+    // const hasExtraResolutions = hlsManifest?.playlists?.length && hlsManifest.playlists.length > 1
 
     const pvVideo = finalUri ? (
       <Video
         disableBack={!isFullscreen || isMiniPlayer}
         disablePlayPause={!isFullscreen || isMiniPlayer}
         disableSeekbar={!isFullscreen || isMiniPlayer}
-        disableSettings={isFullscreen || isMiniPlayer || !hasExtraResolutions}
+        // disableSettings={isFullscreen || isMiniPlayer || !hasExtraResolutions}
+        /* always disabling settings since the hlsManifest helper sometimes
+           breaks video audio (due to improper hls parsing and loading) */
+        disableSettings
         disableTimer
         disableVolume
         disableFullscreen={isFullscreen || disableFullscreen || isMiniPlayer}
