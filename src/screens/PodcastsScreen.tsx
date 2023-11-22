@@ -67,8 +67,8 @@ import { getAddByRSSPodcastsLocally, parseAllAddByRSSPodcasts } from '../service
 import { playerUpdateUserPlaybackPosition } from '../services/player'
 import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudioSetup'
 import { getPodcast, getPodcasts } from '../services/podcast'
-import { getSavedQueryPodcastsScreenSort, setSavedQueryAlbumsScreenFilter, setSavedQueryAlbumsScreenSort,
-  setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
+import { setAutoPlayEpisodesFromPodcast } from '../services/queue'
+import { getSavedQueryPodcastsScreenSort, setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
 import { getNowPlayingItem, getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
@@ -108,6 +108,7 @@ import { updateScreenReaderEnabledState } from '../state/actions/screenReader'
 import { initializeSettings, setPodcastsGridView } from '../state/actions/settings'
 import { setShouldshowPodcastsListPopover } from '../state/actions/podcasts-ui'
 import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
+import { getLoggedInUserPlaylistsCombined } from '../state/actions/user'
 import { v4vInitialize, v4vRefreshConnectedProviders } from '../state/actions/v4v/v4v'
 import { core } from '../styles'
 
@@ -268,6 +269,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.REFRESH_SUBSCRIPTIONS_ON_LAUNCH, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.SETTING_SHOULD_DISPLAY_NON_TOC_CHAPTERS, 'TRUE'),
+          setAutoPlayEpisodesFromPodcast('newer'),
           resetAllAppKeychain()
         ])
 
@@ -763,6 +765,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // as the nowPlayingItem may affect when v4v buttons
     // are rendered on the PlayerScreen
     await v4vInitialize()
+
+    // This is an initialization step that can happen in the background.
+    // We need playlists in global state at all times so we can determine
+    // when an item is already in one of your playlists.
+    getLoggedInUserPlaylistsCombined()
 
     this._setDownloadedDataIfOffline()
     downloadedEpisodeDeleteMarked()

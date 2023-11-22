@@ -1,6 +1,5 @@
 import { Dimensions } from 'react-native'
 import { isPortrait, pvIsTablet } from '../lib/deviceDetection'
-import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { InitialState } from '../resources/Interfaces'
 import { v4vSettingsDefault } from './actions/v4v/v4v'
@@ -74,7 +73,8 @@ const initialTheme: InitialState = {
     hidePlaybackSpeedButton: false,
     remoteSkipButtonsAreTimeJumps: true,
     queueRepeatModeMusic: 'off',
-    queueEnabledWhileMusicIsPlaying: false
+    queueEnabledWhileMusicIsPlaying: false,
+    autoPlayEpisodesFromPodcast: 'off'
   },
   playlists: {
     myPlaylists: [],

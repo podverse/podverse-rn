@@ -2,6 +2,7 @@ import { TranscriptRow, ValueTransaction } from 'podverse-shared'
 import { AutoQueueSettingsPosition } from '../services/autoQueue'
 import { QueueRepeatModeMusic } from '../services/queue'
 import { V4VProviderConnectedState, V4VSettings } from '../state/actions/v4v/v4v'
+import { AutoPlayEpisodesFromPodcast } from './Queue'
 
 export interface GlobalTheme {
   actionSheetButton?: any
@@ -160,6 +161,7 @@ export interface InitialState {
     remoteSkipButtonsAreTimeJumps: boolean
     queueRepeatModeMusic: QueueRepeatModeMusic
     queueEnabledWhileMusicIsPlaying: boolean
+    autoPlayEpisodesFromPodcast: AutoPlayEpisodesFromPodcast
   }
   playlists: {
     myPlaylists: []

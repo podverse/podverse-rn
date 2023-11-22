@@ -9,7 +9,7 @@ import { PV } from '../resources'
 import { ActivityIndicator, FastImage, PressableWithOpacity, PVVideo, ScrollView, Text, TextTicker } from './'
 
 type Props = {
-  handlePressClipInfo: any
+  handlePressViewerBottomText: any
   navigation?: any
   width: number
 }
@@ -63,7 +63,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
   }
 
   render() {
-    const { handlePressClipInfo, navigation, width } = this.props
+    const { handlePressViewerBottomText, navigation, width } = this.props
     const { currentChapter, player, screen, screenPlayer, screenReaderEnabled } = this.global
     const { screenWidth } = screen
     const { isLoading } = screenPlayer
@@ -74,6 +74,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
 
     const { addByRSSPodcastFeedUrl, clipTitle, episodeImageUrl, episodeTitle, podcastImageUrl } = nowPlayingItem
     let { clipId, clipEndTime, clipStartTime } = nowPlayingItem
+
     let clipUrl = ''
     let imageUrl = episodeImageUrl || podcastImageUrl
 
@@ -177,6 +178,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             <RNView style={styles.imageContainer}>
               <FastImage
                 allowFullView={allowFullView}
+                currentChapter={currentChapter}
                 isAddByRSSPodcast={!!addByRSSPodcastFeedUrl}
                 isAddByRSSPodcastLarger
                 key={imageUrl}
@@ -192,7 +194,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             <Pressable
               accessibilityHint={clipAccessibilityHint}
               accessibilityLabel={clipAccessibilityLabel}
-              onPress={handlePressClipInfo}>
+              onPress={handlePressViewerBottomText}>
               <RNView style={styles.clipWrapper}>
                 {!screenReaderEnabled ? (
                   <TextTicker

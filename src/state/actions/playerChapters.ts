@@ -149,7 +149,7 @@ export const setChaptersOnGlobalState = async (currentChapters: any[], currentTo
   const { screenWidth } = screen
   const sliderWidth = screenWidth - PV.Player.sliderStyles.wrapper.marginHorizontal * 2
   const duration = await playerGetDuration()
-  const currentTocChaptersStartTimePositions = [] as number[]
+  let currentTocChaptersStartTimePositions = [] as number[]
 
   if (sliderWidth && duration > 0) {
     for (const tocChapter of currentTocChapters) {
@@ -158,6 +158,10 @@ export const setChaptersOnGlobalState = async (currentChapters: any[], currentTo
         currentTocChaptersStartTimePositions.push(chapterStartTimePosition)
       }
     }
+
+    // remove duplicates, in case the podcaster included overlapping
+    // start times for some chapters, and to avoid duplicate keys in PlayerProgressBar
+    currentTocChaptersStartTimePositions = [...new Set(currentTocChaptersStartTimePositions)]
   }
 
   setGlobal({

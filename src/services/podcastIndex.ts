@@ -41,11 +41,11 @@ export const getValueTagsForItemGuidOrFeedGuid = async (feedGuid: string, itemGu
       throw new Error('Not found')
     }
   } catch (error) {
-    console.log('getValueTagsForItemGuidOrFeedGuid getValueTagsForFeedGuidAndItemGuid error', error)
+    // console.log('getValueTagsForItemGuidOrFeedGuid getValueTagsForFeedGuidAndItemGuid error', error)
     try {
       valueTags = await getValueTagsForFeedGuid(feedGuid)
     } catch (error) {
-      console.log('getValueTagsForItemGuidOrFeedGuid getValueTagsForFeedGuid error', error)
+      // console.log('getValueTagsForItemGuidOrFeedGuid getValueTagsForFeedGuid error', error)
     }
   }
   return valueTags
