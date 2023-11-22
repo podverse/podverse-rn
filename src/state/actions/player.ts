@@ -7,7 +7,7 @@ import {
   convertNowPlayingItemToMediaRef,
   NowPlayingItem
 } from 'podverse-shared'
-import { State } from 'react-native-track-player'
+import TrackPlayer, { State } from 'react-native-track-player'
 import { getGlobal, setGlobal } from 'reactn'
 import { errorLogger } from '../../lib/logger'
 import { getEpisodeProxyTranscript, getParsedTranscript } from '../../lib/transcriptHelpers'
@@ -25,7 +25,8 @@ import {
   getRemoteSkipButtonsTimeJumpOverride,
   playerGetPosition
 } from '../../services/player'
-import { getNextFromQueue } from '../../services/queue'
+import { audioPlayPreviousFromQueue } from '../../services/playerAudio'
+import { getAutoPlayEpisodesFromPodcast, getNextFromQueue, getQueueRepeatModeMusic } from '../../services/queue'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 import { trackPlayerScreenPageView } from '../../services/tracking'
 import { addOrUpdateHistoryItem } from '../../services/userHistoryItem'
@@ -218,7 +219,7 @@ export const playerPlayPreviousChapterOrReturnToBeginningOfTrack = async () => {
   }
 
   debouncedClearSkipChapterInterval()
-  await playerHandleSeekTo(0)
+  await audioPlayPreviousFromQueue()
 }
 
 export const playerPlayNextChapterOrQueueItem = async () => {
@@ -272,16 +273,24 @@ export const playerHandleResumeAfterClipHasEnded = async () => {
   playerSetNowPlayingItem(nowPlayingItemEpisode, playbackPosition)
 }
 
+type PlayerLoadNowPlayingItemOptions = {
+  forceUpdateOrderDate: boolean
+  setCurrentItemNextInQueue: boolean
+  shouldPlay: boolean
+  secondaryQueuePlaylistId?: string
+}
+
 export const playerLoadNowPlayingItem = async (
   item: NowPlayingItem,
-  shouldPlay: boolean,
-  forceUpdateOrderDate: boolean,
-  setCurrentItemNextInQueue: boolean
+  options: PlayerLoadNowPlayingItemOptions
 ) => {
+  const { forceUpdateOrderDate, setCurrentItemNextInQueue, shouldPlay, secondaryQueuePlaylistId } = options
   const globalState = getGlobal()
   const { nowPlayingItem: previousNowPlayingItem } = globalState.player
 
-  if (item) {
+  if (!!item?.episodeId) {
+    showMiniPlayer()
+
     await clearEnrichedPodcastDataIfNewEpisode(previousNowPlayingItem, item)
 
     if (item.clipIsOfficialChapter) {
@@ -305,13 +314,14 @@ export const playerLoadNowPlayingItem = async (
 
     await playerLoadNowPlayingItemService(
       item,
-      shouldPlay,
-      !!forceUpdateOrderDate,
-      itemToSetNextInQueue,
-      previousNowPlayingItem
+      {
+        shouldPlay,
+        forceUpdateOrderDate: !!forceUpdateOrderDate,
+        itemToSetNextInQueue,
+        previousNowPlayingItem,
+        secondaryQueuePlaylistId
+      }
     )
-
-    showMiniPlayer()
   }
 
   setGlobal(
@@ -335,10 +345,11 @@ export const goToCurrentLiveTime = () => {
   if (checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType)) {
     PVEventEmitter.emit(PV.Events.PLAYER_VIDEO_LIVE_GO_TO_CURRENT_TIME)
   } else {
-    const shouldPlay = true
-    const forceUpdateOrderDate = true
-    const setCurrentItemNextInQueue = false
-    playerLoadNowPlayingItem(nowPlayingItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+    playerLoadNowPlayingItem(nowPlayingItem, {
+      forceUpdateOrderDate: true,
+      setCurrentItemNextInQueue: false,
+      shouldPlay: true
+    })
   }
 }
 
@@ -353,11 +364,13 @@ export const setLiveStreamWasPausedState = (bool: boolean) => {
 }
 
 export const handleEnrichingPlayerState = (item: NowPlayingItem) => {
-  // Be careful not to cause async issues when updating global state with these function calls.
-  trackPlayerScreenPageView(item)
-  loadChaptersForNowPlayingItem(item)
-  enrichParsedTranscript(item)
-  v4vEnrichValueTagDataIfNeeded(item)
+  if (item) {
+    // Be careful not to cause async issues when updating global state with these function calls.
+    trackPlayerScreenPageView(item)
+    loadChaptersForNowPlayingItem(item)
+    enrichParsedTranscript(item)
+    v4vEnrichValueTagDataIfNeeded(item)
+  }
 }
 
 const enrichParsedTranscript = (item: NowPlayingItem) => {
@@ -444,11 +457,17 @@ export const initializePlayerSettings = async () => {
   const [
     playbackSpeedString,
     hidePlaybackSpeedButton,
-    remoteSkipButtonsAreTimeJumps
+    remoteSkipButtonsAreTimeJumps,
+    queueRepeatModeMusic,
+    queueEnabledWhileMusicIsPlaying,
+    autoPlayEpisodesFromPodcast,
   ] = await Promise.all([
     AsyncStorage.getItem(PV.Keys.PLAYER_PLAYBACK_SPEED),
     AsyncStorage.getItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON),
-    getRemoteSkipButtonsTimeJumpOverride()
+    getRemoteSkipButtonsTimeJumpOverride(),
+    getQueueRepeatModeMusic(),
+    AsyncStorage.getItem(PV.Keys.QUEUE_ENABLED_WHILE_MUSIC_IS_PLAYING),
+    getAutoPlayEpisodesFromPodcast()
   ])
 
   let playbackSpeed = 1
@@ -462,7 +481,10 @@ export const initializePlayerSettings = async () => {
       ...globalState.player,
       playbackRate: playbackSpeed,
       hidePlaybackSpeedButton: !!hidePlaybackSpeedButton,
-      remoteSkipButtonsAreTimeJumps: !!remoteSkipButtonsAreTimeJumps
+      remoteSkipButtonsAreTimeJumps: !!remoteSkipButtonsAreTimeJumps,
+      queueRepeatModeMusic,
+      queueEnabledWhileMusicIsPlaying,
+      autoPlayEpisodesFromPodcast
     }
   })
 }

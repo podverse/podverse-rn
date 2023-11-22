@@ -9,8 +9,9 @@ import {
   playerJumpBackward,
   playerJumpForward,
   playerPlayNextFromQueue,
-  playerHandleSeekTo
+  playerPlayPreviousFromQueue
 } from '../services/player'
+import { QueueRepeatModeMusic } from '../services/queue'
 import {
   playerPlayNextChapterOrQueueItem,
   playerPlayPreviousChapterOrReturnToBeginningOfTrack,
@@ -18,6 +19,7 @@ import {
   playerTogglePlay
 } from '../state/actions/player'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { setQueueRepeatModeMusic } from '../state/actions/queue'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
 import {
@@ -107,6 +109,34 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     )
   }
 
+  getQueueRepeatModeProps = (queueRepeatModeMusic: QueueRepeatModeMusic) => {
+    let props = {
+      repeatModeAriaLabel: translate('ARIA LABEL - repeat mode - off'),
+      repeatModeMaterialIconName: 'repeat'
+    }
+    if (queueRepeatModeMusic === 'queue') {
+      props = {
+        repeatModeAriaLabel: translate('ARIA LABEL - repeat mode - queue'),
+        repeatModeMaterialIconName: 'repeat'
+      }
+    } else if (queueRepeatModeMusic === 'track') {
+      props = {
+        repeatModeAriaLabel: translate('ARIA LABEL - repeat mode - track'),
+        repeatModeMaterialIconName: 'repeat-one-on'
+      }
+    }
+    return props
+  }
+
+  _changeQueueRepeatModeMusic = () => {
+    const { queueRepeatModeMusic } = this.global.player
+    if (queueRepeatModeMusic === 'queue') {
+      setQueueRepeatModeMusic('off')
+    } else {
+      setQueueRepeatModeMusic('queue')
+    }
+  }
+
   render() {
     const { navigation } = this.props
     const { progressValue, showPlayerMoreActionSheet } = this.state
@@ -118,12 +148,9 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       jumpBackwardsTime,
       jumpForwardsTime,
       player,
-      screenPlayer,
-      session
+      screenPlayer
     } = this.global
-    const { backupDuration, hidePlaybackSpeedButton, playbackRate, playbackState } = player
-    const { userInfo } = session
-    const { queueItems } = userInfo
+    const { backupDuration, hidePlaybackSpeedButton, playbackRate, playbackState, queueRepeatModeMusic } = player
     const { isLoading } = screenPlayer
     const hasErrored = playbackState === PV.Player.errorState
     const hitSlop = {
@@ -133,18 +160,11 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       top: 8
     }
 
-    const isLastChapter =
-      currentTocChapter &&
-      currentTocChapters.length > 1 &&
-      currentTocChapters[currentTocChapters.length - 1] &&
-      currentTocChapters[currentTocChapters.length - 1].id === currentTocChapter.id
-
-    const noNextQueueItem = currentTocChapter ? queueItems?.length === 0 && isLastChapter : queueItems?.length === 0
-
     // nowPlayingItem will be undefined when loading from a deep link
     let { nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
     const { liveItem } = nowPlayingItem
+    const isMusic = nowPlayingItem.podcastMedium === PV.Medium.music
 
     let playButtonIcon = <Icon name='play' size={20} testID={`${testIDPrefix}_play_button`} />
     let playButtonAdjust = { paddingLeft: 2 } as any
@@ -194,6 +214,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
     const isVideo = checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType)
 
+    const { repeatModeAriaLabel, repeatModeMaterialIconName } = this.getQueueRepeatModeProps(queueRepeatModeMusic)
+
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
         <View style={styles.progressWrapper}>
@@ -214,7 +236,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               <PressableWithOpacity
                 accessibilityLabel={previousButtonAccessibilityLabel}
                 accessibilityRole='button'
-                onLongPress={() => playerHandleSeekTo(0)}
+                onLongPress={playerPlayPreviousFromQueue}
                 onPress={playerPlayPreviousChapterOrReturnToBeginningOfTrack}
                 style={[playerStyles.icon, { flexDirection: 'row' }]}>
                 {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
@@ -258,9 +280,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 accessibilityRole='button'
                 onLongPress={playerPlayNextFromQueue}
                 onPress={playerPlayNextChapterOrQueueItem}
-                disabled={noNextQueueItem}
                 style={[playerStyles.icon, { flexDirection: 'row' }]}>
-                {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, `${testIDPrefix}_skip_track`, noNextQueueItem)}
+                {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, `${testIDPrefix}_skip_track`)}
               </PressableWithOpacity>
             )}
           </View>
@@ -273,11 +294,27 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               accessibilityRole='button'
               hitSlop={hitSlop}
               onPress={this._navToStopWatchScreen}>
-              <View style={styles.playerControlsBottomButton}>
+              <View style={[styles.playerControlsBottomButton, { marginTop: 2 }]}>
                 <Icon name='moon' size={20} solid testID={`${testIDPrefix}_sleep_timer`} />
               </View>
             </PressableWithOpacity>
-            {!liveItem && !hidePlaybackSpeedButton && (
+            {!liveItem && isMusic && (
+              <PressableWithOpacity
+                accessibilityLabel={repeatModeAriaLabel}
+                accessibilityRole='button'
+                hitSlop={hitSlop}
+                onPress={this._changeQueueRepeatModeMusic}>
+                <View style={[styles.playerControlsBottomButton, { marginTop: -2 }]}>
+                  <Icon
+                    materialIconName={repeatModeMaterialIconName}
+                    size={26}
+                    solid
+                    {...(queueRepeatModeMusic === 'queue' ? { color: PV.Colors.blueLighter } : {})}
+                    testID={`${testIDPrefix}_repeat_mode`} />
+                </View>
+              </PressableWithOpacity>
+            )}
+            {!liveItem && !hidePlaybackSpeedButton && !isMusic && (
               <PressableWithOpacity
                 accessibilityHint={translate('ARIA HINT - current playback speed')}
                 accessibilityLabel={`${playbackRate}X`}

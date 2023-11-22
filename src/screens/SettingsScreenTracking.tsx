@@ -52,15 +52,11 @@ export class SettingsScreenTracking extends React.Component<Props> {
             <View style={core.itemWrapper}>
               <SwitchWithText
                 accessibilityHint={translate('Error Reporting subtext')}
-                accessibilityLabel={
-                  errorReportingEnabled ? translate('Error Reporting Enabled') : translate('Error Reporting Disabled')
-                }
+                accessibilityLabel={translate('Error Reporting')}
                 onValueChange={this._handleToggleErrorReporting}
                 subText={translate('Error Reporting subtext')}
                 testID={`${testIDPrefix}_error_reporting`}
-                text={
-                  errorReportingEnabled ? translate('Error Reporting Enabled') : translate('Error Reporting Disabled')
-                }
+                text={translate('Error Reporting')}
                 value={!!errorReportingEnabled}
               />
             </View>
@@ -71,15 +67,11 @@ export class SettingsScreenTracking extends React.Component<Props> {
           <View style={core.itemWrapper}>
             <SwitchWithText
               accessibilityHint={translate('Listen Tracking subtext')}
-              accessibilityLabel={
-                listenTrackingEnabled ? translate('Listen Tracking Enabled') : translate('Listen Tracking Disabled')
-              }
+              accessibilityLabel={translate('Listen Tracking')}
               onValueChange={this._handleToggleListenTracking}
               subText={translate('Listen Tracking subtext')}
               testID={`${testIDPrefix}_listen_tracking`}
-              text={
-                listenTrackingEnabled ? translate('Listen Tracking Enabled') : translate('Listen Tracking Disabled')
-              }
+              text={translate('Listen Tracking')}
               value={!!listenTrackingEnabled}
             />
           </View>

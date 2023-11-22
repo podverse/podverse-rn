@@ -2,6 +2,7 @@ import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
+import { AutoPlayEpisodesFromPodcast } from '../../resources/Queue'
 import {
   addQueueItemLast as addQueueItemLastService,
   addQueueItemNext as addQueueItemNextService,
@@ -9,7 +10,12 @@ import {
   getQueueItems as getQueueItemsService,
   getQueueItemsLocally,
   removeQueueItem as removeQueueItemService,
-  setAllQueueItems as setAllQueueItemsService
+  setAllQueueItems as setAllQueueItemsService,
+  setQueueRepeatModeMusic as setQueueRepeatModeMusicService,
+  QueueRepeatModeMusic,
+  setQueueEnabledWhileMusicIsPlaying as setQueueEnabledWhileMusicIsPlayingService,
+  setAutoPlayEpisodesFromPodcast as setAutoPlayEpisodesFromPodcastService,
+  setRNTPRepeatMode
 } from '../../services/queue'
 
 export const addQueueItemLast = async (queueItem: NowPlayingItem) => {
@@ -119,4 +125,45 @@ export const setAllQueueItemsLocally = async (queueItems: NowPlayingItem[]) => {
   })
 
   return results
+}
+
+export const setQueueRepeatModeMusic = async (repeatMode: QueueRepeatModeMusic) => {
+  const globalState = getGlobal()
+  await setQueueRepeatModeMusicService(repeatMode)
+
+  setGlobal({
+    player: {
+      ...globalState.player,
+      queueRepeatModeMusic: repeatMode
+    }
+  }, () => {
+    const isMusic = globalState?.player?.nowPlayingItem?.podcastMedium === 'music'
+    setRNTPRepeatMode(isMusic)
+  })
+}
+
+export const setQueueEnabledWhileMusicIsPlaying = async (val: boolean) => {
+  const globalState = getGlobal()
+  await setQueueEnabledWhileMusicIsPlayingService(val)
+
+  setGlobal({
+    player: {
+      ...globalState.player,
+      queueEnabledWhileMusicIsPlaying: val
+    }
+  })
+}
+
+export const setAutoPlayEpisodesFromPodcast = (val: AutoPlayEpisodesFromPodcast) => {
+  val = val || 'off'
+  const globalState = getGlobal()
+  setGlobal({
+    player: {
+      ...globalState.player,
+      autoPlayEpisodesFromPodcast: val
+    }
+  },
+  async () => {
+    await setAutoPlayEpisodesFromPodcastService(val)
+  })
 }

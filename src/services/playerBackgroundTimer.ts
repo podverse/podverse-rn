@@ -17,7 +17,7 @@ import {
   playerUpdateUserPlaybackPosition,
   setClipHasEnded
 } from './player'
-import { getEnrichedNowPlayingItemFromLocalStorage, setNowPlayingItemLocally } from './userNowPlayingItem'
+import { getEnrichedNowPlayingItemFromLocalStorageOrRemote, setNowPlayingItemLocally } from './userNowPlayingItem'
 import { removeQueueItem } from './queue'
 import { handleValueStreamingTimerIncrement } from './v4v/v4vStreaming'
 import { addOrUpdateHistoryItem } from './userHistoryItem'
@@ -98,7 +98,7 @@ export const syncAudioNowPlayingItemWithTrack = (track: any, callback?: any) => 
         if (retryIntervalCount >= 10) {
           clearInterval(retryInterval)
         } else {
-          const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(currentTrackId)
+          const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorageOrRemote(currentTrackId)
           if (currentNowPlayingItem && retryInterval) {
             clearInterval(retryInterval)
             await handleSyncNowPlayingItem(currentNowPlayingItem, callback)
@@ -182,17 +182,11 @@ const handleBackgroundTimerInterval = (isVideo: boolean) => {
   }
 
   try {
-    if (v4v?.streamingValueOn) {
-      handleValueStreamingTimerIncrement(isVideo)
-    }
-  } catch (error) {
-    errorLogger(_fileName, 'handleBackgroundTimerInterval handleValueStreamingTimerIncrement', error?.message)
-  }
-
-  try {
     if (!!v4v) {
       handleIntervalEnrichGlobalState(session)
-      handleValueStreamingTimerIncrement(isVideo)
+      if (v4v?.streamingValueOn) {
+        handleValueStreamingTimerIncrement(isVideo)
+      }
     }
   } catch (error) {
     errorLogger(_fileName, 'handleBackgroundTimerInterval handleValueStreamingTimerIncrement', error?.message)

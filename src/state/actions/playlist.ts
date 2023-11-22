@@ -4,6 +4,7 @@ import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import {
   addOrRemovePlaylistItem as addOrRemovePlaylistItemService,
+  addOrRemovePlaylistItemToDefaultPlaylist as addOrRemovePlaylistItemToDefaultPlaylistService,
   createPlaylist as createPlaylistService,
   deletePlaylistOnServer as deletePlaylistService,
   getPlaylist as getPlaylistService,
@@ -14,13 +15,47 @@ import {
 
 export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: string, mediaRefId?: string) => {
   const globalState = getGlobal()
-  const { playlistItemCount } = await addOrRemovePlaylistItemService(playlistId, episodeId, mediaRefId)
+  const { playlistItemCount, actionTaken } = await addOrRemovePlaylistItemService(playlistId, episodeId, mediaRefId)
   const playlistsFlatListData = globalState.playlists.myPlaylists
   const foundIndex = playlistsFlatListData.findIndex((x: any) => x.id === playlistId)
 
   if (foundIndex > -1) {
+    const previousItemsOrder = playlistsFlatListData?.[foundIndex]?.itemsOrder
+    const newItemsOrder = actionTaken === 'removed'
+      ? previousItemsOrder.filter((id: string) => id !== episodeId && id !== mediaRefId)
+      : previousItemsOrder.concat(episodeId || mediaRefId)
     playlistsFlatListData[foundIndex] = {
       ...playlistsFlatListData[foundIndex],
+      itemsOrder: newItemsOrder,
+      itemCount: playlistItemCount
+    }
+  }
+
+  setGlobal({
+    playlists: {
+      myPlaylists: playlistsFlatListData,
+      subscribedPlaylists: globalState.playlists.subscribedPlaylists
+    }
+  })
+
+  return playlistItemCount
+}
+
+export const addOrRemovePlaylistItemToDefaultPlaylist = async (episodeId?: string, mediaRefId?: string) => {
+  const globalState = getGlobal()
+  const { playlistId, playlistItemCount, actionTaken } =
+    await addOrRemovePlaylistItemToDefaultPlaylistService(episodeId, mediaRefId)
+  const playlistsFlatListData = globalState.playlists.myPlaylists
+  const foundIndex = playlistsFlatListData.findIndex((x: any) => x.id === playlistId)
+
+  if (foundIndex > -1) {
+    const previousItemsOrder = playlistsFlatListData?.[foundIndex]?.itemsOrder
+    const newItemsOrder = actionTaken === 'removed'
+      ? previousItemsOrder.filter((id: string) => id !== episodeId && id !== mediaRefId)
+      : previousItemsOrder.concat(episodeId || mediaRefId)
+    playlistsFlatListData[foundIndex] = {
+      ...playlistsFlatListData[foundIndex],
+      itemsOrder: newItemsOrder,
       itemCount: playlistItemCount
     }
   }

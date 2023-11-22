@@ -18,6 +18,7 @@ type Props = {
   itemType?: 'chapter' | 'clip'
   navigation: any
   onLayout?: any
+  playlistId?: string
   showEpisodeInfo?: boolean
   showPodcastInfo?: boolean
   testID: string
@@ -38,6 +39,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       item,
       itemType,
       loadChapterOnPlay,
+      playlistId,
       onLayout,
       showEpisodeInfo,
       showPodcastInfo,
@@ -163,6 +165,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
               item={item}
               itemType={itemType ? itemType : 'clip'}
               loadChapterOnPlay={loadChapterOnPlay}
+              playlistId={playlistId}
               testID={testID}
               timeLabel={timeLabelText}
               transparent={transparent}

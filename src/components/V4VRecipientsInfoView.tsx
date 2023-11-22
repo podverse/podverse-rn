@@ -45,6 +45,9 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
     const localPercentage = 100 - remotePercentage
 
     const combinedFeeTransactions = feeTransactions.concat(parentFeeTransactions)
+    const hasTransactions = combinedFeeTransactions?.length > 0 || nonFeeTransactions?.length > 0
+
+    if (!hasTransactions) return null
 
     const renderTransactionSection = (data: any, index: number) => {
       const { customKey, customValue, name, amount, split, address } = data.normalizedValueRecipient
@@ -133,10 +136,10 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
           {combinedFeeTransactions?.map((data, index) => renderTransactionSection(data, index))}
           <View style={styles.recipientTableFooter}>
             <Text testID={`${testID}_boost_recipient_amount_total`} style={styles.recipientFooterText}>
-              {`${totalAmountText}: ${parsedTotalAmount}`}
+              {`${totalAmountText}: ${parsedTotalAmount}*`}
             </Text>
             <Text style={styles.disclaimerText} testID='boost_dropdown_banner_disclaimer_text'>
-              {`(${translate('Actual amount will be higher due to network fees')})`}
+              {`*${translate('Actual amount will be higher due to network fees')}`}
             </Text>
           </View>
         </View>

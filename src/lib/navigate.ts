@@ -185,3 +185,64 @@ export const handlePodcastScreenNavigateWithParams = async (
     forceRequest: options?.forceRequest
   })
 }
+
+/*
+  handleAlbumScreenNavigateWithParams
+  the AlbumScreen requires some params passed in the navigation header
+  in order to load with the correct filters on initial render
+*/
+type AlbumScreenNavigateWithParamsOptions = {
+  forceRequest?: boolean
+}
+export const handleAlbumScreenNavigateWithParams = async (
+  navigation: any,
+  podcastId: string,
+  podcast?: Podcast | null,
+  options?: AlbumScreenNavigateWithParamsOptions
+) => {
+  const hasInternetConnection = await hasValidNetworkConnection()
+
+  navigation.navigate(PV.RouteNames.AlbumScreen, {
+    podcast,
+    podcastId,
+    addByRSSPodcastFeedUrl: podcast?.addByRSSPodcastFeedUrl,
+    hasInternetConnection,
+    forceRequest: options?.forceRequest
+  })
+}
+
+/*
+  Navigate to the AlbumScreen located within the MyLibraryStackNavigator.
+ */
+  export const navigateToAlbumScreenWithNowPlayingItem = (
+    navigation: any,
+    item: NowPlayingItem
+  ) => {
+    const episode = convertNowPlayingItemToEpisode(item)
+    const podcast = episode?.podcast
+    navigateToAlbumScreenWithPodcast(navigation, podcast, item.addByRSSPodcastFeedUrl)
+  }
+
+  export const navigateToAlbumScreenWithPodcast =
+    async (navigation: any, podcast: any, addByRSSPodcastFeedUrl?: string) => {
+    const hasInternetConnection = await hasValidNetworkConnection()
+    navigateBackToRoot(navigation)
+
+    navigation.navigate({ routeName: PV.RouteNames.MyLibraryScreen })
+    setTimeout(() => {
+      navigation.navigate({ routeName: PV.RouteNames.AlbumsScreen })
+      setTimeout(() => {
+        navigation.navigate({
+          routeName: PV.RouteNames.AlbumScreen,
+          params: {
+            podcast,
+            podcastId: podcast?.id,
+            podcastTitle: podcast?.title,
+            addByRSSPodcastFeedUrl,
+            hasInternetConnection,
+            forceRequest: false
+          }
+        })
+      }, 333)
+    }, 333)
+  }

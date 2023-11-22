@@ -40,9 +40,10 @@ import {
   audioHandlePauseWithUpdate,
   audioPlayNextFromQueue,
   audioHandleSeekToWithUpdate,
-  audioSyncPlayerWithQueue,
+  debouncedAudioSyncPlayerWithQueue,
   audioUpdateCurrentTrack,
-  audioTogglePlay
+  audioTogglePlay,
+  audioPlayPreviousFromQueue
 } from './playerAudio'
 import { audioUpdateTrackPlayerCapabilities } from './playerAudioSetup'
 import { saveOrResetCurrentlyPlayingItemInHistory } from './userHistoryItem'
@@ -196,33 +197,37 @@ export const playerUpdateUserPlaybackPosition = async (skipSetNowPlaying?: boole
   }
 }
 
+type PlayerLoadNowPlayingItemOptions = {
+  forceUpdateOrderDate: boolean
+  itemToSetNextInQueue: NowPlayingItem | null
+  previousNowPlayingItem: NowPlayingItem | null
+  shouldPlay: boolean
+  secondaryQueuePlaylistId?: string
+}
+
 export const playerLoadNowPlayingItem = async (
   item: NowPlayingItem,
-  shouldPlay: boolean,
-  forceUpdateOrderDate: boolean,
-  itemToSetNextInQueue: NowPlayingItem | null,
-  previousNowPlayingItem: NowPlayingItem | null
+  options: PlayerLoadNowPlayingItemOptions
 ) => {
   try {
-    if (!item) {
+    if (!item?.episodeId) {
       return
     }
+
+    const { forceUpdateOrderDate, itemToSetNextInQueue, previousNowPlayingItem,
+      secondaryQueuePlaylistId, shouldPlay } = options
 
     const skipSetNowPlaying = true
     await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
 
     if (!checkIfVideoFileOrVideoLiveType(itemToSetNextInQueue?.episodeMediaType)) {
-      if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
-        await audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
-      } else {
-        audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
-      }
+      await audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
     }
 
     if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
       await videoLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, previousNowPlayingItem)
     } else {
-      await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate)
+      await audioLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, secondaryQueuePlaylistId)
     }
   } catch (error) {
     errorLogger(_fileName, 'playerLoadNowPlayingItem service', error)
@@ -319,7 +324,7 @@ export const getPlaybackSpeed = async () => {
 
     const nowPlayingItem = getGlobal().player?.nowPlayingItem
 
-    if (rate && !nowPlayingItem?.liveItem) {
+    if (rate && !nowPlayingItem?.liveItem && nowPlayingItem?.podcastMedium !== PV.Medium.music) {
       return parseFloat(rate)
     } else {
       return 1.0
@@ -387,6 +392,15 @@ export const playerGetRate = async () => {
   return playerRate
 }
 
+export const playerPlayPreviousFromQueue = async () => {
+  const playerType = await playerCheckActiveType()
+  if (playerType === PV.Player.playerTypes.isAudio) {
+    await audioPlayPreviousFromQueue()
+  } else if (playerType === PV.Player.playerTypes.isVideo) {
+    // NO CORRESPONDING VIDEO FUNCTION NEEDED
+  }
+}
+
 export const playerPlayNextFromQueue = async () => {
   const playerType = await playerCheckActiveType()
   if (playerType === PV.Player.playerTypes.isAudio) {
@@ -410,7 +424,7 @@ export const playerPlayNextFromQueue = async () => {
 export const playerSyncPlayerWithQueue = async () => {
   const playerType = await playerCheckActiveType()
   if (playerType === PV.Player.playerTypes.isAudio) {
-    await audioSyncPlayerWithQueue()
+    await debouncedAudioSyncPlayerWithQueue()
   } else if (playerType === PV.Player.playerTypes.isVideo) {
     // NO CORRESPONDING VIDEO FUNCTION NEEDED
     // QUEUE CURRENTLY DISABLED FOR VIDEO

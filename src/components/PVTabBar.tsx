@@ -16,7 +16,7 @@ export const PVTabBar = (props: Props) => {
 
   return (
     <SafeAreaView style={{ flex: 0 }} testID='tabbar'>
-      {player && player.showMiniPlayer && player.nowPlayingItem && <MiniPlayer navigation={navigation} />}
+      {player && player.showMiniPlayer && <MiniPlayer navigation={navigation} />}
       <BottomTabBar
         {...props}
         activeTintColor={PV.Colors.skyLight}

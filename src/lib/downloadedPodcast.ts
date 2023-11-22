@@ -82,7 +82,10 @@ export const getDownloadedEpisodes = async (
   sort?: string
 ) => {
   const finalEpisodes = []
-  const downloadedPodcasts = await getDownloadedPodcasts(searchPodcastTitle, hasVideo)
+  const downloadedPodcasts = await getDownloadedPodcasts({
+    searchTitle: searchPodcastTitle,
+    hasVideo
+  })
 
   for (const podcast of downloadedPodcasts) {
     for (const episode of podcast.episodes) {
@@ -112,17 +115,28 @@ export const getDownloadedPodcast = async (podcastId: string) => {
   return downloadedPodcast
 }
 
-export const getDownloadedPodcasts = async (searchTitle?: string, hasVideo?: boolean) => {
+type GetDownloadedPodcastsParams = {
+  hasVideo?: boolean
+  isMusic?: boolean
+  podcastsOnly?: boolean
+  searchTitle?: string
+}
+export const getDownloadedPodcasts = async (options?: GetDownloadedPodcastsParams) => {
   try {
+    const { hasVideo, isMusic, podcastsOnly, searchTitle } = options || {}
     const itemsString = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_PODCASTS)
     let items = itemsString ? JSON.parse(itemsString) : []
 
-    if (searchTitle) {
-      items = items.filter((podcast: any) => checkIfContainsStringMatch(searchTitle, podcast.title))
+    if (isMusic) {
+      items = items.filter((podcast: any) => podcast.medium === PV.Medium.music)
+    } else if (hasVideo) {
+      items = items.filter((podcast: any) => podcast.hasVideo)
+    } else if (podcastsOnly) {
+      items = items.filter((podcast: any) => podcast.medium === PV.Medium.podcast)
     }
 
-    if (hasVideo) {
-      items = items.filter((podcast: any) => podcast.hasVideo)
+    if (searchTitle) {
+      items = items.filter((podcast: any) => checkIfContainsStringMatch(searchTitle, podcast.title))
     }
 
     return items

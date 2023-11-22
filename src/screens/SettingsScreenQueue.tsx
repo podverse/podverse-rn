@@ -8,6 +8,7 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { setAutoQueueDownloadsOn, updateAutoQueueSettingsPosition } from '../state/actions/autoQueue'
+import { setAutoPlayEpisodesFromPodcast, setQueueEnabledWhileMusicIsPlaying } from '../state/actions/queue'
 import { setAddCurrentItemNextInQueue } from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent } from '../styles'
 
@@ -59,18 +60,41 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
     }
   }
 
+  _setAutoPlayEpisodesFromPodcast = (value: string) => {
+    const autoPlayEpisodesFromPodcastOptions = PV.Queue.autoPlayEpisodesFromPodcastOptions
+    const autoPlayEpisodesFromPodcastSelected =
+      autoPlayEpisodesFromPodcastOptions.find((x: any) => x.value === value)
+
+    if (autoPlayEpisodesFromPodcastSelected?.value) {
+      setAutoPlayEpisodesFromPodcast(autoPlayEpisodesFromPodcastSelected.value)
+    }
+  }
+
   _toggleAutoQueueDownloadsOn = () => {
     const { autoQueueDownloadsOn } = this.global
     setAutoQueueDownloadsOn(!autoQueueDownloadsOn)
   }
 
+  _toggleEnableQueueWhileMusicIsPlaying = () => {
+    const queueEnabledWhileMusicIsPlaying = this.global?.player?.queueEnabledWhileMusicIsPlaying
+    setQueueEnabledWhileMusicIsPlaying(!queueEnabledWhileMusicIsPlaying)
+  }
+
   render() {
     const { isLoading } = this.state
-    const { addCurrentItemNextInQueue, autoQueueSettingsPosition, autoQueueDownloadsOn, globalTheme } = this.global
+    const { addCurrentItemNextInQueue, autoQueueSettingsPosition,
+      autoQueueDownloadsOn, globalTheme } = this.global
+    const queueEnabledWhileMusicIsPlaying = this.global?.player?.queueEnabledWhileMusicIsPlaying
+    const autoPlayEpisodesFromPodcast = this.global?.player?.autoPlayEpisodesFromPodcast
+    
     const isDarkMode = globalTheme === darkTheme
 
     const autoQueueOptionSelected = PV.Queue.autoQueuePositionOptions.find((option: any) => {
       return option.value === autoQueueSettingsPosition
+    })
+
+    const autoPlayEpisodesFromPodcastSelected = PV.Queue.autoPlayEpisodesFromPodcastOptions.find((option: any) => {
+      return option.value === autoPlayEpisodesFromPodcast
     })
 
     return (
@@ -81,6 +105,50 @@ export class SettingsScreenQueue extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && (
           <>
+            <View style={[core.itemWrapperReducedHeight]}>
+              <RNPickerSelect
+                fixAndroidTouchableBug
+                items={PV.Queue.autoPlayEpisodesFromPodcastOptions}
+                onValueChange={this._setAutoPlayEpisodesFromPodcast}
+                style={hidePickerIconOnAndroidTransparent(isDarkMode)}
+                useNativeAndroidPickerStyle={false}
+                value={autoPlayEpisodesFromPodcast}>
+                <View
+                  accessible
+                  accessibilityLabel={`${translate('Auto-play episodes from podcast')} ${
+                    autoPlayEpisodesFromPodcastSelected?.label
+                  }`}
+                  importantForAccessibility='yes'
+                  style={core.selectorWrapper}>
+                  <View
+                    accessible={false}
+                    importantForAccessibility='no-hide-descendants'
+                    style={[core.selectorWrapperLeft, { minWidth: null }]}>
+                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[core.pickerSelect, globalTheme.text]}>
+                      {autoPlayEpisodesFromPodcastSelected?.label}
+                    </Text>
+                    <Icon name='angle-down' size={14} style={[core.pickerSelectIcon, globalTheme.text]} />
+                  </View>
+                  <View
+                    accessible={false}
+                    importantForAccessibility='no-hide-descendants'
+                    style={core.selectorWrapperRight}>
+                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[core.pickerSelect, globalTheme.text]}>
+                      {translate('Auto-play episodes from podcast')}
+                    </Text>
+                  </View>
+                </View>
+              </RNPickerSelect>
+            </View>
+            <View style={core.itemWrapper}>
+              <SwitchWithText
+                onValueChange={this._toggleEnableQueueWhileMusicIsPlaying}
+                accessibilityLabel={translate('Settings - Queue - enable queue while music is playing')}
+                testID={`${testIDPrefix}_enable_queue_while_music`}
+                text={translate('Settings - Queue - enable queue while music is playing')}
+                value={!!queueEnabledWhileMusicIsPlaying}
+              />
+            </View>
             <View style={core.itemWrapper}>
               <SwitchWithText
                 onValueChange={this._toggleAddCurrentItemNextInQueue}

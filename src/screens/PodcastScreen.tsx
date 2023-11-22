@@ -116,39 +116,17 @@ type State = {
 const testIDPrefix = 'podcast_screen'
 
 const getScreenTitle = () => {
-  const { appMode } = getGlobal()
-  let screenTitle = translate('Podcast')
-
-  if (appMode === PV.AppMode.videos) {
-    screenTitle = translate('Channel')
-  }
-
+  const screenTitle = translate('Podcast')
   return screenTitle
 }
 
-const getSearchPlaceholder = (viewType: string) => {
-  const { appMode } = getGlobal()
-  let searchPlaceholder = translate('Search episodes')
-
-  if (viewType === PV.Filters._clipsKey) {
-    searchPlaceholder = translate('Search clips')
-  } else {
-    if (appMode === PV.AppMode.videos) {
-      searchPlaceholder = translate('Search videos')
-    }
-  }
-
+const getSearchPlaceholder = () => {
+  const searchPlaceholder = translate('Search podcasts')
   return searchPlaceholder
 }
 
 const getDefaultSelectedFilterLabel = () => {
-  const { appMode } = getGlobal()
-  let defaultSelectedFilterLabel = translate('Episodes')
-
-  if (appMode === PV.AppMode.videos) {
-    defaultSelectedFilterLabel = translate('Videos')
-  }
-
+  const defaultSelectedFilterLabel = translate('Episodes')
   return defaultSelectedFilterLabel
 }
 
@@ -680,7 +658,8 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _handleToggleDeleteDownloadedEpisodesDialog = () => {
-    const DOWNLOADED_EPISODES_DELETE = PV.Alerts.DOWNLOADED_EPISODES_DELETE(() => this._handleDeleteDownloadedEpisodes)
+    const DOWNLOADED_EPISODES_DELETE = PV.Alerts.DOWNLOADED_EPISODES_DELETE(
+      this._handleDeleteDownloadedEpisodesForThisPodcast)
     Alert.alert(
       DOWNLOADED_EPISODES_DELETE.title,
       DOWNLOADED_EPISODES_DELETE.message,
@@ -688,7 +667,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleDeleteDownloadedEpisodes = async () => {
+  _handleDeleteDownloadedEpisodesForThisPodcast = async () => {
     const { podcast, podcastId } = this.state
     const id = podcast?.id || podcastId
     try {

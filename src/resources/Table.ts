@@ -12,6 +12,15 @@ export const Table = {
         width: 78,
         margin: 10
       }
+    },
+    album: {
+      wrapper: {
+        height: 118
+      },
+      image: {
+        height: 94,
+        width: 94
+      }
     }
   },
   sectionHeader: {

@@ -20,7 +20,7 @@ import { CarPlay } from 'react-native-carplay'
 import Config from 'react-native-config'
 import { endConnection as iapEndConnection, initConnection as iapInitConnection } from 'react-native-iap'
 import { NavigationStackOptions } from 'react-navigation-stack'
-import React, { getGlobal, addCallback } from 'reactn'
+import React, { setGlobal, addCallback } from 'reactn'
 import Popover from 'react-native-popover-view'
 import {
   ActionSheet,
@@ -43,6 +43,7 @@ import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { handlePodcastScreenNavigateWithParams,
+  navigateToAlbumScreenWithPodcast,
   navigateToEpisodeScreenInPodcastsStackNavigatorWithIds } from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { resetAllAppKeychain } from '../lib/secutity'
@@ -66,6 +67,7 @@ import { getAddByRSSPodcastsLocally, parseAllAddByRSSPodcasts } from '../service
 import { playerUpdateUserPlaybackPosition } from '../services/player'
 import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudioSetup'
 import { getPodcast, getPodcasts } from '../services/podcast'
+import { setAutoPlayEpisodesFromPodcast } from '../services/queue'
 import { getSavedQueryPodcastsScreenSort, setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
 import { getNowPlayingItem, getNowPlayingItemLocally } from '../services/userNowPlayingItem'
@@ -106,6 +108,7 @@ import { updateScreenReaderEnabledState } from '../state/actions/screenReader'
 import { initializeSettings, setPodcastsGridView } from '../state/actions/settings'
 import { setShouldshowPodcastsListPopover } from '../state/actions/podcasts-ui'
 import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
+import { getLoggedInUserPlaylistsCombined } from '../state/actions/user'
 import { v4vInitialize, v4vRefreshConnectedProviders } from '../state/actions/v4v/v4v'
 import { core } from '../styles'
 
@@ -148,20 +151,12 @@ const horizontalRowHeight = 98
 const dividerHeight = 1
 
 const getScreenTitle = () => {
-  const { appMode } = getGlobal()
-  let screenTitle = translate('Podcasts')
-  if (appMode === PV.AppMode.videos) {
-    screenTitle = translate('Channels')
-  }
+  const screenTitle = translate('Podcasts')
   return screenTitle
 }
 
 const getSearchPlaceholder = () => {
-  const { appMode } = getGlobal()
-  let searchPlaceholder = translate('Search podcasts')
-  if (appMode === PV.AppMode.videos) {
-    searchPlaceholder = translate('Search channels')
-  }
+  const searchPlaceholder = translate('Search podcasts')
   return searchPlaceholder
 }
 
@@ -251,8 +246,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     PVEventEmitter.on(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED, this._handleTrackingTermsAcknowledged)
-    PVEventEmitter.on(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
     PVEventEmitter.on(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
+    PVEventEmitter.on(PV.Events.USER_LOGGED_IN, this._handleUserLoggedIn)
 
     updateScreenReaderEnabledState()
 
@@ -269,12 +264,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5'),
           AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5'),
-          AsyncStorage.setItem(PV.Keys.APP_MODE, PV.AppMode.podcasts),
           AsyncStorage.setItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.REFRESH_SUBSCRIPTIONS_ON_LAUNCH, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.SETTING_SHOULD_DISPLAY_NON_TOC_CHAPTERS, 'TRUE'),
+          setAutoPlayEpisodesFromPodcast('newer'),
           resetAllAppKeychain()
         ])
 
@@ -310,11 +305,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
       this._handleNavigateToAddPodcastByRSSAuthScreen
     )
     PVEventEmitter.removeListener(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
-    PVEventEmitter.removeListener(PV.Events.APP_MODE_CHANGED, this._handleAppModeChanged)
     PVEventEmitter.removeListener(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
+    PVEventEmitter.removeListener(PV.Events.USER_LOGGED_IN, this._handleUserLoggedIn)
     // this._unsubscribe?.()
 
     this.pvNativeEventSubscriptions.forEach((subscription) => subscription.remove())
+  }
+
+  _handleUserLoggedIn = () => {
+    this.handleSelectFilterItem(PV.Filters._subscribedKey)
   }
 
   handleNoficationOpened = async (remoteMessage: any, goBackToRootScreen = false) => {
@@ -375,6 +374,31 @@ export class PodcastsScreen extends React.Component<Props, State> {
       messaging()
         .getInitialNotification()
         .then(this.handleInitialNotification)
+
+      messaging().onMessage((notification) => {
+        const data = notification.data
+        const { podcastId, episodeId, notificationType, episodeTitle,
+          podcastTitle, title: notificationTitle } = data || {}
+        const image = data?.fcm_options?.image
+        const title = podcastTitle
+        const description = notificationType === 'live'
+          ? notificationTitle
+          : episodeTitle
+
+        if(AppState.currentState === "active") {
+          setGlobal({
+            bannerInfo: {
+              podcastId,
+              episodeId,
+              show: true,
+              title,
+              description,
+              imageUrl: image,
+              type: 'NOTIFICATION'
+            }
+          })
+        }
+      })
     }
 
     // DEBUG: Make sure remote debugging is disabled in the dev environment
@@ -411,20 +435,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         }
       }
     )
-  }
-
-  _handleAppModeChanged = () => {
-    const { queryFrom } = this.state
-
-    if (queryFrom === PV.Filters._episodesKey) {
-      this.handleSelectFilterItem(PV.Filters._allPodcastsKey)
-    } else {
-      this._onRefresh()
-    }
-
-    this.props.navigation.setParams({
-      _screenTitle: getScreenTitle()
-    })
   }
 
   _handleOrientationChange = () => {
@@ -560,10 +570,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
           const mediaRef = await getMediaRef(mediaRefId)
           if (mediaRef) {
             const newItem = convertToNowPlayingItem(mediaRef, null, null)
-            const shouldPlay = true
-            const forceUpdateOrderDate = false
-            const setCurrentItemNextInQueue = true
-            await playerLoadNowPlayingItem(newItem, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+            await playerLoadNowPlayingItem(newItem, {
+              forceUpdateOrderDate: false,
+              setCurrentItemNextInQueue: true,
+              shouldPlay: true
+            })
           }
         }
 
@@ -653,6 +664,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
           } else if (path === PV.DeepLinks.XMPP.path) {
             await navigate(PV.RouteNames.MoreScreen)
             await navigate(PV.RouteNames.ContactXMPPChatScreen)
+          } else if (path === PV.DeepLinks.Albums.path) {
+            await navigate(PV.RouteNames.MyLibraryScreen)
+            await navigate(PV.RouteNames.AlbumsScreen)
+          } else if (path === PV.DeepLinks.Album.pathPrefix) {
+            await navigate(PV.RouteNames.MyLibraryScreen)
+            setTimeout(() => {
+              navigate(PV.RouteNames.AlbumsScreen)
+              setTimeout(() => {
+                navigate(PV.RouteNames.AlbumScreen, {
+                  podcastId: id
+                })
+              }, 333)
+            }, 333)
           }
 
           // V4V PROVIDERS:
@@ -685,7 +709,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // before getting the latest from server and parsing the addByPodcastFeedUrls in getAuthUserInfo.
     await getAuthenticatedUserInfoLocally()
     const savedQuerySort = await getSavedQueryPodcastsScreenSort()
-    await combineWithAddByRSSPodcasts(searchBarText, savedQuerySort)
+
+    // Set the subscribedPodcasts immediately on state, without waiting for local parsing,
+    // then update subscribedPodcasts again combined with addByRSS feeds.
+    const initialPodcastsAllMediums = await combineWithAddByRSSPodcasts(searchBarText, savedQuerySort)
+    const initalPodcasts = initialPodcastsAllMediums.filter((podcast: Podcast) => podcast.medium === PV.Medium.podcast)
+    this.setState({
+      flatListData: initalPodcasts || [],
+      flatListDataTotalCount: initalPodcasts?.length || 0
+    })
 
     /* Navigate to custom screen on app launch */
     const customLaunchScreen = await getCustomLaunchScreenKey()
@@ -724,7 +756,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     initDownloads()
 
     await Promise.all([
-      this._handleInitialDefaultQuery,
       initAutoQueue(),
       initializePlayer(),
       initializePlayerSettings()
@@ -734,6 +765,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // as the nowPlayingItem may affect when v4v buttons
     // are rendered on the PlayerScreen
     await v4vInitialize()
+
+    // This is an initialization step that can happen in the background.
+    // We need playlists in global state at all times so we can determine
+    // when an item is already in one of your playlists.
+    getLoggedInUserPlaylistsCombined()
 
     this._setDownloadedDataIfOffline()
     downloadedEpisodeDeleteMarked()
@@ -748,9 +784,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { isInMaintenanceMode } = this.global
     if (!isInMaintenanceMode) {
       const isConnected = await hasValidNetworkConnection()
-      const preventIsLoading = true
+      const preventIsLoading = false
       const preventAutoDownloading = false
       const keepSearchTitle = false
+      const retainPreviousFlatListData = true
       if (isConnected) {
         const refreshSubscriptionsOnLaunch = await AsyncStorage.getItem(PV.Keys.REFRESH_SUBSCRIPTIONS_ON_LAUNCH)
         const preventParseCustomRSSFeeds = !refreshSubscriptionsOnLaunch
@@ -761,7 +798,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
             preventIsLoading,
             preventAutoDownloading,
             keepSearchTitle,
-            preventParseCustomRSSFeeds
+            preventParseCustomRSSFeeds,
+            retainPreviousFlatListData
           )
         })
       } else {
@@ -795,13 +833,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
     preventIsLoading?: boolean,
     preventAutoDownloading?: boolean,
     keepSearchTitle?: boolean,
-    preventParseCustomRSSFeeds?: boolean
+    preventParseCustomRSSFeeds?: boolean,
+    retainPreviousFlatListData?: boolean
   ) => {
     if (!selectedKey) {
       return
     }
 
-    const { querySort } = this.state
+    const { flatListData, flatListDataTotalCount, querySort } = this.state
     const sort = getDefaultSortForFilter({
       screenName: PV.RouteNames.PodcastsScreen,
       selectedFilterItemKey: selectedKey,
@@ -816,8 +855,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.setState(
       {
         endOfResultsReached: false,
-        flatListData: [],
-        flatListDataTotalCount: null,
+        flatListData: retainPreviousFlatListData ? flatListData : [],
+        flatListDataTotalCount: retainPreviousFlatListData ? flatListDataTotalCount : null,
         isLoadingMore: !preventIsLoading,
         queryFrom: selectedKey,
         queryPage: 1,
@@ -1007,12 +1046,18 @@ export class PodcastsScreen extends React.Component<Props, State> {
   )
 
   _onPodcastItemSelected = (podcast: Podcast) => {
-    handlePodcastScreenNavigateWithParams(
-      this.props.navigation,
-      podcast.id,
-      podcast,
-      { forceRequest: false }
-    )
+    const { navigation } = this.props
+    const isMusic = podcast?.medium === PV.Medium.music
+    if (isMusic) {
+      navigateToAlbumScreenWithPodcast(navigation, podcast)
+    } else {
+      handlePodcastScreenNavigateWithParams(
+        navigation,
+        podcast.id,
+        podcast,
+        { forceRequest: false }
+      )
+    }
   }
 
   _onPodcastItemLongPressed = (item: Podcast) => {
@@ -1110,11 +1155,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleSearchBarTextQuery = () => {
+  _handleSearchBarTextQuery = async () => {
     const { queryFrom, querySort, searchBarText, tempQueryEnabled } = this.state
     if (!searchBarText) {
       this._handleRestoreSavedQuery()
     } else {
+      const hasInternetConnection = await hasValidNetworkConnection()
       const tempQueryObj: any = !tempQueryEnabled
         ? {
             tempQueryEnabled: true,
@@ -1123,7 +1169,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           }
         : {}
       this.setState(tempQueryObj, () => {
-        const queryFrom = PV.Filters._allPodcastsKey
+        const queryFrom = !hasInternetConnection ? PV.Filters._downloadedKey : PV.Filters._allPodcastsKey
         const preventIsLoading = false
         const preventAutoDownloading = true
         const keepSearchTitle = true
@@ -1150,22 +1196,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleSearchNavigation = () => {
-    this.props.navigation.navigate(PV.RouteNames.SearchScreen)
-  }
-
-  _handleScanQRCodeNavigation = () => {
-    // this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
-  }
-
-  _handleNoResultsTopAction = () => {
-    if (Config.DEFAULT_ACTION_NO_SUBSCRIBED_PODCASTS === PV.Keys.DEFAULT_ACTION_BUTTON_SCAN_QR_CODE) {
-      this._handleScanQRCodeNavigation()
-    } else {
-      this._handleSearchNavigation()
-    }
-  }
-
   _handleDataSettingsWifiOnly = () => {
     AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
     this._initializeScreenData()
@@ -1179,27 +1209,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     Linking.openURL(createEmailLinkUrl(PV.Emails.PODCAST_REQUEST))
   }
 
-  _getFlatListData = () => {
-    const { isLoadingMore, queryFrom } = this.state
-    const { subscribedPodcasts = [], subscribedPodcastsTotalCount = 0 } = this.global
-    let flatListData = []
-    let flatListDataTotalCount = null
-    if (isLoadingMore && queryFrom === PV.Filters._subscribedKey) {
-      // do nothing
-    } else if (queryFrom === PV.Filters._subscribedKey) {
-      flatListData = subscribedPodcasts
-      flatListDataTotalCount = subscribedPodcastsTotalCount
-    } else {
-      flatListData = this.state?.flatListData || []
-      flatListDataTotalCount = this.state?.flatListDataTotalCount || []
-    }
-
-    return {
-      flatListData,
-      flatListDataTotalCount
-    }
-  }
-
   _getItemLayout = (_: any, index: number) => {
     return {
       length: horizontalRowHeight + dividerHeight,
@@ -1211,6 +1220,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const {
+      flatListData,
+      flatListDataTotalCount,
       isInitialLoadFinished,
       isLoadingMore,
       isRefreshing,
@@ -1231,8 +1242,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       queryFrom === PV.Filters._subscribedKey && (!subscribedPodcastIds || subscribedPodcastIds.length === 0)
 
     const isCategoryScreen = queryFrom === PV.Filters._categoryKey
-
-    const { flatListData, flatListDataTotalCount } = this._getFlatListData()
 
     const hasANotch = hasNotch() || hasDynamicIsland()
     const popoverYOffset = hasANotch ? 100 : 40
@@ -1368,15 +1377,18 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _querySubscribedPodcasts = async (preventAutoDownloading?: boolean, preventParseCustomRSSFeeds?: boolean) => {
     const { querySort, searchBarText } = this.state
-    await getSubscribedPodcasts(querySort)
+    
+    let subscribedPodcastsAllMediums = await getSubscribedPodcasts(querySort)
 
     await handleUpdateNewEpisodesCount()
 
     if (!preventParseCustomRSSFeeds) {
       if (!searchBarText && preventAutoDownloading) await parseAllAddByRSSPodcasts()
-
-      await combineWithAddByRSSPodcasts(searchBarText, querySort)
+      subscribedPodcastsAllMediums = await combineWithAddByRSSPodcasts(searchBarText, querySort)
     }
+
+    const subscribedPodcasts = subscribedPodcastsAllMediums.filter(
+      (podcast: Podcast) => podcast.medium === PV.Medium.podcast)
 
     if (!preventAutoDownloading) {
       try {
@@ -1391,6 +1403,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     // let syncing with server history data run in the background
     syncNewEpisodesCountWithHistory()
+
+    return subscribedPodcasts
   }
 
   _queryCustomFeeds = async () => {
@@ -1400,12 +1414,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _queryAllPodcasts = async (sort: string | null, page = 1) => {
     const { searchBarText: searchTitle } = this.state
-    const { appMode } = this.global
-    const hasVideo = appMode === PV.AppMode.videos
 
     let localPodcasts = [] as any
     if (searchTitle && page === 1) {
-      localPodcasts = await findCombineWithAddByRSSPodcasts(searchTitle)
+      // When searching on the PodcastsScreen, we want to return ALL podcast results,
+      // including music and video.
+      const medium = searchTitle ? PV.Medium.mixed : PV.Medium.podcast
+      localPodcasts = await findCombineWithAddByRSSPodcasts(medium, searchTitle)
       this.setState({
         queryFrom: PV.Filters._allPodcastsKey,
         flatListData: localPodcasts,
@@ -1421,7 +1436,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       sort,
       page,
       ...(searchTitle ? { searchTitle } : {}),
-      ...(hasVideo ? { hasVideo: true } : {})
+      ...(!searchTitle ? { podcastsOnly: true } : {})
     })
 
     if (searchTitle) {
@@ -1438,13 +1453,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _queryPodcastsByCategory = async (categoryId?: string | null, sort?: string | null, page = 1) => {
-    const { appMode } = this.global
-    const hasVideo = appMode === PV.AppMode.videos
     const results = await getPodcasts({
       categories: categoryId,
       sort,
       page,
-      ...(hasVideo ? { hasVideo: true } : {})
+      podcastsOnly: true
     })
     return results
   }
@@ -1465,7 +1478,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     } as State
 
     let shouldCleanFlatListData = true
-
     try {
       const {
         searchBarText: searchTitle,
@@ -1475,9 +1487,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         selectedCategory,
         selectedCategorySub
       } = prevState
-
-      const { appMode, isInMaintenanceMode } = this.global
-      const hasVideo = appMode === PV.AppMode.videos
+      
+      const { isInMaintenanceMode } = this.global
 
       const hasInternetConnection = await hasValidNetworkConnection()
       const isSubscribedSelected = filterKey === PV.Filters._subscribedKey || queryFrom === PV.Filters._subscribedKey
@@ -1487,7 +1498,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
       if (isDownloadedSelected) {
-        const podcasts = await getDownloadedPodcasts(searchTitle, hasVideo)
+        const podcasts = await getDownloadedPodcasts({
+          searchTitle,
+          podcastsOnly: searchTitle ? false : true
+        })
         newState.flatListData = [...podcasts]
         newState.queryFrom = PV.Filters._downloadedKey
         newState.selectedFilterLabel = await getSelectedFilterLabel(PV.Filters._downloadedKey)
@@ -1498,7 +1512,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
           await getAuthUserInfo() // get the latest subscribedPodcastIds first
           shouldCleanFlatListData = false
         }
-        await this._querySubscribedPodcasts(preventAutoDownloading, preventParseCustomRSSFeeds)
+        const subscribedPodcasts = await this._querySubscribedPodcasts(
+          preventAutoDownloading, preventParseCustomRSSFeeds)
+        newState.flatListData = [...subscribedPodcasts]
+        newState.flatListDataTotalCount = subscribedPodcasts.length
       } else if (isCustomFeedsSelected) {
         const podcasts = await this._queryCustomFeeds()
         newState.flatListData = [...podcasts]
@@ -1519,7 +1536,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedCategorySub),
           sort: filterKey,
           ...(searchTitle ? { searchTitle } : {}),
-          ...(hasVideo ? { hasVideo: true } : {})
+          ...(!searchTitle ? { podcastsOnly: true } : {})
         })
         newState.flatListData = results[0]
         newState.endOfResultsReached = results[0].length < 20

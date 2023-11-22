@@ -72,10 +72,11 @@ export const Alerts = {
         {
           text: translate('Resume'),
           onPress: async () => {
-            const shouldPlay = false
-            const forceUpdateOrderDate = false
-            const setCurrentItemNextInQueue = false
-            await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+            await playerLoadNowPlayingItem(item, {
+              forceUpdateOrderDate: false,
+              setCurrentItemNextInQueue: false,
+              shouldPlay: false
+            })
             callback?.()
           }
         }

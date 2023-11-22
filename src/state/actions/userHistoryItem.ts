@@ -42,27 +42,21 @@ export const clearHistoryItems = async () => {
   return []
 }
 
-export const getHistoryItems = async (page: number, existingItems: any[]) => {
+export const getHistoryItems = async (page: number) => {
   const globalState = getGlobal()
 
-  const { userHistoryItems, userHistoryItemsCount } = await getHistoryItemsService(page)
+  const { userHistoryItems: newUserHistoryItems, userHistoryItemsCount } = await getHistoryItemsService(page)
   await updateHistoryItemsIndex()
   const historyItemsIndex = await getHistoryItemsIndexLocally()
 
   const historyQueryPage = page || 1
-
-  let combinedHistoryItems = [] as any
-  if (historyQueryPage > 1 && Array.isArray(existingItems) && existingItems.length > 0) {
-    combinedHistoryItems = combinedHistoryItems.concat(existingItems)
-  }
-  combinedHistoryItems = combinedHistoryItems.concat(userHistoryItems)
 
   setGlobal({
     session: {
       ...globalState.session,
       userInfo: {
         ...globalState.session.userInfo,
-        historyItems: combinedHistoryItems,
+        historyItems: newUserHistoryItems,
         historyItemsCount: userHistoryItemsCount,
         historyItemsIndex,
         historyQueryPage
@@ -70,7 +64,9 @@ export const getHistoryItems = async (page: number, existingItems: any[]) => {
     }
   })
 
-  return combinedHistoryItems
+  const endOfResultsReached = newUserHistoryItems?.length >= userHistoryItemsCount
+
+  return endOfResultsReached
 }
 
 export const updateHistoryItemsIndex = async () => {

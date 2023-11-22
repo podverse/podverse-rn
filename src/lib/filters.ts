@@ -2,6 +2,104 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { getFlatCategoryItems } from '../services/category'
 
+const getPodcastsTypeSortFilter = (screenName: string, selectedFilterItemKey: string, selectedSortItemKey: string) => {
+  let newSelectedSortItemKey = ''
+  if (selectedFilterItemKey === PV.Filters._downloadedKey || selectedFilterItemKey === PV.Filters._customFeedsKey) {
+    newSelectedSortItemKey = PV.Filters._alphabeticalKey
+  } else if (selectedFilterItemKey === PV.Filters._subscribedKey) {
+    newSelectedSortItemKey =
+      selectedSortItemKey === PV.Filters._mostRecentKey ? PV.Filters._mostRecentKey : PV.Filters._alphabeticalKey
+  } else {
+    newSelectedSortItemKey = !PV.FilterOptions.screenFilters[screenName].sort.includes(newSelectedSortItemKey)
+      ? PV.Filters._topPastWeek
+      : newSelectedSortItemKey
+  }
+  return newSelectedSortItemKey
+}
+
+const generatePodcastsTypeSections = (
+  screenName: string,
+  selectedFilterItemKey: string,
+  flatCategoryItems: any[],
+  includeCategories: boolean
+) => {
+  let sortItems: any[] = PV.FilterOptions.sortItems
+  let filterItems: any[] = []
+  let sections: any[] = []
+  let newSelectedCategoryItemKey = ''
+  let newSelectedCategorySubItemKey = ''
+  if (
+    selectedFilterItemKey === PV.Filters._downloadedKey ||
+    selectedFilterItemKey === PV.Filters._subscribedKey ||
+    selectedFilterItemKey === PV.Filters._customFeedsKey
+  ) {
+    newSelectedCategoryItemKey = ''
+    newSelectedCategorySubItemKey = ''
+    sortItems = sortItems.filter(
+      (item) => item.value === PV.Filters._alphabeticalKey || item.value === PV.Filters._mostRecentKey
+    )
+  } else {
+    if (selectedFilterItemKey === PV.Filters._allPodcastsKey) {
+      newSelectedCategoryItemKey = ''
+      newSelectedCategorySubItemKey = ''
+    }
+    sortItems = sortItems.filter((item) => PV.FilterOptions.screenFilters[screenName].sort.includes(item.value))
+  }
+
+  filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
+    PV.FilterOptions.screenFilters[screenName].type.includes(item.value)
+  )
+
+  sections = includeCategories
+    ? [
+        {
+          title: translate('Filter'),
+          data: filterItems,
+          value: PV.Filters._sectionFilterKey,
+          accessibilityHint: translate(filterAccessibilityHint),
+          accessibilityRole: 'header'
+        },
+        {
+          title: translate('Category'),
+          data: flatCategoryItems,
+          value: PV.Filters._sectionCategoryKey,
+          accessibilityHint: translate(categoryAccessibilityHint),
+          accessibilityRole: 'header'
+        },
+        {
+          title: translate('Sort'),
+          data: sortItems,
+          value: PV.Filters._sectionSortKey,
+          accessibilityHint: translate(sortingFilterAccessibilityHint),
+          accessibilityRole: 'header'
+        }
+      ]
+    : [
+        {
+          title: translate('Filter'),
+          data: filterItems,
+          value: PV.Filters._sectionFilterKey,
+          accessibilityHint: translate(filterAccessibilityHint),
+          accessibilityRole: 'header'
+        },
+        {
+          title: translate('Sort'),
+          data: sortItems,
+          value: PV.Filters._sectionSortKey,
+          accessibilityHint: translate(sortingFilterAccessibilityHint),
+          accessibilityRole: 'header'
+        }
+      ]
+
+    return {
+      filterItems,
+      newSelectedCategoryItemKey,
+      newSelectedCategorySubItemKey,
+      sections,
+      sortItems
+    }
+}
+
 export const getDefaultSortForFilter = (options: any) => {
   const {
     addByRSSPodcastFeedUrl,
@@ -12,6 +110,16 @@ export const getDefaultSortForFilter = (options: any) => {
   } = options
   let newSelectedSortItemKey = selectedSortItemKey
   switch (screenName) {
+    case PV.RouteNames.AlbumScreen:
+      if (addByRSSPodcastFeedUrl) {
+        newSelectedSortItemKey = selectedSortItemKey ? selectedSortItemKey : PV.Filters._mostRecentKey
+      } else if (selectedFilterItemKey === PV.Filters._downloadedKey) {
+        newSelectedSortItemKey = selectedSortItemKey ? selectedSortItemKey : PV.Filters._mostRecentKey
+      }
+      break
+    case PV.RouteNames.AlbumsScreen:
+      newSelectedSortItemKey = getPodcastsTypeSortFilter('AlbumsScreen', selectedFilterItemKey, selectedSortItemKey)
+      break
     case PV.RouteNames.ClipsScreen:
       break
     case PV.RouteNames.EpisodesScreen:
@@ -47,16 +155,7 @@ export const getDefaultSortForFilter = (options: any) => {
       }
       break
     case PV.RouteNames.PodcastsScreen:
-      if (selectedFilterItemKey === PV.Filters._downloadedKey || selectedFilterItemKey === PV.Filters._customFeedsKey) {
-        newSelectedSortItemKey = PV.Filters._alphabeticalKey
-      } else if (selectedFilterItemKey === PV.Filters._subscribedKey) {
-        newSelectedSortItemKey =
-          selectedSortItemKey === PV.Filters._mostRecentKey ? PV.Filters._mostRecentKey : PV.Filters._alphabeticalKey
-      } else {
-        newSelectedSortItemKey = !PV.FilterOptions.screenFilters.PodcastsScreen.sort.includes(newSelectedSortItemKey)
-          ? PV.Filters._topPastWeek
-          : newSelectedSortItemKey
-      }
+      newSelectedSortItemKey = getPodcastsTypeSortFilter('PodcastsScreen', selectedFilterItemKey, selectedSortItemKey)
       break
     case PV.RouteNames.ProfileScreen:
       if (selectedFilterItemKey === PV.Filters._podcastsKey) {
@@ -115,6 +214,55 @@ export const generateSections = (options: any) => {
       !PV.FilterOptions.screenFilters[screenName].type.includes(selectedFilterItemKey))
 
   switch (screenName) {
+    case PV.RouteNames.AlbumScreen:
+      if (addByRSSPodcastFeedUrl) {
+        filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
+          PV.FilterOptions.screenFilters.AlbumScreen.addByPodcastRSSFeedURLType.includes(item.value)
+        )
+        sortItems = sortItems.filter((item) =>
+          PV.FilterOptions.screenFilters.AlbumScreen.addByPodcastRSSFeedURLSort.includes(item.value)
+        )
+      } else if (selectedFilterItemKey === PV.Filters._downloadedKey) {
+        filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
+          PV.FilterOptions.screenFilters.AlbumScreen.type.includes(item.value)
+        )
+        sortItems = sortItems.filter(
+          (item) => item.value === PV.Filters._mostRecentKey || item.value === PV.Filters._oldestKey
+        )
+      } else if (selectedFilterItemKey === PV.Filters._tracksKey) {
+        filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
+          PV.FilterOptions.screenFilters.AlbumScreen.type.includes(item.value)
+        )
+        sortItems = sortItems.filter((item) => PV.FilterOptions.screenFilters.AlbumScreen.sort.includes(item.value))
+      }
+
+      sections = [
+        {
+          title: translate('Filter'),
+          data: filterItems,
+          value: PV.Filters._sectionFilterKey,
+          accessibilityHint: translate(filterAccessibilityHint),
+          accessibilityRole: 'header'
+        },
+        {
+          title: translate('Sort'),
+          data: sortItems,
+          value: PV.Filters._sectionSortKey,
+          accessibilityHint: translate(sortingFilterAccessibilityHint),
+          accessibilityRole: 'header'
+        }
+      ]
+
+      break
+    case PV.RouteNames.AlbumsScreen:
+      const albumsScreenData = generatePodcastsTypeSections(
+        'AlbumsScreen', selectedFilterItemKey, flatCategoryItems, includeCategories)
+      sortItems = albumsScreenData.sortItems
+      filterItems = albumsScreenData.filterItems
+      sections = albumsScreenData.sections
+      newSelectedCategoryItemKey = albumsScreenData.newSelectedCategoryItemKey
+      newSelectedCategorySubItemKey = albumsScreenData.newSelectedCategorySubItemKey
+      break
     case PV.RouteNames.ClipsScreen:
       if (selectedFilterItemKey === PV.Filters._subscribedKey) {
         sortItems = sortItems.filter((item) => PV.FilterOptions.screenFilters.ClipsScreen.sort.includes(item.value))
@@ -286,6 +434,7 @@ export const generateSections = (options: any) => {
       ]
 
       break
+    // TODO: This should be reused for VideoScreen
     case PV.RouteNames.PodcastScreen:
       if (addByRSSPodcastFeedUrl) {
         filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
@@ -343,69 +492,13 @@ export const generateSections = (options: any) => {
 
       break
     case PV.RouteNames.PodcastsScreen:
-      if (
-        selectedFilterItemKey === PV.Filters._downloadedKey ||
-        selectedFilterItemKey === PV.Filters._subscribedKey ||
-        selectedFilterItemKey === PV.Filters._customFeedsKey
-      ) {
-        newSelectedCategoryItemKey = ''
-        newSelectedCategorySubItemKey = ''
-        sortItems = sortItems.filter(
-          (item) => item.value === PV.Filters._alphabeticalKey || item.value === PV.Filters._mostRecentKey
-        )
-      } else {
-        if (selectedFilterItemKey === PV.Filters._allPodcastsKey) {
-          newSelectedCategoryItemKey = ''
-          newSelectedCategorySubItemKey = ''
-        }
-        sortItems = sortItems.filter((item) => PV.FilterOptions.screenFilters.PodcastsScreen.sort.includes(item.value))
-      }
-
-      filterItems = PV.FilterOptions.getTypeItems().filter((item) =>
-        PV.FilterOptions.screenFilters.PodcastsScreen.type.includes(item.value)
-      )
-
-      sections = includeCategories
-        ? [
-            {
-              title: translate('Filter'),
-              data: filterItems,
-              value: PV.Filters._sectionFilterKey,
-              accessibilityHint: translate(filterAccessibilityHint),
-              accessibilityRole: 'header'
-            },
-            {
-              title: translate('Category'),
-              data: flatCategoryItems,
-              value: PV.Filters._sectionCategoryKey,
-              accessibilityHint: translate(categoryAccessibilityHint),
-              accessibilityRole: 'header'
-            },
-            {
-              title: translate('Sort'),
-              data: sortItems,
-              value: PV.Filters._sectionSortKey,
-              accessibilityHint: translate(sortingFilterAccessibilityHint),
-              accessibilityRole: 'header'
-            }
-          ]
-        : [
-            {
-              title: translate('Filter'),
-              data: filterItems,
-              value: PV.Filters._sectionFilterKey,
-              accessibilityHint: translate(filterAccessibilityHint),
-              accessibilityRole: 'header'
-            },
-            {
-              title: translate('Sort'),
-              data: sortItems,
-              value: PV.Filters._sectionSortKey,
-              accessibilityHint: translate(sortingFilterAccessibilityHint),
-              accessibilityRole: 'header'
-            }
-          ]
-
+      const podcastsScreenData = generatePodcastsTypeSections(
+        'PodcastsScreen', selectedFilterItemKey, flatCategoryItems, includeCategories)
+      sortItems = podcastsScreenData.sortItems
+      filterItems = podcastsScreenData.filterItems
+      sections = podcastsScreenData.sections
+      newSelectedCategoryItemKey = podcastsScreenData.newSelectedCategoryItemKey
+      newSelectedCategorySubItemKey = podcastsScreenData.newSelectedCategorySubItemKey
       break
     case PV.RouteNames.ProfileScreen:
       if (selectedFilterItemKey === PV.Filters._podcastsKey) {
@@ -481,7 +574,7 @@ export const getSelectedFilterLabel = async (
   selectedCategoryItemKey?: string | null,
   selectedCategorySubItemKey?: string | null
 ) => {
-  let selectedFilterItem
+  let selectedFilterItem = null
   if (!selectedCategoryItemKey && !selectedCategorySubItemKey) {
     selectedFilterItem = PV.FilterOptions.getTypeItems().find((item) => {
       return item.value === selectedFilterItemKey

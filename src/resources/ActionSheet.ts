@@ -7,6 +7,7 @@ import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
 import { translate } from '../lib/i18n'
 import {
+  navigateToAlbumScreenWithNowPlayingItem,
   navigateToEpisodeScreenWithItem,
   navigateToEpisodeScreenWithItemInCurrentStack,
   navigateToPodcastScreenWithItem
@@ -33,7 +34,7 @@ const mediaMoreButtons = (
     includeGoToEpisodeInEpisodesStack?: boolean | string
     includeGoToEpisodeInCurrentStack?: boolean
   },
-  itemType: 'podcast' | 'episode' | 'clip' | 'chapter' | 'playlist' | 'profile'
+  itemType: 'album' | 'podcast' | 'episode' | 'clip' | 'chapter' | 'playlist' | 'profile' | 'track'
 ) => {
   if (!item || !item.episodeId) return
 
@@ -66,10 +67,11 @@ const mediaMoreButtons = (
           const { darkTheme } = require('../styles')
           const isDarkMode = globalState.globalTheme === darkTheme
           await handleDismiss()
-          const shouldPlay = false
-          const forceUpdateOrderDate = false
-          const setCurrentItemNextInQueue = true
-          await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+          await playerLoadNowPlayingItem(item, {
+            forceUpdateOrderDate: false,
+            setCurrentItemNextInQueue: true,
+            shouldPlay: false
+          })
           await navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
           setTimeout(() => {
             (async () => {
@@ -104,10 +106,11 @@ const mediaMoreButtons = (
       text: translate('Play'),
       onPress: async () => {
         await handleDismiss()
-        const shouldPlay = true
-        const forceUpdateOrderDate = false
-        const setCurrentItemNextInQueue = true
-        await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+        await playerLoadNowPlayingItem(item, {
+          forceUpdateOrderDate: false,
+          setCurrentItemNextInQueue: true,
+          shouldPlay: true
+        })
       }
     })
   } else {
@@ -116,8 +119,10 @@ const mediaMoreButtons = (
         itemType === 'episode'
           ? translate('ARIA HINT - stream this episode')
           : itemType === 'chapter'
-          ? translate('ARIA HINT - stream this chapter')
-          : translate('ARIA HINT - stream this clip'),
+            ? translate('ARIA HINT - stream this chapter')
+            : itemType === 'track'
+              ? translate('ARIA HINT - stream this track')
+              : translate('ARIA HINT - stream this clip'),
       accessibilityLabel: translate('Stream'),
       key: PV.Keys.stream,
       text: translate('Stream'),
@@ -126,10 +131,11 @@ const mediaMoreButtons = (
         if (showAlert) return
 
         await handleDismiss()
-        const shouldPlay = true
-        const forceUpdateOrderDate = false
-        const setCurrentItemNextInQueue = true
-        await playerLoadNowPlayingItem(item, shouldPlay, forceUpdateOrderDate, setCurrentItemNextInQueue)
+        await playerLoadNowPlayingItem(item, {
+          forceUpdateOrderDate: false,
+          setCurrentItemNextInQueue: true,
+          shouldPlay: true
+        })
       }
     })
 
@@ -163,8 +169,10 @@ const mediaMoreButtons = (
           itemType === 'episode'
             ? translate('ARIA HINT - add this episode next in your queue')
             : itemType === 'clip'
-            ? translate('ARIA HINT - add this clip next in your queue')
-            : translate('ARIA HINT - add this chapter next in your queue'),
+              ? translate('ARIA HINT - add this clip next in your queue')
+              : itemType === 'track'
+                ? translate('ARIA HINT - add this track next in your queue')
+                : translate('ARIA HINT - add this chapter next in your queue'),
         accessibilityLabel: translate('ARIA LABEL - Queue Next'),
         key: PV.Keys.queue_next,
         text: translate('Queue Next'),
@@ -178,8 +186,10 @@ const mediaMoreButtons = (
           itemType === 'episode'
             ? translate('ARIA HINT - add this episode last in your queue')
             : itemType === 'clip'
-            ? translate('ARIA HINT - add this clip last in your queue')
-            : translate('ARIA HINT - add this chapter last in your queue'),
+              ? translate('ARIA HINT - add this clip last in your queue')
+              : itemType === 'track'
+                ? translate('ARIA HINT - add this track last in your queue')
+                : translate('ARIA HINT - add this chapter last in your queue'),
         accessibilityLabel: translate('ARIA LABEL - Queue Last'),
         key: PV.Keys.queue_last,
         text: translate('Queue Last'),
@@ -196,8 +206,10 @@ const mediaMoreButtons = (
           itemType === 'episode'
             ? translate('ARIA HINT - add this episode to a playlist')
             : itemType === 'clip'
-            ? translate('ARIA HINT - add this clip to a playlist')
-            : translate('ARIA HINT - add this chapter to a playlist'),
+              ? translate('ARIA HINT - add this clip to a playlist')
+              : itemType === 'track'
+                ? translate('ARIA HINT - add this track to a playlist')
+                : translate('ARIA HINT - add this chapter to a playlist'),
         accessibilityLabel: translate('Add to Playlist'),
         key: PV.Keys.add_to_playlist,
         text: translate('Add to Playlist'),
@@ -217,16 +229,18 @@ const mediaMoreButtons = (
       itemType === 'podcast'
         ? translate('ARIA HINT - share this podcast')
         : itemType === 'episode'
-        ? translate('ARIA HINT - share this episode')
-        : itemType === 'clip'
-        ? translate('ARIA HINT - share this clip')
-        : itemType === 'chapter'
-        ? translate('ARIA HINT - share this chapter')
-        : itemType === 'playlist'
-        ? translate('ARIA HINT - share this playlist')
-        : itemType === 'profile'
-        ? translate('ARIA HINT - share this profile')
-        : translate('ARIA HINT - share this item')
+          ? translate('ARIA HINT - share this episode')
+          : itemType === 'clip'
+            ? translate('ARIA HINT - share this clip')
+            : itemType === 'chapter'
+              ? translate('ARIA HINT - share this chapter')
+              : itemType === 'playlist'
+                ? translate('ARIA HINT - share this playlist')
+                : itemType === 'profile'
+                  ? translate('ARIA HINT - share this profile')
+                  : itemType === 'track'
+                    ? translate('ARIA HINT - share this track')
+                    : translate('ARIA HINT - share this item')
     buttons.push({
       accessibilityHint,
       accessibilityLabel: translate('Share'),
@@ -237,15 +251,19 @@ const mediaMoreButtons = (
           const urlsWeb = safelyUnwrapNestedVariable(() => globalState.urlsWeb, {})
           let url = ''
           let title = ''
+          const isMusic = item?.podcastMedium === 'music'
 
-          if (item.clipId) {
-            url = urlsWeb.clip + item.clipId
-            title = item.clipTitle ? item.clipTitle : prefixClipLabel(item.episodeTitle)
-            title += ` – ${item?.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
+          if (isMusic && item.episodeId) {
+            url = urlsWeb.track + item.episodeId
+            title += `${item?.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`
           } else if (item.episodeId) {
             url = urlsWeb.episode + item.episodeId
             title += `${item?.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`
-          }
+          } else if (item.clipId) {
+            url = urlsWeb.clip + item.clipId
+            title = item.clipTitle ? item.clipTitle : prefixClipLabel(item.episodeTitle)
+            title += ` – ${item?.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
+          } 
           await Share.open({
             title,
             subject: title,
@@ -260,11 +278,17 @@ const mediaMoreButtons = (
   }
 
   if (isDownloaded) {
+    const text = itemType === 'track'
+      ? translate('Music - Delete Track')
+      : translate('Delete Episode')
+    const accessibilityHint = itemType === 'track'
+      ? translate('ARIA HINT - delete this downloaded track')
+      : translate('ARIA HINT - delete this downloaded episode')
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - delete this downloaded episode'),
-      accessibilityLabel: translate('Delete Episode'),
+      accessibilityHint,
+      accessibilityLabel: text,
       key: PV.Keys.delete_episode,
-      text: translate('Delete Episode'),
+      text,
       onPress: async () => {
         removeDownloadedPodcastEpisode(item.episodeId)
         await handleDismiss()
@@ -298,22 +322,34 @@ const mediaMoreButtons = (
   // Limit the action sheet to 8 items, so all items appear even on smaller screens.
   // Since this action sheet can't be scrollable, we're just hiding the less important buttons.
   if (includeGoToPodcast && buttons.length < 8) {
+    const text = itemType === 'album'
+      ? translate('Go to Album')
+      : translate('Go to Podcast')
     buttons.push({
-      accessibilityLabel: translate('Go to Podcast'),
+      accessibilityLabel: text,
       key: PV.Keys.go_to_podcast,
-      text: translate('Go to Podcast'),
+      text,
       onPress: async () => {
         await handleDismiss()
-        navigateToPodcastScreenWithItem(navigation, item)
+        if (itemType === 'album') {
+          navigateToAlbumScreenWithNowPlayingItem(navigation, item)
+        } else {
+          navigateToPodcastScreenWithItem(navigation, item)
+        }
       }
     })
   }
 
-  if ((includeGoToEpisodeInEpisodesStack || includeGoToEpisodeInCurrentStack) && buttons.length < 8) {
+  if ((itemType !== 'album'
+    && includeGoToEpisodeInEpisodesStack
+    || includeGoToEpisodeInCurrentStack)
+    && buttons.length < 8
+  ) {
+    const text = translate('Go to Episode')
     buttons.push({
-      accessibilityLabel: translate('Go to Episode'),
+      accessibilityLabel: text,
       key: PV.Keys.go_to_episode,
-      text: translate('Go to Episode'),
+      text,
       onPress: async () => {
         await handleDismiss()
         if (includeGoToEpisodeInEpisodesStack) {

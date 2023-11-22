@@ -1,8 +1,9 @@
 import url from 'url'
+import PromiseQueue from 'queue-promise'
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import debounce from 'lodash/debounce'
-import { convertBytesToHumanReadableString, Episode, getExtensionFromUrl } from 'podverse-shared'
+import { convertBytesToHumanReadableString, Episode, getExtensionFromUrl, Podcast } from 'podverse-shared'
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
 import * as ScopedStorage from 'react-native-scoped-storage'
@@ -68,8 +69,8 @@ const debouncePlayerSyncPlayerWithQueue = debounce(
   }
 )
 
-const addDLTask = (episode: any, podcast: any) =>
-  DownloadState.addDownloadTask({
+const addDLTask = (episode: any, podcast: any) => {
+  return DownloadState.addDownloadTask({
     addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
     episodeChaptersUrl: episode.chaptersUrl,
     episodeCredentialsRequired: episode.credentialsRequired,
@@ -93,6 +94,7 @@ const addDLTask = (episode: any, podcast: any) =>
     podcastHideDynamicAdsWarning: podcast.hideDynamicAdsWarning,
     podcastId: podcast.id,
     podcastImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
+    podcastIndexPodcastId: podcast.podcastIndexId,
     podcastIsExplicit: podcast.isExplicit,
     podcastLinkUrl: podcast.linkUrl,
     podcastItunesFeedType: podcast.itunesFeedType,
@@ -102,6 +104,59 @@ const addDLTask = (episode: any, podcast: any) =>
     podcastTitle: podcast.title,
     podcastValue: podcast.value
   })
+}
+
+const finishedDownloadQueue = new PromiseQueue({
+  concurrent: 1,
+  interval: 333,
+  start: true
+})
+
+
+type FinishDownloadParams = {
+  customLocation: string | null
+  episode: Episode
+  ext: string
+  origDestination: string
+  podcast: Podcast
+  progressLimiter: any
+}
+
+const finishDownload = async (params: FinishDownloadParams) => {
+  const { customLocation, episode, ext, origDestination, podcast, progressLimiter } = params
+  await progressLimiter.stop()
+  if (customLocation) {
+    try {
+      const tempDownloadFileType = await FileSystem.stat(origDestination)
+      const newFileType = await ScopedStorage.createFile(customLocation, `${episode.id}${ext}`, 'audio/mpeg')
+      if (tempDownloadFileType && newFileType) {
+        const { uri: newFileUri } = newFileType
+        await FileSystem.cp(origDestination, newFileUri)
+      }
+    } catch (error) {
+      errorLogger(_fileName, 'done error', error)
+    }
+  }
+
+  await addDownloadedPodcastEpisode(episode, podcast)
+
+  // Call updateDownloadComplete after updateDownloadedPodcasts
+  // to prevent the download icon from flashing in the EpisodeTableCell
+  // right after download finishes.
+  DownloadState.updateDownloadedPodcasts(() => {
+    DownloadState.updateDownloadComplete(episode.id)
+    removeDownloadingEpisode(episode.id)
+  })
+
+  PVEventEmitter.emit(PV.Events.DOWNLOADED_EPISODE_REFRESH)
+
+  // Make sure the queue refreshes so that the downloaded episode path is
+  // in the track object instead of the stream URL.
+  // Related to:
+  // https://github.com/podverse/podverse-rn/issues/1314
+  // https://github.com/podverse/podverse-rn/issues/1717
+  debouncePlayerSyncPlayerWithQueue()
+}
 
 // NOTE: I was unable to get BackgroundDownloader to successfully resume tasks that were
 // retrieved from checkForExistingDownloads, so as a workaround, I am forcing those existing tasks
@@ -243,40 +298,15 @@ export const downloadEpisode = async (
             // limiter has been stopped
           })
       })
-      .done(async () => {
-        await progressLimiter.stop()
-
-        if (customLocation) {
-          try {
-            const tempDownloadFileType = await FileSystem.stat(origDestination)
-            const newFileType = await ScopedStorage.createFile(customLocation, `${episode.id}${ext}`, 'audio/mpeg')
-            if (tempDownloadFileType && newFileType) {
-              const { uri: newFileUri } = newFileType
-              await FileSystem.cp(origDestination, newFileUri)
-            }
-          } catch (error) {
-            errorLogger(_fileName, 'done error', error)
-          }
-        }
-
-        await addDownloadedPodcastEpisode(episode, podcast)
-
-        // Call updateDownloadComplete after updateDownloadedPodcasts
-        // to prevent the download icon from flashing in the EpisodeTableCell
-        // right after download finishes.
-        DownloadState.updateDownloadedPodcasts(() => {
-          DownloadState.updateDownloadComplete(episode.id)
-          removeDownloadingEpisode(episode.id)
-        })
-
-        PVEventEmitter.emit(PV.Events.DOWNLOADED_EPISODE_REFRESH)
-
-        // Make sure the queue refreshes so that the downloaded episode path is
-        // in the track object instead of the stream URL.
-        // Related to:
-        // https://github.com/podverse/podverse-rn/issues/1314
-        // https://github.com/podverse/podverse-rn/issues/1717
-        debouncePlayerSyncPlayerWithQueue()
+      .done(() => {
+        finishedDownloadQueue.enqueue(() => finishDownload({
+          customLocation,
+          ext,
+          episode,
+          origDestination,
+          podcast,
+          progressLimiter
+        }))
       })
       .error((error: string) => {
         DownloadState.updateDownloadError(episode.id)

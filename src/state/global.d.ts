@@ -1,9 +1,9 @@
 import { Episode, NowPlayingItem, TranscriptRow } from 'podverse-shared'
 import 'reactn'
-import { AppModes } from '../resources/AppMode'
 import { BannerInfo, GlobalTheme, UserInfo, TempMediaRef } from '../resources/Interfaces'
-import { AutoQueueSettingsPosition } from '../services/queue'
-import { V4VProviderConnectedState, V4VSenderInfo, V4VTransactionError } from '../state/actions/v4v/v4v'
+import { AutoPlayEpisodesFromPodcast } from '../resources/Queue'
+import { AutoQueueSettingsPosition, QueueRepeatModeMusic } from '../services/queue'
+import { V4VProviderConnectedState, V4VTransactionError } from '../state/actions/v4v/v4v'
 
 declare module 'reactn/default' {
   export interface State {
@@ -64,6 +64,9 @@ declare module 'reactn/default' {
       }
       hidePlaybackSpeedButton: boolean
       remoteSkipButtonsAreTimeJumps: boolean
+      queueRepeatModeMusic: QueueRepeatModeMusic
+      queueEnabledWhileMusicIsPlaying: boolean
+      autoPlayEpisodesFromPodcast: AutoPlayEpisodesFromPodcast
     }
     playlists: {
       myPlaylists: []
@@ -147,7 +150,6 @@ declare module 'reactn/default' {
     urlsAPI?: any
     urlsWeb?: any
     userAgent?: string
-    appMode: AppModes
     bannerInfo: BannerInfo
     tempMediaRefInfo: TempMediaRef
     screenReaderEnabled: boolean

@@ -15,12 +15,14 @@ const webDefaultBaseUrl = root
 const webDefaultRedirectBaseUrl = redirectRoot
 
 const webPaths = {
+  album: `/album/`,
   clip: `/clip/`,
   contribute: `/contribute`,
   episode: `/episode/`,
   playlist: `/playlist/`,
   podcast: `/podcast/`,
   profile: `/profile/`,
+  track: `/track/`,
   tutorials: `/tutorials`
 }
 
@@ -76,12 +78,14 @@ export const URLs = {
 
     return {
       baseUrl: base,
+      album: `${base}${webPaths.album}`,
       clip: `${base}${webPaths.clip}`,
       contribute: `${base}${webPaths.contribute}`,
       episode: `${base}${webPaths.episode}`,
       playlist: `${base}${webPaths.playlist}`,
       podcast: `${base}${webPaths.podcast}`,
       profile: `${base}${webPaths.profile}`,
+      track: `${base}${webPaths.track}`,
       tutorials: `${base}${webPaths.tutorials}`
     }
   },

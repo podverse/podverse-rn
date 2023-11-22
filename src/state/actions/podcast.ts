@@ -1,4 +1,4 @@
-import { checkIfContainsStringMatch } from 'podverse-shared'
+import { PodcastMedium, checkIfContainsStringMatch } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { errorLogger } from '../../lib/logger'
 import { safelyUnwrapNestedVariable } from '../../lib/utility'
@@ -20,9 +20,6 @@ import { updateDownloadedPodcasts } from './downloads'
 const _fileName = 'src/state/actions/podcast.ts'
 
 const handleCombineWithAddByRSSPodcasts = async (searchTitle?: string, sort?: string | null) => {
-  const { appMode } = getGlobal()
-  const videoOnlyMode = appMode === PV.AppMode.videos
-
   const combinedPodcasts = await combineWithAddByRSSPodcastsService(sort)
   let finalPodcasts = []
 
@@ -32,17 +29,24 @@ const handleCombineWithAddByRSSPodcasts = async (searchTitle?: string, sort?: st
     finalPodcasts = combinedPodcasts
   }
 
-  if (videoOnlyMode) {
-    finalPodcasts = finalPodcasts.filter((podcast) => podcast.hasVideo)
-  }
-
   return finalPodcasts
 }
 
 export const findCombineWithAddByRSSPodcasts = async (
+  medium: PodcastMedium,
   searchTitle?: string
 ) => {
-  return handleCombineWithAddByRSSPodcasts(searchTitle)
+  let podcasts = await handleCombineWithAddByRSSPodcasts(searchTitle)
+
+  if (medium === PV.Medium.video) {
+    podcasts = podcasts.filter((podcast) => podcast.hasVideo)
+  } else if (medium === PV.Medium.music) {
+    podcasts = podcasts.filter((podcast) => podcast.medium === PV.Medium.music)
+  } else if (medium === PV.Medium.podcast) {
+    podcasts = podcasts.filter((podcast) => podcast.medium === PV.Medium.podcast)
+  }
+
+  return podcasts
 }
 
 export const combineWithAddByRSSPodcasts = async (
@@ -55,6 +59,8 @@ export const combineWithAddByRSSPodcasts = async (
     subscribedPodcasts: finalPodcasts,
     subscribedPodcastsTotalCount: finalPodcasts?.length
   })
+
+  return finalPodcasts
 }
 
 export const getSubscribedPodcasts = async (sort?: string | null) => {

@@ -342,8 +342,7 @@ export const handleCarPlayHistoryUpdate = async () => {
 const refreshHistory = () => {
   (async () => {
     const page = 1
-    const existingItems: any[] = []
-    await getHistoryItems(page, existingItems)
+    await getHistoryItems(page)
     handleCarPlayHistoryUpdate()
   })()
 }

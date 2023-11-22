@@ -10,13 +10,13 @@ import Orientation from 'react-native-orientation-locker'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
-
 import {
   UpdateRequiredOverlay,
   OverlayAlert,
   ImageFullView,
   BoostDropdownBanner,
-  LoadingInterstitialView
+  LoadingInterstitialView,
+  NotificationBanner
 } from './src/components'
 import { checkIfFDroidAppVersion, pvIsTablet } from './src/lib/deviceDetection'
 import { registerAndroidAutoModule, requestDrawOverAppsPermission,
@@ -168,14 +168,12 @@ class App extends Component<Props, State> {
 
   setupGlobalState = async (theme: GlobalTheme) => {
     const fontScale = await getFontScale()
-    const appMode = await AsyncStorage.getItem(PV.Keys.APP_MODE)
     const fontScaleMode = determineFontScaleMode(fontScale)
 
     setGlobal({
       globalTheme: theme,
       fontScaleMode,
-      fontScale,
-      appMode: appMode || PV.AppMode.podcasts
+      fontScale
     })
   }
 
@@ -223,6 +221,7 @@ class App extends Component<Props, State> {
           </View>
           <ImageFullView />
           <BoostDropdownBanner />
+          <NotificationBanner on />
         </SafeAreaProvider>
         <LoadingInterstitialView />
       </GestureHandlerRootView>

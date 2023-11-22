@@ -1,7 +1,9 @@
 import { TranscriptRow, ValueTransaction } from 'podverse-shared'
 import { AutoQueueSettingsPosition } from '../services/autoQueue'
-import { V4VProviderConnectedState, V4VSenderInfo, V4VSettings } from '../state/actions/v4v/v4v'
-import { AppModes } from './AppMode'
+import { QueueRepeatModeMusic } from '../services/queue'
+import { V4VProviderConnectedState, V4VSettings } from '../state/actions/v4v/v4v'
+import { AutoPlayEpisodesFromPodcast } from './Queue'
+
 export interface GlobalTheme {
   actionSheetButton?: any
   actionSheetButtonCancel?: any
@@ -157,6 +159,9 @@ export interface InitialState {
     }
     hidePlaybackSpeedButton: boolean
     remoteSkipButtonsAreTimeJumps: boolean
+    queueRepeatModeMusic: QueueRepeatModeMusic
+    queueEnabledWhileMusicIsPlaying: boolean
+    autoPlayEpisodesFromPodcast: AutoPlayEpisodesFromPodcast
   }
   playlists: {
     myPlaylists: []
@@ -230,7 +235,6 @@ export interface InitialState {
   subscribedPodcasts: []
   subscribedPodcastsTotalCount: number
   userAgent?: string
-  appMode: AppModes
   bannerInfo: BannerInfo
   tempMediaRefInfo: {
     startTime?: number
@@ -250,6 +254,8 @@ export interface InitialState {
   slidingPositionOverride: number | null
 }
 
+export type BannerType = "BOOST" | "NOTIFICATION"
+
 export interface BannerInfoError {
   error: Error
   details: Record<string, any>
@@ -257,10 +263,15 @@ export interface BannerInfoError {
 
 export interface BannerInfo {
   show: boolean
+  title?: string
   description: string
+  imageUrl?: string
   errors?: BannerInfoError[]
   transactions?: ValueTransaction[]
   totalAmount?: number
+  type?: BannerType
+  podcastId?: string
+  episodeId?: string
 }
 
 export interface IActionSheet {
@@ -295,6 +306,7 @@ export interface IFilters {
   _allEpisodesKey: string
   _podcastsKey: string
   _episodesKey: string
+  _tracksKey: string
   _hideCompletedKey: string
   _showCompletedKey: string
   _clipsKey: string
@@ -309,6 +321,7 @@ export interface IFilters {
   _sectionMyPlaylistsKey: string
   _sectionSortKey: string
   _sectionSubscribedPlaylistsKey: string
+  _episodeNumberAscKey: string
 }
 
 interface IFontLargeSizes {
