@@ -1,5 +1,6 @@
 import {
   checkIfVideoFileOrVideoLiveType,
+  convertNowPlayingItemToEpisode,
   convertNowPlayingItemToMediaRef,
   replaceLinebreaksWithBrTags
 } from 'podverse-shared'
@@ -62,9 +63,8 @@ export class PlayerScreen extends React.Component<Props> {
   }
 
   static navigationOptions = ({ navigation }) => {
-    const _getEpisodeId = navigation.getParam('_getEpisodeId')
-    const _getMediaRefId = navigation.getParam('_getMediaRefId')
-    const _getMedium = navigation.getParam('_getMedium')
+    const _getEpisode = navigation.getParam('_getEpisode')
+    const _getMediaRef = navigation.getParam('_getMediaRef')
     const _showShareActionSheet = navigation.getParam('_showShareActionSheet')
     const _getInitialProgressValue = navigation.getParam('_getInitialProgressValue')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
@@ -110,9 +110,8 @@ export class PlayerScreen extends React.Component<Props> {
                 />
                 <NavAddToPlaylistIcon
                   addByRSSPodcastFeedUrl={!!addByRSSPodcastFeedUrl}
-                  getEpisodeId={_getEpisodeId}
-                  getMedium={_getMedium}
-                  getMediaRefId={_getMediaRefId}
+                  getEpisode={_getEpisode}
+                  getMediaRef={_getMediaRef}
                   globalTheme={globalTheme}
                   navigation={navigation}
                 />
@@ -133,10 +132,9 @@ export class PlayerScreen extends React.Component<Props> {
     PVEventEmitter.on(PV.Events.PLAYER_DISMISS, this.props.navigation.dismiss)
 
     this.props.navigation.setParams({
-      _getEpisodeId: this._getEpisodeId,
+      _getEpisode: this._getEpisode,
       _getInitialProgressValue: this._getInitialProgressValue,
-      _getMediaRefId: this._getMediaRefId,
-      _getMedium: this._getMedium,
+      _getMediaRef: this._getMediaRef,
       _showShareActionSheet: this._showShareActionSheet
     })
 
@@ -208,19 +206,14 @@ export class PlayerScreen extends React.Component<Props> {
     }
   }
 
-  _getEpisodeId = () => {
+  _getEpisode = () => {
     const { nowPlayingItem } = this.global.player
-    return nowPlayingItem && nowPlayingItem.episodeId
+    return nowPlayingItem && convertNowPlayingItemToEpisode(nowPlayingItem)
   }
 
-  _getMediaRefId = () => {
+  _getMediaRef = () => {
     const { nowPlayingItem } = this.global.player
-    return nowPlayingItem && nowPlayingItem.clipId
-  }
-
-  _getMedium = () => {
-    const { nowPlayingItem } = this.global.player
-    return nowPlayingItem && nowPlayingItem.podcastMedium
+    return nowPlayingItem?.clipId && convertNowPlayingItemToMediaRef(nowPlayingItem)
   }
 
   _getInitialProgressValue = async () => {
@@ -301,7 +294,7 @@ export class PlayerScreen extends React.Component<Props> {
     const { currentTocChapter, player, screenPlayer } = this.global
     const { episode, nowPlayingItem } = player
     const { showShareActionSheet } = screenPlayer
-    let { mediaRef } = player
+    let mediaRef = null
 
     if (nowPlayingItem && nowPlayingItem.clipId) {
       mediaRef = convertNowPlayingItemToMediaRef(nowPlayingItem)
