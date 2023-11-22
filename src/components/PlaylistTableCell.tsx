@@ -83,8 +83,10 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
           </RNView>
           <RNView style={styles.wrapperRight}>
             {isSaving && <ActivityIndicator styles={styles.activityIndicator} testID={testID} />}
-            {!isSaving && isAdded && <Icon isSecondary name={'check'}
-              size={20} solid style={addedIndicatorStyles} testID={`${testID}_is_added`} />}
+            {!isSaving && isAdded && <Icon isSecondary name={'check-circle'}
+              size={21} style={addedIndicatorStyles} testID={`${testID}_is_added`} />}
+            {!isSaving && !isAdded && <Icon isSecondary name={'circle'}
+              size={21} style={addedIndicatorStyles} testID={`${testID}_is_not_added`} />}
           </RNView>
         </View>
       </Pressable>

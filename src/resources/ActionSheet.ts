@@ -20,6 +20,7 @@ import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
 import { toggleMarkAsPlayed } from '../state/actions/userHistoryItem'
 import { PV } from './PV'
+import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef } from 'podverse-shared'
 
 const _fileName = 'src/resources/ActionSheet.ts'
 
@@ -216,7 +217,9 @@ const mediaMoreButtons = (
         onPress: async () => {
           await handleDismiss()
           navigation.navigate(PV.RouteNames.PlaylistsAddToScreenModal, {
-            ...(item.clipId ? { mediaRefId: item.clipId } : { episodeId: item.episodeId }),
+            ...(item.clipId 
+              ? { mediaRef: convertNowPlayingItemToMediaRef(item) }
+              : { episode: convertNowPlayingItemToEpisode(item) }),
             isModal: true
           })
         }

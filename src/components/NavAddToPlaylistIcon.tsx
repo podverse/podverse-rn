@@ -1,3 +1,4 @@
+import { Episode, MediaRef } from 'podverse-shared'
 import { Alert, View } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
@@ -10,8 +11,8 @@ import { ActionSheet, NavItemIcon, NavItemWrapper } from './'
 
 type Props = {
   addByRSSPodcastFeedUrl?: boolean
-  getEpisodeId: any
-  getMediaRefId: any
+  getEpisode: any
+  getMediaRef: any
   getMedium: any
   globalTheme?: GlobalTheme
   isModal?: boolean
@@ -32,22 +33,21 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
   }
 
   _handleIconPress = () => {
-    const { addByRSSPodcastFeedUrl, getEpisodeId, getMediaRefId, getMedium, navigation } = this.props
+    const { addByRSSPodcastFeedUrl, getEpisode, getMediaRef, navigation } = this.props
 
     if (addByRSSPodcastFeedUrl) {
       Alert.alert(
         PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE('disabled add to playlist').title,
         PV.Alerts.ADD_BY_RSS_FEATURE_UNAVAILABLE().message
       )
-    } else if (getEpisodeId && getMediaRefId && getMedium) {
-      const episodeId = getEpisodeId()
-      const mediaRefId = getMediaRefId()
-      const medium = getMedium()
-      if (mediaRefId) {
+    } else if (getEpisode && getMediaRef) {
+      const episode = getEpisode()
+      const mediaRef = getMediaRef()
+      if (mediaRef) {
         this.setState({ showActionSheet: !this.state.showActionSheet })
-      } else if (episodeId) {
+      } else if (episode) {
         this._dismissActionSheet()
-        navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, { episodeId, medium })
+        navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, { episode })
       }
     }
   }
@@ -60,9 +60,9 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
     const isLoggedIn = safelyUnwrapNestedVariable(() => this.global.session.isLoggedIn, false)
     if (Config.DISABLE_ADD_TO_PLAYLIST || !isLoggedIn) return null
 
-    const { getEpisodeId, getMediaRefId, navigation } = this.props
-    const episodeId = getEpisodeId ? getEpisodeId() : null
-    const mediaRefId = getMediaRefId ? getMediaRefId() : null
+    const { getEpisode, getMediaRef, navigation } = this.props
+    const episode = getEpisode ? getEpisode() : null
+    const mediaRef = getMediaRef ? getMediaRef() : null
     const { showActionSheet } = this.state
     let color = darkTheme.text.color
     if (this.props.globalTheme) {
@@ -80,8 +80,8 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
         </NavItemWrapper>
         <ActionSheet
           handleCancelPress={this._dismissActionSheet}
-          items={actionSheetButtons(episodeId, mediaRefId, navigation, this._dismissActionSheet)}
-          {...(mediaRefId ? { message: translate('Do you want to add this episode or clip') } : '')}
+          items={actionSheetButtons(episode, mediaRef, navigation, this._dismissActionSheet)}
+          {...(mediaRef ? { message: translate('Do you want to add this episode or clip') } : '')}
           showModal={showActionSheet}
           testID={`nav_add_to_playlist_icon_action_sheet`}
           title={translate('Add to Playlist')}
@@ -91,13 +91,13 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
   }
 }
 
-const actionSheetButtons = (episodeId: string, mediaRefId: string, navigation: any, handleDismiss: any) => [
+const actionSheetButtons = (episode?: Episode, mediaRef?: MediaRef, navigation: any, handleDismiss: any) => [
   {
     key: 'episode',
     text: translate('Episode'),
     onPress: () => {
       handleDismiss()
-      navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, { episodeId })
+      navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, { episode })
     }
   },
   {
@@ -105,7 +105,7 @@ const actionSheetButtons = (episodeId: string, mediaRefId: string, navigation: a
     text: translate('Clip'),
     onPress: () => {
       handleDismiss()
-      navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, { mediaRefId })
+      navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, { mediaRef })
     }
   }
 ]
