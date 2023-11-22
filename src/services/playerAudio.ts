@@ -16,12 +16,12 @@ import PVEventEmitter from './eventEmitter'
 import { getPodcastCredentialsHeader } from './parser'
 import { playerSetRateWithLatestPlaybackSpeed, playerUpdateUserPlaybackPosition } from './player'
 import { getPodcastFeedUrlAuthority } from './podcast'
-import { addQueueItemNext, getQueueItemsLocally, setRNTPRepeatMode } from './queue'
+import { addQueueItemNext, getAutoPlayEpisodesFromPodcast, getQueueItemsLocally, setRNTPRepeatMode } from './queue'
 import { addOrUpdateHistoryItem, getHistoryItemIndexInfoForEpisode,
   getHistoryItemsIndexLocally } from './userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage } from './userNowPlayingItem'
 import { getSecondaryQueueEpisodesForPlaylist, getSecondaryQueueEpisodesForPodcastId } from './secondaryQueue'
-import { audioUpdateTrackPlayerCapabilities } from './playerAudioSetup'
+// import { audioUpdateTrackPlayerCapabilities } from './playerAudioSetup'
 
 declare module 'react-native-track-player' {
   export function getCurrentLoadedTrack(): Promise<string>
@@ -237,9 +237,12 @@ const audioSyncPlayerWithQueue = async () => {
       10. add the previousEpisodes nowPlayingItems before the current track index.
     */
 
-    const nowPlayingItem = getGlobal()?.player?.nowPlayingItem
+    const globalState = getGlobal()
 
+    const nowPlayingItem = globalState?.player?.nowPlayingItem
     const isMusic = nowPlayingItem?.podcastMedium === PV.Medium.music
+    const autoPlayEpisodesFromPodcast = globalState?.player?.autoPlayEpisodesFromPodcast
+
     await setRNTPRepeatMode(isMusic)
 
     /*
@@ -295,22 +298,34 @@ const audioSyncPlayerWithQueue = async () => {
             return convertToNowPlayingItem(nextEpisodeOrMediaRef, null, null, userPlaybackPosition)
           }) 
         } else {
-          const secondaryQueueData = await getSecondaryQueueEpisodesForPodcastId(episodeId, podcastId)
-          const { previousEpisodes, nextEpisodes, inheritedPodcast } = secondaryQueueData
-  
-          previousNowPlayingItems = previousEpisodes.map((previousEpisode: Episode) => {
-            const userPlaybackPosition = inheritedPodcast?.medium === PV.Medium.music
-                ? 0
-                : getHistoryItemIndexInfoForEpisode(previousEpisode?.id)?.userPlaybackPosition || 0
-            return convertToNowPlayingItem(previousEpisode, null, inheritedPodcast, userPlaybackPosition)
-          }) 
+          if (!isMusic && autoPlayEpisodesFromPodcast === 'off') {
+            // don't add secondaryQueue items
+          } else {
+            const secondaryQueueData = await getSecondaryQueueEpisodesForPodcastId(episodeId, podcastId)
+            const { previousEpisodes, nextEpisodes, inheritedPodcast } = secondaryQueueData
+
+            const sortedPreviousEpisodes = !isMusic && autoPlayEpisodesFromPodcast === 'newer'
+              ? nextEpisodes?.reverse()
+              : previousEpisodes
+
+            const sortedNextEpisodes = !isMusic && autoPlayEpisodesFromPodcast === 'newer'
+              ? previousEpisodes?.reverse()
+              : nextEpisodes
     
-          nextNowPlayingItems = nextEpisodes.map((nextEpisode: Episode) => {
-            const userPlaybackPosition = inheritedPodcast?.medium === PV.Medium.music
-            ? 0
-            : getHistoryItemIndexInfoForEpisode(nextEpisode?.id)?.userPlaybackPosition || 0
-            return convertToNowPlayingItem(nextEpisode, null, inheritedPodcast, userPlaybackPosition)
-          }) 
+            previousNowPlayingItems = sortedPreviousEpisodes.map((previousEpisode: Episode) => {
+              const userPlaybackPosition = inheritedPodcast?.medium === PV.Medium.music
+                  ? 0
+                  : getHistoryItemIndexInfoForEpisode(previousEpisode?.id)?.userPlaybackPosition || 0
+              return convertToNowPlayingItem(previousEpisode, null, inheritedPodcast, userPlaybackPosition)
+            }) 
+      
+            nextNowPlayingItems = sortedNextEpisodes.map((nextEpisode: Episode) => {
+              const userPlaybackPosition = inheritedPodcast?.medium === PV.Medium.music
+              ? 0
+              : getHistoryItemIndexInfoForEpisode(nextEpisode?.id)?.userPlaybackPosition || 0
+              return convertToNowPlayingItem(nextEpisode, null, inheritedPodcast, userPlaybackPosition)
+            })
+          }
         }
       }
 
@@ -323,7 +338,7 @@ const audioSyncPlayerWithQueue = async () => {
         await audioRemoveUpcomingTracks()
 
         let queueItemTracks = []
-        if (isMusic && getGlobal()?.player?.queueEnabledWhileMusicIsPlaying) {
+        if (!isMusic || (isMusic && getGlobal()?.player?.queueEnabledWhileMusicIsPlaying)) {
           queueItemTracks = await audioCreateTracks(pvQueueItems, { isPrimaryQueueItem: true })        
           await PVAudioPlayer.add(queueItemTracks)
         }

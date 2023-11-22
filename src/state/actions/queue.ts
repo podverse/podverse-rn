@@ -2,6 +2,7 @@ import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
+import { AutoPlayEpisodesFromPodcast } from '../../resources/Queue'
 import {
   addQueueItemLast as addQueueItemLastService,
   addQueueItemNext as addQueueItemNextService,
@@ -12,7 +13,8 @@ import {
   setAllQueueItems as setAllQueueItemsService,
   setQueueRepeatModeMusic as setQueueRepeatModeMusicService,
   QueueRepeatModeMusic,
-  setQueueEnabledWhileMusicIsPlaying as setQueueEnabledWhileMusicIsPlayingService
+  setQueueEnabledWhileMusicIsPlaying as setQueueEnabledWhileMusicIsPlayingService,
+  setAutoPlayEpisodesFromPodcast as setAutoPlayEpisodesFromPodcastService
 } from '../../services/queue'
 
 export const addQueueItemLast = async (queueItem: NowPlayingItem) => {
@@ -145,5 +147,19 @@ export const setQueueEnabledWhileMusicIsPlaying = async (val: boolean) => {
       ...globalState.player,
       queueEnabledWhileMusicIsPlaying: val
     }
+  })
+}
+
+export const setAutoPlayEpisodesFromPodcast = (val: AutoPlayEpisodesFromPodcast) => {
+  val = val || 'off'
+  const globalState = getGlobal()
+  setGlobal({
+    player: {
+      ...globalState.player,
+      autoPlayEpisodesFromPodcast: val
+    }
+  },
+  async () => {
+    await setAutoPlayEpisodesFromPodcastService(val)
   })
 }

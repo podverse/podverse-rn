@@ -3,6 +3,7 @@ import { NowPlayingItem } from 'podverse-shared'
 import TrackPlayer, { RepeatMode } from 'react-native-track-player'
 import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
+import { AutoPlayEpisodesFromPodcast } from '../resources/Queue'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
 import { playerSyncPlayerWithQueue } from './player'
 import { request } from './request'
@@ -271,5 +272,18 @@ export const setQueueEnabledWhileMusicIsPlaying = async (val: boolean) => {
     await AsyncStorage.setItem(PV.Keys.QUEUE_ENABLED_WHILE_MUSIC_IS_PLAYING, 'TRUE')
   } else {
     await AsyncStorage.removeItem(PV.Keys.QUEUE_ENABLED_WHILE_MUSIC_IS_PLAYING)
+  }
+}
+
+export const getAutoPlayEpisodesFromPodcast = async () => {
+  const val = await AsyncStorage.getItem(PV.Keys.QUEUE_AUTO_PLAY_EPISODES_FROM_PODCAST)
+  return val || 'off'  
+}
+
+export const setAutoPlayEpisodesFromPodcast = async (val: AutoPlayEpisodesFromPodcast) => {
+  if (val === 'older' || val === 'newer') {
+    await AsyncStorage.setItem(PV.Keys.QUEUE_AUTO_PLAY_EPISODES_FROM_PODCAST, val)
+  } else {
+    await AsyncStorage.setItem(PV.Keys.QUEUE_AUTO_PLAY_EPISODES_FROM_PODCAST, 'off')
   }
 }

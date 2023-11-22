@@ -1,6 +1,7 @@
 import { Episode, NowPlayingItem, TranscriptRow } from 'podverse-shared'
 import 'reactn'
 import { BannerInfo, GlobalTheme, UserInfo, TempMediaRef } from '../resources/Interfaces'
+import { AutoPlayEpisodesFromPodcast } from '../resources/Queue'
 import { AutoQueueSettingsPosition, QueueRepeatModeMusic } from '../services/queue'
 import { V4VProviderConnectedState, V4VTransactionError } from '../state/actions/v4v/v4v'
 
@@ -63,8 +64,9 @@ declare module 'reactn/default' {
       }
       hidePlaybackSpeedButton: boolean
       remoteSkipButtonsAreTimeJumps: boolean
-      queueRepeatModeMusic: QueueRepeatModeMusic,
+      queueRepeatModeMusic: QueueRepeatModeMusic
       queueEnabledWhileMusicIsPlaying: boolean
+      autoPlayEpisodesFromPodcast: AutoPlayEpisodesFromPodcast
     }
     playlists: {
       myPlaylists: []

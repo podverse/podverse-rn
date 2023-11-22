@@ -67,8 +67,8 @@ import { getAddByRSSPodcastsLocally, parseAllAddByRSSPodcasts } from '../service
 import { playerUpdateUserPlaybackPosition } from '../services/player'
 import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudioSetup'
 import { getPodcast, getPodcasts } from '../services/podcast'
-import { getSavedQueryPodcastsScreenSort, setSavedQueryAlbumsScreenFilter, setSavedQueryAlbumsScreenSort,
-  setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
+import { setAutoPlayEpisodesFromPodcast } from '../services/queue'
+import { getSavedQueryPodcastsScreenSort, setSavedQueryPodcastsScreenSort } from '../services/savedQueryFilters'
 import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
 import { getNowPlayingItem, getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
@@ -268,6 +268,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.REFRESH_SUBSCRIPTIONS_ON_LAUNCH, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.SETTING_SHOULD_DISPLAY_NON_TOC_CHAPTERS, 'TRUE'),
+          setAutoPlayEpisodesFromPodcast('newer'),
           resetAllAppKeychain()
         ])
 
