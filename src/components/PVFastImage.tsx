@@ -100,6 +100,11 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     PV.Alerts.LEAVING_APP_ALERT(url)
   }
 
+  checkIfVTS = () => {
+    const { currentChapter } = this.props
+    return !!currentChapter?.remoteEpisodeId
+  }
+
   checkIfVTSIsInDefaultPlaylist = () => {
     const { currentChapter } = this.props
     const myPlaylists = this.global?.playlists?.myPlaylists || []
@@ -126,7 +131,6 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     const {
       accessible = false,
       allowFullView,
-      currentChapter,
       isAddByRSSPodcast,
       isAddByRSSPodcastLarger,
       isTabletGridView,
@@ -164,8 +168,9 @@ export class PVFastImage extends React.PureComponent<Props, State> {
       ? [defaultStyles.lightningIcon, defaultStyles.lightningIconLarge]
       : [defaultStyles.lightningIcon]
 
+    const isVTS = this.checkIfVTS()
     let isInDefaultPlaylist = false
-    if (currentChapter?.remoteEpisodeId) {
+    if (isVTS) {
       isInDefaultPlaylist = this.checkIfVTSIsInDefaultPlaylist()
     }
 
@@ -200,16 +205,18 @@ export class PVFastImage extends React.PureComponent<Props, State> {
               <LiveStatusBadge />
             </View>
           )}
-          <View style={defaultStyles.heartButton}>
-            <Icon
-              accessible={false}
-              name='heart'
-              onPress={this.handleLikePress}
-              solid={isInDefaultPlaylist}
-              size={14}
-              style={heartButtonIconStyles}
-            />
-          </View>
+          {isVTS && (
+            <View style={defaultStyles.heartButton}>
+              <Icon
+                accessible={false}
+                name='heart'
+                onPress={this.handleLikePress}
+                solid={isInDefaultPlaylist}
+                size={14}
+                style={heartButtonIconStyles}
+              />
+            </View>
+          )}
           {!!linkButtonUrl && (
             <View style={defaultStyles.linkButton}>
               <Icon
