@@ -17,7 +17,6 @@ import {
   NavShareIcon,
   ScrollView,
   SwitchWithText,
-  TableSectionSelectors,
   Text,
   TrackTableCell,
   View

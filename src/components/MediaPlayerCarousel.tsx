@@ -5,6 +5,7 @@ import { checkIfHasSupportedCommentTag, Episode, TranscriptRow } from 'podverse-
 import { PV } from '../resources'
 import { InitialState } from '../resources/Interfaces'
 import { translate } from '../lib/i18n'
+import { hasValidNetworkConnection } from '../lib/network'
 import { playerCheckIfStateIsPlaying } from '../services/player'
 import { v4vGetPluralCurrencyUnitPerMinute } from '../services/v4v/v4v'
 import { getBoostagramItemValueTags, v4vGetActiveProviderInfo } from '../state/actions/v4v/v4v'
@@ -73,7 +74,7 @@ const checkIfHasChat = (episode: Episode) => {
 export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   carousel: any
   scrollView: any
-  handlePressClipInfo: any
+  handlePressViewerBottomText: any
 
   constructor(props) {
     super(props)
@@ -128,9 +129,28 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     this.setState({ activeIndex })
   }
 
-  _handlePressClipInfo = () => {
-    const animated = true
-    this.scrollToActiveIndex(1, animated)
+  _handlePressViewerBottomText = () => {
+    const { navigation } = this.props
+    const { currentChapter, player } = this.global
+    const isClip = player?.nowPlayingItem?.clipId && !player?.nowPlayingItem?.clipIsOfficialChapter
+    if (isClip) {
+      const animated = true
+      this.scrollToActiveIndex(1, animated)
+    } else if (currentChapter?.remotePodcastId) {
+      if (currentChapter?.remoteMedium === PV.Medium.music) {
+        navigation.dismiss()
+        setTimeout(() => {
+          navigation.navigate(PV.RouteNames.AlbumsScreen)
+          setTimeout(async () => {
+            const hasInternetConnection = await hasValidNetworkConnection()
+            navigation.navigate(PV.RouteNames.AlbumScreen, {
+              podcastId: currentChapter?.remotePodcastId,
+              hasInternetConnection
+            })
+          }, 333)
+        }, 333)
+      }
+    }
   }
 
   _toggleSatStreaming = async () => {
@@ -238,7 +258,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const carouselComponents = mediaPlayerCarouselComponents({
       currentTocChapter,
       currentTocChapters,
-      handlePressClipInfo: this._handlePressClipInfo,
+      handlePressViewerBottomText: this._handlePressViewerBottomText,
       screenWidth,
       navigation,
       hasSummary,
@@ -384,7 +404,7 @@ type MPCComponents = {
   accessibilityItemSelectedValue?: string | null
   currentTocChapter?: InitialState['currentTocChapter']
   currentTocChapters: InitialState['currentTocChapters']
-  handlePressClipInfo: any
+  handlePressViewerBottomText: any
   hasSummary: boolean
   hasChapters: boolean
   hasChat: boolean
@@ -404,7 +424,7 @@ const mediaPlayerCarouselComponents = ({
   accessibilityItemSelectedValue,
   currentTocChapter,
   currentTocChapters,
-  handlePressClipInfo,
+  handlePressViewerBottomText,
   hasChapters,
   hasChat,
   hasComments,
@@ -424,7 +444,7 @@ const mediaPlayerCarouselComponents = ({
     if(isReady && (accessibilityItemSelectedValue === _nowPlayingInfoKey || !accessibilityItemSelectedValue)) {
       components.push(
         <MediaPlayerCarouselViewer
-          handlePressClipInfo={handlePressClipInfo}
+          handlePressViewerBottomText={handlePressViewerBottomText}
           key='mpc_sr_viewer'
           navigation={navigation}
           width={screenWidth}
@@ -496,7 +516,7 @@ const mediaPlayerCarouselComponents = ({
     if(isReady) {
       components.push(
         <MediaPlayerCarouselViewer
-          handlePressClipInfo={handlePressClipInfo}
+          handlePressViewerBottomText={handlePressViewerBottomText}
           key='mpc_viewer'
           navigation={navigation}
           width={screenWidth}
