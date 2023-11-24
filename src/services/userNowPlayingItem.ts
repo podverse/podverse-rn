@@ -119,15 +119,19 @@ export const clearNowPlayingItemOnServer = async () => {
 
   await clearNowPlayingItemLocally()
 
-  await request({
-    endpoint: '/user-now-playing-item',
-    method: 'DELETE',
-    headers: {
-      Authorization: bearerToken,
-      'Content-Type': 'application/json'
-    },
-    opts: { credentials: 'include' }
-  })
+  try {
+    await request({
+      endpoint: '/user-now-playing-item',
+      method: 'DELETE',
+      headers: {
+        Authorization: bearerToken,
+        'Content-Type': 'application/json'
+      },
+      opts: { credentials: 'include' }
+    })
+  } catch (error) {
+    errorLogger(_fileName, 'clearNowPlayingItemOnServer', error)
+  }
 }
 
 /*

@@ -47,33 +47,37 @@ import { v4vEnrichValueTagDataIfNeeded } from './v4v/v4v'
 const _fileName = 'src/state/actions/player.ts'
 
 export const initializePlayer = async () => {
-  let item = await getNowPlayingItemLocally()
-  const isLiveItem = !!item?.liveItem
-
-  if (isLiveItem && item?.episodeId) {
-    const isLive = await checkIfLiveItemIsLive(item.episodeId)
-    if (!isLive) {
-      item = null
-      await playerClearNowPlayingItem()
-    }
-
-    if (!item) {
-      const nextItem = await getNextFromQueue()
-      if (nextItem) {
-        item = nextItem
-      } else {
-        return
+  try {
+    let item = await getNowPlayingItemLocally()
+    const isLiveItem = !!item?.liveItem
+  
+    if (isLiveItem && item?.episodeId) {
+      const isLive = await checkIfLiveItemIsLive(item.episodeId)
+      if (!isLive) {
+        item = null
+        await playerClearNowPlayingItem()
+      }
+  
+      if (!item) {
+        const nextItem = await getNextFromQueue()
+        if (nextItem) {
+          item = nextItem
+        } else {
+          return
+        }
       }
     }
+  
+    if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
+      videoInitializePlayer(item)
+    } else if (!checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
+      audioInitializePlayerQueue(item)
+    }
+  
+    handleEnrichingPlayerState(item)
+  } catch (error) {
+    errorLogger(_fileName, 'initializePlayer', error)
   }
-
-  if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
-    videoInitializePlayer(item)
-  } else if (!checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
-    audioInitializePlayerQueue(item)
-  }
-
-  handleEnrichingPlayerState(item)
 }
 
 const clearEnrichedPodcastDataIfNewEpisode =
@@ -454,39 +458,43 @@ export const playerSetNowPlayingItem = async (item: NowPlayingItem | null, playb
 }
 
 export const initializePlayerSettings = async () => {
-  const [
-    playbackSpeedString,
-    hidePlaybackSpeedButton,
-    remoteSkipButtonsAreTimeJumps,
-    queueRepeatModeMusic,
-    queueEnabledWhileMusicIsPlaying,
-    autoPlayEpisodesFromPodcast,
-  ] = await Promise.all([
-    AsyncStorage.getItem(PV.Keys.PLAYER_PLAYBACK_SPEED),
-    AsyncStorage.getItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON),
-    getRemoteSkipButtonsTimeJumpOverride(),
-    getQueueRepeatModeMusic(),
-    AsyncStorage.getItem(PV.Keys.QUEUE_ENABLED_WHILE_MUSIC_IS_PLAYING),
-    getAutoPlayEpisodesFromPodcast()
-  ])
-
-  let playbackSpeed = 1
-  if (playbackSpeedString) {
-    playbackSpeed = JSON.parse(playbackSpeedString)
-  }
-
-  const globalState = getGlobal()
-  setGlobal({
-    player: {
-      ...globalState.player,
-      playbackRate: playbackSpeed,
-      hidePlaybackSpeedButton: !!hidePlaybackSpeedButton,
-      remoteSkipButtonsAreTimeJumps: !!remoteSkipButtonsAreTimeJumps,
+  try {
+    const [
+      playbackSpeedString,
+      hidePlaybackSpeedButton,
+      remoteSkipButtonsAreTimeJumps,
       queueRepeatModeMusic,
       queueEnabledWhileMusicIsPlaying,
-      autoPlayEpisodesFromPodcast
+      autoPlayEpisodesFromPodcast,
+    ] = await Promise.all([
+      AsyncStorage.getItem(PV.Keys.PLAYER_PLAYBACK_SPEED),
+      AsyncStorage.getItem(PV.Keys.PLAYER_HIDE_PLAYBACK_SPEED_BUTTON),
+      getRemoteSkipButtonsTimeJumpOverride(),
+      getQueueRepeatModeMusic(),
+      AsyncStorage.getItem(PV.Keys.QUEUE_ENABLED_WHILE_MUSIC_IS_PLAYING),
+      getAutoPlayEpisodesFromPodcast()
+    ])
+  
+    let playbackSpeed = 1
+    if (playbackSpeedString) {
+      playbackSpeed = JSON.parse(playbackSpeedString)
     }
-  })
+  
+    const globalState = getGlobal()
+    setGlobal({
+      player: {
+        ...globalState.player,
+        playbackRate: playbackSpeed,
+        hidePlaybackSpeedButton: !!hidePlaybackSpeedButton,
+        remoteSkipButtonsAreTimeJumps: !!remoteSkipButtonsAreTimeJumps,
+        queueRepeatModeMusic,
+        queueEnabledWhileMusicIsPlaying,
+        autoPlayEpisodesFromPodcast
+      }
+    })
+  } catch (error) {
+    errorLogger(_fileName, 'initializePlayerSettings', error)
+  }
 }
 
 /*
