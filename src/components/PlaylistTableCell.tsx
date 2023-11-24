@@ -13,6 +13,7 @@ type Props = {
   itemId?: string
   itemsOrder?: string[]
   onPress?: any
+  showCheckmarks?: boolean
   testID: string
   title?: string
 }
@@ -28,6 +29,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
       itemId,
       itemsOrder,
       onPress,
+      showCheckmarks,
       testID,
       title = translate('Untitled Playlist')
     } = this.props
@@ -81,13 +83,17 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
               </Text>
             )}
           </RNView>
-          <RNView style={styles.wrapperRight}>
-            {isSaving && <ActivityIndicator styles={styles.activityIndicator} testID={testID} />}
-            {!isSaving && isAdded && <Icon isSecondary name={'check-circle'}
-              size={21} style={addedIndicatorStyles} testID={`${testID}_is_added`} />}
-            {!isSaving && !isAdded && <Icon isSecondary name={'circle'}
-              size={21} style={addedIndicatorStyles} testID={`${testID}_is_not_added`} />}
-          </RNView>
+          {
+            showCheckmarks && (
+              <RNView style={styles.wrapperRight}>
+                {isSaving && <ActivityIndicator styles={styles.activityIndicator} testID={testID} />}
+                {!isSaving && isAdded && <Icon isSecondary name={'check-circle'}
+                  size={21} style={addedIndicatorStyles} testID={`${testID}_is_added`} />}
+                {!isSaving && !isAdded && <Icon isSecondary name={'circle'}
+                  size={21} style={addedIndicatorStyles} testID={`${testID}_is_not_added`} />}
+              </RNView>
+            )
+          }
         </View>
       </Pressable>
     )
