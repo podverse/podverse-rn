@@ -16,12 +16,12 @@ import PVEventEmitter from './eventEmitter'
 import { getPodcastCredentialsHeader } from './parser'
 import { playerSetRateWithLatestPlaybackSpeed, playerUpdateUserPlaybackPosition } from './player'
 import { getPodcastFeedUrlAuthority } from './podcast'
-import { addQueueItemNext, getAutoPlayEpisodesFromPodcast, getQueueItemsLocally, setRNTPRepeatMode } from './queue'
+import { addQueueItemNext, getQueueItemsLocally, setRNTPRepeatMode } from './queue'
 import { addOrUpdateHistoryItem, getHistoryItemIndexInfoForEpisode,
   getHistoryItemsIndexLocally } from './userHistoryItem'
 import { getEnrichedNowPlayingItemFromLocalStorage } from './userNowPlayingItem'
 import { getSecondaryQueueEpisodesForPlaylist, getSecondaryQueueEpisodesForPodcastId } from './secondaryQueue'
-// import { audioUpdateTrackPlayerCapabilities } from './playerAudioSetup'
+import { audioUpdateTrackPlayerCapabilities } from './playerAudioSetup'
 
 declare module 'react-native-track-player' {
   export function getCurrentLoadedTrack(): Promise<string>
@@ -217,6 +217,22 @@ export const audioLoadNowPlayingItem = async (
   return item
 }
 
+export const updatePlayerSettingsForTrack = async (isMusic: boolean) => {
+  await setRNTPRepeatMode(isMusic)
+
+    /*
+      NOTE: I'm updating the player settings every time audioSyncPlayerWithQueue.
+      This may not be the best place to be doing this, but audioSyncPlayerWithQueue
+      generally happens every time *after* an item changes in the player. So
+      audioSyncPlayerWithQueue seems to be a reliable place to put things that are
+      important for playing a new item, but can happen after the other player loading steps complete.
+    */
+    // TODO: can remote commands be passed in on the track, rather than updating them in this function?
+    if (Platform.OS === 'ios') {
+      await audioUpdateTrackPlayerCapabilities()
+    }
+}
+
 const audioSyncPlayerWithQueue = async () => {
   try {
     /*
@@ -243,17 +259,7 @@ const audioSyncPlayerWithQueue = async () => {
     const isMusic = nowPlayingItem?.podcastMedium === PV.Medium.music
     const autoPlayEpisodesFromPodcast = globalState?.player?.autoPlayEpisodesFromPodcast
 
-    await setRNTPRepeatMode(isMusic)
-
-    /*
-      possibly uncomment this later
-      // NOTE: I'm updating the player settings every time audioSyncPlayerWithQueue.
-      // This may not be the best place to be doing this, but audioSyncPlayerWithQueue
-      // generally happens every time *after* an item changes in the player. So
-      // audioSyncPlayerWithQueue seems to be a reliable place to put things that are
-      // important for playing a new item, but can happen after the other player loading steps complete.
-      await audioUpdateTrackPlayerCapabilities()
-    */
+    await updatePlayerSettingsForTrack(isMusic)
 
     // todo: handle retry in case not on global state yet?
     if (nowPlayingItem) {
@@ -473,7 +479,7 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
       initialTime = startPodcastFromTime
     }
 
-    const pitchAlgorithm = isMusic ? PitchAlgorithm.Music : PitchAlgorithm.Voice
+    const pitchAlgorithm = isMusic ? PitchAlgorithm.Linear : PitchAlgorithm.Voice
     const finalPodcastTitle = isMusic ? generateAuthorsText(podcastAuthors) : podcastTitle
 
     if (isDownloadedFile) {
