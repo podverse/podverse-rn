@@ -50,23 +50,7 @@ export const audioUpdateTrackPlayerCapabilities = async () => {
     ? AppKilledPlaybackBehavior.ContinuePlayback
     : AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
 
-  /* 
-    On Android, skip buttons always show because of customActions, and there
-    is room on the lock screen for both time jumps and track skips, so we
-    include time jumps, skipTos, and custom actions.
-    On iOS, only time jumps OR track skips can fit, so we need to replace
-    the time jump buttons with track skips.
-  */
-
-  const compactCapabilities = [
-    Capability.JumpBackward,
-    Capability.JumpForward,
-    Capability.Pause,
-    Capability.Play,
-    Capability.SeekTo
-  ]
-
-  const capabilities = isMusic && Platform.OS !== 'android' ? [
+  const capabilities = isMusic ? [
     Capability.Pause,
     Capability.Play,
     Capability.SeekTo,
@@ -84,10 +68,12 @@ export const audioUpdateTrackPlayerCapabilities = async () => {
 
   const iosCategoryMode = isMusic ? IOSCategoryMode.Default : IOSCategoryMode.SpokenAudio
   
+  console.log('capabilities', capabilities)
+
   const RNTPOptions: UpdateOptions = {
     capabilities,
-    compactCapabilities,
-    notificationCapabilities: compactCapabilities,
+    compactCapabilities: capabilities,
+    notificationCapabilities: capabilities,
     backwardJumpInterval: parseInt(jumpBackwardsTime, 10),
     forwardJumpInterval: parseInt(jumpForwardsTime, 10),
     progressUpdateEventInterval: 1,
@@ -97,24 +83,24 @@ export const audioUpdateTrackPlayerCapabilities = async () => {
     iosCategoryMode
   }
 
-  // HACK: android < 13 doesnt show forward/backward buttons in adnroid auto?
-  // proposed solution is to resolve buttons all through custom actions
-  if (Platform.OS === 'android') {
-    if (Platform.Version > 32) {
-      RNTPOptions.customActions = {
-        customActionsList: ['customSkipPrev', 'customSkipNext'],
-        customSkipPrev: require('../resources/assets/icons/skip-prev.png'),
-        customSkipNext: require('../resources/assets/icons/skip-next.png')
-      }
-    } else {
-      RNTPOptions.customActions = {
-        customActionsList: ['customSkipPrev', 'customSkipNext', 'customJumpBackward', 'customJumpForward'],
-        customSkipPrev: require('../resources/assets/icons/skip-prev.png'),
-        customSkipNext: require('../resources/assets/icons/skip-next.png'),
-        customJumpForward: require('../resources/assets/icons/forward-30.png'),
-        customJumpBackward: require('../resources/assets/icons/replay-10.png')
-      }
-    }
-  }
+  // // HACK: android < 13 doesnt show forward/backward buttons in adnroid auto?
+  // // proposed solution is to resolve buttons all through custom actions
+  // if (Platform.OS === 'android') {
+  //   if (Platform.Version > 32) {
+  //     RNTPOptions.customActions = {
+  //       customActionsList: ['customSkipPrev', 'customSkipNext'],
+  //       customSkipPrev: require('../resources/assets/icons/skip-prev.png'),
+  //       customSkipNext: require('../resources/assets/icons/skip-next.png')
+  //     }
+  //   } else {
+  //     RNTPOptions.customActions = {
+  //       customActionsList: ['customSkipPrev', 'customSkipNext', 'customJumpBackward', 'customJumpForward'],
+  //       customSkipPrev: require('../resources/assets/icons/skip-prev.png'),
+  //       customSkipNext: require('../resources/assets/icons/skip-next.png'),
+  //       customJumpForward: require('../resources/assets/icons/forward-30.png'),
+  //       customJumpBackward: require('../resources/assets/icons/replay-10.png')
+  //     }
+  //   }
+  // }
   PVAudioPlayer.updateOptions(RNTPOptions)
 }
