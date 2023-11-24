@@ -239,13 +239,12 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 const styles = StyleSheet.create({
   outerView: {
     borderWidth: 2,
-    borderStyle: 'solid',
-    marginVertical: 5
+    borderStyle: 'solid'
   },
   description: {
     fontSize: PV.Fonts.sizes.sm,
     color: PV.Colors.grayLighter,
-    marginTop: 8
+    marginTop: 10
   },
   image: {
     flex: 0,
@@ -280,16 +279,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start'
   },
   timeRemainingWrapper: {
-    marginTop: 12
+    marginTop: 15
   },
   title: {
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.thin
   },
   wrapper: {
-    paddingBottom: 10,
+    paddingBottom: 14,
     paddingHorizontal: 8,
-    paddingTop: 12
+    paddingTop: 14
   },
   wrapperTop: {
     flexDirection: 'row',
