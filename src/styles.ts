@@ -854,6 +854,25 @@ export const sliderStyles = StyleSheet.create({
   wrapper: {
     minHeight: 50,
     marginHorizontal: PV.Player.sliderStyles.wrapper.marginHorizontal
+  },
+  onlySliderThumbStyle: {
+    height: 0,
+    width: 0
+  },
+  onlySliderWrapperStyle: {
+    height: 4,
+    marginHorizontal: PV.Player.sliderStyles.wrapper.marginHorizontal
+  },
+  onlySliderTrackStyle: {
+    borderRadius: 0,
+    height: 4
+  },
+  onlySliderStyle: {
+    height: 4,
+    marginTop: 0,
+    marginBottom: 0,
+    marginLeft: 0,
+    marginRight: 0
   }
 })
 

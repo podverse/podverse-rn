@@ -266,11 +266,13 @@ module.exports = async () => {
   })
 
   PVAudioPlayer.addEventListener(Event.RemoteJumpBackward, () => {
+    console.log('Event.RemoteJumpBackward')
     const { jumpBackwardsTime } = getGlobal()
     audioJumpBackward(jumpBackwardsTime)
   })
 
   PVAudioPlayer.addEventListener(Event.RemoteJumpForward, () => {
+    console.log('Event.RemoteJumpForward')
     const { jumpForwardsTime } = getGlobal()
     audioJumpForward(jumpForwardsTime)
   })
@@ -295,8 +297,10 @@ module.exports = async () => {
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   PVAudioPlayer.addEventListener(Event.RemotePrevious, async () => {
+    console.log('Event.RemotePrevious')
+    const isMusic = getGlobal()?.player?.nowPlayingItem?.podcastMedium === PV.Medium.music
     const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
-    if (remoteSkipButtonsAreTimeJumps) {
+    if (!isMusic && remoteSkipButtonsAreTimeJumps) {
       const { jumpBackwardsTime } = getGlobal()
       audioJumpBackward(jumpBackwardsTime)
     } else {
@@ -306,8 +310,10 @@ module.exports = async () => {
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   PVAudioPlayer.addEventListener(Event.RemoteNext, async () => {
+    console.log('Event.RemoteNext')
+    const isMusic = getGlobal()?.player?.nowPlayingItem?.podcastMedium === PV.Medium.music
     const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
-    if (remoteSkipButtonsAreTimeJumps) {
+    if (!isMusic && remoteSkipButtonsAreTimeJumps) {
       const { jumpForwardsTime } = getGlobal()
       audioJumpForward(jumpForwardsTime)
     } else {
@@ -373,6 +379,7 @@ module.exports = async () => {
       handlePlayRemoteMediaId(e.id)
     })
     PVAudioPlayer.addEventListener(Event.RemoteSkip, (e) => {
+      console.log('Event.RemoteSkip', e)
       PVAudioPlayer.skip(e.index).then(() => PVAudioPlayer.play())
     })
     PVAudioPlayer.addEventListener(Event.RemoteBrowse, (e) => {
@@ -436,27 +443,27 @@ module.exports = async () => {
       })()
     })
 
-    // TODO: handle skip next/previous via customActions in android auto
-    PVAudioPlayer.addEventListener(Event.RemoteCustomAction, (e) => {
-      console.log('Event.RemoteCustomAction', e)
-      switch (e.customAction) {
-        case 'customSkipPrev':
-          playerPlayPreviousChapterOrReturnToBeginningOfTrack()
-          break
-        case 'customSkipNext':
-          playerPlayNextChapterOrQueueItem()
-          break
-        case 'customJumpForward':
-          const { jumpBackwardsTime } = getGlobal()
-          audioJumpBackward(jumpBackwardsTime)
-          break
-        case 'customJumpBackward':
-          const { jumpForwardsTime } = getGlobal()
-          audioJumpForward(jumpForwardsTime)
-          break
-        default:
-          break
-      }
-    })
+    // // TODO: handle skip next/previous via customActions in android auto
+    // PVAudioPlayer.addEventListener(Event.RemoteCustomAction, (e) => {
+    //   console.log('Event.RemoteCustomAction', e)
+    //   switch (e.customAction) {
+    //     case 'customSkipPrev':
+    //       playerPlayPreviousChapterOrReturnToBeginningOfTrack()
+    //       break
+    //     case 'customSkipNext':
+    //       playerPlayNextChapterOrQueueItem()
+    //       break
+    //     case 'customJumpForward':
+    //       const { jumpBackwardsTime } = getGlobal()
+    //       audioJumpBackward(jumpBackwardsTime)
+    //       break
+    //     case 'customJumpBackward':
+    //       const { jumpForwardsTime } = getGlobal()
+    //       audioJumpForward(jumpForwardsTime)
+    //       break
+    //     default:
+    //       break
+    //   }
+    // })
   }
 }

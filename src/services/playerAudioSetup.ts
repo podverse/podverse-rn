@@ -42,63 +42,65 @@ export const PlayerAudioSetupService = async () => {
 }
 
 export const audioUpdateTrackPlayerCapabilities = async () => {
-  const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
+  const { jumpBackwardsTime, jumpForwardsTime, player } = getGlobal()
+  const isMusic = player?.nowPlayingItem?.podcastMedium === PV.Medium.music
 
   const appKilledContinuePlayback = await AsyncStorage.getItem(PV.Keys.SETTING_APP_KILLED_CONTINUE_PLAYBACK)
   const appKilledPlaybackBehavior = !!appKilledContinuePlayback
     ? AppKilledPlaybackBehavior.ContinuePlayback
     : AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
 
+  const capabilities = isMusic ? [
+    Capability.Pause,
+    Capability.Play,
+    Capability.SeekTo,
+    Capability.SkipToNext,
+    Capability.SkipToPrevious
+  ] : [
+    Capability.JumpBackward,
+    Capability.JumpForward,
+    Capability.Pause,
+    Capability.Play,
+    Capability.SeekTo,
+    Capability.SkipToNext,
+    Capability.SkipToPrevious
+  ]
+
+  const iosCategoryMode = isMusic ? IOSCategoryMode.Default : IOSCategoryMode.SpokenAudio
+  
+  console.log('capabilities', capabilities)
+
   const RNTPOptions: UpdateOptions = {
-    capabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo,
-      Capability.SkipToNext,
-      Capability.SkipToPrevious
-    ],
-    compactCapabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo
-    ],
-    notificationCapabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo
-    ],
+    capabilities,
+    compactCapabilities: capabilities,
+    notificationCapabilities: capabilities,
     backwardJumpInterval: parseInt(jumpBackwardsTime, 10),
     forwardJumpInterval: parseInt(jumpForwardsTime, 10),
     progressUpdateEventInterval: 1,
     android: {
       appKilledPlaybackBehavior
-    }
+    },
+    iosCategoryMode
   }
 
-  // HACK: android < 13 doesnt show forward/backward buttons in adnroid auto?
-  // proposed solution is to resolve buttons all through custom actions
-  if (Platform.OS === 'android') {
-    if (Platform.Version > 32) {
-      RNTPOptions.customActions = {
-        customActionsList: ['customSkipPrev', 'customSkipNext'],
-        customSkipPrev: require('../resources/assets/icons/skip-prev.png'),
-        customSkipNext: require('../resources/assets/icons/skip-next.png')
-      }
-    } else {
-      RNTPOptions.customActions = {
-        customActionsList: ['customSkipPrev', 'customSkipNext', 'customJumpBackward', 'customJumpForward'],
-        customSkipPrev: require('../resources/assets/icons/skip-prev.png'),
-        customSkipNext: require('../resources/assets/icons/skip-next.png'),
-        customJumpForward: require('../resources/assets/icons/forward-30.png'),
-        customJumpBackward: require('../resources/assets/icons/replay-10.png')
-      }
-    }
-  }
+  // // HACK: android < 13 doesnt show forward/backward buttons in adnroid auto?
+  // // proposed solution is to resolve buttons all through custom actions
+  // if (Platform.OS === 'android') {
+  //   if (Platform.Version > 32) {
+  //     RNTPOptions.customActions = {
+  //       customActionsList: ['customSkipPrev', 'customSkipNext'],
+  //       customSkipPrev: require('../resources/assets/icons/skip-prev.png'),
+  //       customSkipNext: require('../resources/assets/icons/skip-next.png')
+  //     }
+  //   } else {
+  //     RNTPOptions.customActions = {
+  //       customActionsList: ['customSkipPrev', 'customSkipNext', 'customJumpBackward', 'customJumpForward'],
+  //       customSkipPrev: require('../resources/assets/icons/skip-prev.png'),
+  //       customSkipNext: require('../resources/assets/icons/skip-next.png'),
+  //       customJumpForward: require('../resources/assets/icons/forward-30.png'),
+  //       customJumpBackward: require('../resources/assets/icons/replay-10.png')
+  //     }
+  //   }
+  // }
   PVAudioPlayer.updateOptions(RNTPOptions)
 }

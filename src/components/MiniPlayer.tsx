@@ -22,7 +22,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
     const { hasErrored } = screenPlayer
     const isDarkMode = globalTheme === darkTheme
 
-    let { nowPlayingItem } = player
+    let { backupDuration, nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
     const isMusic = nowPlayingItem?.podcastMedium === PV.Medium.music
     const podcastTitle = isMusic
@@ -96,7 +96,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
     // const clipTitleWrapperStyle = [styles.clipTitleWrapper, globalTheme.player]
 
     return (
-      <View>
+      <View style={{ position: 'relative' }}>
         {/* {
           screenReaderEnabled ? (
             <View style={clipTitleWrapperStyle}>
@@ -117,6 +117,13 @@ export class MiniPlayer extends React.PureComponent<Props> {
             </View>
           )
         } */}
+        {/* <View style={styles.progressWrapper}>
+          <PlayerProgressBar
+            backupDuration={backupDuration}
+            globalTheme={globalTheme}
+            onlySlider
+          />
+        </View> */}
         <View style={[styles.playerInnerWrapper, globalTheme.player]}>
           <Pressable
             accessibilityLabel={nowPlayingAccessibilityLabel}
@@ -230,6 +237,13 @@ const styles = StyleSheet.create({
     color: PV.Colors.skyLight,
     marginTop: Platform.OS === 'android' ? 2 : 4,
     flexWrap: 'wrap'
+  },
+  progressWrapper: {
+    position: 'absolute',
+    top: -3,
+    left: 0,
+    right: 0,
+    zIndex: 0
   },
   textWrapper: {
     flex: 1,
