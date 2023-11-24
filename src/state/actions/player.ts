@@ -272,7 +272,32 @@ export const playerHandleResumeAfterClipHasEnded = async () => {
     playerGetPosition(),
     playerGetDuration()
   ])
+
+  /*
+    We need to make sure the id of the track updates, or else playerUpdateUserPlaybackPosition
+    will get "stuck" with the id of the clip, and subsequent pause/saves will re-save the clip
+    as the nowPlayingItem, instead of the episode.
+  */
+ 
   const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(nowPlayingItem)
+  try {
+    const currentIndex = await TrackPlayer.getActiveTrackIndex()
+    if (currentIndex || currentIndex === 0) {
+      const track = await TrackPlayer.getTrack(currentIndex)
+  
+      if (track && nowPlayingItemEpisode?.episodeId) {
+        const newTrack = {
+          ...track,
+          id: nowPlayingItemEpisode?.episodeId
+        }
+  
+        await TrackPlayer.updateMetadataForTrack(currentIndex, newTrack)
+      }
+    }
+  } catch (error) {
+    errorLogger(_fileName, 'playerHandleResumeAfterClipHasEnded currentIndex handling', error)
+  }
+
   await addOrUpdateHistoryItem(nowPlayingItemEpisode, playbackPosition, mediaFileDuration)
   playerSetNowPlayingItem(nowPlayingItemEpisode, playbackPosition)
 }
