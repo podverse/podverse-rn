@@ -67,8 +67,6 @@ export const audioUpdateTrackPlayerCapabilities = async () => {
   ]
 
   const iosCategoryMode = isMusic ? IOSCategoryMode.Default : IOSCategoryMode.SpokenAudio
-  
-  console.log('capabilities', capabilities)
 
   const RNTPOptions: UpdateOptions = {
     capabilities,

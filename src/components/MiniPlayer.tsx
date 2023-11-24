@@ -6,7 +6,7 @@ import { PV } from '../resources'
 import { playerCheckIfStateIsBuffering, playerCheckIfStateIsPlaying } from '../services/player'
 import { handleNavigateToPlayerScreen, playerTogglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
-import { ActivityIndicator, FastImage, Icon, PVVideo, Text, TextTicker } from './'
+import { ActivityIndicator, FastImage, Icon, PlayerProgressBar, PVVideo, Text, TextTicker } from './'
 
 type Props = {
   navigation: any
@@ -117,13 +117,13 @@ export class MiniPlayer extends React.PureComponent<Props> {
             </View>
           )
         } */}
-        {/* <View style={styles.progressWrapper}>
+        <View style={styles.progressWrapper}>
           <PlayerProgressBar
             backupDuration={backupDuration}
             globalTheme={globalTheme}
             onlySlider
           />
-        </View> */}
+        </View>
         <View style={[styles.playerInnerWrapper, globalTheme.player]}>
           <Pressable
             accessibilityLabel={nowPlayingAccessibilityLabel}

@@ -173,6 +173,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
             this.setState({ isSavingId: '' })
           }
         }}
+        showCheckmarks
         testID={`${testIDPrefix}_playlist_item_${index}`}
         title={item.title || translate('Untitled Playlist')}
       />
