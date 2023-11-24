@@ -478,9 +478,9 @@ export const playerTogglePlay = async () => {
 export const setRemoteSkipButtonsTimeJumpOverride = async (bool: boolean) => {
   try {
     if (bool) {
-      await AsyncStorage.setItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP_2, 'TRUE')
+      await AsyncStorage.setItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP, 'TRUE')
     } else {
-      await AsyncStorage.removeItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP_2)
+      await AsyncStorage.removeItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP)
     }
   } catch (error) {
     errorLogger(_fileName, 'setRemoteSkipButtonsTimeJumpOverride', error)
@@ -489,7 +489,7 @@ export const setRemoteSkipButtonsTimeJumpOverride = async (bool: boolean) => {
 
 export const getRemoteSkipButtonsTimeJumpOverride = async () => {
   try {
-    const remoteSkipButtonsTimeJumpOverride = await AsyncStorage.getItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP_2)
+    const remoteSkipButtonsTimeJumpOverride = await AsyncStorage.getItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP)
     return remoteSkipButtonsTimeJumpOverride
   } catch (error) {
     return false
