@@ -1,4 +1,5 @@
 import { getGlobal, setGlobal } from 'reactn'
+import { errorLogger } from '../../lib/logger'
 import {
   AutoQueueSettingsPosition,
   getAutoQueueSettings,
@@ -9,25 +10,31 @@ import {
   setAutoQueueDownloadsOn as setAutoQueueDownloadsOnService
 } from '../../services/autoQueue'
 
+const _fileName = 'src/state/actions/autoQueue.ts'
+
 /* Init both auto queue new episodes and auto queue downloads */
 
 export const initAutoQueue = async () => {
-  const [autoQueueSettings, autoQueueSettingsPosition,
-    autoQueueDownloadsOn] = await Promise.all([
-    getAutoQueueSettings(),
-    getAutoQueueSettingsPosition(),
-    getAutoQueueDownloadsOn()
-  ])
-  
-  // TODO: There is a race condition preventing this state from being set properly on app launch :(
-  // I don't know where the problem is coming from...
-  setTimeout(() => {
-    setGlobal({
-      autoQueueSettings,
-      autoQueueSettingsPosition,
-      autoQueueDownloadsOn
-    })
-  }, 1000)
+  try {
+    const [autoQueueSettings, autoQueueSettingsPosition,
+      autoQueueDownloadsOn] = await Promise.all([
+      getAutoQueueSettings(),
+      getAutoQueueSettingsPosition(),
+      getAutoQueueDownloadsOn()
+    ])
+    
+    // TODO: There is a race condition preventing this state from being set properly on app launch :(
+    // I don't know where the problem is coming from...
+    setTimeout(() => {
+      setGlobal({
+        autoQueueSettings,
+        autoQueueSettingsPosition,
+        autoQueueDownloadsOn
+      })
+    }, 1000)
+  } catch (error) {
+    errorLogger(_fileName, 'initAutoQueue', error)
+  }
 }
 
 /* Auto queue new episdoes helpers */

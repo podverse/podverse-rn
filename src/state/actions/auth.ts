@@ -128,10 +128,11 @@ export const askToSyncWithNowPlayingItem = async (callback?: any) => {
         await setNowPlayingItemLocally(serverNowPlayingItem, serverNowPlayingItem.userPlaybackPosition || 0)
       }
     }
-    callback?.()
   } catch (error) {
     errorLogger(_fileName, 'askToSyncWithNowPlayingItem error', error)
   }
+
+  callback?.()
 }
 
 // If a new player item should be loaded, the local history/queue must be up-to-date
