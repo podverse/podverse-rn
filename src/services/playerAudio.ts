@@ -228,7 +228,9 @@ export const updatePlayerSettingsForTrack = async (isMusic: boolean) => {
       important for playing a new item, but can happen after the other player loading steps complete.
     */
     // TODO: can remote commands be passed in on the track, rather than updating them in this function?
-    await audioUpdateTrackPlayerCapabilities()
+    if (Platform.OS === 'ios') {
+      await audioUpdateTrackPlayerCapabilities()
+    }
 }
 
 const audioSyncPlayerWithQueue = async () => {
