@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: PV.Fonts.sizes.sm,
     color: PV.Colors.grayLighter,
-    marginTop: 12
+    marginTop: 8
   },
   image: {
     flex: 0,
@@ -280,16 +280,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start'
   },
   timeRemainingWrapper: {
-    marginTop: 15
+    marginTop: 12
   },
   title: {
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.thin
   },
   wrapper: {
-    paddingBottom: 14,
+    paddingBottom: 10,
     paddingHorizontal: 8,
-    paddingTop: 16
+    paddingTop: 12
   },
   wrapperTop: {
     flexDirection: 'row',
