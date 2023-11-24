@@ -1,11 +1,13 @@
-import { StyleSheet } from 'react-native'
-import React from 'reactn'
+import { StyleSheet, View as RNView, Alert } from 'react-native'
+import React, { getGlobal } from 'reactn'
 import {
   ActivityIndicator,
   Divider,
   FlatList,
   MessageWithAction,
+  NavHeaderButtonText,
   PlaylistTableCell,
+  PVDialog,
   SwipeRowBack,
   TableSectionSelectors,
   View
@@ -17,7 +19,7 @@ import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { trackPageView } from '../services/tracking'
-import { deletePlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
+import { createPlaylist, deletePlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { getLoggedInUserPlaylistsCombined } from '../state/actions/user'
 
 const _fileName = 'src/screens/PlaylistsScreen.tsx'
@@ -30,7 +32,9 @@ type State = {
   isLoading: boolean
   isLoadingMore: boolean
   isRemoving?: boolean
+  newPlaylistTitle?: string
   sections?: any[]
+  showNewPlaylistDialog?: boolean
   showNoInternetConnectionMessage?: boolean
 }
 
@@ -47,12 +51,33 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     }
   }
 
-  static navigationOptions = () => ({
-    title: translate('Playlists')
-  })
+  static navigationOptions = ({ navigation }) => {
+    const isLoggedIn = !!getGlobal().session?.isLoggedIn
+
+    return {
+      title: translate('Playlists'),
+      headerRight: () => (
+        <RNView>
+          {isLoggedIn && (
+            <NavHeaderButtonText
+              accessibilityHint={translate('ARIA HINT - create a new playlist')}
+              accessibilityLabel={translate('New')}
+              handlePress={navigation.getParam('showNewPlaylistDialog')}
+              testID={`${testIDPrefix}_new`}
+              text={translate('New')}
+            />
+          )}
+        </RNView>
+      )
+    }
+  }
 
   async componentDidMount() {
     const { navigation } = this.props
+
+    navigation.setParams({
+      showNewPlaylistDialog: this._showNewPlaylistDialog
+    })
 
     if (this.global.session.isLoggedIn) {
       const newState = await this._queryData()
@@ -195,8 +220,52 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     })
   }
 
+  _showNewPlaylistDialog = () =>
+    this.setState({
+      newPlaylistTitle: '',
+      showNewPlaylistDialog: true
+    })
+
+  _handleNewPlaylistTextChange = (text: string) => this.setState({ newPlaylistTitle: text })
+
+  _handleNewPlaylistDismiss = () => this.setState({ showNewPlaylistDialog: false })
+
+  _saveNewPlaylist = async () => {
+    const wasAlerted = await alertIfNoNetworkConnection('create a playlist')
+    if (wasAlerted) return
+
+    this.setState(
+      {
+        isLoading: true,
+        showNewPlaylistDialog: false
+      },
+      () => {
+        (async () => {
+          const { newPlaylistTitle } = this.state
+
+          try {
+            await createPlaylist({ title: newPlaylistTitle }, this.global)
+          } catch (error) {
+            if (error.response) {
+              Alert.alert(
+                PV.Alerts.SOMETHING_WENT_WRONG.title,
+                PV.Alerts.SOMETHING_WENT_WRONG.message,
+                PV.Alerts.BUTTONS.OK
+              )
+            }
+          }
+
+          this.setState({
+            isLoading: false
+          })
+        })()
+      }
+    )
+  }
+
   render() {
-    const { isLoading, isLoadingMore, sections, showNoInternetConnectionMessage } = this.state
+    const { isLoading, isLoadingMore, newPlaylistTitle, sections,
+      showNewPlaylistDialog, showNoInternetConnectionMessage } = this.state
     const { globalTheme } = this.global
 
     return (
@@ -233,6 +302,31 @@ export class PlaylistsScreen extends React.Component<Props, State> {
               topActionText={translate('Login')}
             />
           )}
+          <PVDialog
+            buttonProps={[
+              {
+                label: translate('Cancel'),
+                onPress: this._handleNewPlaylistDismiss,
+                testID: 'new_playlist_title_cancel'.prependTestId()
+              },
+              {
+                bold: true,
+                label: translate('Save'),
+                onPress: this._saveNewPlaylist,
+                testID: 'new_playlist_title_save'.prependTestId()
+              }
+            ]}
+            inputProps={[
+              {
+                onChangeText: this._handleNewPlaylistTextChange,
+                placeholder: translate('title of playlist'),
+                testID: 'new_playlist_title_input'.prependTestId(),
+                value: newPlaylistTitle || ''
+              }
+            ]}
+            title={translate('New Playlist')}
+            visible={showNewPlaylistDialog}
+          />
         </View>
       </View>
     )
