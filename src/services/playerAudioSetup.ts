@@ -82,6 +82,8 @@ export const audioUpdateTrackPlayerCapabilities = async () => {
     Capability.SkipToPrevious
   ]
 
+  const iosCategoryMode = isMusic ? IOSCategoryMode.Default : IOSCategoryMode.SpokenAudio
+  
   const RNTPOptions: UpdateOptions = {
     capabilities,
     compactCapabilities,
@@ -91,7 +93,8 @@ export const audioUpdateTrackPlayerCapabilities = async () => {
     progressUpdateEventInterval: 1,
     android: {
       appKilledPlaybackBehavior
-    }
+    },
+    iosCategoryMode
   }
 
   // HACK: android < 13 doesnt show forward/backward buttons in adnroid auto?
