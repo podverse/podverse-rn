@@ -265,6 +265,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5'),
           AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5'),
           AsyncStorage.setItem(PV.Keys.PODCASTS_GRID_VIEW_ENABLED, 'TRUE'),
+          AsyncStorage.setItem(PV.Keys.REMOTE_SKIP_BUTTONS_TIME_JUMP, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_BY_DEFAULT, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.REFRESH_SUBSCRIPTIONS_ON_LAUNCH, 'TRUE'),
           AsyncStorage.setItem(PV.Keys.SETTING_SHOULD_DISPLAY_NON_TOC_CHAPTERS, 'TRUE'),
