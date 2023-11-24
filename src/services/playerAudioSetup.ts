@@ -42,43 +42,59 @@ export const PlayerAudioSetupService = async () => {
 }
 
 export const audioUpdateTrackPlayerCapabilities = async () => {
-  const { jumpBackwardsTime, jumpForwardsTime } = getGlobal()
+  const { jumpBackwardsTime, jumpForwardsTime, player } = getGlobal()
+  const isMusic = player?.nowPlayingItem?.podcastMedium === PV.Medium.music
 
   const appKilledContinuePlayback = await AsyncStorage.getItem(PV.Keys.SETTING_APP_KILLED_CONTINUE_PLAYBACK)
   const appKilledPlaybackBehavior = !!appKilledContinuePlayback
     ? AppKilledPlaybackBehavior.ContinuePlayback
     : AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
 
+  /* 
+    On Android, skip buttons always show because of customActions, and there
+    is room on the lock screen for both time jumps and track skips, so we
+    include time jumps, skipTos, and custom actions.
+    On iOS, only time jumps OR track skips can fit, so we need to replace
+    the time jump buttons with track skips.
+  */
+
+  const compactCapabilities = [
+    Capability.JumpBackward,
+    Capability.JumpForward,
+    Capability.Pause,
+    Capability.Play,
+    Capability.SeekTo
+  ]
+
+  const capabilities = isMusic && Platform.OS !== 'android' ? [
+    Capability.Pause,
+    Capability.Play,
+    Capability.SeekTo,
+    Capability.SkipToNext,
+    Capability.SkipToPrevious
+  ] : [
+    Capability.JumpBackward,
+    Capability.JumpForward,
+    Capability.Pause,
+    Capability.Play,
+    Capability.SeekTo,
+    Capability.SkipToNext,
+    Capability.SkipToPrevious
+  ]
+
+  const iosCategoryMode = isMusic ? IOSCategoryMode.Default : IOSCategoryMode.SpokenAudio
+  
   const RNTPOptions: UpdateOptions = {
-    capabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo,
-      Capability.SkipToNext,
-      Capability.SkipToPrevious
-    ],
-    compactCapabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo
-    ],
-    notificationCapabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo
-    ],
+    capabilities,
+    compactCapabilities,
+    notificationCapabilities: compactCapabilities,
     backwardJumpInterval: parseInt(jumpBackwardsTime, 10),
     forwardJumpInterval: parseInt(jumpForwardsTime, 10),
     progressUpdateEventInterval: 1,
     android: {
       appKilledPlaybackBehavior
-    }
+    },
+    iosCategoryMode
   }
 
   // HACK: android < 13 doesnt show forward/backward buttons in adnroid auto?

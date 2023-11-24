@@ -295,8 +295,9 @@ module.exports = async () => {
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   PVAudioPlayer.addEventListener(Event.RemotePrevious, async () => {
+    const isMusic = getGlobal()?.player?.nowPlayingItem?.podcastMedium === PV.Medium.music
     const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
-    if (remoteSkipButtonsAreTimeJumps) {
+    if (!isMusic && remoteSkipButtonsAreTimeJumps) {
       const { jumpBackwardsTime } = getGlobal()
       audioJumpBackward(jumpBackwardsTime)
     } else {
@@ -306,8 +307,9 @@ module.exports = async () => {
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   PVAudioPlayer.addEventListener(Event.RemoteNext, async () => {
+    const isMusic = getGlobal()?.player?.nowPlayingItem?.podcastMedium === PV.Medium.music
     const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
-    if (remoteSkipButtonsAreTimeJumps) {
+    if (!isMusic && remoteSkipButtonsAreTimeJumps) {
       const { jumpForwardsTime } = getGlobal()
       audioJumpForward(jumpForwardsTime)
     } else {

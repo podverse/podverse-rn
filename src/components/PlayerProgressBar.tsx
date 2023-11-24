@@ -26,6 +26,7 @@ type Props = {
   isLiveItem?: boolean
   isLoading?: boolean
   isMakeClipScreen?: boolean
+  onlySlider?: boolean
   value: number
 }
 
@@ -102,7 +103,8 @@ export function PlayerProgressBar(props: Props) {
     currentTocChaptersStartTimePositions,
     isLiveItem,
     isLoading,
-    isMakeClipScreen
+    isMakeClipScreen,
+    onlySlider
   } = props
   const { position } = useProgress()
   const { duration } = useProgress()
@@ -159,47 +161,58 @@ export function PlayerProgressBar(props: Props) {
     durationText = translate('Live')
   }
 
-  return (
-    <View style={sliderStyles.wrapper}>
-      <Slider
-        disabled={isLiveItem}
-        minimumValue={0}
-        maximumValue={isLoading ? 0 : 1}
-        minimumTrackTintColor={PV.Colors.skyDark}
-        maximumTrackTintColor={PV.Colors.gray}
-        onSlidingStart={(newProgressValue) => {
-          pauseChapterInterval()
-          const slidingPositionOverride = newProgressValue * parentScopeDuration
-          setGlobal({ slidingPositionOverride })
-        }}
-        onSlidingComplete={async (newProgressValue) => {
-          const innerPosition = newProgressValue * parentScopeDuration
-          await playerHandleSeekTo(innerPosition)
-          loadChapterPlaybackInfo()
-          resumeChapterInterval()
-
-          /*
-            slidingPositionOverride is required to make the currentTime label update with the slider's hhmmss value,
-            prior to the seekTo method being called on slide complete.
-            Calling PVAudioPlayer.seekTo(innerPosition) in playerHandleSeekTo causes the progress bar
-            to re-render with the *last* innerPosition, before finally seeking to the new innerPosition
-            and then re-rendering with the new correct innerPosition. To workaround this, I am adding
-            a 3 second delay before clearing the slidingPositionOverride from local state.
-          */
+  const slider = (
+    <Slider
+      disabled={isLiveItem || onlySlider}
+      minimumValue={0}
+      maximumValue={isLoading ? 0 : 1}
+      minimumTrackTintColor={PV.Colors.skyDark}
+      maximumTrackTintColor={onlySlider ? 'transparent' : PV.Colors.gray}
+      onSlidingStart={(newProgressValue) => {
+        pauseChapterInterval()
+        const slidingPositionOverride = newProgressValue * parentScopeDuration
+        setGlobal({ slidingPositionOverride })
+      }}
+      onSlidingComplete={async (newProgressValue) => {
+        const innerPosition = newProgressValue * parentScopeDuration
+        await playerHandleSeekTo(innerPosition)
+        loadChapterPlaybackInfo()
+        resumeChapterInterval()
+        /*
+          slidingPositionOverride is required to make the currentTime label update with the slider's hhmmss value,
+          prior to the seekTo method being called on slide complete.
+          Calling PVAudioPlayer.seekTo(innerPosition) in playerHandleSeekTo causes the progress bar
+          to re-render with the *last* innerPosition, before finally seeking to the new innerPosition
+          and then re-rendering with the new correct innerPosition. To workaround this, I am adding
+          a 3 second delay before clearing the slidingPositionOverride from local state.
+        */
           setTimeout(() => {
             setGlobal({ slidingPositionOverride: null })
           }, 3000)
         }}
-        onValueChange={(newProgressValue) => {
-          handleOnValueChange(newProgressValue)
-          debouncedOnValueChange(newProgressValue)
-          handleOnValueChangeChapter(newProgressValue)
-          debouncedOnValueChangeChapterTime(newProgressValue)
-        }}
-        thumbStyle={sliderStyles.thumbStyle}
-        thumbTintColor={PV.Colors.white}
-        value={isLiveItem ? 0 : newProgressValue}
-      />
+      onValueChange={(newProgressValue) => {
+        handleOnValueChange(newProgressValue)
+        debouncedOnValueChange(newProgressValue)
+        handleOnValueChangeChapter(newProgressValue)
+        debouncedOnValueChangeChapterTime(newProgressValue)
+      }}
+      style={onlySlider ? sliderStyles.onlySliderStyle : {}}
+      thumbStyle={onlySlider ? sliderStyles.onlySliderThumbStyle : sliderStyles.thumbStyle}
+      thumbTintColor={PV.Colors.white}
+      // NOTE: there is a crazy bug where the slider value change behavior breaks
+      // (always goes to 0) if you override trackStyle with an empty array
+      {...(onlySlider ? { trackStyle: sliderStyles.onlySliderTrackStyle } : {})}
+      value={isLiveItem ? 0 : newProgressValue}
+    />
+  )
+
+  if (onlySlider) {
+    return slider
+  }
+
+  return (
+    <View style={onlySlider ? sliderStyles.onlySliderWrapperStyle : sliderStyles.wrapper}>
+      {slider}
       {!isLoading ? (
         <View style={sliderStyles.timeRow}>
           <Text
