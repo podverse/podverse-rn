@@ -473,7 +473,7 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
       initialTime = startPodcastFromTime
     }
 
-    const pitchAlgorithm = isMusic ? PitchAlgorithm.Music : PitchAlgorithm.Voice
+    const pitchAlgorithm = isMusic ? PitchAlgorithm.Linear : PitchAlgorithm.Voice
     const finalPodcastTitle = isMusic ? generateAuthorsText(podcastAuthors) : podcastTitle
 
     if (isDownloadedFile) {
