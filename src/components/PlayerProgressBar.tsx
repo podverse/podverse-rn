@@ -167,7 +167,7 @@ export function PlayerProgressBar(props: Props) {
       minimumValue={0}
       maximumValue={isLoading ? 0 : 1}
       minimumTrackTintColor={PV.Colors.skyDark}
-      maximumTrackTintColor={onlySlider ? PV.Colors.grayDarker : PV.Colors.gray}
+      maximumTrackTintColor={onlySlider ? 'transparent' : PV.Colors.gray}
       onSlidingStart={(newProgressValue) => {
         pauseChapterInterval()
         const slidingPositionOverride = newProgressValue * parentScopeDuration
