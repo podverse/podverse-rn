@@ -55,6 +55,8 @@
 					<string>opml</string>
 				</array>
 			</dict>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeName</key>
@@ -173,7 +175,5 @@
 	<false/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<false/>
-	<key>LSHandlerRank</key>
-	<string>Default</string>
 </dict>
 </plist>
