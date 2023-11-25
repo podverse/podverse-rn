@@ -367,16 +367,21 @@ export class PodcastScreen extends React.Component<Props, State> {
                 // but not with our Flatlist for some reason. As a result I'm only calling
                 // scrollToOffset in addition to setting contentOffset.
                 // The setTimeout is necessary for some render timing reason...
-                setTimeout(() => {
-                  this.listRef?.scrollToOffset?.({
-                    animated: false,
-                    offset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset.y
-                  })
-                  this.listStickyRef?.scrollToOffset?.({
-                    animated: false,
-                    offset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset.y
-                  })
-                }, 0)
+
+                const flatListDataTotalCount = newState?.flatListDataTotalCount
+                const shouldShowSearchBar = flatListDataTotalCount && flatListDataTotalCount > 3
+                if (shouldShowSearchBar) {
+                  setTimeout(() => {
+                    this.listRef?.scrollToOffset?.({
+                      animated: false,
+                      offset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset.y
+                    })
+                    this.listStickyRef?.scrollToOffset?.({
+                      animated: false,
+                      offset: PV.FlatList.ListHeaderHiddenSearchBar.contentOffset.y
+                    })
+                  }, 0)
+                }
               }
             )
           } catch (error) {
