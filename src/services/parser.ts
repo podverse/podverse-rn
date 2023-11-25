@@ -357,8 +357,11 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
     podcast.imageUrl = meta.imageURL?.trim()
     podcast.isExplicit = meta.explicit
     podcast.language = meta.language
-
     podcast.linkUrl = meta.link
+
+    // TODO: always setting medium to "podcast" by default (until we replace with new parser).
+    podcast.medium = PV.Medium.podcast
+
     podcast.sortableTitle = convertToSortableTitle(title)
     podcast.subtitle = meta.subtitle && meta.subtitle.trim()
     podcast.title = title
