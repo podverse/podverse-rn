@@ -256,17 +256,17 @@ const mediaMoreButtons = (
           let title = ''
           const isMusic = item?.podcastMedium === 'music'
 
-          if (isMusic && item.episodeId) {
+          if (item.clipId) {
+            url = urlsWeb.clip + item.clipId
+            title = item.clipTitle ? item.clipTitle : prefixClipLabel(item.episodeTitle)
+            title += ` – ${item?.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
+          } else if (isMusic && item.episodeId) {
             url = urlsWeb.track + item.episodeId
             title += `${item?.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`
           } else if (item.episodeId) {
             url = urlsWeb.episode + item.episodeId
             title += `${item?.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`
-          } else if (item.clipId) {
-            url = urlsWeb.clip + item.clipId
-            title = item.clipTitle ? item.clipTitle : prefixClipLabel(item.episodeTitle)
-            title += ` – ${item?.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
-          } 
+          }
           await Share.open({
             title,
             subject: title,
