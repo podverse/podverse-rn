@@ -616,7 +616,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         (!hideCompleted && viewType === PV.Filters._hideCompletedKey && completed)
 
       if (shouldHideCompleted) {
-        return <></>
+        return null
       }
 
       return (

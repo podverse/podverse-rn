@@ -390,7 +390,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
     const shouldHideCompleted = hideCompleted && completed
 
     if (shouldHideCompleted) {
-      return <></>
+      return null
     }
 
     return (
