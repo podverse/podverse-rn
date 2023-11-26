@@ -546,8 +546,8 @@ export class ProfileScreen extends React.Component<Props, State> {
                   const itemType = selectedItem.clipIsOfficialChapter
                     ? 'chapter'
                     : !!selectedItem.clipId
-                    ? 'clip'
-                    : 'episode'
+                      ? 'clip'
+                      : 'episode'
 
                   return PV.ActionSheet.media.moreButtons(
                     selectedItem,
