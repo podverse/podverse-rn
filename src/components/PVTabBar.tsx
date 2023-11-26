@@ -16,6 +16,7 @@ export const PVTabBar = (props: Props) => {
 
   return (
     <SafeAreaView style={{ flex: 0 }} testID='tabbar'>
+      {/* TODO: would checking player.nowPlayingItem?.episodeId prevent MiniPlayer getting stuck? */}
       {player && player.showMiniPlayer && player.nowPlayingItem && <MiniPlayer navigation={navigation} />}
       <BottomTabBar
         {...props}
