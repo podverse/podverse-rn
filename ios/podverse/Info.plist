@@ -55,6 +55,8 @@
 					<string>opml</string>
 				</array>
 			</dict>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeName</key>
@@ -170,6 +172,8 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<false/>
 </dict>
 </plist>

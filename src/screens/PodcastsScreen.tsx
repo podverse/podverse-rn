@@ -242,6 +242,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
     Dimensions.addEventListener('change', this._handleOrientationChange)
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
+    PVEventEmitter.on(
+      PV.Events.NOTIFICATION_BANNER_PRESSED, 
+      (params: {episodeId:string, podcastId:string}) => 
+        navigateToEpisodeScreenInPodcastsStackNavigatorWithIds(
+          this.props.navigation,  
+          params.podcastId, 
+          params.episodeId
+      ))
     PVEventEmitter.on(PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, this._handleNavigateToAddPodcastByRSSAuthScreen)
     PVEventEmitter.on(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
