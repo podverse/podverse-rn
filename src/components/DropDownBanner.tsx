@@ -29,8 +29,14 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true)
 }
 
-export const DropdownBanner = ({children, canExpand = false,
-  closeBannerDismissTime, show, onExpand, onClose}: Props) => {
+export const DropdownBanner = ({
+  children, 
+  canExpand = false,
+  closeBannerDismissTime = 3000, 
+  show, 
+  onExpand, 
+  onClose} : Props
+) => {
   const [animatedValue] = useState(new Animated.Value(-POPOUT_SIZE))
 
   let timeoutId: null | ReturnType<typeof setTimeout> = null

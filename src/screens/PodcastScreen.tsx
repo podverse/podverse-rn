@@ -493,7 +493,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       !endOfResultsReached &&
       this.shouldLoad
     ) {
-      if (distanceFromEnd > -1) {
+      // if (distanceFromEnd > -1) {
         this.shouldLoad = false
         this.setState(
           {
@@ -509,7 +509,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             })()
           }
         )
-      }
+      // }
     }
   }
 
@@ -614,6 +614,10 @@ export class PodcastScreen extends React.Component<Props, State> {
       const shouldHideCompleted =
         (hideCompleted && viewType === PV.Filters._episodesKey && completed) ||
         (!hideCompleted && viewType === PV.Filters._hideCompletedKey && completed)
+
+      if (shouldHideCompleted) {
+        return <></>
+      }
 
       return (
         <EpisodeTableCell
@@ -1539,6 +1543,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         const { addByRSSEpisodes, addByRSSEpisodesCount } = this._queryAddByRSSEpisodes(filterKey, querySort)
         newState.flatListData = addByRSSEpisodes || []
         newState.flatListDataTotalCount = addByRSSEpisodesCount
+        newState.endOfResultsReached = true
       } else if (
         !podcast?.addByRSSPodcastFeedUrl &&
         (filterKey === PV.Filters._downloadedKey ||
@@ -1553,13 +1558,13 @@ export class PodcastScreen extends React.Component<Props, State> {
         await this._handleSeasonOrSerialPodcastEpisodes(episodes, querySort, newState, extraParams)
         newState.flatListData = [...flatListData, ...episodes]
         newState.flatListData = this.cleanFlatListData(newState.flatListData, filterKey)
-        newState.endOfResultsReached = newState.flatListData.length >= extraParams
+        newState.endOfResultsReached = episodes.length < 20
         newState.flatListDataTotalCount = episodesCount
       } else if (filterKey === PV.Filters._clipsKey) {
         const results = await this._queryClips(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.flatListData = this.cleanFlatListData(newState.flatListData, filterKey)
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = results[0].length < 20
         newState.flatListDataTotalCount = results[1]
       } else if (PV.FilterOptions.screenFilters.PodcastScreen.sort.some((option) => option === filterKey)) {
         let data = []
@@ -1569,6 +1574,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           const { addByRSSEpisodes, addByRSSEpisodesCount } = this._queryAddByRSSEpisodes(viewType, filterKey)
           newState.flatListData = addByRSSEpisodes || []
           newState.flatListDataTotalCount = addByRSSEpisodesCount
+          newState.endOfResultsReached = true
         } else if (
           viewType === PV.Filters._downloadedKey ||
           viewType === PV.Filters._episodesKey ||
@@ -1579,16 +1585,17 @@ export class PodcastScreen extends React.Component<Props, State> {
           data = results[0]?.[0]
           dataCount = results[0]?.[1]
           const extraParams = results[1]
+          newState.endOfResultsReached = data.length < 20
           await this._handleSeasonOrSerialPodcastEpisodes(data, querySort, newState, extraParams)
         } else if (viewType === PV.Filters._clipsKey) {
           const results = await this._queryClips(querySort)
           data = results[0]
           dataCount = results[1]
+          newState.endOfResultsReached = results[1].length < 20
         }
 
         newState.flatListData = [...flatListData, ...data]
         newState.flatListData = this.cleanFlatListData(newState.flatListData, viewType)
-        newState.endOfResultsReached = newState.flatListData.length >= dataCount
         newState.flatListDataTotalCount = dataCount
       }
       newState.queryPage = queryOptions.queryPage || 1

@@ -19,8 +19,11 @@ import {
   NotificationBanner
 } from './src/components'
 import { checkIfFDroidAppVersion, pvIsTablet } from './src/lib/deviceDetection'
-import { registerAndroidAutoModule, requestDrawOverAppsPermission,
-  unregisterAndroidAutoModule } from './src/lib/carplay/PVCarPlay.android'
+import {
+  registerAndroidAutoModule,
+  requestDrawOverAppsPermission,
+  unregisterAndroidAutoModule
+} from './src/lib/carplay/PVCarPlay.android'
 import { refreshDownloads } from './src/lib/downloader'
 import { PV } from './src/resources'
 import { determineFontScaleMode } from './src/resources/Fonts'
@@ -221,7 +224,7 @@ class App extends Component<Props, State> {
           </View>
           <ImageFullView />
           <BoostDropdownBanner />
-          <NotificationBanner on />
+          <NotificationBanner />
         </SafeAreaProvider>
         <LoadingInterstitialView />
       </GestureHandlerRootView>
