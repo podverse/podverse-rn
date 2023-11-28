@@ -20,13 +20,7 @@ const enrichTranscriptatorResult = (parsedTranscript: TranscriptRow[]) => {
   const enrichedTranscript = []
   let newIndex = 0
 
-  const limitLines = 100
-  let limitCount = 0
-
   for (const parsedRow of parsedTranscript) {
-    limitCount++
-    if (limitLines < limitCount) break
-
     const body = parsedRow.body || ''
     const hasSpeaker = !!parsedRow.speaker
 
