@@ -33,7 +33,6 @@ import {
   audioHandleSeekToWithUpdate,
   audioGetState,
   audioCheckIfIsPlaying,
-  audioGetLoadedTrackIdByIndex,
   audioGetTrackDuration,
   audioRemovePreviousPrimaryQueueItemTracks
 } from './playerAudio'
@@ -43,53 +42,52 @@ import { getEnrichedNowPlayingItemFromLocalStorage, getNowPlayingItemLocally } f
 
 const _fileName = 'src/services/playerAudioEvents.ts'
 
-const audioResetHistoryItemByTrack = async (x: any, position: number) => {
-  if (x?.lastTrack?.id) {
-    const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(x.lastTrack.id)
+const audioResetHistoryItemByTrack = async (lastTrack: any, lastPosition: number) => {
+  if (lastTrack?.id) {
+    const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(lastTrack.id)
     if (metaEpisode) {
       const { mediaFileDuration } = metaEpisode
-      const isWithin2MinutesOfEnd = mediaFileDuration && mediaFileDuration - 120 < position
+      const isWithin2MinutesOfEnd = mediaFileDuration && mediaFileDuration - 120 < lastPosition
       const isLessThanOneMinute = mediaFileDuration <= 60
-      if (isWithin2MinutesOfEnd || isLessThanOneMinute) {
-        const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(x.lastTrack.id)
-        if (currentNowPlayingItem) {
-          const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
-          if (autoDeleteEpisodeOnEnd && currentNowPlayingItem?.episodeId) {
-            downloadedEpisodeMarkForDeletion(currentNowPlayingItem.episodeId)
-          }
-  
-          const retriesLimit = 5
-          for (let i = 0; i < retriesLimit; i++) {
-            try {
-              const forceUpdateOrderDate = false
-              const skipSetNowPlaying = true
-              const completed = true
-              await addOrUpdateHistoryItem(
-                currentNowPlayingItem,
-                0,
-                null,
-                forceUpdateOrderDate,
-                skipSetNowPlaying,
-                completed
-              )
-              break
-            } catch (error) {
-              // Maybe the network request failed due to poor internet.
-              // continue to try again.
-              continue
-            }
+      const completed = isWithin2MinutesOfEnd || isLessThanOneMinute
+      const positionToSave = completed ? 0 : lastPosition
+      
+      const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorage(lastTrack.id)
+
+      if (currentNowPlayingItem) {
+        const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+        if (autoDeleteEpisodeOnEnd && currentNowPlayingItem?.episodeId) {
+          downloadedEpisodeMarkForDeletion(currentNowPlayingItem)
+        }
+
+        const retriesLimit = 5
+        for (let i = 0; i < retriesLimit; i++) {
+          try {
+            const forceUpdateOrderDate = false
+            const skipSetNowPlaying = true
+            await addOrUpdateHistoryItem(
+              currentNowPlayingItem,
+              positionToSave,
+              mediaFileDuration || null,
+              forceUpdateOrderDate,
+              skipSetNowPlaying,
+              completed
+            )
+            break
+          } catch (error) {
+            // Maybe the network request failed due to poor internet.
+            // continue to try again.
+            continue
           }
         }
       }
     }
   }
-
 }
 
-export const audioResetHistoryItemActiveTrackChanged = async (x: any) => {
-  const { lastPosition, lastTrack } = x
+export const audioResetHistoryItemActiveTrackChanged = async (lastTrack: any, lastPosition: number) => {
   if (lastTrack?.id) {
-    await audioResetHistoryItemByTrack(x, lastPosition)
+    await audioResetHistoryItemByTrack(lastTrack, lastPosition)
   }
 }
 
@@ -133,16 +131,14 @@ export const audioHandleQueueEnded = (x: any) => {
   }, 0)
 }
 
-export const audioHandleActiveTrackChanged = (x: any) => {
+export const audioHandleActiveTrackChanged = (lastTrack: any, lastPosition: number) => {
   setTimeout(() => {
     ;(async () => {
-      await audioResetHistoryItemActiveTrackChanged(x)
+      await audioResetHistoryItemActiveTrackChanged(lastTrack, lastPosition)
       await audioRemovePreviousPrimaryQueueItemTracks()
     })()
   }, 0)
 }
-
-let preventQueueEnded = false
 
 // eslint-disable-next-line @typescript-eslint/require-await
 module.exports = async () => {
@@ -163,45 +159,19 @@ module.exports = async () => {
   */
   PVAudioPlayer.addEventListener(Event.PlaybackQueueEnded, (x) => {
     debugLogger('playback-queue-ended', x)
-    if (Platform.OS === 'ios') {
-      setTimeout(() => {
-        if (!preventQueueEnded) {
-          audioHandleQueueEnded(x)
-        }
-      }, 3000)
-    }
+    audioHandleQueueEnded(x)
   })
 
   PVAudioPlayer.addEventListener(Event.PlaybackActiveTrackChanged, (x: any) => {
     debugLogger('playback-active-track-changed', x)
 
-    const callback = () => {
-      audioHandleActiveTrackChanged(x)
-    }
-
+    const lastTrack = x?.lastTrack
+    const lastPosition = x?.lastPosition || 0
     const track = x?.track
 
-    if (Platform.OS === 'ios') {
-      preventQueueEnded = true
-      setTimeout(() => {
-        preventQueueEnded = false
-      }, 6000)
-      // If the first item loaded in queue for the app session, then don't call the track changed callback.
-      if ((x.index || x.index === 0) && !x?.lastIndex && x?.lastIndex !== 0) {
-        syncAudioNowPlayingItemWithTrack(track)
-      } else {
-        syncAudioNowPlayingItemWithTrack(track, callback)
-      }
-    } else if (Platform.OS === 'android') {
-      if ((x.index || x.index === 0) && x.index === x?.lastIndex) {
-        audioHandleQueueEnded(x)
-      }
-      // If the first item loaded in queue for the app session, then don't call the track changed callback.
-      else if ((x.index || x.index === 0) && !x?.lastIndex && x?.lastIndex !== 0) {
-        syncAudioNowPlayingItemWithTrack(track)
-      } else {
-        syncAudioNowPlayingItemWithTrack(track, callback)
-      }
+    syncAudioNowPlayingItemWithTrack(track)
+    if (lastTrack) {
+      audioHandleActiveTrackChanged(lastTrack, lastPosition)
     }
 
     PVEventEmitter.emit(PV.Events.PLAYER_NEW_EPISODE_LOADED)

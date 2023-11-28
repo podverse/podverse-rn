@@ -283,7 +283,7 @@ export const videoResetHistoryItem = async () => {
     const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
 
     if (autoDeleteEpisodeOnEnd && nowPlayingItem?.episodeId) {
-      downloadedEpisodeMarkForDeletion(nowPlayingItem.episodeId)
+      downloadedEpisodeMarkForDeletion(nowPlayingItem)
     }
 
     const forceUpdateOrderDate = false

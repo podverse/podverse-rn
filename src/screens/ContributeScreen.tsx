@@ -52,10 +52,9 @@ export class ContributeScreen extends React.Component<Props> {
       <View style={core.backgroundView} testID={`${testIDPrefix}_view`}>
         <ScrollView style={styles.scrollView}>
           <Text style={styles.text}>
-            Podverse creates free and open source software to expand what is possible in podcasting.
+            {translate('Podverse Mission Statement')}
           </Text>
           <Text style={styles.text}>Below are a few ways you can support the project:</Text>
-          <Divider style={styles.divider} />
           <Text style={styles.headerText}>{translate('Support')}</Text>
           <TextLink
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -71,7 +70,6 @@ export class ContributeScreen extends React.Component<Props> {
             testID={`${testIDPrefix}_show_your_support`}
             text={translate('Show your support')}
           />
-          <Divider style={styles.divider} />
           <Text style={styles.textTop}>Here is a partial list of tasks we would appreciate help with:</Text>
           <Text style={styles.listText}>- Share with friends and family</Text>
           <Text style={styles.listText}>- Translations</Text>

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import type { PodcastMedium } from 'podverse-shared'
+import type { NowPlayingItem, PodcastMedium } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { errorLogger } from '../../lib/logger'
 import {
@@ -420,8 +420,14 @@ export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
   await updateDownloadedPodcasts()
 }
 
-export const downloadedEpisodeMarkForDeletion = async (episodeId: string) => {
+export const downloadedEpisodeMarkForDeletion = async (nowPlayingItem: NowPlayingItem) => {
+  const episodeId = nowPlayingItem?.episodeId
   try {
+    // Don't automatically mark Music downloads for deletion
+    if (nowPlayingItem?.podcastMedium === PV.Medium.music || !episodeId) {
+      return
+    }
+
     const markedForDeletionString = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION)
     const markedForDeletion = JSON.parse(markedForDeletionString || '[]') || []
     if (episodeId && !markedForDeletion.includes(episodeId)) {
@@ -429,7 +435,7 @@ export const downloadedEpisodeMarkForDeletion = async (episodeId: string) => {
     }
     await AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_MARKED_FOR_DELETION, JSON.stringify(markedForDeletion))
   } catch (error) {
-    errorLogger(_fileName, 'downloadedEpisodeMarkForDeletion', error, episodeId)
+    errorLogger(_fileName, 'downloadedEpisodeMarkForDeletion', `episodeId: ${episodeId}, error: ${error}`)
   }
 }
 

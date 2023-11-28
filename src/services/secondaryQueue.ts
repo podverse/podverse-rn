@@ -12,7 +12,7 @@ const emptyResponseData = { previousEpisodes: [], nextEpisodes: [], inheritedPod
 export const getSecondaryQueueEpisodesForPodcastId = async (episodeId: string, podcastId: string) => {
   try {
     const response = await request({
-      endpoint: `/secondary-queue/podcast/${podcastId}/episode/${episodeId}`,
+      endpoint: `/secondary-queue/podcast/${podcastId}/episode/${episodeId}?withFix=true`,
       method: 'GET'
     })
 

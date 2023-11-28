@@ -214,7 +214,7 @@ export const FilterOptions = {
       sort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey]
     },
     EpisodesScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _hideCompletedKey, _categoryKey],
       sort: [_mostRecentKey, _oldestKey, ..._top],
       sortLimitQueries: [..._top]
     },

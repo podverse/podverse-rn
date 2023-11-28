@@ -31,7 +31,7 @@ export const addOrUpdateHistoryItem = async (
   const useServerData = await checkIfShouldUseServerData()
   const func = useServerData
     ? () => addOrUpdateHistoryItemOnServer(item, playbackPosition, mediaFileDuration, forceUpdateOrderDate, completed)
-    : () => addOrUpdateHistoryItemLocally(item, playbackPosition, mediaFileDuration)
+    : () => addOrUpdateHistoryItemLocally(item, playbackPosition, mediaFileDuration, completed)
   await func()
 
   // The historyItemsIndex does not automatically trigger components to re-render,
@@ -139,7 +139,8 @@ export const getHistoryItemIndexInfoForEpisode = (episodeId: string) => {
 export const addOrUpdateHistoryItemLocally = async (
   item: NowPlayingItem,
   playbackPosition: number,
-  mediaFileDuration?: number | null
+  mediaFileDuration?: number | null,
+  completed?: boolean
 ) => {
   playbackPosition = Math.floor(playbackPosition) || 0
   mediaFileDuration = (mediaFileDuration && Math.floor(mediaFileDuration)) || 0
@@ -148,6 +149,7 @@ export const addOrUpdateHistoryItemLocally = async (
   const filteredItems = filterItemFromHistoryItems(userHistoryItems, item)
   item.episodeDuration = mediaFileDuration ? mediaFileDuration : item.episodeDuration
   item.userPlaybackPosition = playbackPosition
+  item.completed = !!completed
   filteredItems.unshift(item)
   await setAllHistoryItemsLocally(filteredItems)
 }
