@@ -424,7 +424,7 @@ export const downloadedEpisodeMarkForDeletion = async (nowPlayingItem: NowPlayin
   const episodeId = nowPlayingItem?.episodeId
   try {
     // Don't automatically mark Music downloads for deletion
-    if (nowPlayingItem.podcastMedium === PV.Medium.music || !episodeId) {
+    if (nowPlayingItem?.podcastMedium === PV.Medium.music || !episodeId) {
       return
     }
 
