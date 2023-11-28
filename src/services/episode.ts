@@ -16,7 +16,8 @@ export const getEpisodes = async (query: any = {}) => {
     ...(query.includePodcast ? { includePodcast: query.includePodcast } : {}),
     ...(query.sincePubDate ? { sincePubDate: query.sincePubDate } : {}),
     ...(query.hasVideo ? { hasVideo: query.hasVideo } : {}),
-    ...(query.maxResults ? { maxResults: query.maxResults } : {})
+    ...(query.maxResults ? { maxResults: query.maxResults } : {}),
+    ...(query.podcastsOnly ? { podcastsOnly: query.podcastsOnly } : {})
   } as any
 
   if (query.categories && query.categories) {

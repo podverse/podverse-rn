@@ -648,6 +648,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
             page: queryPage,
             podcastId,
             ...(searchTitle ? { searchTitle } : {}),
+            ...(!searchTitle ? { podcastsOnly: true } : {}),
             subscribedOnly: true,
             includePodcast: true
           })
@@ -687,6 +688,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
           ...(queryFrom === PV.Filters._subscribedKey ? { podcastId } : {}),
           sort: filterKey,
           ...(searchTitle ? { searchTitle } : {}),
+          ...(!searchTitle ? { podcastsOnly: true } : {}),
           subscribedOnly: queryFrom === PV.Filters._subscribedKey,
           includePodcast: true
         })
@@ -739,6 +741,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       sort: cleanedSort,
       page,
       ...(searchTitle ? { searchTitle } : {}),
+      ...(!searchTitle ? { podcastsOnly: true } : {}),
       includePodcast: true
     })
 
