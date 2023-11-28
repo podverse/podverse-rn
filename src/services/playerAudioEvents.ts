@@ -169,22 +169,9 @@ module.exports = async () => {
     const lastPosition = x?.lastPosition || 0
     const track = x?.track
 
-    if (Platform.OS === 'ios') {
-      // If the first item loaded in queue for the app session, then don't call the track changed callback.
-      syncAudioNowPlayingItemWithTrack(track)
-      if (lastTrack) {
-        audioHandleActiveTrackChanged(lastTrack, lastPosition)
-      }
-    } else if (Platform.OS === 'android') {
-      if ((x.index || x.index === 0) && x.index === x?.lastIndex) {
-        audioHandleQueueEnded(x)
-      }
-      // If the first item loaded in queue for the app session, then don't call the track changed callback.
-      else if ((x.index || x.index === 0) && !x?.lastIndex && x?.lastIndex !== 0) {
-        syncAudioNowPlayingItemWithTrack(track)
-      } else {
-        syncAudioNowPlayingItemWithTrack(track)
-      }
+    syncAudioNowPlayingItemWithTrack(track)
+    if (lastTrack) {
+      audioHandleActiveTrackChanged(lastTrack, lastPosition)
     }
 
     PVEventEmitter.emit(PV.Events.PLAYER_NEW_EPISODE_LOADED)
