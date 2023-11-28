@@ -25,7 +25,7 @@ import { PVAudioPlayer } from './playerAudio'
 
 const _fileName = 'src/services/playerBackgroundTimer.ts'
 
-const handleSyncNowPlayingItem = async (currentNowPlayingItem: NowPlayingItem, callback?: any) => {
+const handleSyncNowPlayingItem = async (currentNowPlayingItem: NowPlayingItem) => {
   if (!currentNowPlayingItem) return
 
   await clearChapterPlaybackInfo(currentNowPlayingItem)
@@ -52,11 +52,9 @@ const handleSyncNowPlayingItem = async (currentNowPlayingItem: NowPlayingItem, c
     currentNowPlayingItem.userPlaybackPosition || currentPosition,
     currentNowPlayingItem.episodeDuration
   )
-
-  callback?.()
 }
 
-export const syncAudioNowPlayingItemWithTrack = (track: any, callback?: any) => {
+export const syncAudioNowPlayingItemWithTrack = (track: any) => {
   stopClipInterval()
 
   /*
@@ -76,11 +74,7 @@ export const syncAudioNowPlayingItemWithTrack = (track: any, callback?: any) => 
   // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
   // - Sometimes the debouncedSetPlaybackPosition seems to load with the previous track's playback position,
   // instead of the new track's playback position.
-  // TODO: This timeout will lead to a delay before every clip starts, where it starts playing from the episode start
-  // before playing from the clip start. Hopefully we can iron this out sometime...
-  // - The second timeout is called in case something was out of sync previously from getCurrentTrack
-  // or getEnrichedNowPlayingItemFromLocalStorage...
-  function sync(callback?: any) {
+  function sync() {
     (async () => {
       playerUpdatePlaybackState()
 
@@ -99,9 +93,9 @@ export const syncAudioNowPlayingItemWithTrack = (track: any, callback?: any) => 
           clearInterval(retryInterval)
         } else {
           const currentNowPlayingItem = await getEnrichedNowPlayingItemFromLocalStorageOrRemote(currentTrackId)
-          if (currentNowPlayingItem && retryInterval) {
+          if (currentNowPlayingItem?.episodeId && retryInterval) {
             clearInterval(retryInterval)
-            await handleSyncNowPlayingItem(currentNowPlayingItem, callback)
+            await handleSyncNowPlayingItem(currentNowPlayingItem)
             await removeQueueItem(currentNowPlayingItem)
             PVEventEmitter.emit(PV.Events.QUEUE_HAS_UPDATED)
           }
@@ -110,7 +104,7 @@ export const syncAudioNowPlayingItemWithTrack = (track: any, callback?: any) => 
     })()
   }
 
-  sync(callback)
+  sync()
 }
 
 const stopCheckClipIfEndTimeReached = () => {

@@ -166,7 +166,7 @@ export const toggleMarkAsPlayed = async (item: NowPlayingItem, shouldMarkAsPlaye
 
     const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
     if (autoDeleteEpisodeOnEnd && shouldMarkAsPlayed) {
-      downloadedEpisodeMarkForDeletion(item.episodeId)
+      downloadedEpisodeMarkForDeletion(item)
     }
 
     await addOrUpdateHistoryItem(
