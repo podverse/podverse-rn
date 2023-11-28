@@ -32,7 +32,7 @@ type SecondaryQueueForPlaylistResponseData = {
 export const getSecondaryQueueEpisodesForPlaylist = async (playlistId: string, episodeOrMediaRefId: string) => {
   try {
     const response = await request({
-      endpoint: `/secondary-queue/playlist/${playlistId}/episode-or-media-ref/${episodeOrMediaRefId}`,
+      endpoint: `/secondary-queue/playlist/${playlistId}/episode-or-media-ref/${episodeOrMediaRefId}?withFix=true`,
       method: 'GET',
       query: {
         audioOnly: true
