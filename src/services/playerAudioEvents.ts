@@ -126,7 +126,7 @@ export const audioHandleQueueEnded = (x: any) => {
       await playerClearNowPlayingItem()
 
       // Clear the queue completely after queue ended
-      await PVAudioPlayer.reset()
+      // await PVAudioPlayer.reset()
     })()
   }, 0)
 }
@@ -146,13 +146,23 @@ module.exports = async () => {
     debugLogger('playback-metadata-received', x)
   })
 
-  /*
-    playback-active-track-changed always gets called when playback-queue-ended.
-    As a result, if we use both events, there will be a race-condition with our
-    playback-track-changed and playback-queue-ended handling.
-  */
-  PVAudioPlayer.addEventListener(Event.PlaybackQueueEnded, (x) => {
+  PVAudioPlayer.addEventListener(Event.PlaybackQueueEnded, async (x) => {
     debugLogger('playback-queue-ended', x)
+
+    /*
+      RNTP returns an actual `track` object in PlaybackActiveTrackChanged,
+      but returns the index of the track as the `track` param in PlaybackQueueEnded,
+      so I am overriding this in the PlaybackQueueEnded handler,
+      so resetHistory calls will have the same type of `track` param.
+    */
+    // https://rntp.dev/docs/next/api/events#playbackqueueended
+    if (x?.track === 0 || x?.track > 1) {
+      const track = await PVAudioPlayer.getTrack(x.track)
+      if (track) {
+        x.track = track
+      }
+    }
+
     audioHandleQueueEnded(x)
   })
 
