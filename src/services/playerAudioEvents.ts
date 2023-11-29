@@ -149,13 +149,7 @@ module.exports = async () => {
   /*
     playback-active-track-changed always gets called when playback-queue-ended.
     As a result, if we use both events, there will be a race-condition with our
-    playback-track-changed and playback-queue-ended handling. To work around this,
-    I am determining if the "queue ended" event that we care about has happened
-    from within the playback-active-track-changed event listener.
-    Also: there is a bug on iOS where playback-queue-ended will fire even when
-    there is a next item in the queue...but playback-queue-ended will also fire
-    correctly (without PlaybackActiveTrackChanged) when end of queue is reached.
-    Handling this with setTimeouts.
+    playback-track-changed and playback-queue-ended handling.
   */
   PVAudioPlayer.addEventListener(Event.PlaybackQueueEnded, (x) => {
     debugLogger('playback-queue-ended', x)
