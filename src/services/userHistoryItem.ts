@@ -418,6 +418,7 @@ export const setHistoryItemsIndexLocally = async (historyItemsIndex: any) => {
   await AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS_INDEX, JSON.stringify(historyItemsIndex))
 }
 
+// Using a get helper since I was running into issues with the const object getting modified.
 export const getDefaultHistoryItemsIndex = () => {
   return { episodes: {}, mediaRefs: {} }
 }
