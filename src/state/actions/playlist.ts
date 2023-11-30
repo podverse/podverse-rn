@@ -12,6 +12,7 @@ import {
   toggleSubscribeToPlaylist as toggleSubscribeToPlaylistService,
   updatePlaylist as updatePlaylistService
 } from '../../services/playlist'
+import { Alert } from 'react-native'
 
 export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: string, mediaRefId?: string) => {
   const globalState = getGlobal()
@@ -41,8 +42,19 @@ export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: st
   return playlistItemCount
 }
 
-export const addOrRemovePlaylistItemToDefaultPlaylist = async (episodeId?: string, mediaRefId?: string) => {
+export const addOrRemovePlaylistItemToDefaultPlaylist = async (
+  episodeId?: string, mediaRefId?: string, navigation?: any) => {
   const globalState = getGlobal()
+
+  if (!globalState?.session?.isLoggedIn && navigation) {
+    Alert.alert(
+      PV.Alerts.LOGIN_TO_ADD_TO_PLAYLISTS.title,
+      PV.Alerts.LOGIN_TO_ADD_TO_PLAYLISTS.message,
+      PV.Alerts.GO_TO_LOGIN_BUTTONS(navigation)
+    )
+    return
+  }
+
   const { playlistId, playlistItemCount, actionTaken } =
     await addOrRemovePlaylistItemToDefaultPlaylistService(episodeId, mediaRefId)
   const playlistsFlatListData = globalState.playlists.myPlaylists

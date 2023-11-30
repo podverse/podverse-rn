@@ -181,6 +181,10 @@ export const Alerts = {
     message: translate('Please login to mark episodes as played'),
     title: translate('Login Needed')
   },
+  LOGIN_TO_ADD_TO_PLAYLISTS: {
+    message: translate('Login to add to playlists'),
+    title: translate('Login Needed')
+  },
   MAINTENANCE_MODE: {
     message: translate('Maintenance mode message'),
     title: translate('Maintenance mode title')

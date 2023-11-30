@@ -2,6 +2,7 @@ import { checkIfNowPlayingItem, convertToNowPlayingItem } from 'podverse-shared'
 import React, { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { getGlobal } from 'reactn'
+import { translate } from '../lib/i18n'
 import { requestAppStoreReviewForEpisodePlayed } from '../lib/reviews'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
@@ -168,71 +169,83 @@ export const TimeRemainingWidget = (props: Props) => {
   const isNowPlayingItem = isPlaying && checkIfNowPlayingItem(item, nowPlayingItem)
 
   const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]
+  const liveHasEnded = liveItem?.status === 'ended'
 
   return (
     <View accessible={false} style={[styles.container, style]} transparent={transparent}>
-      {!hidePlayButton && (
-        <PressableWithOpacity
-          accessible={false}
-          importantForAccessibility='no-hide-descendants'
-          hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-          // People have reported issues with this play button not always playing
-          // on the first try as expected on Android. I'm not sure why Android has
-          // this issue but not iOS, but I'm using onPressOut to work around this.
-          // {...(Platform.OS === 'ios' ? { onPress: playItem } : { onPressOut: playItem })}
-          onPress={playItem}
-          style={iconStyle}
-          testID={`${testID}_time_remaining_widget_toggle_play`.prependTestId()}>
-          {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
-        </PressableWithOpacity>
+      {liveHasEnded && (
+        <Text style={styles.livestreamEndedText}>
+          {translate('Livestream has ended')}
+        </Text>
       )}
-      {liveItem?.status === 'live' && (
-        <>
-          <LiveStatusBadge testID={testID} />
-          <View style={styles.spacer} />
-        </>
-      )}
-      {(forceShowProgressBar || (!liveItem && hasStartedItem && !isInvalidDuration && playedTime > 0)) && (
-        <MiniProgressBar
-          fullWidth={progressFullWidth}
-          item={isNowPlayingItem}
-          playedTime={playedTime || 0}
-          totalTime={totalTime}
-        />
-      )}
-      {!liveItem && (
-        <View
-          accessible={false}
-          importantForAccessibility='no-hide-descendants'
-          style={{ flexDirection: 'row', flex: 1, alignItems: 'center', height: '100%' }}>
-          {!!timeLabel && (
-            <Text
-              accessible={false}
-              fontSizeLargerScale={PV.Fonts.largeSizes.md}
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-              importantForAccessibility='no-hide-descendants'
-              style={styles.text}>
-              {timeLabel}
-            </Text>
-          )}
-          {!!episodeCompleted && (
-            <View style={styles.icon}>
-              <Icon name={'check'} size={22} style={styles.iconCompleted} />
+      {
+        !liveHasEnded && (
+          <>
+            {!hidePlayButton && (
+              <PressableWithOpacity
+                accessible={false}
+                importantForAccessibility='no-hide-descendants'
+                hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+                // People have reported issues with this play button not always playing
+                // on the first try as expected on Android. I'm not sure why Android has
+                // this issue but not iOS, but I'm using onPressOut to work around this.
+                // {...(Platform.OS === 'ios' ? { onPress: playItem } : { onPressOut: playItem })}
+                onPress={playItem}
+                style={iconStyle}
+                testID={`${testID}_time_remaining_widget_toggle_play`.prependTestId()}>
+                {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
+              </PressableWithOpacity>
+            )}
+            {liveItem?.status === 'live' && (
+              <>
+                <LiveStatusBadge testID={testID} />
+                <View style={styles.spacer} />
+              </>
+            )}
+            {(forceShowProgressBar || (!liveItem && hasStartedItem && !isInvalidDuration && playedTime > 0)) && (
+              <MiniProgressBar
+                fullWidth={progressFullWidth}
+                item={isNowPlayingItem}
+                playedTime={playedTime || 0}
+                totalTime={totalTime}
+              />
+            )}
+            {!liveItem && (
+              <View
+                accessible={false}
+                importantForAccessibility='no-hide-descendants'
+                style={{ flexDirection: 'row', flex: 1, alignItems: 'center', height: '100%' }}>
+                {!!timeLabel && (
+                  <Text
+                    accessible={false}
+                    fontSizeLargerScale={PV.Fonts.largeSizes.md}
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                    importantForAccessibility='no-hide-descendants'
+                    style={styles.text}>
+                    {timeLabel}
+                  </Text>
+                )}
+                {!!episodeCompleted && (
+                  <View style={styles.icon}>
+                    <Icon name={'check'} size={22} style={styles.iconCompleted} />
+                  </View>
+                )}
+              </View>
+            )}
+            <View style={{ flexDirection: 'row' }}>
+              {!hideMoreButton && !!handleMorePress && (
+                <MoreButton
+                  accessible={false}
+                  handleMorePress={handleMorePress}
+                  isLoading={episodeDownloading}
+                  itemType={itemType}
+                  testID={testID}
+                />
+              )}
             </View>
-          )}
-        </View>
-      )}
-      <View style={{ flexDirection: 'row' }}>
-        {!hideMoreButton && !!handleMorePress && (
-          <MoreButton
-            accessible={false}
-            handleMorePress={handleMorePress}
-            isLoading={episodeDownloading}
-            itemType={itemType}
-            testID={testID}
-          />
-        )}
-      </View>
+          </>
+        )
+      }
     </View>
   )
 }
@@ -249,6 +262,11 @@ const styles = StyleSheet.create({
   },
   iconCompleted: {
     color: PV.Colors.green
+  },
+  livestreamEndedText: {
+    fontSize: PV.Fonts.sizes.lg,
+    marginVertical: 24,
+    marginHorizontal: 12
   },
   playButton: {
     borderColor: PV.Colors.skyLight,
