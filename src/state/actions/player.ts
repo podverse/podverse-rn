@@ -23,7 +23,8 @@ import {
   playerGetState,
   playerGetDuration,
   getRemoteSkipButtonsTimeJumpOverride,
-  playerGetPosition
+  playerGetPosition,
+  playerCheckActiveType
 } from '../../services/player'
 import { audioPlayPreviousFromQueue } from '../../services/playerAudio'
 import { getAutoPlayEpisodesFromPodcast, getNextFromQueue, getQueueRepeatModeMusic } from '../../services/queue'
@@ -239,6 +240,22 @@ export const playerPlayNextChapterOrQueueItem = async () => {
       handleSlidingPositionOverride(nextChapter.startTime)
       debouncedClearSkipChapterInterval()
       return
+    } else {
+      // If the episode has chapters, but there is no next chapter,
+      // then move the position near the end of the duration,
+      // so the resetHistoryItem handling will detect the track
+      // was "near the end of playback", and automatically mark it as completed.
+      // Disable for video since only audio uses the queue right now.
+      const playerType = await playerCheckActiveType()
+      if (playerType === PV.Player.playerTypes.isAudio) {
+        const duration = await playerGetDuration()
+        if (duration > 0) {
+          const timeCloseToEndOfDuration = duration - 30
+          if (timeCloseToEndOfDuration > 0) {
+            await playerHandleSeekTo(timeCloseToEndOfDuration)
+          }
+        }
+      }
     }
   }
   

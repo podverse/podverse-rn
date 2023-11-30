@@ -24,6 +24,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
 
     let { backupDuration, nowPlayingItem } = player
     nowPlayingItem = nowPlayingItem || {}
+    const { liveItem } = nowPlayingItem
     const isMusic = nowPlayingItem?.podcastMedium === PV.Medium.music
     const podcastTitle = isMusic
       ? generateAuthorsText(nowPlayingItem.podcastAuthors)
@@ -117,13 +118,17 @@ export class MiniPlayer extends React.PureComponent<Props> {
             </View>
           )
         } */}
-        <View style={styles.progressWrapper}>
-          <PlayerProgressBar
-            backupDuration={backupDuration}
-            globalTheme={globalTheme}
-            onlySlider
-          />
-        </View>
+        {
+          !liveItem && (
+            <View style={styles.progressWrapper}>
+              <PlayerProgressBar
+                backupDuration={backupDuration}
+                globalTheme={globalTheme}
+                onlySlider
+              />
+            </View>
+          )
+        }
         <View style={[styles.playerInnerWrapper, globalTheme.player]}>
           <Pressable
             accessibilityLabel={nowPlayingAccessibilityLabel}

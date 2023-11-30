@@ -132,7 +132,7 @@ export const getDownloadedPodcasts = async (options?: GetDownloadedPodcastsParam
     } else if (hasVideo) {
       items = items.filter((podcast: any) => podcast.hasVideo)
     } else if (podcastsOnly) {
-      items = items.filter((podcast: any) => podcast.medium === PV.Medium.podcast)
+      items = items.filter((podcast: any) => podcast.medium === PV.Medium.podcast || podcast.hasVideo)
     }
 
     if (searchTitle) {

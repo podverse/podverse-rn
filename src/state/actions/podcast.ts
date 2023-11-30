@@ -43,7 +43,7 @@ export const findCombineWithAddByRSSPodcasts = async (
   } else if (medium === PV.Medium.music) {
     podcasts = podcasts.filter((podcast) => podcast.medium === PV.Medium.music)
   } else if (medium === PV.Medium.podcast) {
-    podcasts = podcasts.filter((podcast) => podcast.medium === PV.Medium.podcast)
+    podcasts = podcasts.filter((podcast) => podcast.medium === PV.Medium.podcast || podcast.hasVideo)
   }
 
   return podcasts

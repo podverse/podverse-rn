@@ -213,6 +213,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         : translate('Skip to next item in your queue')
 
     const isVideo = checkIfVideoFileOrVideoLiveType(nowPlayingItem?.episodeMediaType)
+    const hasChapters = currentTocChapters?.length > 1
 
     const { repeatModeAriaLabel, repeatModeMaterialIconName } = this.getQueueRepeatModeProps(queueRepeatModeMusic)
 
@@ -232,7 +233,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         </View>
         <View style={styles.playerControlsMiddleRow}>
           <View style={styles.playerControlsMiddleRowTop}>
-            {!isVideo && !liveItem && (
+            {((!isVideo && !liveItem) || (isVideo && !liveItem && hasChapters)) && (
               <PressableWithOpacity
                 accessibilityLabel={previousButtonAccessibilityLabel}
                 accessibilityRole='button'
@@ -274,7 +275,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 </View>
               </PressableWithOpacity>
             )}
-            {!isVideo && !liveItem && (
+            {((!isVideo && !liveItem) || (isVideo && !liveItem && hasChapters)) && (
               <PressableWithOpacity
                 accessibilityLabel={nextButtonAccessibilityLabel}
                 accessibilityRole='button'
