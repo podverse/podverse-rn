@@ -94,7 +94,7 @@ export const audioResetHistoryItemActiveTrackChanged = async (lastTrack: any, la
 export const audioResetHistoryItemQueueEnded = async (x: any) => {
   const { position, track } = x
   if (track?.id) {
-    await audioResetHistoryItemByTrack(x, position)
+    await audioResetHistoryItemByTrack(track, position)
   }
 }
 
@@ -124,9 +124,6 @@ export const audioHandleQueueEnded = (x: any) => {
       PVEventEmitter.emit(PV.Events.PLAYER_DISMISS)
       await audioResetHistoryItemQueueEnded(x)
       await playerClearNowPlayingItem()
-
-      // Clear the queue completely after queue ended
-      await PVAudioPlayer.reset()
     })()
   }, 0)
 }
@@ -146,19 +143,23 @@ module.exports = async () => {
     debugLogger('playback-metadata-received', x)
   })
 
-  /*
-    playback-active-track-changed always gets called when playback-queue-ended.
-    As a result, if we use both events, there will be a race-condition with our
-    playback-track-changed and playback-queue-ended handling. To work around this,
-    I am determining if the "queue ended" event that we care about has happened
-    from within the playback-active-track-changed event listener.
-    Also: there is a bug on iOS where playback-queue-ended will fire even when
-    there is a next item in the queue...but playback-queue-ended will also fire
-    correctly (without PlaybackActiveTrackChanged) when end of queue is reached.
-    Handling this with setTimeouts.
-  */
-  PVAudioPlayer.addEventListener(Event.PlaybackQueueEnded, (x) => {
+  PVAudioPlayer.addEventListener(Event.PlaybackQueueEnded, async (x) => {
     debugLogger('playback-queue-ended', x)
+
+    /*
+      RNTP returns an actual `track` object in PlaybackActiveTrackChanged,
+      but returns the index of the track as the `track` param in PlaybackQueueEnded,
+      so I am overriding this in the PlaybackQueueEnded handler,
+      so resetHistory calls will have the same type of `track` param.
+    */
+    // https://rntp.dev/docs/next/api/events#playbackqueueended
+    if (x?.track === 0 || x?.track > 1) {
+      const track = await PVAudioPlayer.getTrack(x.track)
+      if (track) {
+        x.track = track
+      }
+    }
+
     audioHandleQueueEnded(x)
   })
 

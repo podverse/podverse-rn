@@ -6,7 +6,7 @@ import { checkIfShouldUseServerData } from '../../services/auth'
 import {
   addOrUpdateHistoryItem,
   clearHistoryItems as clearHistoryItemsService,
-  defaultHistoryItemsIndex,
+  getDefaultHistoryItemsIndex,
   filterItemFromHistoryItems,
   filterItemFromHistoryItemsIndex,
   generateHistoryItemsIndex,
@@ -72,7 +72,7 @@ export const getHistoryItems = async (page: number) => {
 export const updateHistoryItemsIndex = async () => {
   const globalState = getGlobal()
   const useServerData = await checkIfShouldUseServerData()
-  let historyItemsIndex = defaultHistoryItemsIndex
+  let historyItemsIndex = getDefaultHistoryItemsIndex()
   if (useServerData) {
     historyItemsIndex = await getHistoryItemsIndex()
   } else {

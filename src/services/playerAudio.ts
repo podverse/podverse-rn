@@ -718,6 +718,13 @@ export const audioGetTrackPosition = () => {
 export const audioReset = async () => {
   await audioRemovePreviousTracks()
   await audioRemoveUpcomingTracks()
+
+  /*
+    Be very careful with when you call .stop() or .reset(), as these can
+    trigger the PlaybackActiveTrackChanged event, and also can cause the
+    x.lastPosition value to always be 0, which can break our "end of episode"
+    reached "automatically mark as played" handling.
+  */
   await audioHandleStop()
   await PVAudioPlayer.reset()
 }
