@@ -7,9 +7,10 @@ buildscript {
         compileSdkVersion = 33
         targetSdkVersion = 33
         supportLibVersion = "30.0.2"
-        kotlinVersion = '1.6.10'
+        kotlinVersion = '1.7.0'
         ndkVersion = '23.0.7599858'
         androidXCore = "1.7.0"
+        RNVUseExoplayerIMA = false
     }
     repositories {
         google()
