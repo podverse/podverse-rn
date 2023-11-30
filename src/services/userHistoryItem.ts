@@ -149,6 +149,13 @@ export const addOrUpdateHistoryItemLocally = async (
   const filteredItems = filterItemFromHistoryItems(userHistoryItems, item)
   item.episodeDuration = mediaFileDuration ? mediaFileDuration : item.episodeDuration
   item.userPlaybackPosition = playbackPosition
+
+  
+  const [historyItemsIndex] = await Promise.all([getHistoryItemsIndexLocally()])
+  const { clipId, episodeId } = item
+  if (!clipId && episodeId && !completed) {
+    completed = historyItemsIndex?.episodes?.[episodeId]?.completed || false
+  }
   item.completed = !!completed
   filteredItems.unshift(item)
   await setAllHistoryItemsLocally(filteredItems)
