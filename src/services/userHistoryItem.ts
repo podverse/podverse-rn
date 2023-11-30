@@ -204,7 +204,7 @@ const addOrUpdateHistoryItemOnServer = async (
 
 const clearHistoryItemsLocally = async () => {
   await setAllHistoryItemsLocally([])
-  await setHistoryItemsIndexLocally(defaultHistoryItemsIndex)
+  await setHistoryItemsIndexLocally(getDefaultHistoryItemsIndex())
 }
 
 const clearHistoryItemsOnServer = async () => {
@@ -297,7 +297,7 @@ export const filterItemFromHistoryItemsIndex = (historyItemsIndex: any, item: an
 }
 
 export const generateHistoryItemsIndex = (historyItems: any[]) => {
-  const historyItemsIndex = defaultHistoryItemsIndex
+  const historyItemsIndex = getDefaultHistoryItemsIndex()
 
   if (!historyItems) {
     historyItems = []
@@ -337,10 +337,10 @@ export const combineLocalHistoryItemsWithServerMetaHistoryItems = async (serverM
 export const getHistoryItemsIndexLocally = async () => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.HISTORY_ITEMS_INDEX)
-    const historyItemsIndex = itemsString ? JSON.parse(itemsString) : defaultHistoryItemsIndex
+    const historyItemsIndex = itemsString ? JSON.parse(itemsString) : getDefaultHistoryItemsIndex()
     return historyItemsIndex
   } catch (error) {
-    return defaultHistoryItemsIndex
+    return getDefaultHistoryItemsIndex()
   }
 }
 
@@ -414,11 +414,13 @@ export const setAllHistoryItemsLocally = async (items: NowPlayingItem[]) => {
 }
 
 export const setHistoryItemsIndexLocally = async (historyItemsIndex: any) => {
-  historyItemsIndex = historyItemsIndex || defaultHistoryItemsIndex
+  historyItemsIndex = historyItemsIndex || getDefaultHistoryItemsIndex()
   await AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS_INDEX, JSON.stringify(historyItemsIndex))
 }
 
-export const defaultHistoryItemsIndex = { episodes: {}, mediaRefs: {} }
+export const getDefaultHistoryItemsIndex = () => {
+  return { episodes: {}, mediaRefs: {} }
+}
 
 export const markAsPlayedEpisodesMultipleOnServer = async (episodeIds: string[]) => {
   const bearerToken = await getBearerToken()
