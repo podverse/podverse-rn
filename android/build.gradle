@@ -2,14 +2,16 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "30.0.2"
+        buildToolsVersion = "33.0.0"
         minSdkVersion = 23
         compileSdkVersion = 33
         targetSdkVersion = 33
-        supportLibVersion = "30.0.2"
-        kotlinVersion = '1.6.10'
+        supportLibVersion = "33.0.0"
+        kotlinVersion = "1.8.0"
         ndkVersion = '23.0.7599858'
-        androidXCore = "1.7.0"
+        androidXCore = "1.9.0"
+        
+        RNVUseExoplayerIMA = true
     }
     repositories {
         google()
@@ -50,7 +52,7 @@ subprojects {
         if (project.hasProperty("android")) {
             android {
                 compileSdkVersion 33
-                buildToolsVersion '30.0.2'
+                buildToolsVersion '33.0.0'
             }
         }
     }
