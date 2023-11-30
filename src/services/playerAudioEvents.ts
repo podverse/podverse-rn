@@ -20,17 +20,19 @@ import {
   getClipHasEnded,
   getPlaybackSpeed,
   getRemoteSkipButtonsTimeJumpOverride,
+  playerCheckActiveType,
+  playerHandlePauseWithUpdate,
+  playerHandleSeekToWithUpdate,
+  playerJumpBackward,
+  playerJumpForward,
   playerSetRateWithLatestPlaybackSpeed,
   playerUpdateUserPlaybackPosition
 } from './player'
 import {
   PVAudioPlayer,
-  audioJumpBackward,
-  audioJumpForward,
   audioGetTrackPosition,
   audioHandlePauseWithUpdate,
   audioHandlePlayWithUpdate,
-  audioHandleSeekToWithUpdate,
   audioGetState,
   audioCheckIfIsPlaying,
   audioGetTrackDuration,
@@ -239,31 +241,35 @@ module.exports = async () => {
   PVAudioPlayer.addEventListener(Event.RemoteJumpBackward, () => {
     console.log('Event.RemoteJumpBackward')
     const { jumpBackwardsTime } = getGlobal()
-    audioJumpBackward(jumpBackwardsTime)
+    playerJumpBackward(jumpBackwardsTime)
   })
 
   PVAudioPlayer.addEventListener(Event.RemoteJumpForward, () => {
     console.log('Event.RemoteJumpForward')
     const { jumpForwardsTime } = getGlobal()
-    audioJumpForward(jumpForwardsTime)
+    playerJumpForward(jumpForwardsTime)
   })
 
   PVAudioPlayer.addEventListener(Event.RemotePause, () => {
-    audioHandlePauseWithUpdate()
+    console.log('Event.RemotePause')
+    playerHandlePauseWithUpdate()
   })
 
   PVAudioPlayer.addEventListener(Event.RemotePlay, () => {
-    audioHandlePlayWithUpdate()
+    console.log('Event.RemotePlay')
+    playerHandlePlayWithUpdate()
   })
 
   PVAudioPlayer.addEventListener(Event.RemoteSeek, (data) => {
+    console.log('Event.RemoteSeek')
     if (data.position || data.position >= 0) {
-      audioHandleSeekToWithUpdate(data.position)
+      playerHandleSeekToWithUpdate(data.position)
     }
   })
 
   PVAudioPlayer.addEventListener(Event.RemoteStop, () => {
-    audioHandlePauseWithUpdate()
+    console.log('Event.RemoteStop')
+    playerHandlePauseWithUpdate()
   })
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -273,7 +279,7 @@ module.exports = async () => {
     const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
     if (!isMusic && remoteSkipButtonsAreTimeJumps) {
       const { jumpBackwardsTime } = getGlobal()
-      audioJumpBackward(jumpBackwardsTime)
+      playerJumpBackward(jumpBackwardsTime)
     } else {
       playerPlayPreviousChapterOrReturnToBeginningOfTrack()
     }
@@ -286,7 +292,7 @@ module.exports = async () => {
     const remoteSkipButtonsAreTimeJumps = await getRemoteSkipButtonsTimeJumpOverride()
     if (!isMusic && remoteSkipButtonsAreTimeJumps) {
       const { jumpForwardsTime } = getGlobal()
-      audioJumpForward(jumpForwardsTime)
+      playerJumpForward(jumpForwardsTime)
     } else {
       playerPlayNextChapterOrQueueItem()
     }
@@ -311,6 +317,13 @@ module.exports = async () => {
     ;(async () => {
       debugLogger('remote-duck', x)
       const { paused, permanent } = x
+
+      const playerType = await playerCheckActiveType()
+      // TODO: should we add remoteDuck handling for videos?
+      if (playerType === PV.Player.playerTypes.isVideo) {
+        return
+      }
+
       const currentState = await audioGetState()
       const isPlaying = audioCheckIfIsPlaying(currentState)
 
@@ -347,6 +360,7 @@ module.exports = async () => {
   // Android Auto Handlers
   if (Platform.OS === 'android') {
     PVAudioPlayer.addEventListener(Event.RemotePlayId, (e) => {
+      console.log('Event.RemotePlayId', e)
       handlePlayRemoteMediaId(e.id)
     })
     PVAudioPlayer.addEventListener(Event.RemoteSkip, (e) => {
@@ -354,6 +368,7 @@ module.exports = async () => {
       PVAudioPlayer.skip(e.index).then(() => PVAudioPlayer.play())
     })
     PVAudioPlayer.addEventListener(Event.RemoteBrowse, (e) => {
+      console.log('Event.RemoteBrowse', e)
       handleAABrowseMediaId(e.mediaId)
     })
     PVAudioPlayer.addEventListener(Event.RemotePlaySearch, (e) => {
