@@ -134,7 +134,8 @@ export class PVFastImage extends React.PureComponent<Props, State> {
       const episode = await getEpisode(currentChapter.remoteEpisodeId)
       navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, { episode })
     } else if (!isInDefaultPlaylist && currentChapter?.remoteEpisodeId) {
-      await addOrRemovePlaylistItemToDefaultPlaylist(currentChapter.remoteEpisodeId)
+      await addOrRemovePlaylistItemToDefaultPlaylist(
+        currentChapter.remoteEpisodeId, '', navigation)
     }
   }
 
