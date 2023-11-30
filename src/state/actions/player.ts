@@ -239,6 +239,18 @@ export const playerPlayNextChapterOrQueueItem = async () => {
       handleSlidingPositionOverride(nextChapter.startTime)
       debouncedClearSkipChapterInterval()
       return
+    } else {
+      // If the episode has chapters, but there is no next chapter,
+      // then move the position near the end of the duration,
+      // so the resetHistoryItem handling will detect the track
+      // was "near the end of playback", and automatically mark it as completed.
+      const duration = await playerGetDuration()
+      if (duration > 0) {
+        const timeCloseToEndOfDuration = duration - 30
+        if (timeCloseToEndOfDuration > 0) {
+          await playerHandleSeekTo(timeCloseToEndOfDuration)
+        }
+      }
     }
   }
   
