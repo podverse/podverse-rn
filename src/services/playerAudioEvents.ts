@@ -124,9 +124,6 @@ export const audioHandleQueueEnded = (x: any) => {
       PVEventEmitter.emit(PV.Events.PLAYER_DISMISS)
       await audioResetHistoryItemQueueEnded(x)
       await playerClearNowPlayingItem()
-
-      // Clear the queue completely after queue ended
-      // await PVAudioPlayer.reset()
     })()
   }, 0)
 }
