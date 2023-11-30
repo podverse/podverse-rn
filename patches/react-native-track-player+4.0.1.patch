@@ -5657,7 +5657,7 @@ index 32df9a5..1958c0e 100644
 -        let sessionCategoryOptsStr = config["iosCategoryOptions"] as? [String]
 -        let mappedCategoryOpts = sessionCategoryOptsStr?.compactMap { SessionCategoryOptions(rawValue: $0)?.mapConfigToAVAudioSessionCategoryOptions() } ?? []
 -        sessionCategoryOptions = AVAudioSession.CategoryOptions(mappedCategoryOpts)
-+        updateCategory(config: options)
++        updateCategory(config: config)
  
          configureAudioSession()
  
