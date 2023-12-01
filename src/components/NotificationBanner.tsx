@@ -43,7 +43,7 @@ export const NotificationBanner = () => {
   }
   
   return (
-    <DropdownBanner show={bannerInfo.show}>
+    <DropdownBanner closeBannerDismissTime={15000} show={bannerInfo.show}>
       <PressableWithOpacity onPress={notificationPressed} style={styles.container}>
         <PVFastImage source={bannerInfo.imageUrl} styles={styles.image}/>
         <View style={styles.textWrapper}>
