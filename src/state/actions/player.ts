@@ -38,7 +38,7 @@ import {
 } from '../../services/userNowPlayingItem'
 import { clearEpisodesCountForPodcastEpisode } from './newEpisodesCount'
 import { audioInitializePlayerQueue, audioPlayNextFromQueue } from './playerAudio'
-import { clearChapterPlaybackInfo, getChapterNext, getChapterPrevious, loadChapterPlaybackInfo,
+import { clearChapterPlaybackInfo, getTocChapterNext, getChapterPrevious, loadChapterPlaybackInfo,
   loadChaptersForNowPlayingItem, 
   setChapterOnGlobalState} from './playerChapters'
 import { videoInitializePlayer, videoStateClearVideoInfo,
@@ -232,7 +232,7 @@ export const playerPlayNextChapterOrQueueItem = async () => {
   const { currentTocChapters } = globalState
 
   if (currentTocChapters && currentTocChapters.length > 1) {
-    const nextChapter = await getChapterNext()
+    const nextChapter = await getTocChapterNext()
     if (nextChapter) {
       setSkipChapterInterval()
       await playerHandleSeekTo(nextChapter.startTime)

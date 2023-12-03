@@ -200,7 +200,7 @@ export const getChapterPrevious = () => {
   }
 }
 
-export const getChapterNext = () => {
+export const getTocChapterNext = async () => {
   const globalState = getGlobal()
   const { currentTocChapter, currentTocChapters } = globalState
   if (currentTocChapter && currentTocChapters?.length && currentTocChapters.length > 1) {
@@ -208,7 +208,33 @@ export const getChapterNext = () => {
     const nextIndex = currentIndex + 1
     const nextChapter = currentTocChapters[nextIndex]
     return nextChapter
+  } else if (!currentTocChapter && currentTocChapters?.length && currentTocChapters.length > 1) {
+    return getNextTocChapterByTime()
   }
+}
+
+const getNextTocChapterByTime = async () => {
+  const globalState = getGlobal()
+  const { currentChapters, player } = globalState
+  const { backupDuration } = player
+  const position = await playerGetPosition()
+
+  let nextChapter = null
+  for (let i = 0; i < currentChapters.length; i++) {
+    const chapter = currentChapters[i]
+    const isInTimeRange = checkIfChapterInTimeRange(chapter, position, backupDuration)
+    if (isInTimeRange) {
+      nextChapter = currentChapters[i + 1] || null
+    }
+  }
+
+  // If no next chapter is found, assume there was no first chapter,
+  // and skip to the first chapter
+  if (!nextChapter) {
+    nextChapter = currentChapters[0] || null
+  }
+
+  return nextChapter
 }
 
 export const getChapterForTime = (playerPosition: number, tocOnly: boolean) => {
