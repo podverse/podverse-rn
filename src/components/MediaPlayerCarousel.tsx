@@ -37,6 +37,7 @@ type State = {
   activeIndex: number
   boostIsSending: boolean
   boostWasSent: boolean
+  isInitialLoad: boolean
   isReady: boolean
   isReady2: boolean
 }
@@ -95,11 +96,11 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     this.scrollToActiveIndex(activeIndex, animated)
 
     /*
-    Add timeout to improve initial rendering time on Android.
-    https://stackoverflow.com/questions/46127753/react-native-react-navigation-slow-transitions-when-nesting-navigators
-  */
-    const timeout1 = Platform.OS === 'android' ? 50 : 0
-    const timeout2 = Platform.OS === 'android' ? 100 : 0
+      Add timeouts to prevent slow / chunky player screen navigation rendering.
+      https://stackoverflow.com/questions/46127753/react-native-react-navigation-slow-transitions-when-nesting-navigators
+    */
+    const timeout1 = 50
+    const timeout2 = 1000
 
     setTimeout(() => {
       this.setState({ isReady: true })
