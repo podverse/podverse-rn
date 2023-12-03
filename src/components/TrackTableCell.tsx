@@ -29,9 +29,11 @@ export class TrackTableCell extends React.PureComponent<Props> {
     const {
       downloadedEpisodeIds,
       downloadsActive,
+      player,
       screenReaderEnabled
     } = this.global
     
+    const { nowPlayingItem } = player
     const { podcast } = episode
     const episodeId = episode.id
     const isAddByRSSPodcast = !!podcast?.addByRSSPodcastFeedUrl
@@ -45,13 +47,16 @@ export class TrackTableCell extends React.PureComponent<Props> {
     const episodeDownloaded = !!(episodeId && !!downloadedEpisodeIds[episodeId])
     const episodeDownloading = !!(episodeId && !!downloadsActive[episodeId])
 
+    const textWrapperStyle = showArtist
+      ? [styles.textWrapper]
+      : [styles.textWrapper, { justifyContent: 'center' }]
+
     const textStyle = showArtist
       ? [styles.text, { marginTop: 1 }]
       : [styles.text]
 
-    const textWrapperStyle = showArtist
-      ? [styles.textWrapper]
-      : [styles.textWrapper, { justifyContent: 'center' }]
+    const isActive = nowPlayingItem?.episodeId === episodeId
+    const activeTrackStyle = isActive ? { color: PV.Colors.orange } : {}
 
     return (
       <RNView style={styles.outerWrapper}>
@@ -73,7 +78,7 @@ export class TrackTableCell extends React.PureComponent<Props> {
             )
           }
           <RNView style={textWrapperStyle}>
-            <Text numberOfLines={1} style={textStyle}>{trackTitle}</Text>
+            <Text numberOfLines={1} style={[textStyle, activeTrackStyle]}>{trackTitle}</Text>
             {showArtist && (<Text numberOfLines={1} style={styles.subText}>{authorNames}</Text>)}
           </RNView>          
           {!!episodeDownloaded && (
