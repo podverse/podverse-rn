@@ -98,6 +98,10 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     /*
       Add timeouts to prevent slow / chunky player screen navigation rendering.
       https://stackoverflow.com/questions/46127753/react-native-react-navigation-slow-transitions-when-nesting-navigators
+
+      isReady = only the carousel Viewer component should load (so first appearance looks complete)
+      isReady2 = can happen slower. all the other carousel components load after the Player screen
+                 has finished displaying.
     */
     const timeout1 = 50
     const timeout2 = 1000
