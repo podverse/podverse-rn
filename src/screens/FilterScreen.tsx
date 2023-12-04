@@ -1,7 +1,7 @@
-import { Pressable, StyleSheet, View as RNView } from 'react-native'
+import { Pressable, StyleSheet, View as RNView, Dimensions } from 'react-native'
 import React from 'reactn'
 // import { hasValidNetworkConnection } from '../lib/network'
-import { FlatList, Icon, NavHeaderButtonText, Text, View } from '../components'
+import { FlatList, Icon, NavHeaderButtonText, PillButton, Text, View } from '../components'
 import { generateSections } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { safeKeyExtractor } from '../lib/utility'
@@ -23,6 +23,13 @@ type State = {
   selectedSortItemKey?: string
   screenName: string
   isOffline: boolean
+  selectedMedia: string[]
+}
+
+const MediaSelectionOptions = {
+  "PODCASTS":"PODCASTS",
+  "MUSIC":"MUSIC",
+  "VIDEOS":"VIDEOS"
 }
 
 type Item = {
@@ -57,7 +64,8 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedFilterItemKey: '',
       selectedFromItemKey: '',
       selectedSortItemKey: '',
-      isOffline: false
+      isOffline: false,
+      selectedMedia: []
     }
   }
 
@@ -207,6 +215,20 @@ export class FilterScreen extends React.Component<Props, State> {
     return { categoryValueOverride, handleSelect }
   }
 
+  mediaButtonPressed = (title: string) => {
+    let newSelectedMedia = []
+    if(this.state.selectedMedia.includes(title)) {
+      newSelectedMedia = this.state.selectedMedia
+                          .filter((media) => media !== title)
+    } else {
+      newSelectedMedia.push(...this.state.selectedMedia, title)
+    }
+    
+    this.setState({selectedMedia:newSelectedMedia}, () => {
+      // Call the Podcasts screen handler with the new state
+    })
+  }
+
   renderItem = ({ item, section }) => {
     const {
       selectedCategoryItemKey,
@@ -288,6 +310,19 @@ export class FilterScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view} testID={`${testIDPrefix}_view`}>
+      { PV.FilterOptions.screenFilters[this.state.screenName]?.showMediaTypeFilters 
+        && <View style={styles.mediaButtonsContainer}>
+        {
+          Object.keys(MediaSelectionOptions).map((mediaType: string) => {
+            return <PillButton
+              key={mediaType}
+              style={styles.mediaButtonOverride} // 10 is magin number for padding
+              buttonTitle={mediaType} 
+              filled={this.state.selectedMedia.includes(mediaType)} 
+              handleOnPress={() => this.mediaButtonPressed(mediaType)}/>
+          })
+        }
+      </View>}
         <FlatList
           disableNoResultsMessage
           keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.value || item?.id)}
@@ -357,5 +392,15 @@ const styles = StyleSheet.create({
   view: {
     backgroundColor: 'blue',
     flex: 1
+  },
+  mediaButtonsContainer: {
+    paddingTop: 15,
+    paddingHorizontal: 10,
+    flexDirection:"row", 
+    flexWrap:"wrap"
+  },
+  mediaButtonOverride: {
+    margin: 5, 
+    minWidth:(Dimensions.get("screen").width / 3) - 20 // - 20 is to match padding of container and button
   }
 })

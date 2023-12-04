@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
+import { Dimensions, StyleSheet } from 'react-native'
 import { PV } from '../resources'
 import { PressableWithOpacity, Text } from './'
 
@@ -9,16 +9,22 @@ type Props = {
   testID: string
   style?: any
   destructive?: boolean
+  filled?: boolean 
 }
 
 export const PillButton = (props: Props) => {
-  const { handleOnPress, buttonTitle, testID, style, destructive } = props
+  const { handleOnPress, buttonTitle, testID, style, destructive, filled } = props
 
   let destructButtonStyles = {}
   let destructTextStyles = {}
   if (destructive) {
     destructButtonStyles = styles.destructiveButtonStyle
     destructTextStyles = styles.destructiveTextStyle
+  }
+
+  if (filled) {
+    destructButtonStyles = styles.filledButtonStyle
+    destructTextStyles = styles.filledTextStyle
   }
 
   return (
@@ -55,6 +61,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     minWidth: 120,
     minHeight: 32,
+    maxWidth: 200, // Smallest iPad width divided by 5
     backgroundColor: PV.Colors.velvet
   },
   buttonText: {
@@ -66,5 +73,12 @@ const styles = StyleSheet.create({
   },
   destructiveTextStyle: {
     color: PV.Colors.redLighter
+  },
+  filledButtonStyle: {
+    borderColor: PV.Colors.brandBlueLight,
+    backgroundColor: PV.Colors.white
+  },
+  filledTextStyle: {
+    color: PV.Colors.velvet
   }
 })

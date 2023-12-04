@@ -1261,7 +1261,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         <RNView style={{ flex: 1 }}>
           <PlayerEvents />
           <TableSectionSelectors
-            filterScreenTitle={getScreenTitle()}
+            filterScreenTitle={translate('Filters')}
             handleSelectCategoryItem={(x: any) => this._selectCategory(x)}
             handleSelectCategorySubItem={(x: any) => this._selectCategory(x, true)}
             handleSelectFilterItem={this.handleSelectFilterItemWithoutParse}

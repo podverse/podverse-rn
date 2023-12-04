@@ -233,7 +233,8 @@ export const FilterOptions = {
     PodcastsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _customFeedsKey],
       sort: [..._top],
-      subscribedSort: [_alphabeticalKey, _mostRecentKey]
+      subscribedSort: [_alphabeticalKey, _mostRecentKey],
+      showMediaTypeFilters: true
     },
     ProfileScreen: {
       type: [_podcastsKey, _clipsKey, _playlistsKey],
