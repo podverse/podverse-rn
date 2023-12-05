@@ -50,3 +50,19 @@ export const getValueTagsForItemGuidOrFeedGuid = async (feedGuid: string, itemGu
   }
   return valueTags
 }
+
+export const getEpisodeByGuidFromPodcastIndex = async (podcastIndexId: string, episodeGuid: string) => {
+  if (episodeGuid.indexOf('http') === 0) {
+    episodeGuid = episodeGuid.replace(/#/g, "%23")
+    episodeGuid = episodeGuid.replace(/\?/g, "%3F")
+  }
+  const response = await request({
+    endpoint: `/podcast-index/episode/byguid`,
+    query: {
+      podcastIndexId,
+      episodeGuid
+    }
+  })
+
+  return response && response.data
+}
