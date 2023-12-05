@@ -10,9 +10,9 @@ const getPodcastsTypeSortFilter = (screenName: string, selectedFilterItemKey: st
     newSelectedSortItemKey =
       selectedSortItemKey === PV.Filters._mostRecentKey ? PV.Filters._mostRecentKey : PV.Filters._alphabeticalKey
   } else {
-    newSelectedSortItemKey = !PV.FilterOptions.screenFilters[screenName].sort.includes(newSelectedSortItemKey)
+    newSelectedSortItemKey = !PV.FilterOptions.screenFilters[screenName].sort.includes(selectedSortItemKey)
       ? PV.Filters._topPastWeek
-      : newSelectedSortItemKey
+      : selectedSortItemKey
   }
   return newSelectedSortItemKey
 }
