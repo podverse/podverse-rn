@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dimensions, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { PV } from '../resources'
 import { PressableWithOpacity, Text } from './'
 
@@ -9,11 +9,11 @@ type Props = {
   testID: string
   style?: any
   destructive?: boolean
-  filled?: boolean 
+  selected?: boolean 
 }
 
 export const PillButton = (props: Props) => {
-  const { handleOnPress, buttonTitle, testID, style, destructive, filled } = props
+  const { handleOnPress, buttonTitle, testID, style, destructive, selected } = props
 
   let destructButtonStyles = {}
   let destructTextStyles = {}
@@ -22,9 +22,9 @@ export const PillButton = (props: Props) => {
     destructTextStyles = styles.destructiveTextStyle
   }
 
-  if (filled) {
-    destructButtonStyles = styles.filledButtonStyle
-    destructTextStyles = styles.filledTextStyle
+  if (selected) {
+    destructButtonStyles = styles.selectedButtonStyle
+    destructTextStyles = styles.selectedTextStyle
   }
 
   return (
@@ -74,11 +74,11 @@ const styles = StyleSheet.create({
   destructiveTextStyle: {
     color: PV.Colors.redLighter
   },
-  filledButtonStyle: {
+  selectedButtonStyle: {
     borderColor: PV.Colors.brandBlueLight,
     backgroundColor: PV.Colors.white
   },
-  filledTextStyle: {
+  selectedTextStyle: {
     color: PV.Colors.velvet
   }
 })

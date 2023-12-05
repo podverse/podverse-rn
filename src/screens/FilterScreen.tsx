@@ -26,10 +26,10 @@ type State = {
   selectedMedia: string[]
 }
 
-const MediaSelectionOptions = {
-  "PODCASTS":"PODCASTS",
-  "MUSIC":"MUSIC",
-  "VIDEOS":"VIDEOS"
+enum MediaSelectionOptions {
+  PODCASTS = "PODCASTS",
+  MUSIC = "MUSIC",
+  VIDEOS = "VIDEOS"
 }
 
 type Item = {
@@ -99,6 +99,7 @@ export class FilterScreen extends React.Component<Props, State> {
     const selectedFilterItemKey = navigation.getParam('selectedFilterItemKey')
     const selectedFromItemKey = navigation.getParam('selectedFromItemKey')
     const selectedSortItemKey = navigation.getParam('selectedSortItemKey')
+    const selectedMediaOptions = navigation.getParam('selectedMediaOptions')
 
     const { newSelectedSortItemKey, sections } = generateSections({
       addByRSSPodcastFeedUrl,
@@ -119,7 +120,8 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFromItemKey,
-      selectedSortItemKey: newSelectedSortItemKey
+      selectedSortItemKey: newSelectedSortItemKey,
+      selectedMedia: selectedMediaOptions || []
     })
   }
 
@@ -316,9 +318,9 @@ export class FilterScreen extends React.Component<Props, State> {
           Object.keys(MediaSelectionOptions).map((mediaType: string) => {
             return <PillButton
               key={mediaType}
-              style={styles.mediaButtonOverride} // 10 is magin number for padding
+              style={styles.mediaButtonOverride}
               buttonTitle={mediaType} 
-              filled={this.state.selectedMedia.includes(mediaType)} 
+              selected={this.state.selectedMedia.includes(mediaType)} 
               handleOnPress={() => this.mediaButtonPressed(mediaType)}/>
           })
         }
