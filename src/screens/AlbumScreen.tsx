@@ -14,6 +14,7 @@ import {
   Button,
   FlatList,
   NavFundingIcon,
+  NavNotificationsIcon,
   NavShareIcon,
   ScrollView,
   SwitchWithText,
@@ -40,6 +41,7 @@ import {
 import { getPodcast } from '../services/podcast'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
 import * as DownloadState from '../state/actions/downloads'
+import { checkIfNotificationsEnabledForPodcastId } from '../state/actions/notifications'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { playerLoadNowPlayingItem } from '../state/actions/player'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
@@ -99,16 +101,19 @@ export class AlbumScreen extends React.Component<Props, State> {
     const podcast = props.navigation.getParam('podcast')
 
     const podcastId = podcast?.id || podcast?.addByRSSPodcastFeedUrl || props.navigation.getParam('podcastId')
+    const notificationsEnabled = checkIfNotificationsEnabledForPodcastId(podcastId)
 
     if (podcast?.id || podcast?.addByRSSPodcastFeedUrl) {
       props.navigation.setParams({
         podcastId,
         podcastTitle: podcast.title,
-        addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
+        addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
+        notificationsEnabled
       })
     } else if (podcastId) {
       props.navigation.setParams({
-        podcastId
+        podcastId,
+        notificationsEnabled
       })
     }
 
@@ -142,6 +147,7 @@ export class AlbumScreen extends React.Component<Props, State> {
     const podcastTitle = navigation.getParam('podcastTitle')
     const podcast = navigation.getParam('podcast')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
+    const notificationsEnabled = navigation.getParam('notificationsEnabled')
 
     const { globalTheme } = getGlobal()
 
@@ -154,6 +160,16 @@ export class AlbumScreen extends React.Component<Props, State> {
           {/* Always show NavFundingIcon in dev, otherwise funding tag will be unavailable to Appium tests. */}
           {(!!Config.IS_DEV || !!showFundingIcon) && podcast && (
             <NavFundingIcon globalTheme={globalTheme} navigation={navigation} podcast={podcast} />
+          )}
+          {!addByRSSPodcastFeedUrl && (
+            <NavNotificationsIcon
+              podcastId={podcastId}
+              navigation={navigation}
+              isEnabled={notificationsEnabled}
+              onNotificationSelectionChanged={() =>
+                navigation.setParams({ notificationsEnabled: !notificationsEnabled })
+              }
+            />
           )}
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon podcastTitle={podcastTitle} urlId={podcastId} urlPath={PV.URLs.webPaths.album} />

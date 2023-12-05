@@ -22,6 +22,7 @@ import {
 } from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
 import { AlbyKeysendResponse, AlbyMultiKeySendResponse, KeysendCustomKeyValueAddress } from './providers/alby'
+import { getEpisodeByGuidFromPodcastIndex } from '../podcastIndex'
 
 const _fileName = 'src/services/v4v/v4v.ts'
 
@@ -428,8 +429,37 @@ const processSendValueTransactions = async (
   
   try {
     if (valueTransactions?.length > 0) {
+      const finalValueTransactions: ValueTransaction[] = []
+      for (const valueTransaction of valueTransactions) {
+        const podcastIndexId = valueTransaction?.satoshiStreamStats?.[7629169]?.feedID
+        const episodeGuid = valueTransaction?.satoshiStreamStats?.[7629169]?.episode_guid
+
+        try {
+          const podcastIndexData = await getEpisodeByGuidFromPodcastIndex(
+            podcastIndexId,
+            episodeGuid
+          )
+
+          const podcastIndexEpisodeId = podcastIndexData?.episode?.id
+            
+          const finalTransaction = {
+            ...valueTransaction,
+            satoshiStreamStats: {
+              ...valueTransaction.satoshiStreamStats,
+              7629169: {
+                ...valueTransaction.satoshiStreamStats[7629169],
+                itemID: podcastIndexEpisodeId
+              }
+            }
+          }
+          finalValueTransactions.push(finalTransaction)
+        } catch (error) {
+          console.log('getEpisodeByGuidFromPodcastIndex error', error)
+        }
+      }
+
       const response = await sendValueTransactions(
-        valueTransactions,
+        finalValueTransactions,
         'alby',
         includeMessage
       )

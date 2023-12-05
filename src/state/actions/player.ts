@@ -38,7 +38,7 @@ import {
 } from '../../services/userNowPlayingItem'
 import { clearEpisodesCountForPodcastEpisode } from './newEpisodesCount'
 import { audioInitializePlayerQueue, audioPlayNextFromQueue } from './playerAudio'
-import { clearChapterPlaybackInfo, getChapterNext, getChapterPrevious, loadChapterPlaybackInfo,
+import { clearChapterPlaybackInfo, getTocChapterNext, getChapterPrevious, loadChapterPlaybackInfo,
   loadChaptersForNowPlayingItem, 
   setChapterOnGlobalState} from './playerChapters'
 import { videoInitializePlayer, videoStateClearVideoInfo,
@@ -232,7 +232,7 @@ export const playerPlayNextChapterOrQueueItem = async () => {
   const { currentTocChapters } = globalState
 
   if (currentTocChapters && currentTocChapters.length > 1) {
-    const nextChapter = await getChapterNext()
+    const nextChapter = await getTocChapterNext()
     if (nextChapter) {
       setSkipChapterInterval()
       await playerHandleSeekTo(nextChapter.startTime)
@@ -412,10 +412,13 @@ export const setLiveStreamWasPausedState = (bool: boolean) => {
 export const handleEnrichingPlayerState = (item: NowPlayingItem) => {
   if (item) {
     // Be careful not to cause async issues when updating global state with these function calls.
-    trackPlayerScreenPageView(item)
     loadChaptersForNowPlayingItem(item)
     enrichParsedTranscript(item)
     v4vEnrichValueTagDataIfNeeded(item)
+
+    // TODO: this might not be the best place to put tracking because
+    // it may get called from multiple places after a track loads in the player.
+    trackPlayerScreenPageView(item)
   }
 }
 
