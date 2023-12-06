@@ -136,8 +136,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         ndkVersion rootProject.ext.ndkVersion
-        versionCode 5244
-        versionName "4.15.0"
+        versionCode 5251
+        versionName "4.15.1"
         multiDexEnabled true
         missingDimensionStrategy 'store', 'play'
     }
@@ -184,8 +184,6 @@ android {
 }
 
 dependencies {
-    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-
     // Added this to address a bug with react-native and react-native-elements TextInputs
     // https://stackoverflow.com/questions/67683149/react-native-build-error-attempt-to-invoke-virtual-methodboolean-com-facebook
     implementation ("androidx.appcompat:appcompat:1.3.1") {

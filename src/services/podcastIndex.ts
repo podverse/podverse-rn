@@ -21,6 +21,9 @@ export const getValueTagsForFeedGuid = async (feedGuid: string) => {
 }
 
 export const getValueTagsForFeedGuidAndItemGuid = async (feedGuid: string, itemGuid: string) => {
+  if (itemGuid.indexOf('http') === 0) {
+    itemGuid = encodeURIComponent(itemGuid)
+  }
   const response = await request({
     endpoint: `/podcast-index/value/by-guids`,
     query: {
@@ -36,6 +39,9 @@ export const getValueTagsForItemGuidOrFeedGuid = async (feedGuid: string, itemGu
   let valueTags: ValueTag[] = []
   try {
     if (itemGuid) {
+      if (itemGuid.indexOf('http') === 0) {
+        itemGuid = encodeURIComponent(itemGuid)
+      }
       valueTags = await getValueTagsForFeedGuidAndItemGuid(feedGuid, itemGuid)
     } else {
       throw new Error('Not found')
@@ -49,4 +55,19 @@ export const getValueTagsForItemGuidOrFeedGuid = async (feedGuid: string, itemGu
     }
   }
   return valueTags
+}
+
+export const getEpisodeByGuidFromPodcastIndex = async (podcastIndexId: string, episodeGuid: string) => {
+  if (episodeGuid.indexOf('http') === 0) {
+    episodeGuid = encodeURIComponent(episodeGuid)
+  }
+  const response = await request({
+    endpoint: `/podcast-index/episode/byguid`,
+    query: {
+      podcastIndexId,
+      episodeGuid
+    }
+  })
+
+  return response && response.data
 }

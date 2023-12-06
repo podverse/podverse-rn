@@ -182,7 +182,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       isLoadingMore: true,
       isRefreshing: false,
       isUnsubscribing: false,
-      queryFrom: null,
+      queryFrom: PV.Filters._subscribedKey,
       queryPage: 1,
       querySort: null,
       searchBarText: '',
@@ -720,7 +720,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // Set the subscribedPodcasts immediately on state, without waiting for local parsing,
     // then update subscribedPodcasts again combined with addByRSS feeds.
     const initialPodcastsAllMediums = await combineWithAddByRSSPodcasts(searchBarText, savedQuerySort)
-    const initalPodcasts = initialPodcastsAllMediums.filter((podcast: Podcast) => podcast.medium === PV.Medium.podcast)
+    const initalPodcasts = initialPodcastsAllMediums.filter((podcast: Podcast) =>
+      podcast.medium === PV.Medium.podcast
+      || podcast.hasVideo)
+
     this.setState({
       flatListData: initalPodcasts || [],
       flatListDataTotalCount: initalPodcasts?.length || 0
@@ -1251,7 +1254,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const isCategoryScreen = queryFrom === PV.Filters._categoryKey
 
     const hasANotch = hasNotch() || hasDynamicIsland()
-    const popoverYOffset = hasANotch ? 100 : 40
+    const popoverYOffset = hasANotch ? 100 : 40    
 
     return (
       <View style={styles.view} testID={`${testIDPrefix}_view`}>
@@ -1395,7 +1398,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
 
     const subscribedPodcasts = subscribedPodcastsAllMediums.filter(
-      (podcast: Podcast) => podcast.medium === PV.Medium.podcast)
+      (podcast: Podcast) => podcast.medium === PV.Medium.podcast || podcast.hasVideo)
 
     if (!preventAutoDownloading) {
       try {
@@ -1421,7 +1424,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _queryAllPodcasts = async (sort: string | null, page = 1) => {
     const { searchBarText: searchTitle } = this.state
-
     let localPodcasts = [] as any
     if (searchTitle && page === 1) {
       // When searching on the PodcastsScreen, we want to return ALL podcast results,

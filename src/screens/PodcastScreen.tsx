@@ -1368,6 +1368,20 @@ export class PodcastScreen extends React.Component<Props, State> {
                 noResultsMessage={noResultsMessage}
                 onEndReached={this._onEndReached}
                 renderItem={this._renderItem}
+                ItemSeparatorComponent={(item) => {
+                  const { hideCompleted } = this.global
+                  const { completed } = getHistoryItemIndexInfoForEpisode(item?.leadingItem?.id)
+
+                  const shouldHideCompleted =
+                    (hideCompleted && viewType === PV.Filters._episodesKey && completed) ||
+                    (!hideCompleted && viewType === PV.Filters._hideCompletedKey && completed)
+
+                  if (shouldHideCompleted) {
+                    return null
+                  } else {
+                    return <Divider optional style={{ marginHorizontal: 10 }}/>
+                  }
+                }}
                 renderSectionHeader={(obj) => this._renderSectionHeader(obj, { collapsedSectionsData, globalTheme })}
                 sections={sections}
                 showNoInternetConnectionMessage={showNoInternetConnectionMessage}

@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "4.15.0",
+  "version": "4.15.1",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -108,10 +108,10 @@
     "react-native-swipe-list-view": "3.2.9",
     "react-native-system-setting": "1.7.6",
     "react-native-text-ticker": "1.13.0",
-    "react-native-track-player": "github:podverse/lovegaoshi-react-native-track-player#dev-podverse-aa",
+    "react-native-track-player": "github:podverse/lovegaoshi-react-native-track-player#dev-android-auto",
     "react-native-tracking-transparency": "0.1.1",
     "react-native-vector-icons": "8.1.0",
-    "react-native-video": "6.0.0-alpha.4",
+    "react-native-video": "6.0.0-beta.0",
     "react-native-video-controls": "2.8.1",
     "react-native-webview": "11.26.0",
     "react-native-xml2js": "1.0.3",

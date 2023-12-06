@@ -31,7 +31,7 @@ export const addOrUpdateHistoryItem = async (
   const useServerData = await checkIfShouldUseServerData()
   const func = useServerData
     ? () => addOrUpdateHistoryItemOnServer(item, playbackPosition, mediaFileDuration, forceUpdateOrderDate, completed)
-    : () => addOrUpdateHistoryItemLocally(item, playbackPosition, mediaFileDuration)
+    : () => addOrUpdateHistoryItemLocally(item, playbackPosition, mediaFileDuration, completed)
   await func()
 
   // The historyItemsIndex does not automatically trigger components to re-render,
@@ -139,7 +139,8 @@ export const getHistoryItemIndexInfoForEpisode = (episodeId: string) => {
 export const addOrUpdateHistoryItemLocally = async (
   item: NowPlayingItem,
   playbackPosition: number,
-  mediaFileDuration?: number | null
+  mediaFileDuration?: number | null,
+  completed?: boolean
 ) => {
   playbackPosition = Math.floor(playbackPosition) || 0
   mediaFileDuration = (mediaFileDuration && Math.floor(mediaFileDuration)) || 0
@@ -148,6 +149,14 @@ export const addOrUpdateHistoryItemLocally = async (
   const filteredItems = filterItemFromHistoryItems(userHistoryItems, item)
   item.episodeDuration = mediaFileDuration ? mediaFileDuration : item.episodeDuration
   item.userPlaybackPosition = playbackPosition
+
+  
+  const [historyItemsIndex] = await Promise.all([getHistoryItemsIndexLocally()])
+  const { clipId, episodeId } = item
+  if (!clipId && episodeId && !completed) {
+    completed = historyItemsIndex?.episodes?.[episodeId]?.completed || false
+  }
+  item.completed = !!completed
   filteredItems.unshift(item)
   await setAllHistoryItemsLocally(filteredItems)
 }
@@ -195,7 +204,7 @@ const addOrUpdateHistoryItemOnServer = async (
 
 const clearHistoryItemsLocally = async () => {
   await setAllHistoryItemsLocally([])
-  await setHistoryItemsIndexLocally(defaultHistoryItemsIndex)
+  await setHistoryItemsIndexLocally(getDefaultHistoryItemsIndex())
 }
 
 const clearHistoryItemsOnServer = async () => {
@@ -288,7 +297,7 @@ export const filterItemFromHistoryItemsIndex = (historyItemsIndex: any, item: an
 }
 
 export const generateHistoryItemsIndex = (historyItems: any[]) => {
-  const historyItemsIndex = defaultHistoryItemsIndex
+  const historyItemsIndex = getDefaultHistoryItemsIndex()
 
   if (!historyItems) {
     historyItems = []
@@ -328,10 +337,10 @@ export const combineLocalHistoryItemsWithServerMetaHistoryItems = async (serverM
 export const getHistoryItemsIndexLocally = async () => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.HISTORY_ITEMS_INDEX)
-    const historyItemsIndex = itemsString ? JSON.parse(itemsString) : defaultHistoryItemsIndex
+    const historyItemsIndex = itemsString ? JSON.parse(itemsString) : getDefaultHistoryItemsIndex()
     return historyItemsIndex
   } catch (error) {
-    return defaultHistoryItemsIndex
+    return getDefaultHistoryItemsIndex()
   }
 }
 
@@ -405,11 +414,14 @@ export const setAllHistoryItemsLocally = async (items: NowPlayingItem[]) => {
 }
 
 export const setHistoryItemsIndexLocally = async (historyItemsIndex: any) => {
-  historyItemsIndex = historyItemsIndex || defaultHistoryItemsIndex
+  historyItemsIndex = historyItemsIndex || getDefaultHistoryItemsIndex()
   await AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS_INDEX, JSON.stringify(historyItemsIndex))
 }
 
-export const defaultHistoryItemsIndex = { episodes: {}, mediaRefs: {} }
+// Using a get helper since I was running into issues with the const object getting modified.
+export const getDefaultHistoryItemsIndex = () => {
+  return { episodes: {}, mediaRefs: {} }
+}
 
 export const markAsPlayedEpisodesMultipleOnServer = async (episodeIds: string[]) => {
   const bearerToken = await getBearerToken()

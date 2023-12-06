@@ -5,6 +5,7 @@ import { getTrackingStatus, requestTrackingPermission } from 'react-native-track
 import { errorLogger } from '../lib/logger'
 import { PV } from '../resources'
 import { matomoTrackPageView } from './matomo'
+import { NowPlayingItem } from 'podverse-shared'
 
 const _fileName = 'src/services/tracking.ts'
 
@@ -80,33 +81,64 @@ export const getTrackingIdText = (id?: string, isAddedByRss?: boolean) => {
   }
 }
 
-export const trackPlayerScreenPageView = (item: any) => {
+export const trackPlayerScreenPageView = (item: NowPlayingItem) => {
   try {
     if (item?.clipId) {
       trackPageView(
         '/clip/' + getTrackingIdText(item.clipId, !!item.addByRSSPodcastFeedUrl),
         'Player Screen - Clip - ' +
-          encodeURIComponent(item.podcastTitle) +
+          encodeURIComponent(item.podcastTitle || '') +
           ' - ' +
-          encodeURIComponent(item.episodeTitle) +
+          encodeURIComponent(item.episodeTitle || '') +
           ' - ' +
-          encodeURIComponent(item.clipTitle)
+          encodeURIComponent(item.clipTitle || '')
       )
     }
     if (item?.episodeId) {
-      trackPageView(
-        '/episode/' + getTrackingIdText(item.episodeId, !!item.addByRSSPodcastFeedUrl),
-        'Player Screen - Episode - ' +
-          encodeURIComponent(item.podcastTitle) +
-          ' - ' +
-          encodeURIComponent(item.episodeTitle)
-      )
+      if (item?.podcastMedium === PV.Medium.music) {
+        trackPageView(
+          '/track/' + getTrackingIdText(item.episodeId, !!item.addByRSSPodcastFeedUrl),
+          'Player Screen - Track - ' +
+            encodeURIComponent(item.podcastTitle || '') +
+            ' - ' +
+            encodeURIComponent(item.episodeTitle || '')
+        )
+      } else if (item?.podcastHasVideo) {
+        trackPageView(
+          '/video/' + getTrackingIdText(item.episodeId, !!item.addByRSSPodcastFeedUrl),
+          'Player Screen - Video - ' +
+            encodeURIComponent(item.podcastTitle || '') +
+            ' - ' +
+            encodeURIComponent(item.episodeTitle || '')
+        )
+      } else {
+        trackPageView(
+          '/episode/' + getTrackingIdText(item.episodeId, !!item.addByRSSPodcastFeedUrl),
+          'Player Screen - Episode - ' +
+            encodeURIComponent(item.podcastTitle || '') +
+            ' - ' +
+            encodeURIComponent(item.episodeTitle || '')
+        )
+      }
+
     }
     if (item?.podcastId) {
-      trackPageView(
-        '/podcast/' + getTrackingIdText(item.podcastId, !!item.addByRSSPodcastFeedUrl),
-        'Player Screen - Podcast - ' + encodeURIComponent(item.podcastTitle)
-      )
+      if (item?.podcastMedium === PV.Medium.music) {
+        trackPageView(
+          '/album/' + getTrackingIdText(item.podcastId, !!item.addByRSSPodcastFeedUrl),
+          'Player Screen - Album - ' + encodeURIComponent(item.podcastTitle || '')
+        )
+      } else if (item?.podcastHasVideo) {
+        trackPageView(
+          '/channel/' + getTrackingIdText(item.podcastId, !!item.addByRSSPodcastFeedUrl),
+          'Player Screen - Channel - ' + encodeURIComponent(item.podcastTitle || '')
+        )
+      } else {
+        trackPageView(
+          '/podcast/' + getTrackingIdText(item.podcastId, !!item.addByRSSPodcastFeedUrl),
+          'Player Screen - Podcast - ' + encodeURIComponent(item.podcastTitle || '')
+        )
+      }
     }
   } catch (error) {
     errorLogger(_fileName, 'trackPlayerScreenPageView', error)

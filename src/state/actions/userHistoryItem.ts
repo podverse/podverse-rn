@@ -6,7 +6,7 @@ import { checkIfShouldUseServerData } from '../../services/auth'
 import {
   addOrUpdateHistoryItem,
   clearHistoryItems as clearHistoryItemsService,
-  defaultHistoryItemsIndex,
+  getDefaultHistoryItemsIndex,
   filterItemFromHistoryItems,
   filterItemFromHistoryItemsIndex,
   generateHistoryItemsIndex,
@@ -72,7 +72,7 @@ export const getHistoryItems = async (page: number) => {
 export const updateHistoryItemsIndex = async () => {
   const globalState = getGlobal()
   const useServerData = await checkIfShouldUseServerData()
-  let historyItemsIndex = defaultHistoryItemsIndex
+  let historyItemsIndex = getDefaultHistoryItemsIndex()
   if (useServerData) {
     historyItemsIndex = await getHistoryItemsIndex()
   } else {
@@ -166,7 +166,7 @@ export const toggleMarkAsPlayed = async (item: NowPlayingItem, shouldMarkAsPlaye
 
     const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
     if (autoDeleteEpisodeOnEnd && shouldMarkAsPlayed) {
-      downloadedEpisodeMarkForDeletion(item.episodeId)
+      downloadedEpisodeMarkForDeletion(item)
     }
 
     await addOrUpdateHistoryItem(

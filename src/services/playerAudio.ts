@@ -169,13 +169,9 @@ export const audioLoadNowPlayingItem = async (
   // in audioSyncPlayerWithQueue.
   secondaryQueuePlaylistId?: string
 ) => {
-  /*
-    Call .stop() instead of .pause() to avoid a race-condition in the Event.PlaybackState listener
-    with the playerUpdateUserPlaybackPosition call.
-    If we call .pause here, then playerUpdateUserPlaybackPosition gets invoked in multiple
-    places, leading to the incorrect nowPlayingItem info saved to history (such as an incorrect duration).
-  */
-  await PVAudioPlayer.stop()
+  // Don't call stop, as it causes the lastPosition in the PlaybackActiveTrackChanged
+  // to be set to 0 no matter what!
+  // await PVAudioPlayer.stop()
 
   const [historyItemsIndex] = await Promise.all([getHistoryItemsIndexLocally()])
 
@@ -308,14 +304,14 @@ const audioSyncPlayerWithQueue = async () => {
             const secondaryQueueData = await getSecondaryQueueEpisodesForPodcastId(episodeId, podcastId)
             const { previousEpisodes, nextEpisodes, inheritedPodcast } = secondaryQueueData
 
-            const sortedPreviousEpisodes = !isMusic && autoPlayEpisodesFromPodcast === 'newer'
+            const sortedPreviousEpisodes = !isMusic && autoPlayEpisodesFromPodcast === 'older'
               ? nextEpisodes?.reverse()
               : previousEpisodes
 
-            const sortedNextEpisodes = !isMusic && autoPlayEpisodesFromPodcast === 'newer'
+            const sortedNextEpisodes = !isMusic && autoPlayEpisodesFromPodcast === 'older'
               ? previousEpisodes?.reverse()
               : nextEpisodes
-    
+
             previousNowPlayingItems = sortedPreviousEpisodes.map((previousEpisode: Episode) => {
               const userPlaybackPosition = inheritedPodcast?.medium === PV.Medium.music
                   ? 0
@@ -373,7 +369,9 @@ const audioSyncPlayerWithQueue = async () => {
         }
 
         const previousInsertBeforeIndex = 0
-        await PVAudioPlayer.add(previousSecondaryQueueTracks, previousInsertBeforeIndex)
+
+        const reversedPreviousSecondaryQueueTracks = previousSecondaryQueueTracks?.reverse()
+        await PVAudioPlayer.add(reversedPreviousSecondaryQueueTracks, previousInsertBeforeIndex)
 
         if (endOfQueueBugWorkaround) {
           const removeBugWorkaroundIndex = await TrackPlayer.getActiveTrackIndex()
@@ -664,16 +662,7 @@ export const audioPlayPreviousFromQueue = async () => {
 }
 
 export const audioPlayNextFromQueue = async () => {
-  const queueItems = await PVAudioPlayer.getQueue()
-  if (queueItems && queueItems.length > 1) {
-    await PVAudioPlayer.skipToNext()
-    const currentId = await audioGetCurrentLoadedTrackId()
-    const item = await getEnrichedNowPlayingItemFromLocalStorage(currentId)
-    if (item) {
-      await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0)
-      return item
-    }
-  }
+  await PVAudioPlayer.skipToNext()
 }
 
 export const audioAddNowPlayingItemNextInQueue = async (
@@ -729,6 +718,13 @@ export const audioGetTrackPosition = () => {
 export const audioReset = async () => {
   await audioRemovePreviousTracks()
   await audioRemoveUpcomingTracks()
+
+  /*
+    Be very careful with when you call .stop() or .reset(), as these can
+    trigger the PlaybackActiveTrackChanged event, and also can cause the
+    x.lastPosition value to always be 0, which can break our "end of episode"
+    reached "automatically mark as played" handling.
+  */
   await audioHandleStop()
   await PVAudioPlayer.reset()
 }

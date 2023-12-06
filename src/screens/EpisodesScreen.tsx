@@ -384,10 +384,13 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
 
   _renderEpisodeItem = ({ item, index }) => {
     const { navigation } = this.props
+    const { queryFrom } = this.state
     const { completed, mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
 
     const { hideCompleted } = this.global
-    const shouldHideCompleted = hideCompleted && completed
+    const shouldHideCompleted =
+      (hideCompleted && queryFrom === PV.Filters._episodesKey && completed) ||
+      (!hideCompleted && queryFrom === PV.Filters._hideCompletedKey && completed)
 
     if (shouldHideCompleted) {
       return <></>
@@ -626,7 +629,11 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
       const { queryPage } = queryOptions
 
-      const isSubscribedSelected = filterKey === PV.Filters._subscribedKey || queryFrom === PV.Filters._subscribedKey
+      const isSubscribedSelected = 
+        filterKey === PV.Filters._subscribedKey
+        || queryFrom === PV.Filters._subscribedKey
+        || filterKey === PV.Filters._hideCompletedKey
+        || queryFrom === PV.Filters._hideCompletedKey
       const isDownloadedSelected = filterKey === PV.Filters._downloadedKey || queryFrom === PV.Filters._downloadedKey
       const isAllPodcastsSelected = filterKey === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._allPodcastsKey
 
@@ -641,6 +648,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
             page: queryPage,
             podcastId,
             ...(searchTitle ? { searchTitle } : {}),
+            ...(!searchTitle ? { podcastsOnly: true } : {}),
             subscribedOnly: true,
             includePodcast: true
           })
@@ -680,6 +688,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
           ...(queryFrom === PV.Filters._subscribedKey ? { podcastId } : {}),
           sort: filterKey,
           ...(searchTitle ? { searchTitle } : {}),
+          ...(!searchTitle ? { podcastsOnly: true } : {}),
           subscribedOnly: queryFrom === PV.Filters._subscribedKey,
           includePodcast: true
         })
@@ -732,6 +741,7 @@ export class EpisodesScreen extends HistoryIndexListenerScreen<Props, State> {
       sort: cleanedSort,
       page,
       ...(searchTitle ? { searchTitle } : {}),
+      ...(!searchTitle ? { podcastsOnly: true } : {}),
       includePodcast: true
     })
 

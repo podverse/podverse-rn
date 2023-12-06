@@ -1,6 +1,7 @@
 import { getMediaRefStartPosition, NowPlayingItem } from 'podverse-shared'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { getGlobal, setGlobal } from 'reactn'
+import { translate } from '../../lib/i18n'
 import { PV } from '../../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../../services/episode'
 import { playerGetPosition, playerGetDuration, playerUpdateCurrentTrack } from '../../services/player'
@@ -68,7 +69,8 @@ export const loadChaptersForNowPlayingItem = async (item?: NowPlayingItem) => {
 }
 
 const isNewChapter = (currentChapter: any, newCurrentChapter: any) => (
-  (currentChapter && newCurrentChapter && currentChapter.id !== newCurrentChapter.id)
+  !newCurrentChapter
+  || (currentChapter && newCurrentChapter && currentChapter.id !== newCurrentChapter.id)
   || (!currentChapter && newCurrentChapter)
 )
 
@@ -124,7 +126,7 @@ const enrichChapterDataForPlayer = (chapters: any[]) => {
 
 export const setChapterOnGlobalState = (newCurrentChapter: any, haptic?: boolean) => {
   const globalState = getGlobal()
-  const { currentChapter } = globalState
+  const { currentChapter, player } = globalState
 
   if (isNewChapter(currentChapter, newCurrentChapter)) {
     if (haptic) {
@@ -132,9 +134,16 @@ export const setChapterOnGlobalState = (newCurrentChapter: any, haptic?: boolean
     }
 
     const tocOnly = true
-    const newCurrentTocChapter = getChapterForTime(newCurrentChapter.startTime, tocOnly)
+    const newCurrentTocChapter = getChapterForTime(newCurrentChapter?.startTime, tocOnly)
 
-    playerUpdateCurrentTrack(newCurrentChapter.title, newCurrentChapter.imageUrl)
+    if (!newCurrentChapter) {
+      const podcastTitle = player?.nowPlayingItem?.podcastTitle || translate('Untitled Podcast')
+      const episodeTitle = player?.nowPlayingItem?.episodeTitle || translate('Untitled Episode')
+      playerUpdateCurrentTrack(podcastTitle, episodeTitle)
+    } else {
+      playerUpdateCurrentTrack(newCurrentChapter.title, newCurrentChapter.imageUrl)
+    }
+
     setGlobal({
       currentChapter: newCurrentChapter,
       currentTocChapter: newCurrentTocChapter
@@ -191,7 +200,7 @@ export const getChapterPrevious = () => {
   }
 }
 
-export const getChapterNext = () => {
+export const getTocChapterNext = async () => {
   const globalState = getGlobal()
   const { currentTocChapter, currentTocChapters } = globalState
   if (currentTocChapter && currentTocChapters?.length && currentTocChapters.length > 1) {
@@ -199,7 +208,33 @@ export const getChapterNext = () => {
     const nextIndex = currentIndex + 1
     const nextChapter = currentTocChapters[nextIndex]
     return nextChapter
+  } else if (!currentTocChapter && currentTocChapters?.length && currentTocChapters.length > 1) {
+    return getNextTocChapterByTime()
   }
+}
+
+const getNextTocChapterByTime = async () => {
+  const globalState = getGlobal()
+  const { currentChapters, player } = globalState
+  const { backupDuration } = player
+  const position = await playerGetPosition()
+
+  let nextChapter = null
+  for (let i = 0; i < currentChapters.length; i++) {
+    const chapter = currentChapters[i]
+    const isInTimeRange = checkIfChapterInTimeRange(chapter, position, backupDuration)
+    if (isInTimeRange) {
+      nextChapter = currentChapters[i + 1] || null
+    }
+  }
+
+  // If no next chapter is found, assume there was no first chapter,
+  // and skip to the first chapter
+  if (!nextChapter) {
+    nextChapter = currentChapters[0] || null
+  }
+
+  return nextChapter
 }
 
 export const getChapterForTime = (playerPosition: number, tocOnly: boolean) => {

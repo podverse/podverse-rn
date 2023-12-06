@@ -598,6 +598,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       sort,
       page,
       ...(searchTitle ? { searchTitle } : {}),
+      ...(!searchTitle ? { podcastsOnly: true } : {}),
       includePodcast: true
     })
 
@@ -611,6 +612,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       sort,
       page,
       ...(searchTitle ? { searchTitle } : {}),
+      ...(!searchTitle ? { podcastsOnly: true } : {}),
       includePodcast: true
     })
     return results

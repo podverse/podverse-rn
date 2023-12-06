@@ -10,9 +10,9 @@ const getPodcastsTypeSortFilter = (screenName: string, selectedFilterItemKey: st
     newSelectedSortItemKey =
       selectedSortItemKey === PV.Filters._mostRecentKey ? PV.Filters._mostRecentKey : PV.Filters._alphabeticalKey
   } else {
-    newSelectedSortItemKey = !PV.FilterOptions.screenFilters[screenName].sort.includes(newSelectedSortItemKey)
+    newSelectedSortItemKey = !PV.FilterOptions.screenFilters[screenName].sort.includes(selectedSortItemKey)
       ? PV.Filters._topPastWeek
-      : newSelectedSortItemKey
+      : selectedSortItemKey
   }
   return newSelectedSortItemKey
 }
@@ -123,7 +123,9 @@ export const getDefaultSortForFilter = (options: any) => {
     case PV.RouteNames.ClipsScreen:
       break
     case PV.RouteNames.EpisodesScreen:
-      if (selectedFilterItemKey === PV.Filters._subscribedKey) {
+      if (selectedFilterItemKey === PV.Filters._hideCompletedKey) {
+        newSelectedSortItemKey = PV.Filters._mostRecentKey
+      } else if (selectedFilterItemKey === PV.Filters._subscribedKey) {
         newSelectedSortItemKey = newSelectedSortItemKey
       } else if (selectedFilterItemKey === PV.Filters._downloadedKey) {
         newSelectedSortItemKey =
@@ -337,7 +339,8 @@ export const generateSections = (options: any) => {
 
       break
     case PV.RouteNames.EpisodesScreen:
-      if (selectedFilterItemKey === PV.Filters._subscribedKey) {
+      if (selectedFilterItemKey === PV.Filters._subscribedKey
+        || selectedFilterItemKey === PV.Filters._hideCompletedKey) {
         sortItems = sortItems.filter(
           (item) =>
             PV.FilterOptions.screenFilters.EpisodesScreen.sort.includes(item.value) &&
