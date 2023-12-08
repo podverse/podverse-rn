@@ -575,7 +575,7 @@ export const sendBoost = async (
 const sendValueTransactions = async (
   valueTransactions: ValueTransaction[],
   providerKey: 'alby',
-  boostagramMessage?: boolean
+  boostagramMessage?: string
 ) => {
   if (valueTransactions.length === 0) return
   let response: AlbyMultiKeySendResponse | null = null
