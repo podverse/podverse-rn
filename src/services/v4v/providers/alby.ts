@@ -370,20 +370,17 @@ export type AlbyMultiKeySendResponse = {
 
 // https://guides.getalby.com/alby-wallet-api/reference/api-reference/payments#multi-keysend-payment
 export const v4vAlbySendKeysendPayments = async (
-  transactions: ValueTransaction[], includeMessage?: boolean) => {
+  transactions: ValueTransaction[], boostagramMessage?: string) => {
   
   let finalTransactions = transactions
-  if (includeMessage) {
-    const { boostagramMessage } = getGlobal().session.v4v
-    if (boostagramMessage) {
-      finalTransactions = []
-      for (const transaction of transactions) {
-        transaction.satoshiStreamStats[7629169].message = boostagramMessage
-        finalTransactions.push(transaction)
-      }
+  if (boostagramMessage) {
+    finalTransactions = []
+    for (const transaction of transactions) {
+      transaction.satoshiStreamStats[7629169].message = boostagramMessage
+      finalTransactions.push(transaction)
     }
   }
-  
+
   const keysends: AlbyKeySend[] = []
   const customKeyValueAddresses: KeysendCustomKeyValueAddress[] = []
   
@@ -433,7 +430,6 @@ export const v4vAlbySendKeysendPayments = async (
     }
     throw error
   }
-
 }
 
 /* Fiat conversion */

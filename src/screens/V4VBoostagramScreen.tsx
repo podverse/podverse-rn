@@ -198,8 +198,8 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
       (async () => {
         const { playerPositionState } = this.state
         const boostagramItem = this._convertToBoostagramItem()
-        const includeMessage = true
-        await sendBoost(boostagramItem, playerPositionState, includeMessage)
+        const { boostagramMessage } = this.global.session.v4v
+        await sendBoost(boostagramItem, playerPositionState, boostagramMessage)
         this.setState(
           {
             boostIsSending: false,
