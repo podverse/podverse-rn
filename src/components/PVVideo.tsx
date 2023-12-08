@@ -110,6 +110,7 @@ export class PVVideo extends React.PureComponent<Props, State> {
     // nowPlayingItem will be undefined when loading from a deep link
     nowPlayingItem = nowPlayingItem || {}
     const uri = nowPlayingItem.episodeMediaUrl
+    // TODO: use getSecureUrl to get video mediaUrl
     let finalUri = encodeSpacesInString(convertUrlToSecureHTTPS(uri || '').trim())
 
     const { Authorization, filePath, fileType, isDownloadedFile } = await videoGetDownloadedFileInfo(nowPlayingItem)

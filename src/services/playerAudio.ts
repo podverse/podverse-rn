@@ -22,6 +22,7 @@ import { addOrUpdateHistoryItem, getHistoryItemIndexInfoForEpisode,
 import { getEnrichedNowPlayingItemFromLocalStorage } from './userNowPlayingItem'
 import { getSecondaryQueueEpisodesForPlaylist, getSecondaryQueueEpisodesForPodcastId } from './secondaryQueue'
 import { audioUpdateTrackPlayerCapabilities } from './playerAudioSetup'
+import { getSecureUrl } from './tools'
 
 declare module 'react-native-track-player' {
   export function getCurrentLoadedTrack(): Promise<string>
@@ -423,7 +424,6 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
     addByRSSPodcastFeedUrl,
     clipId,
     episodeId,
-    episodeMediaUrl = '',
     episodeTitle = 'Untitled Episode',
     liveItem,
     podcastAuthors,
@@ -434,6 +434,8 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
     podcastShrunkImageUrl,
     podcastTitle = 'Untitled Podcast'
   } = item
+
+  let { episodeMediaUrl = '' } = item
 
   const { isPrimaryQueueItem, secondaryQueuePlaylistId } = options
 
@@ -496,6 +498,7 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
       }
     } else {
       const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
+      episodeMediaUrl = await getSecureUrl(episodeMediaUrl)
 
       track = {
         id,
