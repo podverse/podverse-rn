@@ -26,11 +26,6 @@ import { downloadImageFile } from './storage'
 
 const _fileName = 'src/lib/downloader.ts'
 
-const forceSecureRedirectDomains = {
-  'feeds.gty.org': true,
-  'chtbl.com': true
-}
-
 export const BackgroundDownloader = () => {
   const userAgent = getAppUserAgent()
   RNBackgroundDownloader.setHeaders({
@@ -233,27 +228,7 @@ export const downloadEpisode = async (
   const origDestination = `${folderPath}/${episode.id}${ext}`
   const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
 
-  let downloadUrl = episode.mediaUrl
-  const hostname = url?.parse(downloadUrl)?.hostname
-  if ((hostname && forceSecureRedirectDomains[hostname]) || downloadUrl.startsWith('http://')) {
-    try {
-      const secureUrlInfo = await getSecureUrl(episode.mediaUrl)
-      if (secureUrlInfo?.secureUrl) {
-        downloadUrl = secureUrlInfo.secureUrl
-      }
-    } catch (error) {
-      errorLogger(_fileName, 'Secure url not found for http mediaUrl. Info: ', error)
-    }
-  } else if (downloadUrl.indexOf('http://') >= 0) {
-    /*
-      Find and replace ALL "http://" matches because sometimes
-      episodes use a tracker prefix url, then redirects to
-      the actual URL passed in as a parameter
-      For example: from Andrew Schulz's Flagrant with Akaash Singh
-      https://chrt.fm/track/9DD8D/pdst.fm/e/http://feeds.soundcloud.com/stream/1351569700-flagrantpodcast-mr-beast.mp3
-    */
-    downloadUrl = downloadUrl.replaceAll('http://', 'https://')
-  }
+  const downloadUrl = await getSecureUrl(episode.mediaUrl);
 
   (async () => {
     // Download and store the image files if available

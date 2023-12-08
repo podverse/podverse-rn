@@ -423,7 +423,7 @@ const processSendValueTransactionError = (
 const processSendValueTransactions = async (
   valueTransactions: ValueTransaction[],
   type: 'boost' | 'stream',
-  includeMessage?: boolean
+  boostagramMessage?: string
 ) => {
   let totalAmountPaid = 0
   
@@ -461,7 +461,7 @@ const processSendValueTransactions = async (
       const response = await sendValueTransactions(
         finalValueTransactions,
         'alby',
-        includeMessage
+        boostagramMessage
       )
   
       const keysendsData = response?.keysends
@@ -508,7 +508,7 @@ const processSendValueTransactions = async (
 export const sendBoost = async (
   item: NowPlayingItem | BoostagramItem,
   playerPosition: number,
-  includeMessage?: boolean
+  boostagramMessage?: string
 ) => {
   const action = 'boost'
   const valueTags =
@@ -560,8 +560,8 @@ export const sendBoost = async (
  (async () => {
     const combinedNonFeeValueTransactions = nonFeeValueTransactions.concat(parentNonFeeValueTransactions)
     const combinedFeeValueTransactions = feeValueTransactions.concat(parentFeeValueTransactions)
-    await processSendValueTransactions(combinedNonFeeValueTransactions, action, includeMessage)
-    await processSendValueTransactions(combinedFeeValueTransactions, action, includeMessage)
+    await processSendValueTransactions(combinedNonFeeValueTransactions, action, boostagramMessage)
+    await processSendValueTransactions(combinedFeeValueTransactions, action, boostagramMessage)
   })()
   
   // Run refresh wallet data in the background after transactions complete.
@@ -575,7 +575,7 @@ export const sendBoost = async (
 const sendValueTransactions = async (
   valueTransactions: ValueTransaction[],
   providerKey: 'alby',
-  includeMessage?: boolean
+  boostagramMessage?: string
 ) => {
   if (valueTransactions.length === 0) return
   let response: AlbyMultiKeySendResponse | null = null
@@ -593,7 +593,7 @@ const sendValueTransactions = async (
       const { v4vAlbySendKeysendPayments } = require('./providers/alby')
       response = await v4vAlbySendKeysendPayments(
         filteredTransactions,
-        includeMessage
+        boostagramMessage
       )
     }
   }
@@ -610,8 +610,7 @@ export const processValueTransactionQueue = async () => {
     (transaction: ValueTransaction) => transaction.providerKey === 'alby'
   )
 
-  const includeMessage = false
-  const totalAmountPaid = await processSendValueTransactions(albyValueTransactionsToProcess, action, includeMessage)
+  const totalAmountPaid = await processSendValueTransactions(albyValueTransactionsToProcess, action)
 
   PVEventEmitter.emit(PV.Events.V4V_VALUE_SENT)
 
