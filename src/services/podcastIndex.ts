@@ -61,13 +61,19 @@ export const getEpisodeByGuidFromPodcastIndex = async (podcastIndexId: string, e
   if (episodeGuid.indexOf('http') === 0) {
     episodeGuid = encodeURIComponent(episodeGuid)
   }
-  const response = await request({
-    endpoint: `/podcast-index/episode/byguid`,
-    query: {
-      podcastIndexId,
-      episodeGuid
-    }
-  })
 
-  return response && response.data
+  try {
+    const response = await request({
+      endpoint: `/podcast-index/episode/byguid`,
+      query: {
+        podcastIndexId,
+        episodeGuid
+      }
+    })
+  
+    return response && response.data
+  } catch (error) {
+    // assume a 404, and return an empty object so the result is ignored by subsequent code
+    return {}
+  }
 }

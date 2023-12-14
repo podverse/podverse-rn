@@ -1,7 +1,6 @@
 import { ValueTransaction } from 'podverse-shared'
 import qs from 'qs'
 import * as RNKeychain from 'react-native-keychain'
-import { getGlobal } from 'reactn'
 import { Alert } from 'react-native'
 import { v4vGetSatoshisInFormattedFiatValue, _v4v_env_ } from '../v4v'
 import { pkceGenerateRandomString, pkceGenerateCodeChallenge } from '../../pkce'
