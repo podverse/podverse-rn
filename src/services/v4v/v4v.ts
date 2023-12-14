@@ -448,7 +448,7 @@ const processSendValueTransactions = async (
               ...valueTransaction.satoshiStreamStats,
               7629169: {
                 ...valueTransaction.satoshiStreamStats[7629169],
-                itemID: podcastIndexEpisodeId
+                ...(podcastIndexEpisodeId ? { itemID: podcastIndexEpisodeId } : {})
               }
             }
           }
@@ -457,7 +457,6 @@ const processSendValueTransactions = async (
           console.log('getEpisodeByGuidFromPodcastIndex error', error)
         }
       }
-
       const response = await sendValueTransactions(
         finalValueTransactions,
         'alby',
