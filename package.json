@@ -9,12 +9,12 @@
     "Kyle Downey"
   ],
   "scripts": {
-    "dev": "NODE_OPTIONS=--openssl-legacy-provider react-native start",
-    "dev:android": "NODE_OPTIONS=--openssl-legacy-provider react-native run-android",
-    "dev:ios": "NODE_OPTIONS=--openssl-legacy-provider react-native run-ios --simulator 'iPhone 15 Pro Max'",
-    "dev:ios:iPhoneSE": "NODE_OPTIONS=--openssl-legacy-provider react-native run-ios --simulator 'iPhone SE (2nd generation)'",
-    "dev:ios:iPod": "NODE_OPTIONS=--openssl-legacy-provider react-native run-ios --simulator 'iPod touch (7th generation)'",
-    "dev:ios:device": "NODE_OPTIONS=--openssl-legacy-provider react-native run-ios --device",
+    "dev": "react-native start",
+    "dev:android": "react-native run-android",
+    "dev:ios": "react-native run-ios --simulator 'iPhone 15 Pro Max'",
+    "dev:ios:iPhoneSE": "react-native run-ios --simulator 'iPhone SE (2nd generation)'",
+    "dev:ios:iPod": "react-native run-ios --simulator 'iPod touch (7th generation)'",
+    "dev:ios:device": "react-native run-ios --device",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "eslint --fix 'src/**/*.{ts,tsx}'",
     "format": "prettier --write src/**/*.ts* && yarn lint",
