@@ -111,7 +111,7 @@
     "react-native-track-player": "github:podverse/lovegaoshi-react-native-track-player#dev-android-auto",
     "react-native-tracking-transparency": "0.1.1",
     "react-native-vector-icons": "8.1.0",
-    "react-native-video": "6.0.0-beta.0",
+    "react-native-video": "6.0.0-beta.3",
     "react-native-video-controls": "2.8.1",
     "react-native-webview": "11.26.0",
     "react-native-xml2js": "1.0.3",
