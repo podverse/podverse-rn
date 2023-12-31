@@ -9345,10 +9345,10 @@ react-native-video-controls@2.8.1:
   dependencies:
     lodash "^4.16.4"
 
-react-native-video@6.0.0-beta.3:
-  version "6.0.0-beta.3"
-  resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-6.0.0-beta.3.tgz#acf7fca5feefb1ac93a6cac3dbfe0e0476714369"
-  integrity sha512-WCGhl9drOr670En1taM7YF0r8obSjirnBabBaz+c0n2ZWd6EJUezI2+OtRH+/EQdtpI6hR52nTMIl42cQITEOw==
+react-native-video@6.0.0-beta.0:
+  version "6.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-6.0.0-beta.0.tgz#c6c3c21f3d46e66dfc942f61dc65dc89ca6b5ff5"
+  integrity sha512-PZrwrbVKvIyDdRImV76T75/Cmilx5TC1H78D5/rPOsiE/LKabWWXUDNZeNx8hdwcmdPxtGHK77BdLq8S1qYAmQ==
 
 react-native-webview@11.26.0:
   version "11.26.0"
