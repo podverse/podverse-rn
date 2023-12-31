@@ -380,7 +380,9 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
     const pvVideo = finalUri ? (
       <Video
+        allowsExternalPlayback
         disableBack={!isFullscreen || isMiniPlayer}
+        disableDisconnectError
         disablePlayPause={!isFullscreen || isMiniPlayer}
         disableSeekbar={!isFullscreen || isMiniPlayer}
         // disableSettings={isFullscreen || isMiniPlayer || !hasExtraResolutions}
