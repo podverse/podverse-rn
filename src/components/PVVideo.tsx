@@ -92,7 +92,9 @@ export class PVVideo extends React.PureComponent<Props, State> {
       this._handleInitializeState()
     }
 
-    this.willFocusListener = navigation.addListener('willFocus', this._handleNewEpisodeItemShouldLoad)
+    if (isMiniPlayer) {
+      this.willFocusListener = navigation.addListener('willFocus', this._handleNewEpisodeItemShouldLoad)
+    }
   }
 
   componentWillUnmount() {
@@ -378,7 +380,9 @@ export class PVVideo extends React.PureComponent<Props, State> {
 
     const pvVideo = finalUri ? (
       <Video
+        allowsExternalPlayback
         disableBack={!isFullscreen || isMiniPlayer}
+        disableDisconnectError
         disablePlayPause={!isFullscreen || isMiniPlayer}
         disableSeekbar={!isFullscreen || isMiniPlayer}
         // disableSettings={isFullscreen || isMiniPlayer || !hasExtraResolutions}

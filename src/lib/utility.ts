@@ -218,3 +218,5 @@ export const GlobalPropertyCallbackFunction = (propertyKey: string, callback: (n
     }
   }
 }
+
+export const promiseDelay = (timeout: number) => new Promise(resolve => setTimeout(resolve, timeout))

@@ -1,5 +1,5 @@
 {
-    "_translatorsField": "Pazen<mailto:pazengaz@porcod.io>",
+    "_translatorsField": "Lemon Blue https://t.me/cock_lemon",
     "_translatorsFieldExample": "Jane Doe<https://jane.doe.homepage>,Joe Bloggs,Juan Perez<https://some.socialmedia/juan>",
     "18 per year after that": "После 18$ в год",
     "A-Z": "А-Я",
@@ -405,7 +405,7 @@
     "Jump forwards seconds": "Пропуск секунд при перемотки вперёд",
     "Jump backwards seconds": "Пропуск секунд при перемотки назад",
     "Podverse External Storage Permission": "Доступ к внешней карте памяти",
-    "Next": "Следующий",
+    "Next": "Продолжить",
     "Last": "Предыдущий",
     "Include username and password": "Войти с помощью логина и пароля",
     "paste RSS feed link here": "Вставьте RSS-ссылку…",
@@ -481,5 +481,18 @@
     "Verify email title": "Почта успешно подтверждена",
     "You should receive an email shortly The email may go to your Spam folder": "Вскоре вы должны получить письмо с ссылкой для подтверждения почты.\nЕсли письмо не пришло проверьте папку спам.",
     "Verify email succeeded": "Теперь вы можете войти в свой аккаунт.",
-    "Report a content issue": "Сообщить о проблеме с контентом"
+    "Report a content issue": "Сообщить о проблеме с контентом",
+    "Available": "Доступно",
+    "App killed continue playback label": "Держать приложение открытым, если оно не закрыто вручную",
+    "Debugging": "Отладка",
+    "Music - Album": "Альбом",
+    "Purchase has been cancelled If you are seeing this in error please contact support": "Покупка отменена. Пожалуйста, свяжитесь со службой поддержки, если это ошибка.",
+    "Music - Albums": "Альбомы",
+    "Podcast supports value-for-value donations": "Подключитесь к кошельку в приложении, чтобы поддержать этих создателей.",
+    "List View": "Вид списком",
+    "V4V Providers connected explanation": "Подключенные кошельки.",
+    "Music - Album not found": "Не удалось найти альбом",
+    "Music": "Музыка",
+    "App killed continue playback subtext": "Если вы обнаружили, что приложение слишком быстро закрывается в фоновом режиме или приостанавливается при возвращении на передний план, вы можете включить эту настройку, чтобы приложение оставалось открытым в фоновом режиме. Это может увеличить расход батареи приложением.",
+    "Grid View": "Вид сетки"
 }

@@ -251,7 +251,7 @@ export class V4VBoostagramScreen extends React.Component<Props, State> {
 
     const podcastTitle = boostagramItem?.podcastTitle?.trim() || translate('Untitled Podcast')
     const episodeTitle = boostagramItem?.episodeTitle?.trim()
-    const pubDate = readableDate(boostagramItem.episodePubDate)
+    const pubDate = readableDate(boostagramItem?.liveItem?.start || boostagramItem.episodePubDate)
     const headerAccessibilityLabel = `${podcastTitle}, ${episodeTitle}, ${pubDate}`
 
     const boostagramMessageCharCount = boostagramMessage?.length || 0
