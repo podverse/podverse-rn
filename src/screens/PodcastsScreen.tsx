@@ -64,7 +64,7 @@ import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRef } from '../services/mediaRef'
 import { getAddByRSSPodcastsLocally, parseAllAddByRSSPodcasts } from '../services/parser'
-import { playerUpdateUserPlaybackPosition } from '../services/player'
+import { playerCheckActiveType, playerUpdateUserPlaybackPosition } from '../services/player'
 import { audioUpdateTrackPlayerCapabilities } from '../services/playerAudioSetup'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { setAutoPlayEpisodesFromPodcast } from '../services/queue'
@@ -515,7 +515,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
         // on the lock screen.
         // Source: https://github.com/react-native-kit/react-native-track-player/issues/921#issuecomment-686806847
         if (Platform.OS === 'ios') {
-          await audioUpdateTrackPlayerCapabilities()
+          const playerActiveType = await playerCheckActiveType()
+          if (playerActiveType === PV.Player.playerTypes.isAudio) {
+            await audioUpdateTrackPlayerCapabilities()
+          }
         }
       }
 

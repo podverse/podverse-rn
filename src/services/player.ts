@@ -3,6 +3,7 @@ import { checkIfVideoFileOrVideoLiveType, NowPlayingItem } from 'podverse-shared
 import { Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
+import { promiseDelay } from '../lib/utility'
 import { PV } from '../resources'
 import {
   videoCheckIfStateIsBuffering,
@@ -218,10 +219,16 @@ export const playerLoadNowPlayingItem = async (
       secondaryQueuePlaylistId, shouldPlay } = options
 
     const skipSetNowPlaying = true
-    await playerUpdateUserPlaybackPosition(skipSetNowPlaying)
+    playerUpdateUserPlaybackPosition(skipSetNowPlaying)
+    /*
+      wait a beat for playerUpdateUserPlaybackPosition to
+      grab the last now playing position before continuing
+    */
+    await promiseDelay(200)
 
     if (!checkIfVideoFileOrVideoLiveType(itemToSetNextInQueue?.episodeMediaType)) {
-      await audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
+      audioAddNowPlayingItemNextInQueue(item, itemToSetNextInQueue)
+      await promiseDelay(200)
     }
 
     if (checkIfVideoFileOrVideoLiveType(item?.episodeMediaType)) {
