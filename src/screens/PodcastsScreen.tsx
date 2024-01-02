@@ -256,6 +256,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     PVEventEmitter.on(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED, this._handleTrackingTermsAcknowledged)
     PVEventEmitter.on(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
     PVEventEmitter.on(PV.Events.USER_LOGGED_IN, this._handleUserLoggedIn)
+    PVEventEmitter.on(PV.Events.RELOAD_SUBSCRIPTIONS, this._handleReloadSubscriptions)
 
     updateScreenReaderEnabledState()
 
@@ -314,6 +315,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     PVEventEmitter.removeListener(PV.Events.NAV_TO_MEMBERSHIP_SCREEN, this._handleNavigateToMembershipScreen)
     PVEventEmitter.removeListener(PV.Events.SERVER_MAINTENANCE_MODE, this._handleMaintenanceMode)
     PVEventEmitter.removeListener(PV.Events.USER_LOGGED_IN, this._handleUserLoggedIn)
+    PVEventEmitter.removeListener(PV.Events.RELOAD_SUBSCRIPTIONS, this._handleReloadSubscriptions)
     // this._unsubscribe?.()
 
     this.pvNativeEventSubscriptions.forEach((subscription) => subscription.remove())
@@ -321,6 +323,20 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _handleUserLoggedIn = () => {
     this.handleSelectFilterItem(PV.Filters._subscribedKey)
+  }
+
+  _handleReloadSubscriptions = () => {
+    const preventIsLoading = false
+    const preventAutoDownloading = false
+    const keepSearchTitle = false
+    const preventParseCustomRSSFeeds = true
+    this.handleSelectFilterItem(
+      PV.Filters._subscribedKey,
+      preventIsLoading,
+      preventAutoDownloading,
+      keepSearchTitle,
+      preventParseCustomRSSFeeds
+    )
   }
 
   handleNoficationOpened = async (remoteMessage: any, goBackToRootScreen = false) => {
@@ -1135,11 +1151,20 @@ export class PodcastsScreen extends React.Component<Props, State> {
           // by appending an index to the rowMap key
           // const row = rowMap[selectedId] || rowMap[addByRSSPodcastFeedUrl]
           // row.closeRow()
+          this._removeFlatListItem(selectedId)
         } catch (error) {
           errorLogger(_fileName, '_handleHiddenItemPress', error)
         }
         this.setState({ isUnsubscribing: false })
       })()
+    })
+  }
+
+  _removeFlatListItem = (podcastId: string) => {
+    const flatListData = this.state.flatListData?.filter((podcast: Podcast) => podcast.id !== podcastId)
+    this.setState({
+      flatListData,
+      flatListDataTotalCount: flatListData.length
     })
   }
 
