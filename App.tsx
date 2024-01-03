@@ -16,7 +16,8 @@ import {
   ImageFullView,
   BoostDropdownBanner,
   LoadingInterstitialView,
-  NotificationBanner
+  NotificationBanner,
+  MaintenanceScheduledOverlay
 } from './src/components'
 import { checkIfFDroidAppVersion, pvIsTablet } from './src/lib/deviceDetection'
 import {
@@ -34,7 +35,8 @@ import { downloadCategoriesList } from './src/services/category'
 import PVEventEmitter from './src/services/eventEmitter'
 import { playerHandlePauseWithUpdate } from './src/services/player'
 import { PlayerAudioSetupService } from './src/services/playerAudioSetup'
-import { isOnMinimumAllowedVersion } from './src/services/versioning'
+import { getLastMaintenanceScheduledStartTime, getMetaAppInfo,
+  setLastMaintenanceScheduledStartTime } from './src/services/meta'
 import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import { settingsRunEveryStartup } from './src/state/actions/settings'
 import initialState from './src/state/initialState'
@@ -55,12 +57,17 @@ type Props = any
 type State = {
   appReady: boolean
   minVersionMismatch: boolean
+  maintenanceScheduled?: {
+    endTime: Date
+    startTime: Date
+  } | null
 }
 
 setGlobal(initialState)
 
 let ignoreHandleNetworkChange = true
 let carplayEventsInitialized = false
+let maintenanceScheduledStartTime: string = ''
 
 class App extends Component<Props, State> {
   unsubscribeNetListener: NetInfoSubscription | null
@@ -151,15 +158,16 @@ class App extends Component<Props, State> {
 
   handleNetworkChange = () => {
     ;(async () => {
-      // isInternetReachable will be false
-
-      await this.checkAppVersion()
       this.setState({ appReady: true })
+      
       // Don't continue handleNetworkChange when internet is first reachable on initial app launch
       if (ignoreHandleNetworkChange) {
         ignoreHandleNetworkChange = false
         return
       }
+
+      await this.getMetaAppInfo()
+
       const skipCannotDownloadAlert = true
       if (await hasValidDownloadingConnection(skipCannotDownloadAlert)) {
         refreshDownloads()
@@ -180,9 +188,36 @@ class App extends Component<Props, State> {
     })
   }
 
-  checkAppVersion = async () => {
-    const versionValid = await isOnMinimumAllowedVersion()
-    this.setState({ minVersionMismatch: !versionValid })
+  getMetaAppInfo = async () => {
+    const result = await getMetaAppInfo()
+    const { versionValid } = result
+    let { maintenanceScheduled } = result
+    
+    const currentUTCTime = new Date(new Date().getTime())
+    const startTime = maintenanceScheduled?.startTime ? new Date(maintenanceScheduled.startTime) : null
+    const endTime = maintenanceScheduled?.endTime ? new Date(maintenanceScheduled.endTime) : null
+    const lastStartTime = await getLastMaintenanceScheduledStartTime()
+    const hasNewStartTime = startTime && lastStartTime !== startTime?.toString()
+    
+    if (hasNewStartTime && endTime && currentUTCTime < startTime) {
+      await setLastMaintenanceScheduledStartTime(startTime)
+      maintenanceScheduled = {
+        startTime,
+        endTime
+      }
+    } else {
+      await setLastMaintenanceScheduledStartTime()
+      maintenanceScheduled = null
+    }
+
+    this.setState({
+      minVersionMismatch: !versionValid,
+      maintenanceScheduled
+    })
+  }
+
+  _handleMaintenanceScheduledConfirm = () => {
+    this.setState({ maintenanceScheduled: null })
   }
 
   _renderIntersitial = () => {
@@ -198,6 +233,8 @@ class App extends Component<Props, State> {
   }
 
   render() {
+    const { maintenanceScheduled, minVersionMismatch } = this.state
+
     // Prevent white screen flash on navigation on Android
     const wrapperStyle =
       Platform.OS === 'android'
@@ -211,8 +248,18 @@ class App extends Component<Props, State> {
             flex: 1
           }
 
-    if (this.state.minVersionMismatch) {
+    if (minVersionMismatch) {
       return <UpdateRequiredOverlay />
+    }
+
+    if (maintenanceScheduled) {
+      return (
+        <MaintenanceScheduledOverlay
+          endTime={maintenanceScheduled.endTime}
+          handleConfirmPress={this._handleMaintenanceScheduledConfirm}
+          startTime={maintenanceScheduled.startTime}
+        />
+      )
     }
 
     return this.state.appReady ? (

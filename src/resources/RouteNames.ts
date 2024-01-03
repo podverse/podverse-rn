@@ -24,6 +24,7 @@ export const RouteNames = {
   HistoryScreen: 'HistoryScreen',
   MainApp: 'MainApp',
   MakeClipScreen: 'MakeClipScreen',
+  MaintenanceScheduledScreen: 'MaintenanceScheduledScreen',
   MembershipScreen: 'MembershipScreen',
   MoreScreen: 'MoreScreen',
   MyLibraryScreen: 'MyLibraryScreen',
