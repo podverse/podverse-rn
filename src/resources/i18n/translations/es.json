@@ -554,7 +554,7 @@
     "search by podcast title": "Buscar por título de podcast",
     "seconds": "segundos",
     "shared using brandName": " — compartido usando Podverse",
-    "split": "division",
+    "split": "split",
     "start time": "tiempo de inicio",
     "subscribe to podcast": "Suscríbete al podcast",
     "subscribe to profile": "Suscríbete al perfil",
@@ -851,5 +851,7 @@
     "Your password was changed succesfully": "Ya puedes usar tu nueva contraseña",
     "Streaming": "Streaming",
     "Off": "Apagado",
-    "Error Reporting": "Notificación de errores"
+    "Error Reporting": "Notificación de errores",
+    "Time splits": "Distribución del tiempo",
+    "value_tag_info_streaming_sats_title": "Saturación de streaming"
 }
