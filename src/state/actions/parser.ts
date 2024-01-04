@@ -51,8 +51,9 @@ const addAddByRSSPodcastIfNotAlready = async (
   if (Array.isArray(alreadySubscribedAddByRSSPodcasts) && !alreadySubscribedAddByRSSPodcasts.some(
     alreadySubscribedAddByRSSPodcast =>
       alreadySubscribedAddByRSSPodcast.addByRSSPodcastFeedUrl === feedUrl)
-  ) {
-    await addAddByRSSPodcast(feedUrl, skipBadParse)
+      ) {
+    const skipSubscribedEvent = true
+    await addAddByRSSPodcast(feedUrl, skipBadParse, skipSubscribedEvent)
   }
 }
 
@@ -86,14 +87,14 @@ export const addAddByRSSPodcasts = async (urls: string[]) => {
     await parseAllAddByRSSPodcasts()
     await getSubscribedPodcasts()
     
-    PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
+    PVEventEmitter.emit(PV.Events.RELOAD_SUBSCRIPTIONS)
   } catch (error) {
     errorLogger(_fileName, 'addAddByRSSPodcasts', error)
     Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
   }
 }
 
-export const addAddByRSSPodcast = async (feedUrl: string, skipBadParse = false) => {
+export const addAddByRSSPodcast = async (feedUrl: string, skipBadParse = false, skipSubscribedEvent = false) => {
   let result = false
 
   if (!feedUrl) return result
@@ -103,7 +104,7 @@ export const addAddByRSSPodcast = async (feedUrl: string, skipBadParse = false) 
     const credentials = ''
     const throwError = true
     await handleAddOrRemoveByRSSPodcast(feedUrl, shouldAdd, credentials, throwError)
-    PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
+    if (!skipSubscribedEvent) PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
     result = true
   } catch (error) {
     if (skipBadParse) {

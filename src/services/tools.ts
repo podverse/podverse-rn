@@ -3,8 +3,7 @@ import { errorLogger } from '../lib/logger'
 import { request } from './request'
 
 const forceSecureRedirectDomains = {
-  'feeds.gty.org': true,
-  'chtbl.com': true
+  'feeds.gty.org': true
 }
 
 export const getSecureUrl = async (mediaUrl: string) => {

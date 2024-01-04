@@ -215,6 +215,8 @@ export const playerLoadNowPlayingItem = async (
       return
     }
 
+    await playerHandlePause()
+
     const { forceUpdateOrderDate, itemToSetNextInQueue, previousNowPlayingItem,
       secondaryQueuePlaylistId, shouldPlay } = options
 

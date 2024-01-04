@@ -199,8 +199,6 @@ export const audioLoadNowPlayingItem = async (
     await PVAudioPlayer.add([track])
   }
 
-  await debouncedAudioSyncPlayerWithQueue()
-  
   if (item && !item.clipId && shouldPlay) {
     if (Platform.OS === 'android') {
       PVAudioPlayer.setPlayWhenReady(true)
@@ -211,6 +209,8 @@ export const audioLoadNowPlayingItem = async (
     await audioHandleLoadClip(item, shouldPlay)
   }
 
+  await debouncedAudioSyncPlayerWithQueue()
+  
   return item
 }
 
