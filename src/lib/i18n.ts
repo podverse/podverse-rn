@@ -52,13 +52,29 @@ class Internationalizer {
     return Internationalizer.instance
   }
 
-  static translate = (key: string) => {
+  static translate = (key: string, params?: any) => {
     if (Internationalizer.instance.translationConfig[key]) {
-      return Internationalizer.instance.translationConfig[key]
+      return handleStringInterpolation(Internationalizer.instance.translationConfig[key], params)
     } else {
-      return Config.IS_DEV ? `[Missing tranlation for key: ${key}]` : translationGetters.en()[key]
+      return Config.IS_DEV ?
+        `[Missing tranlation for key: ${key}]`
+        : handleStringInterpolation(translationGetters.en()[key], params)
     }
   }
+}
+
+const handleStringInterpolation = (str: string, params?: any) => {
+  let paramKeys: string[] = []
+  try {
+    paramKeys = params ? Object.keys(params) : []
+    for (const paramKey of paramKeys) {
+      str = str.replace(`{{${paramKey}}}`, params[paramKey])
+    }
+  } catch (error) {
+    //
+  }
+
+  return str
 }
 
 export const getLanguageTag = () => {

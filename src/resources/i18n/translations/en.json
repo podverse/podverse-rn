@@ -469,6 +469,8 @@
   "Maintainers": "Maintainers",
   "Maintenance mode message": "Our servers are down for maintenance. The app will only work in offline mode until the update is complete.",
   "Maintenance mode title": "Under maintenance",
+  "Maintenance scheduled message": "Our servers will be offline for scheduled maintenance from {{startTime}} to {{endTime}}.\n\nThe app will only be able to play downloaded episodes during the maintenance window.",
+  "Maintenance scheduled title": "Maintenance Scheduled",
   "Make Clip": "Make Clip",
   "Mark All As Seen": "Mark All As Seen",
   "Mark as Played": "Mark as Played",
