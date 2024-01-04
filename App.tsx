@@ -65,9 +65,8 @@ type State = {
 
 setGlobal(initialState)
 
-let ignoreHandleNetworkChange = true
+let ignoreHandleNetworkChange = Platform.OS === 'ios'
 let carplayEventsInitialized = false
-let maintenanceScheduledStartTime: string = ''
 
 class App extends Component<Props, State> {
   unsubscribeNetListener: NetInfoSubscription | null
