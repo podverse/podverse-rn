@@ -431,10 +431,10 @@
     "Social Media - Twitter": "Síguenos en Twitter/X",
     "Something went wrong when trying to create a Podverse folder in your external storage card. More Info: ": "No se puedo crear una carpeta Podverse en su tarjeta de almacenamiento externa. ",
     "Sort": "Clasificar",
-    "Start Timer": "Temporizador de inicio",
+    "Start Timer": "Iniciar temporizador",
     "Start time": "Hora de inicio",
     "Status": "Estado:",
-    "Stop Timer": "Detener temporizador",
+    "Stop Timer": "Detener el temporizador",
     "Stream": "Arroyo",
     "Stream Off": "Stream desactivado",
     "Stream On": "Stream activado",
@@ -848,5 +848,8 @@
     "Android Auto Permission Body": "Si desea utilizar Android Auto, otorgue a Podverse el permiso \"Escribir sobre otras aplicaciones\".",
     "Maintenance scheduled title": "Mantenimiento programado",
     "Android Auto Queue Title": "Cola",
-    "Your password was changed succesfully": "Ya puedes usar tu nueva contraseña"
+    "Your password was changed succesfully": "Ya puedes usar tu nueva contraseña",
+    "Streaming": "Streaming",
+    "Off": "Apagado",
+    "Error Reporting": "Notificación de errores"
 }
