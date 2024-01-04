@@ -36,7 +36,7 @@ import PVEventEmitter from './src/services/eventEmitter'
 import { playerHandlePauseWithUpdate } from './src/services/player'
 import { PlayerAudioSetupService } from './src/services/playerAudioSetup'
 import { getLastMaintenanceScheduledStartTime, getMetaAppInfo,
-  setLastMaintenanceScheduledStartTime } from './src/services/meta'
+  updateLastMaintenanceScheduledStartTime } from './src/services/meta'
 import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import { settingsRunEveryStartup } from './src/state/actions/settings'
 import initialState from './src/state/initialState'
@@ -200,13 +200,13 @@ class App extends Component<Props, State> {
     const hasNewStartTime = startTime && lastStartTime !== startTime?.toString()
     
     if (hasNewStartTime && endTime && currentUTCTime < startTime) {
-      await setLastMaintenanceScheduledStartTime(startTime)
+      await updateLastMaintenanceScheduledStartTime(startTime)
       maintenanceScheduled = {
         startTime,
         endTime
       }
     } else {
-      await setLastMaintenanceScheduledStartTime()
+      await updateLastMaintenanceScheduledStartTime()
       maintenanceScheduled = null
     }
 

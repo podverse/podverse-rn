@@ -61,7 +61,7 @@ export const getLastMaintenanceScheduledStartTime = () => {
   return AsyncStorage.getItem(PV.Keys.LAST_MAINTENANCE_SCHEDULED_START_TIME)
 }
 
-export const setLastMaintenanceScheduledStartTime = async (date?: Date) => {
+export const updateLastMaintenanceScheduledStartTime = async (date?: Date) => {
   if (date) {
     await AsyncStorage.setItem(PV.Keys.LAST_MAINTENANCE_SCHEDULED_START_TIME, date.toString())
   } else {
