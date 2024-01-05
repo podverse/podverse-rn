@@ -685,7 +685,7 @@
     "Download my data": "Descargar",
     "Enable UnifiedPush notifications": "Configurar notificaciones inmediatas",
     "hour": "hora",
-    "Chapters Non-Table of Contents subtext": "Los capítulos que no pertenecen a la tabla de contenido aparecen en el Reproductor, pero se omiten al presionar el botón de saltar o anterior.",
+    "Chapters Non-Table of Contents subtext": "Los capítulos que no pertenecen a la tabla de contenido aparecen en el reproductor, pero se omiten al pulsar el botón de \"saltar\" o \"anterior\".",
     "Enable notifications in settings message": "Active las notificaciones en la configuración del dispositivo.",
     "Incomplete": "Incompleto",
     "Fees": "Tasas",
@@ -720,7 +720,7 @@
     "Video": "Vídeo",
     "Login / Register": "Iniciar sesión o registrarse",
     "Music - Delete Track": "Elimina Pista",
-    "Share Episode": "Compartir episodio",
+    "Share Episode": "Compartir Episodio",
     "Share Chapter": "Compartir capítulo",
     "Podcasting 2.0 transcripts": "Podcasting 2.0 transcripciones",
     "Yes save them": "Sí, salvarlos",
@@ -731,7 +731,7 @@
     "Mark as Seen": "Marcar como visto",
     "Music - Album": "Álbum",
     "Mark All Episodes As Played": "Marcar todos los episodios como reproducidos",
-    "value_tag_info_streaming_sats_text_3": "(Cerrar y volver a abrir la aplicación borra la cola).",
+    "value_tag_info_streaming_sats_text_3": "(Cerrar y volver a abrir la aplicación borra la cola)",
     "language - oc": "Occitano",
     "Share Track": "Compartir pista",
     "value_tag_preview_streaming": "Stream envía una donación por cada minuto escuchada.",
@@ -853,5 +853,5 @@
     "Off": "Apagado",
     "Error Reporting": "Notificación de errores",
     "Time splits": "Distribución del tiempo",
-    "value_tag_info_streaming_sats_title": "Saturación de streaming"
+    "value_tag_info_streaming_sats_title": ""
 }
