@@ -1,7 +1,7 @@
 {
     "1 hour": "1 time",
     "2 hours": "2 timer",
-    "3 months free": "3 måneder gratis",
+    "3 months free": "3 måneder gratis prøveperiode",
     "30 minutes": "30 minutter",
     "A-Z": "A-Å",
     "About": "Om",
@@ -48,5 +48,6 @@
     "_moment.js date with time format": "D. MM YYYY, H:mm:ss",
     "All episodes in this podcast will be marked as played.": "Alle episoder i denne podcast vil blive markeret som afspillet.",
     "All downloaded episodes will be deleted from External Storage.": "Alle downloadede episodefiler vil blive slettet.",
-    "All Channels": "Alle kanaler"
+    "All Channels": "Alle kanaler",
+    "_translatorsFieldExample": "Jane Doe<https://jane.doe.homepage>,Joe Bloggs,Juan Perez<https://some.socialmedia/juan>"
 }
