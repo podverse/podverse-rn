@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Funding, NowPlayingItem, ValueRecipient, ValueRecipientNormalized,
+import { Funding, LiveItem, NowPlayingItem, ValueRecipient, ValueRecipientNormalized,
   ValueTag, ValueTimeSplit, ValueTransaction, checkIfIsLightningKeysendValueTag } from 'podverse-shared'
 import * as RNKeychain from 'react-native-keychain'
 import { errorLogger } from '../../lib/logger'
@@ -21,8 +21,8 @@ import {
   v4vSettingsDefault
 } from '../../state/actions/v4v/v4v'
 import { playerGetPosition, playerGetRate } from '../player'
-import { AlbyKeysendResponse, AlbyMultiKeySendResponse, KeysendCustomKeyValueAddress } from './providers/alby'
 import { getEpisodeByGuidFromPodcastIndex } from '../podcastIndex'
+import { AlbyKeysendResponse, AlbyMultiKeySendResponse, KeysendCustomKeyValueAddress } from './providers/alby'
 
 const _fileName = 'src/services/v4v/v4v.ts'
 
@@ -32,6 +32,7 @@ export type BoostagramItem = {
   episodePubDate?: Date
   episodeTitle?: string
   episodeValue?: ValueTag[]
+  liveItem?: LiveItem
   podcastFunding: Funding[]
   podcastIndexPodcastId: string
   podcastShrunkImageUrl: string
