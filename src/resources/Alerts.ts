@@ -196,6 +196,10 @@ export const Alerts = {
         : `${translate('You must be connected to the internet to ')}${str}.`,
     title: _networkErrorTitle
   },
+  PAYMENT_DISABLED_BETA: {
+    message: translate('Payment disabled beta message'),
+    title: translate('Payment disabled beta title')
+  },
   PLAYER_CANNOT_STREAM_WITHOUT_WIFI: {
     message: translate('Connect to Wifi to stream this episode'),
     title: _networkErrorTitle

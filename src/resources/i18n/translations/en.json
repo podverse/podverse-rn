@@ -562,6 +562,8 @@
   "paste RSS feed link here": "Paste RSS link here…",
   "Pause": "Pause",
   "Paused": "Paused",
+  "Payment disabled beta message": "The payment processor cannot work in beta. To extend your membership, please use the official app version, or email us and we will help you out.",
+  "Payment disabled beta title": "Not available in Beta",
   "Pending": "Pending",
   "per minute": "/min",
   "Permission Denied": "Permission Denied",
