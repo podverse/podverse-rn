@@ -1,10 +1,9 @@
-import url from 'url'
 import PromiseQueue from 'queue-promise'
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import debounce from 'lodash/debounce'
 import { convertBytesToHumanReadableString, Episode, getExtensionFromUrl, Podcast } from 'podverse-shared'
-import RNBackgroundDownloader from 'react-native-background-downloader'
+import RNBackgroundDownloader from '@kesha-antonov/react-native-background-downloader'
 import RNFS from 'react-native-fs'
 import * as ScopedStorage from 'react-native-scoped-storage'
 import { AndroidScoped, FileSystem } from 'react-native-file-access'
@@ -28,8 +27,10 @@ const _fileName = 'src/lib/downloader.ts'
 
 export const BackgroundDownloader = () => {
   const userAgent = getAppUserAgent()
-  RNBackgroundDownloader.setHeaders({
-    'user-agent': userAgent
+  RNBackgroundDownloader.setConfig({
+    headers: {
+      'user-agent': userAgent
+    }
   })
 
   return RNBackgroundDownloader
@@ -224,9 +225,14 @@ export const downloadEpisode = async (
     BackgroundDownloader(),
     AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
   ])
-  const folderPath = customLocation ? RNFS.TemporaryDirectoryPath : downloader.directories.documents
+
+  console.log('customLocation', customLocation)
+  const folderPath = customLocation ? customLocation : downloader.directories.documents
   const origDestination = `${folderPath}/${episode.id}${ext}`
   const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
+
+  console.log('folderPath', folderPath)
+  console.log('origDestination', origDestination)
 
   const downloadUrl = await getSecureUrl(episode.mediaUrl);
 
@@ -237,18 +243,31 @@ export const downloadEpisode = async (
     if (episode?.imageUrl) await downloadImageFile(episode.imageUrl)
   })()
 
+  const userAgent = getAppUserAgent()
+
   // Wait for t.stop() to complete
   setTimeout(() => {
+    console.log('should download', {
+      id: episode.id,
+      url: downloadUrl,
+      destination: origDestination,
+      headers: {
+        'user-agent': userAgent,
+        ...(Authorization ? { Authorization } : {})
+      }
+    })
     const task = downloader
       .download({
         id: episode.id,
         url: downloadUrl,
         destination: origDestination,
         headers: {
+          'user-agent': userAgent,
           ...(Authorization ? { Authorization } : {})
         }
       })
       .begin(() => {
+        console.log('begin', restart)
         if (!restart) {
           downloadTasks.push(task)
           episode.podcast = podcast
@@ -262,18 +281,17 @@ export const downloadEpisode = async (
           }
         }
       })
-      .progress((percent: number, bytesWritten: number, bytesTotal: number) => {
-        progressLimiter
-          .schedule(() => {
-            const written = convertBytesToHumanReadableString(bytesWritten)
+      .progress(({ bytesDownloaded, bytesTotal }) => {
+
+            const percent = bytesDownloaded / bytesTotal
+            console.log('progressLimiter', percent, bytesDownloaded, bytesTotal)
+            const written = convertBytesToHumanReadableString(bytesDownloaded)
             const total = convertBytesToHumanReadableString(bytesTotal)
             DownloadState.updateDownloadProgress(episode.id, percent, written, total)
-          })
-          .catch(() => {
-            // limiter has been stopped
-          })
+
       })
       .done(() => {
+        console.log('done')
         finishedDownloadQueue.enqueue(() => finishDownload({
           customLocation,
           ext,
@@ -284,6 +302,7 @@ export const downloadEpisode = async (
         }))
       })
       .error((error: string) => {
+        console.log('hello', error)
         DownloadState.updateDownloadError(episode.id)
         errorLogger(_fileName, 'Download canceled', error)
       })

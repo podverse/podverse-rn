@@ -8,6 +8,10 @@
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- needed to resolve download error "invalid value for visibility: 2" -->
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+
+
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-permission android:name="com.android.vending.BILLING" />

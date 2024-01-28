@@ -300,9 +300,14 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
 
   _setExtDownloadFileLocationAndroid10 = async () => {
     const dir = await ScopedStorage.openDocumentTree(true)
-
-    if (dir?.uri) {
-      const parsedDownloadLocation = dir.uri
+    console.log('dir', dir)
+    // Using getPersistedUriPermissions due to bug with openDocumentTree result.
+    // https://github.com/ammarahm-ed/react-native-scoped-storage/issues/41
+    const uriPermissions = await ScopedStorage.getPersistedUriPermissions()
+    const uri = uriPermissions?.[0]
+    console.log('uriPermissions', uriPermissions)
+    if (uri) {
+      const parsedDownloadLocation = uri
       await AsyncStorage.setItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION, parsedDownloadLocation)
       this.setState({ customDownloadLocation: parsedDownloadLocation })
     } else {
