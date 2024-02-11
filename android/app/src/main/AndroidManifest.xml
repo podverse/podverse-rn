@@ -15,6 +15,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <!-- This is needed to avoid visibility: 2 crash https://github.com/kesha-antonov/react-native-background-downloader/issues/42 -->
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+
     <!-- Allow tablet support -->
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
