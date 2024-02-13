@@ -23,7 +23,6 @@ public class PodversePackage implements ReactPackage {
        modules.add(new PVAsyncStorageModule(reactContext));
        modules.add(new PVUnifiedPushModule(reactContext));
        modules.add(new PVAndroidAutoModule(reactContext));
-       modules.add(new PVRealPathModule(reactContext));
 
        return modules;
    }

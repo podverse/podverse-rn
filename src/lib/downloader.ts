@@ -22,7 +22,6 @@ import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode
 import { hasValidDownloadingConnection } from './network'
 import { getAppUserAgent, safelyUnwrapNestedVariable } from './utility'
 import { downloadImageFile } from './storage'
-import { NativeModules } from 'react-native'
 
 const _fileName = 'src/lib/downloader.ts'
 
@@ -111,6 +110,7 @@ const finishedDownloadQueue = new PromiseQueue({
 
 
 type FinishDownloadParams = {
+  customLocation: string | null
   episode: Episode
   ext: string
   origDestination: string
@@ -119,9 +119,8 @@ type FinishDownloadParams = {
 }
 
 const finishDownload = async (params: FinishDownloadParams) => {
-  const { episode, ext, origDestination, podcast, progressLimiter } = params
+  const { customLocation, episode, ext, origDestination, podcast, progressLimiter } = params
   await progressLimiter.stop()
-  const customLocation = await AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
   if (customLocation) {
     try {
       const tempDownloadFileType = await FileSystem.stat(origDestination)
@@ -129,7 +128,6 @@ const finishDownload = async (params: FinishDownloadParams) => {
       if (tempDownloadFileType && newFileType) {
         const { uri: newFileUri } = newFileType
         await FileSystem.cp(origDestination, newFileUri)
-        await FileSystem.unlink(origDestination)
       }
     } catch (error) {
       errorLogger(_fileName, 'done error', error)
@@ -223,11 +221,12 @@ export const downloadEpisode = async (
     finalFeedUrl = await getPodcastFeedUrlAuthority(podcast.id)
   }
 
-  const [downloader] = await Promise.all([
-    BackgroundDownloader()
+  const [downloader, customLocation] = await Promise.all([
+    BackgroundDownloader(),
+    AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
   ])
-  const defaultFolderPath = downloader.directories.documents
-  const origDestination = `${defaultFolderPath}/${episode.id}${ext}`
+  const folderPath = customLocation ? RNFS.TemporaryDirectoryPath : downloader.directories.documents
+  const origDestination = `${folderPath}/${episode.id}${ext}`
   const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
 
   const downloadUrl = await getSecureUrl(episode.mediaUrl);
@@ -278,6 +277,7 @@ export const downloadEpisode = async (
       })
       .done(() => {
         finishedDownloadQueue.enqueue(() => finishDownload({
+          customLocation,
           ext,
           episode,
           origDestination,
@@ -436,14 +436,8 @@ export const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: strin
   let isDownloadedFile = true
   try {
     const filePath = await getDownloadedFilePath(id, episodeMediaUrl, isAddByRSSPodcast)
-    const customLocation = await AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
-    if (customLocation) {
-      await ScopedStorage.stat(filePath)
-    } else {
-      await RNFS.stat(filePath)
-    }
+    await RNFS.stat(filePath)
   } catch (innerErr) {
-    console.log('innerErr', innerErr)
     isDownloadedFile = false
   }
   return isDownloadedFile
@@ -455,7 +449,7 @@ export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string,
     BackgroundDownloader(),
     AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
   ])
-  const folderPath = customLocation ? customLocation : `file:/${downloader.directories.documents}`
+  const folderPath = customLocation ? customLocation : downloader.directories.documents
 
   if (isAddByRSSPodcast) {
     const customRSSItemId = downloadCustomFileNameId(episodeMediaUrl)
@@ -463,17 +457,4 @@ export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string,
   } else {
     return `${folderPath}/${id}${ext}`
   }
-}
-
-export const getDownloadedFileAbsolutePath = async (filePath: string) => {
-  const { PVRealPathModule } = NativeModules
-  const [customLocation] = await Promise.all([
-    AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
-  ])
-
-  if (customLocation && filePath) {
-    filePath = filePath.replace(/%3A/g, '/')
-    filePath = PVRealPathModule.getRealPathFromURI(filePath)
-  }
-  return filePath
 }
