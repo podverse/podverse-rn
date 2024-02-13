@@ -3,10 +3,10 @@ import { checkIfVideoFileOrVideoLiveType, convertToNowPlayingItem, Episode, gene
   MediaRef,
   NowPlayingItem } from 'podverse-shared'
 import TrackPlayer, { PitchAlgorithm, State, Track } from 'react-native-track-player'
-import { Platform } from 'react-native'
+import { NativeModules, Platform } from 'react-native'
 import { getGlobal } from 'reactn'
 import { errorLogger } from '../lib/logger'
-import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../lib/downloader'
+import { checkIfFileIsDownloaded, getDownloadedFileAbsolutePath, getDownloadedFilePath } from '../lib/downloader'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
@@ -229,6 +229,14 @@ export const updatePlayerSettingsForTrack = async (isMusic: boolean) => {
 }
 
 const audioSyncPlayerWithQueue = async () => {
+  // TODO: REMOVE BEFORE MERGE TO MASTER
+  // TODO: REMOVE BEFORE MERGE TO MASTER
+  // TODO: REMOVE BEFORE MERGE TO MASTER
+  // TODO: REMOVE BEFORE MERGE TO MASTER
+  // TODO: REMOVE BEFORE MERGE TO MASTER
+  // TODO: REMOVE BEFORE MERGE TO MASTER
+  // TODO: REMOVE BEFORE MERGE TO MASTER
+  return
   try {
     /*
       1. get the nowPlayingItem from global player state.
@@ -481,9 +489,10 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
     const finalPodcastTitle = isMusic ? generateAuthorsText(podcastAuthors) : podcastTitle
 
     if (isDownloadedFile) {
+      const realPath = await getDownloadedFileAbsolutePath(filePath)
       track = {
         id,
-        url: `file://${filePath}`,
+        url: realPath,
         title: episodeTitle,
         artist: finalPodcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
