@@ -4,10 +4,13 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import java.net.URLDecoder;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import java.io.UnsupportedEncodingException;
+import android.os.Environment;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -31,7 +34,13 @@ public class PVRealPathModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public String getRealPathFromURI(String uriString) {
         Context context = getReactApplicationContext();
-        Uri uri = Uri.parse(uriString);
+        String decodedUrl = "";
+        try {
+            decodedUrl = URLDecoder.decode(uriString, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        Uri uri = Uri.parse(decodedUrl);
         String realPath = null;
         String scheme = uri.getScheme();
         if (scheme != null) {
@@ -55,5 +64,39 @@ public class PVRealPathModule extends ReactContextBaseJavaModule {
             }
         }
         return realPath;
+    }
+
+    @ReactMethod
+    public String findPodcastWithIdInExternalStorage(String podcastIdWithExtension) {
+        String path = Environment.getExternalStorageDirectory().getPath();
+        Log.d("findPodcastWithIdInExternalStorage path", path);
+        File directory = new File(path);
+        String fileName = podcastIdWithExtension;
+        String filePath = searchFile(directory, fileName);
+        
+        if (filePath != null) {
+            Log.d("FileSearch", "File found: " + filePath);
+            return filePath;
+        } else {
+            Log.d("FileSearch", "File not found");
+            return null;
+        }
+    }
+
+    public String searchFile(File dir, String fileName) {
+        File[] list = dir.listFiles();
+        if (list != null) {
+            for (File file : list) {
+                if (file.isDirectory()) {
+                    String found = searchFile(file, fileName);
+                    if (found != null) return found;
+                } else {
+                    if (fileName.equalsIgnoreCase(file.getName())) {
+                        return file.getAbsolutePath();
+                    }
+                }
+            }
+        }
+        return null; // File not found
     }
 }

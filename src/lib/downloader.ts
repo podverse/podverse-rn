@@ -461,6 +461,8 @@ export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string,
     const customRSSItemId = downloadCustomFileNameId(episodeMediaUrl)
     return `${folderPath}/${customRSSItemId}${ext}`
   } else {
+    const { PVRealPathModule } = NativeModules
+    PVRealPathModule.findPodcastWithIdInExternalStorage(`${id}${ext}`)
     return `${folderPath}/${id}${ext}`
   }
 }
@@ -472,7 +474,7 @@ export const getDownloadedFileAbsolutePath = async (filePath: string) => {
   ])
 
   if (customLocation && filePath) {
-    filePath = filePath.replace(/%3A/g, '/')
+    // filePath = filePath.replace(/%3A/g, '/')
     filePath = PVRealPathModule.getRealPathFromURI(filePath)
   }
   return filePath
