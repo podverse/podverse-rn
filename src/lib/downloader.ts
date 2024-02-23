@@ -470,10 +470,12 @@ export const getDownloadedFileAbsolutePath = async (filePath: string) => {
   const [customLocation] = await Promise.all([
     AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
   ])
-
+  console.log('getDownloadedFileAbsolutePath customLocation', customLocation)
   if (customLocation && filePath) {
-    filePath = filePath.replace(/%3A/g, '/')
+    // filePath = filePath.replace(/%3A/g, '/')
+    console.log('getDownloadedFileAbsolutePath filePath1', filePath)
     filePath = PVRealPathModule.getRealPathFromURI(filePath)
+    console.log('getDownloadedFileAbsolutePath filePath2', filePath)
   }
   return filePath
 }
