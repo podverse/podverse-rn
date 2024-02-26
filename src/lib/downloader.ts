@@ -1,4 +1,4 @@
-import { Platform, NativeModules } from 'react-native'
+import { Platform, NativeModules, PermissionsAndroid } from 'react-native'
 import PromiseQueue from 'queue-promise'
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
@@ -455,8 +455,14 @@ export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string,
   } else {
     if (Platform.OS === 'android' && customLocation) {
       console.log(`[downloader] using NoxFileUtil to obtain file name ${id}${ext}:`)
-      const externalFileURI = await NoxAndroidAutoModule.listMediaFileByFName(`${id}${ext}`)
-      if (externalFileURI.length > 0) return externalFileURI[0].realPath
+      const androidPermission = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO)
+      if (androidPermission === PermissionsAndroid.RESULTS.GRANTED) {
+        const externalFileURI = await NoxAndroidAutoModule.listMediaFileByFName(`${id}${ext}`)
+        if (externalFileURI.length > 0) return externalFileURI[0].realPath
+        console.warn(`[downloader] NoxFileUtil could not find ${id}${ext}. returned URI will almost certainly fail.`)
+      } else {
+        console.warn('external storage permission not granted. fileUtil will almost certainly fail.')
+      }
     }
     return `${folderPath}/${id}${ext}`
   }
