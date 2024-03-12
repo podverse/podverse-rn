@@ -450,7 +450,7 @@
   "Listen Tracking subtext": "Popularity tracking counts you in the listening rankings.",
   "Live": "Live",
   "Live Chat": "Live chat",
-  "Livestream has ended": "Livestream over",
+  "Livestream has ended": "No longer live",
   "Loading": "Loading…",
   "Local": "Local",
   "Log out": "Log out",
@@ -467,9 +467,9 @@
   "Login to view your profile": "Log in to view your profile",
   "Login to enable podcast notifications": "Log in to turn on podcast notifications",
   "Maintainers": "Maintainers",
-  "Maintenance mode message": "The servers are down for maintenance. Only downloaded material can be played during this time.",
+  "Maintenance mode message": "Servers down for maintenance. Only downloaded material can be played.",
   "Maintenance mode title": "Under maintenance",
-  "Maintenance scheduled message": "Server maintenance is scheduled from {{startTime}} to {{endTime}}.\n\nOnly downloaded material can be played during this time.",
+  "Maintenance scheduled message": "Server maintenance scheduled from {{startTime}} to {{endTime}}.\n\nOnly downloaded material can be played during this time.",
   "Maintenance scheduled title": "Maintenance Scheduled",
   "Make Clip": "Make Clip",
   "Mark All As Seen": "Mark All As Seen",
@@ -562,7 +562,7 @@
   "paste RSS feed link here": "Paste RSS link here…",
   "Pause": "Pause",
   "Paused": "Paused",
-  "Payment disabled beta message": "The payment processor cannot work in beta. Please use the official app version, or e-mail us to extend your membership.",
+  "Payment disabled beta message": "The payment processor cannot work in beta. Please use the regular app version, or e-mail us to extend your membership.",
   "Payment disabled beta title": "Not available in beta",
   "Pending": "Pending",
   "per minute": "/min",
@@ -856,5 +856,5 @@
   "Android Auto Queue Title": "Queue",
   "Android Auto History Title": "History",
   "Android Auto Permission Title": "Android Auto Permission Request",
-  "Android Auto Permission Body": "Please grant Podverse the 'Draw over other Apps' permission to use Android Auto."
+  "Android Auto Permission Body": "Please grant Podverse 'Draw over other Apps' to use Android Auto."
 }
