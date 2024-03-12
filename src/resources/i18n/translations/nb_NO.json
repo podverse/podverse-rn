@@ -802,5 +802,19 @@
     "Grid View": "Rutenettsvisning",
     "Mark selected": "Marker valgte",
     "Season": "Sesong",
-    "Go to Album": "Til album"
+    "Go to Album": "Til album",
+    "ARIA HINT - delete this downloaded music track": "Slett dette nedlastede sporet",
+    "ARIA HINT - download this album": "Last ned album",
+    "ARIA HINT - share this track": "Del spor",
+    "ARIA HINT - stream this track": "Strøm spor",
+    "Android Auto Permission Title": "Android Auto-tilgangsforespørsel",
+    "Android Auto Podcast Title": "Nettradioopptak",
+    "Android Auto Queue Title": "Kø",
+    "Older": "Eldre",
+    "Off": "Av",
+    "Untitled Track": "Spor uten navn",
+    "You are not subscribed to any albums yet": "Ingen albumsabonnementer enda",
+    "ARIA HINT - share this album": "Del album",
+    "Android Auto Permission Body": "Innvilg «Tegn over andre programmer» for å bruke Android Auto.",
+    "ARIA HINT - tap to play this track": "Trykk for å spille sporet"
 }
