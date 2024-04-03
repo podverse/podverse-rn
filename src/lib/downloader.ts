@@ -455,7 +455,7 @@ export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string,
   } else {
     if (Platform.OS === 'android' && customLocation) {
       console.log(`[downloader] using NoxFileUtil to obtain file name ${id}${ext}:`)
-      const androidPermission = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO)
+      const androidPermission = await PermissionsAndroid.request('android.permission.READ_MEDIA_AUDIO')
       if (androidPermission === PermissionsAndroid.RESULTS.GRANTED) {
         const externalFileURI = await NoxAndroidAutoModule.listMediaFileByFName(`${id}${ext}`)
         if (externalFileURI.length > 0) return externalFileURI[0].realPath
