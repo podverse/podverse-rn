@@ -467,15 +467,15 @@ export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string,
   }
 }
 
-export const getDownloadedFileAbsolutePath = async (filePath: string) => {
+export const getDownloadedFileAbsolutePath = async (filePath: string, fileName:string) => {
   const { PVRealPathModule } = NativeModules
   const [customLocation] = await Promise.all([
     AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
   ])
 
   if (customLocation && filePath) {
-    // filePath = filePath.replace(/%3A/g, '/')
-    filePath = PVRealPathModule.getRealPathFromURI(filePath)
+    // fileName here would be 'sdEFG35g.mp3'
+    filePath = PVRealPathModule.getRealPathFromURI(fileName)
   }
   return filePath
 }

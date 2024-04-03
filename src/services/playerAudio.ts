@@ -489,7 +489,7 @@ export const audioCreateTrack = async (item: NowPlayingItem, options: AudioCreat
     const finalPodcastTitle = isMusic ? generateAuthorsText(podcastAuthors) : podcastTitle
 
     if (isDownloadedFile) {
-      const realPath = await getDownloadedFileAbsolutePath(filePath)
+      const realPath = await getDownloadedFileAbsolutePath(filePath, `${episodeId}.${fileExtension}`)
       track = {
         id,
         url: realPath,
