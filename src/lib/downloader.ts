@@ -1,4 +1,4 @@
-import url from 'url'
+import { Platform, NativeModules, PermissionsAndroid } from 'react-native'
 import PromiseQueue from 'queue-promise'
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
@@ -25,6 +25,7 @@ import { getAppUserAgent, safelyUnwrapNestedVariable } from './utility'
 import { downloadImageFile } from './storage'
 
 const _fileName = 'src/lib/downloader.ts'
+const { NoxAndroidAutoModule } = NativeModules
 
 export const BackgroundDownloader = () => {
   const userAgent = getAppUserAgent()
@@ -106,7 +107,6 @@ const finishedDownloadQueue = new PromiseQueue({
   interval: 333,
   start: true
 })
-
 
 type FinishDownloadParams = {
   customLocation: string | null
@@ -228,9 +228,8 @@ export const downloadEpisode = async (
   const origDestination = `${folderPath}/${episode.id}${ext}`
   const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
 
-  const downloadUrl = await getSecureUrl(episode.mediaUrl);
-
-  (async () => {
+  const downloadUrl = await getSecureUrl(episode.mediaUrl)
+  ;(async () => {
     // Download and store the image files if available
     if (podcast?.imageUrl) await downloadImageFile(podcast.imageUrl)
     if (podcast?.shrunkImageUrl) await downloadImageFile(podcast.shrunkImageUrl)
@@ -274,14 +273,16 @@ export const downloadEpisode = async (
           })
       })
       .done(() => {
-        finishedDownloadQueue.enqueue(() => finishDownload({
-          customLocation,
-          ext,
-          episode,
-          origDestination,
-          podcast,
-          progressLimiter
-        }))
+        finishedDownloadQueue.enqueue(() =>
+          finishDownload({
+            customLocation,
+            ext,
+            episode,
+            origDestination,
+            podcast,
+            progressLimiter
+          })
+        )
       })
       .error((error: string) => {
         DownloadState.updateDownloadError(episode.id)
@@ -448,11 +449,21 @@ export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string,
     AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
   ])
   const folderPath = customLocation ? customLocation : downloader.directories.documents
-
   if (isAddByRSSPodcast) {
     const customRSSItemId = downloadCustomFileNameId(episodeMediaUrl)
     return `${folderPath}/${customRSSItemId}${ext}`
   } else {
+    if (Platform.OS === 'android' && customLocation) {
+      console.log(`[downloader] using NoxFileUtil to obtain file name ${id}${ext}:`)
+      const androidPermission = await PermissionsAndroid.request('android.permission.READ_MEDIA_AUDIO')
+      if (androidPermission === PermissionsAndroid.RESULTS.GRANTED) {
+        const externalFileURI = await NoxAndroidAutoModule.listMediaFileByFName(`${id}${ext}`)
+        if (externalFileURI.length > 0) return externalFileURI[0].realPath
+        console.warn(`[downloader] NoxFileUtil could not find ${id}${ext}. returned URI will almost certainly fail.`)
+      } else {
+        console.warn('external storage permission not granted. fileUtil will almost certainly fail.')
+      }
+    }
     return `${folderPath}/${id}${ext}`
   }
 }

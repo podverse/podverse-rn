@@ -226,7 +226,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon podcastTitle={podcastTitle} urlId={podcastId} urlPath={PV.URLs.webPaths.podcast} />
           )}
-          {!!addByRSSPodcastFeedUrl && podcast?.linkUrl && (
+          {!!addByRSSPodcastFeedUrl && !!podcast?.linkUrl && (
             <NavShareIcon
               customUrl={podcast.linkUrl}
               endingText={translate('shared using brandName')}
