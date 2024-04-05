@@ -129,6 +129,7 @@ const finishDownload = async (params: FinishDownloadParams) => {
       if (tempDownloadFileType && newFileType) {
         const { uri: newFileUri } = newFileType
         await FileSystem.cp(origDestination, newFileUri)
+        await FileSystem.unlink(origDestination)
       }
     } catch (error) {
       errorLogger(_fileName, 'done error', error)
