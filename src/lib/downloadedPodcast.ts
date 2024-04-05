@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { checkIfContainsStringMatch, getExtensionFromUrl } from 'podverse-shared'
+import { FileSystem } from 'react-native-file-access'
 import RNFS from 'react-native-fs'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
@@ -207,6 +208,20 @@ export const removeAllDownloadedPodcasts = async () => {
   const downloadedPodcasts = await getDownloadedPodcasts()
   for (const podcast of downloadedPodcasts) {
     await removeDownloadedPodcast(podcast.id)
+  }
+
+  /* Ensure all files are deleted, as sometimes partial/incomplete file downloads hang around. */
+  const [downloader] = await Promise.all([BackgroundDownloader()])
+  const dirFiles = await FileSystem.ls(downloader.directories.documents)
+  for (const fileOrDirName of dirFiles) {
+    try {
+      const isDir = await FileSystem.isDir(`${downloader.directories.documents}/${fileOrDirName}`)
+      if (!isDir) {
+        await FileSystem.unlink(`${downloader.directories.documents}/${fileOrDirName}`)
+      }
+    } catch (error) {
+      console.log('removeDownloadedPodcast error', error)
+    }
   }
 }
 
