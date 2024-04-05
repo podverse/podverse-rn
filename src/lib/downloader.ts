@@ -4,7 +4,7 @@ import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import debounce from 'lodash/debounce'
 import { convertBytesToHumanReadableString, Episode, getExtensionFromUrl, Podcast } from 'podverse-shared'
-import RNBackgroundDownloader from 'react-native-background-downloader'
+import RNBackgroundDownloader from '@kesha-antonov/react-native-background-downloader'
 import RNFS from 'react-native-fs'
 import * as ScopedStorage from 'react-native-scoped-storage'
 import { AndroidScoped, FileSystem } from 'react-native-file-access'
@@ -29,8 +29,10 @@ const { NoxAndroidAutoModule } = NativeModules
 
 export const BackgroundDownloader = () => {
   const userAgent = getAppUserAgent()
-  RNBackgroundDownloader.setHeaders({
-    'user-agent': userAgent
+  RNBackgroundDownloader.setConfig({
+    headers: {
+      'user-agent': userAgent
+    }
   })
 
   return RNBackgroundDownloader
@@ -261,10 +263,11 @@ export const downloadEpisode = async (
           }
         }
       })
-      .progress((percent: number, bytesWritten: number, bytesTotal: number) => {
+      .progress(({ bytesDownloaded, bytesTotal }: any) => {
         progressLimiter
           .schedule(() => {
-            const written = convertBytesToHumanReadableString(bytesWritten)
+            const percent = bytesDownloaded / bytesTotal
+            const written = convertBytesToHumanReadableString(bytesDownloaded)
             const total = convertBytesToHumanReadableString(bytesTotal)
             DownloadState.updateDownloadProgress(episode.id, percent, written, total)
           })
