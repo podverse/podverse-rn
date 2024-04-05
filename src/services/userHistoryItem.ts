@@ -20,6 +20,15 @@ export const addOrUpdateHistoryItem = async (
   skipSetNowPlaying?: boolean,
   completed?: boolean
 ) => {
+  /*
+    In the case of a livestream playing, the playbackPosition should always be 0,
+    or the player will attempt to jump ahead to a time that does not exist
+    within the livestream on resume.
+  */
+  if (item?.liveItem) {
+    playbackPosition = 0
+  }
+
   if (!skipSetNowPlaying) {
     try {
       await setNowPlayingItem(item, playbackPosition)
