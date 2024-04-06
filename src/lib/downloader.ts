@@ -304,7 +304,7 @@ export const deleteDownloadedEpisode = async (episode: Episode) => {
     const ext = getExtensionFromUrl(episode.mediaUrl)
     if (customLocation) {
       const uri = AndroidScoped.appendPath(customLocation, `/${episode.id}${ext}`)
-      await FileSystem.unlink(uri)
+      await ScopedStorage.deleteFile(uri)
     } else {
       const path = `${downloader.directories.documents}/${episode.id}${ext}`
       await FileSystem.unlink(path)
