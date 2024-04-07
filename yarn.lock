@@ -1395,6 +1395,11 @@
   resolved "https://registry.yarnpkg.com/@jsamr/react-native-li/-/react-native-li-2.3.1.tgz#12a5b5f6e3971cec77b96bee58104eed0ae9314a"
   integrity sha512-Qbo4NEj48SQ4k8FZJHFE2fgZDKTWaUGmVxcIQh3msg5JezLdTMMHuRRDYctfdHI6L0FZGObmEv3haWbIvmol8w==
 
+"@kesha-antonov/react-native-background-downloader@3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@kesha-antonov/react-native-background-downloader/-/react-native-background-downloader-3.1.2.tgz#857c5c88798ed2b0f8a48930aa1c777cba8c4cc9"
+  integrity sha512-xBs1DyGOdGCSI7mfE7cT7V1Ecv6G99A4zh08o0q7/DXOqttX4tymiTQNuWQxW2dMe7clOHGjzeW1BLYwofSYNw==
+
 "@native-html/css-processor@1.11.0":
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/@native-html/css-processor/-/css-processor-1.11.0.tgz#27d02e5123b0849f4986d44060ba3f235a15f552"
@@ -8737,10 +8742,10 @@ podcast-partytime@^4.5.5:
     ramda "^0.27.1"
     tiny-invariant "^1.2.0"
 
-podverse-shared@4.15.2:
-  version "4.15.2"
-  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.15.2.tgz#ef2a9ae3845ca9833f62972428ab058511bc195a"
-  integrity sha512-X9jtauggsxazN4F00PkQONiK3DT345v7qL4SXpQh+Qz+1zY5dfJbTBN4fcfya4xp5L1BPpsAj6mn6ALx+ravCQ==
+podverse-shared@4.16.1:
+  version "4.16.1"
+  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-4.16.1.tgz#e30a69b0e81eb9b9cd4d70be1b401ea37533d72d"
+  integrity sha512-UecBQpP1VeDculu08/UVwGU9tVw76+myUof9lNU9/F6IwMqx8yjljx44Y5iHFnDPADxYh6fDVPAmOSPSxZAPjQ==
   dependencies:
     "@types/lodash" "4.14.172"
     he "^1.2.0"
@@ -9015,11 +9020,6 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
-
-react-native-background-downloader@^2.3.4:
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/react-native-background-downloader/-/react-native-background-downloader-2.3.4.tgz#050a94b044b0a204f1c41b9852d4d53dcefe527c"
-  integrity sha512-SqAnsf3dJ/aoj2zq8zG/qVcQZxeK3Le0PsoNQ00G/q6oDho2kHNfIOxthD/00B0t384J3u2gWurwRW8idI79zg==
 
 react-native-carplay@2.1.0:
   version "2.1.0"

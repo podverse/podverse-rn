@@ -84,6 +84,14 @@ export class MediaPlayerCarouselShowNotes extends React.Component<Props, State> 
           <TableSectionSelectors disableFilter includePadding selectedFilterLabel={translate('Episode Summary')} />
           {!isLoading && episode && (
             <View>
+              {(episode?.podcast?.title && episode?.title) && (
+                <Text
+                  accessibilityLabel={`${episode.podcast.title} – ${episode.title}`}
+                  style={styles.title}
+                  testID={`${testIDPrefix}_title`}>
+                  {`${episode.podcast.title} – ${episode.title}`}
+                </Text>
+              )}
               {(episode?.liveItem?.start || episode?.pubDate) && (
                 <Text
                   accessibilityHint={translate('ARIA HINT - This is the episode publication date')}
@@ -123,8 +131,7 @@ const styles = StyleSheet.create({
   episodePubDate: {
     marginBottom: 16,
     marginHorizontal: 8,
-    fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.semibold
+    fontSize: PV.Fonts.sizes.lg
   },
   headerText: {},
   htmlScrollView: {},
@@ -149,6 +156,12 @@ const styles = StyleSheet.create({
     color: 'black',
     flex: 0,
     fontSize: 32
+  },
+  title: {
+    marginBottom: 8,
+    marginHorizontal: 8,
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.semibold
   },
   wrapper: {
     flex: 1

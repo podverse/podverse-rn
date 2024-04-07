@@ -50,7 +50,9 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
     if (!hasTransactions) return null
 
     const renderTransactionSection = (data: any, index: number) => {
-      const { customKey, customValue, name, amount, split, address } = data.normalizedValueRecipient
+      const { customKey, customValue, name, amount, normalizedSplit, address } = data.normalizedValueRecipient
+      const roundedSplit = normalizedSplit < 1 && normalizedSplit > 0 ? 1 : Math.round(normalizedSplit)
+
       const erroring = erroringTransactions.find((trs) => {
         return (
           (customKey &&
@@ -74,7 +76,7 @@ export class V4VRecipientsInfoView extends React.PureComponent<Props> {
                 key={`${index}`}
                 testID={`${testID}_boost_recipient_amount_${index}}`}
                 style={styles.recipientTextAmount}>
-                {`${split}% – ${amount}`}
+                {`${roundedSplit}% – ${amount}`}
               </Text>
             </View>
           </View>

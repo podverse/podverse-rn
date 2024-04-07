@@ -10,7 +10,7 @@ import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../lib/downloade
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
-import { setLiveStreamWasPausedState } from '../state/actions/player'
+import { goToCurrentLiveTime, setLiveStreamWasPausedState } from '../state/actions/player'
 import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import { getPodcastCredentialsHeader } from './parser'
@@ -19,7 +19,7 @@ import { getPodcastFeedUrlAuthority } from './podcast'
 import { addQueueItemNext, getQueueItemsLocally, setRNTPRepeatMode } from './queue'
 import { addOrUpdateHistoryItem, getHistoryItemIndexInfoForEpisode,
   getHistoryItemsIndexLocally } from './userHistoryItem'
-import { getEnrichedNowPlayingItemFromLocalStorage } from './userNowPlayingItem'
+import { getEnrichedNowPlayingItemFromLocalStorage, getNowPlayingItem, getNowPlayingItemLocally } from './userNowPlayingItem'
 import { getSecondaryQueueEpisodesForPlaylist, getSecondaryQueueEpisodesForPodcastId } from './secondaryQueue'
 import { audioUpdateTrackPlayerCapabilities } from './playerAudioSetup'
 import { getSecureUrl } from './tools'
@@ -578,8 +578,19 @@ const audioHandleLoadClip = async (item: NowPlayingItem, shouldPlay: boolean) =>
   }
 }
 
-export const audioHandlePlay = () => {
-  PVAudioPlayer.play()
+export const audioHandlePlay = async () => {
+
+  const nowPlayingItem = await getNowPlayingItemLocally()
+  /*
+    When a liveItem, always attempt to reload the livestream when play is pressed,
+    to avoid issues with the player falling behind to timestamps that don't exist
+    within the livestream file.
+  */
+  if (nowPlayingItem?.liveItem) {
+    goToCurrentLiveTime()
+  } else {
+    PVAudioPlayer.play()
+  }
 
   /*
     Adding setTimeout because it seems calling .play() then immediately setting the rate

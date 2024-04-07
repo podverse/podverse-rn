@@ -299,15 +299,18 @@ export class SettingsScreenDownloads extends React.Component<Props, State> {
   }
 
   _setExtDownloadFileLocationAndroid10 = async () => {
-    const dir = await ScopedStorage.openDocumentTree(true)
-
-    if (dir?.uri) {
-      const parsedDownloadLocation = dir.uri
-      await AsyncStorage.setItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION, parsedDownloadLocation)
-      this.setState({ customDownloadLocation: parsedDownloadLocation })
-    } else {
-      await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
-      this.setState({ customDownloadLocation: null })
+    const androidPermission = await PermissionsAndroid.request('android.permission.READ_MEDIA_AUDIO')
+    if (androidPermission === PermissionsAndroid.RESULTS.GRANTED) {
+      const dir = await ScopedStorage.openDocumentTree(true)
+  
+      if (dir?.uri) {
+        const parsedDownloadLocation = dir.uri
+        await AsyncStorage.setItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION, parsedDownloadLocation)
+        this.setState({ customDownloadLocation: parsedDownloadLocation })
+      } else {
+        await AsyncStorage.removeItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
+        this.setState({ customDownloadLocation: null })
+      }
     }
   }
 

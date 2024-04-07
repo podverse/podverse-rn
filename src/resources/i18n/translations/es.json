@@ -734,7 +734,7 @@
     "value_tag_info_streaming_sats_text_3": "(Cerrar y volver a abrir la aplicación borra la cola)",
     "language - oc": "Occitano",
     "Share Track": "Compartir pista",
-    "value_tag_preview_streaming": "Stream envía una donación por cada minuto escuchada.",
+    "value_tag_preview_streaming": "Stream envía una donación por cada minuto escuchado.",
     "Show Completed": "Mostrar completado",
     "Login to enable podcast notifications": "Inicia sesión para activar notificaciones de podcast",
     "Reset Password Failed": "No se pudo restablecer su contraseña",
@@ -745,7 +745,7 @@
     "Podcasting 2.0 cross-app comments": "Podcasting 2.0 comentarios entre aplicaciones",
     "Trailer": "Trailer",
     "V4V Providers setup explanation": "Carteras soportadas.",
-    "OPML import error message general": "Hubo un problema con la importación del archivo opml.",
+    "OPML import error message general": "Hubo un problema con la importación del archivo OPML.",
     "Podcasting 2.0 chapters": "Podcasting 2.0 capítulos",
     "Resume": "Reanudar",
     "Subscribe to listener profiles": "Suscribirse a perfiles de oyentes",
@@ -852,5 +852,9 @@
     "Streaming": "Streaming (emisión)",
     "Off": "Apagado",
     "Error Reporting": "Notificación de errores",
-    "Time splits": "Distribución del tiempo"
+    "Time splits": "Distribución del tiempo",
+    "value_tag_streaming_sats": "Saturación en streaming",
+    "Payment disabled beta title": "No disponible en la versión Beta",
+    "Payment disabled beta message": "El procesador de pagos no funciona en la versión beta. Para ampliar tu suscripción, utiliza la versión oficial de la aplicación o envíanos un correo electrónico y te ayudaremos.",
+    "value_tag_info_streaming_sats_title": "Saturación del streaming"
 }

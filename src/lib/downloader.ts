@@ -1,10 +1,10 @@
-import url from 'url'
+import { Platform, NativeModules, PermissionsAndroid } from 'react-native'
 import PromiseQueue from 'queue-promise'
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import debounce from 'lodash/debounce'
 import { convertBytesToHumanReadableString, Episode, getExtensionFromUrl, Podcast } from 'podverse-shared'
-import RNBackgroundDownloader from 'react-native-background-downloader'
+import RNBackgroundDownloader from '@kesha-antonov/react-native-background-downloader'
 import RNFS from 'react-native-fs'
 import * as ScopedStorage from 'react-native-scoped-storage'
 import { AndroidScoped, FileSystem } from 'react-native-file-access'
@@ -25,11 +25,14 @@ import { getAppUserAgent, safelyUnwrapNestedVariable } from './utility'
 import { downloadImageFile } from './storage'
 
 const _fileName = 'src/lib/downloader.ts'
+const { NoxAndroidAutoModule } = NativeModules
 
 export const BackgroundDownloader = () => {
   const userAgent = getAppUserAgent()
-  RNBackgroundDownloader.setHeaders({
-    'user-agent': userAgent
+  RNBackgroundDownloader.setConfig({
+    headers: {
+      'user-agent': userAgent
+    }
   })
 
   return RNBackgroundDownloader
@@ -107,7 +110,6 @@ const finishedDownloadQueue = new PromiseQueue({
   start: true
 })
 
-
 type FinishDownloadParams = {
   customLocation: string | null
   episode: Episode
@@ -127,6 +129,7 @@ const finishDownload = async (params: FinishDownloadParams) => {
       if (tempDownloadFileType && newFileType) {
         const { uri: newFileUri } = newFileType
         await FileSystem.cp(origDestination, newFileUri)
+        await FileSystem.unlink(origDestination)
       }
     } catch (error) {
       errorLogger(_fileName, 'done error', error)
@@ -228,9 +231,8 @@ export const downloadEpisode = async (
   const origDestination = `${folderPath}/${episode.id}${ext}`
   const Authorization = await getPodcastCredentialsHeader(finalFeedUrl)
 
-  const downloadUrl = await getSecureUrl(episode.mediaUrl);
-
-  (async () => {
+  const downloadUrl = await getSecureUrl(episode.mediaUrl)
+  ;(async () => {
     // Download and store the image files if available
     if (podcast?.imageUrl) await downloadImageFile(podcast.imageUrl)
     if (podcast?.shrunkImageUrl) await downloadImageFile(podcast.shrunkImageUrl)
@@ -262,10 +264,11 @@ export const downloadEpisode = async (
           }
         }
       })
-      .progress((percent: number, bytesWritten: number, bytesTotal: number) => {
+      .progress(({ bytesDownloaded, bytesTotal }: any) => {
         progressLimiter
           .schedule(() => {
-            const written = convertBytesToHumanReadableString(bytesWritten)
+            const percent = bytesDownloaded / bytesTotal
+            const written = convertBytesToHumanReadableString(bytesDownloaded)
             const total = convertBytesToHumanReadableString(bytesTotal)
             DownloadState.updateDownloadProgress(episode.id, percent, written, total)
           })
@@ -274,14 +277,16 @@ export const downloadEpisode = async (
           })
       })
       .done(() => {
-        finishedDownloadQueue.enqueue(() => finishDownload({
-          customLocation,
-          ext,
-          episode,
-          origDestination,
-          podcast,
-          progressLimiter
-        }))
+        finishedDownloadQueue.enqueue(() =>
+          finishDownload({
+            customLocation,
+            ext,
+            episode,
+            origDestination,
+            podcast,
+            progressLimiter
+          })
+        )
       })
       .error((error: string) => {
         DownloadState.updateDownloadError(episode.id)
@@ -299,7 +304,7 @@ export const deleteDownloadedEpisode = async (episode: Episode) => {
     const ext = getExtensionFromUrl(episode.mediaUrl)
     if (customLocation) {
       const uri = AndroidScoped.appendPath(customLocation, `/${episode.id}${ext}`)
-      await FileSystem.unlink(uri)
+      await ScopedStorage.deleteFile(uri)
     } else {
       const path = `${downloader.directories.documents}/${episode.id}${ext}`
       await FileSystem.unlink(path)
@@ -448,11 +453,21 @@ export const getDownloadedFilePath = async (id: string, episodeMediaUrl: string,
     AsyncStorage.getItem(PV.Keys.EXT_STORAGE_DLOAD_LOCATION)
   ])
   const folderPath = customLocation ? customLocation : downloader.directories.documents
-
   if (isAddByRSSPodcast) {
     const customRSSItemId = downloadCustomFileNameId(episodeMediaUrl)
     return `${folderPath}/${customRSSItemId}${ext}`
   } else {
+    if (Platform.OS === 'android' && customLocation) {
+      console.log(`[downloader] using NoxFileUtil to obtain file name ${id}${ext}:`)
+      const androidPermission = await PermissionsAndroid.request('android.permission.READ_MEDIA_AUDIO')
+      if (androidPermission === PermissionsAndroid.RESULTS.GRANTED) {
+        const externalFileURI = await NoxAndroidAutoModule.listMediaFileByFName(`${id}${ext}`)
+        if (externalFileURI.length > 0) return externalFileURI[0].realPath
+        console.warn(`[downloader] NoxFileUtil could not find ${id}${ext}. returned URI will almost certainly fail.`)
+      } else {
+        console.warn('external storage permission not granted. fileUtil will almost certainly fail.')
+      }
+    }
     return `${folderPath}/${id}${ext}`
   }
 }
