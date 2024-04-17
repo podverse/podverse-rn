@@ -6,11 +6,18 @@ import TrackPlayer, {
   AppKilledPlaybackBehavior,
   Capability,
   IOSCategoryMode,
+  IOSCategoryOptions,
   RepeatMode,
   UpdateOptions
 } from 'react-native-track-player'
 import { PV } from '../resources'
 import { PVAudioPlayer } from './playerAudio'
+
+const iosCategoryOptions = [
+  IOSCategoryOptions.AllowBluetoothA2DP, 
+  IOSCategoryOptions.AllowBluetooth, 
+  IOSCategoryOptions.AllowAirPlay
+]
 
 const setupPlayer = async (options: Parameters<typeof TrackPlayer.setupPlayer>[0]) => {
   const setup = async () => {
@@ -33,6 +40,7 @@ export const PlayerAudioSetupService = async () => {
     waitForBuffer: true,
     maxCacheSize: 1000000, // 1 GB from KB, this affects Android only I think.
     iosCategoryMode: IOSCategoryMode.SpokenAudio,
+    iosCategoryOptions,
     autoHandleInterruptions: Platform.OS === 'android'
     // androidAudioContentType: AndroidAudioContentType.Speech
   })
@@ -78,7 +86,8 @@ export const audioUpdateTrackPlayerCapabilities = async () => {
     android: {
       appKilledPlaybackBehavior
     },
-    iosCategoryMode
+    iosCategoryMode,
+    iosCategoryOptions
   }
 
   // // HACK: android < 13 doesnt show forward/backward buttons in adnroid auto?
