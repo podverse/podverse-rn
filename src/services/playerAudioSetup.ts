@@ -6,6 +6,7 @@ import TrackPlayer, {
   AppKilledPlaybackBehavior,
   Capability,
   IOSCategoryMode,
+  IOSCategoryOptions,
   RepeatMode,
   UpdateOptions
 } from 'react-native-track-player'
@@ -33,6 +34,11 @@ export const PlayerAudioSetupService = async () => {
     waitForBuffer: true,
     maxCacheSize: 1000000, // 1 GB from KB, this affects Android only I think.
     iosCategoryMode: IOSCategoryMode.SpokenAudio,
+    iosCategoryOptions: [
+      IOSCategoryOptions.AllowBluetoothA2DP, 
+      IOSCategoryOptions.AllowBluetooth, 
+      IOSCategoryOptions.AllowAirPlay
+    ],
     autoHandleInterruptions: Platform.OS === 'android'
     // androidAudioContentType: AndroidAudioContentType.Speech
   })
