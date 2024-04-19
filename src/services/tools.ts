@@ -3,7 +3,9 @@ import { errorLogger } from '../lib/logger'
 import { request } from './request'
 
 const forceSecureRedirectDomains = {
-  'feeds.gty.org': true
+  'feeds.gty.org': true,
+  // we've found pdst.fm mp3s to use up to 6 redirects, which causes errors with Android downloads
+  'pdst.fm': true
 }
 
 export const getSecureUrl = async (mediaUrl: string) => {
@@ -21,7 +23,7 @@ export const getSecureUrl = async (mediaUrl: string) => {
       const secureUrlInfo = response?.data || {}
       const { secureUrl } = secureUrlInfo
   
-      if (secureUrl) {
+      if (secureUrl?.startsWith('https://')) {
         finalUrl = secureUrl
       }
     } else if (mediaUrl.indexOf('http://') >= 0) {
