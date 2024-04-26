@@ -1,19 +1,12 @@
-import url from 'url'
+import { Platform } from 'react-native'
 import { errorLogger } from '../lib/logger'
 import { request } from './request'
-
-const forceSecureRedirectDomains = {
-  'feeds.gty.org': true,
-  // we've found pdst.fm mp3s to use up to 6 redirects, which causes errors with Android downloads
-  'pdst.fm': true
-}
 
 export const getSecureUrl = async (mediaUrl: string) => {
   let finalUrl = mediaUrl
 
   try {
-    const hostname = url?.parse(mediaUrl)?.hostname
-    if ((hostname && forceSecureRedirectDomains[hostname]) || mediaUrl.startsWith('http://')) {
+    if (mediaUrl.startsWith('http://')) {
       const response = await request({
         endpoint: '/tools/findHTTPS',
         method: 'POST',
@@ -26,15 +19,31 @@ export const getSecureUrl = async (mediaUrl: string) => {
       if (secureUrl?.startsWith('https://')) {
         finalUrl = secureUrl
       }
-    } else if (mediaUrl.indexOf('http://') >= 0) {
-      /*
-        Find and replace ALL "http://" matches because sometimes
-        episodes use a tracker prefix url, then redirects to
-        the actual URL passed in as a parameter
-        For example: from Andrew Schulz's Flagrant with Akaash Singh
-        https://chrt.fm/track/9DD8D/pdst.fm/e/http://feeds.soundcloud.com/stream/1351569700-flagrantpodcast-mr-beast.mp3
-      */
-        finalUrl = mediaUrl.replaceAll('http://', 'https://')
+    } 
+    
+    /*
+      Find and replace ALL "http://" matches because sometimes
+      episodes use a tracker prefix url, then redirects to
+      the actual URL passed in as a parameter
+      For example: from Andrew Schulz's Flagrant with Akaash Singh
+      https://chrt.fm/track/9DD8D/pdst.fm/e/http://feeds.soundcloud.com/stream/1351569700-flagrantpodcast-mr-beast.mp3
+    */
+    if (mediaUrl.indexOf('http://') >= 0) {
+      finalUrl = mediaUrl.replace(/http:\/\//g, 'https://')
+    }
+
+    /*
+      To avoid a "too many redirects" error with @kesha-antonov/react-native-background-downloader on Android
+      when downloading episodes that have many redirects, we are first making a HEAD request to resolve the
+      final URL before downloading the episode.
+    */
+    if (Platform.OS === 'android') {
+      const redirectResponse = await request({
+        method: 'HEAD'
+      }, finalUrl)
+      if (redirectResponse?.request?.responseURL) {
+        finalUrl = redirectResponse.request.responseURL
+      }
     }
   } catch (error) {
     errorLogger('getSecureUrl', 'Secure url not found for http mediaUrl. Info: ', error)
