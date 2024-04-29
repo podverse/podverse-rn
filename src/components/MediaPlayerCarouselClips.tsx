@@ -43,7 +43,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     if (!selectedKey) return
 
     const { querySort } = this.global.screenPlayer
-    let sort = PV.Filters._topPastWeek
+    let sort = PV.Filters._chronologicalKey
     if (selectedKey === PV.Filters._fromThisPodcastKey && querySort === PV.Filters._chronologicalKey) {
       sort = PV.Filters._chronologicalKey
     }
@@ -327,7 +327,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     const { queryFrom, querySort } = screenPlayer
 
     return !querySort || (queryFrom === PV.Filters._fromThisPodcastKey && querySort === PV.Filters._chronologicalKey)
-      ? PV.Filters._topPastWeek
+      ? PV.Filters._chronologicalKey
       : querySort
   }
 

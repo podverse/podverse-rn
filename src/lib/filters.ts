@@ -146,7 +146,7 @@ export const getDefaultSortForFilter = (options: any) => {
         selectedFromItemKey === PV.Filters._fromThisPodcastKey &&
         selectedSortItemKey === PV.Filters._chronologicalKey
       ) {
-        newSelectedSortItemKey = PV.Filters._topPastWeek
+        newSelectedSortItemKey = PV.Filters._chronologicalKey
       }
       break
     case PV.RouteNames.PodcastScreen:
