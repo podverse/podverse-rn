@@ -43,6 +43,14 @@ export const getSecureUrl = async (mediaUrl: string) => {
       }, finalUrl)
       if (redirectResponse?.request?.responseURL) {
         finalUrl = redirectResponse.request.responseURL
+
+        /*
+          Sometimes the final redirected URL will begin with http. Change it to https
+          to avoid "cleartext not allowed" errors on Android.
+        */
+        if (mediaUrl.indexOf('http://') >= 0) {
+          finalUrl = mediaUrl.replace(/http:\/\//g, 'https://')
+        }
       }
     }
   } catch (error) {
