@@ -54,7 +54,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
       querySort: PV.Filters._chronologicalKey,
       selectedFilterLabel: translate('From this episode'),
       selectedItem: null,
-      selectedSortLabel: translate('top – week'),
+      selectedSortLabel: translate('start time'),
       showActionSheet: false,
       viewType
     }
