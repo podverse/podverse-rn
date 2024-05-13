@@ -39,8 +39,10 @@
             android:launchMode="singleTask"
             android:label="@string/app_name"
             android:exported="true"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode|screenLayout|smallestScreenSize"
-            android:windowSoftInputMode="adjustResize">
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode|screenLayout|smallestScreenSize|locale|layoutDirection|fontScale|density"
+            android:windowSoftInputMode="adjustResize"
+            android:resizeableActivity="true"
+            android:supportsPictureInPicture="true">
             <intent-filter android:label="import">
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.GET_CONTENT" />
