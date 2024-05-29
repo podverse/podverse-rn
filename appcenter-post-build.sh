@@ -27,16 +27,16 @@ if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
         SUBJECT="Browserstack app build upload"
         BODY="A build was uploaded to Browserstack.\n\n\nPlatform: $PLATFORM\n\nBUILD #: $APPCENTER_BUILD_ID\n\nAPP_URL: $APP_URL \n\n"
 
-        echo -e ${BODY} | mail -s "$SUBJECT - Success!" ${TO_ADDRESS}
+        echo -e "${BODY}" | mail -s "$SUBJECT - Success!" ${TO_ADDRESS}
         
         echo "======= Browserstack API URL EMAILED ======="
 
         jsonval() {
-            temp=`echo $APP_URL | sed 's/\\\\\//\//g' | sed 's/[{}]//g' | awk -v k="text" '{n=split($0,a,","); for (i=1; i<=n; i++) print a[i]}' | sed 's/\"\:\"/\|/g' | sed 's/[\,]/ /g' | sed 's/\"//g' | grep -w "app_url"| cut -d":" -f1- | sed -e 's/^ *//g' -e 's/ *$//g'`
-            echo ${temp##*|}
+            temp=$(echo "$APP_URL" | sed 's/\\\\\//\//g' | sed 's/[{}]//g' | awk -v k="text" '{n=split($0,a,","); for (i=1; i<=n; i++) print a[i]}' | sed 's/\"\:\"/\|/g' | sed 's/[\,]/ /g' | sed 's/\"//g' | grep -w "app_url"| cut -d":" -f1- | sed -e 's/^ *//g' -e 's/ *$//g')
+            echo "${temp##*|}"
         }
 
-        APP_ID=`jsonval`
+        APP_ID="$(jsonval)"
 
         #Don't run tests on iOS for now
         if [ "$PLATFORM" == "ios" ] ; then
@@ -56,14 +56,14 @@ if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
          SUBJECT="Browserstack tests succeeded for build $APPCENTER_BUILD_ID"
          BODY="Browserstack tests have passed on $PLATFORM for id: $APP_ID. \n\n Info: \n\n $RUN_TESTS"
 
-         echo -e ${BODY} | mail -s "$SUBJECT" ${TO_ADDRESS}
+         echo -e "${BODY}" | mail -s "$SUBJECT" ${TO_ADDRESS}
          echo "Browserstack Tests successfull!"
         else
          TO_ADDRESS="dev@podverse.fm"
          SUBJECT="Browserstack tests failure for build $APPCENTER_BUILD_ID"
          BODY="An error occured while running browserstack tests on $PLATFORM for id: $APP_ID. \n\n Info: \n\n $RUN_TESTS"
 
-         echo -e ${BODY} | mail -s "$SUBJECT" ${TO_ADDRESS}
+         echo -e "${BODY}" | mail -s "$SUBJECT" ${TO_ADDRESS}
          echo "Browserstack Test Error: $RUN_TESTS"
         fi
         
