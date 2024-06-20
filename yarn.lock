@@ -9070,10 +9070,10 @@ react-native-dialog@*, react-native-dialog@9.3.0:
   resolved "https://registry.yarnpkg.com/react-native-dialog/-/react-native-dialog-9.3.0.tgz#9d745cc51653a1e2ae08076b46f11d99723c47f6"
   integrity sha512-JEOJY/0AzTM9grIl0BL8o/IJPIJru7k5MPj9POTE9RRezUEtgn0YSvCpTlBtG0obWgOdzg2otMz1OQvMXS0wMQ==
 
-react-native-document-picker@7.1.2:
-  version "7.1.2"
-  resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-7.1.2.tgz#99c11a166c65f0fc4184f14067b7ea7a088252ed"
-  integrity sha512-9lVkvv37H2axi69t7IWhDBEEqF/sLXoIS0v3ROCgpcVRY0dyo+XZO5nBGUZtoBnqxiYBEoXDfWtCBmCU8h0/1Q==
+react-native-document-picker@8.2.2:
+  version "8.2.2"
+  resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-8.2.2.tgz#f59448957818b7ce8f2f6288f7a4268ecf3ba997"
+  integrity sha512-5xYoueCDaeU+eZLJM4AxGPedublk4w3YzpdoQR9ayd4E5AdLt1uY1ruK8HoZ/+G4v97o2cFlxfYcuw9QWVMUDA==
   dependencies:
     invariant "^2.2.4"
 
