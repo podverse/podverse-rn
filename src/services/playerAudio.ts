@@ -10,7 +10,7 @@ import { checkIfFileIsDownloaded, getDownloadedFilePath } from '../lib/downloade
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
-import { goToCurrentLiveTime, setLiveStreamWasPausedState } from '../state/actions/player'
+import { goToCurrentLiveTime, setLiveStreamWasPausedState, showMiniPlayer } from '../state/actions/player'
 import { updateHistoryItemsIndex } from '../state/actions/userHistoryItem'
 import PVEventEmitter from './eventEmitter'
 import { getPodcastCredentialsHeader } from './parser'
@@ -208,6 +208,14 @@ export const audioLoadNowPlayingItem = async (
   } else if (item && !!item.clipId) {
     await audioHandleLoadClip(item, shouldPlay)
   }
+
+  /*
+    This should be called in an action, but we don't want to
+    wait for debouncedAudioSyncPlayerWithQueue to finish, so we're
+    calling it in the service.
+    I'm not adding this in playerVideo because there is no auto-queue to be synced.
+  */
+  showMiniPlayer()
 
   await debouncedAudioSyncPlayerWithQueue()
   

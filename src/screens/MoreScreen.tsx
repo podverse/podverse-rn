@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { getExtensionFromUrl, parseOpmlFile } from 'podverse-shared'
+import { decodeHTMLString, getExtensionFromUrl, parseOpmlFile } from 'podverse-shared'
 import { SectionList, Alert } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
@@ -154,11 +154,13 @@ export class MoreScreen extends React.Component<Props, State> {
           return
         }
       }
-
       const contents = await RNFS.readFile(decodeURI(uri), 'utf8')
+      
+      // react-native-xml2js doesn't like the HTML encoded entities
+      const updatedContents = decodeHTMLString(contents)
 
       this.setState({ isLoading: true }, () => {
-        parseString(contents, async (err: any, result: any) => {
+        parseString(updatedContents, async (err: any, result: any) => {
           try {
             if (err) {
               throw err

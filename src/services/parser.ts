@@ -419,6 +419,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
         episode.soundbite = parsedEpisode.soundbite
         episode.subtitle = parsedEpisode.subtitle && parsedEpisode.subtitle.trim()
         episode.title = parsedEpisode.title && parsedEpisode.title.trim()
+        episode.transcript = parsedEpisode.transcript
         episode.value = parsedEpisode.value
 
         if (parsedEpisode.mediaType && parsedEpisode.mediaType.indexOf('video') >= 0) {

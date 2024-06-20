@@ -428,7 +428,7 @@ const enrichParsedTranscript = (item: NowPlayingItem) => {
       try {
         if (item?.episodeTranscript && item.episodeTranscript[0] && item.episodeTranscript[0].url) {
           let parsedTranscript = null
-          if (item?.episodeId) {
+          if (item?.episodeId && !item.addByRSSPodcastFeedUrl) {
             parsedTranscript = await getEpisodeProxyTranscript(item.episodeId)
           } else {
             parsedTranscript = await getParsedTranscript(item.episodeTranscript[0].url)
