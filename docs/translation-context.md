@@ -39,3 +39,7 @@ Previously instead of saying "Free" as in "Free features accessible without a Pr
 `"Membership": "Membership"`
 
 The word membership needs to be translated as "Membership" because it does not represent the user's membership status. It is a title to accompany the actual membership status.
+
+`"Remote": "Remote"`
+
+The word "remote" is meant as in "distant" or "away from a usual location," similar to the usage of "remote" in the phrase "working remote."
