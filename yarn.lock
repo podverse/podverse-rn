@@ -9133,10 +9133,10 @@ react-native-haptic-feedback@1.14.0:
   resolved "https://registry.yarnpkg.com/react-native-haptic-feedback/-/react-native-haptic-feedback-1.14.0.tgz#b50f49dedda4980b3c37c5780823f753cf3ee717"
   integrity sha512-dSXZ6gAzl+W/L7BPjOpnT0bx0cgQiSr0sB3DjyDJbGIdVr4ISaktZC6gC9xYFTv2kMq0+KtbKi+dpd0WtxYZMw==
 
-react-native-iap@10.1.3:
-  version "10.1.3"
-  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-10.1.3.tgz#7f53d04064a1b6eae7467d05c638c7e1a4bbbe02"
-  integrity sha512-6Yz6IZ+8UWHIPUWtd6T25UOo57XZ8Waz3fYodcaGpWevovTvTAe36jtilcRJ/xZFVb033UCTfbqjWoIcEyM/JA==
+react-native-iap@12.15.1:
+  version "12.15.1"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-12.15.1.tgz#0eae574e950be3b5c2d5be1cde1712ccd5f86b53"
+  integrity sha512-NhGqXJb76BnDbbtXIsnRcal/4IWcfXn7sNjoqXoDXfZQkLHPw0WYG1E4S8U0kIV3khw0MZcUcNQbH0UzPVjokQ==
 
 react-native-in-app-review@3.2.2:
   version "3.2.2"
