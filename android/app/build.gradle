@@ -208,6 +208,7 @@ dependencies {
 
     implementation 'com.github.UnifiedPush:android-connector:2.1.1'
     implementation "com.google.crypto.tink:apps-webpush:1.9.1"
+    implementation 'com.github.lovegaoshi:KotlinAudio:v2.0.0-aa22'
     
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
