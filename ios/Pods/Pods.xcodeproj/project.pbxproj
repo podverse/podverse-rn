@@ -320,6 +320,7 @@
 		1977026727A112E5391CE1848DB1A55A /* RNReactNativeHapticFeedback-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = F46A6CB8469042F0D9696A1CEA613EF5 /* RNReactNativeHapticFeedback-dummy.m */; };
 		19CABE438680F698A010613363951FA6 /* VideoSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC988DAD7A60DC268872BEB906AD15E /* VideoSource.swift */; };
 		1A118809A014BD8A44C4F94DA2E05B8C /* react-native-orientation-locker-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 00B427AD20B6456C9C4817ABBF9E6C8A /* react-native-orientation-locker-dummy.m */; };
+		1A13D42B64EC20470135A85B611BC263 /* react-native-in-app-review-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = F65788E3038AE96842CA33A67F25556A /* react-native-in-app-review-umbrella.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		1A27F20BF7AEACBD17161CD1728D83B7 /* RuntimeDecorator.h in Headers */ = {isa = PBXBuildFile; fileRef = 17463C7327B87A1B4B10DBB3733EB8A8 /* RuntimeDecorator.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		1A6FA9161BABDD1B95D869FC6AA69881 /* RCTDisplayLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 82A4E0D5D8889B6D381EC7066B51025E /* RCTDisplayLink.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
 		1A7FF4AE0E5CA6B29C5659AE3EDCA9E6 /* RCTUIManagerUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D07F70709F7C8D9F2CF540522B23B32 /* RCTUIManagerUtils.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
@@ -437,7 +438,6 @@
 		2914828F93E8B24203E59263CD4E6DD5 /* RNFBMessagingModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FB7D89BFBEBE94DC82FDBCA02BE4167 /* RNFBMessagingModule.m */; };
 		291CB601BCC1D048822CA748F0B23CAB /* RNReanimated-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F5AF43BD8D46C5F35F739AB6C61263 /* RNReanimated-dummy.m */; };
 		292E801620343DFF4FAC26797AE10FAE /* RCTModalManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 603568235A4623B76F75961E78016B65 /* RCTModalManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		2936A1DE3F2A1AAAF4857B52DB20A656 /* react-native-in-app-review-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = F65788E3038AE96842CA33A67F25556A /* react-native-in-app-review-umbrella.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		29528802047763F8CD5F33D57CA733DB /* Random.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E1A45BC8349CE8189C55F31A7DC7FE4 /* Random.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		29B67CA7C18A33A46A47F4E2A0D513DD /* Pods-ImageNotification-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F69FCC6DD2AA2D159713E17A2AAAF55 /* Pods-ImageNotification-dummy.m */; };
 		29C25D9339FABDFD7FF503EB7A69F1A0 /* RNFBApp-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2913C6EDC7904879B940EDDBFB496DB6 /* RNFBApp-dummy.m */; };
@@ -915,6 +915,7 @@
 		65607DFBF9A2058557C1568440883A30 /* React-jsi-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = D48D4AB513807EA25491EA870E73398E /* React-jsi-dummy.m */; };
 		656A7D0C091C7369CF8E14B4464D7BF8 /* NativeReanimatedModuleSpec.h in Headers */ = {isa = PBXBuildFile; fileRef = 8432769058645A1931AD09D2C7B8F24B /* NativeReanimatedModuleSpec.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		658BF0A1DD7868068B2B2246BFE2B56B /* Exception.h in Headers */ = {isa = PBXBuildFile; fileRef = 3EAC5112BD5EDB094ADB56C9764B7CF3 /* Exception.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		6593D584B91C3D368B1814EDF0DAD58E /* RNInAppReviewIOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A126567D09502B6868EFA836CBBA2F2A /* RNInAppReviewIOS.swift */; };
 		65C9F83D94ADBA3CF299039C89613E28 /* RNTrackPlayerBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = BBF85150D029D8F1A90C808A31521EF2 /* RNTrackPlayerBridge.m */; };
 		65F19998711F325D515B7B8850F2D5D6 /* MoveWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 445C32A492D5982EE432F19F630AEC11 /* MoveWrapper.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		65FF46C87496960EAD44587E2B7359C8 /* RNPermissionHandlerNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A76C1374451AC28552C2CEB4B601C4B /* RNPermissionHandlerNotifications.m */; };
@@ -1039,6 +1040,7 @@
 		73107CA192884F4192DBD72413DF9288 /* RNFBUtilsModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 751854E8E02A26E5AF0D6AAE2F9EA2EA /* RNFBUtilsModule.m */; };
 		734DBC260643FF64E1A59F72DFCFEA72 /* MallocImpl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FBF2386D4D672CE886B5ABCB8F49E29D /* MallocImpl.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_HAVE_PTHREAD=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation -faligned-new"; }; };
 		7351DD7C2D5D2D31694AC4D9D006D811 /* RNSVGUIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 623E6A0DF5AAEDCF144E90BD46A25F0C /* RNSVGUIKit.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		735601DEF777808BC7A7C5387F88D791 /* react-native-in-app-review-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8201A2C7147DC710AE48DD6386637 /* react-native-in-app-review-dummy.m */; };
 		739C9BE5648FD0A2FFBC060C03D2DF59 /* RCTUIManagerUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = D75BC59823737F4AE7409D5CC4E977CE /* RCTUIManagerUtils.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		73AAF3B2D5421C40B58BDEA6C5DFE175 /* FIRMessagingAPNSInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BDD303B7DB8EA8B7DC3B6D42E621E7D /* FIRMessagingAPNSInfo.m */; };
 		73AD678177AAF012887A3A8E9E710219 /* MMKVMetaInfo.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 689594099ECCDEFDABAEE4600A686214 /* MMKVMetaInfo.hpp */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -1300,7 +1302,6 @@
 		93451A666258763131498D8C50CCD0B4 /* FIRCoreDiagnosticsConnector.h in Headers */ = {isa = PBXBuildFile; fileRef = 2AEC1F6034F761702CBEE5020A71EB9A /* FIRCoreDiagnosticsConnector.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		936CDB0AA560A6640B0C4E37052AE256 /* F14Set-fwd.h in Headers */ = {isa = PBXBuildFile; fileRef = 374130F61E9150869D94F297A914AA52 /* F14Set-fwd.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		939731FFAD0EC2E296548CC2EA0919E6 /* GULUserDefaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A71C8AD1C7F814F3CB672ED7EC1449E /* GULUserDefaults.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		93AC953276C7816EA1A7315FEEDC00CF /* react-native-in-app-review-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8201A2C7147DC710AE48DD6386637 /* react-native-in-app-review-dummy.m */; };
 		93B44B396B05000F07CC84B37E83F4C7 /* FirebaseMessaging-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DDFAE4956F8F6995A5EF1D151A0B31 /* FirebaseMessaging-dummy.m */; };
 		93E29217E9604FE357F490505DE9C990 /* RNSVGTopAlignedLabel.ios.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF997CC289CA968F85A89B5F6C15BB8 /* RNSVGTopAlignedLabel.ios.m */; };
 		93F8DD1B50FCAF93BADA23EF1E48E419 /* SparseByteSet.h in Headers */ = {isa = PBXBuildFile; fileRef = B876347BD107C7FA335AD7114B428C68 /* SparseByteSet.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -1459,7 +1460,6 @@
 		A6610396555B9782CBABCAE3E52BBB0F /* JSIExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = BE855ACB2DF8D08EAD718268838540F8 /* JSIExecutor.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		A67E3D7BFAAD5E0D5C8E7273A1A465FE /* RCTSurfacePresenterStub.h in Headers */ = {isa = PBXBuildFile; fileRef = 450604B753826778E0CFB10315B0E8CB /* RCTSurfacePresenterStub.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		A68D501618ED45DDF5234E704B5C2D73 /* RNSVGPathManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CC0C9EE5C9D27AFF0BF23BFCFC7B61BF /* RNSVGPathManager.m */; };
-		A6C5343D1A350A79E142598D4F6DEE03 /* RNInAppReviewIOS-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ED58BAFB7FFC8AB51B7054425B54812 /* RNInAppReviewIOS-Bridging-Header.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		A713E10A042BBE2B6DE891FDF91CAE59 /* FBVector.h in Headers */ = {isa = PBXBuildFile; fileRef = C6824175C63ABBF5DCD93B673214F633 /* FBVector.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		A729C87F33BD7EE24034FC06CDEC3AE7 /* RNCPickerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AAA8F94F25AA8ECCFEC1CE2D85423BE /* RNCPickerManager.m */; };
 		A769D228CAEA6FCBEBF80E3ACDAA87CD /* RCTVideoTVUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A6EBE6A3557BE08EA1C9BBEF1C6A42 /* RCTVideoTVUtils.swift */; };
@@ -1850,6 +1850,7 @@
 		D227A6432C7E2A2B3EEE8B77AAE62D2B /* jsilib-posix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E263C196DBF1FB9CE82E500703D515A /* jsilib-posix.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
 		D23D6DA700D797AB9BCABF5FD526BE76 /* FIROptionsInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = EF64AC847F73F47B9212692DBF13FF75 /* FIROptionsInternal.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		D254477097CE605AFABF52A2CC658D2F /* InterProcessLock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEA8EC27BB5F37210A76525D4DE23B9C /* InterProcessLock.cpp */; settings = {COMPILER_FLAGS = "-x objective-c++"; }; };
+		D2602079B4723B7E2D49934540598A6E /* RNInAppReviewIOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 289C3C8AA8AB16625B6213FEDEFD4BBE /* RNInAppReviewIOS.m */; };
 		D27CF7792333A116C8698DADDC3126F1 /* GDTCORStorageMetadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 46B804A41B1AE5E414565B10387EDA3D /* GDTCORStorageMetadata.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		D2814D0EF64A4117A6BA9011D7AD1283 /* Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30E38A01154DCB17357CB271CE8A9AB /* Metadata.swift */; };
 		D2933B272260AA07D9933C0AB1761F43 /* RNSScreenStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 8238D6BB24310F1AF71FD83B64614A70 /* RNSScreenStack.m */; };
@@ -2017,6 +2018,7 @@
 		E703E62015E1F7FCE46C4A3EF5D40037 /* RNSVGSvgViewManager.h in Headers */ = {isa = PBXBuildFile; fileRef = B9B0EF3CCE0161B3F1A248F452FF5961 /* RNSVGSvgViewManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		E70C02B953E3EA1F8B87D1CD0BB8359C /* FrozenObject.h in Headers */ = {isa = PBXBuildFile; fileRef = DC324C21157D0D99D384468765647441 /* FrozenObject.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		E71A448DF0B8C9A837ACCA49B13D3358 /* RNSVGTSpanManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E521569537DB22EA30A544C194E7C47 /* RNSVGTSpanManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		E7591183AC319AEBA683B7A210260E3A /* RNInAppReviewIOS-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ED58BAFB7FFC8AB51B7054425B54812 /* RNInAppReviewIOS-Bridging-Header.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		E772211B49BAEA09EA3AB0A098F41D64 /* TrackingTransparency.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A1003236DE48095BFA9FBFC71D4D77F /* TrackingTransparency.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		E7854468AAEF21B67D670476DC31DFFC /* RNDocumentPicker.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F2C605D99BC12FA4263CBC34E70DBE9 /* RNDocumentPicker.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		E7922CF007CCAC775F99E728ECD621DA /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 39CFD28176BEF51EAED2F7A75296B659 /* PrivacyInfo.xcprivacy */; };
@@ -2122,7 +2124,6 @@
 		F37F9173A69F909B4C401BE83666025B /* FIROptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 184AF6B63FA26905DBEEAAF26ACE9C45 /* FIROptions.m */; };
 		F3AA168F758FA4272CBFD90BE8D4071A /* diy-fp.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0D4DCC1829E6E2A5BE80CBF3A47260BC /* diy-fp.cc */; settings = {COMPILER_FLAGS = "-Wno-unreachable-code"; }; };
 		F3AB9A30588BCDEF6BB886F363BA87E0 /* vlog_is_on.cc in Sources */ = {isa = PBXBuildFile; fileRef = 539A740D320A503776E96D297CF7CD20 /* vlog_is_on.cc */; settings = {COMPILER_FLAGS = "-Wno-shorten-64-to-32"; }; };
-		F3D7D6FD2482C21A9063D0AADA5E797F /* RNInAppReviewIOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 289C3C8AA8AB16625B6213FEDEFD4BBE /* RNInAppReviewIOS.m */; };
 		F3FAA3C827C755177DC2A67319F53F51 /* RCTViewRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 63463320E2654B31A825E2953D4A5193 /* RCTViewRegistry.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
 		F40CEBB821E067D83AB35C964C45EABE /* REATransformNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 281E2A55C1993A7054B2B3CD5F9555D3 /* REATransformNode.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -DRNVERSION=66 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
 		F42CF91B629810F9272ABED7B7B2480C /* RCTJSScriptLoaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = D5CF9F800E4002C9A3D46197C48A901B /* RCTJSScriptLoaderModule.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -2154,7 +2155,6 @@
 		F7595880C525E9154B287A7A4301499E /* SharedProxyCxxModule.h in Headers */ = {isa = PBXBuildFile; fileRef = A374190C0D6A79758CD2EE462599449B /* SharedProxyCxxModule.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		F76EB1BABEEA03837E66CBA13BEA2584 /* RCTNativeAnimatedNodesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2032F956269DB1370BDEA71FFB77F761 /* RCTNativeAnimatedNodesManager.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-nullability-completeness"; }; };
 		F772DD7E55F8972F04D288E2D4EB2557 /* RCTParserUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A1FB27711F465F880C5A452DF7177A5 /* RCTParserUtils.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
-		F77A89B7C1EE04807CF5FEBD39BA8B2C /* RNInAppReviewIOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = A126567D09502B6868EFA836CBBA2F2A /* RNInAppReviewIOS.swift */; };
 		F78864EB42871375F6112AF73A139A09 /* RNIap-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 0DA0FE3CB75F668D3BB16AB3234D9076 /* RNIap-umbrella.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		F7908350B94B322403C21398965EE9A2 /* GDTCORMetricsControllerProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = E5FB598471C14B1CAD8740721D6670C7 /* GDTCORMetricsControllerProtocol.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		F7A3EFEFC2E4D5F5E21B491D55C659E2 /* client_metrics.nanopb.c in Sources */ = {isa = PBXBuildFile; fileRef = EC4429694C2CC1EC0980C3D91A32D136 /* client_metrics.nanopb.c */; };
@@ -2227,6 +2227,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 2AB2EF542954AB1C999E03BFEF8DE806;
 			remoteInfo = DoubleConversion;
+		};
+		016FCFA24D1A845228752D248EBC092D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7ACAA9BE580DD31A5CB9D97C45D9492D;
+			remoteInfo = "React-Core";
 		};
 		0315760B57AC0227C8D0B964AF7A8668 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -2682,13 +2689,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = B51433D546A38C51AA781F192E8836F8;
 			remoteInfo = RNLocalize;
-		};
-		350E1C4D0C6DFD774EF724F2E79EF1D0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1BEE828C124E6416179B904A9F66D794;
-			remoteInfo = React;
 		};
 		38074E85E4D2D5C58F9AD3572846343E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -7296,13 +7296,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0F1782C5B3B1C58BBE8264921E1A08B4 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		103801073CB058BCBB9ED3B7C992E5AF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -7661,6 +7654,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A60085F2A9CD3A418C439392950FC4FD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AB002DDCCFFE18DD2CA66A43A73FC4A9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -14866,6 +14866,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A6D9115A4F1405C610E36669A90EFBE1 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A13D42B64EC20470135A85B611BC263 /* react-native-in-app-review-umbrella.h in Headers */,
+				E7591183AC319AEBA683B7A210260E3A /* RNInAppReviewIOS-Bridging-Header.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A750399869F407E1826E3B40CD3B240E /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -15507,15 +15516,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D7F209978748E1841DF5DAC7A76E66F2 /* Pods-podverse-umbrella.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EBBF9BDB6C1243F63CAC13AA260A6F6B /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				2936A1DE3F2A1AAAF4857B52DB20A656 /* react-native-in-app-review-umbrella.h in Headers */,
-				A6C5343D1A350A79E142598D4F6DEE03 /* RNInAppReviewIOS-Bridging-Header.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16496,17 +16496,17 @@
 		};
 		A825B9BC253DDA7637593FC3425A5F0B /* react-native-in-app-review */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 50F342BA9A90A8624649D39E0946BC29 /* Build configuration list for PBXNativeTarget "react-native-in-app-review" */;
+			buildConfigurationList = 0E3527AA81E24BE82C94E943753C723A /* Build configuration list for PBXNativeTarget "react-native-in-app-review" */;
 			buildPhases = (
-				EBBF9BDB6C1243F63CAC13AA260A6F6B /* Headers */,
-				73D6E91955FB77ECA0F412C26587C9F4 /* Sources */,
-				0F1782C5B3B1C58BBE8264921E1A08B4 /* Frameworks */,
-				151ADF611A02F6E519CDD1E55A7817E7 /* Copy generated compatibility header */,
+				A6D9115A4F1405C610E36669A90EFBE1 /* Headers */,
+				5C6E980D1F414EA0C21CAD589544C4BC /* Sources */,
+				AB002DDCCFFE18DD2CA66A43A73FC4A9 /* Frameworks */,
+				78EE3F5680875EE366FDF620F8C817C9 /* Copy generated compatibility header */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				C0E1AE4ED52F42D64DCFFA7BD71D999C /* PBXTargetDependency */,
+				86B7E17E7B56D70C226498DEE1830091 /* PBXTargetDependency */,
 			);
 			name = "react-native-in-app-review";
 			productName = "react-native-in-app-review";
@@ -17429,30 +17429,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		151ADF611A02F6E519CDD1E55A7817E7 /* Copy generated compatibility header */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${DERIVED_SOURCES_DIR}/${PRODUCT_MODULE_NAME}-Swift.h",
-				"${PODS_ROOT}/Headers/Public/react_native_in_app_review/react-native-in-app-review.modulemap",
-				"${PODS_ROOT}/Headers/Public/react_native_in_app_review/react-native-in-app-review-umbrella.h",
-			);
-			name = "Copy generated compatibility header";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}.modulemap",
-				"${BUILT_PRODUCTS_DIR}/react-native-in-app-review-umbrella.h",
-				"${BUILT_PRODUCTS_DIR}/Swift Compatibility Header/${PRODUCT_MODULE_NAME}-Swift.h",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "COMPATIBILITY_HEADER_PATH=\"${BUILT_PRODUCTS_DIR}/Swift Compatibility Header/${PRODUCT_MODULE_NAME}-Swift.h\"\nMODULE_MAP_PATH=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}.modulemap\"\n\nditto \"${DERIVED_SOURCES_DIR}/${PRODUCT_MODULE_NAME}-Swift.h\" \"${COMPATIBILITY_HEADER_PATH}\"\nditto \"${PODS_ROOT}/Headers/Public/react_native_in_app_review/react-native-in-app-review.modulemap\" \"${MODULE_MAP_PATH}\"\nditto \"${PODS_ROOT}/Headers/Public/react_native_in_app_review/react-native-in-app-review-umbrella.h\" \"${BUILT_PRODUCTS_DIR}\"\nprintf \"\\n\\nmodule ${PRODUCT_MODULE_NAME}.Swift {\\n  header \\\"${COMPATIBILITY_HEADER_PATH}\\\"\\n  requires objc\\n}\\n\" >> \"${MODULE_MAP_PATH}\"\n";
-		};
 		1D06934B6CA4E608DB4BC52D02B50E2F /* [CP] Copy XCFrameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -17564,6 +17540,30 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -o pipefail\n\nbash -l -c 'SRCS_DIR='${PODS_TARGET_SRCROOT}/../../Libraries' MODULES_OUTPUT_DIR='${PODS_TARGET_SRCROOT}/../../React/FBReactNativeSpec/FBReactNativeSpec' MODULES_LIBRARY_NAME='FBReactNativeSpec' ${PODS_TARGET_SRCROOT}/../../scripts/generate-specs.sh' 2>&1 | tee \"${SCRIPT_OUTPUT_FILE_0}\"\n    ";
+		};
+		78EE3F5680875EE366FDF620F8C817C9 /* Copy generated compatibility header */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DERIVED_SOURCES_DIR}/${PRODUCT_MODULE_NAME}-Swift.h",
+				"${PODS_ROOT}/Headers/Public/react_native_in_app_review/react-native-in-app-review.modulemap",
+				"${PODS_ROOT}/Headers/Public/react_native_in_app_review/react-native-in-app-review-umbrella.h",
+			);
+			name = "Copy generated compatibility header";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}.modulemap",
+				"${BUILT_PRODUCTS_DIR}/react-native-in-app-review-umbrella.h",
+				"${BUILT_PRODUCTS_DIR}/Swift Compatibility Header/${PRODUCT_MODULE_NAME}-Swift.h",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "COMPATIBILITY_HEADER_PATH=\"${BUILT_PRODUCTS_DIR}/Swift Compatibility Header/${PRODUCT_MODULE_NAME}-Swift.h\"\nMODULE_MAP_PATH=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}.modulemap\"\n\nditto \"${DERIVED_SOURCES_DIR}/${PRODUCT_MODULE_NAME}-Swift.h\" \"${COMPATIBILITY_HEADER_PATH}\"\nditto \"${PODS_ROOT}/Headers/Public/react_native_in_app_review/react-native-in-app-review.modulemap\" \"${MODULE_MAP_PATH}\"\nditto \"${PODS_ROOT}/Headers/Public/react_native_in_app_review/react-native-in-app-review-umbrella.h\" \"${BUILT_PRODUCTS_DIR}\"\nprintf \"\\n\\nmodule ${PRODUCT_MODULE_NAME}.Swift {\\n  header \\\"${COMPATIBILITY_HEADER_PATH}\\\"\\n  requires objc\\n}\\n\" >> \"${MODULE_MAP_PATH}\"\n";
 		};
 		8C8D0C3B050D2B9D1CA53B229882B676 /* Copy generated compatibility header */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -18169,6 +18169,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5C6E980D1F414EA0C21CAD589544C4BC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				735601DEF777808BC7A7C5387F88D791 /* react-native-in-app-review-dummy.m in Sources */,
+				D2602079B4723B7E2D49934540598A6E /* RNInAppReviewIOS.m in Sources */,
+				6593D584B91C3D368B1814EDF0DAD58E /* RNInAppReviewIOS.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6130F0D9C715633571C240EDEA7F5EFA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -18413,16 +18423,6 @@
 				B7E72E3E903B672F780E202401BC765B /* RNFBSharedUtils.m in Sources */,
 				73107CA192884F4192DBD72413DF9288 /* RNFBUtilsModule.m in Sources */,
 				EBABD59ECD420BBC82B588690954B650 /* RNFBVersion.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		73D6E91955FB77ECA0F412C26587C9F4 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				93AC953276C7816EA1A7315FEEDC00CF /* react-native-in-app-review-dummy.m in Sources */,
-				F3D7D6FD2482C21A9063D0AADA5E797F /* RNInAppReviewIOS.m in Sources */,
-				F77A89B7C1EE04807CF5FEBD39BA8B2C /* RNInAppReviewIOS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20125,6 +20125,12 @@
 			target = E7E7CE52C8C68B17224FF8C262D80ABF /* RCTRequired */;
 			targetProxy = 4FE1B7EC0809458A9C74F9D0631466A5 /* PBXContainerItemProxy */;
 		};
+		86B7E17E7B56D70C226498DEE1830091 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "React-Core";
+			target = 7ACAA9BE580DD31A5CB9D97C45D9492D /* React-Core */;
+			targetProxy = 016FCFA24D1A845228752D248EBC092D /* PBXContainerItemProxy */;
+		};
 		8730AD197EE56023B14E75FA90B1F267 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "React-RCTText";
@@ -20568,12 +20574,6 @@
 			name = "react-native-safe-area-context";
 			target = BD9A27D8398DEB3205D3F8937B0672A0 /* react-native-safe-area-context */;
 			targetProxy = 20917C81105C5D23F1E246F91F05205D /* PBXContainerItemProxy */;
-		};
-		C0E1AE4ED52F42D64DCFFA7BD71D999C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = React;
-			target = 1BEE828C124E6416179B904A9F66D794 /* React */;
-			targetProxy = 350E1C4D0C6DFD774EF724F2E79EF1D0 /* PBXContainerItemProxy */;
 		};
 		C24B7D6FEEE40C0A3AB672499277FBD5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -21383,6 +21383,37 @@
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		0CBC2C564DBF83B2BC0B94631824FB08 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 02A0BBE5E3403BE69A7B96EF3BF1D50C /* react-native-in-app-review.release.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
+				GCC_PREFIX_HEADER = "Target Support Files/react-native-in-app-review/react-native-in-app-review-prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MODULEMAP_FILE = "Headers/Public/react_native_in_app_review/react-native-in-app-review.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = react_native_in_app_review;
+				PRODUCT_NAME = "react-native-in-app-review";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -23596,36 +23627,6 @@
 			};
 			name = Debug;
 		};
-		6826A7B537DC562D2491A2C4F9CA420D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 959E05AC8379F6ECB3908FD0E6CC9D7D /* react-native-in-app-review.debug.xcconfig */;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				ENABLE_BITCODE = NO;
-				GCC_PREFIX_HEADER = "Target Support Files/react-native-in-app-review/react-native-in-app-review-prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
-				);
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MODULEMAP_FILE = "Headers/Public/react_native_in_app_review/react-native-in-app-review.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = react_native_in_app_review;
-				PRODUCT_NAME = "react-native-in-app-review";
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
 		6A001675BDA407561A966F97D47A56CA /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7DE7B32264BFA65A899118F3B0DAE947 /* RNReanimated.release.xcconfig */;
@@ -24840,6 +24841,36 @@
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		ACA3E7E594E99AFECD672DA7D406EBF5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 959E05AC8379F6ECB3908FD0E6CC9D7D /* react-native-in-app-review.debug.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
+				GCC_PREFIX_HEADER = "Target Support Files/react-native-in-app-review/react-native-in-app-review-prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MODULEMAP_FILE = "Headers/Public/react_native_in_app_review/react-native-in-app-review.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = react_native_in_app_review;
+				PRODUCT_NAME = "react-native-in-app-review";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -26235,37 +26266,6 @@
 			};
 			name = Debug;
 		};
-		F134FF6E5914A703EFC6F5E040658968 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 02A0BBE5E3403BE69A7B96EF3BF1D50C /* react-native-in-app-review.release.xcconfig */;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				ENABLE_BITCODE = NO;
-				GCC_PREFIX_HEADER = "Target Support Files/react-native-in-app-review/react-native-in-app-review-prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
-				);
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MODULEMAP_FILE = "Headers/Public/react_native_in_app_review/react-native-in-app-review.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = react_native_in_app_review;
-				PRODUCT_NAME = "react-native-in-app-review";
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 		F44E383079A07A5D3B1B1DC43F29D80F /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C0DDB18C5DA72DEE6D9116920C42F12D /* RNFS.release.xcconfig */;
@@ -26465,6 +26465,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		0E3527AA81E24BE82C94E943753C723A /* Build configuration list for PBXNativeTarget "react-native-in-app-review" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ACA3E7E594E99AFECD672DA7D406EBF5 /* Debug */,
+				0CBC2C564DBF83B2BC0B94631824FB08 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		14775447AFF64546FC3DD7F4B58D1B6B /* Build configuration list for PBXNativeTarget "DoubleConversion" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -26641,15 +26650,6 @@
 			buildConfigurations = (
 				4BC7450F9457737EE3E637BA155B56F7 /* Debug */,
 				8B5A46FF8D3C1289CDEE3BAFACABCD2A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		50F342BA9A90A8624649D39E0946BC29 /* Build configuration list for PBXNativeTarget "react-native-in-app-review" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6826A7B537DC562D2491A2C4F9CA420D /* Debug */,
-				F134FF6E5914A703EFC6F5E040658968 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
