@@ -733,7 +733,7 @@
     "Your profile page is public": "Ihr Profil ist öffentlich.",
     "Join our Matrix space": "Treten Sie unserem Matrix-Raum bei",
     "Tutorials": "Anleitungen",
-    "Verify email title": "E-Mail geprüft",
+    "Verify email title": "E-Mail-Adresse verifiziert",
     "Verify email succeeded": "Du kannst dich jetzt einloggen.",
     "Satoshi to fiat conversion by Alby API": "Umrechnung von Sats in Fiat-Währungen über die Alby-API",
     "value_tag_preview_boostagram": "Ein Boostagram fügt auch eine öffentliche Nachricht hinzu.",
@@ -850,5 +850,7 @@
     "Trailer": "Trailer",
     "You are not subscribed to any albums yet": "Du hast noch keine Album-Abonnements.",
     "Music - Tracks": "mehrere Titel",
-    "Newer": "Neuer"
+    "Newer": "Neuer",
+    "Share Album": "Album teilen",
+    "Season": "Staffel"
 }
