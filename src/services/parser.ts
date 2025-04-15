@@ -396,11 +396,10 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
         episode.id = downloadCustomFileNameId(enclosure.url)
         episode.mediaUrl = enclosure.url
 
-        // TODO: add chapters support for podcasts added by RSS feed
-        // if (parsedEpisode.chapters) {
-        //   episode.chaptersUrl = parsedEpisode.chapters.url
-        //   episode.chaptersType = parsedEpisode.chapters.type
-        // }
+        if (parsedEpisode.chapters) {
+          episode.chaptersUrl = parsedEpisode.chapters.url
+          episode.chaptersType = parsedEpisode.chapters.type
+        }
 
         episode.description = parsedEpisode?.summary?.trim() || parsedEpisode?.description?.trim()
         episode.duration = parsedEpisode.duration ? parseInt(parsedEpisode.duration, 10) : 0
