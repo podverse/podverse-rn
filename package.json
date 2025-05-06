@@ -56,7 +56,7 @@
     "appcenter": "4.4.4",
     "appcenter-analytics": "4.4.4",
     "appcenter-crashes": "4.4.4",
-    "axios": "1.6.0",
+    "axios": "1.7.4",
     "bad-words": "3.0.3",
     "base-64": "^1.0.0",
     "bottleneck": "2.19.5",
