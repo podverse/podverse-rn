@@ -507,7 +507,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         playback-queue-ended should remove the nowPlayingItem from state and storage.
       */
       if (!!lastItem || !!currentItem) {
-        await playerUpdateUserPlaybackPosition()
+        playerUpdateUserPlaybackPosition()
       }
 
       if (nextAppState === 'active' && !isInitialLoadPodcastsScreen) {
@@ -534,6 +534,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
           const playerActiveType = await playerCheckActiveType()
           if (playerActiveType === PV.Player.playerTypes.isAudio) {
             await audioUpdateTrackPlayerCapabilities()
+          }
+        } else if (Platform.OS === 'android') {
+          const { PipModule } = NativeModules
+          const playerType = await playerCheckActiveType()
+          if (playerType === PV.Player.playerTypes.isVideo) {
+            PipModule.EnterPipMode()
           }
         }
       }
