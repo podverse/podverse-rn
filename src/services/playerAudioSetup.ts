@@ -25,6 +25,7 @@ const setupPlayer = async (options: Parameters<typeof TrackPlayer.setupPlayer>[0
       await TrackPlayer.setupPlayer(options)
     } catch (error) {
       if (error?.code === 'android_cannot_setup_player_in_background') {
+        // try again if app in the background, foreground needed to setup successfully
         continue;
       }
 
