@@ -2,7 +2,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 $FirebaseSDKVersion = '8.10.0'
 
-platform :ios, '14.0'
+platform :ios, '15.0'
 
 target 'podverse' do
   permissions_path = '../node_modules/react-native-permissions/ios'
@@ -45,9 +45,8 @@ target 'podverse' do
   use_react_native!(:path => config["reactNativePath"])
 end
 
-target 'ImageNotification' do
-  pod 'Firebase/Messaging', '~> 8.10.0'
-end
+# ImageNotification (FCM extension) omitted for local Debug beside Xcode 27.
+# Not on the library-copy or AsyncStorage/Keychain migration path.
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
@@ -60,7 +59,9 @@ post_install do |installer|
 
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-    config.build_settings['ENABLE_BITCODE'] = 'NO'
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
+      # Xcode 27.x only supports deployment targets 15.0–27.2; RN 0.66 pods ship older values.
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
     end
   end
 
@@ -70,6 +71,32 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION']
+    end
+  end
+
+  # RCT-Folly redefines clockid_t; newer SDKs already define it as an enum.
+    installer.pods_project.targets.each do |target|
+    next unless target.name == 'Yoga'
+    target.build_configurations.each do |config|
+      flags = config.build_settings['OTHER_CPLUSPLUSFLAGS'] || ['$(inherited)']
+      flags = [flags] if flags.is_a?(String)
+      unless flags.include?('-Wno-deprecated-literal-operator')
+        flags << '-Wno-deprecated-literal-operator'
+      end
+      config.build_settings['OTHER_CPLUSPLUSFLAGS'] = flags
+    end
+  end
+
+  folly_time = File.join(installer.sandbox.root, 'RCT-Folly/folly/portability/Time.h')
+  if File.exist?(folly_time)
+    contents = File.read(folly_time)
+    patched = contents.gsub(
+      /^typedef uint8_t clockid_t;/,
+      '// typedef uint8_t clockid_t; // patched: system headers define clockid_t on Xcode 15+'
+    )
+    if patched != contents
+      File.chmod(0644, folly_time)
+      File.write(folly_time, patched)
     end
   end
 end

@@ -16,14 +16,12 @@
 		30F93B91236648E6006D889B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30F93B90236648E6006D889B /* StoreKit.framework */; };
 		30FF7DC324D7637E00602B4A /* i18n in Resources */ = {isa = PBXBuildFile; fileRef = 30FF7DC224D7637E00602B4A /* i18n */; };
 		31F1F4B1ED5187A2ECE8FC16 /* libPods-podverse.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22FFE1D24D61988CEEE5EA85 /* libPods-podverse.a */; };
-		DAB68C2C9B15F2537F9F4CC2 /* libPods-ImageNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C0814BA1B75E055EBB7DFFF1 /* libPods-ImageNotification.a */; };
 		DD6EFB43667B49708823C8E8 /* RNPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CDF56DAEB5F43889C2C479C /* RNPlaceholder.swift */; };
 		E58770308C43465B815B53A7 /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 817D31662D5647DEACDF2C26 /* AppCenter-Config.plist */; };
 		E72D0A972925BFCA00F01834 /* PhoneScene.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D0A962925BFCA00F01834 /* PhoneScene.m */; };
 		E72D0A9A2925C23700F01834 /* CarScene.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D0A992925C23700F01834 /* CarScene.m */; };
 		E7484F482796840300919ABB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E7484F472796840300919ABB /* GoogleService-Info.plist */; };
 		E7484F6427968AAC00919ABB /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = E7484F6327968AAC00919ABB /* NotificationService.m */; };
-		E7484F6827968AAC00919ABB /* ImageNotification.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = E7484F6027968AAC00919ABB /* ImageNotification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E7C58368244B5A69001928A9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7C58367244B5A69001928A9 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -35,13 +33,6 @@
 			remoteGlobalIDString = 28C79A09220DC4CC0061DE82;
 			remoteInfo = RNCSlider;
 		};
-		E7484F6627968AAC00919ABB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E7484F5F27968AAC00919ABB;
-			remoteInfo = ImageNotification;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -51,7 +42,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				E7484F6827968AAC00919ABB /* ImageNotification.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,17 +77,14 @@
 		817D31662D5647DEACDF2C26 /* AppCenter-Config.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = "AppCenter-Config.plist"; path = "podverse/AppCenter-Config.plist"; sourceTree = "<group>"; };
 		826EC5F6F54B4C19BBCA18A2 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		8CDF56DAEB5F43889C2C479C /* RNPlaceholder.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = RNPlaceholder.swift; sourceTree = "<group>"; };
-		9D3BB4BF680FF9A03A60C5C4 /* Pods-ImageNotification.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ImageNotification.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ImageNotification/Pods-ImageNotification.debug.xcconfig"; sourceTree = "<group>"; };
 		A4607D8F289E4EE6A4DAE6E1 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		A67C249E3BC942B094E33EBD /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		BAAA15EF966F4302A3CFF9A5 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		BBFE0E41A1F617BA0A97EB40 /* Pods-podverse.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-podverse.release.xcconfig"; path = "Pods/Target Support Files/Pods-podverse/Pods-podverse.release.xcconfig"; sourceTree = "<group>"; };
-		C0814BA1B75E055EBB7DFFF1 /* libPods-ImageNotification.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ImageNotification.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C49FCF7BEDA749F5B0CED3F9 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		C6CACEA0A158447092AF5139 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		CAC3079DE96B440A85F09B47 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		D3F62FFA794D44A8A4EB0CE6 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
-		D92A2341BE976B8564CECD40 /* Pods-ImageNotification.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ImageNotification.release.xcconfig"; path = "Pods/Target Support Files/Pods-ImageNotification/Pods-ImageNotification.release.xcconfig"; sourceTree = "<group>"; };
 		E184364CC80B40F0BCAEDF24 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		E72D0A952925BFCA00F01834 /* PhoneScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhoneScene.h; sourceTree = "<group>"; };
 		E72D0A962925BFCA00F01834 /* PhoneScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhoneScene.m; sourceTree = "<group>"; };
@@ -131,7 +118,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DAB68C2C9B15F2537F9F4CC2 /* libPods-ImageNotification.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,7 +169,6 @@
 				E7F32503223C8F16003E6611 /* JavaScriptCore.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				22FFE1D24D61988CEEE5EA85 /* libPods-podverse.a */,
-				C0814BA1B75E055EBB7DFFF1 /* libPods-ImageNotification.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -238,8 +223,6 @@
 			children = (
 				1D71C09FB94EFF08F9AC0106 /* Pods-podverse.debug.xcconfig */,
 				BBFE0E41A1F617BA0A97EB40 /* Pods-podverse.release.xcconfig */,
-				9D3BB4BF680FF9A03A60C5C4 /* Pods-ImageNotification.debug.xcconfig */,
-				D92A2341BE976B8564CECD40 /* Pods-ImageNotification.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -306,7 +289,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				E7484F6727968AAC00919ABB /* PBXTargetDependency */,
 			);
 			name = podverse;
 			productName = "Hello World";
@@ -317,11 +299,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E7484F6927968AAC00919ABB /* Build configuration list for PBXNativeTarget "ImageNotification" */;
 			buildPhases = (
-				C7E1FEED048A151FD453707D /* [CP] Check Pods Manifest.lock */,
 				E7484F5C27968AAC00919ABB /* Sources */,
 				E7484F5D27968AAC00919ABB /* Frameworks */,
 				E7484F5E27968AAC00919ABB /* Resources */,
-				250A463309C7AA2E4D754D94 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -435,28 +415,6 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		250A463309C7AA2E4D754D94 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ImageNotification/Pods-ImageNotification-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/GoogleDataTransport/GoogleDataTransport_Privacy.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities/GoogleUtilities_Privacy.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/PromisesObjC/FBLPromises_Privacy.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleDataTransport_Privacy.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleUtilities_Privacy.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FBLPromises_Privacy.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ImageNotification/Pods-ImageNotification-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		97E58DCFECA6A5D6338180D9 /* [CP-User] [RNFB] Core Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -486,28 +444,6 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-podverse-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C7E1FEED048A151FD453707D /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ImageNotification-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -599,14 +535,6 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		E7484F6727968AAC00919ABB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E7484F5F27968AAC00919ABB /* ImageNotification */;
-			targetProxy = E7484F6627968AAC00919ABB /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -627,7 +555,7 @@
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = podverse/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 4.16.4;
 				OTHER_LDFLAGS = (
@@ -667,7 +595,7 @@
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = podverse/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 4.16.4;
 				OTHER_LDFLAGS = (
@@ -735,7 +663,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -782,7 +710,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 4.0;
@@ -792,7 +720,6 @@
 		};
 		E7484F6A27968AAC00919ABB /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9D3BB4BF680FF9A03A60C5C4 /* Pods-ImageNotification.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -812,7 +739,7 @@
 				INFOPLIST_FILE = ImageNotification/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ImageNotification;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Facebook. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -827,7 +754,6 @@
 		};
 		E7484F6B27968AAC00919ABB /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D92A2341BE976B8564CECD40 /* Pods-ImageNotification.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -848,7 +774,7 @@
 				INFOPLIST_FILE = ImageNotification/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ImageNotification;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Facebook. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
